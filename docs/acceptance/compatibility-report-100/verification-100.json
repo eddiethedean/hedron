@@ -2,7 +2,7 @@
   "schema": "hedron.verification-evidence/1",
   "phase": "1.0",
   "target": "v1.0.0",
-  "source_commit": "d944b9be19e757cfa4b0fd57ebede476f96aabc0",
+  "source_commit": "5578cfe15f4e62274e965db66666dc4426f230db",
   "retained_command_output": false,
   "checks": [
     {
@@ -51,19 +51,19 @@
       "id": "BROWSER-100",
       "command": "HEDRON_BROWSER=1 HEDRON_BROWSER_ENGINE=chromium bash scripts/ci_checks.sh browser --python 3.12",
       "status": "passed",
-      "summary": "Chromium: 118 passed, 61 skipped, 3956 deselected"
+      "summary": "Chromium: 118 passed, 61 skipped, 3994 deselected"
     },
     {
       "id": "BROWSER-FIREFOX-100",
       "command": "HEDRON_BROWSER=1 HEDRON_BROWSER_ENGINE=firefox bash scripts/ci_checks.sh browser --python 3.12",
       "status": "passed",
-      "summary": "Firefox: 116 passed, 63 skipped, 3956 deselected"
+      "summary": "Firefox: 116 passed, 63 skipped, 3994 deselected"
     },
     {
       "id": "BROWSER-WEBKIT-100",
       "command": "HEDRON_BROWSER=1 HEDRON_BROWSER_ENGINE=webkit bash scripts/ci_checks.sh browser --python 3.12",
       "status": "passed",
-      "summary": "WebKit: 116 passed, 63 skipped, 3956 deselected"
+      "summary": "WebKit: 116 passed, 63 skipped, 3994 deselected"
     },
     {
       "id": "BUILD-100",
@@ -75,7 +75,7 @@
       "id": "REGRESS-100",
       "command": ".venv/bin/pytest -q --tb=short -n 0",
       "status": "passed",
-      "summary": "3648 passed, 515 skipped; historical 0.x alias fixtures are retired on the 1.0 train and remain runnable against v0.67"
+      "summary": "3658 passed, 515 skipped; historical 0.x alias fixtures are retired on the 1.0 train and remain runnable against v0.67"
     },
     {
       "id": "RELEASE-100",

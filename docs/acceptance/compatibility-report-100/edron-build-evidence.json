@@ -1,0 +1,24 @@
+{
+  "schema": "hedron.edron-build-evidence/1",
+  "phase": "1.0",
+  "target": "edron-v1.0.0",
+  "source_commit": "5578cfe15f4e62274e965db66666dc4426f230db",
+  "command": "SOURCE_DATE_EPOCH=315619200 PYTHONDONTWRITEBYTECODE=1 uv build --all-packages",
+  "environment": {
+    "python": "3.12.13",
+    "uv": "0.12.1",
+    "source_date_epoch": 315619200
+  },
+  "reproducibility": {
+    "repeat_builds": 2,
+    "comparison": "byte-for-byte SHA-256 equality",
+    "scope": "the Edron and edron-sim wheel and sdist files",
+    "verified": true
+  },
+  "artifacts": [
+    {"name": "edron-1.0.0-py3-none-any.whl", "sha256": "20062700391398f7156cc1c150038e5329ac72a93cdd4fb097e2488f4ad36abc"},
+    {"name": "edron-1.0.0.tar.gz", "sha256": "d1c731c5ade0d000cbb8a441384ce1cfe46339623971e2f41ac7aa28235b31ed"},
+    {"name": "edron_sim-0.1.0-py3-none-any.whl", "sha256": "e705d2a290b2be32587b672ea16270b56897c53156d84f44fea7078b514671d5"},
+    {"name": "edron_sim-0.1.0.tar.gz", "sha256": "0ba2c8175fe34cd0e9f152dca1b67178bbd223788d88f10ed270e977d8d14977"}
+  ]
+}

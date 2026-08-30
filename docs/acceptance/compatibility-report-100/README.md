@@ -13,7 +13,9 @@ generated Rust SBOM; all 44 workspace artifacts, including the native wheel,
 are byte-for-byte reproducible under that input. The retained
 [`local-build-evidence.json`](local-build-evidence.json) records SHA-256s for
 the 26 coordinated 1.0.0 artifacts; the corresponding files remain temporary
-and are deliberately not treated as published release artifacts.
+and are deliberately not treated as published release artifacts. The independent Edron lane is
+bound separately by [`edron-build-evidence.json`](edron-build-evidence.json), covering the Edron
+and edron-sim wheels and source distributions published from `edron-v1.0.0`.
 
 The [`verification-100.json`](verification-100.json) ledger records the exact
 local phase, bridge, quality, Chromium/Firefox/WebKit browser, and
