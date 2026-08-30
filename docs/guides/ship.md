@@ -49,23 +49,22 @@ import os
 import redis
 
 from hedron import Hedron
-from hedron_core.cache import set_cache_backend
-from hedron_core.jobs import RedisJobBackend, set_job_backend
+from hedron_core.jobs import RedisJobBackend
 from hedron_core.redis_cache import RedisCacheBackend
 
 redis_client = redis.Redis.from_url(
     os.environ["HEDRON_REDIS_URL"],
     decode_responses=True,
 )
-set_job_backend(RedisJobBackend(redis_client))
-set_cache_backend(RedisCacheBackend(redis_client))
 
 app = Hedron(
     title="Operations",
     security="strict",
-    production=os.environ.get("HEDRON_ENV") == "production",
+    production=os.environ.get("HEDRON_ENV", "").lower() in {"prod", "production"},
     explorer="off",
     session_secret=os.environ["HEDRON_SESSION_SECRET"],
+    job_backend=RedisJobBackend(redis_client),
+    cache_backend=RedisCacheBackend(redis_client),
 )
 ```
 

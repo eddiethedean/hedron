@@ -266,6 +266,7 @@ nav:
     - Repository catalog: examples/catalog.md
     - Build a notes app: examples/build-notes-app.md
     - Recipe index: examples/recipes/index.md
+    - Common combinations: examples/common-combinations.md
     - Notes with SQLAlchemy: examples/notes-sqlalchemy.md
     - Session authentication: examples/session-auth.md
     - Notes CRUD: examples/crud-tutorial.md

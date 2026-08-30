@@ -23,6 +23,7 @@ full context. For standalone mini-apps (pip + `app.py`), use
 | Protect a route group | [Protect a route prefix](#protect-a-route-prefix) |
 | Test a component without a server | [Fast component test](#test-a-component-without-a-server) |
 | Prepare an app for production | [Production checklist](#production-checklist) |
+| Combine auth, CRUD, validation, dashboards, uploads, and jobs | [Common combinations](#common-app-combinations) |
 
 The snippets use the current FastAPI-first API. Flask and Django use their adapter route
 helpers; start with the [Flask](../getting-started/flask.md) or
@@ -268,26 +269,146 @@ Prefer polling on every host — SSE helpers are **experimental**
 
 ## File upload / download
 
-```python
-from hedron import DownloadButton, FileUpload, Page, SafeUrl, UrlPurpose
+This complete pattern enforces the upload limit in the handler and generates an authorized
+download. The `FileUpload.maximum_size` value is useful browser guidance; server-side reading is
+the enforcement boundary.
 
-Page(
-    FileUpload(name="roster", accept=".csv"),
-    DownloadButton(
-        "Download template",
-        href=SafeUrl.parse("/downloads/template.csv", purpose=UrlPurpose.NAVIGATION),
-    ),
+```python
+from typing import Annotated
+
+from fastapi import Depends, File, HTTPException, Request, UploadFile, status
+from fastapi.responses import Response
+
+from hedron import (
+    CsrfField,
+    DownloadButton,
+    FileUpload,
+    Form,
+    Page,
+    SafeUrl,
+    Stack,
+    SubmitButton,
+    Text,
+    UrlPurpose,
 )
+
+MAX_BYTES = 64 * 1024
+
+
+def require_file_access(request: Request) -> str:
+    username = request.session.get("username")
+    if not isinstance(username, str) or not username:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Sign in required",
+        )
+    return username
+
+
+@app.action(
+    "/upload",
+    method="POST",
+    fallback="/files",
+    dependencies=[Depends(require_file_access)],
+)
+async def upload(roster: UploadFile = File(...)) -> Page:
+    name = roster.filename or "upload"
+    if not name.lower().endswith(".csv"):
+        raise HTTPException(status_code=415, detail="Upload a CSV file")
+    data = await roster.read(MAX_BYTES + 1)
+    if len(data) > MAX_BYTES:
+        raise HTTPException(status_code=413, detail="File exceeds 64 KiB")
+    return Page(Text(f"Received {name} ({len(data)} bytes)"), title="Uploaded")
+
+
+@app.get("/downloads/template.csv", include_in_schema=False)
+def download_template(
+    _username: Annotated[str, Depends(require_file_access)],
+) -> Response:
+    return Response(
+        "name,email\nAda,ada@example.com\n",
+        media_type="text/csv",
+        headers={
+            "Content-Disposition": 'attachment; filename="roster-template.csv"',
+            "Cache-Control": "private, no-store",
+        },
+    )
+
+
+@app.page("/files")
+def files(_username: Annotated[str, Depends(require_file_access)]) -> Page:
+    return Page(
+        Stack(
+            Form(
+                CsrfField(),
+                FileUpload(
+                    name="roster",
+                    accept=".csv,text/csv",
+                    maximum_size=MAX_BYTES,
+                ),
+                SubmitButton("Upload roster"),
+                action="/upload",
+                method="post",
+                enctype="multipart/form-data",
+            ),
+            DownloadButton(
+                label="Download template",
+                href=SafeUrl.parse(
+                    "/downloads/template.csv",
+                    purpose=UrlPurpose.NAVIGATION,
+                ),
+                filename="roster-template.csv",
+            ),
+        ),
+        title="Roster files",
+    )
 ```
 
-Validate size/type in the action handler. Prefer `safe_download_response` for downloads
-([utility components](../api/UTILITY_COMPONENTS.md)). For ranged media / PDF players and
-download-all budgets, see [Media downloads](media-downloads.md).
+For an existing stored file, use `safe_download_response(path, root=..., filename=...,
+authorized=True)` only after the route's authorization decision; it prevents root escape and emits
+private/no-store caching. The full [file upload recipe](../examples/file-upload.md) covers upload
+composition. For ranged media/PDF players and download-all budgets, see
+[Media downloads](media-downloads.md).
 
 ## Charts as fragments
 
-Install `hedron[charts]>=1.0.0,<1.1`, then return charts through the same declared
-fragment regions used by `Metric` / `Table` / `DataTable`. See
+Install `hedron[charts]>=1.0.0,<1.1`, then use an ordinary view handle. The handle preserves the
+authorized target and the chart lifecycle across replacement:
+
+```python
+from hedron import Page, Stack
+from hedron_charts import LineChart
+
+ROWS = [
+    {"month": "Jan", "revenue": 10},
+    {"month": "Feb", "revenue": 14},
+    {"month": "Mar", "revenue": 21},
+]
+
+
+@app.view("/revenue-chart")
+def revenue_chart():
+    return LineChart(
+        ROWS,
+        x="month",
+        y="revenue",
+        title="Monthly revenue",
+        description="Revenue rises from 10 in January to 21 in March.",
+    )
+
+
+@app.page("/analytics")
+def analytics() -> Page:
+    return Page(
+        Stack(
+            revenue_chart(),
+            revenue_chart.refresh_button("Refresh chart"),
+        ),
+        title="Analytics",
+    )
+```
+
+Use the same declared fragment boundaries for charts, `Metric`, `Table`, and `DataTable`. See
 [Charts and HTMX](charts-and-htmx.md) and
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
@@ -312,17 +433,36 @@ contract. See [Test your UI](testing.md).
 
 ### Turn Explorer off in production
 
+Production mode refuses process-local cache and job backends. Configure durable backends before
+constructing the app; every worker must use the same Redis URL and disjoint default keyspaces:
+
 ```python
+import os
+
+import redis
+
+from hedron import Hedron
+from hedron_core.jobs import RedisJobBackend
+from hedron_core.redis_cache import RedisCacheBackend
+
+client = redis.Redis.from_url(
+    os.environ["HEDRON_REDIS_URL"],
+    decode_responses=True,
+)
+
 app = Hedron(
     title="Prod",
-    security="standard",
-    session_secret="from-secret-store",
+    security="strict",
+    session_secret=os.environ["HEDRON_SESSION_SECRET"],
     explorer="off",
-    production=True,
+    production=os.environ.get("HEDRON_ENV", "").lower() in {"prod", "production"},
+    job_backend=RedisJobBackend(client),
+    cache_backend=RedisCacheBackend(client),
 )
 ```
 
-Or set `HEDRON_ENV=production`. Never ship `explorer="development"`.
+Install `redis>=5,<6`. Never ship `explorer="development"`, a placeholder secret, or an
+in-memory backend under `HEDRON_ENV=production`.
 
 ### Use shared state with multiple workers
 
@@ -343,16 +483,49 @@ See [Deployment](deployment.md) · [Error codes](error-codes.md).
 ```python
 from typing import Annotated
 
-from fastapi import Depends, Request
+from fastapi import Depends, HTTPException, Request, status
 
-from hedron import HedronRouter
+from hedron import HedronRouter, Page, Text
+from hedron.auth import install_authenticated_from_session
+
+install_authenticated_from_session(app, session_key="username")
 
 
 def require_user(request: Request) -> str:
-    ...
+    username = request.session.get("username")
+    if not isinstance(username, str) or not username:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Sign in required",
+        )
+    return username
 
 
 users = HedronRouter(prefix="/users", dependencies=[Depends(require_user)])
+
+
+@users.page("/")
+def user_index(username: Annotated[str, Depends(require_user)]) -> Page:
+    return Page(Text(f"Users visible to {username}"), title="Users")
+
+
+app.include_router(users)
 ```
 
-See [Authentication](authentication.md).
+The dependency authenticates every route in the router. Add role/object/tenant authorization to
+the route or service that owns each resource. See [Authentication](authentication.md).
+
+## Common app combinations
+
+Use [Common combination recipes](../examples/common-combinations.md) for four standalone,
+single-file applications that combine boundaries agents and developers commonly need together:
+
+| Combination | Included contracts |
+|---|---|
+| Authenticated CRUD | Session login/logout, protected routes, create/update/delete, CSRF |
+| Validation + fragment errors | Pydantic validation, `FormErrors`, HTMX target, no-JS fallback |
+| Filtered paginated dashboard | Safe GET filters, bounded pages, table replacement, native links |
+| Upload + background job + polling | Upload limits, scoped job ownership, redirect, terminal polling |
+
+These recipes use in-memory storage/workers only where explicitly labelled as a local learning
+substitute. Follow each recipe's production replacement notes before deployment.

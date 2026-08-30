@@ -27,17 +27,17 @@ job helpers are Experimental — prefer this recipe.
 
     from hedron import ComponentRef, Hedron, Page, Poll, Status, Text
     from hedron.jobs import enqueue_durable, job_status_response
-    from hedron_core.jobs import InMemoryJobBackend, JobState, set_job_backend
+    from hedron_core.jobs import InMemoryJobBackend, JobState
+
+    backend = InMemoryJobBackend()
 
     app = Hedron(
         title="Jobs poll demo",
         security="standard",
         explorer="off",
         session_secret="replace-in-production",
+        job_backend=backend,
     )
-
-    backend = InMemoryJobBackend()
-    set_job_backend(backend)
 
     JOB_STATUS = "/jobs/{job_id}/status"
     DEMO_SUBJECT = "demo-user"
