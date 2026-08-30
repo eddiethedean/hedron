@@ -28,7 +28,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Container, Heading, Text
-
 component = Container(Heading('Profile', level=1), Text('Manage your public details.'), query='inline-size', name='profile')
 ```
 
@@ -42,7 +41,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Container(*nodes, children=None, id=None, class_=None, query='none', name=None, max_width=None, align=None, padding=None)
 ```
 

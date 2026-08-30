@@ -30,6 +30,8 @@ pip install "hedron-charts[altair]>=1.0.0,<2.0"
 
 ```python
 from hedron_charts import AltairChart
+import altair as alt
+chart = alt.Chart({'values': [{'week': 'W1', 'deployments': 3}, {'week': 'W2', 'deployments': 5}]}).mark_bar().encode(x='week:N', y='deployments:Q')
 
 component = AltairChart(chart, title='Deployments per week', description='Deployments peaked in week four.')
 ```
@@ -44,7 +46,7 @@ The server emits bounded, non-executable JSON and accessible metadata. The inter
 
 ## Constructor and parameters
 
-```python
+```text
 AltairChart(chart, *, title=None, description=None, alt=None, waiver=None)
 ```
 

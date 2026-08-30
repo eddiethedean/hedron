@@ -35,61 +35,66 @@ my_hedron_plugin/
       examples.py
 ```
 
-## 2. Entry point
+## 2. Entry point and registration
 
-In `pyproject.toml`:
+These files form one import boundary: package metadata points at the registration
+callable, and the registration module declares the plugin's capabilities and component
+assets.
 
-```toml
-[project.entry-points."hedron.plugins"]
-my_plugin = "my_hedron_plugin.plugin:register"
-```
+=== "pyproject.toml"
 
-## 3. Register
+    ```toml title="pyproject.toml"
+    [project.entry-points."hedron.plugins"]
+    my_plugin = "my_hedron_plugin.plugin:register"
+    ```
 
-```python
-# plugin.py
-from __future__ import annotations
+=== "src/my_hedron_plugin/plugin.py"
 
-from pathlib import Path
+    ```python title="src/my_hedron_plugin/plugin.py"
+    from __future__ import annotations
 
-from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
+    from pathlib import Path
 
-_ROOT = Path(__file__).resolve().parent
-_COMPONENT = _ROOT / "components" / "Callout"
+    from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
 
-PLUGIN_META = PluginMeta(
-    name="my_plugin",
-    version="0.1.0",  # keep aligned with your distribution version
-    distribution="my-hedron-plugin",
-    hedron_version=">=1.0.0,<1.1",
-    capabilities=PluginCapabilities(python=True, styles=True, assets=True),
-)
+    _ROOT = Path(__file__).resolve().parent
+    _COMPONENT = _ROOT / "components" / "Callout"
 
-
-def register(ctx: PluginContext) -> None:
-    ctx.register_component(
-        logical_id="my-hedron-plugin:callout.Callout",
-        name="Callout",
-        module="my_hedron_plugin.components.Callout",
+    PLUGIN_META = PluginMeta(
+        name="my_plugin",
+        version="0.1.0",  # keep aligned with your distribution version
         distribution="my-hedron-plugin",
-        props_model="CalloutProps",
-        styles_path=str(_COMPONENT / "styles.css"),
-        folder_path=str(_COMPONENT),
-        asset_roots=(str(_COMPONENT),),
-        examples=("default",),
+        hedron_version=">=1.0.0,<1.1",
+        capabilities=PluginCapabilities(python=True, styles=True, assets=True),
     )
 
 
-register.PLUGIN_META = PLUGIN_META  # type: ignore[attr-defined]
-```
+    def register(ctx: PluginContext) -> None:
+        ctx.register_component(
+            logical_id="my-hedron-plugin:callout.Callout",
+            name="Callout",
+            module="my_hedron_plugin.components.Callout",
+            distribution="my-hedron-plugin",
+            props_model="CalloutProps",
+            styles_path=str(_COMPONENT / "styles.css"),
+            folder_path=str(_COMPONENT),
+            asset_roots=(str(_COMPONENT),),
+            examples=("default",),
+        )
 
-## 4. Version gates
+
+    register.PLUGIN_META = PLUGIN_META  # type: ignore[attr-defined]
+    ```
+
+Maintained complete plugin reference: [Full code on GitHub](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-sample-kit)
+
+## 3. Version gates
 
 - `PLUGIN_META.version` should match the published package version
 - `hedron_version` constrains which Hedron trains load the plugin
 - Incompatible plugins fail at load with `HED-PLUGIN-0002` — do not silently no-op
 
-## 5. Custom elements (0.40)
+## 4. Custom elements (0.40)
 
 Third-party elements register through public `PluginContext` APIs — never private registry
 imports:
@@ -132,7 +137,7 @@ React migration dispositions (`native` / `hedron` / `element` / `react-island` /
 The React-island bridge is **Experimental docs/reference only** — not Supported and not
 shipped inside `hedron-elements`.
 
-## 6. Assets, CSP, and Explorer
+## 5. Assets, CSP, and Explorer
 
 - Prefer package resources for assets; avoid remote asset URLs unless policy allows
 - Do not ship active script / dangerous URL schemes in registered SVG icons
@@ -141,7 +146,7 @@ shipped inside `hedron-elements`.
   (`HED-EXPLORER-0002` / `0003` on crash/timeout/payload)
 - Optional: `ctx.register_diagnostic_owner("HED-MINE-")` for plugin-owned codes
 
-## 7. Test without FastAPI
+## 6. Test without FastAPI
 
 ```python
 from hedron_core.plugins import PluginContext
@@ -155,7 +160,7 @@ def test_registers() -> None:
 
 Load the plugin in CI via the same entry-point path production uses.
 
-## 8. Publish and version
+## 7. Publish and version
 
 - Pin against `hedron-core` (and optionally `hedron`) with an upper bound matching the
   adopter train (for example `>=0.60,<0.62`).
@@ -164,7 +169,7 @@ Load the plugin in CI via the same entry-point path production uses.
   ([What’s ready](whats-ready.md)).
 - Prefer extras so absent features add **no** import or asset cost.
 
-## 9. Security review checklist
+## 8. Security review checklist
 
 - No raw request/session/DB handles crossed into `hedron-core` types
 - Assets and HTML use SafeUrl / TrustedHtml where required

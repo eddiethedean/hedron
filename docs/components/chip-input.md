@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import ChipInput
-
 component = ChipInput('tags', values=('a',))
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 ChipInput(name: 'str', *, values: 'Sequence[str] | None' = None, id: 'str | None' = None, placeholder: 'str | None' = None, disabled: 'bool' = False, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 

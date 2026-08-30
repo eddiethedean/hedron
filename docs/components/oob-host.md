@@ -115,7 +115,6 @@ Stable out-of-band swap root with a reserved id.
 
 ```python
 from hedron import OobHost, Toast
-
 component = OobHost(Toast('Saved'), id='toast-host')
 ```
 
@@ -129,7 +128,7 @@ This component can initiate or represent a backend interaction. The live documen
 
 ## Constructor and parameters
 
-```python
+```text
 OobHost(*nodes, *, id, tag='div', class_=None)
 ```
 

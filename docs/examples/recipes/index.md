@@ -16,6 +16,7 @@ in-memory variant** — labeled on the page when it differs from the recipe), th
 
 | Recipe | What it shows | Limits |
 |---|---|---|
+| [Composable app](../composable-app.md) | Components split across importable Python modules | No custom CSS; `app.py` owns routes and data |
 | [Common combinations](../common-combinations.md) | Auth + CRUD; validation fragments; dashboard filters + pages; upload + job polling | Four single-file learning apps; in-memory substitutes are labelled |
 | [Notes + SQLAlchemy](../notes-sqlalchemy.md) | Persist notes with SQLAlchemy + SQLite | Create + list + delete (not a full admin) |
 | [Session auth](../session-auth.md) | Login / logout with Starlette sessions | Demo credentials only; `/` redirects to login |

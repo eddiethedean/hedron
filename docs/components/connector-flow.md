@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import ConnectorFlow, ConnectorNode, ConnectorTrack
-
 component = ConnectorFlow(ConnectorNode('CSV', kind='source'), ConnectorTrack(label='Transfer'), ConnectorNode('Warehouse', kind='target'), direction='horizontal')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 ConnectorFlow(*nodes, children=None, direction='horizontal', collapse='md', id=None, class_=None)
 ```
 

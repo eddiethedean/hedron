@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import RequestIndicator
-
 component = RequestIndicator(label='Saving…', placement='top', id='save-indicator')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 RequestIndicator(label='Loading…', *, placement='inline', visible_label=True, id=None, class_=None)
 ```
 

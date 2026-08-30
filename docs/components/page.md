@@ -24,8 +24,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Header, Heading, Main, Page, Text
-
-component = Page(Header(Heading('Account', level=1)), Main(Text('Signed in')), title='Account')
+component = Page(Header(Heading('Account', level=1)), Main(Text('Signed in')), title='Account', htmx_extensions=())
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Page(*body, lang='en', title=None, head=None, children=None, data_theme=None, data_hedron_theme=None, dir=None, scripts=None, script_defer=True)
 ```
 

@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import ConnectorTrack, Text
-
 component = ConnectorTrack(Text('TLS 1.3 · Encrypted in transit'), label='Transfer stages', active=True)
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 ConnectorTrack(*nodes, children=None, active=False, label=None, id=None, class_=None)
 ```
 

@@ -81,7 +81,6 @@ Primary HTMX swap region for AppShell document/fragment dual paths.
 
 ```python
 from hedron import Heading, MainPanel, Text
-
 component = MainPanel(Heading('Dashboard', level=1), Text('Overview'), id='main-panel')
 ```
 
@@ -95,7 +94,7 @@ This component can initiate or represent a backend interaction. The live documen
 
 ## Constructor and parameters
 
-```python
+```text
 MainPanel(*nodes, *, id='main-panel', class_=None)
 ```
 

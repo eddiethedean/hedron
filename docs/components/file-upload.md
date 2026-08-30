@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import FileUpload
-
 component = FileUpload(name='evidence', accept='.pdf,image/*', maximum_size=10_000_000, label='Upload evidence')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 FileUpload(*, name='file', accept=None, maximum_size=5_000_000, multiple=False, label='Upload file')
 ```
 

@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import RadioGroup
-
 component = RadioGroup('plan', 'Billing plan', [('free', 'Free'), ('pro', 'Pro')], value='free')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 RadioGroup(name, legend, options, *, id=None, value=None, required=False)
 ```
 

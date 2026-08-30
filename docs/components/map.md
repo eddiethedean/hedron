@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Map
-
 component = Map(center=(37.77,-122.42), zoom=10, markers=())
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Map(*, center: 'tuple[float, float]' = (0.0, 0.0), zoom: 'float' = 2.0, width: 'int | None' = None, height: 'int | None' = 360, tile_allowlist: 'Sequence[str]' = (), tiles: 'str | None' = None, attribution: 'str' = '', markers: 'Sequence[MarkerSpec | Mapping[str, object]]' = (), geojson: 'Mapping[str, object] | GeoJSONLayer | None' = None, max_features: 'int' = 500, id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 

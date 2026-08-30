@@ -36,7 +36,8 @@ def render() -> str:
     ]
     for entry in sorted(entries, key=lambda item: (item["status"] != "current", item["path"])):
         path = entry["path"]
-        url = f"https://github.com/eddiethedean/hedron/tree/v1.0/examples/{path}"
+        ref = entry.get("ref", "v1.0")
+        url = f"https://github.com/eddiethedean/hedron/tree/{ref}/examples/{path}"
         duration = f"{entry['minutes']} min" if entry["minutes"] else "—"
         lines.append(
             f"| [`{path}`]({url}) | {entry['outcome']} | {entry['layer']} | "

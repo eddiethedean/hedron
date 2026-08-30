@@ -65,7 +65,7 @@ window.
 
 ## Authorization declarations
 
-```python
+```text
 from hedron import RequiresScopes
 
 @app.action("/reports/export", authorization=RequiresScopes("reports:read", "reports:export"))

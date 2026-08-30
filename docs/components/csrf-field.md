@@ -24,8 +24,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import CsrfField
-
-component = CsrfField(token=csrf_token_for_request(request, policy))
+component = CsrfField(token='example-token')
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 CsrfField(*, name=None, token=None)
 ```
 

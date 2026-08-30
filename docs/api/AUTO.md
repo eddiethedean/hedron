@@ -24,7 +24,7 @@ def home() -> Page:
 
 ## Constructor
 
-```python
+```text
 Auto(value=None, *, as_=None)
 ```
 

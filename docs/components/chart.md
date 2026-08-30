@@ -30,8 +30,7 @@ pip install "hedron[charts]>=1.0.0,<1.1"
 
 ```python
 from hedron_charts import Chart
-
-component = Chart(spec)
+component = Chart({'data': {'rows': [{'month': 'Jan', 'revenue': 100}, {'month': 'Feb', 'revenue': 140}]}, 'marks': [{'type': 'line', 'encodings': {'x': {'field': 'month', 'type': 'string'}, 'y': {'field': 'revenue', 'type': 'number'}}}], 'accessibility': {'title': 'Revenue', 'description': 'Revenue increased from January to February.'}})
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
@@ -44,7 +43,7 @@ The server-rendered figure, summary, and table remain useful without JavaScript.
 
 ## Constructor and parameters
 
-```python
+```text
 Chart(spec=None, *, class_=None, **kwargs)
 ```
 

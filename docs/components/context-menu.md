@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import ContextMenu, LinkButton
-
 component = ContextMenu('Row', LinkButton('Edit', '/edit'))
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 ContextMenu(*nodes: 'NodeLike', children: 'NodeLike' = None, label: 'str' = 'Actions', overflow_label: 'str' = 'More actions', id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
 ```
 

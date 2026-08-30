@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Audio
-
 component = Audio('/media/clip.mp3')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Audio(src: 'SafeUrl | str', *, tracks: 'Sequence[Mapping[str, Any] | NodeLike]' = (), controls: 'bool' = True, autoplay: 'bool' = False, loop: 'bool' = False, muted: 'bool' = False, preload: 'str | None' = None, allow_external: 'bool' = False, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 

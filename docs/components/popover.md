@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Popover, Text
-
 component = Popover(Text('Details'), label='Info', placement='inline-end', collision='shift')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Popover(*nodes, children=None, label='Open', mode='popover', placement='block-end', collision='flip', id=None, class_=None, mark=None)
 ```
 

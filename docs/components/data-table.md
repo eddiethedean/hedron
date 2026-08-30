@@ -30,8 +30,7 @@ pip install "hedron[data]>=1.0.0,<1.1"
 
 ```python
 from hedron import DataTable
-
-component = DataTable(rows, row_model=EmployeeRow, caption='Employees', page_size=25)
+component = DataTable([{'id': '1', 'name': 'Ada'}], caption='Employees', page_size=25)
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
@@ -44,7 +43,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 DataTable(rows=None, *, row_model=None, columns=None, page=None, query=None, caption=None, empty_message='No rows', page_size=25, allow_download=False)
 ```
 

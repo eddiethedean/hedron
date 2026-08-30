@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Checkbox
-
 component = Checkbox('terms', 'I agree to the service terms', required=True)
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Checkbox(name, label, *, id=None, checked=False, required=False)
 ```
 

@@ -17,59 +17,66 @@ Plugins declare an entry point in group `hedron.plugins` pointing at a callable 
 receives a `PluginContext`. Discovery and loading live in `hedron_core.plugin_loader`
 (`load_plugins`); the FastAPI package re-exports the same API as `hedron.plugins`.
 
-```toml
-# pyproject.toml of the plugin distribution
-[project.entry-points."hedron.plugins"]
-sample_kit = "hedron_sample_kit.plugin:register"
-```
+## Package files
 
-```python
-from hedron_core.plugins import (
-    PluginCapabilities,
-    PluginContext,
-    PluginDefinition,
-    PluginMeta,
-)
+=== "pyproject.toml"
 
-PLUGIN_META = PluginMeta(
-    name="sample_kit",
-    version="0.1.0",
-    distribution="hedron-sample-kit",
-    hedron_version=">=1.0.0,<1.1",
-    capabilities=PluginCapabilities(python=True, styles=True, explorer_panels=True),
-)
+    ```toml title="pyproject.toml"
+    [project.entry-points."hedron.plugins"]
+    sample_kit = "hedron_sample_kit.plugin:register"
+    ```
 
+=== "src/hedron_sample_kit/plugin.py"
 
-def register_components(ctx: PluginContext) -> None:
-    ctx.register_component(
-        logical_id="hedron-sample-kit:callout.Callout",
-        name="Callout",
-        module="hedron_sample_kit.components.Callout",
+    ```python title="src/hedron_sample_kit/plugin.py"
+    from hedron_core.plugins import (
+        PluginCapabilities,
+        PluginContext,
+        PluginDefinition,
+        PluginMeta,
+    )
+
+    PLUGIN_META = PluginMeta(
+        name="sample_kit",
+        version="0.1.0",
         distribution="hedron-sample-kit",
+        hedron_version=">=1.0.0,<1.1",
+        capabilities=PluginCapabilities(python=True, styles=True, explorer_panels=True),
     )
 
 
-def register_explorer(ctx: PluginContext) -> None:
-    ctx.register_explorer_panel(panel_id="sample-kit-callout", title="Sample Callout")
-    ctx.register_explorer_provider(
-        panel_id="sample-kit-callout",
-        title="Sample Callout",
-        description="Isolated 0.50 panel",
+    def register_components(ctx: PluginContext) -> None:
+        ctx.register_component(
+            logical_id="hedron-sample-kit:callout.Callout",
+            name="Callout",
+            module="hedron_sample_kit.components.Callout",
+            distribution="hedron-sample-kit",
+        )
+
+
+    def register_explorer(ctx: PluginContext) -> None:
+        ctx.register_explorer_panel(panel_id="sample-kit-callout", title="Sample Callout")
+        ctx.register_explorer_provider(
+            panel_id="sample-kit-callout",
+            title="Sample Callout",
+            description="Isolated 0.50 panel",
+        )
+
+
+    PLUGIN = PluginDefinition.from_callbacks(
+        PLUGIN_META,
+        (("components", register_components), ("explorer", register_explorer)),
     )
 
 
-PLUGIN = PluginDefinition.from_callbacks(
-    PLUGIN_META,
-    (("components", register_components), ("explorer", register_explorer)),
-)
+    def register(ctx: PluginContext) -> None:
+        PLUGIN.register(ctx)
 
 
-def register(ctx: PluginContext) -> None:
-    PLUGIN.register(ctx)
+    register.PLUGIN_META = PLUGIN_META
+    ```
 
-
-register.PLUGIN_META = PLUGIN_META
-```
+Maintained complete plugin reference: [Full code on GitHub](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-sample-kit)
 
 `PluginDefinition` is the recommended assembly boundary for first-party and
 third-party satellites. Each contribution owns one registration concern, runs in
@@ -159,7 +166,7 @@ authors.
 | `tokens` | iterable of `str` | `()` | Theme token names |
 | `first_party` | `bool` | `False` | Require `hedron-*` naming when true |
 
-Guide: [Plugin authoring — custom elements](../guides/plugin-authoring.md#5-custom-elements-040).
+Guide: [Plugin authoring — custom elements](../guides/plugin-authoring.md#4-custom-elements-040).
 
 ### `register_renderer`
 

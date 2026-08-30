@@ -93,7 +93,7 @@ def save(request: Request, note: Annotated[str, Form()]) -> Page:
 
 See [Forms and actions](forms-and-actions.md) for validation fragments.
 
-```python
+```text
 from hedron import FragmentRegion, InteractionResult
 
 FORM = FragmentRegion(id="note-form", selector="#note-form")

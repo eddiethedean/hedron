@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import DownloadButton
-
 component = DownloadButton(href='/exports/report.csv', filename='report.csv', label='Download CSV')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 DownloadButton(*, href=None, filename, label='Download', source=None)
 ```
 

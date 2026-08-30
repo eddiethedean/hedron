@@ -82,7 +82,6 @@ Render crawlable page links that optionally swap a target through HTMX.
 
 ```python
 from hedron import Pagination
-
 component = Pagination(page=2, page_size=25, total=93, base_path='/audit', target='#audit-table')
 ```
 
@@ -96,7 +95,7 @@ This component can initiate or represent a backend interaction. The live documen
 
 ## Constructor and parameters
 
-```python
+```text
 Pagination(*, page, page_size, total, base_path, target=None)
 ```
 

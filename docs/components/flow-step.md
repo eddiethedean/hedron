@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import FlowStep
-
 component = FlowStep('Validate schemas', status='current', description='Checking required columns')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 FlowStep(label, *nodes, *, status='pending', description=None, status_text=None, id=None, class_=None)
 ```
 

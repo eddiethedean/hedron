@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import DateTimeInput
-
 component = DateTimeInput('starts')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 DateTimeInput(name: 'str', *, id: 'str | None' = None, value: 'str' = '', min: 'str | None' = None, max: 'str | None' = None, step: 'float | int | str | None' = None, required: 'bool' = False, disabled: 'bool' = False, mark: 'str | None' = None, aria_describedby: 'str | None' = None, aria_invalid: 'str | None' = None, aria_required: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 

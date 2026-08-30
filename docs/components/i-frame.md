@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import IFrame
-
 component = IFrame('/embed', title='Embed')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 IFrame(src: 'SafeUrl | str', *, title: 'str', sandbox: 'str' = '', allow: 'str | None' = None, referrerpolicy: 'str' = 'no-referrer', width: 'str | int | None' = None, height: 'str | int | None' = None, allow_remote: 'bool' = False, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 

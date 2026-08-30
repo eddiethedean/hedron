@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import PageIcon
-
 component = PageIcon('/favicon.ico')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 PageIcon(src: 'SafeUrl | str', *, alt: 'str' = 'Application icon', allow_external: 'bool' = False, class_: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 

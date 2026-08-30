@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import TextInput
-
 component = TextInput('email', type='email', autocomplete='email', required=True)
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 TextInput(name, *, id=None, value='', placeholder=None, required=False, type='text', autocomplete=None, disabled=False)
 ```
 

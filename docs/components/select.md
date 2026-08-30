@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Select
-
 component = Select('region', [('iad', 'US East'), ('fra', 'Europe')], value='iad')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Select(name, options, *, id=None, required=False, value=None, depends_on=None, source=None)
 ```
 

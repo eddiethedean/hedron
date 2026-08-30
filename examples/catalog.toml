@@ -10,6 +10,15 @@ minutes = 15
 status = "current"
 
 [[example]]
+path = "composable-app"
+outcome = "Multi-file component composition"
+layer = "Hedron"
+difficulty = "Intermediate"
+minutes = 15
+status = "current"
+ref = "main"
+
+[[example]]
 path = "connect-reference"
 outcome = "Posit Connect deployment reference"
 layer = "Hedron"

@@ -347,7 +347,7 @@ equivalent class configuration) using the existing 0.43 validated types.
 
 Conceptual types:
 
-```python
+```text
 class FragmentHandle(Generic[ParamsModel, Content]):
     parameter_model: type[ParamsModel] | None
     content_type: object
@@ -412,7 +412,7 @@ Observable requirements are fixed:
 
 Conceptual contract:
 
-```python
+```text
 class RefreshableView(Generic[ParamsModel, Data]):
     host: FragmentHost | None = None
     loading: NodeLike | None = None
@@ -444,7 +444,7 @@ than choose an incidental precedence.
 
 Conceptual contract:
 
-```python
+```text
 class CommandHandler(Generic[InputModel, Result]):
     effects: tuple[Refreshes | Updates, ...] = ()
     fallback: str | None = None

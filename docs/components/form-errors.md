@@ -79,7 +79,6 @@ Summarize one or more form-level validation errors.
 
 ```python
 from hedron import FormErrors
-
 component = FormErrors(['Email is required.', 'Choose a billing plan.'])
 ```
 
@@ -93,7 +92,7 @@ This component can initiate or represent a backend interaction. The live documen
 
 ## Constructor and parameters
 
-```python
+```text
 FormErrors(errors)
 ```
 

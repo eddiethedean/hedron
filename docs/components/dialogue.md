@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Dialogue
-
 component = Dialogue([{'speaker': 'A', 'text': 'Hello', 'start_ms': 0, 'end_ms': 500}])
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Dialogue(turns, *, title='Dialogue', class_=None, mark=None)
 ```
 

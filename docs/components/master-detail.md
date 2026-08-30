@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import MasterDetail, Text
-
 component = MasterDetail(Text('Items'), Text('Detail'), master_id='master', detail_id='detail')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 MasterDetail(master, detail=None, *, ratio='1:2', collapse='md', master_id='master', detail_id='detail', state='ready', empty_message='Select an item')
 ```
 

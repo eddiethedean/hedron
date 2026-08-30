@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Card, Link, Text
-
 component = Card(Text('Build completed in 42 seconds.'), title='Latest deployment', footer=Link('View logs', '/logs'))
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Card(*nodes, children=None, title=None, header=None, footer=None, id=None, class_=None)
 ```
 

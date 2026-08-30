@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import EnvironmentBanner
-
 component = EnvironmentBanner('Staging', tone='warning')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 EnvironmentBanner(label, *, tone='warning', id=None, class_=None)
 ```
 

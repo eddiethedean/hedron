@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import MicrophoneCapture
-
 component = MicrophoneCapture(name='clip')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 MicrophoneCapture(*, name: 'str' = 'microphone', label: 'str' = 'Record audio', accept: 'str' = 'audio/*', capture: "Literal['user', 'environment']" = 'user', class_: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 

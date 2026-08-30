@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Link, Nav, Sidebar
-
 component = Sidebar(Nav(Link('Overview', '/'), Link('Settings', '/settings')), label='Workspace')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Sidebar(*nodes, children=None, label='Sidebar', id=None, class_=None)
 ```
 

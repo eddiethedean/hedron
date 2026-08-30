@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Button
-
 component = Button('Archive project', type='button', variant='danger', size='sm', width='full')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Button(label, *, type='button', disabled=False, variant='primary', size=None, appearance=None, emphasis=None, width=None, leading_icon=None, id=None, class_=None, attrs=None)
 ```
 

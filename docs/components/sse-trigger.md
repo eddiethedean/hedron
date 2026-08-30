@@ -9,8 +9,8 @@ Listen for a named SSE event and optionally issue a cacheable GET swap.
 
 | | |
 |---|---|
-| Import | `from hedron import SseTrigger` |
-| Distribution | `hedron` |
+| Import | `from hedron_core.builtins import SseTrigger` |
+| Distribution | `hedron-core` |
 | Backend activity | No |
 | Normal render mode | `RenderMode.FRAGMENT` |
 
@@ -23,8 +23,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 ## Basic use
 
 ```python
-from hedron import SseTrigger, Text
-
+from hedron_core.builtins import SseTrigger, Text
 component = SseTrigger(Text('Waiting'), event='job-status', href='/jobs/panel', target='#job')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 SseTrigger(*children, *, event, href=None, target=None, swap=None)
 ```
 

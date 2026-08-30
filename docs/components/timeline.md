@@ -24,8 +24,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Text, Timeline
-
-component = Timeline().entry('Now', 'Shipped', Text('0.15'))
+component = Timeline([('Now', 'Shipped', Text('0.15'))])
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Timeline(entries: 'Sequence[tuple[str, str, NodeLike] | dict[str, object]]', *, id: 'str | None' = None, label: 'str' = 'Timeline', class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
 ```
 

@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import ResourceRow
-
 component = ResourceRow('North warehouse', description='Ready', href='/sites/north')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 ResourceRow(title, *, description=None, href=None, actions=None, meta=None, density=None)
 ```
 

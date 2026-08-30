@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import ScrollRegion, Text
-
 component = ScrollRegion(Text('Recent events'), axis='block', size='md', label='Recent events')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 ScrollRegion(*nodes: 'NodeLike', children: 'NodeLike' = None, axis: "Literal['block', 'inline', 'both']" = 'block', size: "Literal['sm', 'md', 'lg']" = 'md', affordance: "Literal['auto', 'always']" = 'auto', label: 'str | None' = None, id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
 ```
 

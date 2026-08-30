@@ -1,0 +1,15 @@
+[project]
+name = "hedron-composable-example"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+  "hedron>=1.0.0,<1.1",
+  "uvicorn[standard]>=0.32,<1.0",
+]
+
+[tool.hedron]
+format_version = 1
+component_roots = ["components"]
+build_dir = ".hedron/build"
+theme = "default"
+explorer = "off"

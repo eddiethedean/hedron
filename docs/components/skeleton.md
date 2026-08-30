@@ -76,7 +76,6 @@ Reserve space for content that is still loading.
 
 ```python
 from hedron import Skeleton
-
 component = Skeleton(lines=4)
 ```
 
@@ -90,7 +89,7 @@ This component can initiate or represent a backend interaction. The live documen
 
 ## Constructor and parameters
 
-```python
+```text
 Skeleton(*, lines=3)
 ```
 

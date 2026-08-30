@@ -50,7 +50,7 @@ class SalesPage(ed.Page):
     def results(self, region: str) -> None:
         rows = load_sales(region)
         self.line_chart(rows, x="month", y="revenue")
-        self.dataframe(rows, name="sales")
+        self.table(rows, caption="Sales")
 
     @ed.action
     def reload(self) -> ed.Outcome:

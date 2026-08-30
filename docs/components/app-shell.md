@@ -85,8 +85,7 @@ Document shell with optional side nav and a MainPanel body.
 
 ```python
 from hedron import AppShell, Heading, Nav, NavGroup, NavLink
-
-component = AppShell(Heading('Home', level=1), nav=Nav(NavGroup('Workspace', NavLink('Home', '/'), NavLink('Reports', '/reports'))), panel_id='main-panel')
+component = AppShell(body=Heading('Home', level=1), nav=Nav(NavGroup('Workspace', NavLink('Home', '/'), NavLink('Reports', '/reports'))), panel_id='main-panel')
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
@@ -99,7 +98,7 @@ This component can initiate or represent a backend interaction. The live documen
 
 ## Constructor and parameters
 
-```python
+```text
 AppShell(*body, *, nav=None, nav_groups=None, panel_id='main-panel', content_width='default', nav_collapse='never', nav_collapsed=False, class_=None, id=None)
 ```
 

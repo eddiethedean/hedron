@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import ConnectorNode
-
 component = ConnectorNode('Warehouse', kind='target', state='ready', detail='Destination', runtime='Postgres')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 ConnectorNode(label, *nodes, children=None, kind='source', state='ready', detail=None, runtime=None, leading=None, id=None, class_=None)
 ```
 

@@ -30,8 +30,7 @@ pip install "hedron[charts]>=1.0.0,<1.1"
 
 ```python
 from hedron_charts import ScatterChart
-
-component = ScatterChart(rows, x='latency', y='errors', title='Latency vs errors', description='Higher latency correlates with elevated error rates.')
+component = ScatterChart([{'latency': 120, 'errors': 2}, {'latency': 200, 'errors': 5}], x='latency', y='errors', title='Latency vs errors', description='Higher latency correlates with elevated error rates.')
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
@@ -44,7 +43,7 @@ The server-rendered figure, summary, and table remain useful without JavaScript.
 
 ## Constructor and parameters
 
-```python
+```text
 ScatterChart(data, *, x, y, title, description=None, alt=None, waiver=None, limits=None)
 ```
 

@@ -62,7 +62,7 @@ class SalesPage(ed.Page):
             title="Monthly revenue",
             description="Revenue for the selected region.",
         )
-        self.dataframe(rows, name="sales")
+        self.table(rows, caption="Sales")
 ```
 
 At application startup, Edron compiles this class metadata into ordinary Hedron pages, fragment
@@ -220,7 +220,7 @@ class Customers(ed.Page):
 
     @ed.fragment
     def list_customers(self, query: str = "") -> None:
-        self.dataframe(find_customers(query), name="customers")
+        self.table(find_customers(query), caption="Customers")
 
     @ed.action(updates=(list_customers,))
     def archive(self, customer_id: int) -> ed.Outcome:
@@ -673,7 +673,7 @@ defaults:
 
 ```python
 with self.style_scope(density="compact"):
-    self.dataframe(rows, name="sales")
+    self.table(rows, caption="Sales")
 ```
 
 `self.style_scope(...)` lowers to native `StyleScope`/`StyleContext` and emits the same stable

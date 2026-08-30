@@ -30,6 +30,8 @@ scripts here when you add them.
 | `check_changelog_structure.py` | Require one package changelog title, a current-version section, and non-empty release sections. CI: quality job |
 | `check_external_links.py` | Check public HTTP links. Runs weekly in `docs-health.yml` to avoid network flakes on ordinary PRs |
 | `check_recipe_code_sync.py` | Fail when a guide's recipe Code tab drifts from its marked runnable source. CI: quality job |
+| `check_docs_file_tabs.py` | Require matching path labels, fence titles, and **Full code on GitHub** links for public multi-file examples, including the canonical composability, plugin, and scoped-CSS groups. CI: docs / quality job |
+| `check_docs_examples.py` | Execute and render every generated component-page Basic use example; optional adapter examples are skipped when their dependency is absent. CI: docs / quality job |
 | `probe_css_059.py` | Capture the phase 0.59 parser, explicit-recipe, and pinned-browser capability evidence bundle |
 
 Documentation source ownership and review rules:

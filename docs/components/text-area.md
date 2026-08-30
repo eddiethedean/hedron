@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import TextArea
-
 component = TextArea('notes', rows=6, placeholder='Add deployment context…')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 TextArea(name, *, id=None, value='', rows=4, required=False, placeholder=None)
 ```
 

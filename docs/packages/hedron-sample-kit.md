@@ -17,13 +17,6 @@ pip install "hedron-sample-kit>=0.2.3,<0.3"
 Versions through `0.2.2` predate the composable 1.0 plugin contract; keep the `>=0.2.3` floor. Details:
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
-Enable the plugin in your app’s `pyproject.toml`:
-
-```toml
-[tool.hedron]
-plugins = ["sample_kit"]
-```
-
 ## When to use
 
 - Learning the `hedron.plugins` entry-point layout
@@ -34,11 +27,25 @@ this package’s source as the reference shape.
 
 ## Quick start
 
-```python
-from hedron_sample_kit.components.Callout import Callout
+Enable the reviewed plugin by entry-point name, then import its component from
+application code:
 
-callout = Callout(message="Plugin components load via entry points.")
-```
+=== "pyproject.toml"
+
+    ```toml title="pyproject.toml"
+    [tool.hedron]
+    plugins = ["sample_kit"]
+    ```
+
+=== "app.py"
+
+    ```python title="app.py"
+    from hedron_sample_kit.components.Callout import Callout
+
+    callout = Callout(message="Plugin components load via entry points.")
+    ```
+
+[Full code on GitHub](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-sample-kit)
 
 Or discover `Callout` in the Component Explorer when `hedron[dev]` is installed and
 the plugin is enabled.

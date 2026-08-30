@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import SkipLink
-
 component = SkipLink(target='#main-panel')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 SkipLink(target='#main-panel', *, label='Skip to main content', id=None, class_=None)
 ```
 

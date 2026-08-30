@@ -24,11 +24,10 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import GeoJSONLayer
-
 component = GeoJSONLayer({'type':'FeatureCollection','features':[]})
 ```
 
-Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
+Use `GeoJSONLayer` as the validated `geojson=` input to `Map`; it is a data helper rather than a renderable node.
 
 ## How it works
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 GeoJSONLayer(geojson: 'Mapping[str, object] | None', *, max_features: 'int' = 500) -> 'None'
 ```
 
@@ -72,11 +71,10 @@ exposure remain application code. Redact secrets before rendering.
 ## Testing
 
 ```python
-from hedron import RenderMode, render
+from hedron import GeoJSONLayer
 
-result = render(component, mode=RenderMode.FRAGMENT)
-assert result.html
-assert not result.diagnostics
+layer = GeoJSONLayer({'type': 'FeatureCollection', 'features': []})
+assert layer.features == ()
 ```
 
 [All component demos](index.md) · [Built-in API](../api/BUILT_INS.md) · [Testing](../guides/testing.md)

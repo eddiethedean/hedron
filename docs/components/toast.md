@@ -70,7 +70,6 @@ Render a polite, transient-looking status message.
 
 ```python
 from hedron import Toast
-
 component = Toast('API key copied.', tone='success')
 ```
 
@@ -84,7 +83,7 @@ This component can initiate or represent a backend interaction. The live documen
 
 ## Constructor and parameters
 
-```python
+```text
 Toast(message, *, tone='info', ttl_ms=4000)
 ```
 

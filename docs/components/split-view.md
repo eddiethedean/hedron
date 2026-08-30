@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Card, SplitView, Text
-
 component = SplitView(Card(Text('Source')), Card(Text('Destination')), ratio='2:1')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 SplitView(primary, secondary, *, ratio='1:1', collapse='md', gap='1rem', id=None, class_=None)
 ```
 

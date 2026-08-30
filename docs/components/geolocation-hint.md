@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import GeolocationHint
-
 component = GeolocationHint()
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 GeolocationHint(text: 'str' = 'Browser geolocation is permission-gated, client-reported, and spoofable. Never use coordinates for authorization.', *, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 

@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import ChatInput
-
 component = ChatInput(action='/chat', target='#transcript', placeholder='Ask the assistant', submit_label='Send')
 ```
 
@@ -38,7 +37,7 @@ This component can initiate or represent a backend interaction. The live documen
 
 ## Constructor and parameters
 
-```python
+```text
 ChatInput(*, ref=None, action=None, target=None, swap='beforeend', placeholder='Message', submit_label='Send', name='message', include_attachments=False)
 ```
 

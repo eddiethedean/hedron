@@ -386,7 +386,14 @@ from hedron_data import DataTable
 
 class Dashboard(ed.Page):
     def render(self) -> None:
-        self.include(LineChart(data=[1, 3, 2]))
+        self.include(
+            LineChart(
+                data=[{"month": "Jan", "revenue": 100}, {"month": "Feb", "revenue": 140}],
+                x="month",
+                y="revenue",
+                title="Revenue",
+            )
+        )
         self.include(DataTable(rows=[{"name": "Ada"}]))
 ```
 

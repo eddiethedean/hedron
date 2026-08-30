@@ -116,6 +116,11 @@ class ComponentDoc:
     package: str = "hedron"
     server: str = "No"
     demo: str = "static"
+    import_module: str | None = None
+    example_imports: tuple[str, ...] = ()
+    example_setup: str = ""
+    renderable: bool = True
+    test_code: str | None = None
 
     @property
     def slug(self) -> str:
@@ -158,7 +163,7 @@ COMPONENTS = (
         "document",
         "Render a complete HTML document with safe head defaults and a body.",
         "Page(*body, lang='en', title=None, head=None, children=None, data_theme=None, data_hedron_theme=None, dir=None, scripts=None, script_defer=True)",
-        "Page(Header(Heading('Account', level=1)), Main(Text('Signed in')), title='Account')",
+        "Page(Header(Heading('Account', level=1)), Main(Text('Signed in')), title='Account', htmx_extensions=())",
         (
             p(
                 "body / children",
@@ -448,7 +453,7 @@ COMPONENTS = (
         "layout",
         "Responsive field grid for forms and settings panels.",
         "FormGrid(*fields, *, columns=2, collapse='md', gap='1rem', id=None, class_=None)",
-        "FormGrid(FormField('Name', TextInput(name='name')), FormField('Email', TextInput(name='email')))",
+        "FormGrid(FormField(name='name', label='Name', control=TextInput(name='name')), FormField(name='email', label='Email', control=TextInput(name='email')))",
         (
             p("fields", "NodeLike", "Form fields or labelled controls."),
             p("columns", "int | Mapping", "Column count or responsive map."),
@@ -729,7 +734,7 @@ COMPONENTS = (
         "utilities",
         "Typed application footer region for AppShell chrome.",
         "AppFooter(*nodes, *, width=None, id=None, class_=None)",
-        "AppFooter(Text('© Acme'), Text('Support'))",
+        "AppFooter('© Acme', Text('Support'))",
         (
             p("nodes", "NodeLike", "Footer body content."),
             p("width", "content | narrow | wide | full | None", "Optional content width token."),
@@ -783,7 +788,8 @@ COMPONENTS = (
         "SseRegion wraps existing experimental SSE helpers with a demand-driven `sse` asset. Polling remains the Supported production fallback; do not treat this region as a correctness path.",
         "Keep a meaningful fallback child for no-JS and failed reconnect. Pair job streams with a Poll region on the same status.",
         "Do not point connect at user-derived or external URLs. Empty Page.htmx_extensions with SseRegion fails closed (HED-EXT-0004).",
-        package="hedron",
+        package="hedron-core",
+        import_module="hedron_core.builtins",
     ),
     ComponentDoc(
         "SseTrigger",
@@ -799,7 +805,8 @@ COMPONENTS = (
         'SseTrigger emits `hx-trigger="sse:<event>"` and registers the sse extension. It does not promote live transport to Supported.',
         "Announce resulting fragment swaps through existing live regions rather than inventing extra polite noise.",
         "Do not use SseTrigger for mutating methods. Prefer Poll when the stream is unavailable.",
-        package="hedron",
+        package="hedron-core",
+        import_module="hedron_core.builtins",
     ),
     ComponentDoc(
         "MainPanel",
@@ -820,7 +827,7 @@ COMPONENTS = (
         "layout",
         "Document shell with optional side nav and a MainPanel body.",
         "AppShell(*body, *, nav=None, nav_groups=None, panel_id='main-panel', content_width='default', nav_collapse='never', nav_collapsed=False, class_=None, id=None)",
-        "AppShell(Heading('Home', level=1), nav=Nav(NavGroup('Workspace', NavLink('Home', '/'), NavLink('Reports', '/reports'))), panel_id='main-panel')",
+        "AppShell(body=Heading('Home', level=1), nav=Nav(NavGroup('Workspace', NavLink('Home', '/'), NavLink('Reports', '/reports'))), panel_id='main-panel')",
         (
             p("body", "NodeLike", "Primary content placed inside MainPanel."),
             p("nav", "NodeLike | None", "Optional side navigation (often Nav of NavLinks)."),
@@ -1094,7 +1101,7 @@ COMPONENTS = (
         "surfaces",
         "Compose a presentation-token surface without application CSS.",
         "Surface(*nodes, *, elevation='plain', padding='md', shape='rounded', width=None, id=None, class_=None)",
-        "Surface(Text('Workspace body'), elevation='raised', padding='lg')",
+        "Surface(Text('Workspace body'), elevation='md', padding='lg')",
         (
             p("nodes", "NodeLike", "Surface body content."),
             p("elevation", "plain | raised", "Named elevation token."),
@@ -1239,6 +1246,8 @@ COMPONENTS = (
         "Icon fails closed on unknown names and never accepts raw SVG markup from application authors. Applications may opt into the small semantic pack with `register_first_party_icons()` and then use names such as `home`, `search`, `pipeline`, `check`, and `chevron-right`; directional icons mirror automatically under RTL.",
         "Prefer decorative=True beside visible text; otherwise supply a title that names the meaning.",
         "Do not use Icon as a button—use IconButton for actionable controls.",
+        example_imports=("register_first_party_icons",),
+        example_setup="register_first_party_icons()",
     ),
     ComponentDoc(
         "Button",
@@ -1327,7 +1336,7 @@ COMPONENTS = (
         "forms",
         "Compose a native GET or POST form with validated action URLs and optional HTMX attributes.",
         "Form(*nodes, children=None, action=None, method='post', hx=None, **native_or_hx_attrs)",
-        "Form(CsrfField(), FormField(name='email', label='Email', control=TextInput(name='email', type='email')), SubmitButton('Subscribe'), action='/subscribe')",
+        "Form(CsrfField(token='example-token'), FormField(name='email', label='Email', control=TextInput(name='email', type='email')), SubmitButton('Subscribe'), action='/subscribe')",
         (
             p("nodes", "NodeLike", "Positional labels, fields, errors, and controls."),
             p(
@@ -1351,7 +1360,7 @@ COMPONENTS = (
         "forms",
         "First-class HTMX attribute bundle for Form (validated selectors and swap).",
         "Hx(*, target=None, swap='outerHTML', select=None, indicator=None, trigger=None, include=None, validate=None, busy=None, ...)",
-        "Form(..., hx=Hx(target='#region', swap='outerHTML', indicator='#busy', busy='region'))",
+        "Form(Text('Results'), hx=Hx(target='#region', swap='outerHTML', indicator='#busy', busy='region'))",
         (
             p("target", "str | None", "hx-target selector (must pass safe_css_selector)."),
             p("swap", "str", "hx-swap value (must pass safe_hx_swap)."),
@@ -1390,6 +1399,8 @@ COMPONENTS = (
         "SwapReveal wraps a swapped region. First paint includes `is-revealed` so content is visible; Hedron UI replays the reveal class on `htmx:afterSwap` unless reduced motion is requested.",
         "Keep the wrapper around the swapped region so keyboard focus restoration stays in the same landmark.",
         "Do not use animation as the only status cue; pair with BusyRegion or aria-busy.",
+        package="hedron-core",
+        import_module="hedron_core.builtins",
         server="No",
         demo="static",
     ),
@@ -1411,6 +1422,8 @@ COMPONENTS = (
         "BusyRegion and `Hx(busy=...)` mark opt-in HTMX busy hosts. Hedron UI sets aria-busy only on those hosts (document scope uses the document element), never on every request's body.",
         "Keep a visible or text status for busy; do not rely on color or motion alone.",
         "Indicator selectors must be simple #id tokens.",
+        package="hedron-core",
+        import_module="hedron_core.builtins",
         server="No",
         demo="static",
     ),
@@ -1419,7 +1432,7 @@ COMPONENTS = (
         "forms",
         "Hidden CSRF input wired to the active strategy or an explicit token.",
         "CsrfField(*, name=None, token=None)",
-        "CsrfField(token=csrf_token_for_request(request, policy))",
+        "CsrfField(token='example-token')",
         (
             p(
                 "name",
@@ -1443,7 +1456,7 @@ COMPONENTS = (
         "forms",
         "Hidden input for pre-auth login CSRF (issue_login_csrf / validate_login_csrf).",
         "LoginCsrfField(*, token=None, session=None, name=None)",
-        "LoginCsrfField(session=request.session)",
+        "LoginCsrfField(token='example-token')",
         (
             p("token", "str | None", "Explicit login CSRF token."),
             p("session", "MutableMapping | None", "Optional session store for issue_login_csrf."),
@@ -1623,7 +1636,7 @@ COMPONENTS = (
         "forms",
         "Generate a labelled form from a typed FormModel and optionally submit it through HTMX.",
         "AutoForm(model, *, action, method='post', csrf_token=None, values=None, errors=(), submit_label='Submit', target=None)",
-        "AutoForm(InviteMember, action='/invite', csrf_token=csrf_token, submit_label='Send invite')",
+        "AutoForm(InviteMember, action='/invite', csrf_token='example-token', submit_label='Send invite')",
         (
             p("model", "type[FormModel] | FormModel", "Field schema or populated instance."),
             p("action", "SafeUrl | str", "Validated endpoint."),
@@ -1645,6 +1658,8 @@ COMPONENTS = (
         "AutoForm derives field labels and required state from model metadata, adds error and CSRF nodes, and uses normal form submission as its baseline. Obtain `csrf_token` with `csrf_token_for_request(request, policy)` after a safe GET. For HTMX-targeted POSTs, prefer the explicit Form loop in the [forms and actions guide](../guides/forms-and-actions.md).",
         "Review generated labels and add model titles that make domain-specific fields understandable.",
         "Generation does not replace authorization, CSRF validation, or server-side model validation. Do not leave `csrf_token` undefined.",
+        example_imports=("FormModel",),
+        example_setup="class InviteMember(FormModel):\n    email: str",
         server="On submit",
         demo="auto-form",
     ),
@@ -1672,7 +1687,7 @@ COMPONENTS = (
         "interaction",
         "Load a component fragment when its placeholder enters the document.",
         "Lazy(*, ref, placeholder=None, target_id=None, error=None)",
-        "Lazy(ref=ComponentRef('activity-feed'), placeholder=Skeleton(lines=3), target_id='activity-feed')",
+        "Lazy(ref=ComponentRef('activity-feed', '/activity-feed'), placeholder=Skeleton(lines=3), target_id='activity-feed')",
         (
             p("ref", "ComponentRef", "Typed fragment endpoint."),
             p("placeholder", "NodeLike | None", "Initial content; defaults to Loading."),
@@ -1690,6 +1705,7 @@ COMPONENTS = (
         "Lazy emits a load-triggered HTMX request that swaps into an inner `#…-body` wrapper so a `template[data-hedron-error-template]` survives a successful load. `hedron-ui.mjs` (core and FastAPI copies, kept byte-identical) rematerializes the template on `htmx:responseError` / `htmx:sendError`.",
         "Choose a placeholder that reserves approximately the final space and provide meaningful loading text for material waits.",
         "Do not lazy-load content needed to understand or operate the initial page without a robust failure state.",
+        example_imports=("ComponentRef",),
         server="Immediately after load",
         demo="lazy",
     ),
@@ -1698,7 +1714,7 @@ COMPONENTS = (
         "interaction",
         "Refresh a fragment at a bounded interval while it remains in the DOM.",
         "Poll(*, ref, interval_ms=5000, target_id=None, content=None)",
-        "Poll(ref=ComponentRef('job-status', job_id=job.id), interval_ms=2000, content=Status('Queued'))",
+        "Poll(ref=ComponentRef('job-status', '/jobs/status', params={'job_id': 'demo-job'}), interval_ms=2000, content=Status('Queued'))",
         (
             p("ref", "ComponentRef", "Typed polling endpoint."),
             p("interval_ms", "int", "Interval, clamped to at least 250 ms."),
@@ -1712,6 +1728,7 @@ COMPONENTS = (
         "HTMX's `every Nms` trigger refreshes the component into its collision-free self-target. Repeated instances can share one ComponentRef safely. Stop polling by returning replacement markup without the polling attributes once the terminal state is reached.",
         "Announce only meaningful state transitions; announcing every timer tick overwhelms screen-reader users.",
         "Use conservative intervals, private caching where appropriate, and a terminal response that stops server load.",
+        example_imports=("ComponentRef",),
         server="On every interval",
         demo="poll",
     ),
@@ -1720,7 +1737,7 @@ COMPONENTS = (
         "interaction",
         "Append the next fragment when a pagination sentinel is revealed.",
         "InfiniteScroll(*, ref, target, swap='beforeend')",
-        "InfiniteScroll(ref=ComponentRef('next-events', page=2), target='#event-list')",
+        "InfiniteScroll(ref=ComponentRef('next-events', '/events', params={'page': 2}), target='#event-list')",
         (
             p("ref", "ComponentRef", "Typed next-page endpoint."),
             p("target", "safe CSS selector", "Collection receiving appended nodes."),
@@ -1729,6 +1746,7 @@ COMPONENTS = (
         "The sentinel uses HTMX's revealed trigger and appends to the selected collection. The response should contain new records plus the next sentinel, or omit the sentinel when no pages remain.",
         "Provide a visible Load more fallback and announce how many items were added without moving focus.",
         "Do not create an endless keyboard or screen-reader experience with no way to reach following page content.",
+        example_imports=("ComponentRef",),
         server="When revealed",
         demo="infinite",
     ),
@@ -1867,7 +1885,7 @@ COMPONENTS = (
         "data",
         "Render typed or pre-fetched rows as an accessible bounded data table.",
         "DataTable(rows=None, *, row_model=None, columns=None, page=None, query=None, caption=None, empty_message='No rows', page_size=25, allow_download=False)",
-        "DataTable(rows, row_model=EmployeeRow, caption='Employees', page_size=25)",
+        "DataTable([{'id': '1', 'name': 'Ada'}], caption='Employees', page_size=25)",
         (
             p("rows", "Any", "Materialized mappings or model rows."),
             p("row_model", "type[Model] | None", "Typed column source."),
@@ -1894,7 +1912,7 @@ COMPONENTS = (
         "data",
         "List resources with first-party density and presentation tokens.",
         "ResourceList(*rows, *, density=None, id=None, class_=None)",
-        "ResourceList(ResourceRow('Orders', description='Open work', href='/orders'), density='compact')",
+        "ResourceList(ResourceRow('Orders', description='Open work', href='/orders'), label='Orders', density='compact')",
         (
             p("rows", "ResourceRow | NodeLike", "Resource rows or compatible children."),
             p("density", "comfortable | compact | None", "Optional density token."),
@@ -1958,7 +1976,7 @@ COMPONENTS = (
         "data",
         "Edit bounded typed rows and submit explicit change sets.",
         "DataEditor(rows=None, *, key='editor', row_model=None, columns=None, key_field='id', on_save=None, source=None, page=None, save_mode='batch', page_size=25, caption=None, save_endpoint=None, allow_deletes=True)",
-        "DataEditor(rows, key='allocation-editor', row_model=EmployeeRow, on_save=save_changes, key_field='id', allow_deletes=False)",
+        "DataEditor([{'id': '1', 'name': 'Ada'}], key='allocation-editor', key_field='id', allow_deletes=False)",
         (
             p("rows", "Any", "Materialized editable rows."),
             p("key", "str", "Stable browser editor identity."),
@@ -2036,7 +2054,7 @@ COMPONENTS = (
         "utilities",
         "Inspect bounded, escaped source text with optional language metadata.",
         "CodeViewer(code, *, language=None, max_chars=100_000)",
-        "CodeViewer(config_text, language='toml', max_chars=20_000)",
+        "CodeViewer('[tool.hedron]\\nplugins = []', language='toml', max_chars=20_000)",
         (
             p("code", "str", "Source text."),
             p("language", "str | None", "Language metadata."),
@@ -2139,6 +2157,7 @@ COMPONENTS = (
         "ThemePicker emits a native POST form. The application owns persistence and authorization; optional client boot helpers are bounded and do not replace the server-rendered selection.",
         "Keep the labels, native submit path, and selected server state available when JavaScript is disabled.",
         "Do not pass unregistered theme names, remote actions, CSS, or identity-bearing preference values into the picker.",
+        example_imports=("ThemePreference",),
     ),
     ComponentDoc(
         "Expander",
@@ -2225,7 +2244,7 @@ COMPONENTS = (
         "theme",
         "Let users choose light, dark, or system color preference.",
         "ColorModeToggle(*, preference=ColorMode.SYSTEM, label='Color mode', id=None, action=None, csrf_token=None)",
-        "ColorModeToggle(preference=ColorMode.SYSTEM, action='/preferences/color', csrf_token=csrf_token)",
+        "ColorModeToggle(preference=ColorMode.SYSTEM, action='/preferences/color', csrf_token='example-token')",
         (
             p("preference", "ColorMode | str", "Current light/dark/system selection."),
             p("label", "str", "Control label."),
@@ -2244,7 +2263,7 @@ COMPONENTS = (
         "charts",
         "Render a validated ChartSpec through the first-party hedron-chart host.",
         "Chart(spec=None, *, class_=None, **kwargs)",
-        "Chart(spec)",
+        "Chart({'data': {'rows': [{'month': 'Jan', 'revenue': 100}, {'month': 'Feb', 'revenue': 140}]}, 'marks': [{'type': 'line', 'encodings': {'x': {'field': 'month', 'type': 'string'}, 'y': {'field': 'revenue', 'type': 'number'}}}], 'accessibility': {'title': 'Revenue', 'description': 'Revenue increased from January to February.'}})",
         (
             p(
                 "spec",
@@ -2265,7 +2284,7 @@ COMPONENTS = (
         "charts",
         "Plot one x/y series from row mappings with an accessible fallback.",
         "LineChart(data, *, x, y, title, description=None, alt=None, waiver=None, limits=None)",
-        "LineChart(rows, x='month', y='revenue', title='Monthly revenue', description='Revenue rose from January through June.')",
+        "LineChart([{'month': 'Jan', 'revenue': 100}, {'month': 'Feb', 'revenue': 140}], x='month', y='revenue', title='Monthly revenue', description='Revenue rose from January through June.')",
         (
             p("data", "Sequence[Mapping]", "Bounded rows."),
             p("x / y", "str", "Source field names."),
@@ -2285,7 +2304,7 @@ COMPONENTS = (
         "charts",
         "Plot a filled x/y area series from row mappings with an accessible fallback.",
         "AreaChart(data, *, x, y, title, description=None, alt=None, waiver=None, limits=None)",
-        "AreaChart(rows, x='month', y='revenue', title='Monthly revenue', description='Revenue rose from January through June.')",
+        "AreaChart([{'month': 'Jan', 'revenue': 100}, {'month': 'Feb', 'revenue': 140}], x='month', y='revenue', title='Monthly revenue', description='Revenue rose from January through June.')",
         (
             p("data", "Sequence[Mapping]", "Bounded rows."),
             p("x / y", "str", "Source field names."),
@@ -2305,7 +2324,7 @@ COMPONENTS = (
         "charts",
         "Plot categorical bars from row mappings with an accessible fallback.",
         "BarChart(data, *, x, y, title, description=None, alt=None, waiver=None, limits=None)",
-        "BarChart(rows, x='region', y='requests', title='Requests by region', description='US East handles the largest share.')",
+        "BarChart([{'region': 'IAD', 'requests': 120}, {'region': 'PDX', 'requests': 80}], x='region', y='requests', title='Requests by region', description='US East handles the largest share.')",
         (
             p("data", "Sequence[Mapping]", "Bounded rows."),
             p("x / y", "str", "Source field names."),
@@ -2325,7 +2344,7 @@ COMPONENTS = (
         "charts",
         "Plot an x/y scatter series from row mappings with an accessible fallback.",
         "ScatterChart(data, *, x, y, title, description=None, alt=None, waiver=None, limits=None)",
-        "ScatterChart(rows, x='latency', y='errors', title='Latency vs errors', description='Higher latency correlates with elevated error rates.')",
+        "ScatterChart([{'latency': 120, 'errors': 2}, {'latency': 200, 'errors': 5}], x='latency', y='errors', title='Latency vs errors', description='Higher latency correlates with elevated error rates.')",
         (
             p("data", "Sequence[Mapping]", "Bounded rows."),
             p("x / y", "str", "Source field names."),
@@ -2355,6 +2374,7 @@ COMPONENTS = (
         "The adapter compiles the figure server-side and renders inert output, avoiding a browser plotting runtime. SVG passes active-content rejection and output limits.",
         "Do not rely only on labels embedded in a dense plot; provide a description and data summary.",
         "Close figures after use in long-running processes and bound image dimensions and complexity.",
+        example_setup="import matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax.plot([1, 2, 3], [100, 140, 180])",
         package="hedron-charts[matplotlib]",
         demo="bar-chart",
     ),
@@ -2372,6 +2392,7 @@ COMPONENTS = (
         "The adapter compiles the figure into the supported static or browser representation, enforces visualization limits, and attaches accessible metadata and fallback content.",
         "Make hover-only values available through labels or a table and ensure keyboard users can reach any enabled controls.",
         "Do not pass untrusted custom HTML, JavaScript callbacks, or unbounded traces.",
+        example_setup="import plotly.graph_objects as go\nfig = go.Figure(data=[go.Bar(x=['IAD', 'PDX'], y=[120, 80])])",
         package="hedron-charts[plotly]",
         demo="donut-chart",
     ),
@@ -2389,6 +2410,7 @@ COMPONENTS = (
         "The server compiles the chart specification under output and accessibility limits. Hedron owns the embedding contract instead of accepting arbitrary active markup.",
         "Use encodings that remain distinguishable without color and provide a narrative or table alternative.",
         "Validate data volume and avoid specifications that fetch remote resources in the browser.",
+        example_setup="import altair as alt\nchart = alt.Chart({'values': [{'week': 'W1', 'deployments': 3}, {'week': 'W2', 'deployments': 5}]}).mark_bar().encode(x='week:N', y='deployments:Q')",
         package="hedron-charts[altair]",
         demo="scatter-chart",
     ),
@@ -2625,6 +2647,8 @@ COMPONENTS = (
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
+        renderable=False,
+        test_code="from hedron import GeoJSONLayer\n\nlayer = GeoJSONLayer({'type': 'FeatureCollection', 'features': []})\nassert layer.features == ()",
     ),
     ComponentDoc(
         "GeolocationButton",
@@ -2785,7 +2809,7 @@ COMPONENTS = (
         "forms",
         "Pill-styled segmented choice group.",
         "Pills(name, options, value=None)",
-        "Pills('tone', options=(('a','A'),))",
+        "Pills('tone', 'Tone', options=(('a','A'),))",
         (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
@@ -2844,7 +2868,7 @@ COMPONENTS = (
         "forms",
         "Accessible 1..n rating radios.",
         "RatingInput(name, maximum=5)",
-        "RatingInput('score', maximum=5)",
+        "RatingInput('score', 'Rating', maximum=5)",
         (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
@@ -2855,7 +2879,7 @@ COMPONENTS = (
         "forms",
         "Segmented radio control group.",
         "SegmentedControl(name, options, value=None)",
-        "SegmentedControl('mode', options=(('a','A'),))",
+        "SegmentedControl('mode', 'View mode', options=(('a','A'),))",
         (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
@@ -2899,7 +2923,7 @@ COMPONENTS = (
         "surfaces",
         "Semantic ordered timeline of events.",
         "Timeline()",
-        "Timeline().entry('Now', 'Shipped', Text('0.15'))",
+        "Timeline([('Now', 'Shipped', Text('0.15'))])",
         (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
@@ -2910,7 +2934,7 @@ COMPONENTS = (
         "forms",
         "Switch-styled checkbox control.",
         "ToggleSwitch(name, checked=False)",
-        "ToggleSwitch('notify', checked=True)",
+        "ToggleSwitch('notify', 'Email notifications', checked=True)",
         (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
@@ -2943,7 +2967,7 @@ COMPONENTS = (
         "surfaces",
         "Document-level inert canvas for composing ordered decorative layers.",
         "AmbientCanvas(*nodes, layers=(), id=None, class_=None, mark=None)",
-        "AmbientCanvas(Text('Dashboard'), layers=(AmbientLayer(pattern='mesh', order=1),))",
+        "AmbientCanvas(Text('Dashboard'))",
         (
             p("nodes / children", "NodeLike", "Semantic page content rendered above the canvas."),
             p("layers", "Sequence[AmbientLayer]", "Ordered bounded ambient layer policies."),
@@ -3484,6 +3508,11 @@ def resolve_spec(spec: ComponentDoc) -> ComponentDoc:
         package=spec.package,
         server=spec.server,
         demo=spec.demo,
+        import_module=spec.import_module,
+        example_imports=spec.example_imports,
+        example_setup=spec.example_setup,
+        renderable=spec.renderable,
+        test_code=spec.test_code,
     )
 
 
@@ -3527,11 +3556,13 @@ def page_text(spec: ComponentDoc) -> str:
             if re.search(rf"\b{candidate.name}\b", spec.example)
         }
     )
+    known_imports.extend(spec.example_imports)
     if "ColorMode." in spec.example:
         known_imports.append("ColorMode")
     if "html." in spec.example:
         known_imports.append("html")
     imports = ", ".join(sorted(set(known_imports)))
+    example_setup = f"\n{spec.example_setup}\n" if spec.example_setup else ""
     server_note = (
         "This component can initiate or represent a backend interaction. The live documentation intercepts that interaction with JavaScript and shows the same pending, success, or replacement states without making a real request. In an application, keep the URL, authorization, validation, and returned fragment on the server; JavaScript is only progressive enhancement."
         if simulated
@@ -3573,12 +3604,14 @@ def page_text(spec: ComponentDoc) -> str:
         )
     optional = (
         _optional_install_text(spec.package)
-        if "[" in spec.package or spec.package.startswith("hedron-")
+        if "[" in spec.package or (
+            spec.package.startswith("hedron-") and spec.package != "hedron-core"
+        )
         else ""
     )
     is_charts = "charts" in spec.package
     workspace_only = ""
-    import_module = "hedron_charts" if is_charts else "hedron"
+    import_module = spec.import_module or ("hedron_charts" if is_charts else "hedron")
     distribution = f"`{spec.package}`"
     related = (
         "[Charts guide](../guides/charts-and-htmx.md) · "
@@ -3594,6 +3627,18 @@ def page_text(spec: ComponentDoc) -> str:
         "[RELEASE_0_61](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_61.md).\n"
         if spec.name in _PHASE_061_COMPONENTS
         else ""
+    )
+    composition_note = (
+        "Use `GeoJSONLayer` as the validated `geojson=` input to `Map`; it is a data "
+        "helper rather than a renderable node."
+        if not spec.renderable
+        else "Compose under `Page` for full documents, or return from a fragment route for HTMX swaps."
+    )
+    test_code = spec.test_code or (
+        "from hedron import RenderMode, render\n\n"
+        f"result = render(component, mode={mode_name})\n"
+        "assert result.html\n"
+        "assert not result.diagnostics"
     )
     return f"""---
 title: {spec.name}
@@ -3618,12 +3663,11 @@ description: {spec.summary}
 ## Basic use
 
 ```python
-{workspace_only}from {import_module} import {imports}
-
+{workspace_only}from {import_module} import {imports}{example_setup}
 component = {spec.example}
 ```
 
-Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
+{composition_note}
 
 ## How it works
 
@@ -3633,7 +3677,7 @@ Compose under `Page` for full documents, or return from a fragment route for HTM
 
 ## Constructor and parameters
 
-```python
+```text
 {spec.signature}
 ```
 
@@ -3666,11 +3710,7 @@ exposure remain application code. Redact secrets before rendering.
 ## Testing
 
 ```python
-from hedron import RenderMode, render
-
-result = render(component, mode={mode_name})
-assert result.html
-assert not result.diagnostics
+{test_code}
 ```
 
 {related}

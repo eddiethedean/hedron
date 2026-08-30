@@ -74,7 +74,6 @@ Present a recoverable request failure and optional HTMX retry.
 
 ```python
 from hedron import ErrorState
-
 component = ErrorState('Activity could not be loaded.', retry_href='/activity', target='#activity')
 ```
 
@@ -88,7 +87,7 @@ This component can initiate or represent a backend interaction. The live documen
 
 ## Constructor and parameters
 
-```python
+```text
 ErrorState(message, *, retry_href=None, retry_label='Retry', target=None)
 ```
 

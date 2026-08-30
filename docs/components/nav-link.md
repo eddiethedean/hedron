@@ -81,7 +81,6 @@ Alias of HtmxLink for navigation lists and AppShell side nav.
 
 ```python
 from hedron import NavLink
-
 component = NavLink('Home', '/', target='#main-panel', swap='innerHTML', active=True)
 ```
 
@@ -95,7 +94,7 @@ This component can initiate or represent a backend interaction. The live documen
 
 ## Constructor and parameters
 
-```python
+```text
 NavLink(label, href, *, method='get', target=None, swap='outerHTML', select=None, select_oob=None, push_url=False, active=False, class_=None)
 ```
 

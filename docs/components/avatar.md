@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Avatar
-
 component = Avatar('Ada Lovelace', size='md')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Avatar(name, *, src=None, size=None, appearance=None, shape='circle')
 ```
 

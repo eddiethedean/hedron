@@ -753,20 +753,29 @@ components/Callout/
 └── styles.css
 ```
 
-```css
-/* components/Callout/styles.css */
-.root {
-  border-left: 4px solid var(--color-accent);
-  padding: var(--space-md);
-}
-```
+=== "components/Callout/component.py"
 
-```python
-from hedron_core import StyleSymbols, styles_from_manifest
+    ```python title="components/Callout/component.py"
+    from collections.abc import Mapping
 
-styles: StyleSymbols = styles_from_manifest(symbols, component_id="app:Callout")
-return html.div("Build completed", class_=styles.root)
-```
+    from hedron_core import NodeLike, StyleSymbols, html, styles_from_manifest
+
+
+    def render_callout(symbols: Mapping[str, str]) -> NodeLike:
+        styles: StyleSymbols = styles_from_manifest(symbols, component_id="app:Callout")
+        return html.div("Build completed", class_=styles.root)
+    ```
+
+=== "components/Callout/styles.css"
+
+    ```css title="components/Callout/styles.css"
+    .root {
+      border-left: 4px solid var(--color-accent);
+      padding: var(--space-md);
+    }
+    ```
+
+Maintained complete component reference: [Full code on GitHub](https://github.com/eddiethedean/hedron/tree/main/examples/reference-app/components/StatusBanner)
 
 For a complete plugin component, register the stylesheet through the plugin manifest;
 see [plugin authoring](plugin-authoring.md) and [themes and scoped styles](../api/THEME.md).

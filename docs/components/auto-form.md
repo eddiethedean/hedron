@@ -126,9 +126,11 @@ Generate a labelled form from a typed FormModel and optionally submit it through
 ## Basic use
 
 ```python
-from hedron import AutoForm
+from hedron import AutoForm, FormModel
+class InviteMember(FormModel):
+    email: str
 
-component = AutoForm(InviteMember, action='/invite', csrf_token=csrf_token, submit_label='Send invite')
+component = AutoForm(InviteMember, action='/invite', csrf_token='example-token', submit_label='Send invite')
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
@@ -141,7 +143,7 @@ This component can initiate or represent a backend interaction. The live documen
 
 ## Constructor and parameters
 
-```python
+```text
 AutoForm(model, *, action, method='post', csrf_token=None, values=None, errors=(), submit_label='Submit', target=None)
 ```
 

@@ -276,7 +276,7 @@ Server validation remains authoritative. Browser attributes such as `required`, 
 
 Command return metadata makes possible outputs inspectable:
 
-```python
+```text
 def add_note(...) -> Annotated[
     CommandResult,
     Refreshes(notes, note_count),

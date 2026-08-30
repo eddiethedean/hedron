@@ -30,8 +30,7 @@ pip install "hedron[charts]>=1.0.0,<1.1"
 
 ```python
 from hedron_charts import AreaChart
-
-component = AreaChart(rows, x='month', y='revenue', title='Monthly revenue', description='Revenue rose from January through June.')
+component = AreaChart([{'month': 'Jan', 'revenue': 100}, {'month': 'Feb', 'revenue': 140}], x='month', y='revenue', title='Monthly revenue', description='Revenue rose from January through June.')
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
@@ -44,7 +43,7 @@ The server-rendered figure, summary, and table remain useful without JavaScript.
 
 ## Constructor and parameters
 
-```python
+```text
 AreaChart(data, *, x, y, title, description=None, alt=None, waiver=None, limits=None)
 ```
 

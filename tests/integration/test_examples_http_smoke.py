@@ -17,6 +17,8 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 
 _ASGI_CASES: tuple[tuple[str, str, int], ...] = (
+    ("examples/composable-app/app.py", "/", 200),
+    ("examples/composable-app/app.py", "/status", 200),
     ("examples/theme-gallery/app.py", "/", 200),
     ("examples/streamlit-migration/app.py", "/", 200),
     ("examples/notes-sqlalchemy/app.py", "/", 200),
@@ -52,6 +54,7 @@ rel = sys.argv[2]
 path = sys.argv[3]
 expected = int(sys.argv[4])
 os.chdir(root)
+sys.path.insert(0, str((root / rel).parent))
 
 spec = importlib.util.spec_from_file_location("hedron_example_http_smoke", root / rel)
 assert spec is not None and spec.loader is not None
@@ -68,6 +71,70 @@ if response.status_code != expected:
         f"{rel} GET {path} -> {response.status_code} (want {expected})\n{response.text[:800]}"
     )
 print(f"ok {rel} GET {path} {response.status_code}")
+"""
+
+_CUSTOM_CSS_CHILD = r"""
+from __future__ import annotations
+
+import importlib.util
+import json
+import os
+import re
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+from fastapi.testclient import TestClient
+
+root = Path(sys.argv[1])
+example = root / "examples/composable-app"
+with tempfile.TemporaryDirectory(prefix="hedron-css-example-") as temp:
+    build_dir = Path(temp) / "build"
+    env = os.environ.copy()
+    env["HEDRON_BUILD_DIR"] = str(build_dir)
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "hedron.cli",
+            "--app",
+            "custom_css:app",
+            "build",
+            "--dev",
+        ],
+        cwd=example,
+        env=env,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    manifest = json.loads((build_dir / "manifest.json").read_text(encoding="utf-8"))
+    styles = manifest["application_styles"]["entries"]
+    assert any(style["name"] == "composable-custom" for style in styles), styles
+
+    os.environ["HEDRON_BUILD_DIR"] = str(build_dir)
+    sys.path.insert(0, str(example))
+    spec = importlib.util.spec_from_file_location(
+        "composable_custom_asset_smoke", example / "custom_css.py"
+    )
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+
+    with TestClient(module.app) as client:
+        page = client.get("/")
+        assert page.status_code == 200, page.text[:800]
+        assert 'data-hedron-style-scope="custom-dashboard"' in page.text
+        hrefs = re.findall(r'<link rel="stylesheet" href="([^"]+)"', page.text)
+        custom = [href for href in hrefs if "/hedron-assets/" in href]
+        assert custom, hrefs
+        css = client.get(custom[0])
+        assert css.status_code == 200, css.text[:800]
+        assert ".custom-hero" in css.text
+        assert 'data-hedron-style-scope="custom-dashboard"' in css.text
+print("ok composable-app custom CSS build and asset")
 """
 
 
@@ -90,6 +157,10 @@ def _run_child(code: str, *args: str, env: dict[str, str] | None = None) -> None
 @pytest.mark.parametrize(("rel", "path", "expected"), _ASGI_CASES)
 def test_example_asgi_home(rel: str, path: str, expected: int) -> None:
     _run_child(_CHILD, rel, path, str(expected))
+
+
+def test_composable_app_custom_css_build_and_asset() -> None:
+    _run_child(_CUSTOM_CSS_CHILD)
 
 
 def test_oidc_example_home_with_settings() -> None:

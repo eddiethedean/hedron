@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import ParameterViewer
-
 component = ParameterViewer({'lr': 0.01, 'api_token': 'x'}, secret_keys=('api_token',))
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 ParameterViewer(parameters, *, title='Parameters', secret_keys=(), class_=None, mark=None)
 ```
 

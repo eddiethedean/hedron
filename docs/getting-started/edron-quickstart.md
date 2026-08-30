@@ -50,21 +50,21 @@ Change `128` to `129`, save the file, and refresh the browser.
 
 Add these methods inside `Home`:
 
-```python
-    @ed.fragment
-    def status(self) -> None:
-        self.text("All systems operational")
+```diff
+     @ed.fragment
+     def status(self) -> None:
+         self.text("All systems operational")
 
-    @ed.action
-    def refresh_status(self) -> ed.Outcome:
-        return ed.refresh(self.status)
+     @ed.action
+     def refresh_status(self) -> ed.Outcome:
+         return ed.refresh(self.status)
 ```
 
 Then call them from `render()`:
 
-```python
-        self.status()
-        self.button("Refresh status", action=self.refresh_status)
+```diff
+         self.status()
+         self.button("Refresh status", action=self.refresh_status)
 ```
 
 The button posts to a declared action. The outcome refreshes only the registered fragment,

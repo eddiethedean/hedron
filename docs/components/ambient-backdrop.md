@@ -28,7 +28,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import AmbientBackdrop, Container, Text
-
 component = AmbientBackdrop(Container(Text('Dashboard'), max_width='lg'), pattern='mesh', tone='accent')
 ```
 
@@ -42,7 +41,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 AmbientBackdrop(*nodes, pattern='radial', tone='accent', intensity='subtle', id=None, class_=None, mark=None)
 ```
 

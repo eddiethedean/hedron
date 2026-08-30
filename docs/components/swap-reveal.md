@@ -9,8 +9,8 @@ Opt-in HTMX after-swap reveal wrapper that respects prefers-reduced-motion.
 
 | | |
 |---|---|
-| Import | `from hedron import SwapReveal` |
-| Distribution | `hedron` |
+| Import | `from hedron_core.builtins import SwapReveal` |
+| Distribution | `hedron-core` |
 | Backend activity | No |
 | Normal render mode | `RenderMode.FRAGMENT` |
 
@@ -23,8 +23,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 ## Basic use
 
 ```python
-from hedron import SwapReveal, Text
-
+from hedron_core.builtins import SwapReveal, Text
 component = SwapReveal(Text('Updated region'))
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 SwapReveal(*nodes, children=None, reduced_motion=True)
 ```
 

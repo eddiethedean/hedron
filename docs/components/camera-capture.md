@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import CameraCapture
-
 component = CameraCapture(name='photo')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 CameraCapture(*, name: 'str' = 'camera', label: 'str' = 'Capture media', accept: 'str' = 'video/*', capture: "Literal['user', 'environment']" = 'environment', class_: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 

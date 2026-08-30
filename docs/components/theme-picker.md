@@ -23,8 +23,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 ## Basic use
 
 ```python
-from hedron import ThemePicker
-
+from hedron import ThemePicker, ThemePreference
 component = ThemePicker(selected=ThemePreference(theme='aurora', color_mode='dark'))
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 ThemePicker(*, themes: 'tuple[str, ...]' = ('default', 'aurora'), color_modes: 'tuple[ColorMode, ...]' = ('system', 'light', 'dark'), selected: 'ThemePreference | None' = None, action: 'SafeUrl | str' = '/preferences/theme', csrf_token: 'str | None' = None, compact: 'bool' = False, id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
 ```
 

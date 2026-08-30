@@ -82,7 +82,6 @@ Button with explicit confirmation prompt (not authorization).
 
 ```python
 from hedron import ConfirmButton
-
 component = ConfirmButton('Delete', confirm='Delete item?')
 ```
 
@@ -96,7 +95,7 @@ This component can initiate or represent a backend interaction. The live documen
 
 ## Constructor and parameters
 
-```python
+```text
 ConfirmButton(label: 'str', *, confirm: 'str', type: "Literal['button', 'submit', 'reset']" = 'button', disabled: 'bool' = False, variant: "Literal['primary', 'secondary', 'danger']" = 'danger', mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
 ```
 

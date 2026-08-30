@@ -24,8 +24,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import RatingInput
-
-component = RatingInput('score', maximum=5)
+component = RatingInput('score', 'Rating', maximum=5)
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 RatingInput(name: 'str', legend: 'str', *, maximum: 'int' = 5, value: 'int | None' = None, id: 'str | None' = None, required: 'bool' = False, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 

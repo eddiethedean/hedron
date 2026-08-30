@@ -24,8 +24,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import FormField, FormGrid, TextInput
-
-component = FormGrid(FormField('Name', TextInput(name='name')), FormField('Email', TextInput(name='email')))
+component = FormGrid(FormField(name='name', label='Name', control=TextInput(name='name')), FormField(name='email', label='Email', control=TextInput(name='email')))
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 FormGrid(*fields, *, columns=2, collapse='md', gap='1rem', id=None, class_=None)
 ```
 

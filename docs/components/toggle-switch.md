@@ -24,8 +24,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import ToggleSwitch
-
-component = ToggleSwitch('notify', checked=True)
+component = ToggleSwitch('notify', 'Email notifications', checked=True)
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 ToggleSwitch(name: 'str', label: 'str', *, id: 'str | None' = None, checked: 'bool' = False, required: 'bool' = False, disabled: 'bool' = False, mark: 'str | None' = None, aria_describedby: 'str | None' = None, aria_invalid: 'str | None' = None, aria_required: 'str | None' = None, enhance: "Literal['legacy', 'native', 'alpine']" = 'legacy', **kwargs: 'object') -> 'None'
 ```
 

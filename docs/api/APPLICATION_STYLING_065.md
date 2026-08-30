@@ -8,7 +8,7 @@ See [RFC-0092](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-00
 
 ## Authoring model
 
-```python
+```text
 app.styles(
     name: str,
     source: str | Path,

@@ -144,7 +144,7 @@ pwd
 python3.11 -c "import hedron, hedron_posit; print(hedron.__version__)"
 ```
 
-Expect the path to end in `my-workbench-app` and Hedron to report the **`0.67.x`** version
+Expect the path to end in `my-workbench-app` and Hedron to report the **`1.0.x`** version
 required by `hedron-posit`.
 
 The project contains:
@@ -182,14 +182,14 @@ from hedron_posit import HedronPosit
 
 Then change:
 
-```python
-app = Hedron(
+```diff
+-app = Hedron(
 ```
 
 to:
 
-```python
-app = HedronPosit(
+```diff
++app = HedronPosit(
 ```
 
 Save the file. `HedronPosit` behaves like ordinary `Hedron` outside Posit products, while exposing

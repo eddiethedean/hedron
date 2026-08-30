@@ -162,7 +162,7 @@ source = InMemoryDataSource(
     rows=[{"id": "1", "name": "Ada"}, {"id": "2", "name": "Grace"}],
     key_field="id",
 )
-page = source.fetch(DataQuery(page=1, page_size=25))
+page = source.fetch(DataQuery(offset=0, limit=25))
 ```
 
 ## SQLAlchemy / SQLModel (app-owned sessions)
@@ -229,7 +229,7 @@ app = Hedron(title="People DB", security="standard", session_secret="replace-in-
 def home(source: SQLAlchemyDataSource[dict[str, str]] = Depends(get_people_source)) -> Page:
     from hedron_data import DataQuery
 
-    page = source.fetch(DataQuery(page=1, page_size=25))
+    page = source.fetch(DataQuery(offset=0, limit=25))
     return Page(
         DataTable(
             page=page,

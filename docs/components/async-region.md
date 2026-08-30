@@ -28,7 +28,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import AsyncRegion, Loading, Text
-
 component = AsyncRegion(Text('Report ready'), state='success', pending=Text('Loading report…'), error=Text('Try again'))
 ```
 
@@ -42,7 +41,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 AsyncRegion(*nodes, state='idle', initial=None, pending=None, empty=None, success=None, error=None, timeout=None, cancelled=None, stale=None, retry=None, conflict=None, fallback='fragment', label=None)
 ```
 

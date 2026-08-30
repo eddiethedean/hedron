@@ -565,6 +565,8 @@ quality_docs() {
   run_py scripts/check_public_doc_links.py
   run_py scripts/check_changelog_structure.py
   run_py scripts/check_recipe_code_sync.py
+  run_py scripts/check_docs_file_tabs.py
+  run_py scripts/check_docs_examples.py
   run_py - <<'PY'
 import re
 from pathlib import Path

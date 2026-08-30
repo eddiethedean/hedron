@@ -41,6 +41,7 @@ those pages linkable from the historical archive and version selector.
 uv run python scripts/check_docs_train_ssot.py
 uv run python scripts/check_public_doc_links.py
 uv run python scripts/check_api_docs_coverage.py
+uv run python scripts/check_docs_file_tabs.py
 uv run --group docs mkdocs build --strict
 ```
 
@@ -53,6 +54,8 @@ them.
 - The first command works in a clean supported Python environment.
 - The page states prerequisites, result, failure recovery, and a next step.
 - Public APIs include parameters, returns, errors, and a realistic example.
+- Multi-file examples use matching file-path tabs followed by a **Full code on GitHub** link;
+  one-file and ordered-edit examples stay linear.
 - Links point to current pages unless explicitly labeled historical.
 - Release facts come from the manifest or canonical release page.
 - Navigation has one obvious location for the page.

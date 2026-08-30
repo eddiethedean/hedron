@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import GeolocationButton
-
 component = GeolocationButton()
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 GeolocationButton(*, label: 'str' = 'Share location', lat_name: 'str' = 'lat', lon_name: 'str' = 'lon', accuracy_name: 'str' = 'accuracy', class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 

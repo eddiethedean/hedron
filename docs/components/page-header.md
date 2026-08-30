@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import ActionGroup, Button, PageHeader
-
 component = PageHeader(title='Pipelines', eyebrow='Operate', description='Source to destination jobs.', title_wrap='balance', description_wrap='pretty', actions=ActionGroup(Button('New')))
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 PageHeader(title, *, eyebrow=None, description=None, title_measure=None, description_measure=None, title_effect=None, description_effect=None, title_tracking=None, description_tracking=None, title_wrap=None, description_wrap=None, eyebrow_tone=None, eyebrow_tracking=None, eyebrow_wrap=None, actions=None, meta=None, id=None, class_=None)
 ```
 

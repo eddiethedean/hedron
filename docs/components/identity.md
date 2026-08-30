@@ -28,7 +28,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Identity
-
 component = Identity('Ada Lovelace', detail='Admin', size='md')
 ```
 
@@ -42,7 +41,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Identity(name, *, detail=None, src=None, size=None, appearance=None)
 ```
 

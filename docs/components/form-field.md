@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import FormField, TextInput
-
 component = FormField(name='email', label='Email address', control=TextInput('email', type='email'), help='We only use this for receipts.', required=True)
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 FormField(*, name, label, control, id=None, help=None, required=False, error=None)
 ```
 

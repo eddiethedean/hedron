@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import ClipboardCopy
-
 component = ClipboardCopy('secret-token')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 ClipboardCopy(text: 'str', *, label: 'str' = 'Copy', mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
 ```
 

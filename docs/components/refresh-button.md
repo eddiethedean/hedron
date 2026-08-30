@@ -74,7 +74,6 @@ Refresh a target component through a typed reference or safe URL.
 
 ```python
 from hedron import RefreshButton
-
 component = RefreshButton('Refresh status', href='/status', target='#status-card', swap='innerHTML')
 ```
 
@@ -88,7 +87,7 @@ This component can initiate or represent a backend interaction. The live documen
 
 ## Constructor and parameters
 
-```python
+```text
 RefreshButton(label='Refresh', *, ref=None, href=None, target=None, swap='outerHTML')
 ```
 

@@ -73,9 +73,8 @@ Load a component fragment when its placeholder enters the document.
 ## Basic use
 
 ```python
-from hedron import Lazy, Skeleton
-
-component = Lazy(ref=ComponentRef('activity-feed'), placeholder=Skeleton(lines=3), target_id='activity-feed')
+from hedron import ComponentRef, Lazy, Skeleton
+component = Lazy(ref=ComponentRef('activity-feed', '/activity-feed'), placeholder=Skeleton(lines=3), target_id='activity-feed')
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
@@ -88,7 +87,7 @@ This component can initiate or represent a backend interaction. The live documen
 
 ## Constructor and parameters
 
-```python
+```text
 Lazy(*, ref, placeholder=None, target_id=None, error=None)
 ```
 

@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import AccountSummary
-
 component = AccountSummary('Ada Lovelace', detail='Admin', href='/account')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 AccountSummary(name, *, detail=None, href=None, id=None, class_=None)
 ```
 

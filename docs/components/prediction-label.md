@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import PredictionLabel
-
 component = PredictionLabel([{'class_id': 'cat', 'score': 0.9, 'calibrated': True}])
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 PredictionLabel(scores, *, title='Predictions', threshold=None, class_=None, mark=None)
 ```
 

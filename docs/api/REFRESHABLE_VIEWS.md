@@ -78,7 +78,7 @@ Final import placement is `hedron` (`Hedron.refreshable`, `Hedron.command`,
 
 Conceptual signatures:
 
-```python
+```text
 @app.refreshable
 def view(...) -> NodeLike: ...
 
@@ -218,7 +218,7 @@ not redirect the control to a different unregistered target.
 
 Conceptual signatures:
 
-```python
+```text
 @app.command
 def save_note(...): ...
 
@@ -238,7 +238,7 @@ coarse mapping input; 0.44 may specialize it to a `FormBody` model.
 
 `ActionHandle` provides at least:
 
-```python
+```text
 save_note.button("Save")
 Form(action=save_note, ...)
 scenario.run(save_note, note="Hello")

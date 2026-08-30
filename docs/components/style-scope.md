@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import StyleScope, Text
-
 component = StyleScope(Text('Scoped panel'), theme='aurora', variant='dense', color_mode='dark', density='compact')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 StyleScope(*nodes, *, theme=None, color_mode=None, density=None, variant=None, presentation=None, recipes=(), id=None, class_=None, mark=None)
 ```
 

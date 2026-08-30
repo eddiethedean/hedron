@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Carousel, Text
-
 component = Carousel([Text('One'), Text('Two')])
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Carousel(slides: 'Sequence[tuple[str, NodeLike] | NodeLike]', *, id: 'str | None' = None, label: 'str' = 'Carousel', class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
 ```
 

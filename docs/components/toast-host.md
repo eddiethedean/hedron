@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import ToastHost
-
 component = ToastHost()
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 ToastHost(*, placement: "Literal['top-start', 'top-end', 'bottom-start', 'bottom-end', 'center']" = 'top-end', position: "Literal['fixed', 'sticky', 'flow']" = 'fixed', width: "Literal['content', 'field', 'full']" = 'content', max_width: "Literal['sm', 'md', 'lg']" = 'md', gap: "Literal['xs', 'sm', 'md']" = 'sm', **kwargs: 'Any') -> 'None'
 ```
 

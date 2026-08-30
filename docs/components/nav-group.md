@@ -28,7 +28,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import NavGroup, NavLink
-
 component = NavGroup('Workspace', NavLink('Overview', '/'), NavLink('Reports', '/reports'))
 ```
 
@@ -42,7 +41,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 NavGroup(label=None, *items, children=None, action=None, id=None, class_=None, mark=None)
 ```
 

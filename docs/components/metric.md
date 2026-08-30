@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Metric
-
 component = Metric('Monthly revenue', '$84,200', delta='+8.4%', delta_tone='up')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Metric(label, value, *, delta=None, delta_tone='neutral')
 ```
 

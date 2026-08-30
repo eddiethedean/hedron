@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Card, Grid, Text
-
 component = Grid(Card(Text('Latency')), Card(Text('Errors')), Card(Text('Traffic')), columns=3)
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Grid(*nodes, children=None, columns=2, gap='1rem', id=None, class_=None)
 ```
 

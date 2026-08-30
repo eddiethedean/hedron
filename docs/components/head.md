@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Head, Title, html
-
 component = Head(Title('Reports'), html.meta(name='description', content='Weekly reports'))
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Head(*nodes, children=None)
 ```
 

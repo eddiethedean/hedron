@@ -1,0 +1,72 @@
+.custom-shell {
+  --custom-accent: #6d28d9;
+  --custom-accent-soft: #ede9fe;
+  --custom-ink: #1e1b4b;
+  min-height: 100vh;
+  padding-block: clamp(1rem, 4vw, 4rem);
+}
+
+.custom-hero {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.5rem, 5vw, 4.5rem);
+  border: 1px solid color-mix(in srgb, var(--custom-accent) 25%, transparent);
+  border-radius: clamp(1.25rem, 3vw, 2.5rem);
+  background:
+    radial-gradient(circle at 90% 10%, rgb(255 255 255 / 85%), transparent 34%),
+    linear-gradient(135deg, var(--custom-accent-soft), #fdf4ff 70%);
+  box-shadow: 0 2rem 5rem rgb(76 29 149 / 14%);
+  color: var(--custom-ink);
+}
+
+.custom-kicker {
+  color: var(--custom-accent);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.custom-title {
+  max-width: 13ch;
+  font-size: clamp(2.5rem, 8vw, 5.75rem);
+  line-height: 0.95;
+  letter-spacing: -0.055em;
+}
+
+.custom-copy {
+  max-width: 58ch;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  line-height: 1.7;
+}
+
+.custom-metrics {
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+.custom-tabs {
+  padding: clamp(0.75rem, 2vw, 1.5rem);
+  border: 1px solid color-mix(in srgb, var(--custom-accent) 18%, transparent);
+  border-radius: 1.25rem;
+  background: color-mix(in srgb, var(--custom-accent-soft) 35%, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  .custom-shell {
+    --custom-accent: #c4b5fd;
+    --custom-accent-soft: #2e1065;
+    --custom-ink: #faf5ff;
+  }
+
+  .custom-hero {
+    background:
+      radial-gradient(circle at 90% 10%, rgb(196 181 253 / 22%), transparent 34%),
+      linear-gradient(135deg, #2e1065, #111827 72%);
+    box-shadow: 0 2rem 5rem rgb(0 0 0 / 35%);
+  }
+}
+
+@media (max-width: 40rem) {
+  .custom-title {
+    font-size: clamp(2.25rem, 14vw, 4rem);
+  }
+}

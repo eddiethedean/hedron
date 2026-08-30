@@ -117,6 +117,18 @@ Use positional children for a small, readable tree and `children=` when a model 
 loop already produced a sequence. If both are supplied, positional nodes render first.
 Strings are always one text node; they are never split as a sequence.
 
+## Organize component trees across files
+
+Component boundaries do not need to match page boundaries. Put focused builders in
+ordinary Python modules, re-export the small surface the app should use, and compose
+their returned values exactly as you would compose local variables. Keep route
+registration and application I/O in the app layer; pass explicit data into reusable
+components.
+
+The runnable [multi-file composable app](../examples/composable-app.md) shows this
+structure with separate metrics, activity, deployment, and status modules. Its source
+is presented in file tabs and checked against the runnable files during CI.
+
 ## Nest components without crossing the renderer boundary
 
 Pass a child component itself, not `child.render()` and not `render(child).html`. Keeping

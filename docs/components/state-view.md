@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Button, StateView
-
 component = StateView('No pipelines yet', kind='empty', description='Create a pipeline to start ingesting data.', actions=Button('New pipeline'))
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 StateView(title, *nodes, *, kind='empty', description=None, detail=None, actions=None, id=None, class_=None)
 ```
 

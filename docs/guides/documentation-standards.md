@@ -69,6 +69,9 @@ and regenerate them; do not hand-edit output that the next generator run will ov
   decision identifiers in maintainer evidence, release history, or a secondary link.
 - Keep examples copy-pasteable. Include imports, environment assumptions, expected output,
   and the next command or browser action.
+- When two or more files form one example, show them as MkDocs content tabs. Use the exact
+  project-relative path for both the tab label and code-fence `title`; keep a genuinely
+  single-file example linear.
 - Document failure behavior. Public API reference should name raised exceptions or HTTP
   status/error codes, not only the happy-path return value.
 - Avoid duplicating current-version claims. Link to the canonical page when a second copy
@@ -110,6 +113,36 @@ essential install or safety information.
 - Label simulations as simulations. Never imply that static documentation is a hosted
   application or live backend.
 
+### File-oriented examples
+
+Use file tabs when a reader must create or compare multiple files to reproduce one result:
+
+````markdown
+=== "app.py"
+
+    ```python title="app.py"
+    # complete app file
+    ```
+
+=== "styles.css"
+
+    ```css title="styles.css"
+    /* complete stylesheet */
+    ```
+````
+
+- Put a small project tree before the tabs when the example has more than three files.
+- Keep tab labels and fence titles identical, including directories and capitalization.
+- Make each tab complete enough to save as the named file; do not hide required imports in
+  prose or another tab.
+- Follow every file-tab group with a **Full code on GitHub** link. Link exact runnable source
+  when it exists; for a shortened teaching example, link the maintained full reference and
+  state that relationship honestly.
+- Keep ordered edits, command sequences, migration stages, and independent alternatives
+  linear. Tabs should describe files that coexist, not conceal steps that happen over time.
+- For runnable repository examples, add source-sync coverage so documentation cannot drift
+  from the actual files.
+
 ## Reader-experience quality bar
 
 - Keep **Start**, **Guides**, **Examples**, **Reference**, and **Project** task-oriented.
@@ -140,6 +173,7 @@ uv run python scripts/check_package_readme_links.py
 uv run python scripts/check_public_doc_links.py
 uv run python scripts/check_changelog_structure.py
 uv run python scripts/check_recipe_code_sync.py
+uv run python scripts/check_docs_file_tabs.py
 uv run --group docs mkdocs build --strict
 ```
 
@@ -165,6 +199,7 @@ bash scripts/ci_checks.sh quality --python 3.12
 - [ ] The intended reader and task are obvious from the opening paragraph.
 - [ ] Commands work from the directory and environment the page states.
 - [ ] Code uses public imports and current signatures.
+- [ ] Multi-file examples use matching project-relative file tabs; sequential edits remain linear.
 - [ ] Expected output or browser behavior is stated.
 - [ ] Errors, security boundaries, and production caveats are present where relevant.
 - [ ] Version, maturity, and support claims match their canonical pages.

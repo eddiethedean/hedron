@@ -30,6 +30,8 @@ pip install "hedron-charts[plotly]>=1.0.0,<2.0"
 
 ```python
 from hedron_charts import PlotlyChart
+import plotly.graph_objects as go
+fig = go.Figure(data=[go.Bar(x=['IAD', 'PDX'], y=[120, 80])])
 
 component = PlotlyChart(fig, title='Requests by region', description='US East handles the largest share.')
 ```
@@ -44,7 +46,7 @@ The server emits bounded, non-executable JSON and accessible metadata. The inter
 
 ## Constructor and parameters
 
-```python
+```text
 PlotlyChart(figure, *, title=None, description=None, alt=None, waiver=None)
 ```
 

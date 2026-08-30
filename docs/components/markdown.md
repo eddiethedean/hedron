@@ -30,7 +30,6 @@ pip install "hedron[markdown]>=1.0.0,<1.1"
 
 ```python
 from hedron import Markdown
-
 component = Markdown("## Release notes\n\n- Safer URLs\n- Faster rendering")
 ```
 
@@ -44,7 +43,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Markdown(source)
 ```
 

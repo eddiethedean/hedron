@@ -213,84 +213,114 @@ and progressive-enhancement behavior.
 ## Canonical complete application
 
 This is a copy-safe baseline containing a full page, replaceable GET view, classic POST action,
-CSRF field, built-in styling, and ordinary FastAPI form parsing:
+CSRF field, built-in styling, ordinary FastAPI form parsing, and a fragment test:
 
-```python title="app.py"
-import os
-from datetime import datetime, timezone
+=== "app.py"
 
-from fastapi import Form as FastAPIForm
+    ```python title="app.py"
+    import os
+    from datetime import datetime, timezone
 
-from hedron import (
-    Card,
-    CsrfField,
-    Form,
-    Heading,
-    Hedron,
-    Page,
-    Stack,
-    SubmitButton,
-    Text,
-    TextInput,
-    html,
-    redirect_local,
-)
+    from fastapi import Form as FastAPIForm
 
-app = Hedron(
-    title="Operations",
-    security="standard",
-    explorer="off",
-    session_secret=os.environ.get(
-        "HEDRON_SESSION_SECRET",
-        "replace-in-production",
-    ),
-)
-
-_NOTES: list[str] = []  # Demo only. Use application-owned durable storage in production.
-
-
-@app.view("/status")
-def status():
-    stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
-    return html.div(
-        Text(f"All systems operational · refreshed {stamp}"),
-        role="status",
-        aria={"live": "polite"},
+    from hedron import (
+        Card,
+        CsrfField,
+        Form,
+        Heading,
+        Hedron,
+        Page,
+        Stack,
+        SubmitButton,
+        Text,
+        TextInput,
+        html,
+        redirect_local,
     )
 
-
-@app.action("/notes", method="POST")
-def add_note(note: str = FastAPIForm(...)):
-    value = note.strip()
-    if value:
-        _NOTES.append(value)
-    return redirect_local("/")
-
-
-@app.page("/")
-def home() -> Page:
-    return Page(
-        Stack(
-            Heading("Operations", level=1),
-            Card(
-                status(),
-                status.refresh_button("Refresh status"),
-                title="Service status",
-            ),
-            Card(
-                Form(
-                    CsrfField(),
-                    TextInput("note", required=True),
-                    SubmitButton("Save note"),
-                    action="/notes",
-                    method="post",
-                ),
-                title=f"Notes ({len(_NOTES)})",
-            ),
-        ),
+    app = Hedron(
         title="Operations",
+        security="standard",
+        explorer="off",
+        session_secret=os.environ.get(
+            "HEDRON_SESSION_SECRET",
+            "replace-in-production",
+        ),
     )
-```
+
+    _NOTES: list[str] = []  # Demo only. Use durable storage in production.
+
+
+    @app.view("/status")
+    def status():
+        stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
+        return html.div(
+            Text(f"All systems operational · refreshed {stamp}"),
+            role="status",
+            aria={"live": "polite"},
+        )
+
+
+    @app.action("/notes", method="POST")
+    def add_note(note: str = FastAPIForm(...)):
+        value = note.strip()
+        if value:
+            _NOTES.append(value)
+        return redirect_local("/")
+
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(
+            Stack(
+                Heading("Operations", level=1),
+                Card(
+                    status(),
+                    status.refresh_button("Refresh status"),
+                    title="Service status",
+                ),
+                Card(
+                    Form(
+                        CsrfField(),
+                        TextInput("note", required=True),
+                        SubmitButton("Save note"),
+                        action="/notes",
+                        method="post",
+                    ),
+                    title=f"Notes ({len(_NOTES)})",
+                ),
+            ),
+            title="Operations",
+        )
+    ```
+
+=== "test_app.py"
+
+    ```python title="test_app.py"
+    from fastapi.testclient import TestClient
+
+    from app import app, status
+
+
+    def test_home_and_status_fragment() -> None:
+        with TestClient(app) as client:
+            page = client.get("/")
+            fragment = client.get(
+                status.path,
+                headers={
+                    "HX-Request": "true",
+                    "HX-Target": status.dom_id,
+                },
+            )
+
+        assert page.status_code == 200
+        assert "<html" in page.text.lower()
+        assert fragment.status_code == 200
+        assert "<html" not in fragment.text.lower()
+        assert "All systems operational" in fragment.text
+    ```
+
+Expanded production reference: [Full code on GitHub](https://github.com/eddiethedean/hedron/tree/main/examples/reference-app)
 
 Run and inspect it:
 
@@ -471,31 +501,9 @@ or make secrets safe to store in the cookie.
 
 ## Testing pattern
 
-Test documents and fragments separately. Use the handle as the target authority:
-
-```python title="test_app.py"
-from fastapi.testclient import TestClient
-
-from app import app, status
-
-
-def test_home_and_status_fragment() -> None:
-    with TestClient(app) as client:
-        page = client.get("/")
-        fragment = client.get(
-            status.path,
-            headers={
-                "HX-Request": "true",
-                "HX-Target": status.dom_id,
-            },
-        )
-
-    assert page.status_code == 200
-    assert "<html" in page.text.lower()
-    assert fragment.status_code == 200
-    assert "<html" not in fragment.text.lower()
-    assert "All systems operational" in fragment.text
-```
+Test documents and fragments separately. The `test_app.py` tab in the canonical application
+uses the view handle as the target authority and verifies that a fragment response does not
+silently become a full document.
 
 Also test:
 

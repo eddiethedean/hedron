@@ -79,7 +79,6 @@ Return several sibling nodes without adding a wrapper element.
 
 ```python
 from hedron import Alert, Fragment, Text
-
 component = Fragment(Alert('Saved', tone='success'), Text('The record is current.'))
 ```
 
@@ -93,7 +92,7 @@ This component can initiate or represent a backend interaction. The live documen
 
 ## Constructor and parameters
 
-```python
+```text
 Fragment(*nodes, children=None)
 ```
 

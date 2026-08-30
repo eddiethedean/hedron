@@ -30,8 +30,7 @@ pip install "hedron[charts]>=1.0.0,<1.1"
 
 ```python
 from hedron_charts import BarChart
-
-component = BarChart(rows, x='region', y='requests', title='Requests by region', description='US East handles the largest share.')
+component = BarChart([{'region': 'IAD', 'requests': 120}, {'region': 'PDX', 'requests': 80}], x='region', y='requests', title='Requests by region', description='US East handles the largest share.')
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
@@ -44,7 +43,7 @@ The server-rendered figure, summary, and table remain useful without JavaScript.
 
 ## Constructor and parameters
 
-```python
+```text
 BarChart(data, *, x, y, title, description=None, alt=None, waiver=None, limits=None)
 ```
 

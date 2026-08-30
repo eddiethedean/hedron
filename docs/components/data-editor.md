@@ -30,8 +30,7 @@ pip install "hedron[data]>=1.0.0,<1.1"
 
 ```python
 from hedron import DataEditor
-
-component = DataEditor(rows, key='allocation-editor', row_model=EmployeeRow, on_save=save_changes, key_field='id', allow_deletes=False)
+component = DataEditor([{'id': '1', 'name': 'Ada'}], key='allocation-editor', key_field='id', allow_deletes=False)
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
@@ -44,7 +43,7 @@ This component can initiate or represent a backend interaction. The live documen
 
 ## Constructor and parameters
 
-```python
+```text
 DataEditor(rows=None, *, key='editor', row_model=None, columns=None, key_field='id', on_save=None, source=None, page=None, save_mode='batch', page_size=25, caption=None, save_endpoint=None, allow_deletes=True)
 ```
 

@@ -84,7 +84,6 @@ Navigate with a SafeUrl href and typed HTMX attributes for in-shell swaps.
 
 ```python
 from hedron import HtmxLink
-
 component = HtmxLink('Reports', '/reports', target='#main-panel', swap='innerHTML', select='#main-panel')
 ```
 
@@ -98,7 +97,7 @@ This component can initiate or represent a backend interaction. The live documen
 
 ## Constructor and parameters
 
-```python
+```text
 HtmxLink(label, href, *, method='get', target=None, swap='outerHTML', select=None, select_oob=None, push_url=False, preload=None, active=False, attrs=None, class_=None)
 ```
 

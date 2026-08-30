@@ -268,7 +268,7 @@ class SalesDashboard(ed.Page):
         revenue_column, orders_column = self.columns(2)
 
         with revenue_column:
-            self.metric("Revenue", revenue, format="$,.0f")
+            self.metric("Revenue", revenue)
 
         with orders_column:
             self.metric("Orders", orders)
@@ -280,7 +280,7 @@ class SalesDashboard(ed.Page):
             title="Monthly revenue",
             description="Revenue for the selected region and minimum.",
         )
-        self.dataframe(rows, name="sales", page_size=25)
+        self.table(rows, caption="Sales")
 
     @ed.action
     def reload_data(self) -> ed.Outcome:
@@ -308,7 +308,7 @@ self.line_chart(...)
     -> hedron-charts first-party LineChart
     -> semantic summary/table fallback and remount after HTMX swap
 
-self.dataframe(...)
+self.table(...)
     -> hedron-data DataTable
 
 @ed.action reload_data
@@ -624,13 +624,10 @@ ROWS = [
 @app.page("/", title="Interactive revenue")
 class InteractiveRevenue(ed.Page):
     def render(self) -> None:
-        self.plotly_chart(
-            ROWS,
-            x="month",
-            y="revenue",
-            mark="line",
-            title="Monthly revenue",
-        )
+        import plotly.graph_objects as go
+
+        figure = go.Figure(data=[go.Scatter(x=["Jan", "Feb", "Mar"], y=[10, 14, 18], mode="lines")])
+        self.plotly_chart(figure, description="Revenue increased from January through March.")
 ```
 
 Either installation activates the same capability:
@@ -751,12 +748,12 @@ class Operations(ed.Page):
             self.metric("Successful runs", 128, delta="+12%")
 
         with self.style_scope(density="compact"):
-            self.dataframe(
+            self.table(
                 [
                     {"pipeline": "Customers", "state": "Healthy"},
                     {"pipeline": "Invoices", "state": "Delayed"},
                 ],
-                name="pipelines",
+                caption="Pipelines",
             )
 
         self.button("Run pipeline", action=self.run, variant="primary")

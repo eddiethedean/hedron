@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import LinkButton
-
 component = LinkButton('Create account', '/signup', size='sm', width='full')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 LinkButton(label, href, *, size=None, width=None, appearance=None, emphasis=None, id=None, class_=None, attrs=None)
 ```
 

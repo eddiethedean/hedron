@@ -18,6 +18,7 @@ uv sync
 
 | Example | Framework | Simulated demo | Run |
 |---|---|---|---|
+| [composable-app](composable-app.md) | FastAPI | — | `uv run uvicorn app:app --app-dir examples/composable-app --reload` |
 | [streamlit-migration](https://github.com/eddiethedean/hedron/tree/main/examples/streamlit-migration) | FastAPI | — | `uv run uvicorn app:app --app-dir examples/streamlit-migration --reload` |
 | [reference-app](reference-app.md) | FastAPI | [Try it](reference-app.md#auth-gate) | `uv run uvicorn app:app --app-dir examples/reference-app --reload` |
 | [notes-sqlalchemy](notes-sqlalchemy.md) | FastAPI | [Try it](notes-sqlalchemy.md#try-it-simulated) | `uv run uvicorn app:app --app-dir examples/notes-sqlalchemy --reload` |

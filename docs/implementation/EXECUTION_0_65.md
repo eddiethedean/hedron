@@ -64,7 +64,7 @@ move a failing Required slice into Progressive.
 
 The implemented API on `Hedron` and the app-facing protocol is:
 
-```python
+```text
 app.styles(
     name: str,
     source: str | Path,

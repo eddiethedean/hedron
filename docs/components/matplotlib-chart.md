@@ -30,6 +30,9 @@ pip install "hedron-charts[matplotlib]>=1.0.0,<2.0"
 
 ```python
 from hedron_charts import MatplotlibChart
+import matplotlib.pyplot as plt
+fig, ax = plt.subplots()
+ax.plot([1, 2, 3], [100, 140, 180])
 
 component = MatplotlibChart(fig, title='Latency distribution', description='Most requests complete below 200 ms.')
 ```
@@ -44,7 +47,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 MatplotlibChart(figure, *, title=None, description=None, alt=None, waiver=None, fmt='svg')
 ```
 

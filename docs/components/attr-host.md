@@ -79,7 +79,6 @@ Stable element that can receive attribute-only OOB updates.
 
 ```python
 from hedron import AttrHost, Text
-
 component = AttrHost(Text('Ready'), id='status-host', attrs={'data-state': 'idle'})
 ```
 
@@ -93,7 +92,7 @@ This component can initiate or represent a backend interaction. The live documen
 
 ## Constructor and parameters
 
-```python
+```text
 AttrHost(*nodes, *, id, tag='div', attrs=None, class_=None)
 ```
 

@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Dialog, Text
-
 component = Dialog('Delete report', Text('This action cannot be undone.'), id='delete-report')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Dialog(title, *nodes, children=None, open=False, modal=True, id=None, element_id=None)
 ```
 

@@ -28,7 +28,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Table, Tabs, Text
-
 component = Tabs(('Overview', Text('Current health')), ('History', Table(['Run'], [['Today']])), active='Overview')
 ```
 
@@ -42,7 +41,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Tabs(*items, panels=None, active=None, appearance=None, density=None, responsive=None, id=None, class_=None)
 ```
 

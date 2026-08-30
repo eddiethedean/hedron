@@ -26,8 +26,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import CodeViewer
-
-component = CodeViewer(config_text, language='toml', max_chars=20_000)
+component = CodeViewer('[tool.hedron]\nplugins = []', language='toml', max_chars=20_000)
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
@@ -40,7 +39,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 CodeViewer(code, *, language=None, max_chars=100_000)
 ```
 

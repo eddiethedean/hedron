@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Stack, Text
-
 component = Stack(Text('Changes saved.'), Text('Updated now', as_='small'))
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Text(content='', *, as_='p')
 ```
 

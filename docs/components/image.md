@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Image
-
 component = Image('/static/team.jpg', alt='The platform team at the 2026 meetup', width=960, height=540)
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Image(src, *, alt, width=None, height=None, allow_external=False)
 ```
 

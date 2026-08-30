@@ -46,7 +46,7 @@ versioned charts package, not the Hedron flagship version.
 
 Core signatures:
 
-```python
+```text
 Chart(spec: ChartSpec | Mapping[str, Any] | None = None, *, class_: str | None = None)
 parse_chart_spec(value: Mapping[str, Any] | ChartSpec) -> ChartSpec
 compile_chart(spec: ChartSpec | Mapping[str, Any]) -> ChartPlan

@@ -127,8 +127,7 @@ Compose a native GET or POST form with validated action URLs and optional HTMX a
 
 ```python
 from hedron import CsrfField, Form, FormField, SubmitButton, TextInput
-
-component = Form(CsrfField(), FormField(name='email', label='Email', control=TextInput(name='email', type='email')), SubmitButton('Subscribe'), action='/subscribe')
+component = Form(CsrfField(token='example-token'), FormField(name='email', label='Email', control=TextInput(name='email', type='email')), SubmitButton('Subscribe'), action='/subscribe')
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
@@ -141,7 +140,7 @@ This component can initiate or represent a backend interaction. The live documen
 
 ## Constructor and parameters
 
-```python
+```text
 Form(*nodes, children=None, action=None, method='post', hx=None, **native_or_hx_attrs)
 ```
 

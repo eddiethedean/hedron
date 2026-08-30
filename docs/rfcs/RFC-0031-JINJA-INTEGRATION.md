@@ -259,14 +259,14 @@ templates = HedronJinja(
 
 Public operations are:
 
-```python
+```text
 templates.register_component(alias, factory)
 templates.register_asset(logical_id, asset)
 templates.freeze()
-templates.describe(spec_or_name) -> TemplateDeclaration
-templates.check(spec_or_name) -> tuple[Diagnostic, ...]
-templates.capabilities(spec_or_name) -> TemplateCapabilities
-templates.render(spec_or_name, view, *, context=None, mode=None) -> RenderResult
+templates.describe(spec_or_name)  # -> TemplateDeclaration
+templates.check(spec_or_name)  # -> tuple[Diagnostic, ...]
+templates.capabilities(spec_or_name)  # -> TemplateCapabilities
+templates.render(spec_or_name, view, context=None, mode=None)  # -> RenderResult
 await templates.render_async(spec_or_name, view, *, context=None, mode=None)
 ```
 

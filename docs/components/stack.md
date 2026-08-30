@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Button, Heading, Stack, Text
-
 component = Stack(Heading('Settings', level=2), Text('Profile'), Button('Save'), gap='lg')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Stack(*nodes, children=None, gap='1rem', id=None, class_=None)
 ```
 

@@ -30,11 +30,14 @@ Raised by pluggable CSRF strategies (`DoubleSubmitCookieCsrf`, `SessionTokenCsrf
 `validate(...)` fails. Host adapters map this to HTTP **403**.
 
 ```python
+from types import SimpleNamespace
+
 from hedron import CsrfValidationError, DoubleSubmitCookieCsrf
 
 strategy = DoubleSubmitCookieCsrf()
+request = SimpleNamespace(cookies={strategy.cookie_name: "a"}, state=SimpleNamespace())
 try:
-    strategy.validate(cookie="a", form_token="b", header_token=None)
+    strategy.validate(request, form_value="b", header_value=None)
 except CsrfValidationError:
     ...  # typically → HTTP 403
 ```

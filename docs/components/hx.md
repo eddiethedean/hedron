@@ -23,9 +23,8 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 ## Basic use
 
 ```python
-from hedron import Form, Hx
-
-component = Form(..., hx=Hx(target='#region', swap='outerHTML', indicator='#busy', busy='region'))
+from hedron import Form, Hx, Text
+component = Form(Text('Results'), hx=Hx(target='#region', swap='outerHTML', indicator='#busy', busy='region'))
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Hx(*, target=None, swap='outerHTML', select=None, indicator=None, trigger=None, include=None, validate=None, busy=None, ...)
 ```
 

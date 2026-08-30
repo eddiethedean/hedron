@@ -9,8 +9,8 @@ Typed SSE host that registers the sse extension and connects to a same-origin st
 
 | | |
 |---|---|
-| Import | `from hedron import SseRegion` |
-| Distribution | `hedron` |
+| Import | `from hedron_core.builtins import SseRegion` |
+| Distribution | `hedron-core` |
 | Backend activity | No |
 | Normal render mode | `RenderMode.FRAGMENT` |
 
@@ -23,8 +23,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 ## Basic use
 
 ```python
-from hedron import SseRegion, Text
-
+from hedron_core.builtins import SseRegion, Text
 component = SseRegion(Text('Connecting…'), connect='/jobs/status', swap='message', close='done')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 SseRegion(*children, *, connect, swap='message', close=None, id=None, class_=None)
 ```
 

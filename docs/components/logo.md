@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import Logo
-
 component = Logo('/logo.svg', alt='Hedron')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Logo(src: 'SafeUrl | str', *, alt: 'str', href: 'SafeUrl | str | None' = None, allow_external: 'bool' = False, class_: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 

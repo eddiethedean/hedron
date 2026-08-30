@@ -24,7 +24,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import NumberInput
-
 component = NumberInput('qty', value=1)
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 NumberInput(name: 'str', *, id: 'str | None' = None, value: 'float | int | str | None' = None, min: 'float | int | str | None' = None, max: 'float | int | str | None' = None, step: 'float | int | str | None' = None, placeholder: 'str | None' = None, required: 'bool' = False, disabled: 'bool' = False, mark: 'str | None' = None, aria_describedby: 'str | None' = None, aria_invalid: 'str | None' = None, aria_required: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 

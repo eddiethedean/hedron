@@ -9,8 +9,8 @@ Generic HTMX busy host for region or document aria-busy and an optional indicato
 
 | | |
 |---|---|
-| Import | `from hedron import BusyRegion` |
-| Distribution | `hedron` |
+| Import | `from hedron_core.builtins import BusyRegion` |
+| Distribution | `hedron-core` |
 | Backend activity | No |
 | Normal render mode | `RenderMode.FRAGMENT` |
 
@@ -23,8 +23,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 ## Basic use
 
 ```python
-from hedron import BusyRegion, Text
-
+from hedron_core.builtins import BusyRegion, Text
 component = BusyRegion(Text('Results'), scope='region', indicator='#busy')
 ```
 
@@ -38,7 +37,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 BusyRegion(*nodes, children=None, scope='region', indicator=None)
 ```
 

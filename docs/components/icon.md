@@ -23,7 +23,8 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 ## Basic use
 
 ```python
-from hedron import Icon
+from hedron import Icon, register_first_party_icons
+register_first_party_icons()
 
 component = Icon('check', size='sm', title='Complete')
 ```
@@ -38,7 +39,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 Icon(name, *, size='md', title=None, decorative=False, id=None, class_=None)
 ```
 

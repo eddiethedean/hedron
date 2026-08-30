@@ -76,7 +76,6 @@ Show a polite busy status while a request or deferred component is pending.
 
 ```python
 from hedron import Loading
-
 component = Loading('Loading account activity…')
 ```
 
@@ -90,7 +89,7 @@ This component can initiate or represent a backend interaction. The live documen
 
 ## Constructor and parameters
 
-```python
+```text
 Loading(message='Loading…')
 ```
 

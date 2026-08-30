@@ -28,7 +28,6 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 from hedron import JSONViewer
-
 component = JSONViewer({'job': 42, 'status': 'complete', 'token': 'redacted automatically'})
 ```
 
@@ -42,7 +41,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 
 ## Constructor and parameters
 
-```python
+```text
 JSONViewer(value, *, max_chars=100_000)
 ```
 

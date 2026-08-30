@@ -10,6 +10,7 @@ historical examples are phase evidence and are not recommended starting points.
 | Example | Outcome | Layer | Difficulty | Time | Status |
 |---|---|---|---|---:|---|
 | [`chrome-zero-css`](https://github.com/eddiethedean/hedron/tree/v1.0/examples/chrome-zero-css) | Zero-application-CSS component gallery | Hedron | Intermediate | 15 min | Current |
+| [`composable-app`](https://github.com/eddiethedean/hedron/tree/main/examples/composable-app) | Multi-file component composition | Hedron | Intermediate | 15 min | Current |
 | [`connect-reference`](https://github.com/eddiethedean/hedron/tree/v1.0/examples/connect-reference) | Posit Connect deployment reference | Hedron | Advanced | 30 min | Current |
 | [`django-reference`](https://github.com/eddiethedean/hedron/tree/v1.0/examples/django-reference) | Django host integration | Hedron | Intermediate | 20 min | Current |
 | [`edron-showcase`](https://github.com/eddiethedean/hedron/tree/v1.0/examples/edron-showcase) | Full-feature class-oriented operations console | Edron | Intermediate | 15 min | Current |

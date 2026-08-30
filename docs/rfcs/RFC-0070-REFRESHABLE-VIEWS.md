@@ -239,7 +239,7 @@ forms without string URLs:
 
 ```python
 restart_service.button("Restart")
-Form(action=save_note, ...)
+Form(Text("Note"), action="/save")
 ```
 
 In 0.43, form fields remain explicit. The handle supplies only the registered action URL, method,
