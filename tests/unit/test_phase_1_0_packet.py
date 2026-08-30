@@ -11,7 +11,32 @@ from pathlib import Path
 
 import pytest
 
+from scripts import check_100
+
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def test_release_evidence_rejects_dirty_non_evidence_source(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
+    subprocess.run(
+        ["git", "config", "user.email", "test@example.invalid"], cwd=tmp_path, check=True
+    )
+    subprocess.run(["git", "config", "user.name", "Hedron Test"], cwd=tmp_path, check=True)
+    source = tmp_path / "source.py"
+    source.write_text("value = 1\n", encoding="utf-8")
+    subprocess.run(["git", "add", "source.py"], cwd=tmp_path, check=True)
+    subprocess.run(["git", "commit", "-qm", "baseline"], cwd=tmp_path, check=True)
+    source_commit = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=tmp_path, text=True
+    ).strip()
+    source.write_text("value = 2\n", encoding="utf-8")
+    monkeypatch.setattr(check_100, "ROOT", tmp_path)
+
+    assert check_100._evidence_source_blockers(source_commit) == [
+        "release evidence is stale; source_commit predates non-evidence changes: source.py"
+    ]
 
 
 def _toml(relative: str) -> dict[str, object]:

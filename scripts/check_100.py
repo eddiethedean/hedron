@@ -196,26 +196,33 @@ def _evidence_source_blockers(source_commit: object) -> list[str]:
     if not isinstance(source_commit, str) or len(source_commit) != 40:
         return ["release evidence source_commit must be a full commit hash"]
     try:
-        current = subprocess.check_output(
-            ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True, stderr=subprocess.STDOUT
-        ).strip()
         changed = subprocess.check_output(
             ["git", "diff", "--name-only", f"{source_commit}..HEAD"],
             cwd=ROOT,
             text=True,
             stderr=subprocess.STDOUT,
         ).splitlines()
+        working_tree_changed = subprocess.check_output(
+            ["git", "diff", "--name-only", "HEAD", "--"],
+            cwd=ROOT,
+            text=True,
+            stderr=subprocess.STDOUT,
+        ).splitlines()
+        untracked = subprocess.check_output(
+            ["git", "ls-files", "--others", "--exclude-standard"],
+            cwd=ROOT,
+            text=True,
+            stderr=subprocess.STDOUT,
+        ).splitlines()
     except (OSError, subprocess.CalledProcessError):
         return ["release evidence source_commit is not available in the current checkout"]
-    if current == source_commit:
-        return []
     allowed = {
         "docs/acceptance/compatibility-report-100/README.md",
         "docs/acceptance/compatibility-report-100/local-bridge.json",
         "docs/acceptance/compatibility-report-100/local-build-evidence.json",
         "docs/acceptance/compatibility-report-100/verification-100.json",
     }
-    unexpected = sorted(set(changed) - allowed)
+    unexpected = sorted((set(changed) | set(working_tree_changed) | set(untracked)) - allowed)
     if unexpected:
         return [
             "release evidence is stale; source_commit predates non-evidence changes: "
