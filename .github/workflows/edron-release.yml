@@ -250,10 +250,26 @@ jobs:
             "import edron, edron_sim, hedron, hedron_data, hedron_charts, hedron_maps"
 
       - name: Publish Edron and edron-sim to PyPI
+        if: github.event_name == 'push'
         uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # release/v1
         with:
           packages-dir: dist/
           skip-existing: true
+
+      - name: Recover Edron and edron-sim publication
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${UV_PUBLISH_TOKEN:-}" ]; then
+            echo "PYPI_API_TOKEN secret is not set" >&2
+            exit 1
+          fi
+          uv publish --token "$UV_PUBLISH_TOKEN" \
+            --check-url https://pypi.org/simple/ \
+            dist/edron-*.whl dist/edron-*.tar.gz \
+            dist/edron_sim-*.whl dist/edron_sim-*.tar.gz
 
       - name: Verify the published Edron quick start
         run: |

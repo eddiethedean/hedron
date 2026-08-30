@@ -104,6 +104,9 @@ def test_edron_has_an_independent_release_path() -> None:
     assert "fetch-depth: 0" in edron[edron.index("  publish:") :]
     assert "needs: [test, dependency_bounds, browser]" in edron
     assert ".venv/bin/python scripts/check_edron_10_release.py" in edron
+    assert "Recover Edron and edron-sim publication" in edron
+    assert "secrets.PYPI_API_TOKEN" in edron
+    assert "--check-url https://pypi.org/simple/" in edron
     assert "Preflight published Stable dependencies from PyPI" in edron
     assert "tests/unit/test_edron_runtime.py" in edron
     assert "tests/unit/test_edron_phase02.py" in edron

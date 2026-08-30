@@ -129,6 +129,9 @@ def main() -> int:
         "uv build --package edron-sim",
         ".venv/bin/python scripts/check_edron_10_release.py",
         "scripts/verify_edron_release_artifacts.py",
+        "Recover Edron and edron-sim publication",
+        "secrets.PYPI_API_TOKEN",
+        "--check-url https://pypi.org/simple/",
         "dist/edron_sim-*.whl",
         "edron-sim==${SIM_VERSION}",
     )
