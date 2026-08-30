@@ -2,7 +2,7 @@
   "schema": "hedron.verification-evidence/1",
   "phase": "1.0",
   "target": "v1.0.0",
-  "source_commit": "c2336d8433b66533f0c6613370bf5c7ef995dc4a",
+  "source_commit": "cd29381a00d2293f875663e1403d0e8594f7936d",
   "retained_command_output": false,
   "checks": [
     {
