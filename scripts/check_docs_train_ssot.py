@@ -334,6 +334,7 @@ def _is_inventory_page(path: Path) -> bool:
 
 
 CANONICAL_INSTALL_PAGE = Path("docs/getting-started/installation.md")
+CANDIDATE_INSTALL_PATHS = frozenset({Path("docs/api/EDRON_PACKAGING.md")})
 
 # The Posit adapter is released on the beta 0.67 train, so its Workbench
 # walkthroughs intentionally use the matching Hedron bridge rather than the
@@ -608,7 +609,7 @@ def check_text(
             if not constraint and not is_requirement_position:
                 continue
             allowed_edron_pins = {facts.edron_pin}
-            if facts.edron_registry_status == "deferred":
+            if facts.edron_registry_status == "deferred" and path not in CANDIDATE_INSTALL_PATHS:
                 allowed_edron_pins = {facts.edron_pypi_pin}
             if constraint not in allowed_edron_pins:
                 failures.append(

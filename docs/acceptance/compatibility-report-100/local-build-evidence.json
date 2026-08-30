@@ -2,7 +2,7 @@
   "schema": "hedron.local-build-evidence/1",
   "phase": "1.0",
   "target": "v1.0.0",
-  "source_commit": "7e6a0d57beb9c40231c0a10a6c1002c9b2c1603c",
+  "source_commit": "940b11f02e5ae5161fc0bc3843e190b24049108a",
   "command": "SOURCE_DATE_EPOCH=0 PYTHONDONTWRITEBYTECODE=1 uv build --all-packages",
   "environment": {
     "python": "3.12.13",
@@ -27,7 +27,7 @@
     {"name": "hedron_data-1.0.0-py3-none-any.whl", "sha256": "c84fbcba5f033783dc97a721bddfd05ba1118e724e9c8a28bcb29510532cc176"},
     {"name": "hedron_data-1.0.0.tar.gz", "sha256": "831f1a3e1195a60174b9d0946e5459253251ce5b7bbefb00efa94140e09bad20"},
     {"name": "hedron_django-1.0.0-py3-none-any.whl", "sha256": "e28c6bb343fc17849563c5c0bd8b54965dd34d960d64b2dd49738f37826b36a8"},
-    {"name": "hedron_django-1.0.0.tar.gz", "sha256": "df16762a7dc0c5ce8d62b17f6c154392bdc42f9a4b96a62422c708fc9669d"},
+    {"name": "hedron_django-1.0.0.tar.gz", "sha256": "df16762a7dc0c5ce8d62b17f6c154392bdc42f9a4b96a62476422c708fc9669d"},
     {"name": "hedron_elements-1.0.0-py3-none-any.whl", "sha256": "d32b8f80b9daee4b201c9e3925a47605c84b4b0d6a8053cec230ed8dd6b36e91"},
     {"name": "hedron_elements-1.0.0.tar.gz", "sha256": "d89c26f7d88466494f162ab559c013ecbbd34344f870af1b12212481455cc1b1"},
     {"name": "hedron_explorer-1.0.0-py3-none-any.whl", "sha256": "0a38e689b01a5fd1cbe995c1e4c1211ee1af8a815bf0f0fa7a182dfe22e11bf7"},
@@ -36,7 +36,7 @@
     {"name": "hedron_extras-1.0.0.tar.gz", "sha256": "ca18579d89180330c97428ae48964d90c5cd02efec5aa8b1946fabf67460295a"},
     {"name": "hedron_flask-1.0.0-py3-none-any.whl", "sha256": "76f0c2d0171f5a00d9ec7b3a5cc2518f7db38375326c0dad497ca1509a1b7359"},
     {"name": "hedron_flask-1.0.0.tar.gz", "sha256": "baf48d4a9ec043a82f6374b4c7c8addcc616d46b633ca41985cc591dfbeeff3f"},
-    {"name": "hedron_jinja-1.0.0-py3-none-any.whl", "sha256": "a929cc6edcd5e82396e16c680e98bea740e96787c1e4992e7d312d85974c9b7a8"},
+    {"name": "hedron_jinja-1.0.0-py3-none-any.whl", "sha256": "a929cc6edcd5e82396e16c680e98bea740e96787c1e4992e7d312d85974c9b7a"},
     {"name": "hedron_jinja-1.0.0.tar.gz", "sha256": "07608441a8da69b22b3076f0cd95bc58bb13472e2a7f91e03e61f28dd96b211d"},
     {"name": "hedron_posit-1.0.0-py3-none-any.whl", "sha256": "c2a05b4d3ef2f016e977f6a65a896b6f4429b3c2eccd5e5e18566f25a7e7a8ea"},
     {"name": "hedron_posit-1.0.0.tar.gz", "sha256": "4c7484df10ff63532e14159c6eb3a4eb940a1e25f1d452b3f3dd266551debf1c"}
