@@ -1,8 +1,14 @@
 # What's new in 0.54
 
+!!! note "Historical release note"
+
+    This page records the 0.x release named in its title. For current installation,
+    support, and published 1.0 status, use [Current release and support](current-release.md).
+    Keep the historical pins below only when maintaining that release line.
+
 **Status:** Published in-tree as `v0.56.0` (tag/PyPI deferred). This historical
 cut was superseded by later published trains; current applications should use
-`hedron>=0.66.2,<0.67` from the public index.
+`hedron>=1.0.0,<1.1` from the public index.
 
 Phase 0.54 ships one external-author loop and Python-native application chrome.
 

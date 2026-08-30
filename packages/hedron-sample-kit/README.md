@@ -16,10 +16,10 @@ reference when authoring your own plugin distribution.
 ## Install
 
 ```bash
-pip install "hedron-sample-kit>=0.2.1,<0.3"
+pip install "hedron-sample-kit>=0.2.3,<0.3"
 ```
 
-Versions through `0.1.6` target older Hedron cores; keep the `>=0.1.10` floor. See
+Versions through `0.2.2` target older plugin contracts; keep the `>=0.2.3` floor. See
 [Compatibility](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/#charts-and-sample-kit-compatibility-floor).
 
 Enable the plugin in your app’s `pyproject.toml`:

@@ -26,9 +26,13 @@ def _as_upload_file(
         return item
     if isinstance(item, tuple) and len(item) == 2:
         return DirectoryUploadFile(name=str(item[0]), size=int(item[1]))
-    if isinstance(item, Mapping):
-        return DirectoryUploadFile(name=str(item["name"]), size=int(item["size"]))  # type: ignore[index]
-    raise TypeError(f"Unsupported directory upload entry: {type(item)!r}")
+    name = item.get("name")
+    size = item.get("size")
+    if not isinstance(name, str):
+        raise TypeError("directory upload name must be a string")
+    if isinstance(size, bool) or not isinstance(size, int):
+        raise TypeError("directory upload size must be an integer")
+    return DirectoryUploadFile(name=name, size=size)
 
 
 def _reject_traversal(path: str) -> None:

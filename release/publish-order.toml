@@ -1,0 +1,27 @@
+schema_version = 1
+description = "Publication order for the Hedron train. Foundational runtime packages publish before dependents; Edron has its own tag and workflow."
+
+order = [
+  "hedron-core",
+  "hedron",
+  "hedron-data",
+  "hedron-explorer",
+  "hedron-flask",
+  "hedron-django",
+  "hedron-jinja",
+  "hedron-conformance",
+  "hedron-extras",
+  "hedron-elements",
+  "hedron-posit",
+  "hedron-charts",
+  "hedron-maps",
+  "hedron-native",
+  "hedron-mcp",
+  "hedron-gradio",
+  "hedron-sample-kit",
+  "hedron-notebook",
+  "hedron-sim",
+  "fastapi-workbench",
+]
+
+excluded = ["edron", "edron-sim"]

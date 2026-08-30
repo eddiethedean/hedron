@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import time
 
+from pydantic import BaseModel
 from starlette.testclient import TestClient
 
 import edron as ed
@@ -211,3 +212,68 @@ def test_job_flow_honors_explicit_backend_poll_policy_and_sse_terminal_state() -
         message_html="<p>done</p>",
     )
     assert events[-1].event == "hedron-close"
+
+
+def test_page_job_renders_cached_submit_surface_without_reregistering_routes() -> None:
+    class Request(BaseModel):
+        year: int
+
+    app = ed.App(title="Reports")
+    flow = ed.JobFlow(
+        name="annual-report",
+        input_model=Request,
+        job_type="report",
+        payload=lambda value: {"year": value.year},
+        backend=InMemoryJobBackend(),
+        scope=lambda: ed.JobScope(auth_subject="alice", tenant_id="acme"),
+        result=lambda value: None,
+    )
+    app.include(flow)
+    assert app.include(flow) is app.include(flow)
+    assert flow.submit_command is not None
+
+    @app.page("/reports", title="Reports")
+    class ReportsPage(ed.Page):
+        def render(self) -> None:
+            self.job(flow, submit_label="Build report", show_cancel=True)
+
+    with TestClient(app) as client:
+        first = client.get("/reports")
+        second = client.get("/reports")
+
+    assert first.status_code == 200
+    assert second.status_code == 200
+    assert first.text.count("Build report") == 1
+    assert 'data-hedron-job-cancel="true"' in first.text
+
+
+def test_page_job_cancel_option_composes_cancel_form_on_status_surface() -> None:
+    class Request(BaseModel):
+        year: int
+
+    backend = InMemoryJobBackend()
+    app = ed.App(title="Reports")
+    flow = ed.JobFlow(
+        name="annual-report-cancel",
+        input_model=Request,
+        job_type="report",
+        payload=lambda value: {"year": value.year},
+        backend=backend,
+        scope=lambda: ed.JobScope(auth_subject="alice", tenant_id="acme"),
+        authorize_cancel=ed.dependency(lambda: None),
+        result=lambda value: None,
+    )
+    app.include(flow)
+
+    @app.page("/reports-cancel", title="Reports")
+    class ReportsPage(ed.Page):
+        def render(self) -> None:
+            self.job(flow, show_cancel=True)
+
+    handle = backend.submit("report", {"year": 2026}, auth_subject="alice", tenant_id="acme")
+    with TestClient(app) as client:
+        client.get("/reports-cancel")
+        response = client.get(f"/annual-report-cancel/status/{handle.job_id}")
+
+    assert response.status_code == 200
+    assert ">Cancel</button>" in response.text

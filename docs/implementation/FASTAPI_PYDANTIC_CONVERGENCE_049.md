@@ -32,8 +32,8 @@ Stage 1 compiled those plans as in-tree `v0.49.0`. FailFast stays research.
 - 0.48 HTMX: `Page.htmx_extensions`, `SseRegion` / `SseTrigger`, experimental
   SSE helpers. Use them only as LIFETIME streaming/SSE consumers. Do **not**
   reopen `polling_only` or `MORPH-048`.
-- FastAPI `>=0.141.1,<0.150` (Supported CI still `<0.142`); `Depends(scope=)`
-  since 0.121. Pydantic `>=2.13.4,<2.15`. Deployment settings today: argparse
+- FastAPI `>=0.121.0,<0.150` (Supported CI still `<0.142`); `Depends(scope=)`
+  since 0.121. Pydantic `>=2.12.0,<2.15` (D-118). Deployment settings today: argparse
   `WorkbenchConfig` / custom loaders — no `pydantic-settings`.
 - `hedron.config.HedronSettings` is **not** a `SETTINGS-049` candidate.
 

@@ -1,6 +1,6 @@
 # Hedron 1.0 implementation and cut plan
 
-**Status:** Stage 0 Refined; W1 removal work blocked on `ENTRY-100`
+**Status:** **Implemented and Verified as an untagged `v1.0.0` candidate; PyPI publication deferred**
 **Baseline:** Verified Beta `v0.67.0`
 **Target:** `v1.0.0`
 **Authority:** RFC-0096 and D-114–D-117
@@ -35,7 +35,9 @@ immutable 0.67 public/task/artifact inventory
    make optional ownership honest; they are not second beginner paths.
 7. The stable promise is enumerated. Beta/Experimental contracts remain visibly outside SemVer's
    stable facade, and independent satellites keep independent versions.
-8. No package/version/classifier claim changes during Stage 0 refinement.
+8. Runtime corrections are limited to compatibility-preserving authorization fixes; no net-new
+   Required capability is introduced. Package/version/classifier claims are explicit and bumped
+   for the coordinated 1.0.0 cut.
 
 ## Entry audit (W0)
 
@@ -52,10 +54,17 @@ Generate inventories from the immutable `v0.67.0` artifacts and source tree, not
   and host resolutions; and
 - stable maturity, support, security, rollback, and evidence-retention boundaries.
 
+The non-executing generator emits `public-inventory-100.toml` and
+`stable-inventory-100.toml` for exports/artifacts plus `task-inventory-100.toml` for every public
+class, function, and method discovered in the immutable baseline source, including source lines
+and AST-derived signatures. The task inventory is an ownership graph, not an automatic SemVer
+promotion; stable status remains governed by the reviewed stable inventory.
+
 Reconcile the generated inventory with `contract-freeze-067.toml`, the component-engine inventory,
-the compatibility BOM, docs/API references, and `PUBLIC_FUTURE_WARNINGS`. The current eight warning
-records are a known lower bound. `ENTRY-100` remains Planned until every proposed removal has
-complete coverage and the stable inventory is machine-enumerated.
+the compatibility BOM, docs/API references, and `PUBLIC_FUTURE_WARNINGS`. The eleven warning
+records (eight core route/include records plus three Flask adapter records) are fully reconciled.
+`ENTRY-100` is Verified: every proposed removal has complete coverage and the stable inventory is
+machine-enumerated.
 
 ## Work packages
 
@@ -106,6 +115,7 @@ time.
 | Deliverable | Owner | Contents | First gate |
 |---|---|---|---|
 | `docs/acceptance/public-inventory-100.toml` | architecture/API | Every documented/exported/generated/configured/CLI/HDJ/markup/browser/package path, task, owner, maturity, and disposition | `ENTRY-100` |
+| `docs/acceptance/task-inventory-100.toml` | architecture/API | AST-derived public class/function/method task-to-interface graph with immutable provenance | `ENTRY-100` |
 | `docs/acceptance/stable-inventory-100.toml` | API/release | Enumerated SemVer-protected symbols, signatures, schemas, packages, and supported adapters | `SURFACE-100` |
 | `docs/acceptance/removal-inventory-100.toml` | migration/API | One row per removed path, replacement/non-fit reason, warning code, fixture, confidence, and removal slice | `REMOVE-100` |
 | `docs/acceptance/warnings-100.toml` | migration/tooling | Runtime/static warning schema, source forms, diagnostic metadata, and coverage status | `ENTRY-100` |
@@ -128,7 +138,11 @@ the browser asset/registry modules under `packages/hedron-core/src/hedron_core/`
 ### W0 — inventory, baseline, and entry lock
 
 1. Build the `v0.67.0` baseline in a clean environment and record the checksums and tool/browser
-   identities in `baseline-100.json`.
+   identities in `baseline-100.json`. The repository generator is
+   `scripts/generate_100_inventory.py`; it materializes the tag with `git archive`, parses exports
+   without importing code, and emits deterministic public/stable/task inventories plus baseline
+   counts. The task inventory preserves public class/function/method interfaces that are not
+   visible in an import-only snapshot.
 2. Extract `__all__`, public imports, signatures, overloads, schemas, decorators, CLI/config/HDJ
    forms, generated output, browser tags/controllers/assets, manifests, and package entry points.
 3. Normalize aliases and alternate spellings by developer task, not by module name. Join the result
@@ -136,13 +150,13 @@ the browser asset/registry modules under `packages/hedron-core/src/hedron_core/`
 4. Diff the generated result against docs, examples, scaffolds, Explorer, `PUBLIC_FUTURE_WARNINGS`,
    `codes.py`, and existing upgrade fixtures. Every mismatch becomes an inventory row.
 5. Publish stable, transitional, Advanced, package-native, Beta, Experimental, internal, Deferred,
-   and not-fit dispositions. Resolve the current eight-warning floor (`app.component`,
+   and not-fit dispositions. Resolve the current eleven-warning floor (`app.component`,
    `app.fragment`, `app.include_feature`, `router.component`, `app.screen`, `app.refreshable`,
    `app.command`, `app.form_command`) against the complete extracted surface.
 6. Publish the 0.67.x migration-support window and exact dual-version matrix. Do not choose a
    calendar release date; the cut remains evidence-triggered.
 
-**Exit checklist:** all seven W0 deliverables exist; inventory counts are reproducible; every
+**Exit checklist:** all eight W0 deliverables exist; inventory counts are reproducible; every
 proposed removal has a disposition; no public path is `unknown` without an owner; the stable
 inventory is enumerated; and `python scripts/check_100.py --check-plan` plus `ENTRY-100` evidence
 pass. Until then, no deletion or 1.0-only default switch is allowed.
@@ -272,8 +286,9 @@ published in package metadata and docs.
 
 ### W9 — artifacts, release candidate, and cut
 
-1. Update coordinated package versions/classifiers/changelogs only after all behavior and migration
-   gates pass. Keep independent satellite versions independent.
+1. Update coordinated package versions/classifiers/changelogs on the dedicated `v1.0` branch once
+   the implementation surface is ready; publication still waits for every behavior and migration
+   gate. Keep independent satellite versions independent.
 2. Build clean wheels and sdists twice from the same source with normalized timestamps; compare
    manifests, hashes, license notices, SBOMs, and browser assets.
 3. Exercise offline installation, fresh virtual environments, import order, CLI scaffolding,
@@ -313,6 +328,7 @@ shape. Commands that verify implementation evidence do not exist until the corre
 lands; the planning checker must continue to fail closed before then.
 
 ```text
+python scripts/generate_100_inventory.py --baseline v0.67.0 --output-dir docs/acceptance
 python scripts/check_100.py --check-plan
 python scripts/check_100.py --gate ENTRY-100 --verify
 python scripts/check_100.py --gate SURFACE-100 --verify
@@ -333,7 +349,7 @@ python scripts/check_100.py --gate PKG-100 --verify
 python scripts/check_100.py --gate RELEASE-100 --verify
 ```
 
-The CI matrix must include CPython 3.11–3.14, the exact FastAPI/Pydantic bounds, FastAPI plus
+The CI matrix must include CPython 3.10–3.14, the exact FastAPI/Pydantic bounds, FastAPI plus
 Flask/Django/HDJ adapter rows, optional satellite present/absent rows, Pyright, and Chromium/
 Firefox/WebKit. Browser rows run on the pinned Playwright lock and record screenshots/traces;
 non-browser rows run in clean isolated environments. The release job consumes evidence artifacts

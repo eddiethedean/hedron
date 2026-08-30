@@ -1,4 +1,4 @@
-# Package author handbook (0.54)
+# Package author handbook
 
 Use this loop with **public contracts only** — no private monorepo imports.
 

@@ -47,7 +47,7 @@ class ComponentBoundaryNode:
     logical_id: str
     instance_id: str | None
     children: tuple[Node, ...]
-    props_summary: Mapping[str, object] = field(default_factory=dict)
+    props_summary: Mapping[str, object] = field(default_factory=dict[str, object])
 
 
 Node = (

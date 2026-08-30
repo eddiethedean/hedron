@@ -28,6 +28,7 @@ _EXTRA_HEADER_KWARGS: dict[str, str] = {
     "HX-Trigger-After-Swap": "trigger_after_swap",
     "HX-Trigger-After-Settle": "trigger_after_settle",
 }
+EXTRA_HEADER_KWARGS = _EXTRA_HEADER_KWARGS
 
 
 class FragmentRegionError(ValueError):
@@ -209,7 +210,7 @@ class InteractionResult:
     action_trace: ActionTrace | None = None
     region_id: str | None = None
     policy: InteractionPolicy | None = None
-    headers: Mapping[str, str] = field(default_factory=dict)
+    headers: Mapping[str, str] = field(default_factory=dict[str, str])
     explanation: str = ""
     # Request-side hx-select-oob when known (same-target conflict detection).
     select_oob: str | None = None
@@ -228,12 +229,6 @@ class InteractionResult:
                 ) from exc
             object.__setattr__(self, "status_code", code)
         if self.oob:
-            bad = [item for item in self.oob if not isinstance(item, OobUpdate)]
-            if bad:
-                raise TypeError(
-                    "InteractionResult.oob items must be OobUpdate instances; "
-                    f"got {[type(item).__name__ for item in bad]}"
-                )
             from hedron_core.htmx.oob import validate_unique_oob_element_ids
 
             validate_unique_oob_element_ids(self.oob)

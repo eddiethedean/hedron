@@ -61,9 +61,7 @@ def retry_operation(
         submit_type = str(submit_type)
     else:
         submit_type = job_type
-        payload = produced  # type: ignore[assignment]
-    if not isinstance(payload, Mapping):
-        raise TypeError("retry_operation factory must return a mapping payload")
+        payload = produced
     return backend.submit(
         submit_type,
         payload,
@@ -90,8 +88,6 @@ class OperationWorkflow:
     ) -> JobHandle:
         """Submit a new operation; ``factory`` returns the job payload (never polled here)."""
         payload = factory()
-        if not isinstance(payload, Mapping):
-            raise TypeError("OperationWorkflow.start factory must return a mapping payload")
         return self.backend.submit(
             self.job_type,
             payload,

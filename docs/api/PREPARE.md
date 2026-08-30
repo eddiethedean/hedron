@@ -7,10 +7,10 @@ status: shipped
 !!! note "Stability"
 
     Classifications live in [STABILITY.md](STABILITY.md). `prepare()` is **Supported**
-    (beta API level) on the 0.13 train. Opt out by omitting `prepare` on components —
+    (beta API level) on the 1.0 train. Opt out by omitting `prepare` on components —
     sync `render()` semantics are unchanged.
 
-**Status:** Shipped in `0.13.0`
+**Status:** Beta on 1.0 (introduced in `0.13.0`)
 
 Optional async (or sync) work **before** sync `render()` for components that define
 `prepare(self, ctx: PrepareContext)`. Request-owned: deadlines, disconnect cancel,

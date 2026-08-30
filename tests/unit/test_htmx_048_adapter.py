@@ -62,6 +62,6 @@ def test_flask_django_injector_rejects_breakout_href() -> None:
 
 
 def test_posit_workbench_keep_mount_prefix_labels() -> None:
-    workbench = Path("packages/hedron-workbench").is_dir()
+    workbench = Path("packages/hedron-posit").is_dir()
     posit = Path("packages/hedron-posit").is_dir()
     assert workbench and posit

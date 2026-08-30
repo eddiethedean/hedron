@@ -7,13 +7,20 @@ from typing import Any
 
 from django.http import HttpRequest, HttpResponse
 
-from hedron_core.adapter import DJANGO_CAPABILITIES, AuthSignal
+from hedron_core.adapter import DJANGO_CAPABILITIES, AuthSignal, CapabilityRecord
 from hedron_core.component import Component, NodeLike
+from hedron_core.htmx_contract import HtmxContext
 from hedron_core.interaction import FragmentRegion, InteractionResult
+from hedron_core.interaction_067 import Outcome
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult
 from hedron_django.csrf import csrf_token_for_request
 from hedron_django.htmx import htmx_context, render_mode_for_request
-from hedron_django.responses import _headers_mapping, component_response, interaction_response
+from hedron_django.responses import (
+    _headers_mapping,
+    _outcome_response,
+    component_response,
+    interaction_response,
+)
 from hedron_django.routing import HEDRON_APP_ID, DjangoUrlReverser
 
 __all__ = ["HedronDjango"]
@@ -30,7 +37,8 @@ class HedronDjango:
         run_django_production_gates()
 
     @property
-    def capabilities(self):
+    def capabilities(self) -> CapabilityRecord:
+        """Return the immutable capability declaration for the Django adapter."""
         return DJANGO_CAPABILITIES
 
     def render(
@@ -41,6 +49,7 @@ class HedronDjango:
         context: RenderContext | None = None,
         mode: RenderMode | None = None,
     ) -> str:
+        """Render a Hedron value to HTML using request-derived render mode."""
         from hedron_django.responses import _render_body
 
         result = _render_body(
@@ -62,6 +71,12 @@ class HedronDjango:
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         allow_undeclared_targets: bool = False,
     ) -> HttpResponse:
+        """Render a Hedron value as a synchronous Django response.
+
+        Raises:
+            RuntimeError: If called from a running event loop. ASGI views must
+                await :meth:`respond_async` so component preparation is not lost.
+        """
         from hedron_core.async_bridge import running_loop
         from hedron_django.csrf import DjangoCsrfError, seed_csrf_cookie, validate_csrf
 
@@ -93,6 +108,15 @@ class HedronDjango:
             return HttpResponse(str(exc).encode("utf-8"), status=status, content_type="text/plain")
         if isinstance(compiled, InteractionResult):
             value = compiled
+        if isinstance(compiled, Outcome):
+            return _outcome_response(
+                compiled,
+                request=request,
+                authenticated=self.auth_signal(request).authenticated,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+                app_id=self.hedron_app_id,
+            )
         if isinstance(value, InteractionResult):
             return interaction_response(
                 value,
@@ -154,6 +178,15 @@ class HedronDjango:
             return HttpResponse(str(exc).encode("utf-8"), status=status, content_type="text/plain")
         if isinstance(compiled, InteractionResult):
             value = compiled
+        if isinstance(compiled, Outcome):
+            return _outcome_response(
+                compiled,
+                request=request,
+                authenticated=self.auth_signal(request).authenticated,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+                app_id=self.hedron_app_id,
+            )
         if isinstance(value, InteractionResult):
             if value.content is not None:
                 await prepare_tree(value.content)
@@ -204,5 +237,6 @@ class HedronDjango:
     def csrf_token(self, request: HttpRequest) -> str:
         return csrf_token_for_request(request)
 
-    def htmx(self, request: HttpRequest):
+    def htmx(self, request: HttpRequest) -> HtmxContext:
+        """Parse the request's approved HTMX headers into a typed context."""
         return htmx_context(_headers_mapping(request))

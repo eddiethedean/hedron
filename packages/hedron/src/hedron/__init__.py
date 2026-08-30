@@ -248,6 +248,7 @@ from hedron_core import (
     HedronFutureWarning,
     Help,
     HelpInspector,
+    HtmxAttrs,
     HtmxLink,
     Hx,
     Icon,
@@ -265,6 +266,7 @@ from hedron_core import (
     Interaction,
     InteractionCatalog,
     InteractionKind,
+    InteractionLowering,
     InteractionManifest,
     JSONViewer,
     Label,
@@ -408,6 +410,7 @@ from hedron_core import (
     package_theme,
     redact_cookie_value,
     register_component_theme_contract,
+    register_first_party_icons,
     register_icon,
     register_recipe_family,
     register_theme_package,
@@ -558,7 +561,7 @@ def __getattr__(name: str) -> object:
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__version__ = "0.67.0"
+__version__ = "1.0.0"
 
 # Stable + beta public facade. Live transports live in ``hedron.experimental``
 # (compat attribute access retained via ``__getattr__``). Optional data/charts/auth
@@ -765,6 +768,7 @@ __all__ = [
     "HEDRON_NAVIGATION_TITLE_HEADER",
     "HEDRON_PREFETCH_HEADER",
     "HtmxRequest",
+    "HtmxAttrs",
     "Hx",
     "Icon",
     "IconButton",
@@ -778,6 +782,7 @@ __all__ = [
     "InstanceKey",
     "Interaction",
     "InteractionKind",
+    "InteractionLowering",
     "InteractionCatalog",
     "InteractionManifest",
     "InteractionPolicy",
@@ -890,6 +895,7 @@ __all__ = [
     "Refreshes",
     "RefreshIntent",
     "register_icon",
+    "register_first_party_icons",
     "RegisteredAction",
     "render",
     "render_component_response",

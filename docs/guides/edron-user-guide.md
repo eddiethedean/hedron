@@ -10,9 +10,10 @@ Edron is a typed, server-rendered Python facade over one native Hedron applicati
 for dashboards, internal tools, data workspaces, and workflows that should remain useful with
 ordinary HTTP and without a separate frontend build system.
 
-This guide targets Edron `0.9.x` and Hedron `0.67.0` (`>=0.67.0,<0.68`). Edron is a **Beta**
-distribution: pin the package train, keep the supported surface explicit, and treat undocumented
-imports as internal.
+This guide targets the Edron and Hedron `1.0.x` Stable contract. Until publication, install
+the public fallback only when required; use `uv sync` from the repository to exercise the
+candidate. Keep the supported surface explicit, and treat
+undocumented imports as internal.
 
 ## The operating model
 
@@ -38,7 +39,7 @@ Use a clean environment and pin the Edron minor train:
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install "edron>=0.9,<0.10" "hedron>=0.67.0,<0.68" "hedron-data>=0.67.0,<0.68"
+python -m pip install "edron>=0.9.0,<0.10"
 ```
 
 On Windows, activate `.venv\\Scripts\\activate` instead. Verify the interpreter that will run the
@@ -82,7 +83,6 @@ app = ed.App(title="Sales dashboard", security="standard")
 @app.page("/", title="Sales dashboard")
 class Home(ed.Page):
     def render(self) -> None:
-        self.heading("Sales dashboard")
         self.text("A server-rendered page with an accessible HTML fallback.")
         self.metric("Orders", 128, delta="+12")
 ```
@@ -197,10 +197,12 @@ For browser-local enhancement, use the native Hedron 0.67 interaction algebra an
 Edron’s thin exports. Local effects are disposable; request effects remain server-owned:
 
 ```python
-toggle = ed.Interaction.local("toggle-panel", state_keys=("open",))
+toggle = ed.Interaction.local(
+    "toggle-panel", state_keys=("open",), state={"open": False}
+)
 save = ed.Interaction.request("sales-save", target="#sales", swap="outerHTML")
 save_and_close = ed.Interaction.combined(
-    "close-panel", "sales-save", state_keys=("open",), target="#sales"
+    "close-panel", "sales-save", state_keys=("open",), state={"open": False}, target="#sales"
 )
 app.interaction(toggle)
 plan = ed.browser_plan(toggle.demands())
@@ -551,7 +553,7 @@ Treat an Edron upgrade as an application release:
 Edron does not reverse database migrations, rotate secrets, cancel external side effects, reclaim
 user files, or undo already-enqueued work. Those actions require an application-owned runbook.
 
-For the current phase boundary, see [Edron 0.9 acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_009.md) and the
+For the current release boundary, see [Edron 1.0 acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_100.md) and the
 [Edron roadmap](../EDRON_ROADMAP.md).
 
 ## 14. Migrate from Streamlit
@@ -595,7 +597,7 @@ authorization, persistence, and request boundaries reviewable.
 ## Next references
 
 - [Edron deployment guide](edron-deployment.md)
-- [Edron 0.9 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_009.md)
+- [Edron 1.0 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_100.md)
 - [Edron 0.8 → 0.9 upgrade fixtures](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/upgrade-fixtures-09.md)
 - [Edron packaging and compatibility](../api/EDRON_PACKAGING.md) · [Compatibility policy](../COMPATIBILITY.md)
 - [Security](security.md) · [Accessibility](accessibility.md) · [Test your UI](testing.md)

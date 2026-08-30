@@ -5,7 +5,7 @@ from __future__ import annotations
 import inspect
 from collections.abc import Awaitable, Callable, Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, Generic, Literal, Protocol, TypeVar
+from typing import Any, Generic, Literal, Protocol, TypeVar, cast
 
 from pydantic import BaseModel
 
@@ -32,15 +32,14 @@ DashboardHistory = Literal["replace", "push", "none"]
 class _DashboardApp(Protocol):
     """Minimal Hedron host surface for dashboard materialization."""
 
-    def screen(
+    def page(
         self,
         path: str,
         *,
-        title: str,
         name: str | None = None,
     ) -> Callable[[Callable[..., object]], object]: ...
 
-    def refreshable(
+    def view(
         self,
         path: str,
         *,
@@ -48,7 +47,7 @@ class _DashboardApp(Protocol):
         cache: CacheHint | None = None,
     ) -> Callable[[Callable[..., object]], FragmentHandle[Any, Any]]: ...
 
-    def command(
+    def action(
         self,
         path: str,
         *,
@@ -98,7 +97,7 @@ def _reject_sensitive_filters(model: type[BaseModel]) -> None:
                 remediation="Rename the field or use an explicit non-URL filter strategy.",
             )
         extra = getattr(info, "json_schema_extra", None)
-        if isinstance(extra, Mapping) and extra.get("sensitive"):
+        if isinstance(extra, Mapping) and cast(Mapping[str, object], extra).get("sensitive"):
             raise error(
                 HED_DASH_0003,
                 title="Sensitive filter rejected from URL mode",
@@ -207,7 +206,7 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
 
                     defaults = workspace.filters()
 
-                    @app.refreshable(
+                    @app.view(
                         ppath,
                         name=f"{workspace.name}-panel-{pname}",
                         cache=None if workspace.cache is None else workspace.cache.hint,
@@ -257,7 +256,9 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
                 flat: dict[str, str] = {}
                 for key, value in raw.items():
                     if isinstance(value, (list, tuple)):
-                        flat[str(key)] = ",".join(str(item) for item in value)
+                        flat[str(key)] = ",".join(
+                            str(item) for item in cast(Sequence[object], value)
+                        )
                     else:
                         flat[str(key)] = str(value)
                 qs = urlencode(flat)
@@ -281,7 +282,7 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
 
             workspace.filter_form = filter_handle
 
-            @app.screen(workspace.path, title=workspace.title, name=workspace.name)
+            @app.page(workspace.path, name=workspace.name)
             def dashboard_screen() -> object:
                 nodes: list[NodeLike] = [
                     PageHeader(workspace.title),
@@ -295,7 +296,9 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
                             nodes.append(Text(pname))
                     else:
                         nodes.append(Text(pname))
-                return Stack(*nodes)
+                from hedron import Page
+
+                return Page(Stack(*nodes), title=workspace.title)
 
             workspace.screen = dashboard_screen
             return dashboard_screen

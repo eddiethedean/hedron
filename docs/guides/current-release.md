@@ -1,69 +1,87 @@
 ---
-description: The authoritative release, installation, and support status for Hedron.
+description: The authoritative release, installation, compatibility, and support status for Edron and Hedron.
 search:
   boost: 2
 ---
 
 # Current release and support
 
-This page is the public release-status source of truth. Other pages should link here
-instead of repeating version numbers.
+This is the public release-status source of truth. Other pages link here instead of
+maintaining their own release story.
+
+<!-- hedron-release-status -->
 
 ## At a glance
 
-| Channel | Version | Meaning |
-|---|---|---|
-| Stable | `0.66.2` / `0.66.x` | Current stable release and production pin |
-| Beta | `0.67.0` | Preview release for the next phase; subject to change |
-| Package maturity | Beta | Beta surfaces remain usable with pins; no SLA |
-| Supported Python | 3.11–3.14 | CPython only |
+| Package | Version | Maturity | Application pin | Role |
+|---|---:|---|---|---|
+| `edron` | `1.0.0` | Stable | `edron>=1.0.0,<1.1` | Batteries-included application authoring |
+| `hedron` | `1.0.0` candidate | Stable | In-tree only; public fallback `hedron>=0.67.0,<0.68` | FastAPI-native component and route authoring |
+| `hedron-data` | `1.0.0` | Stable | `hedron-data>=1.0.0,<1.1` | DataTable, DataEditor, and bounded data contracts |
+| `hedron-charts` | `1.0.0` | Stable | `hedron-charts>=1.0.0,<2.0` | First-party charts and static/Matplotlib output |
+| `hedron-maps` | `1.0.0` | Stable | `hedron-maps>=1.0.0,<2.0` | Bounded first-party maps and offline presentation |
 
-Application documentation uses the latest public PyPI pin:
+The coordinated candidate supports CPython **3.10–3.14**. Package maturity, capability
+readiness, and individual API stability are separate: a stable package may contain a
+clearly labeled experimental capability.
 
-```text
-hedron>=0.66.2,<0.67
-```
-
-Contributors working from a checkout should use `uv sync` so local packages resolve
-from the workspace.
-
-## PyPI vs checkout (one screen)
-
-| You want… | Do this |
-|---|---|
-| Build an application | Install the stable release: `hedron>=0.66.2,<0.67` |
-| Contribute / hack on Hedron | Clone the repo and `uv sync` (editable workspace) |
-| Evaluate the beta preview | Use `v0.67.0` only for beta evaluation; stable applications should remain on `v0.66.2` |
-| Know security support window | Current stable train `0.66.x` — [SECURITY.md](../SECURITY.md) |
-| Know human AT / screen-reader status | Protocol engineering only; compensated sessions **not Supported** — [What’s ready](whats-ready.md) |
-
-The `0.66.2` release is the latest stable public release and is available from PyPI. The
-`0.67.0` beta is the next preview train. See
-`docs/release.toml` for the public registry facts.
+The exact 1.0 package and API boundary is maintained in the repository’s
+[`release/support-matrix.toml`](https://github.com/eddiethedean/hedron/blob/main/release/support-matrix.toml). Beta
+host/tooling satellites are opt-in compatibility surfaces, not part of the stable platform contract.
 
 ## What should I install?
 
-- Building an application: follow [Installation](../getting-started/installation.md).
-- Trying the framework: follow [Build your first app](../getting-started/quickstart.md).
-- Contributing to Hedron: follow [Contributor day one](contributor-day-one.md).
-- Evaluating production use: read [What's ready today](whats-ready.md), then
-  [Evaluate Hedron](evaluate.md).
+| Goal | Continue with |
+|---|---|
+| New dashboard, CRUD app, or data workflow | [Edron quick start](../getting-started/edron-quickstart.md) |
+| Direct FastAPI/component application | [Hedron quick start](../getting-started/quickstart.md) |
+| Existing Flask or Django application | [Installation and host adapters](../getting-started/installation.md) |
+| Repository contribution | `uv sync`, then [Contributor day one](contributor-day-one.md) |
 
-## Release terminology
+When using the public registry, retain the fallback upper bounds shown above. When evaluating
+the in-tree candidate, use the repository checkout and retain the `<1.1` upper bound. Upgrade
+deliberately after reading the release notes and running the application's own integration tests.
 
-- **Repository train**: the version represented by the current checkout and workspace
-  metadata.
-- **Latest PyPI release**: the newest version that a clean application can resolve from
-  the public package index.
-- **Published**: the release is available from PyPI and has a corresponding release
-  record.
-- **Supported**: a capability covered by the current maturity matrix when the stated
-  version and configuration are pinned.
-- **Experimental**: available for evaluation but subject to change; use the documented
-  fallback when one exists.
+## Support lifecycle
 
-## Update policy
+| Train | Security support | Compatibility expectation |
+|---|---|---|
+| `1.0.x` candidate | Verified, not yet public | Stable APIs follow the 1.x compatibility policy once published |
+| `0.67.x` | Best-effort security triage through approximately 2027-02-27 | Upgrade to 1.0; migration aliases are not the new golden path |
+| Earlier `0.x` | Unsupported | Use historical documentation only to plan an upgrade |
 
-The values on this page are derived from [`docs/release.toml`](../release.toml). When a
-release is uploaded, update that file first, then run the documentation checks before
-editing any prose. Do not hand-edit historical release pages to make them current.
+There is no commercial SLA. Community support is provided through GitHub; security reports
+follow [SECURITY.md](../SECURITY.md), not public issues.
+
+## Stability and deprecation
+
+- **Stable:** compatibility-protected for the documented 1.x contract.
+- **Beta:** usable with pins, but its contract may change in a future minor release.
+- **Experimental:** opt-in evaluation surface with a documented production fallback.
+- **Deprecated:** retained temporarily for migration and absent from new quick starts.
+
+Removal of a stable API requires a deprecation notice, migration guidance, and a future
+major release. See [Stability](../api/STABILITY.md) and [Upgrade](upgrade.md).
+
+## Coordinated and independent packages
+
+`hedron-core`, `hedron`, Edron, `hedron-data`, `hedron-charts`, and `hedron-maps` use the
+coordinated 1.0 Stable contract in the repository. Host adapters and vendor/tooling satellites
+retain independent versions and Beta maturity.
+Do not infer satellite compatibility from a similar
+version number; use the [compatibility matrix](../COMPATIBILITY.md).
+
+The Workbench split is intentional:
+
+| Package | Role |
+|---|---|
+| `hedron-posit` | Coordinated Hedron facade for Posit Workbench and Connect |
+| `fastapi-workbench` | Independent generic adapter for plain FastAPI/ASGI applications |
+| `hedron-workbench` | Removed compatibility distribution |
+
+## Release maintenance
+
+The values rendered in release callouts and install matrices come from
+[`docs/release.toml`](../release.toml). A release change begins there and must pass the
+documentation source-of-truth, API coverage, link, and strict build checks. Historical release
+pages remain historical; they are not edited to masquerade as the current release.

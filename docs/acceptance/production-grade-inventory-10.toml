@@ -1,0 +1,85 @@
+# Hedron 1.0 whole-fleet maturity inventory.
+# Machine-checked by check_package_docs_inventory.py.
+
+baseline = "v0.67.0"
+state = "verified"
+hedron_cut = "v1.0.0"
+charts_cut = "1.0.0"
+tracking = "phase-1.0"
+registry_status = "deferred"
+
+packages = [
+  "hedron",
+  "hedron-core",
+  "edron",
+  "hedron-explorer",
+  "hedron-data",
+  "hedron-flask",
+  "hedron-django",
+  "hedron-jinja",
+  "hedron-extras",
+  "hedron-conformance",
+  "hedron-charts",
+  "hedron-maps",
+  "hedron-native",
+  "hedron-sample-kit",
+  "hedron-sim",
+  "edron-sim",
+  "hedron-notebook",
+  "hedron-mcp",
+  "hedron-gradio",
+  "hedron-posit",
+  "hedron-elements",
+  "fastapi-workbench",
+  "hedron-runtime-node",
+  "hedron-runtime-java",
+]
+
+[hedron]
+maturity = "stable"
+[hedron-core]
+maturity = "stable"
+[edron]
+maturity = "stable"
+[hedron-explorer]
+maturity = "beta"
+[hedron-data]
+maturity = "stable"
+[hedron-flask]
+maturity = "beta"
+[hedron-django]
+maturity = "beta"
+[hedron-jinja]
+maturity = "beta"
+[hedron-extras]
+maturity = "beta"
+[hedron-conformance]
+maturity = "beta"
+[hedron-charts]
+maturity = "stable"
+[hedron-maps]
+maturity = "stable"
+[hedron-native]
+maturity = "beta"
+[hedron-sample-kit]
+maturity = "beta"
+[hedron-sim]
+maturity = "beta"
+[edron-sim]
+maturity = "beta"
+[hedron-notebook]
+maturity = "beta"
+[hedron-mcp]
+maturity = "beta"
+[hedron-gradio]
+maturity = "beta"
+[hedron-posit]
+maturity = "beta"
+[hedron-elements]
+maturity = "beta"
+[fastapi-workbench]
+maturity = "beta"
+[hedron-runtime-node]
+maturity = "beta"
+[hedron-runtime-java]
+maturity = "beta"

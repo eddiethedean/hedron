@@ -4,7 +4,10 @@ Deploy plain FastAPI applications behind Posit Workbench / RStudio Server withou
 installing Hedron.
 
 **Package:** `fastapi-workbench` `1.0.1` (independent semver) · import `fastapi_workbench`
-**Requires:** Python 3.11–3.14, FastAPI/Starlette ASGI app
+**Requires:** Python 3.10–3.14, FastAPI/Starlette ASGI app
+
+The package supports Python 3.10–3.14; the commands below use Python 3.11 as the standard
+Workbench spelling.
 
 If `python3.11` is unavailable, use the [Python 3.11 pyenv fallback](../getting-started/first-app-posit-workbench.md#python-311-fallback)
 before creating the virtual environment. When finished, return to [Install](#install).
@@ -45,13 +48,13 @@ Installing or importing this package never monkey-patches your application.
 
 ## Hedron apps
 
-Hedron applications should use [`hedron-workbench`](posit-workbench.md) 0.30+,
-which depends on this package and adds `HedronWorkbench`, `HEDRON_ROOT_PATH`, and
-Hedron URL/CSRF integration.
+Hedron applications should use [`hedron-posit`](posit-workbench.md) 1.0+ (or
+`hedron[posit]`), which composes this package and adds `HedronPosit`,
+`HEDRON_ROOT_PATH`, and Hedron URL/CSRF integration.
 
 ## Reference
 
 - [RFC-0063](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0063-FASTAPI-WORKBENCH-EXTRACTION.md)
 - [Example app](https://github.com/eddiethedean/hedron/tree/main/examples/fastapi-workbench-reference)
 - REALWB-030 Docker smoke runs this app via `fastapi-workbench run` alongside the
-  hedron-workbench reference (`examples/workbench-reference/app_facade.py`).
+  `hedron-posit` reference (`examples/workbench-reference/app_facade.py`).

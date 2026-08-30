@@ -23,9 +23,11 @@ def is_tabular(value: object) -> bool:
     if isinstance(value, DataSource):
         return True
     if isinstance(value, Sequence) and value and not isinstance(value, (str, bytes)):
-        first = value[0]
+        sequence = cast(Sequence[object], value)
+        first = sequence[0]
         return isinstance(first, Mapping) or hasattr(first, "model_dump")
-    return hasattr(value, "columns") and callable(getattr(value, "head", None))
+    candidate = cast(object, value)
+    return hasattr(candidate, "columns") and callable(getattr(candidate, "head", None))
 
 
 def is_chart_like(value: object) -> bool:
@@ -133,7 +135,9 @@ def register_defaults() -> None:
             name="sequence",
             priority=400,
             predicate=lambda v: (
-                isinstance(v, Sequence) and not isinstance(v, (str, bytes)) and not is_tabular(v)
+                isinstance(v, Sequence)
+                and not isinstance(v, (str, bytes))
+                and not is_tabular(cast(object, v))
             ),
             explanation="Sequences → List",
             factory=factory_sequence,

@@ -57,7 +57,7 @@ Keep `GeolocationButton` at the smallest semantic boundary. Fragment routes shou
 the replaced region and preserve stable target IDs across success, validation, empty,
 loading, and error responses.
 
-`GeolocationButton` participates in interaction markup. Pair it with an explicit `@action` / `@component` POST (and CSRF) when the control mutates state.
+`GeolocationButton` participates in interaction markup. Pair it with an explicit `@app.action` POST (and CSRF) when the control mutates state.
 
 ## Accessibility
 

@@ -14,19 +14,19 @@ helpers when the package is installed and falls back otherwise.
 
 Also available as the flagship extra `hedron[native]`.
 
-**Package maturity:** Beta (`0.1.x`) · pin `>=0.1.2,<0.2` and expect churn
+**Package maturity:** Beta (`0.1.x`) · pin `>=0.1.3,<0.2` and expect churn
 
 ## Install
 
 ```bash
-pip install "hedron-native>=0.1.2,<0.2"
+pip install "hedron-native>=0.1.3,<0.2"
 # or
-uv add "hedron-native>=0.1.2,<0.2"
+uv add "hedron-native>=0.1.3,<0.2"
 # via flagship extra:
-pip install "hedron[native]>=0.66.2,<0.67"
+pip install "hedron[native]>=1.0.0,<1.1"
 ```
 
-Requires Python 3.11–3.14. Prebuilt wheels for the Supported matrix are built by `native-wheels.yml` (confirm Supported tags on PyPI);
+Requires Python 3.10–3.14. Prebuilt wheels for the Supported matrix are built by `native-wheels.yml` (confirm Supported tags on PyPI);
 if a wheel is unavailable, pip may build from the Rust source (requires a Rust
 toolchain) or you can rely on the pure-Python path without this package.
 

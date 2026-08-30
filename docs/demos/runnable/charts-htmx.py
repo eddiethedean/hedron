@@ -61,7 +61,7 @@ def home() -> Page:
     )
 
 
-@app.component("/charts/refresh", fragment_regions=(panel,))
+@app.view("/charts/refresh", fragment_regions=(panel,))
 def refresh() -> InteractionResult:
     return InteractionResult(
         content=chart_panel(

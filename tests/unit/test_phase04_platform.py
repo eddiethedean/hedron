@@ -46,7 +46,7 @@ def test_plugin_loader_registers_panel_and_rolls_back_on_failure() -> None:
         version="0.4.0",
         distribution="good",
         capabilities=PluginCapabilities(explorer_panels=True),
-        hedron_version=">=0.67,<0.68",
+        hedron_version=">=0.67,<2.0",
     )
 
     def bad(ctx: PluginContext) -> None:
@@ -56,7 +56,7 @@ def test_plugin_loader_registers_panel_and_rolls_back_on_failure() -> None:
         name="bad",
         version="0.4.0",
         distribution="bad",
-        hedron_version=">=0.67,<0.68",
+        hedron_version=">=0.67,<2.0",
     )
 
     class EP:
@@ -89,7 +89,7 @@ def test_plugin_loader_rolls_back_components_on_failure() -> None:
         version="0.4.0",
         distribution="good",
         capabilities=PluginCapabilities(python=True),
-        hedron_version=">=0.67,<0.68",
+        hedron_version=">=0.67,<2.0",
     )
 
     def bad(ctx: PluginContext) -> None:
@@ -99,7 +99,7 @@ def test_plugin_loader_rolls_back_components_on_failure() -> None:
         name="bad",
         version="0.4.0",
         distribution="bad",
-        hedron_version=">=0.67,<0.68",
+        hedron_version=">=0.67,<2.0",
     )
 
     class EP:
@@ -139,7 +139,7 @@ def test_plugin_loader_rolls_back_features_owners_and_bundles_on_failure() -> No
         version="0.4.0",
         distribution="good",
         capabilities=PluginCapabilities(python=True),
-        hedron_version=">=0.67,<0.68",
+        hedron_version=">=0.67,<2.0",
     )
 
     def bad(ctx: PluginContext) -> None:
@@ -149,7 +149,7 @@ def test_plugin_loader_rolls_back_features_owners_and_bundles_on_failure() -> No
         name="bad",
         version="0.4.0",
         distribution="bad",
-        hedron_version=">=0.67,<0.68",
+        hedron_version=">=0.67,<2.0",
     )
 
     class EP:
@@ -183,7 +183,7 @@ def test_plugin_enabled_empty_loads_none() -> None:
         name="demo",
         version="0.4.0",
         distribution="demo",
-        hedron_version=">=0.67,<0.68",
+        hedron_version=">=0.67,<2.0",
     )
 
     class EP:
@@ -229,7 +229,7 @@ def test_plugin_loader_success() -> None:
         version="0.4.0",
         distribution="demo",
         capabilities=PluginCapabilities(python=True, explorer_panels=True),
-        hedron_version=">=0.67,<0.68",
+        hedron_version=">=0.67,<2.0",
     )
 
     class EP:
@@ -438,7 +438,7 @@ def test_csrf_on_mixed_method_page_and_action() -> None:
     def form_page() -> Page:
         return Page(Text("form"), title="Form")
 
-    @app.action("/act", methods=["GET", "POST"])
+    @app.action("/act", method="POST")
     def act() -> Text:
         return Text("ok")
 

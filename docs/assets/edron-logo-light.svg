@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 372 128" role="img" aria-labelledby="title">
+  <title id="title">Edron</title>
+  <defs>
+    <linearGradient id="edron-gradient" x1="18" y1="10" x2="106" y2="106" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0e7490"/>
+      <stop offset="1" stop-color="#0f766e"/>
+    </linearGradient>
+  </defs>
+  <rect width="372" height="128" fill="#fff"/>
+  <path fill="url(#edron-gradient)" d="M62 5 111.6 33.6v58.8L62 121 12.4 92.4V33.6L62 5Z"/>
+  <path fill="#f8fafc" d="M30 34h66L82 50H50v8h36L72 74H50v8h46L82 98H30V34Z"/>
+  <path fill="#a5f3fc" d="M50 58h36L72 74H50V58Z"/>
+  <text fill="#0f766e" x="132" y="88" font-family="Arial, Helvetica Neue, sans-serif" font-size="72" font-weight="400" letter-spacing="-2">Edron</text>
+</svg>

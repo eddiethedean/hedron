@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Generic, Protocol, TypeVar, runtime_checkable
+from typing import Any, Generic, Protocol, TypeVar, cast, runtime_checkable
 
 from hedron_core.typing_aliases import JsonValue
 
@@ -22,7 +22,7 @@ class DataQuery:
     limit: int = 25
     cursor: str | None = None
     sort: tuple[tuple[str, str], ...] = ()
-    filters: Mapping[str, JsonValue] = field(default_factory=dict)
+    filters: Mapping[str, JsonValue] = field(default_factory=lambda: dict[str, JsonValue]())
     projection: tuple[str, ...] | None = None
     search: str | None = None
     locale: str | None = None
@@ -31,16 +31,17 @@ class DataQuery:
     allowlisted_projection_fields: frozenset[str] | None = None
 
     def validated(self, *, max_page_size: int = DEFAULT_MAX_PAGE_SIZE) -> DataQuery:
-        if not isinstance(self.offset, int) or isinstance(self.offset, bool) or self.offset < 0:
+        offset: Any = self.offset
+        if not isinstance(offset, int) or isinstance(offset, bool) or offset < 0:
             raise ValueError("DataQuery.offset must be an integer >= 0")
         if (
-            not isinstance(max_page_size, int)
+            not isinstance(cast(Any, max_page_size), int)
             or isinstance(max_page_size, bool)
             or max_page_size < 1
         ):
             raise ValueError("max_page_size must be an integer >= 1")
         limit = self.limit
-        if not isinstance(limit, int) or isinstance(limit, bool) or limit < 1:
+        if not isinstance(cast(Any, limit), int) or isinstance(limit, bool) or limit < 1:
             raise ValueError("DataQuery.limit must be an integer >= 1")
         capped = min(limit, max_page_size, HARD_MAX_PAGE_SIZE)
         if capped < 1:

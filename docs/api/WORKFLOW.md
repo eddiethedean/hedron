@@ -1,6 +1,6 @@
-# Workflow APIs (0.55)
+# Workflow APIs
 
-Phase 0.55 adds opt-in `beta` workflow contracts under `hedron.workflow` and related
+Available as `beta` contracts on 1.0; introduced in phase 0.55 under `hedron.workflow` and related
 modules. See [RFC-0082](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0082-SECURE-UPGRADEABLE-WORKFLOWS.md).
 
 ## Public entry points
@@ -22,13 +22,13 @@ FastAPI owns action `capability=` / `idempotency=` enforcement introduced in the
 replay action kwargs remain `unsupported` on those adapters
 (`docs/acceptance/workflow-parity-055.toml`).
 
-Pin and maturity follow the living **0.66.x** train; 0.55 workflow symbols remain
+Pin and maturity follow the current **1.0.x** train; 0.55 workflow symbols remain
 `beta`.
 
 ## Example
 
 ```python
-from hedron import Hedron, Stack, Text
+from hedron import Hedron, Page, Stack, Text
 from hedron.workflow import WorkflowManifest
 
 app = Hedron(title="Workflows", security="standard", session_secret="replace-me", explorer="off")
@@ -39,11 +39,14 @@ manifest = WorkflowManifest(
 )
 
 
-@app.screen("/", title="Home")
+@app.page("/")
 def home():
-    return Stack(
-        Text(f"Workflow: {manifest.app_id}"),
-        Text("Use workflow helpers for upgradeable, capability-aware actions."),
+    return Page(
+        Stack(
+            Text(f"Workflow: {manifest.app_id}"),
+            Text("Use workflow helpers for upgradeable, capability-aware actions."),
+        ),
+        title="Home",
     )
 ```
 

@@ -8,7 +8,8 @@ import sys
 from pathlib import Path
 from typing import Any, cast
 
-from hedron.cli.discovery import _apply_project_discovery, _load_app
+from hedron.cli.discovery import apply_project_discovery as _apply_project_discovery
+from hedron.cli.discovery import load_app as _load_app
 from hedron_core.registry import get_registry
 from hedron_core.typing_aliases import JsonObject
 
@@ -23,9 +24,10 @@ def _cmd_graph(args: argparse.Namespace) -> int:
         explorer_payload: dict[str, Any] = graph_json()
         inverse: dict[str, list[str]] = {}
         raw_edges = explorer_payload.get("edges")
-        edges_list = raw_edges if isinstance(raw_edges, list) else []
-        for edge in edges_list:
-            if isinstance(edge, dict):
+        edges_list = cast(list[object], raw_edges) if isinstance(raw_edges, list) else []
+        for edge_value in edges_list:
+            edge = cast(dict[str, object], edge_value) if isinstance(edge_value, dict) else None
+            if edge is not None:
                 inverse.setdefault(str(edge.get("to")), []).append(str(edge.get("from")))
         explorer_payload["inverse_consumers"] = inverse
         print(json.dumps(explorer_payload, indent=2))
@@ -50,3 +52,6 @@ def _cmd_graph(args: argparse.Namespace) -> int:
     )
     print(json.dumps(payload, indent=2))
     return 0
+
+
+cmd_graph = _cmd_graph

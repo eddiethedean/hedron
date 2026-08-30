@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.0] — 2026-08-27
+
+- Align Data package metadata with the Hedron 1.0 coordinated train.
+- Set verified optional-adapter floors to Narwhals `>=1.1` and Dask `>=2024.5`.
+
 ## [0.67.0] — 2026-08-27
 
 ### Changed

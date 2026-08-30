@@ -9,9 +9,11 @@ on a clean venv — that is the polished first-success path.
 | Example | Host | Notes |
 |---|---|---|
 | [`theme-gallery/`](theme-gallery/) | FastAPI | Visual QA across common interfaces in forced light and dark modes |
+| [`showcase/`](showcase/) | FastAPI | Full-feature operations console with real fragment and action routes |
+| [`edron-showcase/`](edron-showcase/) | Edron | Edron-only operations console with pages, layouts, actions, charts, and outcomes |
 | [`chrome-zero-css/`](chrome-zero-css/) | FastAPI | Data Mover-class chrome from `Theme` + built-ins with no application CSS |
 | [`streamlit-migration/`](streamlit-migration/) | FastAPI | Runnable sales-dashboard migration with typed GET filters |
-| [`notes-sqlalchemy/`](notes-sqlalchemy/) | FastAPI | SQLite create / list / delete via `@app.refreshable` + `@app.command` |
+| [`notes-sqlalchemy/`](notes-sqlalchemy/) | FastAPI | SQLite create / list / delete via `@app.view` + `@app.action` |
 | [`session-auth/`](session-auth/) | FastAPI | Session login; `/` redirects to `/login` |
 | [`file-upload/`](file-upload/) | FastAPI | Multipart upload with size/type checks |
 | [`jobs-poll/`](jobs-poll/) | FastAPI | Supported job polling (`Poll` + status) |
@@ -23,7 +25,7 @@ on a clean venv — that is the polished first-success path.
 | [`flask-reference/`](flask-reference/) | Flask | Home + HTMX refresh fragment (port **8000**) |
 | [`django-reference/`](django-reference/) | Django | Waitress WSGI or uvicorn ASGI (manage-less) |
 | [`hdj-progressive/`](hdj-progressive/) | CLI render | Prints HTML to stdout — not a web server |
-| [`workbench-reference/`](workbench-reference/) | FastAPI | Ordinary Hedron and `HedronWorkbench` launch paths (0.29) |
+| [`workbench-reference/`](workbench-reference/) | FastAPI | HedronPosit launch path for Posit Workbench |
 
 ## Phase evidence (0.15–0.18) — maintainers
 
@@ -44,7 +46,8 @@ uv sync
 # then follow each example README
 ```
 
-Docs gallery demos on Read the Docs are **simulations**, not these servers. Matrix:
+Most gallery demos on Read the Docs are **simulations**, not these servers. The Hedron and Edron
+showcase pages intentionally link to and document the real applications above. Matrix:
 [runnable examples](https://hedron.readthedocs.io/en/latest/examples/runnable/).
 
 ## Docker

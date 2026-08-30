@@ -35,6 +35,67 @@
   --hs-ok-soft: rgba(94, 234, 212, 0.14);
 }
 
+/* Keep an embedded Edron app deterministic when its documentation host has a
+ * different OS color preference. These values mirror the shipped default
+ * Edron tokens; the app source still owns no presentation CSS. */
+[data-md-color-scheme="default"] .edron-sim {
+  --hedron-default-bg: #f6f8fb;
+  --hedron-default-surface: #ffffff;
+  --hedron-default-surface-muted: #f0f3f8;
+  --hedron-default-fg: #172033;
+  --hedron-default-muted: #647084;
+  --hedron-default-border: #dce2eb;
+  --hedron-default-border-strong: #c7d0dd;
+  --hedron-default-accent: #2563eb;
+  --hedron-default-link: #2563eb;
+  --hedron-default-link-hover: #1d4ed8;
+  --hedron-default-link-active: #1d4ed8;
+  --hedron-default-link-visited: #2563eb;
+  --hedron-default-accent-hover: #1d4ed8;
+  --hedron-default-accent-soft: #e8f0ff;
+  --hedron-default-on-accent: #ffffff;
+  --hedron-default-danger: #c73939;
+  --hedron-default-danger-soft: #fff0f0;
+  --hedron-default-on-danger: #ffffff;
+  --hedron-default-success: #15805f;
+  --hedron-default-success-soft: #e9f8f1;
+  --hedron-default-warning: #9a6200;
+  --hedron-default-warning-soft: #fff6dd;
+  --hedron-default-info-soft: #eaf3ff;
+  --hedron-default-shadow: 0 1px 2px rgb(15 23 42 / 6%), 0 8px 24px rgb(15 23 42 / 7%);
+  --hedron-default-shadow-raised: 0 14px 38px rgb(15 23 42 / 13%);
+  color-scheme: light;
+}
+
+[data-md-color-scheme="slate"] .edron-sim {
+  --hedron-default-bg: #0d121c;
+  --hedron-default-surface: #151c28;
+  --hedron-default-surface-muted: #1b2432;
+  --hedron-default-fg: #eef3fa;
+  --hedron-default-muted: #9ba8ba;
+  --hedron-default-border: #2c3748;
+  --hedron-default-border-strong: #3b485c;
+  --hedron-default-accent: #7ca7ff;
+  --hedron-default-link: #7ca7ff;
+  --hedron-default-link-hover: #a2c0ff;
+  --hedron-default-link-active: #a2c0ff;
+  --hedron-default-link-visited: #7ca7ff;
+  --hedron-default-accent-hover: #a2c0ff;
+  --hedron-default-accent-soft: #1d3158;
+  --hedron-default-on-accent: #071a3c;
+  --hedron-default-danger: #ff8585;
+  --hedron-default-danger-soft: #442326;
+  --hedron-default-on-danger: #321214;
+  --hedron-default-success: #65d5aa;
+  --hedron-default-success-soft: #183b32;
+  --hedron-default-warning: #f3c86b;
+  --hedron-default-warning-soft: #41351f;
+  --hedron-default-info-soft: #193453;
+  --hedron-default-shadow: 0 1px 2px rgb(0 0 0 / 25%), 0 12px 30px rgb(0 0 0 / 24%);
+  --hedron-default-shadow-raised: 0 18px 46px rgb(0 0 0 / 38%);
+  color-scheme: dark;
+}
+
 .hedron-sim__stage {
   padding: clamp(1rem, 3vw, 1.6rem);
 }
@@ -103,6 +164,82 @@
   opacity: 1;
 }
 
+/*
+ * Edron's default stylesheet intentionally uses cascade layers. Documentation
+ * hosts such as MkDocs Material use unlayered selectors, so they would
+ * otherwise win for bare elements in an Edron-only simulation (for example,
+ * changing a native button into a transparent documentation button). Revert
+ * the host's unlayered declarations and let the bundled Edron layer resolve
+ * the element exactly as it does in a live app.
+ */
+.edron-sim :where(
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  small,
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  img,
+  svg,
+  canvas,
+  table,
+  caption,
+  thead,
+  tbody,
+  tfoot,
+  tr,
+  th,
+  td,
+  ul,
+  ol,
+  dl,
+  dt,
+  dd,
+  hr,
+  figure,
+  figcaption
+) {
+  all: revert-layer;
+}
+
+/* Edron uses viewport media queries in a real page. A docs island is a
+ * narrower container inside that page, so mirror the same breakpoint with a
+ * container query. The island's 0.8 zoom means its 48rem query corresponds to
+ * the live app's 48rem visual breakpoint. */
+.edron-sim > .hedron-sim__stage {
+  container-type: inline-size;
+}
+
+/* MkDocs Material uses a 20px document root for its typography scale. Edron
+ * is authored against the browser's 16px root, so scale only the embedded
+ * island back to Edron's native coordinate system. */
+@supports (zoom: 1) {
+  .edron-sim {
+    zoom: 0.8;
+  }
+}
+
+@container (max-width: 48rem) {
+  .edron-sim .hedron-grid[data-hedron-columns="2"],
+  .edron-sim .hedron-grid[data-hedron-columns="3"],
+  .edron-sim .hedron-grid[data-hedron-columns="4"],
+  .edron-sim .hedron-grid[data-hedron-columns="5"],
+  .edron-sim .hedron-grid[data-hedron-columns="6"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .edron-sim .hedron-sidebar {
+    position: static;
+  }
+}
+
 .hedron-sim-card {
   background: var(--hs-raised);
   border: 1px solid var(--hs-line);
@@ -126,10 +263,10 @@
 }
 
 .hedron-sim-btn,
-.hedron-sim button[hx-get],
-.hedron-sim button[hx-post],
-.hedron-sim button[hx-delete],
-.hedron-sim button[type="submit"] {
+.hedron-sim:not(.edron-sim) button[hx-get],
+.hedron-sim:not(.edron-sim) button[hx-post],
+.hedron-sim:not(.edron-sim) button[hx-delete],
+.hedron-sim:not(.edron-sim) button[type="submit"] {
   background: var(--hs-raised);
   border: 1px solid var(--hs-line);
   border-radius: 0.55rem;
@@ -143,10 +280,10 @@
 }
 
 .hedron-sim-btn:hover,
-.hedron-sim button[hx-get]:hover,
-.hedron-sim button[hx-post]:hover,
-.hedron-sim button[hx-delete]:hover,
-.hedron-sim button[type="submit"]:hover {
+.hedron-sim:not(.edron-sim) button[hx-get]:hover,
+.hedron-sim:not(.edron-sim) button[hx-post]:hover,
+.hedron-sim:not(.edron-sim) button[hx-delete]:hover,
+.hedron-sim:not(.edron-sim) button[type="submit"]:hover {
   border-color: var(--hs-accent);
 }
 
@@ -229,21 +366,21 @@
   font-size: 0.78rem;
 }
 
-.hedron-sim form {
+.hedron-sim:not(.edron-sim) form {
   display: grid;
   gap: 0.65rem;
   margin: 0 0 0.75rem;
   max-width: 28rem;
 }
 
-.hedron-sim label {
+.hedron-sim:not(.edron-sim) label {
   display: grid;
   font-size: 0.85rem;
   font-weight: 650;
   gap: 0.3rem;
 }
 
-.hedron-sim input {
+.hedron-sim:not(.edron-sim) input {
   background: var(--hs-panel);
   border: 1px solid var(--hs-line);
   border-radius: 0.5rem;
@@ -271,13 +408,13 @@
 }
 
 /* Hedron component chrome rendered inside sims */
-.hedron-sim .hedron-app-shell {
+.hedron-sim:not(.edron-sim) .hedron-app-shell {
   display: grid;
   gap: 0.85rem;
   grid-template-columns: minmax(7rem, 9.5rem) 1fr;
 }
 
-.hedron-sim .hedron-app-shell-nav {
+.hedron-sim:not(.edron-sim) .hedron-app-shell-nav {
   background: var(--hs-raised);
   border: 1px solid var(--hs-line);
   border-radius: 0.65rem;
@@ -286,34 +423,34 @@
   padding: 0.55rem;
 }
 
-.hedron-sim .hedron-app-shell-nav a {
+.hedron-sim:not(.edron-sim) .hedron-app-shell-nav a {
   border-radius: 0.45rem;
   color: var(--hs-text);
   padding: 0.4rem 0.55rem;
   text-decoration: none;
 }
 
-.hedron-sim .hedron-app-shell-nav a[aria-current="page"] {
+.hedron-sim:not(.edron-sim) .hedron-app-shell-nav a[aria-current="page"] {
   background: var(--hs-accent-soft);
   color: var(--hs-accent);
   font-weight: 750;
 }
 
-.hedron-sim .hedron-main-panel {
+.hedron-sim:not(.edron-sim) .hedron-main-panel {
   background: var(--hs-raised);
   border: 1px solid var(--hs-line);
   border-radius: 0.65rem;
   padding: 0.85rem 1rem;
 }
 
-.hedron-sim .hedron-loading,
-.hedron-sim .hedron-skeleton,
-.hedron-sim .hedron-error,
-.hedron-sim .hedron-toast {
+.hedron-sim:not(.edron-sim) .hedron-loading,
+.hedron-sim:not(.edron-sim) .hedron-skeleton,
+.hedron-sim:not(.edron-sim) .hedron-error,
+.hedron-sim:not(.edron-sim) .hedron-toast {
   color: var(--hs-text);
 }
 
-.hedron-sim .hedron-error {
+.hedron-sim:not(.edron-sim) .hedron-error {
   background: var(--hs-raised);
   border: 1px solid var(--hs-line);
   border-left: 4px solid var(--hs-danger);
@@ -321,7 +458,7 @@
   padding: 0.85rem 1rem;
 }
 
-.hedron-sim .hedron-toast {
+.hedron-sim:not(.edron-sim) .hedron-toast {
   background: var(--hs-raised);
   border: 1px solid var(--hs-line);
   border-radius: 0.55rem;

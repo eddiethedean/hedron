@@ -7,6 +7,7 @@ import io
 import json
 import math
 from collections.abc import Mapping, Sequence
+from typing import Any, cast
 
 from hedron_charts.limits import (
     accessibility_or_raise,
@@ -44,9 +45,11 @@ def _json_safe(value: object) -> object:
     if isinstance(value, float):
         return value if math.isfinite(value) else None
     if isinstance(value, Mapping):
-        return {str(key): _json_safe(item) for key, item in value.items()}
+        mapping = cast(Mapping[object, object], value)
+        return {str(key): _json_safe(item) for key, item in mapping.items()}
     if isinstance(value, (list, tuple)):
-        return [_json_safe(item) for item in value]
+        sequence = cast(Sequence[object], value)
+        return [_json_safe(item) for item in sequence]
     tolist = getattr(value, "tolist", None)
     if callable(tolist):
         try:
@@ -193,7 +196,7 @@ class PlotlyAdapter:
                 fig_dict,
                 separators=(",", ":"),
                 allow_nan=False,
-                cls=PlotlyJSONEncoder,
+                cls=cast(Any, PlotlyJSONEncoder),
             )
         except (ImportError, TypeError, ValueError):
             body = _strict_payload(fig_dict)
@@ -258,9 +261,11 @@ class AltairAdapter:
             raw_spec = to_dict()
             if not isinstance(raw_spec, dict):
                 raise TypeError("Altair adapter expects to_dict() to return a mapping")
-            spec: dict[str, object] = dict(raw_spec)
+            raw_mapping = cast(Mapping[object, object], raw_spec)
+            spec = {str(key): value for key, value in raw_mapping.items()}
         elif isinstance(value, dict):
-            spec = {str(k): v for k, v in value.items()}
+            value_mapping = cast(Mapping[object, object], value)
+            spec = {str(key): item for key, item in value_mapping.items()}
         else:
             raise TypeError("Altair adapter expects a Chart or Vega-Lite dict")
         # Altair emits a remote JSON-schema identifier as metadata. The browser

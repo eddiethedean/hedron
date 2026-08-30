@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable, Mapping
+from collections.abc import Generator, Iterable, Mapping
+from contextlib import contextmanager
+from contextvars import ContextVar
 from dataclasses import dataclass, field, replace
-from typing import Any, TypedDict, cast
+from typing import TypedDict
 
 from hedron_core.diagnostics import error
 from hedron_core.element_form import validate_form_contract
@@ -14,7 +16,7 @@ from hedron_core.registry.addressable import AddressableMeta
 from hedron_core.registry.application_style import ApplicationStyleMeta
 from hedron_core.registry.asset import AssetMeta
 from hedron_core.registry.browser_module import BrowserModuleMeta
-from hedron_core.registry.component import _COMPONENT_UPDATE_KEYS, ComponentMeta
+from hedron_core.registry.component import COMPONENT_UPDATE_KEYS, ComponentMeta
 from hedron_core.registry.element import ElementDefinitionMeta
 from hedron_core.registry.route import RouteKind, RouteMeta
 from hedron_core.registry.theme import ThemeMeta
@@ -24,11 +26,14 @@ __all__ = [
     "RegistryBuilder",
     "RegistryBuilderSnapshot",
     "active_builder",
+    "bind_compatibility_builder",
+    "fork_registry_builder",
     "get_registry",
     "reset_registry_for_tests",
     "restore_registry_builder",
     "seal_registry",
     "snapshot_registry_builder",
+    "use_registry_builder",
 ]
 
 
@@ -45,16 +50,22 @@ class RegistryBuilderSnapshot(TypedDict):
     application_styles: dict[str, ApplicationStyleMeta]
 
 
-@dataclass
+@dataclass(slots=True)
 class RegistryBuilder:
-    _components: dict[str, ComponentMeta] = field(default_factory=dict)
-    _addressables: dict[str, AddressableMeta] = field(default_factory=dict)
-    _routes: dict[str, RouteMeta] = field(default_factory=dict)
-    _themes: dict[str, ThemeMeta] = field(default_factory=dict)
-    _assets: dict[str, AssetMeta] = field(default_factory=dict)
-    _browser_modules: dict[str, BrowserModuleMeta] = field(default_factory=dict)
-    _element_definitions: dict[str, ElementDefinitionMeta] = field(default_factory=dict)
-    _application_styles: dict[str, ApplicationStyleMeta] = field(default_factory=dict)
+    _components: dict[str, ComponentMeta] = field(default_factory=dict[str, ComponentMeta])
+    _addressables: dict[str, AddressableMeta] = field(default_factory=dict[str, AddressableMeta])
+    _routes: dict[str, RouteMeta] = field(default_factory=dict[str, RouteMeta])
+    _themes: dict[str, ThemeMeta] = field(default_factory=dict[str, ThemeMeta])
+    _assets: dict[str, AssetMeta] = field(default_factory=dict[str, AssetMeta])
+    _browser_modules: dict[str, BrowserModuleMeta] = field(
+        default_factory=dict[str, BrowserModuleMeta]
+    )
+    _element_definitions: dict[str, ElementDefinitionMeta] = field(
+        default_factory=dict[str, ElementDefinitionMeta]
+    )
+    _application_styles: dict[str, ApplicationStyleMeta] = field(
+        default_factory=dict[str, ApplicationStyleMeta]
+    )
     _sealed: bool = False
 
     def register(self, meta: ComponentMeta) -> None:
@@ -231,11 +242,71 @@ class RegistryBuilder:
                 explanation=f"Component {logical_id!r} is not registered.",
                 remediation="Register the component before updating metadata.",
             )
-        unknown = set(updates) - _COMPONENT_UPDATE_KEYS
+        unknown = set(updates) - COMPONENT_UPDATE_KEYS
         if unknown:
             raise TypeError(f"Unknown ComponentMeta fields: {sorted(unknown)}")
-        # kwargs mirror ComponentMeta fields; cast for dataclasses.replace typing.
-        self._components[key] = replace(existing, **cast(dict[str, Any], updates))
+        self._components[key] = replace(existing, **updates)
+
+    @property
+    def is_sealed(self) -> bool:
+        """Return whether this builder no longer accepts registrations."""
+        return self._sealed
+
+    def snapshot(self) -> RegistryBuilderSnapshot:
+        """Return independent copies of every mutable registry collection."""
+        return {
+            "components": dict(self._components),
+            "addressables": dict(self._addressables),
+            "routes": dict(self._routes),
+            "themes": dict(self._themes),
+            "assets": dict(self._assets),
+            "browser_modules": dict(self._browser_modules),
+            "element_definitions": dict(self._element_definitions),
+            "application_styles": dict(self._application_styles),
+        }
+
+    def restore(self, snapshot: RegistryBuilderSnapshot) -> None:
+        """Restore a previously captured snapshot while the builder is open."""
+        self._ensure_open()
+        self._components = dict(snapshot["components"])
+        self._addressables = dict(snapshot["addressables"])
+        self._routes = dict(snapshot["routes"])
+        self._themes = dict(snapshot["themes"])
+        self._assets = dict(snapshot["assets"])
+        self._browser_modules = dict(snapshot["browser_modules"])
+        self._element_definitions = dict(snapshot.get("element_definitions", {}))
+        self._application_styles = dict(snapshot.get("application_styles", {}))
+
+    def registry_snapshot(self) -> Registry:
+        """Build an immutable registry view without sealing the builder."""
+        return Registry(
+            dict(self._components),
+            dict(self._addressables),
+            dict(self._routes),
+            dict(self._themes),
+            dict(self._assets),
+            dict(self._browser_modules),
+            dict(self._element_definitions),
+            dict(self._application_styles),
+        )
+
+    def fork(self) -> RegistryBuilder:
+        """Create an open builder seeded from this builder's current snapshot.
+
+        Application runtimes use this to inherit package registrations without
+        sharing mutable route/plugin state with another application.
+        """
+        snapshot = self.snapshot()
+        return RegistryBuilder(
+            _components=dict(snapshot["components"]),
+            _addressables=dict(snapshot["addressables"]),
+            _routes=dict(snapshot["routes"]),
+            _themes=dict(snapshot["themes"]),
+            _assets=dict(snapshot["assets"]),
+            _browser_modules=dict(snapshot["browser_modules"]),
+            _element_definitions=dict(snapshot["element_definitions"]),
+            _application_styles=dict(snapshot["application_styles"]),
+        )
 
     def seal(self) -> Registry:
         self._sealed = True
@@ -263,13 +334,19 @@ class RegistryBuilder:
 @dataclass(frozen=True, slots=True)
 class Registry:
     _components: Mapping[str, ComponentMeta]
-    _addressables: Mapping[str, AddressableMeta] = field(default_factory=dict)
-    _routes: Mapping[str, RouteMeta] = field(default_factory=dict)
-    _themes: Mapping[str, ThemeMeta] = field(default_factory=dict)
-    _assets: Mapping[str, AssetMeta] = field(default_factory=dict)
-    _browser_modules: Mapping[str, BrowserModuleMeta] = field(default_factory=dict)
-    _element_definitions: Mapping[str, ElementDefinitionMeta] = field(default_factory=dict)
-    _application_styles: Mapping[str, ApplicationStyleMeta] = field(default_factory=dict)
+    _addressables: Mapping[str, AddressableMeta] = field(default_factory=dict[str, AddressableMeta])
+    _routes: Mapping[str, RouteMeta] = field(default_factory=dict[str, RouteMeta])
+    _themes: Mapping[str, ThemeMeta] = field(default_factory=dict[str, ThemeMeta])
+    _assets: Mapping[str, AssetMeta] = field(default_factory=dict[str, AssetMeta])
+    _browser_modules: Mapping[str, BrowserModuleMeta] = field(
+        default_factory=dict[str, BrowserModuleMeta]
+    )
+    _element_definitions: Mapping[str, ElementDefinitionMeta] = field(
+        default_factory=dict[str, ElementDefinitionMeta]
+    )
+    _application_styles: Mapping[str, ApplicationStyleMeta] = field(
+        default_factory=dict[str, ApplicationStyleMeta]
+    )
 
     def get(self, logical_id: str) -> ComponentMeta | None:
         return self._components.get(registry_resource_id("component", logical_id))
@@ -319,16 +396,48 @@ class Registry:
 
 _builder = RegistryBuilder()
 _active: Registry | None = None
+_compatibility_builder: RegistryBuilder | None = None
+_scoped_builder: ContextVar[RegistryBuilder | None] = ContextVar(
+    "hedron_registry_builder", default=None
+)
 
 
 def active_builder() -> RegistryBuilder:
-    return _builder
+    return _scoped_builder.get() or _compatibility_builder or _builder
+
+
+def bind_compatibility_builder(builder: RegistryBuilder | None) -> None:
+    """Bind the legacy no-context helpers to the most recently attached app.
+
+    This is intentionally a migration bridge. New code should use
+    ``use_registry_builder`` or an application runtime explicitly.
+    """
+    global _compatibility_builder
+    _compatibility_builder = builder
+
+
+def fork_registry_builder() -> RegistryBuilder:
+    """Return an open application builder seeded from the process template."""
+    return _builder.fork()
+
+
+@contextmanager
+def use_registry_builder(builder: RegistryBuilder) -> Generator[None, None, None]:
+    """Temporarily make ``builder`` the active registration target."""
+    token = _scoped_builder.set(builder)
+    try:
+        yield
+    finally:
+        _scoped_builder.reset(token)
 
 
 def seal_registry() -> Registry:
     """Seal the builder. Idempotent: returns the existing snapshot if already sealed."""
+    scoped = _scoped_builder.get() or _compatibility_builder
+    if scoped is not None:
+        return scoped.seal()
     global _active
-    if _builder._sealed and _active is not None:
+    if _builder.is_sealed and _active is not None:
         return _active
     _active = _builder.seal()
     return _active
@@ -336,59 +445,31 @@ def seal_registry() -> Registry:
 
 def get_registry() -> Registry:
     """Return the sealed registry, or an unsealed snapshot of current registrations."""
+    scoped = _scoped_builder.get() or _compatibility_builder
+    if scoped is not None:
+        return scoped.registry_snapshot()
     global _active
     if _active is not None:
         return _active
-    return Registry(
-        dict(_builder._components),
-        dict(_builder._addressables),
-        dict(_builder._routes),
-        dict(_builder._themes),
-        dict(_builder._assets),
-        dict(_builder._browser_modules),
-        dict(_builder._element_definitions),
-        dict(_builder._application_styles),
-    )
+    return _builder.registry_snapshot()
 
 
 def snapshot_registry_builder() -> RegistryBuilderSnapshot:
     """Capture mutable builder maps for plugin-load rollback."""
-    return {
-        "components": dict(_builder._components),
-        "addressables": dict(_builder._addressables),
-        "routes": dict(_builder._routes),
-        "themes": dict(_builder._themes),
-        "assets": dict(_builder._assets),
-        "browser_modules": dict(_builder._browser_modules),
-        "element_definitions": dict(_builder._element_definitions),
-        "application_styles": dict(_builder._application_styles),
-    }
+    return active_builder().snapshot()
 
 
 def restore_registry_builder(snapshot: RegistryBuilderSnapshot) -> None:
     """Restore builder maps from ``snapshot_registry_builder``."""
-    if _builder._sealed:
-        raise error(
-            "HED-RENDER-0006",
-            title="Registry is sealed",
-            explanation="Cannot restore builder state on a sealed registry.",
-            remediation="Roll back plugins before seal_registry().",
-        )
-    _builder._components = dict(snapshot["components"])
-    _builder._addressables = dict(snapshot["addressables"])
-    _builder._routes = dict(snapshot["routes"])
-    _builder._themes = dict(snapshot["themes"])
-    _builder._assets = dict(snapshot["assets"])
-    _builder._browser_modules = dict(snapshot["browser_modules"])
-    _builder._element_definitions = dict(snapshot.get("element_definitions", {}))
-    _builder._application_styles = dict(snapshot.get("application_styles", {}))
+    active_builder().restore(snapshot)
 
 
 def reset_registry_for_tests() -> None:
     """Test helper: replace the module-level builder/registry."""
-    global _builder, _active
+    global _builder, _active, _compatibility_builder
     _builder = RegistryBuilder()
     _active = None
+    _compatibility_builder = None
     from hedron_core.updates import reset_handles_for_tests
 
     reset_handles_for_tests()

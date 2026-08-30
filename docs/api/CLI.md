@@ -9,7 +9,7 @@ status: shipped
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Accepted · **Shipped in 0.4**
+**Status:** Stable 1.0 command surface; advanced commands retain their documented levels
 
 Entry points: console script `hedron` → `hedron.cli:main`, and
 **`python -m hedron`** (same CLI; PATH-independent).
@@ -34,9 +34,9 @@ Scaffold an application.
 hedron new my-app
 hedron new my-app --path ./apps/my-app --force
 mkdir my-app && cd my-app
-python3.11 -m venv .venv
+python3.10 -m venv .venv
 source .venv/bin/activate
-python3.11 -m pip install "hedron>=0.66.2,<0.67"
+python3.10 -m pip install "hedron>=0.67.0,<0.68"
 hedron new my-app --path . --force
 hedron new my-flask-app --flask
 hedron new my-django-app --django
@@ -305,7 +305,8 @@ always falls back to the reference Python serializer.
 ### `run`
 
 Run an ASGI application with Uvicorn. When Posit Workbench is explicitly selected or
-`RS_SERVER_URL` is present, delegate pre-import mount discovery to `hedron-workbench`.
+`RS_SERVER_URL` is present, delegate pre-import mount discovery to `hedron-posit` when
+the `hedron[posit]` extra is installed.
 
 ```bash
 hedron run app:app --reload
@@ -328,7 +329,7 @@ hedron run app:app --workbench --workbench-mode on
 | `--topology` | `auto`, `local`, `launcher-local`, `launcher-kubernetes`, `launcher-slurm`, or `reverse-proxy` |
 
 The target must be `module:attribute` (or supplied through global `--app`). A detected
-Workbench runtime without `hedron[workbench]` exits `2` with an install hint.
+Workbench runtime without `hedron[posit]` exits `2` with an install hint.
 
 ### `migrate api`
 
@@ -364,7 +365,7 @@ hedron migrate streamlit streamlit_app.py --out ./migrated-app --python-version 
 | `--project-root` | Boundary for local-module discovery |
 | `--analyze-only` | Report without generating files |
 | `--format` | `text`, `json`, or `sarif` |
-| `--python-version` | Parser grammar: Python 3.11–3.14 |
+| `--python-version` | Parser grammar: Python 3.10–3.14 |
 | `--fail-on` | Return `2` when findings reach `information`, `warning`, or `error` (default) |
 
 Exit `1` covers invalid input or generation failure; exit `2` means review findings met the

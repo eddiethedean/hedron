@@ -31,6 +31,10 @@ class JobScopeProvider(Protocol):
     def __call__(self, *args: object, **kwargs: object) -> JobScope: ...
 
 
+def _runtime_object(value: object) -> object:
+    return value
+
+
 def evaluate_job_scope(
     provider: JobScopeProvider | Callable[..., JobScope], **kwargs: object
 ) -> JobScope:
@@ -47,11 +51,12 @@ def evaluate_job_scope(
             explanation=f"JobScopeProvider failed: {exc}",
             remediation="Ensure the scope provider returns JobScope for every request.",
         ) from exc
-    if not isinstance(scope, JobScope):
+    scope_value = _runtime_object(scope)
+    if not isinstance(scope_value, JobScope):
         raise error(
             HED_TASKFLOW_0001,
             title="Invalid job scope",
             explanation=f"JobScopeProvider returned {type(scope).__name__}, not JobScope.",
             remediation="Return an immutable JobScope(auth_subject=..., tenant_id=...).",
         )
-    return scope
+    return scope_value

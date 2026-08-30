@@ -49,7 +49,7 @@ def home(request: Request) -> Page:
     )
 
 
-@app.fragment("/jobs/{job_id}", region=status)
+@app.view("/jobs/{job_id}", fragment_regions=(status,))
 def job_status(request: Request, job_id: str):
     job = JOBS.get(job_id)
     if job is None or job["tenant_id"] != current_tenant(request):

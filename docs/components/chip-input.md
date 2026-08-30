@@ -58,7 +58,7 @@ Keep `ChipInput` at the smallest semantic boundary. Fragment routes should retur
 the replaced region and preserve stable target IDs across success, validation, empty,
 loading, and error responses.
 
-`ChipInput` participates in interaction markup. Pair it with an explicit `@action` / `@component` POST (and CSRF) when the control mutates state.
+`ChipInput` participates in interaction markup. Pair it with an explicit `@app.action` POST (and CSRF) when the control mutates state.
 
 ## Accessibility
 

@@ -7,7 +7,8 @@ status: published
 !!! tip "Verified on the 0.25 train"
 
     Canonical production archetype packet (`ARCHETYPE-025` … `PKG-025`) is **Verified**.
-    Pin `hedron>=0.66.2,<0.67`.
+    For the public fallback, pin `hedron>=0.67.0,<0.68`; use `uv sync` for the in-tree
+    1.0.0 candidate.
 
     **Ship today:** [Ship a Hedron app](../guides/ship.md) ·
     [What’s ready](../guides/whats-ready.md) ·

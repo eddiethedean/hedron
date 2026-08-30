@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import subprocess
-import tomllib
 from pathlib import Path
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 GATE = ROOT / "docs" / "acceptance" / "release-gate-0.43.toml"
@@ -138,4 +139,3 @@ def check_gate(gate_id: str) -> int:
             return code
     print(f"ok: {gate_id}")
     return 0
-

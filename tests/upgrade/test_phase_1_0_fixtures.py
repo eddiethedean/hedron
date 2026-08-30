@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import importlib.util
+import os
+import subprocess
+import sys
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -15,7 +18,7 @@ ROOT = Path(__file__).parent / "phase_1_0"
 def test_canonical_fixture_has_no_transitional_findings() -> None:
     report = scan_api(ROOT / "canonical")
     assert report.findings == ()
-    assert report.files_seen == 3  # app.py, config.toml, and README.md
+    assert report.files_seen == 4  # app.py, config.toml, status.hdj, and README.md
 
 
 def test_transitional_fixture_corpus_covers_warning_floor() -> None:
@@ -28,13 +31,23 @@ def test_transitional_fixture_corpus_covers_warning_floor() -> None:
         "app_refreshable.py": "app.refreshable",
         "app_command.py": "app.command",
         "app_form_command.py": "app.form_command",
+        "flask_component.py": "flask.component",
+        "blueprint_component.py": "blueprint.component",
+        "blueprint_include_feature.py": "blueprint.include_feature",
     }
     observed = {}
     for filename, _old_path in expected.items():
         findings = scan_api(ROOT / "transitional" / filename).findings
         assert findings, filename
         observed[filename] = findings[0].old_path
-        assert findings[0].fixture == "tests/upgrade/shared.py"
+        if filename in {
+            "flask_component.py",
+            "blueprint_component.py",
+            "blueprint_include_feature.py",
+        }:
+            assert findings[0].fixture == f"tests/upgrade/phase_1_0/transitional/{filename}"
+        else:
+            assert findings[0].fixture == "tests/upgrade/shared.py"
         assert findings[0].removal_version == "1.0"
     assert observed == expected
 
@@ -44,6 +57,19 @@ def test_negative_dynamic_fixture_is_manual_unknown() -> None:
     assert len(findings) == 1
     assert findings[0].confidence == "unknown"
     assert findings[0].automation_status == "manual-review"
+
+
+def test_negative_interaction_fixture_rejects_cross_lane_fields() -> None:
+    path = ROOT / "negative" / "invalid_interaction.py"
+    spec = importlib.util.spec_from_file_location("hedron_phase_1_invalid_interaction", path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    try:
+        spec.loader.exec_module(module)
+    except ValueError as exc:
+        assert "exactly its declared effect lanes" in str(exc)
+    else:
+        raise AssertionError("invalid interaction fixture unexpectedly executed")
 
 
 def test_canonical_fixture_imports_and_serves_page() -> None:
@@ -56,3 +82,79 @@ def test_canonical_fixture_imports_and_serves_page() -> None:
     assert response.status_code == 200
     assert "ready" in response.text
     assert 'data-hedron-interaction="request"' in response.text
+    assert 'data-hedron-interaction="local"' in response.text
+    assert 'data-hedron-interaction="combined"' in response.text
+
+
+def test_canonical_fixture_type_checks_without_errors() -> None:
+    env = {
+        **os.environ,
+        "PYTHONPATH": os.pathsep.join(
+            (
+                str(ROOT.parent.parent.parent / "packages/hedron/src"),
+                str(ROOT.parent.parent.parent / "packages/hedron-core/src"),
+                str(ROOT.parent.parent.parent / "packages/hedron-jinja/src"),
+            )
+        ),
+    }
+    result = subprocess.run(
+        [sys.executable, "-m", "pyright", str(ROOT / "canonical/app.py")],
+        cwd=ROOT.parent.parent.parent,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_canonical_outcome_handlers_lower_expected_roles() -> None:
+    path = ROOT / "canonical" / "app.py"
+    spec = importlib.util.spec_from_file_location("hedron_phase_1_outcomes", path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    client = TestClient(module.app)
+    client.get("/")
+    token = client.cookies.get("hedron_csrf", "")
+    headers = {"HX-Request": "true", "X-CSRF-Token": token}
+    expected = {
+        "no-content": 204,
+        "refresh": 200,
+        "patch": 200,
+        "redirect": 200,
+        "job": 202,
+        "validation": 422,
+        "conflict": 409,
+        "download": 200,
+    }
+    for name, status in expected.items():
+        response = client.post(f"/outcomes/{name}", headers=headers)
+        assert response.status_code == status, name
+    assert client.post("/ping", headers=headers).status_code == 200
+    assert client.post("/outcomes/patch", headers=headers).json()["role"] == "patch"
+
+
+def test_canonical_hdj_fixture_parses_without_legacy_forms() -> None:
+    from hedron_jinja.source import parse_hdj_source
+
+    source = (ROOT / "canonical" / "status.hdj").read_text(encoding="utf-8")
+    parsed = parse_hdj_source("status.hdj", source)
+    assert parsed.declaration.format_version == 1
+    assert parsed.declaration.kind.value == "fragment"
+
+
+def test_flask_adapter_exposes_only_canonical_route_facade() -> None:
+    """Adapter applications must use the same page/view/action/include vocabulary."""
+    from hedron_flask import HedronBlueprint, HedronFlask
+
+    blueprint = HedronBlueprint("phase_1_flask", __name__)
+    assert callable(blueprint.page)
+    assert callable(blueprint.view)
+    assert callable(blueprint.action)
+    assert callable(blueprint.include)
+    for legacy in ("component", "include_feature"):
+        assert not hasattr(blueprint, legacy)
+    extension = HedronFlask()
+    assert callable(extension.include)
+    assert not hasattr(extension, "include_feature")

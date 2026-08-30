@@ -48,6 +48,33 @@ function normalizeTabs(root) {
   }
 }
 
+function setNavCollapsed(shell, collapsed, persist = true) {
+  if (!(shell instanceof HTMLElement)) return;
+  shell.dataset.hedronNavCollapsed = collapsed ? "true" : "false";
+  const toggle = shell.querySelector("[data-hedron-nav-toggle]");
+  if (toggle instanceof HTMLElement) {
+    toggle.setAttribute("aria-expanded", collapsed ? "false" : "true");
+    toggle.textContent = collapsed ? "Expand navigation" : "Collapse navigation";
+  }
+  if (persist) {
+    const key = shell.querySelector("[data-hedron-nav-preference]")?.getAttribute("data-hedron-nav-preference");
+    try { if (key) localStorage.setItem(key, collapsed ? "true" : "false"); } catch (_) { /* storage may be disabled */ }
+  }
+}
+
+function normalizeNavCollapse(root) {
+  const shells = [];
+  if (root instanceof Element && root.matches(".hedron-app-shell[data-hedron-nav-collapse='user']")) shells.push(root);
+  root.querySelectorAll?.(".hedron-app-shell[data-hedron-nav-collapse='user']").forEach((shell) => shells.push(shell));
+  for (const shell of shells) {
+    const key = shell.querySelector("[data-hedron-nav-preference]")?.getAttribute("data-hedron-nav-preference");
+    try {
+      const saved = key ? localStorage.getItem(key) : null;
+      if (saved === "true" || saved === "false") setNavCollapsed(shell, saved === "true", false);
+    } catch (_) { /* storage may be disabled */ }
+  }
+}
+
 function dialogFromTrigger(trigger) {
   const selector = trigger.getAttribute("data-hedron-dialog-open");
   if (!selector || !/^#[A-Za-z][\w:.-]*$/.test(selector)) return null;
@@ -69,6 +96,7 @@ document.addEventListener("click", (event) => {
     if (dialog) {
       if (dialog.dataset.modal === "false") dialog.show();
       else dialog.showModal();
+      dialog.dispatchEvent(new CustomEvent("hedron-dialog-open", { bubbles: true }));
     }
     return;
   }
@@ -76,6 +104,15 @@ document.addEventListener("click", (event) => {
   const dismiss = event.target.closest("[data-hedron-toast-dismiss]");
   if (dismiss instanceof HTMLElement) {
     dismiss.closest("[data-hedron-toast]")?.remove();
+    return;
+  }
+
+  const navToggle = event.target.closest("[data-hedron-nav-toggle]");
+  if (navToggle instanceof HTMLElement) {
+    const shell = navToggle.closest(".hedron-app-shell");
+    if (shell instanceof HTMLElement) {
+      setNavCollapsed(shell, shell.dataset.hedronNavCollapsed !== "true");
+    }
   }
 });
 
@@ -98,19 +135,27 @@ document.addEventListener("keydown", (event) => {
   else return;
 
   event.preventDefault();
-  activateTab(controls[next]);
+  controls[next].focus();
+  controls[next].click();
 });
 
-document.body.addEventListener("htmx:afterSwap", (event) => {
+document.addEventListener("htmx:afterSwap", (event) => {
   normalizeTabs(event.target);
+  normalizeNavCollapse(event.target);
   upgradeOpenModalDialogs(event.target);
   const source = event.detail?.requestConfig?.elt;
   const load = source instanceof Element ? source.getAttribute("data-hedron-after-load") : null;
-  if (load && typeof window.htmx?.ajax === "function") {
-    window.htmx.ajax("GET", load, { source, swap: "none" });
+  if (load && source instanceof Element) {
+    // Compatibility notification only.  Hedron no longer starts a second
+    // request from this lifecycle listener; applications should declare a
+    // typed hx-trigger/hx-get companion for follow-up work.
+    source.dispatchEvent(
+      new CustomEvent("hedron:after-load", { bubbles: true, detail: { url: load } }),
+    );
   }
 });
 normalizeTabs(document);
+normalizeNavCollapse(document);
 upgradeOpenModalDialogs(document);
 
 function upgradeOpenModalDialogs(root) {
@@ -159,7 +204,7 @@ function applyErrorTemplate(elt) {
   host.replaceChildren(tpl.content.cloneNode(true));
 }
 
-document.body.addEventListener("htmx:afterSwap", (event) => {
+document.addEventListener("htmx:afterSwap", (event) => {
   const swapped = event.detail?.elt;
   if (swapped instanceof HTMLElement && swapped.matches("[data-hedron-toast]")) {
     enqueueToast(swapped);
@@ -188,25 +233,39 @@ document.addEventListener("click", (event) => {
   toggle.textContent = show ? "Hide password" : "Show password";
 });
 
+if (!window.__hedronHtmxLifecycleInstalled) {
+  window.__hedronHtmxLifecycleInstalled = true;
 const busyCounts = new WeakMap();
 const actionGenerations = new WeakMap();
+const activeRequests = new WeakMap();
+const requestsByMarker = new WeakMap();
+const markersByHost = new WeakMap();
 
 function busyMarked(elt) {
   if (!(elt instanceof Element)) return null;
   return elt.closest("[data-hedron-busy]");
 }
 
-function setBusy(marked, busy) {
-  if (!(marked instanceof HTMLElement)) return;
-  const next = (busyCounts.get(marked) || 0) + (busy ? 1 : -1);
+function busyHost(marked) {
+  return marked.getAttribute("data-hedron-busy") === "document"
+    ? document.documentElement
+    : marked;
+}
+
+function setBusyHost(host, busy) {
+  const next = (busyCounts.get(host) || 0) + (busy ? 1 : -1);
   const count = Math.max(0, next);
-  busyCounts.set(marked, count);
+  busyCounts.set(host, count);
   const on = count > 0;
-  const host =
-    marked.getAttribute("data-hedron-busy") === "document"
-      ? document.documentElement
-      : marked;
   host.setAttribute("aria-busy", on ? "true" : "false");
+  const markers = markersByHost.get(host);
+  if (markers) {
+    for (const marked of markers) updateBusyIndicator(marked, on);
+  }
+  return on;
+}
+
+function updateBusyIndicator(marked, on) {
   const indicatorSel = marked.getAttribute("data-hedron-busy-indicator");
   if (indicatorSel && /^#[A-Za-z][\w:.-]*$/.test(indicatorSel)) {
     const indicator = document.querySelector(indicatorSel);
@@ -214,47 +273,105 @@ function setBusy(marked, busy) {
   }
 }
 
-function setActionPhase(elt, phase) {
-  const marked = busyMarked(elt);
+function registerBusyMarker(marked, host) {
+  const markers = markersByHost.get(host) || new Set();
+  markers.add(marked);
+  markersByHost.set(host, markers);
+}
+
+function unregisterBusyMarker(marked, host) {
+  const markers = markersByHost.get(host);
+  if (!markers) return;
+  markers.delete(marked);
+  if (markers.size === 0) markersByHost.delete(host);
+}
+
+function setActionPhase(marked, phase) {
   if (!(marked instanceof HTMLElement)) return;
-  if (phase === "pending") {
-    const generation = (actionGenerations.get(marked) || 0) + 1;
-    actionGenerations.set(marked, generation);
-    marked.setAttribute("data-hedron-action-generation", String(generation));
-  }
   marked.setAttribute("data-hedron-action-phase", phase);
 }
 
-document.body.addEventListener("htmx:beforeRequest", (event) => {
+function requestKey(detail) {
+  return detail?.xhr && typeof detail.xhr === "object" ? detail.xhr : null;
+}
+
+function finishRecord(record, phase, { error = false } = {}) {
+  if (!record || record.finalized) return;
+  record.finalized = true;
+  activeRequests.delete(record.key);
+  const records = requestsByMarker.get(record.marked);
+  if (records) {
+    records.delete(record);
+    if (records.size === 0) {
+      requestsByMarker.delete(record.marked);
+    }
+  }
+  setBusyHost(record.host, false);
+  if (!records || records.size === 0) unregisterBusyMarker(record.marked, record.host);
+  if (actionGenerations.get(record.marked) === record.generation) {
+    setActionPhase(record.marked, phase);
+    if (error) applyErrorTemplate(record.elt);
+  }
+}
+
+function finishRequest(event, phase, { error = false } = {}) {
+  const key = requestKey(event.detail);
+  const record = key ? activeRequests.get(key) : null;
+  finishRecord(record, phase, { error });
+}
+
+document.addEventListener("htmx:beforeRequest", (event) => {
   const marked = busyMarked(event.detail?.elt);
-  if (marked) {
-    setActionPhase(event.detail?.elt, "pending");
-    setBusy(marked, true);
+  const key = requestKey(event.detail);
+  if (!(marked instanceof HTMLElement) || !key) return;
+  const generation = (actionGenerations.get(marked) || 0) + 1;
+  actionGenerations.set(marked, generation);
+  marked.setAttribute("data-hedron-action-generation", String(generation));
+  setActionPhase(marked, "pending");
+  const record = {
+    key,
+    elt: event.detail?.elt,
+    marked,
+    host: busyHost(marked),
+    generation,
+    finalized: false,
+  };
+  activeRequests.set(key, record);
+  const records = requestsByMarker.get(marked) || new Set();
+  records.add(record);
+  requestsByMarker.set(marked, records);
+  registerBusyMarker(marked, record.host);
+  setBusyHost(record.host, true);
+});
+document.addEventListener("htmx:afterRequest", (event) => {
+  const status = event.detail?.xhr?.status || 0;
+  finishRequest(event, status >= 200 && status < 400 ? "success" : "error", {
+    error: !(status >= 200 && status < 400),
+  });
+});
+document.addEventListener("htmx:responseError", (event) => {
+  // finishRequest owns the exactly-once setBusy(false) cleanup.
+  finishRequest(event, "error", { error: true });
+});
+document.addEventListener("htmx:sendError", (event) => {
+  // finishRequest owns the exactly-once setBusy(false) cleanup.
+  finishRequest(event, "error", { error: true });
+});
+document.addEventListener("htmx:sendAbort", (event) => finishRequest(event, "cancelled"));
+document.addEventListener("htmx:timeout", (event) => finishRequest(event, "error", { error: true }));
+document.addEventListener("htmx:beforeCleanupElement", (event) => {
+  const cleaned = event.detail?.elt;
+  const marked = cleaned instanceof Element ? cleaned.closest("[data-hedron-busy]") : null;
+  const records = marked instanceof HTMLElement ? requestsByMarker.get(marked) : null;
+  if (!records) return;
+  for (const record of [...records]) {
+    if (cleaned === record.elt || (cleaned instanceof Element && cleaned.contains(record.elt))) {
+      finishRecord(record, "cancelled");
+    }
   }
 });
-document.body.addEventListener("htmx:afterRequest", (event) => {
-  const marked = busyMarked(event.detail?.elt);
-  if (marked) {
-    const status = event.detail?.xhr?.status || 0;
-    setActionPhase(event.detail?.elt, status >= 200 && status < 400 ? "success" : "error");
-    setBusy(marked, false);
-  }
-});
-document.body.addEventListener("htmx:responseError", (event) => {
-  setActionPhase(event.detail?.elt, "error");
-  applyErrorTemplate(event.detail?.elt);
-  const marked = busyMarked(event.detail?.elt);
-  if (marked) setBusy(marked, false);
-});
-document.body.addEventListener("htmx:sendError", (event) => {
-  setActionPhase(event.detail?.elt, "error");
-  applyErrorTemplate(event.detail?.elt);
-  const marked = busyMarked(event.detail?.elt);
-  if (marked) setBusy(marked, false);
-});
-document.body.addEventListener("htmx:sendAbort", (event) => setActionPhase(event.detail?.elt, "cancelled"));
-document.body.addEventListener("htmx:timeout", (event) => setActionPhase(event.detail?.elt, "error"));
-document.body.addEventListener("htmx:afterSwap", (event) => {
+}
+document.addEventListener("htmx:afterSwap", (event) => {
   const root = event.target instanceof Element ? event.target : document;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const nodes = [];
@@ -270,4 +387,3 @@ document.body.addEventListener("htmx:afterSwap", (event) => {
     requestAnimationFrame(() => node.classList.add("is-revealed"));
   }
 });
-

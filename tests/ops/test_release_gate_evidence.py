@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import sys
 import tomllib
 from pathlib import Path
@@ -98,8 +99,27 @@ def test_edron_has_an_independent_release_path() -> None:
 
     assert general.count('echo "Skipping Edron; publish it only from edron-v* tags"') == 2
     assert '"edron-v*.*.*"' in edron
-    assert "needs: test" in edron
+    assert "workflow_dispatch:" in edron
+    assert "RELEASE_REF:" in edron
+    assert "fetch-depth: 0" in edron[edron.index("  publish:") :]
+    assert "needs: [test, dependency_bounds, browser]" in edron
+    assert ".venv/bin/python scripts/check_edron_10_release.py" in edron
+    assert "Recover Edron and edron-sim publication" in edron
+    assert "secrets.PYPI_API_TOKEN" in edron
+    assert "--check-url https://pypi.org/simple/" in edron
+    assert "uv sync --no-install-project" in edron
+    assert "uv run --no-sync python" in edron
+    assert "Preflight published Stable dependencies from PyPI" in edron
     assert "tests/unit/test_edron_runtime.py" in edron
     assert "tests/unit/test_edron_phase02.py" in edron
     assert "id-token: write" in edron
-    assert "pypa/gh-action-pypi-publish@release/v1" in edron
+    publisher = re.search(r"pypa/gh-action-pypi-publish@([^\s]+)", edron)
+    assert publisher is not None
+    assert re.fullmatch(r"[0-9a-f]{40}", publisher.group(1))
+
+
+def test_v1_branch_has_one_stable_required_ci_context() -> None:
+    workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
+    assert "branches: [main, v1.0]" in workflow
+    assert "name: CI required" in workflow
+    assert "needs:\n      [changes, test, dependency-bounds" in workflow

@@ -4,8 +4,8 @@ Prefer **`DashboardWorkspace`** for validated filters, one request-bound loader,
 render-only panels (phase **0.60**). Phase **0.17** `DashboardBinding` /
 `InteractionGraph` remain available as Advanced linked-interaction primitives.
 
-Capability readiness is **Supported** on the living **0.66.x** train; API compatibility
-remains **`beta`** — pin `hedron>=0.66.2,<0.67` from PyPI (stable release `v0.66.2`).
+Capability readiness is **Supported** in the verified **1.0.0** candidate; API compatibility
+remains **`beta`** — until publication, pin the public fallback `hedron>=0.67.0,<0.68`.
 
 ## Start here
 
@@ -66,10 +66,10 @@ dashboard = DashboardWorkspace(
     load=load_dashboard,
     panels={"summary": summary_panel},
 )
-app.include_feature(dashboard)
+app.include(dashboard)
 
 
-@app.screen("/", title="Home")
+@app.page("/", title="Home")
 def home():
     return Text("Open /sales for the DashboardWorkspace. Replace loader/auth for production.")
 ```
@@ -167,17 +167,17 @@ checks, authorization, and the action that supplies the rows.
         )
 
 
-    @app.fragment("/rows", region=table)
+    @app.view("/rows", fragment_regions=(table,))
     def all_rows():
         return swap(table_panel())
 
 
-    @app.fragment("/rows/admin", region=table)
+    @app.view("/rows/admin", fragment_regions=(table,))
     def admin_rows():
         return swap(table_panel("admin"))
 
 
-    @app.fragment("/rows/member", region=table)
+    @app.view("/rows/member", fragment_regions=(table,))
     def member_rows():
         return swap(table_panel("member"))
     ```
@@ -212,7 +212,7 @@ graph.register(
 )
 
 
-@app.screen("/", title="Home")
+@app.page("/", title="Home")
 def home():
     order = ", ".join(graph.topological_order())
     return Text(f"Bindings in order: {order}")

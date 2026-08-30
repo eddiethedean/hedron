@@ -1,7 +1,9 @@
 # Runnable examples
 
 Clone the repository to run real Hedron servers. The [simulated UI patterns](gallery.md)
-in these docs are a **browser simulation**—not a live Hedron process.
+in these docs are a **browser simulation**—not a live Hedron process. The showcase pages document
+actual runnable applications; Edron's preview is generated from that same Edron-only source rather
+than maintained as a separate showcase implementation.
 
 Each recipe page below also has a **Try it (simulated)** Demo/Code tab so you can click
 through the interaction before starting uvicorn.
@@ -22,6 +24,8 @@ uv sync
 | [session-auth](session-auth.md) | FastAPI | [Try it](session-auth.md#try-it-simulated) | `uv run uvicorn app:app --app-dir examples/session-auth --reload` |
 | [file-upload](file-upload.md) | FastAPI | [Try it](file-upload.md#try-it-simulated) | `uv run uvicorn app:app --app-dir examples/file-upload --reload` |
 | [jobs-poll](jobs-poll.md) | FastAPI | [Try it](jobs-poll.md#try-it-simulated) | `uv run uvicorn app:app --app-dir examples/jobs-poll --reload` |
+| [showcase](showcase.md) | FastAPI | — | `uv run uvicorn app:app --app-dir examples/showcase --reload` |
+| [edron-showcase](edron-showcase.md) | Edron | [Try it](edron-showcase.md#explore-the-same-app-without-a-server) | `uv run uvicorn app:app --app-dir examples/edron-showcase --reload` |
 | [model-demo-0.18](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18) | FastAPI | — | `uv run uvicorn app:app --app-dir examples/model-demo-0.18 --reload` |
 | [package-workflows](https://github.com/eddiethedean/hedron/tree/main/examples/package-workflows) | FastAPI | — | `uv run uvicorn app:app --app-dir examples/package-workflows --reload` |
 | [live-interaction](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction) | FastAPI | [Live poll](../guides/live-interaction.md#try-it-simulated) | `uv run uvicorn app:app --app-dir examples/live-interaction --reload` |
@@ -29,7 +33,7 @@ uv sync
 | [flask-reference](https://github.com/eddiethedean/hedron/tree/main/examples/flask-reference) | Flask | — | See example README |
 | [django-reference](https://github.com/eddiethedean/hedron/tree/main/examples/django-reference) | Django | — | See example README |
 | [hdj-progressive](https://github.com/eddiethedean/hedron/tree/main/examples/hdj-progressive) | HDJ | — | Prints HTML to stdout (not a web server) |
-| [workbench-reference](https://github.com/eddiethedean/hedron/tree/main/examples/workbench-reference) | FastAPI | — | `hedron-workbench run app_facade:app` from `examples/workbench-reference` |
+| [workbench-reference](https://github.com/eddiethedean/hedron/tree/main/examples/workbench-reference) | FastAPI | — | `hedron-posit run app_facade:app` from `examples/workbench-reference` |
 
 ## Phase evidence (0.15–0.18)
 

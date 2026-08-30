@@ -27,7 +27,7 @@ class RedisJobBackend:
         self._ttl = ttl_seconds
 
     def _load(self, job_id: str) -> dict[str, object] | None:
-        return self._store._load(job_id)
+        return self._store.load(job_id)
 
     def submit(
         self,

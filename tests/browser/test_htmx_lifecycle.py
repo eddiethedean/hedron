@@ -77,7 +77,7 @@ def browser_app_url() -> Iterator[str]:
             title="Browser smoke",
         )
 
-    @app.component("/charts/fragment", fragment_regions=regions)
+    @app.view("/charts/fragment", fragment_regions=regions)
     def chart_fragment() -> InteractionResult:
         return InteractionResult(
             content=Text("Chart panel updated"),

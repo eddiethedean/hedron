@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from hedron import ChatInput, ChatMessage
+from hedron.routing.reverse import ComponentRef
 from hedron_core.rendering import render
 
 
@@ -27,3 +28,19 @@ def test_chat_input_explicit_submit() -> None:
     assert 'hx-post="/chat"' in html
     assert 'hx-target="#transcript"' in html
     assert "Go" in html
+
+
+def test_chat_input_preserves_existing_query_string() -> None:
+    rendered = render(
+        ChatInput(
+            ref=ComponentRef(
+                logical_id="chat",
+                path="/chat?room=1",
+                method="POST",
+                params={"thread": 2},
+            )
+        )
+    ).html
+
+    assert 'hx-post="/chat?room=1&amp;thread=2"' in rendered
+    assert "?room=1?thread=2" not in rendered

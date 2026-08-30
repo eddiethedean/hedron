@@ -42,6 +42,11 @@ def browser_app_url() -> Iterator[str]:
         explorer="development",
     )
 
+    # Register against the application's scoped plugin registry before the
+    # server thread starts serving requests.
+    with app._hedron_runtime.activate():
+        _register_crashy_provider()
+
     @app.page("/")
     def home():
         return Page(Text("home"), title="Home")
@@ -72,7 +77,6 @@ def _register_crashy_provider() -> None:
 
 
 def _run_engine(browser_type: str, url: str) -> None:
-    _register_crashy_provider()
     with sync_playwright() as playwright:
         launcher = getattr(playwright, browser_type)
         browser = launcher.launch(headless=True)

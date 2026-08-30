@@ -1,9 +1,9 @@
 [project]
 name = "hedron-posit"
-version = "0.67.1"
+version = "1.0.0"
 description = "Unified Posit Workbench / Connect deployment adapter for Hedron"
 readme = "README.md"
-requires-python = ">=3.11,<3.15"
+requires-python = ">=3.10,<3.15"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [
@@ -30,6 +30,7 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -39,8 +40,9 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron>=0.67.0",
-    "starlette>=1.3.1",
+    "hedron>=1.0.0,<2.0",
+    "fastapi-workbench>=1.0.1,<2.0",
+    "starlette>=0.40.0",
     "uvicorn[standard]>=0.32",
 ]
 

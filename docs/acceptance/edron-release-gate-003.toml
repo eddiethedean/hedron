@@ -6,7 +6,7 @@ tag = "edron-v0.3.0"
 package = "edron"
 version = "0.3.0"
 compatible_hedron = ">=0.66,<0.67"
-python = ">=3.11,<3.15"
+python = ">=3.10,<3.15"
 publication_state = "Published to PyPI"
 release_ready = true
 native_authority = "hedron-data"

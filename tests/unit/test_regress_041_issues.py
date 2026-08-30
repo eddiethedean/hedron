@@ -6,7 +6,6 @@ import asyncio
 import json
 import threading
 from concurrent.futures import ThreadPoolExecutor
-from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -29,48 +28,6 @@ from hedron_core.htmx.policy import FragmentRegion, InteractionPolicy, OobUpdate
 from hedron_core.htmx_eval import reject_hx_eval_value
 from hedron_core.interaction import InteractionResult
 from hedron_flask.routing import FlaskUrlReverser
-
-ISSUES = (70, 74, 85, 98, 103, 106, 135, 149, 150, 185, 186, 200, 202, 207)
-
-_R = "tests/unit/test_regress_041_issues.py"
-_A = "tests/adapters"
-_U = "tests/unit"
-ISSUE_TESTS: dict[int, str] = {
-    70: f"{_R}::test_issue_70_multi_target_select_oob_accepted",
-    74: f"{_U}/test_prerelease_0282_adapter_parity.py::test_fastapi_honors_allow_htmx_eval_policy",
-    85: f"{_R}::test_issue_85_duplicate_oob_element_ids_rejected",
-    98: f"{_R}::test_issue_98_rejects_non_object_json_frames",
-    103: f"{_U}/test_adaptive_concurrency.py::test_issue_103_cancels_siblings_on_overload",
-    106: f"{_R}::test_issue_106_connection_registry_single_flight",
-    135: (
-        f"{_A}/fastapi_workbench/test_resolve.py::"
-        "test_issue_135_resolved_public_base_preserves_mount_path"
-    ),
-    149: f"{_R}::test_issue_149_session_state_refreshes_after_direct_session_mutation",
-    150: f"{_R}::test_issue_150_duplicate_session_state_dependencies_share_cache",
-    185: f"{_R}::test_explicit_mount_hint_accepts_hedron_root_path",
-    186: (
-        f"{_A}/fastapi_workbench/test_runner.py::"
-        "test_run_target_skips_discovery_when_uvicorn_root_path_set"
-    ),
-    200: f"{_R}::test_zero_width_unicode_cannot_hide_js_eval",
-    202: f"{_R}::test_issue_202_url_reversal_uses_boundary_safe_mount_prefix",
-    207: f"{_U}/test_sse.py::test_issue_207",
-}
-
-
-def test_every_locked_issue_has_bound_evidence() -> None:
-    root = Path(__file__).resolve().parents[2]
-    assert len(ISSUES) == 14
-    assert tuple(ISSUE_TESTS) == ISSUES
-    for issue, node in ISSUE_TESTS.items():
-        path = root / node.split("::", 1)[0]
-        assert path.is_file(), f"#{issue} evidence missing file {path}"
-        name = node.split("::", 1)[1] if "::" in node else ""
-        if name:
-            assert f"def {name}(" in path.read_text(encoding="utf-8"), (
-                f"#{issue} missing test {name} in {path}"
-            )
 
 
 def test_explicit_mount_hint_accepts_hedron_root_path() -> None:

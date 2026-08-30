@@ -11,8 +11,9 @@ import threading
 import time
 from collections.abc import Mapping
 from dataclasses import dataclass
-from enum import StrEnum
-from typing import Any, Protocol
+from typing import Any, Protocol, cast
+
+from hedron_core.compat import StrEnum
 
 
 class IntentState(StrEnum):
@@ -192,8 +193,8 @@ def mint_intent(
     revision: str,
     target: str,
     payload: Mapping[str, Any] | None = None,
-    ttl_seconds: float = 300.0,
-    now: float | None = None,
+    ttl_seconds: object = 300.0,
+    now: object | None = None,
     store: IntentStore | None = None,
 ) -> SignedIntent:
     ts = time.time() if now is None else now
@@ -260,19 +261,20 @@ def verify_intent(
     revision: str,
     target: str,
     payload: Mapping[str, Any] | None = None,
-    now: float | None = None,
+    now: object | None = None,
 ) -> None:
     ts = time.time() if now is None else now
+    expires_at = cast(object, intent.expires_at)
     if (
         isinstance(ts, bool)
         or not isinstance(ts, (int, float))
         or not math.isfinite(ts)
-        or isinstance(intent.expires_at, bool)
-        or not isinstance(intent.expires_at, (int, float))
-        or not math.isfinite(intent.expires_at)
+        or isinstance(expires_at, bool)
+        or not isinstance(expires_at, (int, float))
+        or not math.isfinite(expires_at)
     ):
         raise IntentError("intent timestamp invalid")
-    if float(ts) > float(intent.expires_at):
+    if float(ts) > float(expires_at):
         raise IntentError("intent expired")
     key = keyring.get_for_verify(intent.key_id, "intent", now=ts)
     expected_sig = _sign(key.secret, intent.canonical_payload())

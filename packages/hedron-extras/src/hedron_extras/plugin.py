@@ -16,8 +16,12 @@ from hedron_core.codes import HED_ASSET_MISSING
 from hedron_core.component import Component
 from hedron_core.diagnostics import error
 from hedron_core.identifiers import content_digest
-from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
-from hedron_core.registry import register_asset, register_browser_module, register_component
+from hedron_core.plugins import (
+    PluginCapabilities,
+    PluginContext,
+    PluginDefinition,
+    PluginMeta,
+)
 from hedron_extras.composition import (
     ChoiceCards,
     FloatingAction,
@@ -43,9 +47,9 @@ _ROOT = Path(__file__).resolve().parent
 
 PLUGIN_META = PluginMeta(
     name="hedron_extras",
-    version="0.67.0",
+    version="1.0.0",
     distribution="hedron-extras",
-    hedron_version=">=0.67,<0.68",
+    hedron_version=">=1.0,<2.0",
     capabilities=PluginCapabilities(
         python=True,
         styles=False,
@@ -118,7 +122,7 @@ def _asset_logical_id(rel: str) -> str:
     return f"hedron-extras:{rel.replace('/', '.')}"
 
 
-def _register_module_asset(rel: str) -> tuple[str, Path]:
+def _module_asset(rel: str) -> tuple[str, Path]:
     path = _ROOT / rel
     if not path.is_file():
         raise error(
@@ -127,25 +131,33 @@ def _register_module_asset(rel: str) -> tuple[str, Path]:
             explanation=f"Declared hedron-extras asset {rel!r} was not found at {path}.",
             remediation="Reinstall hedron-extras or repair the package wheel.",
         )
-    digest = content_digest(path.read_bytes())
     logical = _asset_logical_id(rel)
-    register_asset(
+    return logical, path
+
+
+def _register_module_asset(ctx: PluginContext, rel: str) -> tuple[str, Path]:
+    logical, path = _module_asset(rel)
+    ctx.register_asset(
         logical_id=logical,
         kind="module",
         path=str(path),
-        digest=digest,
+        digest=content_digest(path.read_bytes()),
         content_type="text/javascript",
         attributes={"type": "module"},
     )
     return logical, path
 
 
-def register(ctx: PluginContext) -> None:
+def _register_assets(ctx: PluginContext) -> None:
+    _register_module_asset(ctx, _LIFECYCLE_REL)
+
+
+def _register_components(ctx: PluginContext) -> None:
     module_by_cls: dict[type[Component[Any]], str] = {}
-    lifecycle_id, lifecycle_path = _register_module_asset(_LIFECYCLE_REL)
+    _, lifecycle_path = _module_asset(_LIFECYCLE_REL)
 
     for _rel, module_id, tag_name, classes in _BROWSER_HOSTS:
-        register_browser_module(
+        ctx.register_browser_module(
             logical_id=module_id,
             tag_name=tag_name,
             module_path=str(lifecycle_path),
@@ -162,7 +174,7 @@ def register(ctx: PluginContext) -> None:
             f"{cls.distribution}:{cls.__module__}.{getattr(cls, 'logical_name', cls.__name__)}"
         )
         modules = (module_by_cls[cls],) if cls in module_by_cls else ()
-        register_component(
+        ctx.register_component(
             logical_id=logical,
             name=getattr(cls, "logical_name", cls.__name__) or cls.__name__,
             module=cls.__module__,
@@ -172,9 +184,13 @@ def register(ctx: PluginContext) -> None:
             accessibility_notes="See feature manifest a11y_notes.",
         )
 
-    for feature in extras_features(assets={"lifecycle": lifecycle_id}):
+
+def _register_features(ctx: PluginContext) -> None:
+    for feature in extras_features(assets={"lifecycle": _asset_logical_id(_LIFECYCLE_REL)}):
         feature.register(ctx)
 
+
+def _register_catalog(ctx: PluginContext) -> None:
     # Packages view lists plugin panels; dedicated /extras route is not shipped yet.
     ctx.register_explorer_provider(
         panel_id="hedron-extras-features",
@@ -195,6 +211,21 @@ def register(ctx: PluginContext) -> None:
             limitations=("current extras only; landmines stay experimental",),
         )
     )
+
+
+PLUGIN = PluginDefinition.from_callbacks(
+    PLUGIN_META,
+    (
+        ("assets", _register_assets),
+        ("components", _register_components),
+        ("features", _register_features),
+        ("catalog", _register_catalog),
+    ),
+)
+
+
+def register(ctx: PluginContext) -> None:
+    PLUGIN.register(ctx)
 
 
 register.PLUGIN_META = PLUGIN_META  # type: ignore[attr-defined]

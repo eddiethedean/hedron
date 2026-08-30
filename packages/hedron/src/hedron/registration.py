@@ -31,7 +31,8 @@ def fail_closed_late_registration(
 
 
 def router_excludes_alpha_hooks(router: Any) -> bool:
-    cls = type(router)
+    router_value: object = router
+    cls: type[object] = type(router_value)
     for name in ALPHA_ROUTER_HOOKS:
         owned = name in vars(cls)
         if owned:

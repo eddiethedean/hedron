@@ -12,6 +12,8 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any, TypeVar, cast
 
+from hedron_core.cache.backend import validate_cache_ttl
+
 R = TypeVar("R")
 
 
@@ -42,8 +44,13 @@ class _SyncFlight:
 class InMemoryCacheBackend:
     process_local = True
 
-    def __init__(self) -> None:
+    def __init__(self, *, max_entries: int = 10_000, max_bytes: int = 64 * 1024 * 1024) -> None:
+        if max_entries < 1 or max_bytes < 1:
+            raise ValueError("max_entries and max_bytes must be positive")
+        self.max_entries = max_entries
+        self.max_bytes = max_bytes
         self._store: dict[str, _Entry] = {}
+        self._total_size = 0
         self._lock = threading.RLock()
         self._flights: dict[str, _SyncFlight] = {}
         # Keyed by (cache key, event-loop id) so Futures are never shared across loops.
@@ -60,6 +67,7 @@ class InMemoryCacheBackend:
                 return False, None
             if entry.expires_at is not None and time.monotonic() >= entry.expires_at:
                 del self._store[key]
+                self._total_size -= entry.size
                 return False, None
             return True, copy.deepcopy(entry.value)
 
@@ -78,27 +86,45 @@ class InMemoryCacheBackend:
         ttl: float | None = None,
         tags: tuple[str, ...] = (),
     ) -> None:
-        expires = None if ttl is None else time.monotonic() + ttl
+        normalized_ttl = validate_cache_ttl(ttl)
+        expires = None if normalized_ttl is None else time.monotonic() + normalized_ttl
         try:
             size = len(json.dumps(value, default=str))
-        except TypeError:
-            size = 0
+        except (TypeError, ValueError) as exc:
+            raise ValueError("cache value cannot be bounded for in-memory storage") from exc
+        if size > self.max_bytes:
+            # Validate before mutating so a rejected replacement cannot evict a
+            # previously valid value for the same key.
+            raise ValueError("cache entry exceeds max_bytes")
         with self._lock:
+            previous = self._store.pop(key, None)
+            if previous is not None:
+                self._total_size -= previous.size
+            while self._store and (
+                len(self._store) >= self.max_entries or self._total_size + size > self.max_bytes
+            ):
+                oldest_key = min(self._store, key=lambda item: self._store[item].stored_at)
+                oldest = self._store.pop(oldest_key)
+                self._total_size -= oldest.size
             self._store[key] = _Entry(
                 value=copy.deepcopy(value), expires_at=expires, tags=tags, size=size
             )
+            self._total_size += size
 
     def invalidate(self, *, tags: tuple[str, ...] = (), keys: tuple[str, ...] = ()) -> int:
         removed = 0
         with self._lock:
             for key in keys:
-                if self._store.pop(key, None) is not None:
+                entry = self._store.pop(key, None)
+                if entry is not None:
+                    self._total_size -= entry.size
                     removed += 1
             if tags:
                 tagset = set(tags)
                 for key, entry in list(self._store.items()):
                     if tagset.intersection(entry.tags):
                         del self._store[key]
+                        self._total_size -= entry.size
                         removed += 1
         return removed
 

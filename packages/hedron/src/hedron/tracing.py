@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 import logging
-from collections.abc import Iterator, Mapping
+from collections.abc import Generator, Mapping
 from contextlib import contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Protocol, cast
 
 from hedron_core.csrf import redact_secret_like
 
@@ -17,6 +17,7 @@ __all__ = [
     "configure_tracing",
     "get_trace_config",
     "reset_tracing_for_tests",
+    "use_trace_config",
     "span",
     "start_span",
 ]
@@ -36,6 +37,29 @@ class TraceConfig:
     service_name: str = "hedron"
     _force_sample: bool | None = field(default=None, repr=False)
 
+    @property
+    def forced_sample(self) -> bool | None:
+        """Return the deterministic sampling override used by tests, if configured."""
+        return self._force_sample
+
+
+class _OpenTelemetrySpan(Protocol):
+    def set_attribute(self, key: str, value: object) -> object: ...
+
+
+class _OpenTelemetrySpanContext(Protocol):
+    def __enter__(self) -> _OpenTelemetrySpan: ...
+
+    def __exit__(self, *args: object) -> object: ...
+
+
+class _OpenTelemetryTracer(Protocol):
+    def start_as_current_span(self, name: str) -> _OpenTelemetrySpanContext: ...
+
+
+class _OpenTelemetryApi(Protocol):
+    def get_tracer(self, name: str) -> _OpenTelemetryTracer: ...
+
 
 class TracingDisabled:
     """No-op span context when tracing is off or exporter fails."""
@@ -46,22 +70,22 @@ class TracingDisabled:
     def __exit__(self, *args: object) -> None:
         return None
 
-    def set_attribute(self, key: str, value: Any) -> None:
+    def set_attribute(self, key: str, value: object) -> None:
         del key, value
 
 
 class _RecordingSpan:
-    def __init__(self, name: str, attributes: Mapping[str, Any]) -> None:
+    def __init__(self, name: str, attributes: Mapping[str, object]) -> None:
         self.name = name
-        self.attributes = dict(redact_secret_like(dict(attributes)) or {})
-        self._otel_span: Any | None = None
-        self._otel_entered: Any | None = None
+        self.attributes = redact_secret_like(dict(attributes))
+        self._otel_span: _OpenTelemetrySpanContext | None = None
+        self._otel_entered: _OpenTelemetrySpan | None = None
 
     def __enter__(self) -> _RecordingSpan:
         try:
             from opentelemetry import trace  # type: ignore[import-not-found]
 
-            tracer = trace.get_tracer("hedron")
+            tracer = cast(_OpenTelemetryApi, trace).get_tracer("hedron")
             span_cm = tracer.start_as_current_span(self.name)
             entered = span_cm.__enter__()
             self._otel_span = span_cm
@@ -90,17 +114,16 @@ class _RecordingSpan:
                 logger.debug("span end failed", exc_info=True)
         return
 
-    def set_attribute(self, key: str, value: Any) -> None:
+    def set_attribute(self, key: str, value: object) -> None:
         safe = redact_secret_like({key: value})
-        if isinstance(safe, dict):
-            self.attributes.update(safe)
-            target = self._otel_entered
-            if target is not None:
-                try:
-                    for k, v in safe.items():
-                        target.set_attribute(k, v)
-                except Exception:
-                    logger.debug("set_attribute failed", exc_info=True)
+        self.attributes.update(safe)
+        target = self._otel_entered
+        if target is not None:
+            try:
+                for name, safe_value in safe.items():
+                    target.set_attribute(name, safe_value)
+            except Exception:
+                logger.debug("set_attribute failed", exc_info=True)
 
 
 def get_trace_config() -> TraceConfig:
@@ -108,6 +131,16 @@ def get_trace_config() -> TraceConfig:
     if current is not None:
         return current
     return _global_config or TraceConfig(enabled=False)
+
+
+@contextmanager
+def use_trace_config(config: TraceConfig) -> Generator[None, None, None]:
+    """Bind tracing configuration to the current application context."""
+    token = _config.set(config)
+    try:
+        yield
+    finally:
+        _config.reset(token)
 
 
 def configure_tracing(
@@ -131,8 +164,8 @@ def reset_tracing_for_tests() -> None:
 def _should_sample(cfg: TraceConfig) -> bool:
     if not cfg.enabled:
         return False
-    if cfg._force_sample is not None:
-        return cfg._force_sample
+    if cfg.forced_sample is not None:
+        return cfg.forced_sample
     if cfg.sample_rate >= 1.0:
         return True
     if cfg.sample_rate <= 0.0:
@@ -143,7 +176,9 @@ def _should_sample(cfg: TraceConfig) -> bool:
 
 
 @contextmanager
-def span(name: str, /, **attributes: Any) -> Iterator[TracingDisabled | _RecordingSpan]:
+def span(
+    name: str, /, **attributes: object
+) -> Generator[TracingDisabled | _RecordingSpan, None, None]:
     """Open a redacted span; no-op when tracing is disabled."""
     cfg = get_trace_config()
     if not _should_sample(cfg):
@@ -153,7 +188,7 @@ def span(name: str, /, **attributes: Any) -> Iterator[TracingDisabled | _Recordi
         yield opened
 
 
-def start_span(name: str, /, **attributes: Any) -> TracingDisabled | _RecordingSpan:
+def start_span(name: str, /, **attributes: object) -> TracingDisabled | _RecordingSpan:
     """Non-contextmanager entry for prepare/job hooks."""
     cfg = get_trace_config()
     if not _should_sample(cfg):

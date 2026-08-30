@@ -8,8 +8,8 @@ import pytest
 from starlette._utils import get_route_path
 from starlette.types import Scope
 
-from hedron_workbench.config import WorkbenchMode
-from hedron_workbench.middleware import WorkbenchPathMiddleware, workbenchify
+from hedron_posit.config import WorkbenchMode
+from hedron_posit.middleware import WorkbenchPathMiddleware, workbenchify
 
 
 def _scope(**kwargs: object) -> Scope:

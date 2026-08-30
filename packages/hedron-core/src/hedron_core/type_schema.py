@@ -104,16 +104,16 @@ class TypeSchema:
     handler_kind: HandlerKind = "view"
     boundary_sources: tuple[str, ...] = ()
     field_paths: tuple[Mapping[str, JsonValue], ...] = ()
-    control_dispositions: Mapping[str, str] = field(default_factory=dict)
+    control_dispositions: Mapping[str, str] = field(default_factory=dict[str, str])
     sensitivity_flags: tuple[str, ...] = ()
     identity_flags: tuple[str, ...] = ()
     effect_knowledge: EffectKnowledge = "dynamic"
     declared_target_ids: tuple[str, ...] = ()
     outcome_variant_ids: tuple[str, ...] = ()
-    fallback_cache_projection: Mapping[str, JsonValue] = field(default_factory=dict)
+    fallback_cache_projection: Mapping[str, JsonValue] = field(default_factory=dict[str, JsonValue])
     diagnostics: tuple[str, ...] = ()
-    input_projection: Mapping[str, JsonValue] = field(default_factory=dict)
-    output_projection: Mapping[str, JsonValue] = field(default_factory=dict)
+    input_projection: Mapping[str, JsonValue] = field(default_factory=dict[str, JsonValue])
+    output_projection: Mapping[str, JsonValue] = field(default_factory=dict[str, JsonValue])
     shared_fields: tuple[str, ...] = ()
     write_only_fields: tuple[str, ...] = ()
     read_only_fields: tuple[str, ...] = ()
@@ -247,19 +247,21 @@ def _json_int(value: object, default: int) -> int:
 def _json_str_tuple(value: object) -> tuple[str, ...]:
     if isinstance(value, str) or not isinstance(value, Sequence):
         return ()
-    return tuple(str(item) for item in value)
+    return tuple(str(item) for item in cast(Sequence[object], value))
 
 
 def _json_str_map(value: object) -> dict[str, str]:
     if not isinstance(value, Mapping):
         return {}
-    return {str(key): str(item) for key, item in value.items()}
+    mapping = cast(Mapping[object, object], value)
+    return {str(key): str(item) for key, item in mapping.items()}
 
 
 def _json_object(value: object) -> JsonObject:
     if not isinstance(value, Mapping):
         return {}
-    return {str(key): cast("JsonValue", item) for key, item in value.items()}
+    mapping = cast(Mapping[object, object], value)
+    return {str(key): cast("JsonValue", item) for key, item in mapping.items()}
 
 
 def type_schema_from_descriptor(descriptor: BaseHandleDescriptor) -> TypeSchema | None:

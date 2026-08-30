@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from enum import StrEnum
 from typing import Any
 
 from hedron_core.active_markup import has_active_markup
+from hedron_core.compat import StrEnum
 from hedron_core.htmx_contract import safe_css_selector
 from hedron_core.security.trusted import TrustedHtml
 from hedron_core.security.urls import SafeUrl, UrlPurpose, contains_dangerous_scheme

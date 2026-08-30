@@ -2,8 +2,8 @@
 """Fail if core-only satellites import the FastAPI ``hedron`` package.
 
 Packages that declare only ``hedron-core`` (or no Hedron flagship dependency) must not
-import ``hedron`` / ``hedron.*``. Known interaction-helper debt is allowlisted until
-handles/refresh protocols move into ``hedron-core`` (1.0 readiness). New violations fail CI.
+import ``hedron`` / ``hedron.*``. The interaction and refresh protocols now live in
+``hedron-core``, so every violation fails CI and there is no compatibility allowlist.
 """
 
 from __future__ import annotations
@@ -26,14 +26,7 @@ SATELLITES: dict[str, str] = {
     "hedron-native": "hedron_native",
 }
 
-# Known debt: interaction helpers that reach into FastAPI hedron (must shrink, not grow).
-ALLOWED: frozenset[str] = frozenset(
-    {
-        "packages/hedron-data/src/hedron_data/workspace.py",
-        "packages/hedron-charts/src/hedron_charts/interaction.py",
-        "packages/hedron-maps/src/hedron_maps/interaction.py",
-    }
-)
+ALLOWED: frozenset[str] = frozenset()
 
 
 def _imports_hedron_flagship(path: Path) -> bool:
@@ -74,10 +67,7 @@ def main() -> int:
     if errors:
         print("\n".join(errors), file=sys.stderr)
         return 1
-    print(
-        f"ok: satellite→hedron import boundary "
-        f"({len(ALLOWED)} allowlisted debt file(s))"
-    )
+    print(f"ok: satellite→hedron import boundary ({len(ALLOWED)} allowlisted debt file(s))")
     return 0
 
 

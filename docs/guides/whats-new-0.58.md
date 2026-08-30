@@ -1,5 +1,11 @@
 # What's new in 0.58
 
+!!! note "Historical release note"
+
+    This page records the 0.x release named in its title. For current installation,
+    support, and published 1.0 status, use [Current release and support](current-release.md).
+    Keep the historical pins below only when maintaining that release line.
+
 Phase **0.58** (`v0.58.0` on PyPI) lands progressive feature and styling
 authoring under
 [RFC-0085](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md)

@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Any
 from hedron_core.codes import HED_WORKFLOW_0001, HED_WORKFLOW_0002, HED_WORKFLOW_0003
 from hedron_core.diagnostics import error
 from hedron_core.inference_workflow.graph import (
-    _FORBIDDEN_PARAM_KEYS,
+    FORBIDDEN_PARAM_KEYS,
     PublishedRevision,
     WorkflowEditorView,
     WorkflowError,
@@ -36,12 +36,16 @@ class InferenceWorkflow:
     workflow_id: str
     schema_version: str = "1"
     tenant_id: str | None = None
-    _nodes: dict[str, WorkflowNode] = field(default_factory=dict, init=False)
-    _edges: list[tuple[str, str, str, str]] = field(default_factory=list, init=False)
+    _nodes: dict[str, WorkflowNode] = field(default_factory=dict[str, WorkflowNode], init=False)
+    _edges: list[tuple[str, str, str, str]] = field(
+        default_factory=list[tuple[str, str, str, str]], init=False
+    )
     # (from_node, from_port, to_node, to_port)
-    _permissions: dict[str, set[WorkflowPermission]] = field(default_factory=dict, init=False)
-    _published: list[PublishedRevision] = field(default_factory=list, init=False)
-    _history: list[Mapping[str, Any]] = field(default_factory=list, init=False)
+    _permissions: dict[str, set[WorkflowPermission]] = field(
+        default_factory=dict[str, set[WorkflowPermission]], init=False
+    )
+    _published: list[PublishedRevision] = field(default_factory=list[PublishedRevision], init=False)
+    _history: list[Mapping[str, Any]] = field(default_factory=list[Mapping[str, Any]], init=False)
     _version: int = field(default=1, init=False)
     _etag: int = field(default=1, init=False)
     _http_exposed: bool = field(default=False, init=False)
@@ -551,7 +555,7 @@ class InferenceWorkflow:
     def _reject_forbidden_parameters(self, parameters: Mapping[str, JsonValue]) -> None:
         for key in parameters:
             lowered = key.lower()
-            if lowered in _FORBIDDEN_PARAM_KEYS or any(
+            if lowered in FORBIDDEN_PARAM_KEYS or any(
                 tok in lowered for tok in ("path", "code", "eval", "exec", "shell")
             ):
                 raise WorkflowError(

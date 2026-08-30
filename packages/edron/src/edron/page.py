@@ -4,7 +4,7 @@ import base64
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from datetime import date
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 import hedron
 from edron._internal import require_frame
@@ -18,8 +18,8 @@ class Container:
 
     page: Page
     kind: str = "stack"
-    options: dict[str, Any] = field(default_factory=dict)
-    children: list[Any] = field(default_factory=list)
+    options: dict[str, Any] = field(default_factory=lambda: dict[str, Any]())
+    children: list[Any] = field(default_factory=lambda: list[Any]())
     _entered: bool = field(default=False, init=False)
 
     def _append(self, value: Any) -> None:
@@ -29,13 +29,14 @@ class Container:
         if self._entered:
             raise RuntimeError("a container cannot be entered twice")
         self._entered = True
-        self.page._container_stack.append(self)
+        cast(Any, self.page)._container_stack.append(self)
         return self
 
     def __exit__(self, *_: Any) -> None:
-        if not self.page._container_stack or self.page._container_stack[-1] is not self:
+        page = cast(Any, self.page)
+        if not page._container_stack or page._container_stack[-1] is not self:
             raise RuntimeError("containers must be exited in nesting order")
-        self.page._container_stack.pop()
+        page._container_stack.pop()
 
     def text(self, value: str) -> None:
         self.page.text(value, _target=self)
@@ -61,12 +62,13 @@ class Container:
             raise AttributeError(name)
 
         def forward(*args: Any, **kwargs: Any) -> Any:
-            previous = self.page._explicit_target
-            self.page._explicit_target = self
+            page = cast(Any, self.page)
+            previous = page._explicit_target
+            page._explicit_target = self
             try:
                 return method(*args, **kwargs)
             finally:
-                self.page._explicit_target = previous
+                page._explicit_target = previous
 
         return forward
 
@@ -104,7 +106,7 @@ class Page:
         if target is None:
             self._frame.buffer.append(value)
         else:
-            target._append(value)
+            cast(Any, target)._append(value)
 
     def _native(self, name: str, *args: Any, **kwargs: Any) -> Any:
         return getattr(hedron, name)(*args, **kwargs)
@@ -167,8 +169,21 @@ class Page:
             node = DataTable(data, caption=caption)
         except (ImportError, TypeError, ValueError):
             rows = list(data) if data is not None else []
-            headers = list(rows[0].keys()) if rows and isinstance(rows[0], Mapping) else None
-            values = [tuple(row.get(key) for key in headers) for row in rows] if headers else rows
+            first_row: object = rows[0] if rows else None
+            source_headers = (
+                list(cast(Mapping[object, Any], first_row))
+                if isinstance(first_row, Mapping)
+                else None
+            )
+            headers = [str(key) for key in source_headers] if source_headers else None
+            values: list[Any] = (
+                [
+                    tuple(cast(Mapping[object, Any], row).get(key) for key in source_headers)
+                    for row in rows
+                ]
+                if source_headers
+                else rows
+            )
             node = self._native("Table", headers=headers, rows=values, caption=caption)
         self._append(node)
 
@@ -240,7 +255,7 @@ class Page:
         node = spec if isinstance(spec, Chart) else Chart(spec=spec)
         self._append(node, _target=_target)
         if alternative is not None:
-            if not isinstance(alternative, str) or not alternative.strip():
+            if not isinstance(cast(Any, alternative), str) or not alternative.strip():
                 raise ValueError("chart alternative must be a non-empty string")
             self._append(
                 self._native("Text", alternative, as_="small", class_="edron-visual-alternative"),
@@ -356,7 +371,7 @@ class Page:
             _target=_target,
         )
         if alternative is not None:
-            if not isinstance(alternative, str) or not alternative.strip():
+            if not isinstance(cast(Any, alternative), str) or not alternative.strip():
                 raise ValueError("map alternative must be a non-empty string")
             self._append(
                 self._native("Text", alternative, as_="small", class_="edron-visual-alternative"),
@@ -374,7 +389,7 @@ class Page:
         _target: Container | None = None,
     ) -> None:
         """Render a native safe image with required alternative text."""
-        if not isinstance(alt, str) or not alt.strip():
+        if not isinstance(cast(Any, alt), str) or not alt.strip():
             raise ValueError("image alt must be a non-empty string")
         self._append(
             self._native(
@@ -453,16 +468,25 @@ class Page:
         if request is None:
             return default
         query = getattr(request, "query_params", {})
+        if not isinstance(query, Mapping):
+            return default
+        query = cast(Mapping[str, Any], query)
         return query.get(name, default)
 
     @staticmethod
     def _options(options: Sequence[Any]) -> list[tuple[str, Any]]:
-        result = []
+        result: list[tuple[str, Any]] = []
         for item in options:
-            if isinstance(item, (tuple, list)) and len(item) == 2:
-                result.append((str(item[0]), item[1]))
+            value: object = item
+            if isinstance(value, (tuple, list)):
+                pair = cast(Sequence[Any], value)
+                if len(pair) == 2:
+                    result.append((str(pair[0]), pair[1]))
+                    continue
             else:
-                result.append((str(item), item))
+                result.append((str(value), value))
+                continue
+            result.append((str(cast(object, value)), cast(Any, value)))
         return result
 
     def _labelled(self, label: str, control: Any, *, target: Container | None) -> None:
@@ -698,12 +722,13 @@ class Page:
         **options: Any,
     ) -> Container:
         """Open a shared, bounded layout container for imperative composition."""
-        if isinstance(spec, str):
+        raw_spec: object = spec
+        if isinstance(raw_spec, str):
             resolved = LayoutSpec(kind=spec, **options)  # type: ignore[arg-type]
-        elif isinstance(spec, LayoutSpec):
+        elif isinstance(cast(Any, raw_spec), LayoutSpec):
             if options:
                 raise TypeError("layout options cannot be combined with a LayoutSpec")
-            resolved = spec
+            resolved = raw_spec
         else:
             raise TypeError("layout expects a layout kind or edron.LayoutSpec")
         container = Container(
@@ -817,7 +842,7 @@ class Page:
         else:
             reference = getattr(value, "identifier", value)
             filename = filename or str(reference)
-        if reference is None or filename is None:
+        if reference is None:
             raise BindingError(
                 "download_button requires a Download or bytes value",
                 code="EDRON_DOWNLOAD_VALUE",
@@ -833,11 +858,29 @@ class Page:
         )
 
     def job(self, flow: Any, *, submit_label: str = "Submit", show_cancel: bool = False) -> None:
-        frame = require_frame("page", "fragment")
-        bundle = flow.to_bundle() if hasattr(flow, "to_bundle") else flow
-        frame.app.include(bundle)
-        if hasattr(bundle, "render"):
-            self._append(bundle.render())
+        """Render the submit surface for a flow already included in the app.
+
+        Including a feature mutates the router and must happen during startup.
+        A page render is request-time work, so it only consumes the handles
+        produced by the one-time materialization.  ``show_cancel`` is exposed
+        as a data hint for the generated status surface; a cancel command is
+        only rendered once a job id is available on that surface.
+        """
+        require_frame("page", "fragment")
+        submit = getattr(flow, "submit_command", None)
+        if submit is None:
+            native = getattr(flow, "_native", None)
+            submit = getattr(native, "submit_command", None)
+        if submit is None:
+            raise BindingError(
+                "job requires a flow included during app startup",
+                code="EDRON_JOB_BIND",
+            )
+        native = getattr(flow, "_native", None)
+        if native is not None:
+            native.show_cancel = bool(show_cancel)
+        attrs = {"data": {"hedron-job-cancel": "true"}} if show_cancel else {}
+        self.form(action=submit, submit_label=submit_label, **attrs)
 
     def _resolve(self, value: Any) -> Any:
         if isinstance(value, Container):
@@ -870,9 +913,9 @@ class Page:
                 items = list(zip(value.options["labels"], children, strict=True))
                 return self._native("Tabs", items)
             if kind == "expander":
-                return self._native(
-                    "Expander", value.options.pop("title"), *children, **value.options
-                )
+                options = dict(value.options)
+                title = options.pop("title")
+                return self._native("Expander", title, *children, **options)
             if kind == "style":
                 return self._native("StyleScope", *children, **value.options)
             options = dict(value.options)

@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 
 
-_BETA_PACKAGES = {
+_TRAIN_ALIGNED_PACKAGES = {
     "hedron",
     "hedron-core",
     "hedron-data",
@@ -19,17 +19,16 @@ _BETA_PACKAGES = {
     "hedron-explorer",
     "hedron-conformance",
     "hedron-extras",
-    "hedron-workbench",
+    "hedron-posit",
     "hedron-elements",
 }
 _INDEPENDENT_BETA = {
     "hedron-native",
-    "hedron-maps",
+    "edron-sim",
 }
 _INDEPENDENT_BETA_02 = {
     "hedron-mcp",
     "hedron-gradio",
-    "hedron-charts",
     "hedron-sample-kit",
     "hedron-sim",
     "hedron-notebook",
@@ -39,6 +38,10 @@ _INDEPENDENT_BETA_067 = {
 }
 _INDEPENDENT_BETA_05 = {
     "edron",
+}
+_STABLE_INDEPENDENT = {
+    "hedron-charts",
+    "hedron-maps",
 }
 _INDEPENDENT_MAJOR = {
     "fastapi-workbench",
@@ -54,14 +57,14 @@ def test_all_packages_declare_license_and_version() -> None:
     for pyproject in sorted((ROOT / "packages").glob("*/pyproject.toml")):
         project = tomllib.loads(pyproject.read_text(encoding="utf-8"))["project"]
         name = project["name"]
-        if name in _BETA_PACKAGES or name in _TRAIN_ALIGNED_ALPHA:
+        if name in _TRAIN_ALIGNED_PACKAGES or name in _TRAIN_ALIGNED_ALPHA:
             assert project["version"] == workspace_version, pyproject
         elif name in _INDEPENDENT_BETA_02:
             assert str(project["version"]).startswith("0.2."), pyproject
         elif name in _INDEPENDENT_BETA_067:
             assert str(project["version"]).startswith("0.67."), pyproject
-        elif name == "edron":
-            assert str(project["version"]).startswith("0.9."), pyproject
+        elif name in _STABLE_INDEPENDENT or name == "edron":
+            assert project["version"] == "1.0.0", pyproject
         elif name in _INDEPENDENT_BETA_05:
             assert str(project["version"]).startswith("0.5."), pyproject
         elif name in _INDEPENDENT_BETA or name in _ALPHA_INDEPENDENT:
@@ -90,14 +93,27 @@ def test_first_party_plugin_meta_matches_package_version() -> None:
     for pyproject in sorted((ROOT / "packages").glob("*/pyproject.toml")):
         project = tomllib.loads(pyproject.read_text(encoding="utf-8"))["project"]
         for module in (pyproject.parent / "src").rglob("*.py"):
+            source = module.read_text(encoding="utf-8")
             match = re.search(
-                r"PLUGIN_META\s*=\s*PluginMeta\(.*?\bversion\s*=\s*[\"']([^\"']+)[\"']",
-                module.read_text(encoding="utf-8"),
+                r"PLUGIN_META\s*=\s*PluginMeta\(.*?\bversion\s*=\s*(?:[\"']([^\"']+)[\"']|([A-Za-z_]\w*))",
+                source,
                 re.S,
             )
             if match:
                 seen.add(str(project["name"]))
-                assert match.group(1) == project["version"], module
+                plugin_version = match.group(1)
+                if plugin_version is None:
+                    version_module = module.with_name("_version.py")
+                    assert version_module.is_file(), module
+                    name = re.escape(str(match.group(2)))
+                    constant = re.search(
+                        rf'^{name}\s*=\s*["\']([^"\']+)["\']',
+                        version_module.read_text(encoding="utf-8"),
+                        re.M,
+                    )
+                    assert constant is not None, module
+                    plugin_version = constant.group(1)
+                assert plugin_version == project["version"], module
     assert seen == {
         "hedron-charts",
         "hedron-data",
@@ -120,7 +136,7 @@ def test_025_satellites_have_installable_patch_floors() -> None:
         (ROOT / "packages" / "hedron-extras" / "pyproject.toml").read_text(encoding="utf-8")
     )["project"]
 
-    charts_pin = "hedron-charts>=0.2.2,<0.3"
+    charts_pin = "hedron-charts>=1.0.0,<2.0"
     assert hedron["optional-dependencies"]["charts"] == [charts_pin]
     assert charts_pin in extras["optional-dependencies"]["chart_workbench"]
     assert charts_pin in extras["optional-dependencies"]["all"]
@@ -130,10 +146,9 @@ def test_025_satellites_have_installable_patch_floors() -> None:
     sample = tomllib.loads(
         (ROOT / "packages" / "hedron-sample-kit" / "pyproject.toml").read_text(encoding="utf-8")
     )["project"]
-    # Tip may patch above the floor; pin floor stays >=0.2.2,<0.3.
-    assert charts["version"].startswith("0.2.")
-    assert tuple(int(p) for p in charts["version"].split(".")) >= (0, 2, 0)
-    assert sample["version"] == "0.2.1"
+    # Tip may patch above the floor; the 1.0 plugin contract starts at these patches.
+    assert charts["version"] == "1.0.0"
+    assert sample["version"] == "0.2.3"
 
 
 def test_hedron_build_module_is_packaged(tmp_path: Path) -> None:

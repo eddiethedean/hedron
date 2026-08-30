@@ -18,10 +18,10 @@ def generate_csrf_token() -> str:
     return secrets.token_urlsafe(32)
 
 
-def tokens_match(expected: str, provided: str) -> bool:
-    if not expected or not provided:
-        return False
+def tokens_match(expected: object, provided: object) -> bool:
     if not isinstance(expected, str) or not isinstance(provided, str):
+        return False
+    if not expected or not provided:
         return False
     try:
         left = expected.encode("utf-8")

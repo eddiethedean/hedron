@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from collections import OrderedDict
 from collections.abc import Callable, Mapping
-from typing import Any, cast
+from typing import Any, Protocol, cast
 
 from hedron_core.job_status_store import (
     RQ_ENQUEUE_FAILED,
@@ -18,6 +18,14 @@ from hedron_core.typing_aliases import JsonValue
 __all__ = ["RQJobBackend"]
 
 _logger = logging.getLogger("hedron.jobs.rq")
+
+
+class _RqJob(Protocol):
+    @classmethod
+    def fetch(cls, job_id: str, *, connection: object) -> object: ...
+
+    def cancel(self) -> object: ...
+
 
 _TERMINAL_STATES = frozenset(
     {
@@ -120,11 +128,11 @@ class RQJobBackend:
         auth_subject: str | None = None,
         tenant_id: str | None = None,
     ) -> bool:
-        prior = self._store._load(job_id)
+        prior = self._store.load(job_id)
         ok = self._store.request_cancel(job_id, auth_subject=auth_subject, tenant_id=tenant_id)
         if not ok:
             return False
-        cancelled = self._store._load(job_id)
+        cancelled = self._store.load(job_id)
         rq_job = self._rq_jobs.get(job_id)
         if rq_job is None:
             try:
@@ -177,7 +185,7 @@ class RQJobBackend:
         self._forget_rq_job(job_id)
         return True
 
-    def _fetch_rq_job(self, job_id: str) -> Any | None:
+    def _fetch_rq_job(self, job_id: str) -> _RqJob | None:
         """Resolve an RQ job across workers via the shared connection.
 
         Missing jobs (``NoSuchJobError``) return ``None``. Unexpected fetch
@@ -192,7 +200,8 @@ class RQJobBackend:
             _logger.debug("rq is not installed; cannot fetch job_id=%s", job_id)
             return None
         try:
-            return Job.fetch(job_id, connection=connection)
+            job_class = cast(type[_RqJob], Job)
+            return cast(_RqJob, job_class.fetch(job_id, connection=connection))
         except Exception as exc:
             # Prefer typed NoSuchJobError when present; fall back to class name.
             try:

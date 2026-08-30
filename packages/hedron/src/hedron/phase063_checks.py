@@ -4,9 +4,8 @@ from __future__ import annotations
 
 import hashlib
 import re
-import tomllib
 from pathlib import Path
-from typing import Any
+from typing import TypedDict
 
 from hedron_core.codes import (
     HED_CHECK_0001,
@@ -16,6 +15,8 @@ from hedron_core.codes import (
     HED_CHECK_0005,
     HED_CHECK_0006,
 )
+from hedron_core.compat import tomllib
+from hedron_core.typing_aliases import is_object_list, is_string_mapping
 
 SCHEMA = "hedron.interaction-checks/1"
 MAX_FILES = 1_000
@@ -36,7 +37,40 @@ _RULES: tuple[tuple[str, str, str, str], ...] = (
 )
 
 
-def _span(text: str, offset: int) -> dict[str, int]:
+class _SpanCoordinates(TypedDict):
+    start_line: int
+    start_column: int
+
+
+class FindingSpan(_SpanCoordinates):
+    path: str
+
+
+class Phase063Finding(TypedDict):
+    code: str
+    severity: str
+    kind: str
+    message: str
+    span: FindingSpan
+    evidence: str
+    suppressed: bool
+
+
+class _AnalysisBase(TypedDict):
+    schema: str
+    non_executing: bool
+    limits: dict[str, int]
+    files_scanned: int
+    bytes_scanned: int
+    suppressions: list[str]
+    findings: list[Phase063Finding]
+
+
+class Phase063Analysis(_AnalysisBase):
+    digest: str
+
+
+def _span(text: str, offset: int) -> _SpanCoordinates:
     line = text.count("\n", 0, offset) + 1
     previous = text.rfind("\n", 0, offset)
     return {"start_line": line, "start_column": offset - previous}
@@ -50,13 +84,13 @@ def _suppressed(root: Path) -> set[str]:
         data = tomllib.loads(path.read_text(encoding="utf-8"))
     except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError):
         return set()
-    rows = data.get("suppressions", [])
-    if not isinstance(rows, list):
+    rows: object = data.get("suppressions", [])
+    if not is_object_list(rows):
         return set()
     result: set[str] = set()
     for row in rows:
         if (
-            isinstance(row, dict)
+            is_string_mapping(row)
             and str(row.get("code", "")).startswith("HED-CHECK-")
             and str(row.get("justification", "")).strip()
         ):
@@ -64,7 +98,7 @@ def _suppressed(root: Path) -> set[str]:
     return result
 
 
-def analyze_project(root: Path) -> dict[str, Any]:
+def analyze_project(root: Path) -> Phase063Analysis:
     """Scan source text only; never import or execute the project."""
 
     root = root.resolve()
@@ -78,7 +112,7 @@ def analyze_project(root: Path) -> dict[str, Any]:
     if len(files) > MAX_FILES:
         files = files[:MAX_FILES]
     suppressions = _suppressed(root)
-    findings: list[dict[str, Any]] = []
+    findings: list[Phase063Finding] = []
     bytes_seen = 0
     for path in files:
         if path.stat().st_size > MAX_BYTES:
@@ -97,7 +131,10 @@ def analyze_project(root: Path) -> dict[str, Any]:
                 if code in suppressions and not code.startswith("HED-SEC-"):
                     continue
                 source_text = relative if kind == "application-css" else text
-                location = {"path": relative, **_span(source_text, match.start())}
+                location: FindingSpan = {
+                    "path": relative,
+                    **_span(source_text, match.start()),
+                }
                 findings.append(
                     {
                         "code": code,
@@ -110,7 +147,7 @@ def analyze_project(root: Path) -> dict[str, Any]:
                     }
                 )
     findings.sort(key=lambda item: (item["span"]["path"], item["span"]["start_line"], item["code"]))
-    payload: dict[str, Any] = {
+    payload: _AnalysisBase = {
         "schema": SCHEMA,
         "non_executing": True,
         "limits": {"max_files": MAX_FILES, "max_bytes_per_file": MAX_BYTES},
@@ -119,8 +156,8 @@ def analyze_project(root: Path) -> dict[str, Any]:
         "suppressions": sorted(suppressions),
         "findings": findings,
     }
-    payload["digest"] = hashlib.sha256(repr(payload).encode("utf-8")).hexdigest()
-    return payload
+    digest = hashlib.sha256(repr(payload).encode("utf-8")).hexdigest()
+    return {**payload, "digest": digest}
 
 
 __all__ = ["SCHEMA", "analyze_project"]

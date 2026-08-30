@@ -12,10 +12,10 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from types import MappingProxyType
-from typing import Final, Literal
+from typing import Final, Literal, cast
 
 from hedron_core.theme import Theme, default_theme
 
@@ -262,13 +262,15 @@ def motion_recipe(name: str) -> MotionRecipe:
 
 
 def _identifier(value: str, label: str) -> str:
-    if not isinstance(value, str) or _IDENTIFIER.fullmatch(value) is None:
+    value = _required_string(value, label=label)
+    if _IDENTIFIER.fullmatch(value) is None:
         raise PresentationError(f"{label} must be a safe identifier")
     return value
 
 
 def _part_identifier(value: str) -> str:
-    if not isinstance(value, str) or _PART_IDENTIFIER.fullmatch(value) is None:
+    value = _required_string(value, label="part")
+    if _PART_IDENTIFIER.fullmatch(value) is None:
         raise PresentationError("part must be a safe identifier")
     return value
 
@@ -279,7 +281,8 @@ def _class_fragment(value: str) -> str:
 
 
 def _css_value(value: str, *, label: str) -> str:
-    if not isinstance(value, str) or not value.strip():
+    value = _required_string(value, label=label)
+    if not value.strip():
         raise PresentationError(f"{label} must be a non-empty CSS value")
     value = value.strip()
     if any(bad in value.lower() for bad in ("url(", "expression(", "javascript:", "@import")):
@@ -291,17 +294,25 @@ def _css_value(value: str, *, label: str) -> str:
 
 def _freeze_public(value: object) -> object:
     if isinstance(value, Mapping):
-        return MappingProxyType({key: _freeze_public(item) for key, item in value.items()})
+        mapping = cast(Mapping[object, object], value)
+        return MappingProxyType({key: _freeze_public(item) for key, item in mapping.items()})
     if isinstance(value, (list, tuple)):
-        return tuple(_freeze_public(item) for item in value)
+        return tuple(_freeze_public(item) for item in cast(Iterable[object], value))
     return value
 
 
 def _thaw_public(value: object) -> object:
     if isinstance(value, Mapping):
-        return {key: _thaw_public(item) for key, item in value.items()}
+        mapping = cast(Mapping[object, object], value)
+        return {key: _thaw_public(item) for key, item in mapping.items()}
     if isinstance(value, tuple):
-        return [_thaw_public(item) for item in value]
+        return [_thaw_public(item) for item in cast(tuple[object, ...], value)]
+    return value
+
+
+def _required_string(value: object, *, label: str) -> str:
+    if not isinstance(value, str):
+        raise PresentationError(f"{label} must be a string")
     return value
 
 
@@ -328,21 +339,29 @@ class ResponsiveCondition:
     value: str
 
     def __post_init__(self) -> None:
+        kind = _required_string(self.kind, label="unknown responsive condition kind")
+        value = _required_string(self.value, label="unknown responsive condition value")
         # Accept compact values for integrations that want to keep the axis
         # in ``kind``: ``viewport/max-lg`` and ``viewport/md-to-lg``.
-        if self.kind == "viewport" and isinstance(self.value, str):
-            if self.value.startswith("max-"):
+        if kind == "viewport":
+            if value.startswith("max-"):
                 object.__setattr__(self, "kind", "viewport-max")
-                object.__setattr__(self, "value", self.value.removeprefix("max-"))
-            elif "-to-" in self.value:
+                kind = "viewport-max"
+                value = value.removeprefix("max-")
+                object.__setattr__(self, "value", value)
+            elif "-to-" in value:
                 object.__setattr__(self, "kind", "viewport-range")
-        elif self.kind == "container" and isinstance(self.value, str):
-            if self.value.startswith("max-"):
+                kind = "viewport-range"
+        elif kind == "container":
+            if value.startswith("max-"):
                 object.__setattr__(self, "kind", "container-max")
-                object.__setattr__(self, "value", self.value.removeprefix("max-"))
-            elif "-to-" in self.value:
+                kind = "container-max"
+                value = value.removeprefix("max-")
+                object.__setattr__(self, "value", value)
+            elif "-to-" in value:
                 object.__setattr__(self, "kind", "container-range")
-        if not isinstance(self.kind, str) or self.kind not in (
+                kind = "container-range"
+        if kind not in (
             "viewport",
             "viewport-max",
             "viewport-range",
@@ -353,36 +372,26 @@ class ResponsiveCondition:
             "writing-mode",
             "accessibility",
         ):
-            raise PresentationError(f"unknown responsive condition kind: {self.kind!r}")
-        if self.kind in ("viewport", "viewport-max") and (
-            not isinstance(self.value, str) or self.value not in _BREAKPOINTS
-        ):
-            raise PresentationError(f"unknown viewport condition: {self.value!r}")
-        if self.kind in ("container", "container-max") and (
-            not isinstance(self.value, str) or self.value not in _CONTAINER_SIZES
-        ):
-            raise PresentationError(f"unknown container condition: {self.value!r}")
-        if self.kind in ("viewport-range", "container-range"):
-            names = _BREAKPOINTS if self.kind == "viewport-range" else _CONTAINER_SIZES
-            parts = self.value.split("-to-") if isinstance(self.value, str) else []
+            raise PresentationError(f"unknown responsive condition kind: {kind!r}")
+        if kind in ("viewport", "viewport-max") and value not in _BREAKPOINTS:
+            raise PresentationError(f"unknown viewport condition: {value!r}")
+        if kind in ("container", "container-max") and value not in _CONTAINER_SIZES:
+            raise PresentationError(f"unknown container condition: {value!r}")
+        if kind in ("viewport-range", "container-range"):
+            names = _BREAKPOINTS if kind == "viewport-range" else _CONTAINER_SIZES
+            parts = value.split("-to-")
             if (
                 len(parts) != 2
                 or any(item not in names for item in parts)
                 or (len(parts) == 2 and list(names).index(parts[0]) >= list(names).index(parts[1]))
             ):
-                raise PresentationError(f"unknown {self.kind} condition: {self.value!r}")
-        if self.kind == "direction" and (
-            not isinstance(self.value, str) or self.value not in _DIRECTIONS
-        ):
-            raise PresentationError(f"unknown direction: {self.value!r}")
-        if self.kind == "writing-mode" and (
-            not isinstance(self.value, str) or self.value not in _WRITING_MODES
-        ):
-            raise PresentationError(f"unknown writing mode: {self.value!r}")
-        if self.kind == "accessibility" and (
-            not isinstance(self.value, str) or self.value not in _ACCESSIBILITY
-        ):
-            raise PresentationError(f"unknown accessibility condition: {self.value!r}")
+                raise PresentationError(f"unknown {kind} condition: {value!r}")
+        if kind == "direction" and value not in _DIRECTIONS:
+            raise PresentationError(f"unknown direction: {value!r}")
+        if kind == "writing-mode" and value not in _WRITING_MODES:
+            raise PresentationError(f"unknown writing mode: {value!r}")
+        if kind == "accessibility" and value not in _ACCESSIBILITY:
+            raise PresentationError(f"unknown accessibility condition: {value!r}")
 
     @classmethod
     def viewport_max(cls, breakpoint: str) -> ResponsiveCondition:

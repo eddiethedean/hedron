@@ -5,13 +5,13 @@ Minimal **native Django** slice (manage-less): home + fragment. Depends on
 
 ## Prerequisites
 
-- Python 3.11–3.14
+- Python 3.10–3.14
 - From a Hedron monorepo checkout: `uv sync`
 
 Or (pip, outside the monorepo):
 
 ```bash
-pip install "hedron-django>=0.66.2,<0.67" "django>=5.2,<6" "waitress>=3,<4"
+pip install "hedron-django>=1.0.0,<1.1" "django>=5.2,<6" "waitress>=3,<4"
 ```
 
 For ASGI locally you can use `uvicorn` instead of Waitress.

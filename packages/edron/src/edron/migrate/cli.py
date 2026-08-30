@@ -7,6 +7,7 @@ import difflib
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 from edron.migrate.analyze import analyze_source
 from edron.migrate.codemod import codemod_file
@@ -16,7 +17,7 @@ from hedron.migrate.findings import plan_to_diagnostics
 from hedron_core.diagnostics import DiagnosticSeverity, meets_severity_threshold
 
 
-def build_migrate_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
+def build_migrate_parser(subparsers: Any) -> None:
     migrate = subparsers.add_parser("migrate", help="migrate a Streamlit app to Edron")
     commands = migrate.add_subparsers(dest="migrate_command")
     streamlit = commands.add_parser("streamlit", help="analyze and generate an Edron project")
@@ -26,7 +27,7 @@ def build_migrate_parser(subparsers: argparse._SubParsersAction[argparse.Argumen
     streamlit.add_argument("--analyze-only", action="store_true")
     streamlit.add_argument("--format", choices=("text", "json", "sarif"), default="text")
     streamlit.add_argument(
-        "--python-version", choices=("3.11", "3.12", "3.13", "3.14"), default="3.12"
+        "--python-version", choices=("3.10", "3.11", "3.12", "3.13", "3.14"), default="3.12"
     )
     streamlit.add_argument(
         "--fail-on", choices=("information", "warning", "error"), default="error"

@@ -7,11 +7,12 @@ import argparse
 import re
 import sys
 import tarfile
-import tomllib
 import zipfile
 from email.parser import BytesParser
 from email.policy import compat32
 from pathlib import Path
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = ROOT / "packages" / "edron"
@@ -58,6 +59,12 @@ FORBIDDEN_WHEEL_PREFIXES = ("hedron/", "hedron_core/", "hedron_data/", "hedron_c
 REQUIREMENTS_BY_VERSION = {
     "0.8": ("hedron>=0.66.2,<0.67", "hedron-data>=0.66.2,<0.67"),
     "0.9": ("hedron>=0.67.0,<0.68", "hedron-data>=0.67.0,<0.68"),
+    "1.0": (
+        "hedron>=1.0.0,<2.0",
+        "hedron-data>=1.0.0,<2.0",
+        "hedron-charts>=1.0.0,<2.0",
+        "hedron-maps>=1.0.0,<2.0",
+    ),
 }
 
 

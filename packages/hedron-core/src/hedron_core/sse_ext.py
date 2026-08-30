@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import re
-from collections.abc import Sequence
 from typing import ClassVar
 
 from hedron_core.builtins._base import collect_children
@@ -11,6 +10,7 @@ from hedron_core.codes import HED_EXT_0010
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.html import html
+from hedron_core.htmx.attrs import HtmxAttrs
 from hedron_core.htmx_contract import safe_css_selector, safe_hx_swap
 from hedron_core.htmx_extensions import require_htmx_extension
 from hedron_core.models import Props
@@ -90,7 +90,7 @@ class SseRegion(Component[SseRegionProps]):
     def render(self) -> NodeLike:
         require_htmx_extension("sse")
         attrs: dict[str, HtmlAttrValue] = {
-            "hx-ext": "sse",
+            **HtmxAttrs(extension="sse").as_html_attrs(),
             "sse-connect": self.props.connect,
             "sse-swap": self.props.swap,
         }
@@ -154,17 +154,17 @@ class SseTrigger(Component[SseTriggerProps]):
         super().__init__(
             SseTriggerProps(event=token, href=url, target=selector, swap=swap, **kwargs)
         )
-        self._children: Sequence[NodeLike] = collect_children(*children)
+        self._children = collect_children(*children)
 
     def render(self) -> NodeLike:
         require_htmx_extension("sse")
-        attrs: dict[str, HtmlAttrValue] = {"hx-trigger": f"sse:{self.props.event}"}
-        if self.props.href is not None:
-            attrs["hx-get"] = self.props.href
-        if self.props.target:
-            attrs["hx-target"] = self.props.target
-        if self.props.swap:
-            attrs["hx-swap"] = self.props.swap
+        attrs: dict[str, HtmlAttrValue] = HtmxAttrs(
+            method="get" if self.props.href is not None else None,
+            url=str(self.props.href) if self.props.href is not None else None,
+            target=self.props.target,
+            swap=self.props.swap,
+            trigger=f"sse:{self.props.event}",
+        ).as_html_attrs()
         return html.div(*self._children, **attrs)
 
 

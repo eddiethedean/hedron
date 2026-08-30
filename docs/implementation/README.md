@@ -51,7 +51,7 @@ These documents describe how accepted RFC behavior will be implemented. They def
   D-101 / D-102 / D-105 W0–W17 workstreams for screens, forms, workspaces, task/dashboard/session/
   upload flows, `DesignSystem`, brand compilation, recipes/feature roles, scopes, unified
   explanation/preview/diff/ejection, all starter migrations, and twenty-gate release evidence
-  (Stage 0 Refined)
+  (implementation in progress)
 - [Modern CSS platform and intuitive built-in styling](MODERN_CSS_059.md) — phase 0.59 D-106 / D-107
   refined workstreams for the scoped compiler, cascade/tokens, modern color/type, container layout,
   media/overlay/motion, control/AppShell/pipeline consumer slices, tooling, fleet adoption, and
@@ -89,10 +89,17 @@ These documents describe how accepted RFC behavior will be implemented. They def
 - [Phase 0.67 execution plan](EXECUTION_0_67.md) — entry lock, supply/CSP, browser-plan closure,
   typed directives, unified interaction, lifecycle, component-engine, migration, evidence, and
   release sequence
-- [Hedron 1.0 implementation and cut plan](HEDRON_1_0.md) — **Stage 0 Refined** against Verified
-  Beta `v0.67.0`; complete inventory/warning reconciliation, canonical facade and per-slice
-  removals, static migration, interaction/engine cutover, dual-version fleet evidence, and
-  release sequencing; W1 removals remain blocked on `ENTRY-100`
+- [HTMX/Alpine component usage counts](HTMX_ALPINE_COMPONENT_COUNTS.md) — generated built-in
+  component inventory across the 0.66.2, 0.67.0, and 1.0.0 release boundaries
+- [HTMX/Alpine implementation refinement](HTMX_ALPINE_REFINEMENT_1_1_2_0.md) — proposed 1.1
+  transition and 2.0 cleanup for explicit scopes, typed lowering, native-first controls,
+  lifecycle ownership, concurrency, and demand-driven assets
+- [HTMX/Alpine 1.1 migration](../guides/htmx-alpine-migration.md) — migration table, ownership rules,
+  compatibility shims, and complete release-gate command
+- [Hedron 1.0 implementation and cut plan](HEDRON_1_0.md) — **Implemented and Verified** against
+  the immutable `v0.67.0` baseline; inventory/warning reconciliation, canonical facade and
+  per-slice removals, static migration, interaction/engine cutover, dual-version fleet evidence,
+  and all 17 release gates are complete; `v1.0.0` is verified in-tree and publication is deferred
 - [Hedron-native documentation application](HEDRON_NATIVE_DOCUMENTATION.md) — draft unassigned
   workstreams for compiling the Markdown corpus into native Hedron component trees, building the
   docs shell/search/API/live-demo application, proving parity, and cutting over to FastAPI Cloud

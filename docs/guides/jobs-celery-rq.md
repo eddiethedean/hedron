@@ -71,7 +71,7 @@ experimental.
         )
 
 
-    @app.fragment("/jobs/42", region=job)
+    @app.view("/jobs/42", fragment_regions=(job,))
     def job_tick():
         global _tick
         state, detail = _STEPS[min(_tick, len(_STEPS) - 1)]

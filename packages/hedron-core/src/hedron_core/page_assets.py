@@ -37,6 +37,7 @@ __all__ = [
     "DEFAULT_STATIC_PREFIX",
     "htmx_core_script_end",
     "inject_htmx_core",
+    "inject_htmx_bridge",
     "inject_htmx_extensions",
     "inject_alpine_plan",
     "inject_page_assets",
@@ -145,6 +146,27 @@ def inject_htmx_core(
     tag = f'<script src="{htmx_src}" defer></script>'
     if "htmx.min.js" in html_text:
         return html_text
+    if "</head>" in html_text:
+        return html_text.replace("</head>", f"{tag}\n</head>", 1)
+    if "</body>" in html_text:
+        return html_text.replace("</body>", f"{tag}</body>", 1)
+    return html_text + tag
+
+
+def inject_htmx_bridge(
+    html_text: str,
+    mode: RenderMode,
+    *,
+    static_href: Callable[[str], str] | None = None,
+) -> str:
+    """Inject Hedron's minimal HTMX lifecycle bridge after HTMX core."""
+    if mode is not RenderMode.PAGE or "hedron-htmx.mjs" in html_text:
+        return html_text
+    bridge_src = _prefix_href("/hedron-static/hedron-htmx.mjs", static_href=static_href)
+    tag = f'<script type="module" src="{bridge_src}"></script>'
+    core_end = htmx_core_script_end(html_text)
+    if core_end is not None:
+        return html_text[:core_end] + "\n" + tag + html_text[core_end:]
     if "</head>" in html_text:
         return html_text.replace("</head>", f"{tag}\n</head>", 1)
     if "</body>" in html_text:
@@ -369,6 +391,7 @@ def inject_page_assets(
     theme_preference: object | None = None,
     plan: ExtensionPlan | None = None,
     browser_plan: object | None = None,
+    demand_driven: bool = False,
 ) -> str:
     """Inject HTMX core, default CSS/UI modules, build assets, then extensions.
 
@@ -381,7 +404,11 @@ def inject_page_assets(
     :func:`merge_registered_head` (not also emitted here) to avoid double scripts.
     """
     html_text = inject_page_theme(html_text, mode, theme, preference=theme_preference)
-    html_text = inject_htmx_core(html_text, mode, policy=policy, static_href=static_href)
+    requires_htmx = bool(re.search(r"\s(?:data-)?hx-[a-z][a-z0-9-]*=", html_text))
+    if not demand_driven or requires_htmx:
+        html_text = inject_htmx_core(html_text, mode, policy=policy, static_href=static_href)
+    if requires_htmx:
+        html_text = inject_htmx_bridge(html_text, mode, static_href=static_href)
     html_text = inject_alpine_plan(html_text, mode, browser_plan, static_href=static_href)
     if mode is not RenderMode.PAGE:
         reject_invented_fragment_scripts(html_text)
@@ -424,15 +451,27 @@ def inject_page_assets(
         else:
             head_tags.append(tag)
 
-    if include_ui_modules:
-        if "hedron-disclose.mjs" not in html_text:
+    ui_demand = any(
+        marker in html_text
+        for marker in (
+            "hedron-tabs",
+            "data-hedron-password-toggle",
+            "data-hedron-toast",
+            "data-hedron-reveal",
+            "data-hedron-nav-toggle",
+            "data-hedron-after-load",
+        )
+    )
+    disclose_demand = "<hedron-" in html_text
+    if include_ui_modules and (not demand_driven or ui_demand or disclose_demand):
+        if (not demand_driven or disclose_demand) and "hedron-disclose.mjs" not in html_text:
             disclose = _prefix_href(
                 f"{DEFAULT_STATIC_PREFIX}/hedron-disclose.mjs", static_href=static_href
             )
             if disclose not in seen_href:
                 seen_href.add(disclose)
                 head_tags.append(f'<script type="module" src="{disclose}"></script>')
-        if "hedron-ui.mjs" not in html_text:
+        if (not demand_driven or ui_demand) and "hedron-ui.mjs" not in html_text:
             ui = _prefix_href(f"{DEFAULT_STATIC_PREFIX}/hedron-ui.mjs", static_href=static_href)
             if ui not in seen_href:
                 seen_href.add(ui)
@@ -466,4 +505,6 @@ def inject_page_assets(
         merge_assets,
         enabled=head_support_on,
     )
+    if demand_driven and not requires_htmx:
+        return html_text
     return inject_htmx_extensions(html_text, static_href=static_href, plan=resolved)

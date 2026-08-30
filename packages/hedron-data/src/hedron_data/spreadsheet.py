@@ -74,7 +74,7 @@ _DANGEROUS_FORMULA_PREFIXES = frozenset(
 )
 
 
-def _reject_or_sanitize(value: str, *, formula_policy: str) -> str:
+def reject_or_sanitize(value: str, *, formula_policy: str) -> str:
     # Classic spreadsheet/CSV injection prefixes, after stripping evasion padding.
     normalized = _strip_formula_evasion_prefix(value)
     folded = unicodedata.normalize("NFKC", normalized) if normalized else ""
@@ -92,6 +92,10 @@ def _reject_or_sanitize(value: str, *, formula_policy: str) -> str:
             return "'" + normalized
         raise ValueError(f"Unknown formula_policy {formula_policy!r}")
     return value
+
+
+# Compatibility name retained for callers that used the pre-1.0 helper.
+_reject_or_sanitize = reject_or_sanitize
 
 
 def _xml_safe_text(value: str) -> str:
@@ -239,9 +243,9 @@ def export_rows_xlsx(
             ]
             for row in rows
         ]
-        row_xml = []
+        row_xml: list[str] = []
         for r_idx, values in enumerate(sheet_rows, start=1):
-            cells = []
+            cells: list[str] = []
             for c_idx, value in enumerate(values):
                 col = excel_col(c_idx)
                 ref = f"{col}{r_idx}"

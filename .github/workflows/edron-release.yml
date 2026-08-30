@@ -4,23 +4,37 @@ on:
   push:
     tags:
       - "edron-v*.*.*"
+  workflow_dispatch:
+    inputs:
+      release_ref:
+        description: Existing immutable edron-v tag to recover
+        required: true
+        type: string
 
 permissions:
   contents: read
 
 concurrency:
-  group: edron-release-${{ github.ref }}
+  group: edron-release-${{ inputs.release_ref || github.ref }}
   cancel-in-progress: false
 
 env:
   UV_NO_PROGRESS: "1"
   UV_VERSION: "0.12.1"
+  SOURCE_DATE_EPOCH: "315619200"
+  PYTHONDONTWRITEBYTECODE: "1"
+  RELEASE_REF: ${{ inputs.release_ref || github.ref }}
+  RELEASE_TAG: ${{ inputs.release_ref || github.ref_name }}
 
 jobs:
   test:
-    name: Test Edron
+    name: Test Edron (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
     permissions:
       contents: read
 
@@ -28,7 +42,7 @@ jobs:
       - name: Check out tagged source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ env.RELEASE_REF }}
           persist-credentials: false
 
       - name: Install uv
@@ -39,37 +53,42 @@ jobs:
           cache-dependency-glob: uv.lock
 
       - name: Set up Python
-        run: uv python install 3.11
+        run: uv python install ${{ matrix.python-version }}
 
       - name: Sync locked workspace
-        run: uv sync --locked --python 3.11
+        run: uv sync --locked --python ${{ matrix.python-version }}
 
       - name: Run Edron regression tests
         run: >-
-          uv run --python 3.11 pytest -q
+          uv run --python ${{ matrix.python-version }} pytest -q
           tests/unit/test_edron_phase05.py
           tests/unit/test_phase07_edron.py
           tests/unit/test_phase08_edron.py
           tests/unit/test_edron_phase09.py
           tests/unit/test_edron_phase09_packet.py
+          tests/unit/test_edron_100_packet.py
           tests/upgrade/test_0_7_to_0_8_deployment.py
           tests/unit/test_edron_phase04.py
           tests/unit/test_edron_phase03.py
           tests/unit/test_edron_phase02.py
+          tests/unit/test_package_metadata.py
           tests/unit/test_edron_runtime.py
           tests/unit/test_edron_docs_checker.py
           tests/unit/test_hedron_import_surface.py
-          tests/unit/test_package_metadata.py
+          tests/unit/test_maps_047_pkg.py
           tests/ops/test_packaging_isolation.py::test_all_packages_declare_license_and_version
 
       - name: Lint Edron release surface
+        if: matrix.python-version == '3.12'
         run: >-
-          uv run --python 3.11 ruff check
+          uv run --python 3.12 ruff check
           packages/edron/src/edron
           scripts/check_edron_release.py
           scripts/verify_edron_phase08.py
           scripts/check_edron_09_release.py
           scripts/verify_edron_phase09.py
+          scripts/check_edron_10_release.py
+          scripts/verify_edron_100.py
           tests/unit/test_edron_phase05.py
           tests/unit/test_phase07_edron.py
           tests/unit/test_phase08_edron.py
@@ -77,15 +96,65 @@ jobs:
           tests/unit/test_edron_phase04.py
           tests/unit/test_edron_phase03.py
           tests/unit/test_edron_phase02.py
-          tests/unit/test_package_metadata.py
 
-      - name: Verify Edron 0.9 packet
-        run: uv run --python 3.11 python scripts/verify_edron_phase09.py
+      - name: Run Stable package typing gate
+        if: matrix.python-version == '3.12'
+        run: bash scripts/ci_checks.sh typing --python 3.12
+
+      - name: Verify Edron 1.0 packet
+        if: matrix.python-version == '3.12'
+        run: uv run --python 3.12 python scripts/verify_edron_100.py
+
+  dependency_bounds:
+    name: Edron Stable dependency bounds
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_REF }}
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: ${{ env.UV_VERSION }}
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Run minimum/latest matrix
+        run: bash scripts/ci_checks.sh workbench --python 3.12
+
+  browser:
+    name: Edron browser (${{ matrix.browser }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_REF }}
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: ${{ env.UV_VERSION }}
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Sync locked workspace
+        run: uv sync --locked --python 3.12
+      - name: Install browser
+        run: bash scripts/ci_install_playwright.sh ${{ matrix.browser }} 3.12
+      - name: Run Stable browser gate
+        env:
+          HEDRON_BROWSER: "1"
+          HEDRON_BROWSER_ENGINE: ${{ matrix.browser }}
+        run: bash scripts/ci_checks.sh browser --python 3.12
 
   publish:
     name: Build and publish Edron
-    needs: test
+    needs: [test, dependency_bounds, browser]
     runs-on: ubuntu-latest
+    environment: release
     timeout-minutes: 15
     permissions:
       contents: read
@@ -96,7 +165,8 @@ jobs:
       - name: Check out tagged source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ env.RELEASE_REF }}
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Install uv
@@ -107,11 +177,14 @@ jobs:
           cache-dependency-glob: uv.lock
 
       - name: Set up Python
-        run: uv python install 3.11
+        run: uv python install 3.12
+
+      - name: Sync locked workspace
+        run: uv sync --locked --python 3.12
 
       - name: Verify tag and package version
         env:
-          TAG: ${{ github.ref_name }}
+          TAG: ${{ env.RELEASE_TAG }}
         run: |
           set -euo pipefail
 
@@ -127,7 +200,7 @@ jobs:
             exit 1
           fi
 
-          read -r package_name package_version <<<"$(uv run --no-project --python 3.11 python -c '
+          read -r package_name package_version <<<"$(uv run --no-project --python 3.12 python -c '
           import tomllib
           from pathlib import Path
           project = tomllib.loads(Path("packages/edron/pyproject.toml").read_text())["project"]
@@ -145,15 +218,18 @@ jobs:
 
           echo "Publishing edron==$package_version from $TAG"
 
-      - name: Build Edron artifacts
+      - name: Build Edron release artifacts
         run: |
           set -euo pipefail
           rm -rf dist
           uv build --package edron --out-dir dist
+          uv build --package edron-sim --out-dir dist
           ls -la dist
-          VERSION="${GITHUB_REF_NAME#edron-v}"
-          uv run --no-project --python 3.11 python scripts/check_edron_09_release.py \
+          VERSION="${RELEASE_TAG#edron-v}"
+          .venv/bin/python scripts/check_edron_10_release.py \
             --dist-dir dist --version "${VERSION}"
+          .venv/bin/python scripts/verify_edron_release_artifacts.py \
+            --dist-dir dist
 
       - name: Attest build provenance
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
@@ -161,9 +237,81 @@ jobs:
           subject-path: |
             dist/edron-*.whl
             dist/edron-*.tar.gz
+            dist/edron_sim-*.whl
+            dist/edron_sim-*.tar.gz
 
-      - name: Publish Edron to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Preflight published Stable dependencies from PyPI
+        run: |
+          set -euo pipefail
+          uv venv .edron-release-preflight --python 3.12
+          uv pip install --python .edron-release-preflight/bin/python \
+            dist/edron-*.whl dist/edron_sim-*.whl
+          .edron-release-preflight/bin/python -c \
+            "import edron, edron_sim, hedron, hedron_data, hedron_charts, hedron_maps"
+
+      - name: Publish Edron and edron-sim to PyPI
+        if: github.event_name == 'push'
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # release/v1
         with:
           packages-dir: dist/
           skip-existing: true
+
+      - name: Recover Edron and edron-sim publication
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${UV_PUBLISH_TOKEN:-}" ]; then
+            echo "PYPI_API_TOKEN secret is not set" >&2
+            exit 1
+          fi
+          uv publish --token "$UV_PUBLISH_TOKEN" \
+            --check-url https://pypi.org/simple/ \
+            dist/edron-*.whl dist/edron-*.tar.gz \
+            dist/edron_sim-*.whl dist/edron_sim-*.tar.gz
+
+      - name: Verify the published Edron quick start
+        run: |
+          set -euo pipefail
+          VERSION="${RELEASE_TAG#edron-v}"
+          smoke_dir="$(mktemp -d)"
+          for attempt in 1 2 3 4 5 6; do
+            if uvx --refresh --from "edron==${VERSION}" edron new smoke \
+              --path "${smoke_dir}/app" --template minimal --overwrite; then
+              break
+            fi
+            if [ "${attempt}" -eq 6 ]; then
+              echo "Published edron==${VERSION} did not resolve from PyPI" >&2
+              exit 1
+            fi
+            sleep 20
+          done
+          cd "${smoke_dir}/app"
+          uv sync --no-install-project
+          uv run --no-sync python -c \
+            "import importlib.metadata as m; import app; assert m.version('edron') == '${VERSION}'; assert app.app"
+
+      - name: Verify published edron-sim
+        run: |
+          set -euo pipefail
+          SIM_VERSION="$(uv run --no-project --python 3.12 python -c '
+          import tomllib
+          from pathlib import Path
+          print(tomllib.loads(Path("packages/edron-sim/pyproject.toml").read_text())["project"]["version"])
+          ')"
+          smoke_dir="$(mktemp -d)"
+          uv venv "${smoke_dir}/venv" --python 3.12
+          for attempt in 1 2 3 4 5 6; do
+            if uv pip install --refresh --python "${smoke_dir}/venv/bin/python" \
+              "edron-sim==${SIM_VERSION}"; then
+              break
+            fi
+            if [ "${attempt}" -eq 6 ]; then
+              echo "Published edron-sim==${SIM_VERSION} did not resolve from PyPI" >&2
+              exit 1
+            fi
+            sleep 20
+          done
+          "${smoke_dir}/venv/bin/python" -c \
+            "import edron_sim; assert edron_sim.__version__ == '${SIM_VERSION}'"

@@ -2,10 +2,10 @@
 
 Deny-by-default MCP Streamable HTTP projection for Hedron.
 
-**Package maturity:** Beta (`0.2.1`) · pin `>=0.2.1,<0.3` (compatible floor `>=0.2.0,<0.3`)  
-**Flagship extra:** `hedron[mcp]` · **Import:** `hedron_mcp`  
-Living Hedron train `0.66.x` (checkout tip `v0.66.2`; flagship extra install from PyPI
-stays `>=0.66.2,<0.67` ). Disabled and empty until resources and tools are
+**Package maturity:** Beta · **Repository package version:** `0.2.4` · pin `>=0.2.4,<0.3`
+**Flagship extra:** `hedron[mcp]` · **Import:** `hedron_mcp`
+The source tree requires the Hedron 1.0 candidate; applications installed from PyPI
+should pin the flagship extra to `hedron[mcp]>=0.67.0,<0.68`. Disabled and empty until resources and tools are
 **explicitly registered**. MCP never grants authority beyond the authenticated principal.
 
 Production-grade for the declared Supported inventory (phase **0.32** /
@@ -15,9 +15,9 @@ Production-grade for the declared Supported inventory (phase **0.32** /
 ## Install
 
 ```bash
-pip install "hedron[mcp]>=0.66.2,<0.67"
+pip install "hedron[mcp]>=1.0.0,<1.1"
 # or
-pip install "hedron-mcp>=0.2.0,<0.3"
+pip install "hedron-mcp>=0.2.4,<0.3"
 ```
 
 Installing without registrations remains a no-op empty server.

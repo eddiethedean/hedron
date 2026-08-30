@@ -25,7 +25,7 @@ Supports **create, list, and delete** — not a full admin CRUD surface.
 
     from typing import Annotated
 
-    from fastapi import HTTPException, status
+    from fastapi import HTTPException
     from pydantic import BaseModel, Field
     from sqlalchemy import Column, Integer, String, create_engine, select
     from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
@@ -76,7 +76,7 @@ Supports **create, list, and delete** — not a full admin CRUD surface.
     )
 
 
-    @app.refreshable("/notes")
+    @app.view("/notes")
     def notes():
         with Session(engine) as db:
             rows = list(db.scalars(select(Note).order_by(Note.id.desc())).all())
@@ -98,12 +98,12 @@ Supports **create, list, and delete** — not a full admin CRUD surface.
         return html.ul(*items)
 
 
-    @app.command("/save", fallback="/")
+    @app.action("/save", fallback="/")
     def save(data: Annotated[NoteIn, FormBody()]):
         normalized = data.body.strip()
         if not normalized:
             raise HTTPException(
-                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                status_code=422,
                 detail="Note body must not be blank",
             )
         with SessionLocal() as db:
@@ -112,7 +112,7 @@ Supports **create, list, and delete** — not a full admin CRUD surface.
         return refresh(notes)
 
 
-    @app.command("/delete", fallback="/")
+    @app.action("/delete", fallback="/")
     def delete(data: Annotated[DeleteNote, FormBody()]):
         with SessionLocal() as db:
             note = db.get(Note, data.note_id)
@@ -138,7 +138,7 @@ Supports **create, list, and delete** — not a full admin CRUD surface.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # Windows: py -3 -m venv .venv && .\.venv\Scripts\Activate.ps1
-pip install "hedron>=0.66.2,<0.67" "uvicorn[standard]" "sqlalchemy>=2.0"
+pip install "hedron>=1.0.0,<1.1" "uvicorn[standard]" "sqlalchemy>=2.0"
 curl -fsSL https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/notes-sqlalchemy/app.py -o app.py
 uvicorn app:app --reload
 ```
@@ -155,7 +155,7 @@ process working directory (gitignored).
 
 ## What it shows
 
-- `@app.refreshable` notes list plus `@app.command` save/delete with `FormBody` / `refresh(notes)`
+- `@app.view` notes list plus `@app.action` save/delete with `FormBody` / `refresh(notes)`
 - SQLAlchemy ORM + SQLite (`notes.db` in the process working directory)
 - HTMX fragment refresh with ordinary HTTP fallback to `/`
 

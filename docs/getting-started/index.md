@@ -6,12 +6,21 @@ search:
 
 # Learn Hedron
 
+<!-- hedron-release-status -->
+
+These are the stable **1.0** learning paths. Release and support details:
+[Current release](../guides/current-release.md).
+
+Not sure which authoring layer you need? Start with
+[Choose Edron or Hedron](choose-layer.md). New complete applications normally begin with
+Edron; direct FastAPI and component work begins with Hedron.
+
 Get from an empty directory to a CSRF-protected form without introducing a frontend
 build system. The golden path extends one small application across four pages; each step
 has an observable browser result.
 
-**Start now:** [Build your first app](quickstart.md) — scaffold → Hello → Refresh → edit
-(~10 minutes after Python + uv/pip are ready).
+**Start now:** [Build your first Edron app](edron-quickstart.md) (~5 minutes) or
+[build your first Hedron app](quickstart.md) (~10 minutes).
 
 New to application development, VS Code, or terminals? Choose the slower, fully explained
 walkthrough for your environment:
@@ -26,7 +35,7 @@ walkthrough for your environment:
 |---|---|---|
 | 1. [Build your first app](quickstart.md) | A generated FastAPI application | A button refreshes one region without reloading the page |
 | 2. [Understand HTMX](what-is-htmx.md) | The request/target/swap mental model | You can explain why the refresh is a fragment request |
-| 3. [Add a second region](../guides/htmx-interactions.md) | Another `@app.refreshable` view | Each button updates only its view |
+| 3. [Add a second region](../guides/htmx-interactions.md) | Another `@app.view` | Each button updates only its view |
 | 4. [Post a minimal form](../guides/minimal-form.md) | A form, action, and CSRF field | A valid POST changes the page; a missing token fails closed |
 | 5. [Continue through the curriculum](learning-path.md) | Validation, persistence, auth, testing, and deployment | The same app grows along a production-minded path |
 
@@ -42,7 +51,8 @@ Evaluating production use? [What’s ready](../guides/whats-ready.md) ·
 | You need to… | Go to |
 |---|---|
 | Learn the page/fragment model | [Core concepts](core-concepts.md) |
-| Choose between `@app.refreshable` and `@app.fragment` | [Which interaction API?](interaction-apis.md) |
+| Decide whether behavior belongs in the browser or on the server | [What is Alpine?](what-is-alpine.md) · [What is HTMX?](what-is-htmx.md) |
+| Choose between `@app.view` and the Advanced fragment API | [Which interaction API?](interaction-apis.md) |
 | Paste one focused pattern into an existing app | [Cookbook](../guides/cookbook.md) |
 | Diagnose an error or unexpected response | [Troubleshooting](../guides/troubleshooting.md) |
 | Look up an exact component or signature | [Components](../components/index.md) · [API reference](../api/HEDRON.md) |
@@ -51,6 +61,7 @@ Evaluating production use? [What’s ready](../guides/whats-ready.md) ·
 
 | Starting point | Continue with |
 |---|---|
+| New complete Python application | [Build your first Edron app](edron-quickstart.md) |
 | Know Python, new to application development | [Start with VS Code and terminal basics](first-app-vscode.md) |
 | Know Python, developing in Posit Workbench | [Start with `hedron-posit` in Workbench](first-app-posit-workbench.md) |
 | New FastAPI app | [Build your first app](quickstart.md) |

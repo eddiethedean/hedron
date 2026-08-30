@@ -18,7 +18,6 @@ from hedron_core._html_meta import (
 from hedron_core._nodes import (
     CommentNode,
     ComponentBoundaryNode,
-    ElementNode,
     EmptyNode,
     FragmentNode,
     Node,
@@ -213,31 +212,25 @@ def serialize_node(node: Node, *, mount_path: str = "") -> str:
         return "".join(serialize_node(child, mount_path=mount_path) for child in node.children)
     if isinstance(node, ComponentBoundaryNode):
         return "".join(serialize_node(child, mount_path=mount_path) for child in node.children)
-    if isinstance(node, ElementNode):
-        tag = node.tag.lower()
-        if tag in FORBIDDEN_TAGS:
+    tag = node.tag.lower()
+    if tag in FORBIDDEN_TAGS:
+        raise error(
+            "HED-SEC-0009",
+            title="Active HTML element rejected",
+            explanation=f"<{tag}> cannot be serialized under baseline policy.",
+        )
+    attrs = serialize_attributes(node.attributes, mount_path=mount_path)
+    if node.void or tag in VOID_TAGS:
+        if node.children:
             raise error(
-                "HED-SEC-0009",
-                title="Active HTML element rejected",
-                explanation=f"<{tag}> cannot be serialized under baseline policy.",
+                "HED-HTML-0003",
+                title="Void element cannot have children",
+                explanation=f"<{tag}> is a void element and cannot contain children.",
+                remediation="Remove children from void elements.",
             )
-        attrs = serialize_attributes(node.attributes, mount_path=mount_path)
-        if node.void or tag in VOID_TAGS:
-            if node.children:
-                raise error(
-                    "HED-HTML-0003",
-                    title="Void element cannot have children",
-                    explanation=f"<{tag}> is a void element and cannot contain children.",
-                    remediation="Remove children from void elements.",
-                )
-            return f"<{tag}{attrs}>"
-        inner = "".join(serialize_node(child, mount_path=mount_path) for child in node.children)
-        return f"<{tag}{attrs}>{inner}</{tag}>"
-    raise error(
-        "HED-RENDER-0001",
-        title="Unknown node type",
-        explanation=f"Cannot serialize {type(node)!r}.",
-    )
+        return f"<{tag}{attrs}>"
+    inner = "".join(serialize_node(child, mount_path=mount_path) for child in node.children)
+    return f"<{tag}{attrs}>{inner}</{tag}>"
 
 
 def serialize_tree(nodes: tuple[Node, ...] | Node, *, mount_path: str = "") -> str:

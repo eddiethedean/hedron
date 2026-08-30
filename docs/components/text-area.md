@@ -57,7 +57,7 @@ Keep `TextArea` at the smallest semantic boundary. Fragment routes should return
 the replaced region and preserve stable target IDs across success, validation, empty,
 loading, and error responses.
 
-`TextArea` participates in interaction markup. Pair it with an explicit `@action` / `@component` POST (and CSRF) when the control mutates state.
+`TextArea` participates in interaction markup. Pair it with an explicit `@app.action` POST (and CSRF) when the control mutates state.
 
 ## Accessibility
 

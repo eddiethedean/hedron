@@ -7,9 +7,8 @@ description: First-party charts, deterministic exports, and optional plotting-li
 `hedron-charts` provides Hedron's first-party declarative chart path, four beginner components,
 deterministic server exports, and explicit adapters for established Python plotting libraries.
 
-**Package maturity:** Beta · Compatible with published Hedron train `0.60.x`
-(`v0.64.0` published on PyPI) · **Package version:** `0.2.0`
-(pin `>=0.2.0,<0.3`)
+**Package maturity:** Stable · **Repository package version:** `1.0.0`
+(pin `>=1.0.0,<2.0`) · requires `hedron-core>=1.0.0,<2.0`
 
 **Flagship extra:** `hedron[charts]` · **Import:** `hedron_charts`
 
@@ -19,19 +18,23 @@ Experimental explicit opt-ins.
 
 ## Install
 
+The flagship extra below resolves the current public `1.0.0` train. The direct satellite
+pin describes the 1.0 repository package and is intended for the coordinated 1.0 publication
+or an editable workspace checkout.
+
 ```bash
-pip install "hedron[charts]>=0.66.2,<0.67"
+pip install "hedron[charts]>=1.0.0,<1.1"
 
 # Or install the independently versioned satellite:
-pip install "hedron-charts>=0.2.1,<0.3"
+pip install "hedron-charts>=1.0.0,<2.0"
 ```
 
 Add only the plotting backend your application uses:
 
 ```bash
-pip install "hedron-charts[matplotlib]>=0.2.1,<0.3"
-pip install "hedron-charts[plotly]>=0.2.1,<0.3"
-pip install "hedron-charts[altair]>=0.2.1,<0.3"
+pip install "hedron-charts[matplotlib]>=1.0.0,<2.0"
+pip install "hedron-charts[plotly]>=1.0.0,<2.0"
+pip install "hedron-charts[altair]>=1.0.0,<2.0"
 ```
 
 | Extra | Backend |

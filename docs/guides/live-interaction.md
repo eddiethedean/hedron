@@ -94,7 +94,7 @@ for Flask/Django use the same `Poll` component with `hedron_route` /
         )
 
 
-    @app.fragment("/jobs/42", region=job)
+    @app.view("/jobs/42", fragment_regions=(job,))
     def job_tick():
         global _tick
         state, detail = _STEPS[min(_tick, len(_STEPS) - 1)]
@@ -103,7 +103,7 @@ for Flask/Django use the same `Poll` component with `hedron_route` /
     ```
 
 ```python title="app.py"
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from hedron import (
     ComponentRef,
@@ -132,11 +132,11 @@ CLOCK_REF = ComponentRef(
 
 
 def clock_text():
-    now = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    now = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
     return Text(now)
 
 
-@app.component("/clock", fragment_regions=(CLOCK,))
+@app.view("/clock", fragment_regions=(CLOCK,))
 def clock_fragment() -> InteractionResult:
     return InteractionResult(
         content=clock_text(),

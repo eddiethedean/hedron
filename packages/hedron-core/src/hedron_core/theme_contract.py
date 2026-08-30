@@ -82,13 +82,20 @@ class ThemeResolution:
 
     name: str
     tokens: Mapping[str, str]
-    derived: Mapping[str, str] = field(default_factory=dict)
-    modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
-    variants: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
-    accessibility_modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
-    aliases: Mapping[str, str] = field(default_factory=dict)
-    groups: Mapping[str, str] = field(default_factory=dict)
-    recipes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
+    derived: Mapping[str, str] = field(default_factory=dict[str, str])
+    modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict[str, Mapping[str, str]])
+    variants: Mapping[str, Mapping[str, str]] = field(default_factory=dict[str, Mapping[str, str]])
+    accessibility_modes: Mapping[str, Mapping[str, str]] = field(
+        default_factory=dict[str, Mapping[str, str]]
+    )
+    aliases: Mapping[str, str] = field(default_factory=dict[str, str])
+    groups: Mapping[str, str] = field(default_factory=dict[str, str])
+    recipes: Mapping[str, Mapping[str, str]] = field(default_factory=dict[str, Mapping[str, str]])
+    content_width: str | None = None
+    typography_features: Mapping[str, int] = field(default_factory=dict[str, int])
+    typography_role_features: Mapping[str, Mapping[str, int]] = field(
+        default_factory=dict[str, Mapping[str, int]]
+    )
     provenance: tuple[Mapping[str, Any], ...] = ()
     source_schema: str = "hedron.theme/1"
 
@@ -116,6 +123,12 @@ class ThemeResolution:
             "groups": dict(sorted(self.groups.items())),
             "recipes": {
                 key: dict(sorted(value.items())) for key, value in sorted(self.recipes.items())
+            },
+            "content_width": self.content_width,
+            "typography_features": dict(sorted(self.typography_features.items())),
+            "typography_role_features": {
+                key: dict(sorted(value.items()))
+                for key, value in sorted(self.typography_role_features.items())
             },
             "provenance": [dict(item) for item in self.provenance],
             "source_schema": self.source_schema,
@@ -152,6 +165,11 @@ def resolve_theme(theme: Theme | ThemeSpec) -> ThemeResolution:
         aliases=dict(getattr(source, "aliases", {})),
         groups=dict(getattr(source, "groups", {})),
         recipes={key: dict(value) for key, value in getattr(source, "recipes", {}).items()},
+        content_width=resolved.content_width,
+        typography_features=dict(resolved.typography_features),
+        typography_role_features={
+            key: dict(value) for key, value in resolved.typography_role_features.items()
+        },
         provenance=provenance,
         source_schema=source_schema,
     )
@@ -407,6 +425,11 @@ def export_theme(theme: Theme | ThemeSpec, *, profile: str = "core") -> ThemeExp
             modes={key: dict(value) for key, value in theme.modes.items()},
             accessibility_modes={
                 key: dict(value) for key, value in theme.accessibility_modes.items()
+            },
+            content_width=theme.content_width,
+            typography_features=dict(theme.typography_features),
+            typography_role_features={
+                key: dict(value) for key, value in theme.typography_role_features.items()
             },
             metadata={"source": "Theme", "parent": theme.parent},
         )

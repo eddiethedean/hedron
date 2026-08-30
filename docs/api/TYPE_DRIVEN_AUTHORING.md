@@ -1,5 +1,5 @@
 ---
-status: current
+status: historical
 phase: "0.44"
 ---
 
@@ -10,7 +10,8 @@ phase: "0.44"
     Published in-tree `v0.44.0` type-driven authoring (D-072 / D-073 / D-076). These symbols are
     **Beta**. They consume the shipped 0.43 handle API
     ([Refreshable views and commands](REFRESHABLE_VIEWS.md)). Pin
-    `hedron>=0.66.2,<0.67`.
+    `hedron>=0.67.0,<0.68` for public installs; use the repository checkout for the 1.0.0
+    candidate.
 
 Type-driven authoring uses Pydantic models and `typing.Annotated` metadata to describe validated
 view parameters, command forms, result effects, and optional class lifecycles:
@@ -496,7 +497,7 @@ FastAPI is the complete flagship. Flask, Django, and Jinja either consume portab
 [`adapter-disposition-044.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/adapter-disposition-044.toml).
 This phase does not implement 0.45 catalogs or 0.46 workflows.
 
-Supported authoring matrix: Python 3.11–3.14, Pydantic v2 public APIs only, FastAPI/Starlette as
+Supported authoring matrix: Python 3.10–3.14, Pydantic v2 public APIs only, FastAPI/Starlette as
 pinned on the 0.43 train, stock mypy and pyright. No required type-checker plugin.
 
 The `HED-TYPE-*` diagnostic family, including `HED-TYPE-BIND-SOURCE` (`HED-TYPE-0001`),

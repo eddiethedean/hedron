@@ -13,7 +13,7 @@ _MODULE_SPEC_RE = re.compile(
 )
 
 
-def _rewrite_css_urls(css: str, url_map: dict[str, str]) -> str:
+def rewrite_css_urls(css: str, url_map: dict[str, str]) -> str:
     """Rewrite relative url(...) values to fingerprinted public paths."""
 
     def repl(match: re.Match[str]) -> str:
@@ -29,7 +29,7 @@ def _rewrite_css_urls(css: str, url_map: dict[str, str]) -> str:
     return _URL_RE.sub(repl, css)
 
 
-def _rewrite_module_imports(js: str, basename_map: dict[str, str]) -> str:
+def rewrite_module_imports(js: str, basename_map: dict[str, str]) -> str:
     """Rewrite relative ES module specifiers to fingerprinted sibling filenames.
 
     Build flattens modules into one assets directory, so ``./foo.mjs`` becomes
@@ -45,3 +45,7 @@ def _rewrite_module_imports(js: str, basename_map: dict[str, str]) -> str:
         return f"{match.group('head')}{match.group('quote')}./{hashed}{match.group('quote')}"
 
     return _MODULE_SPEC_RE.sub(repl, js)
+
+
+_rewrite_css_urls = rewrite_css_urls
+_rewrite_module_imports = rewrite_module_imports

@@ -65,17 +65,17 @@ Document shell with optional side nav and a MainPanel body.
         )
 
 
-    @app.fragment("/home", region=panel)
+    @app.view("/home", fragment_regions=(panel,))
     def home_frag():
         return swap(panel_body("Home", "Overview metrics stay in MainPanel."))
 
 
-    @app.fragment("/reports", region=panel)
+    @app.view("/reports", fragment_regions=(panel,))
     def reports_frag():
         return swap(panel_body("Reports", "Reports fragment swapped into the panel."))
 
 
-    @app.fragment("/settings", region=panel)
+    @app.view("/settings", fragment_regions=(panel,))
     def settings_frag():
         return swap(panel_body("Settings", "Settings fragment; side nav stays put."))
     ```
@@ -100,7 +100,7 @@ This component can initiate or represent a backend interaction. The live documen
 ## Constructor and parameters
 
 ```python
-AppShell(*body, *, nav=None, nav_groups=None, panel_id='main-panel', class_=None, id=None)
+AppShell(*body, *, nav=None, nav_groups=None, panel_id='main-panel', content_width='default', nav_collapse='never', nav_collapsed=False, class_=None, id=None)
 ```
 
 | Parameter | Type | Meaning |
@@ -109,6 +109,9 @@ AppShell(*body, *, nav=None, nav_groups=None, panel_id='main-panel', class_=None
 | `nav` | `NodeLike | None` | Optional side navigation (often Nav of NavLinks). |
 | `nav_groups` | `Mapping[str, Sequence[NodeLike]] | Sequence[tuple[str, Sequence[NodeLike]]] | None` | Ordered grouped navigation lowered through `NavGroup`. |
 | `panel_id` | `str` | Id forwarded to the composed MainPanel. |
+| `content_width` | `narrow | default | wide | full` | Bounded content measure independent of navigation width. |
+| `nav_collapse` | `never | user | always` | Desktop rail policy; `user` adds an accessible persisted toggle. |
+| `nav_collapsed` | `bool` | Initial compact rail state. |
 
 ## Composition and backend behavior
 

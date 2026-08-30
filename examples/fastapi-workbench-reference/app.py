@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import os
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import FastAPI, Request, WebSocket
@@ -21,7 +21,7 @@ if static_dir.is_dir():
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request) -> str:
-    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
     mount = str(request.scope.get("root_path") or "")
     ping_action = f"{mount}/ping"
     docs_href = f"{mount}/docs"
@@ -59,7 +59,7 @@ def encoded_target() -> dict[str, str]:
 
 @app.get("/status")
 def status() -> dict[str, str]:
-    return {"ok": True, "at": datetime.now(UTC).isoformat()}
+    return {"ok": True, "at": datetime.now(timezone.utc).isoformat()}
 
 
 @app.get("/workbench-status", include_in_schema=False)

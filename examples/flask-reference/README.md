@@ -5,13 +5,13 @@ Minimal **native Flask** slice: home page + HTMX fragment route. Depends on
 
 ## Prerequisites
 
-- Python 3.11–3.14
+- Python 3.10–3.14
 - From a Hedron monorepo checkout: `uv sync` (includes adapter extras)
 
 Or in a fresh project:
 
 ```bash
-pip install "hedron-flask>=0.66.2,<0.67"
+pip install "hedron-flask>=1.0.0,<1.1"
 # Optional ASGI bridge only if you intentionally serve Flask via uvicorn:
 # pip install "uvicorn[standard]"
 ```
@@ -43,6 +43,6 @@ CSRF: safe GETs set the `hedron_csrf` cookie. Unsafe methods on `hedron_route` /
 ## Scope
 
 This slice proves portable components and `InteractionResult` on Flask. Adapters
-do not ship `@app.refreshable`; the home page still uses the same Refresh
+do not ship a separate refreshable facade; the home page still uses the same Refresh
 pattern as `hedron new --flask`. It is not the full FastAPI reference application
 (auth, DataEditor, charts).

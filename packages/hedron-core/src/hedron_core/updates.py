@@ -5,7 +5,9 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-from collections.abc import Mapping, Sequence
+from collections.abc import Generator, Mapping, Sequence
+from contextlib import contextmanager
+from contextvars import ContextVar
 from dataclasses import dataclass, field, replace
 from typing import Generic, Literal, Protocol, TypeVar, cast, runtime_checkable
 from urllib.parse import quote
@@ -18,7 +20,6 @@ from hedron_core.codes import (
     HED_UPDATE_0005,
     HED_UPDATE_0006,
     HED_UPDATE_0007,
-    HED_UPDATE_0008,
     HED_UPDATE_0009,
     HED_VIEW_0001,
     HED_VIEW_0003,
@@ -42,6 +43,7 @@ __all__ = [
     "BASE_DESCRIPTOR_VERSION",
     "IDENTITY_ALGO_VERSION",
     "MAX_EVENT_BYTES",
+    "MAX_HANDLE_DESCRIPTORS",
     "MAX_PATCH_TARGETS",
     "MAX_REFRESH_TARGETS",
     "SUPPORTED_SWAPS",
@@ -50,6 +52,7 @@ __all__ = [
     "BindingPlan",
     "BoundValues",
     "HandleKind",
+    "HandleRegistryState",
     "Patch",
     "PatchSet",
     "PortableTarget",
@@ -64,10 +67,12 @@ __all__ = [
     "generated_view_path",
     "list_handle_descriptors",
     "normalize_logical_id",
+    "new_handle_registry",
     "refresh_event_name",
     "register_handle_descriptor",
     "reset_handles_for_tests",
     "unregister_handle_descriptor",
+    "use_handle_registry",
     "safe_dom_id",
     "structural_bind",
     "validate_explicit_key",
@@ -78,6 +83,7 @@ BASE_DESCRIPTOR_VERSION = 1
 MAX_REFRESH_TARGETS = 16
 MAX_PATCH_TARGETS = 16
 MAX_EVENT_BYTES = 8192
+MAX_HANDLE_DESCRIPTORS = 4096
 SUPPORTED_SWAPS = frozenset({"outerHTML", "innerHTML"})
 _LOGICAL_RE = re.compile(r"^[a-z][a-z0-9-]{0,62}$")
 _KEY_RE = re.compile(r"^[A-Za-z][\w:-]{0,63}$")
@@ -86,10 +92,11 @@ _INSTANCE_TOKEN_RE = re.compile(r"^[a-z2-7]{20}$")
 
 HandleKind = Literal["view", "command"]
 EffectKnowledge = Literal["dynamic", "observed", "declared"]
-ContentT = TypeVar("ContentT")
+ContentT = TypeVar("ContentT", covariant=True)
 
-_DESCRIPTORS: dict[tuple[str, str], BaseHandleDescriptor] = {}
-_KEYS: dict[tuple[str, str], str] = {}
+
+def _empty_extensions() -> dict[str, Mapping[str, JsonValue]]:
+    return {}
 
 
 def normalize_logical_id(name: str) -> str:
@@ -239,13 +246,46 @@ class BaseHandleDescriptor:
             "max_patch_targets": MAX_PATCH_TARGETS,
         }
     )
-    extensions: Mapping[str, Mapping[str, JsonValue]] = field(default_factory=dict)
+    extensions: Mapping[str, Mapping[str, JsonValue]] = field(default_factory=_empty_extensions)
 
     def __post_init__(self) -> None:
         frozen_limits = dict(self.limits)
         object.__setattr__(self, "limits", frozen_limits)
         object.__setattr__(self, "extensions", dict(self.extensions))
         _assert_extensions_cannot_override(self.extensions)
+
+
+@dataclass(slots=True)
+class HandleRegistryState:
+    """Application-owned handle descriptors and explicit-key ownership."""
+
+    descriptors: dict[tuple[str, str], BaseHandleDescriptor] = field(
+        default_factory=lambda: dict[tuple[str, str], BaseHandleDescriptor]()
+    )
+    keys: dict[tuple[str, str], str] = field(default_factory=lambda: dict[tuple[str, str], str]())
+
+
+_GLOBAL_HANDLE_STATE = HandleRegistryState()
+_ACTIVE_HANDLE_STATE: ContextVar[HandleRegistryState | None] = ContextVar(
+    "hedron_handle_registry", default=None
+)
+
+
+def new_handle_registry() -> HandleRegistryState:
+    return HandleRegistryState()
+
+
+def _active_handle_state() -> HandleRegistryState:
+    return _ACTIVE_HANDLE_STATE.get() or _GLOBAL_HANDLE_STATE
+
+
+@contextmanager
+def use_handle_registry(state: HandleRegistryState) -> Generator[None, None, None]:
+    token = _ACTIVE_HANDLE_STATE.set(state)
+    try:
+        yield
+    finally:
+        _ACTIVE_HANDLE_STATE.reset(token)
 
 
 def _assert_extensions_cannot_override(extensions: Mapping[str, Mapping[str, JsonValue]]) -> None:
@@ -308,8 +348,11 @@ def descriptor_fingerprint(descriptor: BaseHandleDescriptor) -> str:
 
 
 def register_handle_descriptor(descriptor: BaseHandleDescriptor, *, key: str | None = None) -> None:
+    state = _active_handle_state()
+    descriptors = state.descriptors
+    keys = state.keys
     slot = (descriptor.app_id, descriptor.logical_id)
-    existing = _DESCRIPTORS.get(slot)
+    existing = descriptors.get(slot)
     if existing is not None and descriptor_fingerprint(existing) != descriptor_fingerprint(
         descriptor
     ):
@@ -319,10 +362,24 @@ def register_handle_descriptor(descriptor: BaseHandleDescriptor, *, key: str | N
             explanation=f"Handle {descriptor.logical_id!r} is already registered on this app.",
             remediation="Use a distinct name or explicit key=.",
         )
-    _DESCRIPTORS[slot] = descriptor
+    if existing is None:
+        app_count = sum(
+            1 for registered_app, _ in descriptors if registered_app == descriptor.app_id
+        )
+        if app_count >= MAX_HANDLE_DESCRIPTORS:
+            raise error(
+                HED_VIEW_0001,
+                title="Handle descriptor count bound exceeded",
+                explanation=(
+                    f"Application {descriptor.app_id!r} exceeds "
+                    f"max descriptors={MAX_HANDLE_DESCRIPTORS}."
+                ),
+                remediation="Remove generated handles or split the application.",
+            )
+    descriptors[slot] = descriptor
     if key:
         key_slot = (descriptor.app_id, key)
-        owner = _KEYS.get(key_slot)
+        owner = keys.get(key_slot)
         if owner not in {None, descriptor.logical_id}:
             raise error(
                 HED_VIEW_0001,
@@ -330,19 +387,20 @@ def register_handle_descriptor(descriptor: BaseHandleDescriptor, *, key: str | N
                 explanation=f"Explicit key {key!r} is already owned by {owner!r}.",
                 remediation="Choose a unique key= for this handle.",
             )
-        _KEYS[key_slot] = descriptor.logical_id
+        keys[key_slot] = descriptor.logical_id
 
 
 def unregister_handle_descriptor(logical_id: str, *, app_id: str) -> None:
     """Drop a handle descriptor. Used by FeatureBundle rollback/eject."""
-    _DESCRIPTORS.pop((app_id, logical_id), None)
-    stale = [key for key, owner in _KEYS.items() if key[0] == app_id and owner == logical_id]
+    state = _active_handle_state()
+    state.descriptors.pop((app_id, logical_id), None)
+    stale = [key for key, owner in state.keys.items() if key[0] == app_id and owner == logical_id]
     for key in stale:
-        _KEYS.pop(key, None)
+        state.keys.pop(key, None)
 
 
 def list_handle_descriptors(*, app_id: str | None = None) -> tuple[BaseHandleDescriptor, ...]:
-    rows = list(_DESCRIPTORS.values())
+    rows = list(_active_handle_state().descriptors.values())
     if app_id is not None:
         rows = [item for item in rows if item.app_id == app_id]
     return tuple(sorted(rows, key=lambda item: (item.kind, item.logical_id)))
@@ -379,8 +437,9 @@ def handle_graph_payload(*, app_id: str | None = None) -> dict[str, object]:
 
 
 def reset_handles_for_tests() -> None:
-    _DESCRIPTORS.clear()
-    _KEYS.clear()
+    state = _active_handle_state()
+    state.descriptors.clear()
+    state.keys.clear()
     from hedron_core.catalog import reset_catalog_for_tests
 
     reset_catalog_for_tests()
@@ -393,7 +452,8 @@ def _canonical_params(parameters: Mapping[str, object]) -> dict[str, object]:
     redacted = redact_value(dict(parameters))
     if not isinstance(redacted, dict):
         return {}
-    return {str(key): redacted[key] for key in sorted(redacted)}
+    mapping = cast(dict[object, object], redacted)
+    return {str(key): mapping[key] for key in sorted(mapping, key=str)}
 
 
 def structural_bind(plan: BindingPlan, values: Mapping[str, object], *, path: str) -> BoundValues:
@@ -516,13 +576,6 @@ class PatchSet:
     cache: CacheHint | None = "vary-htmx"
 
     def __post_init__(self) -> None:
-        if self.primary is None:
-            raise error(
-                HED_UPDATE_0008,
-                title="Missing primary patch",
-                explanation="PatchSet requires one primary patch.",
-                remediation="Pass the primary update as the first positional patch.",
-            )
         targets = [self.primary, *self.secondary]
         if len(targets) > MAX_PATCH_TARGETS:
             raise error(
@@ -755,7 +808,7 @@ def compile_to_interaction(value: object, *, expected_app_id: str | None = None)
     if isinstance(value, RefreshIntent):
         return _compile_refresh(value, expected_app_id)
     if isinstance(value, Patch):
-        return _compile_patches(PatchSet(primary=value), expected_app_id)
+        return _compile_patches(PatchSet(primary=cast(Patch[object], value)), expected_app_id)
     if isinstance(value, PatchSet):
         return _compile_patches(value, expected_app_id)
     return value

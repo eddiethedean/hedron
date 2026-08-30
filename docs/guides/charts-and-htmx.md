@@ -10,17 +10,17 @@ chart through an HTMX fragment without losing its accessible fallback.
 ## Install the current chart line
 
 ```bash
-pip install "hedron[charts]>=0.66.2,<0.67"
+pip install "hedron[charts]>=1.0.0,<1.1"
 ```
 
-This resolves `hedron-charts>=0.2.1,<0.3`. The plugin entry point registers the first-party
+This resolves `hedron-charts>=1.0.0,<2.0`. The plugin entry point registers the first-party
 `hedron-chart` module and stylesheet automatically; consuming applications do not need Node.js or
 a JavaScript build step.
 
 Use an independent install only when the application does not depend on the flagship package:
 
 ```bash
-pip install "hedron-charts>=0.2.1,<0.3"
+pip install "hedron-charts>=1.0.0,<2.0"
 ```
 
 ## Pick an authoring level
@@ -228,7 +228,7 @@ HTMX cleanup and load lifecycle, so a replaced chart is disposed and the new one
         )
 
 
-    @app.component("/charts/refresh", fragment_regions=(panel,))
+    @app.view("/charts/refresh", fragment_regions=(panel,))
     def refresh() -> InteractionResult:
         return InteractionResult(
             content=chart_panel(

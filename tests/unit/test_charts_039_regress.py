@@ -60,6 +60,27 @@ def test_039_pydeck_rejects_unsupported_layers() -> None:
         )
 
 
+@pytest.mark.parametrize("layers", [{"data": [[0, 0]]}, "unsupported", object()])
+def test_039_pydeck_rejects_invalid_layer_containers(layers: object) -> None:
+    with pytest.raises(TypeError, match="layers must be a sequence"):
+        extract_pydeck_payload(
+            {
+                "initial_view_state": {"longitude": 0, "latitude": 0, "zoom": 1},
+                "layers": layers,
+            }
+        )
+
+
+def test_039_pydeck_accepts_tuple_layer_sequence() -> None:
+    payload = extract_pydeck_payload(
+        {
+            "initial_view_state": {"longitude": 0, "latitude": 0, "zoom": 1},
+            "layers": ({"data": [[2, 1]]},),
+        }
+    )
+    assert payload["markers"] == [{"location": [1.0, 2.0]}]
+
+
 def test_039_folium_preserves_zoom_zero() -> None:
     payload = extract_folium_payload({"type": "folium", "center": [0, 0], "zoom": 0})
     assert payload["zoom"] == 0

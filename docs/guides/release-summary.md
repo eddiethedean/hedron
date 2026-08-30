@@ -1,34 +1,38 @@
-# Release process (summary)
+# Release process summary
 
-Hedron ships a **coordinated 0.x train**. The living runbook with exact cut commands is:
+Hedron’s coordinated `v1.0.0` package train is implemented and technically Verified in-tree.
+The candidate is intentionally untagged and unpublished until an authorized release action.
 
-**[docs/RELEASE.md on GitHub](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md)**
+The exact maintainer commands and publication rules live in
+[`docs/RELEASE.md`](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md).
 
-## Current train
+## Current release facts
 
 | Item | Value |
 |---|---|
-| Stable release | **v0.66.2** (`hedron` / coordinated train packages) |
-| Beta preview | **v0.67.0** |
-| PyPI latest stable | **v0.66.2** (`hedron`; published 2026-08-26) |
-| Pin (PyPI) | `hedron>=0.66.2,<0.67` |
-| Charts satellite | `hedron-charts>=0.2.1,<0.3` |
-| Gate checker | `python scripts/check_release_gate.py 0.67.0` |
-| Packet verify | `python scripts/check_063.py --gate CONTRACT-063 --verify` |
+| In-tree release candidate | **v1.0.0** (`hedron`, `hedron-core`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps`) |
+| Migration baseline | **v0.67.0** |
+| PyPI latest | **v0.67.0** |
+| Public-index pin | `hedron>=0.67.0,<0.68` until publication |
+| Repository development | `uv sync` (editable 1.0.0 workspace) |
+| Charts package | `hedron-charts>=1.0.0,<2.0` |
+| Maps package | `hedron-maps>=1.0.0,<2.0` |
+| Generic Workbench adapter | `fastapi-workbench>=1.0.1,<2.0` |
+| Plan checker | `python scripts/check_100.py --check-plan` |
+| Entry gate | `python scripts/check_100.py --gate ENTRY-100 --verify` |
 
-Adopter-facing notes: [What’s new in 0.63](whats-new-0.63.md) ·
-[Release notes](release-notes.md) · [Upgrade](upgrade.md) ·
+Adopter-facing sources of truth: [Current release](current-release.md) ·
+[What’s new in 1.0](whats-new-1.0.md) · [Upgrade](upgrade.md) ·
 [What’s ready](whats-ready.md).
 
-Future tags require green CI on `main` and explicit maintainer authorization.
-Do not retag prior train tags.
+## Contributor checklist
 
-## Contributor checklist (abbreviated)
+1. Update `docs/release.toml` first when release-channel facts change.
+2. Synchronize `docs/STATUS.md` to root `STATUS.md`.
+3. Run `bash scripts/ci_checks.sh docs`, the 1.0 packet checker, tests, lint, and package checks.
+4. Build all packages and test the built artifacts in a clean environment.
+5. Tag and publish only with explicit maintainer authorization; this candidate is not yet tagged.
+6. After upload, verify PyPI artifacts and install smoke tests before changing
+   `registry_status` to `uploaded` or publishing release notes.
 
-1. Edit `docs/STATUS.md` / `docs/ROADMAP.md`; sync STATUS with `uv run python scripts/sync_status_roadmap.py`
-2. Pass `bash scripts/ci_checks.sh` suites required by the train
-3. Verify release-gate TOML + `verify_pkg_N.py` for the cut
-4. Tag `v0.N.0` **only if that tag is missing**, publish wheels, attach evidence assets
-
-Do **not** retag or overwrite an existing published tag. Full steps and patch template:
-GitHub [RELEASE.md](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md).
+Never retag or overwrite an existing published release.

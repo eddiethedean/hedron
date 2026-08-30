@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import time
 from concurrent.futures import TimeoutError as FuturesTimeout
 
 from tests.unit._helpers_050 import reset_050
@@ -31,9 +32,12 @@ def test_timeout_isolation() -> None:
         time.sleep(1)
         return "done"
 
+    started = time.monotonic()
     result = run_isolated(provider, hang)
+    elapsed = time.monotonic() - started
     assert result["ok"] is False
     assert result["error"] == "timeout"
+    assert elapsed < 0.5
     assert FuturesTimeout is not None
 
 

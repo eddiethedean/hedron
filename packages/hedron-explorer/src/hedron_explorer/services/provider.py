@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Callable
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import Future, ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FuturesTimeout
-from typing import Any
+from typing import Final
 
 from hedron_core.codes import HED_EXPLORER_0002, HED_EXPLORER_0003
 from hedron_core.plugins.explorer import (
@@ -20,6 +20,10 @@ _logger = logging.getLogger("hedron.explorer")
 
 DEFAULT_TIMEOUT_MS = 250
 DEFAULT_MAX_PAYLOAD = 65_536
+_PROVIDER_EXECUTOR: Final = ThreadPoolExecutor(
+    max_workers=4,
+    thread_name_prefix="hedron-explorer-provider",
+)
 
 
 def providers_or_defaults() -> list[ExplorerProvider]:
@@ -49,15 +53,22 @@ def providers_or_defaults() -> list[ExplorerProvider]:
 
 def run_isolated(
     provider: ExplorerProvider,
-    fn: Callable[[], Any],
-) -> dict[str, Any]:
-    """Run a provider callback with timeout/crash isolation."""
+    fn: Callable[[], object],
+) -> dict[str, object]:
+    """Run a provider callback behind a bounded latency and worker limit.
+
+    Timed-out callbacks cannot be killed safely by Python threads, so the
+    request stops waiting and the bounded shared executor lets an already
+    running callback finish without creating one unbounded thread per request.
+    """
     timeout_s = max(0.05, provider.timeout_ms / 1000)
+    future: Future[object] | None = None
     try:
-        with ThreadPoolExecutor(max_workers=1) as pool:
-            future = pool.submit(fn)
-            result = future.result(timeout=timeout_s)
+        future = _PROVIDER_EXECUTOR.submit(fn)
+        result = future.result(timeout=timeout_s)
     except FuturesTimeout:
+        if future is not None:
+            future.cancel()
         _logger.warning("Explorer provider %s timed out", provider.panel_id)
         return {
             "panel_id": provider.panel_id,
@@ -66,8 +77,12 @@ def run_isolated(
             "diagnostic": HED_EXPLORER_0002,
             "error": "timeout",
         }
-    except Exception as exc:  # noqa: BLE001
-        _logger.warning("Explorer provider %s crashed: %s", provider.panel_id, exc)
+    except Exception as exc:  # noqa: BLE001 - third-party callback isolation boundary
+        _logger.warning(
+            "Explorer provider %s crashed (%s)",
+            provider.panel_id,
+            type(exc).__name__,
+        )
         return {
             "panel_id": provider.panel_id,
             "ok": False,

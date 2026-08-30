@@ -5,7 +5,7 @@ from __future__ import annotations
 import inspect
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, cast
 
 from hedron_core.bundles import (
     MAX_CHART_SELECTION_ITEMS,
@@ -18,6 +18,7 @@ from hedron_core.catalog import PackageProjection, ProjectionCapability
 from hedron_core.codes import HED_BUNDLE_0005, HED_BUNDLE_0007
 from hedron_core.cross_filter import CHART_038_EVENT_KINDS
 from hedron_core.diagnostics import DiagnosticSeverity, make_diagnostic
+from hedron_core.updates import RefreshIntent, UpdateTarget
 
 SUPPORTED_EVENTS = frozenset({"select", "inspect", "focus", "reset"})
 EXPERIMENTAL_EVENTS = frozenset({"legend_filter", "brush", "drill_intent"})
@@ -132,7 +133,7 @@ class ChartInteraction:
                 HED_BUNDLE_0007,
                 "ChartInteraction.command must be a registered ActionHandle",
                 "Event payloads are untrusted Pydantic input to a registered command.",
-                "Register the command with @app.command before composing ChartInteraction.",
+                "Register the command with @app.action before composing ChartInteraction.",
             )
 
     def to_bundle(self) -> FeatureBundle:
@@ -151,10 +152,11 @@ class ChartInteraction:
             def on_chart_event(payload: object) -> object:
                 typed = payload
                 validator = getattr(payload_type, "model_validate", None)
-                if callable(validator) and not isinstance(payload, payload_type):
+                if callable(validator) and not isinstance(payload, cast(Any, payload_type)):
                     typed = validator(payload)
-                ids = getattr(typed, "ids", None)
-                if isinstance(ids, list) and len(ids) > max_items:
+                ids_value: object = getattr(typed, "ids", None)
+                ids = cast(list[Any], ids_value) if isinstance(ids_value, list) else []
+                if len(ids) > max_items:
                     copier = getattr(typed, "model_copy", None)
                     if callable(copier):
                         typed = copier(update={"ids": ids[:max_items]})
@@ -162,27 +164,29 @@ class ChartInteraction:
                 result = _invoke_command(command, handler, typed)
                 if result is not None:
                     return result
-                from hedron.handles import BoundFragment, FragmentHandle, refresh
-
                 targets = tuple(
                     item
                     for item in refresh_targets
-                    if isinstance(item, (BoundFragment, FragmentHandle))
+                    if hasattr(item, "logical_id")
+                    and hasattr(item, "dom_id")
+                    and hasattr(item, "app_id")
                 )
                 if targets:
-                    return refresh(*targets)
+                    return RefreshIntent(
+                        targets=tuple(cast(UpdateTarget, item) for item in targets)
+                    )
                 return result
 
             on_chart_event.__annotations__ = {"payload": payload_type, "return": object}
-            return app.command(  # type: ignore[union-attr]
+            return app.action(  # type: ignore[union-attr]
                 f"/charts/{ident}/{event}",
                 name=f"{ident}-{event}",
             )(on_chart_event)
 
         def export_command(app: object) -> object:
-            from hedron import Text
+            from hedron_core import Text
 
-            @app.command(f"/charts/{ident}/export", name=f"{ident}-export")  # type: ignore[union-attr]
+            @app.action(f"/charts/{ident}/export", name=f"{ident}-export")  # type: ignore[union-attr]
             def export() -> object:
                 return Text("export")
 

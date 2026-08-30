@@ -5,7 +5,7 @@ Practical defaults for production Hedron apps from the 0.8 compatibility baselin
 ## Pages vs fragments
 
 - Use `@app.page` (or full `Page`) for document shells and first paint.
-- Use `@app.component` / fragment routes for HTMX swaps into declared regions.
+- Use `@app.view` routes for replaceable views and `@app.action` for HTMX mutations into declared regions.
 - Declare `FragmentRegion` allowlists when OOB or retarget is in play—do not authorize one
   `#id` and emit `hx-swap-oob` for another.
 
@@ -69,9 +69,10 @@ See also [Security](security.md), [HTMX interactions](htmx-interactions.md),
 
 ## Day-one defaults
 
-1. Prefer `@app.screen` and documented facades over hand-wired `@app.page` unless you need
+1. Prefer the canonical `@app.page` / `@app.view` / `@app.action` roles over hand-wired
+   lower-level routes unless you need
    full `Page` control.
-2. Pin `hedron>=0.66.2,<0.67` (and matching host packages) in every environment.
+2. Pin `hedron>=1.0.0,<1.1` (and matching host packages) in every environment.
 3. Keep Explorer off and `session_secret` from the environment in production.
 4. Declare HTMX regions; undeclared targets fail closed — treat 403s as configuration bugs.
 5. Prefer polling for job UIs until you have proxy/load evidence for SSE/WebSocket.

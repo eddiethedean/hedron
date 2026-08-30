@@ -11,17 +11,21 @@ class CssDecl:
     value: str
 
 
+def _css_rule_list() -> list[CssRule]:
+    return []
+
+
 @dataclass
 class CssRule:
     prelude: str
-    decls: list[CssDecl] = field(default_factory=list)
-    children: list[CssRule] = field(default_factory=list)
+    decls: list[CssDecl] = field(default_factory=list[CssDecl])
+    children: list[CssRule] = field(default_factory=_css_rule_list)
     kind: str = "style"  # style | at-rule | statement | comment
 
 
 @dataclass
 class CssStylesheet:
-    rules: list[CssRule] = field(default_factory=list)
+    rules: list[CssRule] = field(default_factory=list[CssRule])
 
 
 def parse_stylesheet(source: str) -> CssStylesheet:
@@ -34,26 +38,6 @@ def parse_stylesheet(source: str) -> CssStylesheet:
         nonlocal i
         while i < n and source[i].isspace():
             i += 1
-
-    def read_until(chars: str) -> str:
-        nonlocal i
-        start = i
-        while i < n and source[i] not in chars:
-            if source[i] == "\\" and i + 1 < n:
-                i += 2
-                continue
-            if source[i] in {'"', "'"}:
-                quote = source[i]
-                i += 1
-                while i < n and source[i] != quote:
-                    if source[i] == "\\" and i + 1 < n:
-                        i += 2
-                    else:
-                        i += 1
-                i += 1
-                continue
-            i += 1
-        return source[start:i]
 
     def parse_block() -> tuple[list[CssDecl], list[CssRule]]:
         nonlocal i

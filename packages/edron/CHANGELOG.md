@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.0.0] — 2026-08-28
+
+### Changed
+
+- Require the Hedron and hedron-data 1.x trains (`>=1.0.0,<2.0`).
+- Register Edron pages, fragments, actions, and feature bundles exclusively through Hedron's
+  canonical 1.0 `page`, `view`, `action`, and `include` APIs.
+- Delegate native handle construction, route synchronization, lifecycle metadata, result lowering,
+  and application handle registration to Hedron instead of duplicating those responsibilities.
+- Broaden Markdown to `>=3.4.1` and Uvicorn to `>=0.32`; set the verified Narwhals
+  floor to `>=1.1` for Pandas, Polars, and PyArrow adapters.
+
+## [0.9.1] — 2026-08-27
+
+### Fixed
+
+- Publish the Hedron 1.0-compatible dependency metadata under a new immutable
+  patch version, including the corresponding charts and maps satellite floors.
+
 ## [0.9.0] — 2026-08-27
 
 ### Added
@@ -11,7 +30,8 @@
 
 ### Changed
 
-- Edron now targets `hedron>=0.67.0,<0.68` and `hedron-data>=0.67.0,<0.68`.
+- Edron supports the Hedron 0.67 through 1.x compatibility range (`>=0.67.0,<2.0`)
+  for both `hedron` and `hedron-data`.
 - Edron page/action registration uses Hedron's canonical `view` and `action` surfaces.
 
 ## [0.8.0] — 2026-08-27

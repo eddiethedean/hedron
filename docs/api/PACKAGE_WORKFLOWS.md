@@ -10,7 +10,8 @@ phase: "0.46"
     This is the accepted D-075 / RFC-0073 public contract for phase 0.46, refined by D-079
     against Published `v0.45.0`. Implementation is Published `v0.46.0`.
     Tracking [#334](https://github.com/eddiethedean/hedron/issues/334).
-    New symbols are **Beta**. Pin `hedron>=0.66.2,<0.67`.
+    New symbols are **Beta**. For public installs, pin `hedron>=0.67.0,<0.68` until the
+    1.0.0 candidate is published.
 
 Phase 0.46 lets packages assemble ordinary views, commands, components, scenarios, and catalog
 projections into opt-in features. It does not add a second workflow runtime.
@@ -27,7 +28,7 @@ orders = DataWorkspace(
     ),
 )
 
-app.include_feature(orders)
+app.include(orders)
 ```
 
 The workspace compiles to normal refreshable views, commands, forms, effects, outcomes,
@@ -44,7 +45,7 @@ Sources are shipped `DataEditorSource` adapters. After include, handles appear i
 | `FeatureRequirement` | `hedron-core` | Declared package/host/browser capability required by a bundle. |
 | `FeatureConflictError` | `hedron-core` | Atomic registration failure for id/route/projection/dependency conflicts. |
 | `FeatureProvider` | `hedron-core` | Protocol that compiles package configuration into a `FeatureBundle`; not on the `hedron` facade. |
-| `Hedron.include_feature` | `hedron` | Include one validated bundle before registry/catalog seal. |
+| `Hedron.include` | `hedron` | Include one validated bundle before registry/catalog seal. |
 | `DataWorkspace` | `hedron-data` | Opt-in list/detail/create/edit feature over an explicit authorized source and policy. |
 | `DataWorkspacePolicy` | `hedron-data` | Explicit read/create/edit/delete/auth/optimism behavior; defaults deny mutation. |
 | `ChartInteraction` | `hedron-charts` | Explicit chart event → command/effect binding. |
@@ -52,7 +53,7 @@ Sources are shipped `DataEditorSource` adapters. After include, handles appear i
 | `RemoteWorkflow` | `hedron-gradio` | Allowlisted Gradio endpoint → Hedron feature adapter. |
 
 Import placement is frozen by D-079. Portable bundle values live in `hedron-core`;
-`Hedron.include_feature` lives in `hedron`; package-native types stay in their packages.
+`Hedron.include` lives in `hedron`; package-native types stay in their packages.
 Do not reuse `FeatureManifest` or Jinja `ProviderManifest`. Independently versioned satellites
 retain explicit compatibility ranges, but the no-parallel-runtime and explicit-authority rules
 are fixed.
@@ -220,7 +221,7 @@ classifier = RemoteWorkflow.from_gradio(
     ),
 )
 
-app.include_feature(classifier)
+app.include(classifier)
 ```
 
 Remote metadata is untrusted and must match the explicit local models/mapping. Existing egress,

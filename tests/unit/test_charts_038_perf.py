@@ -31,6 +31,15 @@ def test_negative_max_points_rejected() -> None:
         downsample_plotly_body({"x": list(range(100)), "y": list(range(100))}, max_points=-5)
 
 
+@pytest.mark.parametrize("max_points", [1.5, "10", None, True])
+def test_non_integer_max_points_rejected(max_points: object) -> None:
+    with pytest.raises(ValueError, match="positive integer"):
+        downsample_plotly_body(
+            {"x": list(range(100)), "y": list(range(100))},
+            max_points=max_points,  # type: ignore[arg-type]
+        )
+
+
 def test_plotly_resampling_adapter_rejects_nonpositive() -> None:
     adapter = PlotlyResamplingAdapter()
     acc = ChartAccessibility(title="t", description="d")

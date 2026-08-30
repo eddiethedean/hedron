@@ -161,7 +161,7 @@ def check_source(source: str | Path) -> DiagnosticReport:
 
 def load_application(target: str | Path, *, attribute: str = "app") -> Any:
     """Load a trusted application for ``run``, ``check --register``, or ``explain``."""
-    if isinstance(target, Path) or (isinstance(target, str) and Path(target).is_file()):
+    if isinstance(target, Path) or Path(target).is_file():
         path = Path(target).resolve()
         spec = importlib.util.spec_from_file_location("edron_application", path)
         if spec is None or spec.loader is None:
@@ -237,10 +237,10 @@ def doctor(
 
     requirements = {
         "edron": (">=0.9,<0.10", "edron"),
-        "hedron": (">=0.67.0,<0.68", "hedron"),
-        "hedron-data": (">=0.67.0,<0.68", "hedron_data"),
-        "hedron-charts": (">=0.2,<0.3", "hedron_charts"),
-        "hedron-maps": (">=0.1,<0.2", "hedron_maps"),
+        "hedron": (">=0.67.0,<2.0", "hedron"),
+        "hedron-data": (">=0.67.0,<2.0", "hedron_data"),
+        "hedron-charts": (">=1.0.0,<2.0", "hedron_charts"),
+        "hedron-maps": (">=1.0.0,<2.0", "hedron_maps"),
     }
     optional = {
         "pandas": (">=2", "pandas"),

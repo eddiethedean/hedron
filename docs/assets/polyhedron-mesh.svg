@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 320" fill="none" aria-hidden="true">
+  <g stroke="#14b8a6" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="1.8" d="M180 10 322 96l-34 164-108 50-122-52L22 98 180 10Z"/>
+    <path stroke-width="1.35" d="m180 10-72 110 72 52 76-52-76-110Zm0 162v138m-72-190-50 138m198-138 32 140M22 98l86 22m214-24-66 24M58 258l122-86 108 88"/>
+    <path stroke-width="1.05" d="m22 98 158 74L58 258m264-162-142 76 108 88M108 120l72 190 76-190M58 258l230 2M108 120l148 0"/>
+  </g>
+  <g fill="#14b8a6">
+    <circle cx="180" cy="10" r="3"/>
+    <circle cx="322" cy="96" r="3"/>
+    <circle cx="288" cy="260" r="3"/>
+    <circle cx="180" cy="310" r="3"/>
+    <circle cx="58" cy="258" r="3"/>
+    <circle cx="22" cy="98" r="3"/>
+    <circle cx="108" cy="120" r="2.5"/>
+    <circle cx="180" cy="172" r="3"/>
+    <circle cx="256" cy="120" r="2.5"/>
+  </g>
+</svg>

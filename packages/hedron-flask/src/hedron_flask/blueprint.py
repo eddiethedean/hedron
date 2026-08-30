@@ -12,10 +12,11 @@ from flask import Blueprint, Flask, Response, current_app, request
 from hedron_core.addressable import AddressableDescriptor
 from hedron_core.component import Component, NodeLike
 from hedron_core.interaction import FragmentRegion, InteractionResult
+from hedron_core.interaction_067 import Outcome
 from hedron_core.rendering import RenderResult
 from hedron_core.security_policy import SecurityPolicy, SecurityProfile
 from hedron_flask.csrf import DEFAULT_CSRF_COOKIE, assert_flask_csrf_strategy, validate_csrf
-from hedron_flask.responses import component_response, interaction_response
+from hedron_flask.responses import _outcome_response, component_response, interaction_response
 
 if TYPE_CHECKING:
     from hedron_core.bundles import FeatureBundle, FeatureProvider
@@ -82,6 +83,14 @@ def convert_view_result(
         code = getattr(exc.diagnostic, "code", "")
         status = 403 if str(code).startswith("HED-UPDATE-0003") else 400
         return Response(str(exc), status=status, content_type="text/plain")
+    if isinstance(value, Outcome):
+        return _outcome_response(
+            value,
+            authenticated=authenticated,
+            fragment_regions=fragment_regions,
+            allow_undeclared_targets=allow_undeclared_targets,
+            app_id=expected_hedron_app_id(),
+        )
     if isinstance(value, InteractionResult):
         return interaction_response(
             value,
@@ -171,7 +180,7 @@ _wrap_hedron_view = wrap_hedron_view
 
 
 class HedronBlueprint(Blueprint):
-    """Flask Blueprint with Hedron ``page`` / ``component`` / ``action`` helpers."""
+    """Flask Blueprint with Hedron ``page`` / ``view`` / ``action`` helpers."""
 
     def page(
         self,
@@ -204,7 +213,7 @@ class HedronBlueprint(Blueprint):
 
         return decorator
 
-    def component(
+    def _view_route(
         self,
         rule: str,
         *,
@@ -247,11 +256,11 @@ class HedronBlueprint(Blueprint):
     ) -> Callable[[F], F]:
         """Register the canonical replaceable view route.
 
-        A Flask response is lowered identically for component and view routes;
-        this explicit alias gives adapter applications the same canonical task
-        vocabulary as FastAPI while ``component`` remains a migration spelling.
+        A Flask response is lowered identically for fragment and view routes;
+        this explicit canonical surface gives adapter applications the same task
+        vocabulary as FastAPI.
         """
-        return self.component(
+        return self._view_route(
             rule,
             endpoint=endpoint,
             methods=methods,
@@ -318,9 +327,10 @@ class HedronBlueprint(Blueprint):
         )
         self.add_url_rule(path, endpoint=ep, view_func=wrapped, methods=method_list, **options)
 
-    def include_feature(
+    def include(
         self, feature: FeatureBundle | FeatureProvider, *, app_id: str | None = None
     ) -> FeatureBundle:
+        """Include one validated feature bundle through the canonical 1.0 spelling."""
         from hedron_flask.catalog import include_feature as _include
 
         return _include(feature, app_id=app_id or "flask")

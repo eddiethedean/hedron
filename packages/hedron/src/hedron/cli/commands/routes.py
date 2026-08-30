@@ -5,8 +5,10 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from typing import cast
 
-from hedron.cli.discovery import _load_app, _registry_empty_hint
+from hedron.cli.discovery import load_app as _load_app
+from hedron.cli.discovery import registry_empty_hint as _registry_empty_hint
 from hedron_core.registry import get_registry
 from hedron_core.route_document import export_routes_document
 from hedron_core.typing_aliases import JsonObject
@@ -43,9 +45,19 @@ def _cmd_routes(args: argparse.Namespace) -> int:
 
                 payload = routes_json()
                 if isinstance(payload, list):
-                    rows = [item for item in payload if isinstance(item, dict)]
-                elif isinstance(payload, dict) and isinstance(payload.get("items"), list):
-                    rows = [item for item in payload["items"] if isinstance(item, dict)]
+                    rows = [
+                        cast(dict[str, object], item)
+                        for item in cast(list[object], payload)
+                        if isinstance(item, dict)
+                    ]
+                elif isinstance(payload, dict):
+                    items = cast(dict[str, object], payload).get("items")
+                    if isinstance(items, list):
+                        rows = [
+                            cast(dict[str, object], item)
+                            for item in cast(list[object], items)
+                            if isinstance(item, dict)
+                        ]
             except ImportError:
                 pass
         if not rows:
@@ -149,3 +161,8 @@ def _cmd_preview(args: argparse.Namespace) -> int:
     }
     print(json.dumps(payload, indent=2))
     return 0
+
+
+cmd_components = _cmd_components
+cmd_preview = _cmd_preview
+cmd_routes = _cmd_routes

@@ -50,20 +50,23 @@ class ConnectionSpec:
     name: str
     kind: ConnectionKind = "custom"
     # Host-defined opaque config (DSN refs, provider labels, etc.).
-    config: Mapping[str, object] = field(default_factory=dict)
+    config: Mapping[str, object] = field(default_factory=dict[str, object])
     healthcheck: str | None = None
 
     def __post_init__(self) -> None:
-        if not isinstance(self.name, str) or not self.name.strip():
+        name = _runtime_object(self.name)
+        if not isinstance(name, str) or not name.strip():
             raise ValueError("name must be a non-empty string")
         if self.kind not in {"sqlalchemy", "snowflake", "custom"}:
             raise ValueError(
                 f"kind must be 'sqlalchemy', 'snowflake', or 'custom'; got {self.kind!r}"
             )
-        if not isinstance(self.config, Mapping):
+        config = _runtime_object(self.config)
+        if not isinstance(config, Mapping):
             raise ValueError("config must be a mapping")
-        if self.healthcheck is not None and (
-            not isinstance(self.healthcheck, str) or not self.healthcheck.strip()
+        healthcheck = _runtime_object(self.healthcheck)
+        if healthcheck is not None and (
+            not isinstance(healthcheck, str) or not healthcheck.strip()
         ):
             raise ValueError("healthcheck must be a non-empty string when set")
 
@@ -86,7 +89,12 @@ def _dispose_instance(instance: object) -> None:
             return
 
 
-async def _dispose_instance_async(instance: object) -> None:
+def _runtime_object(value: object) -> object:
+    """Preserve runtime validation for values that are statically typed."""
+    return value
+
+
+async def dispose_instance_async(instance: object) -> None:
     errors: list[BaseException] = []
     for attr in ("close", "dispose", "shutdown", "aclose"):
         method = getattr(instance, attr, None)
@@ -135,7 +143,8 @@ class ConnectionRegistry:
         healthcheck_name: str | None = None,
     ) -> ConnectionSpec:
         """Register a lazy factory under ``name`` (replaces prior registration)."""
-        if not isinstance(name, str) or not name.strip():
+        name_value = _runtime_object(name)
+        if not isinstance(name_value, str) or not name_value.strip():
             raise ValueError("name must be a non-empty string")
         if not callable(factory):
             raise TypeError("factory must be callable")
@@ -293,7 +302,7 @@ class ConnectionRegistry:
             instances = [self._instances.pop(name) for name in names]
             self._factory_errors.clear()
         for instance in instances:
-            await _dispose_instance_async(instance)
+            await dispose_instance_async(instance)
 
 
 def install_connections(app: FastAPI, registry: ConnectionRegistry) -> ConnectionRegistry:

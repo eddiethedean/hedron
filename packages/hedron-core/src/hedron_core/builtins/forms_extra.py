@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from typing import Literal
 
-from hedron_core.alpine import AlpineAttrs
+from hedron_core.alpine import AlpineAttrs, AlpineDirective, AlpineExpression
 from hedron_core.builtins._base import (
     ElementProps,
     class_names,
@@ -452,7 +452,7 @@ class MultiSelect(Component[MultiSelectProps]):
         self._values = frozenset(values or ())
 
     def render(self) -> NodeLike:
-        opts = []
+        opts: list[NodeLike] = []
         for val, label in self._options:
             attrs: dict[str, HtmlAttrValue] = {"value": val}
             if val in self._values:
@@ -482,6 +482,7 @@ class MultiSelect(Component[MultiSelectProps]):
 class ToggleSwitchProps(_NamedControlProps):
     label: str
     checked: bool = False
+    enhance: Literal["legacy", "native", "alpine"] = "legacy"
 
 
 class ToggleSwitch(Component[ToggleSwitchProps]):
@@ -501,6 +502,7 @@ class ToggleSwitch(Component[ToggleSwitchProps]):
         aria_describedby: str | None = None,
         aria_invalid: str | None = None,
         aria_required: str | None = None,
+        enhance: Literal["legacy", "native", "alpine"] = "legacy",
         **kwargs: object,
     ) -> None:
         super().__init__(
@@ -515,6 +517,7 @@ class ToggleSwitch(Component[ToggleSwitchProps]):
                 aria_describedby=aria_describedby,
                 aria_invalid=aria_invalid,
                 aria_required=aria_required,
+                enhance=enhance,
                 **kwargs,
             )
         )
@@ -545,17 +548,21 @@ class ToggleSwitch(Component[ToggleSwitchProps]):
         data = mark_data(self.props.mark)
         if data:
             wrap["data"] = data
+        input_alpine = (
+            AlpineAttrs.model("checked", source=f"component:ToggleSwitch:{self.props.id}:input")
+            if self.props.enhance != "native"
+            else None
+        )
         return html.div(
-            html.input(
-                **attrs,
-                alpine=AlpineAttrs.model(
-                    "checked", source=f"component:ToggleSwitch:{self.props.id}:input"
-                ),
-            ),
+            html.input(alpine=input_alpine, **attrs),
             html.label(self.props.label, for_=self.props.id),
-            alpine=AlpineAttrs(
-                state={"checked": self.props.checked},
-                source=f"component:ToggleSwitch:{self.props.id}",
+            alpine=(
+                AlpineAttrs(
+                    state={"checked": self.props.checked},
+                    source=f"component:ToggleSwitch:{self.props.id}",
+                )
+                if self.props.enhance != "native"
+                else None
             ),
             **wrap,
         )
@@ -1065,7 +1072,40 @@ class DirectoryUpload(Component[DirectoryUploadProps]):
             attrs["disabled"] = True
         return html.label(
             self.props.label,
-            html.input(**attrs),
+            html.input(
+                alpine=AlpineAttrs(
+                    directives=(
+                        AlpineDirective(
+                            "x-on:change",
+                            AlpineExpression.assign("has_files", AlpineExpression.literal(True)),
+                        ),
+                    ),
+                    source=f"component:DirectoryUpload:{self.props.id}:input",
+                ),
+                **attrs,
+            ),
+            html.span(
+                "Directory selected",
+                hidden=True,
+                data={"hedron-optional": "true"},
+                alpine=AlpineAttrs(
+                    directives=(
+                        AlpineDirective(
+                            "x-bind:hidden",
+                            AlpineExpression.binary(
+                                "!==",
+                                AlpineExpression.name("has_files"),
+                                AlpineExpression.literal(True),
+                            ),
+                        ),
+                    ),
+                    source=f"component:DirectoryUpload:{self.props.id}:selected",
+                ),
+            ),
             class_=class_names("hedron-directory-upload", self.props.class_),
             for_=self.props.id,
+            alpine=AlpineAttrs(
+                state={"has_files": False},
+                source=f"component:DirectoryUpload:{self.props.id}",
+            ),
         )

@@ -1,6 +1,6 @@
 # Hedron `v1.0.0` interface-consolidation acceptance plan
 
-**Status:** Stage 0 Refined; implementation and release evidence pending
+**Status:** **Verified untagged release candidate; Git tag and PyPI publication deferred**
 
 **Baseline:** Verified Beta `v0.67.0`
 **Target:** `v1.0.0`
@@ -17,17 +17,28 @@ only ordinary surface, removes fully warned compatibility paths, and changes def
 documentation to the frozen model. It does not add a Required runtime capability that exists only
 in 1.0, silently remove a 0.67 path, or claim that every importable symbol and satellite is Stable.
 
-The Stage 0 packet is internally verifiable with `python scripts/check_100.py --check-plan`.
-That command validates planning honesty only. It does not verify any Planned release gate or
-authorize package/version changes.
+The packet wiring is internally verifiable with `python scripts/check_100.py --check-plan`.
+Individual repository-local evidence slices run with
+`python scripts/check_100.py --gate <GATE-ID> --verify`; a passing slice reports the current
+manifest state but does not change it. Artifact and release gates fail closed until their immutable
+evidence and dependency states are present; the retained candidate evidence now satisfies that
+requirement.
+
+Executable local results are summarized in the retained
+[verification ledger](compatibility-report-100/verification-100.json). Green checks are recorded
+with the immutable source commit, reproducible artifact hashes, and release approval.
+
+The immutable Stage-0 inventory includes the export/artifact catalogs, the stable inventory, and
+the AST-derived [`task-inventory-100.toml`](task-inventory-100.toml) graph of public classes,
+functions, methods, source lines, and signatures. These generated records identify the review
+scope; they do not promote a task into the stable SemVer promise without gate evidence.
 
 ## Entry decision
 
 The predecessor requirement is satisfied: `v0.67.0` is implemented and its release gate is
-Verified. Removal work remains blocked until `ENTRY-100` reconciles the actual 0.67 public surface
-with the warning registry and freezes the enumerated stable 1.0 inventory. In particular, the
-four in-tree route/include warnings are known fixtures, not evidence that every proposed removal
-has been classified.
+Verified. `ENTRY-100` reconciles the actual 0.67 public surface with the warning registry and
+freezes the enumerated stable 1.0 inventory. All eleven route/include and adapter warnings have
+complete removal evidence.
 
 ## Gates
 
@@ -53,10 +64,13 @@ has been classified.
 
 ## Release shape
 
-The coordinated 0.67 packages listed in the cut contract move together to `1.0.0`. Independently
-versioned satellites retain their versions and must publish exact Hedron 0.67/1.x ranges. SemVer
-protects the enumerated stable 1.x inventory; Beta/Experimental surfaces stay visibly outside that
-promise. The cut makes no commercial SLA, multi-year LTS, human-AT, or blanket WCAG claim.
+The Stable 1.0 package boundary is `hedron-core`, `hedron`, `edron`, `hedron-data`,
+`hedron-charts`, and `hedron-maps`. Edron publishes from its independent `edron-v*` tag only after
+the coordinated Hedron packages are available. Every other satellite remains Beta, may share the
+version number or release independently, and must publish an explicit compatible Hedron range.
+SemVer protects only the enumerated stable 1.x inventory; Beta/Experimental surfaces stay visibly
+outside that promise. The cut makes no commercial SLA, multi-year LTS, human-AT, or blanket WCAG
+claim.
 
 ## Prerelease checkpoints
 

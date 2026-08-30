@@ -75,7 +75,7 @@ class FeedbackRecord:
     consented: bool = False
     tenant_id: str | None = None
     created_at: float = 0.0
-    redacted: Mapping[str, JsonValue] = field(default_factory=dict)
+    redacted: Mapping[str, JsonValue] = field(default_factory=dict[str, JsonValue])
 
 
 class FeedbackSink(Protocol):
@@ -90,7 +90,7 @@ class FeedbackSink(Protocol):
 class InMemoryFeedbackSink:
     """Default sink for tests; respects export policy at the PredictionFeedback layer."""
 
-    _records: dict[str, FeedbackRecord] = field(default_factory=dict)
+    _records: dict[str, FeedbackRecord] = field(default_factory=dict[str, FeedbackRecord])
 
     def store(self, record: FeedbackRecord) -> None:
         self._records[record.record_id] = record
@@ -112,7 +112,7 @@ class PredictionFeedback:
     max_text_chars: int = 2000
     max_records: int = 10_000
     _seq: int = field(default=0, init=False)
-    _submit_times: list[float] = field(default_factory=list, init=False)
+    _submit_times: list[float] = field(default_factory=list[float], init=False)
 
     def __post_init__(self) -> None:
         self.policy.validate()

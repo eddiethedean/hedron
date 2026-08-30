@@ -6,9 +6,10 @@ import contextlib
 import inspect
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Generic, Literal, Protocol, Self, TypeVar, cast
+from typing import TYPE_CHECKING, Any, Generic, Literal, Protocol, TypeVar, cast
 
 from pydantic import BaseModel, Field, TypeAdapter, create_model
+from typing_extensions import Self
 
 from hedron_core.bundles import (
     MAX_WORKSPACE_FIELDS,
@@ -20,7 +21,11 @@ from hedron_core.catalog import PackageProjection, ProjectionCapability
 from hedron_core.codes import HED_BUNDLE_0005, HED_BUNDLE_0007
 from hedron_core.diagnostics import DiagnosticSeverity, make_diagnostic
 from hedron_core.models import Model
+from hedron_core.request_context import current_request
+from hedron_core.type_markers import FormBody, ViewParams
 from hedron_core.typing_aliases import JsonValue
+from hedron_core.updates import RefreshIntent, UpdateTarget
+from hedron_data._version import DATA_VERSION
 from hedron_data.columns import Column
 from hedron_data.sources import (
     HARD_MAX_PAGE_SIZE,
@@ -32,7 +37,8 @@ from hedron_data.sources import (
 from hedron_data.table import DataTable
 
 if TYPE_CHECKING:
-    from hedron.handles import ActionHandle, FragmentHandle
+    ActionHandle = Any
+    FragmentHandle = Any
 
 ModelT = TypeVar("ModelT", bound=BaseModel)
 AuthzHook = Callable[..., bool]
@@ -56,31 +62,22 @@ class FeatureOverrides:
 
 
 class _WorkspaceApp(Protocol):
-    """Minimal host surface used by workspace factories (Hedron.refreshable/command)."""
+    """Minimal host surface used by workspace factories."""
 
-    def refreshable(
+    def view(
         self,
         path: str,
         *,
         name: str | None = None,
     ) -> Callable[[Callable[..., object]], FragmentHandle[Any, Any]]: ...
 
-    def command(
+    def action(
         self,
         path: str,
         *,
         name: str | None = None,
         fallback: str | None = None,
     ) -> Callable[[Callable[..., object]], ActionHandle[Any, Any]]: ...
-
-    def screen(
-        self,
-        path: str,
-        *,
-        title: str,
-        name: str | None = None,
-        layout: str = "stack",
-    ) -> Callable[[Callable[..., object]], object]: ...
 
     def page(
         self,
@@ -134,7 +131,7 @@ class DataWorkspace(Generic[ModelT]):
         edit_model: type[BaseModel] | None = None,
         key_field: str = "id",
         provider: str = "hedron-data",
-        provider_version: str = "0.60.2",
+        provider_version: str | None = None,
         columns: Sequence[Column | str] = (),
         form_overrides: Mapping[str, object] | None = None,
         list_override: Callable[..., object] | None = None,
@@ -167,7 +164,7 @@ class DataWorkspace(Generic[ModelT]):
         self.edit_model = edit_model or model
         self.key_field = key_field
         self.provider = provider
-        self.provider_version = provider_version
+        self.provider_version = DATA_VERSION if provider_version is None else provider_version
         self.columns = tuple(columns)
         self.form_overrides = dict(form_overrides or {})
         self.list_override = list_override
@@ -197,12 +194,7 @@ class DataWorkspace(Generic[ModelT]):
         if not isinstance(source, InMemoryDataSource):
             return
         names = frozenset(self._column_names())
-        if not source._sort_allow:
-            source._sort_allow = names
-        if not source._filter_allow:
-            source._filter_allow = names
-        if not source._projection_allow:
-            source._projection_allow = names - source._secret_fields
+        cast(Any, source)._configure_allowlists(names)
 
     def with_screen(
         self,
@@ -217,7 +209,7 @@ class DataWorkspace(Generic[ModelT]):
 
         Returns ``self`` after storing screen metadata. When the workspace is
         included on a FastAPI ``Hedron`` host, ``to_bundle()`` also registers a
-        screen/page at ``path`` when the host exposes ``app.screen``.
+        screen/page at ``path`` through the canonical ``app.page`` surface.
         """
         if not path or not str(path).startswith("/"):
             raise _error(
@@ -261,10 +253,6 @@ class DataWorkspace(Generic[ModelT]):
 
     def _request_kwargs(self) -> dict[str, object]:
         kwargs: dict[str, object] = {}
-        try:
-            from hedron.routing.router import current_request
-        except ImportError:
-            return kwargs
         request = current_request.get()
         kwargs["request"] = request
         if request is None:
@@ -272,12 +260,13 @@ class DataWorkspace(Generic[ModelT]):
         scope = cast(object, getattr(request, "scope", None))
         # Prefer scope["user"] — Request.user asserts AuthenticationMiddleware.
         if isinstance(scope, Mapping) and "user" in scope:
-            user_attr = scope.get("user")
+            scope_map = cast(Mapping[str, object], scope)
+            user_attr: object = scope_map.get("user")
             if user_attr is not None and user_attr not in (False, ""):
                 kwargs["user"] = user_attr
                 kwargs["principal"] = user_attr
         if isinstance(scope, Mapping) and "session" in scope:
-            session = cast(object, request.session)
+            session = cast(object, getattr(request, "session", None))
             if isinstance(session, Mapping):
                 session_map = cast(Mapping[str, object], session)
                 for key in ("user", "username", "principal", "sub", "user_id", "_user_id"):
@@ -422,10 +411,8 @@ class DataWorkspace(Generic[ModelT]):
 
             from starlette.exceptions import HTTPException
 
-            from hedron import ViewParams
-
             if workspace.list_override is not None:
-                handle = app.refreshable(f"/{workspace.name}", name=f"{workspace.name}-list")(
+                handle = app.view(f"/{workspace.name}", name=f"{workspace.name}-list")(
                     workspace.list_override
                 )
                 workspace.list_view = handle
@@ -434,7 +421,7 @@ class DataWorkspace(Generic[ModelT]):
             list_query = workspace._list_query_model()
             list_defaults = list_query()
 
-            @app.refreshable(f"/{workspace.name}", name=f"{workspace.name}-list")
+            @app.view(f"/{workspace.name}", name=f"{workspace.name}-list")
             def list_view(
                 # Runtime pydantic model from create_model; not a static type expression.
                 params: Annotated[list_query, ViewParams(source="query")] = list_defaults,  # type: ignore[valid-type]
@@ -462,18 +449,16 @@ class DataWorkspace(Generic[ModelT]):
 
             from starlette.exceptions import HTTPException
 
-            from hedron import ViewParams
-
             identity = workspace._identity_model()
             if workspace.detail_override is not None:
-                handle = app.refreshable(
+                handle = app.view(
                     f"/{workspace.name}/{{{workspace.key_field}}}",
                     name=f"{workspace.name}-detail",
                 )(workspace.detail_override)
                 workspace.detail_view = handle
                 return handle
 
-            @app.refreshable(
+            @app.view(
                 f"/{workspace.name}/{{{workspace.key_field}}}",
                 name=f"{workspace.name}-detail",
             )
@@ -490,7 +475,7 @@ class DataWorkspace(Generic[ModelT]):
                 row = page.rows[0]
                 if not workspace._allowed(workspace.policy.can_read, row=row):
                     raise HTTPException(status_code=403, detail="forbidden")
-                from hedron import Text
+                from hedron_core import Text
 
                 return Text(str(row.get(workspace.key_field, key)))
 
@@ -502,10 +487,8 @@ class DataWorkspace(Generic[ModelT]):
 
             from starlette.exceptions import HTTPException
 
-            from hedron import FormBody, Text, refresh
-
             if workspace.create_override is not None:
-                handle = app.command(
+                handle = app.action(
                     f"/{workspace.name}/create",
                     name=f"{workspace.name}-create",
                     fallback=f"/{workspace.name}",
@@ -514,7 +497,7 @@ class DataWorkspace(Generic[ModelT]):
                 workspace._attach_form_overrides(handle)
                 return handle
 
-            @app.command(
+            @app.action(
                 f"/{workspace.name}/create",
                 name=f"{workspace.name}-create",
                 fallback=f"/{workspace.name}",
@@ -523,6 +506,8 @@ class DataWorkspace(Generic[ModelT]):
                 # Instance attribute holds a runtime model type for FormBody binding.
                 data: Annotated[workspace.create_model, FormBody()],  # type: ignore[valid-type]
             ) -> object:
+                from hedron_core import Text
+
                 payload = _payload_mapping(cast(object, data))
                 if not workspace._allowed(workspace.policy.can_create, data=payload):
                     raise HTTPException(status_code=403, detail="forbidden")
@@ -532,7 +517,7 @@ class DataWorkspace(Generic[ModelT]):
                 if not result.ok:
                     raise HTTPException(status_code=422, detail="validation")
                 if workspace.list_view is not None:
-                    return refresh(workspace.list_view)
+                    return RefreshIntent(targets=(cast(UpdateTarget, workspace.list_view),))
                 return Text("created")
 
             workspace.create_command = create_command
@@ -544,10 +529,8 @@ class DataWorkspace(Generic[ModelT]):
 
             from starlette.exceptions import HTTPException
 
-            from hedron import FormBody, Text, refresh
-
             if workspace.edit_override is not None:
-                handle = app.command(
+                handle = app.action(
                     f"/{workspace.name}/edit",
                     name=f"{workspace.name}-edit",
                     fallback=f"/{workspace.name}",
@@ -566,7 +549,7 @@ class DataWorkspace(Generic[ModelT]):
             else:
                 EditModel = workspace.edit_model
 
-            @app.command(
+            @app.action(
                 f"/{workspace.name}/edit",
                 name=f"{workspace.name}-edit",
                 fallback=f"/{workspace.name}",
@@ -575,6 +558,8 @@ class DataWorkspace(Generic[ModelT]):
                 # EditModel is a runtime type (create_model or edit_model attribute).
                 data: Annotated[EditModel, FormBody()],  # type: ignore[valid-type]
             ) -> object:
+                from hedron_core import Text
+
                 payload = _payload_mapping(cast(object, data))
                 if not workspace._allowed(workspace.policy.can_edit, data=payload, row=payload):
                     raise HTTPException(status_code=403, detail="forbidden")
@@ -590,7 +575,7 @@ class DataWorkspace(Generic[ModelT]):
                 if not result.ok:
                     raise HTTPException(status_code=422, detail="validation")
                 if workspace.list_view is not None:
-                    return refresh(workspace.list_view)
+                    return RefreshIntent(targets=(cast(UpdateTarget, workspace.list_view),))
                 return Text("updated")
 
             workspace.edit_command = edit_command
@@ -634,44 +619,24 @@ class DataWorkspace(Generic[ModelT]):
                 tagged: Any = lambda: None  # noqa: E731
                 tagged.logical_id = f"{workspace.name}-screen-unset"
                 return tagged
-            if not callable(getattr(app, "screen", None)):
-                # Host without screen facade: fall back to page when available.
-                if not callable(getattr(app, "page", None)):
-                    tagged = lambda: None  # noqa: E731
-                    tagged.logical_id = f"{workspace.name}-screen"
-                    tagged.path = str(meta["path"])
-                    return tagged
 
-                @app.page(str(meta["path"]), name=str(meta["name"]))
-                def screen_page() -> object:
-                    from hedron import Text
-                    from hedron_core.builtins.document import Page
-                    from hedron_core.component import NodeLike
-
-                    nodes: list[NodeLike] = [Text(str(meta["title"]))]
-                    if workspace.list_view is not None:
-                        with contextlib.suppress(Exception):
-                            nodes.append(workspace.list_view())
-                    return Page(*nodes, title=str(meta["title"]))
-
-                workspace.screen = screen_page
-                return screen_page
-
-            @app.screen(
-                str(meta["path"]),
-                title=str(meta["title"]),
-                name=str(meta["name"]),
-                layout=str(meta["layout"]),  # type: ignore[arg-type]
-            )
+            @app.page(str(meta["path"]), name=str(meta["name"]))
             def workspace_screen() -> object:
-                from hedron import Stack, Text
+                from hedron_core import Grid, Page, Stack, Text
                 from hedron_core.component import NodeLike
 
                 nodes: list[NodeLike] = [Text(str(meta["title"]))]
                 if workspace.list_view is not None:
                     with contextlib.suppress(Exception):
                         nodes.append(workspace.list_view())
-                return Stack(*nodes)
+                layout = str(meta["layout"])
+                if layout == "plain":
+                    content: NodeLike = nodes[0] if len(nodes) == 1 else nodes
+                elif layout == "grid":
+                    content = Grid(*nodes)
+                else:
+                    content = Stack(*nodes)
+                return Page(content, title=str(meta["title"]))
 
             workspace.screen = workspace_screen
             return workspace_screen

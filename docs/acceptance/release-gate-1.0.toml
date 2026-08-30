@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "1.0"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.67.0"
 required_predecessor = "v0.67.0"
 predecessor_satisfied = true
@@ -12,126 +12,126 @@ contract = "one-zero-cut-contract.toml"
 compatibility_bom = "compatibility-bom-067.toml"
 upgrade_fixtures = "upgrade-fixtures-1.0.md"
 implementation = "../implementation/HEDRON_1_0.md"
-stage_1_entry_satisfied = false
-release_cut_satisfied = false
+stage_1_entry_satisfied = true
+release_cut_satisfied = true
 zero_undocumented_removals_required = true
 net_new_required_runtime_capabilities = 0
 
 [[evidence]]
 id = "ENTRY-100"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_100.py --gate ENTRY-100 --verify"
 owner = "architecture"
 ci_job = "evidence"
 
 [[evidence]]
 id = "SURFACE-100"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_100.py --gate SURFACE-100 --verify"
 owner = "api"
 ci_job = "evidence"
 
 [[evidence]]
 id = "REMOVE-100"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_100.py --gate REMOVE-100 --verify"
 owner = "api"
 ci_job = "evidence"
 
 [[evidence]]
 id = "MIGRATE-100"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_100.py --gate MIGRATE-100 --verify"
 owner = "tooling"
 ci_job = "test"
 
 [[evidence]]
 id = "COMPAT-100"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_100.py --gate COMPAT-100 --verify"
 owner = "compatibility"
 ci_job = "test"
 
 [[evidence]]
 id = "INTERACTION-100"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_100.py --gate INTERACTION-100 --verify"
 owner = "hedron-core"
 ci_job = "browser"
 
 [[evidence]]
 id = "ENGINE-100"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_100.py --gate ENGINE-100 --verify"
 owner = "browser-platform"
 ci_job = "browser"
 
 [[evidence]]
 id = "TOOLING-100"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_100.py --gate TOOLING-100 --verify"
 owner = "tooling"
 ci_job = "test"
 
 [[evidence]]
 id = "TYPE-100"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_100.py --gate TYPE-100 --verify"
 owner = "typing"
 ci_job = "test"
 
 [[evidence]]
 id = "SECURITY-100"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_100.py --gate SECURITY-100 --verify"
 owner = "security"
 ci_job = "evidence"
 
 [[evidence]]
 id = "A11Y-100"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_100.py --gate A11Y-100 --verify"
 owner = "accessibility"
 ci_job = "browser"
 
 [[evidence]]
 id = "PERF-100"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_100.py --gate PERF-100 --verify"
 owner = "performance"
 ci_job = "browser"
 
 [[evidence]]
 id = "FLEET-100"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_100.py --gate FLEET-100 --verify"
 owner = "packages"
 ci_job = "test"
 
 [[evidence]]
 id = "DOCS-100"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_100.py --gate DOCS-100 --verify"
 owner = "docs"
 ci_job = "quality"
 
 [[evidence]]
 id = "REGRESS-100"
-state = "Planned"
-command = "bash scripts/ci_checks.sh all --python 3.12 --all-browsers --gate-version 1.0.0 --jobs 1"
+state = "Verified"
+command = "bash scripts/ci_checks.sh all --python 3.12 --all-browsers --release-gate --gate-version 1.0.0 --jobs 1"
 owner = "release"
 ci_job = "test"
 
 [[evidence]]
 id = "PKG-100"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_100.py --gate PKG-100 --verify"
 owner = "packaging"
 ci_job = "packaging"
 
 [[evidence]]
 id = "RELEASE-100"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_100.py --gate RELEASE-100 --verify"
 owner = "release"
 ci_job = "release"

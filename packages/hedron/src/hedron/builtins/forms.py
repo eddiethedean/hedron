@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import ClassVar
+from typing import Any, ClassVar, Literal, cast
 
 from hedron.builtins.hx import safe_target
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
+from hedron_core.htmx.attrs import HtmxAttrs
 from hedron_core.models import FormModel, Props
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_core.typing_aliases import HtmlAttrMap, JsonValue
@@ -123,14 +124,20 @@ class AutoForm(Component[Props]):
             )
         fields.append(SubmitButton(self.submit_label))
         method = "post" if self.method == "post" else "get"
-        htmx_attrs: HtmlAttrMap = {}
+        htmx_attrs: HtmlAttrMap = {"aria-busy": "false"}
         if self.target:
-            htmx_attrs["hx-post" if method == "post" else "hx-get"] = action_url
-            htmx_attrs["hx-target"] = self.target
-            htmx_attrs["hx-swap"] = "innerHTML"
-            htmx_attrs["hx-sync"] = "closest form:drop"
-            htmx_attrs["aria-busy"] = "false"
-        from typing import Any, cast
+            htmx_attrs.update(
+                HtmxAttrs(
+                    method=cast(
+                        Literal["get", "post", "put", "patch", "delete"],
+                        method,
+                    ),
+                    url=str(action_url),
+                    target=self.target,
+                    swap="innerHTML",
+                    sync="closest form:drop",
+                ).as_html_attrs()
+            )
 
         from hedron_core.builtins.forms import Form
 

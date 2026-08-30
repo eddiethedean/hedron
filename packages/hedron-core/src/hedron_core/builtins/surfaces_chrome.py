@@ -15,6 +15,7 @@ from hedron_core.builtins._base import (
 from hedron_core.builtins.appearance import require_choice
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
+from hedron_core.htmx.attrs import HtmxAttrs
 from hedron_core.models import Props
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_core.typing_aliases import HtmlAttrValue
@@ -514,7 +515,7 @@ class ConfirmButton(Component[ConfirmButtonProps]):
             "type": self.props.type,
             "disabled": self.props.disabled or None,
             "class_": f"hedron-button hedron-button-{self.props.variant} hedron-confirm-button",
-            "hx-confirm": self.props.confirm,
+            **HtmxAttrs(confirm=self.props.confirm).as_html_attrs(),
             "data": {
                 "confirm": self.props.confirm,
                 "hedron-confirm": "true",

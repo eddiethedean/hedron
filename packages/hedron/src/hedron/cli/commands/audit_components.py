@@ -7,7 +7,8 @@ import json
 from pathlib import Path
 from typing import cast
 
-from hedron.cli.discovery import _apply_project_discovery, _load_app
+from hedron.cli.discovery import apply_project_discovery as _apply_project_discovery
+from hedron.cli.discovery import load_app as _load_app
 from hedron_core.registry import get_registry
 from hedron_core.typing_aliases import JsonObject, PluginMetaDict
 
@@ -69,3 +70,6 @@ def _cmd_audit_components(args: argparse.Namespace) -> int:
     )
     print(json.dumps(payload, indent=2))
     return 0
+
+
+cmd_audit_components = _cmd_audit_components

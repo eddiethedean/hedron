@@ -9,4 +9,4 @@ uv run uvicorn app:app --app-dir examples/package-workflows --reload
 ```
 
 Open http://127.0.0.1:8000. The orders table comes from
-`app.include_feature(orders)`; chart selection posts to `filter_orders`.
+`app.include(orders)`; chart selection posts to `filter_orders`.

@@ -11,8 +11,9 @@ import json
 import os
 import subprocess
 import sys
-import tomllib
 from pathlib import Path
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "docs" / "acceptance" / "modern-css-contract-059.toml"

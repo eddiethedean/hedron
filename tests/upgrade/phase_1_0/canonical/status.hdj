@@ -1,0 +1,8 @@
+---hdj
+version = 1
+kind = "fragment"
+profile = "standard"
+---
+<section id="status" aria-live="polite">
+  <p>ready</p>
+</section>

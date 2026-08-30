@@ -5,15 +5,16 @@ from __future__ import annotations
 
 import re
 import sys
-import tomllib
 from pathlib import Path
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = ROOT / "packages" / "edron"
 PACKET = ROOT / "docs" / "acceptance" / "EDRON_009.md"
 GATES = ROOT / "docs" / "acceptance" / "edron-phase09.toml"
 ROADMAP = ROOT / "docs" / "EDRON_ROADMAP.md"
-CURRENT_VERSION = "0.9.0"
+CURRENT_VERSION = "0.9.1"
 EXPECTED_IDS = {
     "EDR-09-TRAIN",
     "EDR-09-NATIVE",
@@ -40,10 +41,10 @@ def main() -> int:
     if project.get("version") != CURRENT_VERSION or (
         f'__version__ = "{CURRENT_VERSION}"' not in source
     ):
-        problems.append("Edron 0.9.0 package version is not synchronized")
-    for expected in ("hedron>=0.67.0,<0.68", "hedron-data>=0.67.0,<0.68"):
+        problems.append("Edron 0.9.1 package version is not synchronized")
+    for expected in ("hedron>=0.67.0,<2.0", "hedron-data>=0.67.0,<2.0"):
         if expected not in dependencies:
-            problems.append(f"Edron 0.9.0 dependency pin is missing: {expected}")
+            problems.append(f"Edron 0.9.1 dependency pin is missing: {expected}")
 
     gate = tomllib.loads(GATES.read_text(encoding="utf-8"))
     rows = gate.get("gate", [])
@@ -51,13 +52,13 @@ def main() -> int:
     if (
         gate.get("phase") != "0.9"
         or gate.get("status") != "Implemented"
-        or gate.get("version") != "0.9.0"
+        or gate.get("version") != "0.9.1"
         or gate.get("hedron_train") != "0.67.0"
-        or gate.get("hedron_requirement") != ">=0.67.0,<0.68"
+        or gate.get("hedron_requirement") != ">=0.67.0,<2.0"
         or gate.get("hedron_lock_target") != "hedron==0.67.0"
         or gate.get("hedron_forward_compatibility_target") != "1.0.0"
         or gate.get("hedron_1_0_dependency_policy")
-        != "do-not-declare-before-release-and-verification"
+        != "declare-after-release-candidate-verification"
         or gate.get("deprecated_feature_policy") != "warning-and-migration-input-only"
     ):
         problems.append(
@@ -73,7 +74,7 @@ def main() -> int:
     roadmap = ROADMAP.read_text(encoding="utf-8")
     for expected in (
         "long-lived `0.x` consolidation on Hedron `0.67.0`",
-        "Edron `0.9.0` with `hedron>=0.67.0,<0.68`",
+        "Edron `0.9.1` with `hedron>=0.67.0,<2.0`",
         "lockfile that resolves",
         "`hedron==0.67.0`",
         "Hedron 0.67 feature integration",

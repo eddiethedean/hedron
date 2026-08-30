@@ -3,7 +3,7 @@ from __future__ import annotations
 import inspect
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Annotated, Any, Generic, ParamSpec, TypeVar, get_args, get_origin, overload
+from typing import Annotated, Any, Generic, ParamSpec, TypeVar, cast, get_args, get_origin, overload
 
 from fastapi.params import Depends as DependsParam
 
@@ -48,7 +48,7 @@ def _validate_action_bind(action: Action[Any, Any], arguments: dict[str, Any]) -
 @dataclass
 class BoundFragment(Generic[P]):
     fragment: Fragment[P]
-    arguments: dict[str, Any] = field(default_factory=dict)
+    arguments: dict[str, Any] = field(default_factory=lambda: dict[str, Any]())
 
     @property
     def logical_id(self) -> str:
@@ -106,7 +106,7 @@ class Fragment(Generic[P]):
 @dataclass
 class BoundAction(Generic[P, R]):
     action: Action[P, R]
-    arguments: dict[str, Any] = field(default_factory=dict)
+    arguments: dict[str, Any] = field(default_factory=lambda: dict[str, Any]())
 
     def __post_init__(self) -> None:
         _validate_action_bind(self.action, self.arguments)
@@ -216,10 +216,10 @@ def action(
 
 def action(fn: Callable[..., Any] | None = None, **kwargs: Any) -> Any:
     if fn is not None and callable(fn):
-        return Action(fn)
+        return Action[Any, Any](fn)
 
     def decorate(wrapped: Callable[..., Any]) -> Action[Any, Any]:
-        return Action(wrapped, **kwargs)
+        return Action[Any, Any](wrapped, **kwargs)
 
     return decorate
 
@@ -233,7 +233,8 @@ def inherit(
     creates a fresh descriptor owned by the subclass, so routes and native handles remain
     app-scoped and a base class cannot accidentally expose a surface.
     """
-    if not isinstance(surface, (Fragment, Action)):
+    raw_surface: object = surface
+    if not isinstance(cast(Any, raw_surface), (Fragment, Action)):
         raise RegistrationError(
             "inherit expects a Fragment or Action descriptor", code="EDRON_PAGE_TYPE"
         )
@@ -252,7 +253,7 @@ def inherit(
         },
         **overrides,
     )
-    cloned._inherited_from = surface.logical_id
+    cast(Any, cloned)._inherited_from = surface.logical_id
     return cloned
 
 

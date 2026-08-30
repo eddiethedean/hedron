@@ -5,9 +5,10 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Any
 
+from hedron_core.htmx.attrs import HtmxAttrs
 from hedron_core.htmx.authorize import authorize_location_selectors, authorize_response_selector
 from hedron_core.htmx.policy import (
-    _EXTRA_HEADER_KWARGS,
+    EXTRA_HEADER_KWARGS,
     InteractionPolicy,
     InteractionResult,
     StatusPolicy,
@@ -31,8 +32,8 @@ def _validated_extra_headers(extra: Mapping[str, str]) -> dict[str, str]:
         if key == "HX-Refresh":
             kwargs["refresh"] = str(value).lower() == "true"
             continue
-        if key in _EXTRA_HEADER_KWARGS:
-            arg = _EXTRA_HEADER_KWARGS[key]
+        if key in EXTRA_HEADER_KWARGS:
+            arg = EXTRA_HEADER_KWARGS[key]
             if arg in {"push_url", "replace_url"} and str(value).lower() in {"true", "false"}:
                 kwargs[arg] = str(value).lower() == "true"
             else:
@@ -200,11 +201,8 @@ def status_policy_for(status_code: int) -> StatusPolicy:
 
 def form_sync_attrs(policy: InteractionPolicy | None = None) -> dict[str, str]:
     pol = policy or default_interaction_policy()
-    attrs: dict[str, str] = {}
-    if pol.hx_sync:
-        attrs["hx-sync"] = pol.hx_sync
-    if pol.indicator:
-        attrs["hx-indicator"] = pol.indicator
+    typed = HtmxAttrs(sync=pol.hx_sync, indicator=pol.indicator).as_html_attrs()
+    attrs = {name: str(value) for name, value in typed.items()}
     if pol.aria_busy:
         attrs["aria-busy"] = "true"
     return attrs

@@ -14,7 +14,7 @@ but are new to editors, terminals, environments, servers, or tests, begin with
 [Your first application in Posit Workbench](first-app-posit-workbench.md) instead. Use
 [Installation](installation.md) when you need prerequisites, adapter choices, or troubleshooting.
 
-**Skills assumed after the first-app step:** Python 3.11+ and the ability to edit a file and run a
+**Skills assumed after the first-app step:** Python 3.10+ and the ability to edit a file and run a
 command. Basic FastAPI, HTML forms, SPA, and HTMX knowledge are not prerequisites; the curriculum
 introduces the necessary web concepts as they appear.
 
@@ -75,7 +75,7 @@ below and identifies what should be durable before deployment.
 [reference app](../examples/reference-app.md) is an optional kitchen sink after that.
 
 1. [Data applications](../guides/data-apps.md) / [Charts and HTMX](../guides/charts-and-htmx.md)
-   (`hedron[charts]>=0.66.2,<0.67`; static Matplotlib is the conservative default)
+   (`hedron[charts]>=1.0.0,<1.1`; static Matplotlib is the conservative default)
 2. More recipes: [File upload](../examples/file-upload.md) ·
    [Jobs poll](../examples/jobs-poll.md)
 3. Optional: [Dashboards](../guides/dashboards.md) · [Model demos](../guides/model-demos.md) ·

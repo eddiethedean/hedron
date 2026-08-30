@@ -5,6 +5,7 @@
   --hedron-muted: #5c6670;
   --hedron-surface: #f7f8fa;
   --hedron-border: #e6e9ed;
+  --hedron-facet-opacity: 0.07;
   --md-primary-fg-color: #ffffff;
   --md-primary-fg-color--light: #ffffff;
   --md-primary-fg-color--dark: #ffffff;
@@ -18,6 +19,7 @@
   --hedron-muted: #aeb9c5;
   --hedron-surface: #18212b;
   --hedron-border: #2d3945;
+  --hedron-facet-opacity: 0.09;
   --md-default-bg-color: #111820;
   --md-default-fg-color: #eef2f6;
   --md-code-bg-color: #18212b;
@@ -35,6 +37,9 @@
 
 body {
   letter-spacing: -0.004em;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .md-banner {
@@ -194,6 +199,16 @@ body {
   width: 1.7rem;
 }
 
+/* Brand assets are explicit rather than filter-derived so every facet keeps its
+ * intended contrast when the Material palette is toggled independently of the OS. */
+[data-md-color-scheme="slate"] img[src$="hedron-mark-light.svg"] {
+  content: url("../assets/hedron-mark-dark.svg");
+}
+
+[data-md-color-scheme="slate"] img[src$="hedron-logo-light.svg"] {
+  content: url("../assets/hedron-logo-dark.svg");
+}
+
 .md-typeset h1,
 .md-typeset h2,
 .md-typeset h3 {
@@ -220,6 +235,18 @@ body {
 
 .md-typeset h2 {
   margin-top: 2.4em;
+}
+
+.md-typeset h2::after {
+  background:
+    linear-gradient(90deg, var(--md-accent-fg-color) 0 34%, transparent 34% 41%, var(--md-accent-fg-color) 41% 67%, transparent 67% 74%, var(--md-accent-fg-color) 74%);
+  clip-path: polygon(0 35%, 34% 35%, 38% 0, 42% 65%, 67% 65%, 71% 30%, 75% 100%, 100% 100%, 100% 70%, 76% 70%, 72% 0, 66% 35%, 42% 35%, 38% 100%, 33% 65%, 0 65%);
+  content: "";
+  display: block;
+  height: 0.28rem;
+  margin-top: 0.45rem;
+  opacity: 0.55;
+  width: 3.2rem;
 }
 
 .md-typeset code {
@@ -290,8 +317,11 @@ body {
 }
 
 .md-typeset__scrollwrap .md-typeset__table {
+  display: block;
   margin: 0;
+  max-width: 100%;
   overflow-x: auto;
+  width: 100%;
 }
 
 .md-typeset .admonition,
@@ -339,6 +369,12 @@ body {
   position: relative;
 }
 
+.md-typeset .hedron-theme-wordmark {
+  display: block;
+  margin: 0 0 1.35rem;
+  width: min(20.5rem, 72vw);
+}
+
 .hedron-hero::before {
   background:
     radial-gradient(circle at 8% 0%, rgba(88, 211, 202, 0.12), transparent 26rem),
@@ -348,6 +384,24 @@ body {
   pointer-events: none;
   position: absolute;
   z-index: -1;
+}
+
+.hedron-hero::after {
+  background: url("../assets/polyhedron-mesh.svg") center / contain no-repeat;
+  content: "";
+  height: clamp(15rem, 28vw, 21rem);
+  opacity: var(--hedron-facet-opacity);
+  pointer-events: none;
+  position: absolute;
+  right: clamp(-5rem, -4vw, -2rem);
+  top: clamp(-3rem, -2.5vw, -1.5rem);
+  transform: rotate(5deg);
+  width: clamp(16rem, 30vw, 22rem);
+}
+
+.hedron-hero > * {
+  position: relative;
+  z-index: 1;
 }
 
 .hedron-eyebrow {
@@ -448,7 +502,7 @@ body {
 }
 
 .md-typeset .hedron-actions .md-button:focus-visible,
-.md-typeset a.hedron-card:focus-visible,
+.md-typeset a.hedron-card:not(.edron-sim .hedron-card):focus-visible,
 .hedron-not-found__links a:focus-visible {
   outline: 3px solid rgba(0, 139, 138, 0.55);
   outline: 3px solid color-mix(in srgb, var(--md-accent-fg-color) 60%, transparent);
@@ -486,6 +540,27 @@ body {
   display: block;
   padding: 1rem 1.05rem;
   transition: border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.hedron-choice::after,
+.hedron-card:not(.edron-sim .hedron-card)::after {
+  background: url("../assets/polyhedron-mesh.svg") center / contain no-repeat;
+  content: "";
+  height: 5.4rem;
+  opacity: 0.04;
+  pointer-events: none;
+  position: absolute;
+  right: -1.7rem;
+  top: -1.85rem;
+  transform: rotate(12deg);
+  width: 6rem;
+}
+
+[data-md-color-scheme="slate"] .hedron-choice::after,
+[data-md-color-scheme="slate"] .hedron-card:not(.edron-sim .hedron-card)::after {
+  opacity: 0.06;
 }
 
 a.hedron-choice:hover {
@@ -518,42 +593,44 @@ a.hedron-choice:hover {
   margin: 0.4rem 0 0;
 }
 
-.hedron-grid {
+.hedron-grid:not(.edron-sim .hedron-grid) {
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin: 1.4rem 0 3.2rem;
 }
 
-.hedron-card {
+.hedron-card:not(.edron-sim .hedron-card) {
   background: var(--hedron-surface);
   border: 1px solid var(--hedron-border);
   border-radius: 0.45rem;
   color: var(--hedron-muted);
   min-height: 10rem;
   padding: 1.25rem;
+  position: relative;
+  overflow: hidden;
   transition: border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
 }
 
-a.hedron-card:hover {
+a.hedron-card:not(.edron-sim .hedron-card):hover {
   border-color: rgba(0, 139, 138, 0.6);
   box-shadow: 0 8px 20px rgba(23, 33, 43, 0.08);
   transform: translateY(-1px);
 }
 
-.hedron-card strong {
+.hedron-card:not(.edron-sim .hedron-card) strong {
   color: var(--hedron-ink);
   display: block;
   font-size: 1rem;
   margin: 0.55rem 0 0.35rem;
 }
 
-.hedron-card p {
+.hedron-card:not(.edron-sim .hedron-card) p {
   font-size: 0.82rem;
   margin: 0;
 }
 
-.hedron-card__icon {
+.hedron-card__icon:not(.edron-sim .hedron-card__icon) {
   color: var(--md-accent-fg-color);
   display: inline-flex;
   font-size: 1.2rem;
@@ -681,12 +758,20 @@ a.hedron-card:hover {
     padding-top: 1.7rem;
   }
 
+  .hedron-hero::after {
+    height: 13rem;
+    opacity: calc(var(--hedron-facet-opacity) * 0.52);
+    right: -8rem;
+    top: -2.25rem;
+    width: 15rem;
+  }
+
   .hedron-hero h1 {
     font-size: clamp(2.15rem, 11vw, 3rem);
   }
 
   .hedron-choice-grid,
-  .hedron-grid,
+  .hedron-grid:not(.edron-sim .hedron-grid),
   .hedron-path {
     grid-template-columns: 1fr;
   }
@@ -695,7 +780,7 @@ a.hedron-card:hover {
     margin-top: 1.25rem;
   }
 
-  .hedron-card {
+  .hedron-card:not(.edron-sim .hedron-card) {
     min-height: 0;
   }
 
@@ -1048,7 +1133,7 @@ a.hedron-card:hover {
 .hedron-avatar--teal { background: #178b82; }
 
 .hedron-role,
-.hedron-status,
+.hedron-status:not(.edron-sim .hedron-status),
 .hedron-stable-pill,
 .hedron-method,
 .hedron-ok {
@@ -1062,12 +1147,12 @@ a.hedron-card:hover {
 }
 
 [data-md-color-scheme="slate"] .hedron-role,
-[data-md-color-scheme="slate"] .hedron-status,
+[data-md-color-scheme="slate"] .hedron-status:not(.edron-sim .hedron-status),
 [data-md-color-scheme="slate"] .hedron-stable-pill,
 [data-md-color-scheme="slate"] .hedron-ok { color: #62dfd3; }
 
 .hedron-role--muted { background: rgba(106, 124, 137, 0.12); color: var(--demo-muted); }
-.hedron-status::before { background: #13a36f; border-radius: 50%; content: ""; display: inline-block; height: 0.3rem; margin-right: 0.25rem; width: 0.3rem; }
+.hedron-status:not(.edron-sim .hedron-status)::before { background: #13a36f; border-radius: 50%; content: ""; display: inline-block; height: 0.3rem; margin-right: 0.25rem; width: 0.3rem; }
 .hedron-demo-empty { color: var(--demo-muted); padding: 1rem; text-align: center; }
 
 .hedron-demo-dialog {

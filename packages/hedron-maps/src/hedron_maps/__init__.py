@@ -41,13 +41,12 @@ from hedron_maps.spec import (
     ViewState,
 )
 
-__version__ = "0.1.2"
+__version__ = "1.0.0"
 
 __all__ = [
     "MAPLIBRE_VERSION",
     "RUNTIME_PINS",
     "SYNTHETIC_ARCHIVE",
-    "TAG_NAME",
     "Bounds",
     "CircleLayer",
     "FeatureActivated",

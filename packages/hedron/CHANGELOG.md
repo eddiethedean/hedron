@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.0] — 2026-08-27
+
+- Canonical `page`/`view`/`action` authoring and 0.67 migration tooling.
+- Broaden verified runtime floors to FastAPI `>=0.121.0`, Pydantic `>=2.12.0`,
+  Packaging `>=22`, itsdangerous `>=2.1.2`, Markdown `>=3.4.1`, and HTTPX `>=0.27`.
+
 ## [0.67.0] — 2026-08-27
 
 ### Added
@@ -500,7 +506,7 @@
 ### Changed
 
 - Coordinated Beta patch to `0.28.2` (pin `>=0.28.2,<0.29`).
-- Charts floor for `hedron[charts]` raised to `hedron-charts>=0.2.1,<0.3` (Plotly/Vega
+- Charts floor for `hedron[charts]` raised to `hedron-charts>=0.2.3,<0.3` (Plotly/Vega
   destroy-before-remount; tip charts `0.1.11` for OOB lifecycle).
 
 ## [0.28.1] — 2026-08-10

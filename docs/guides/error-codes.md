@@ -40,7 +40,7 @@ reserved for 0.47 are listed under [HED-MAP](#hed-map).
 | `HED-ELEMENT-STATE-0006` | blocker | Draft transfer before 0.41 | Keep drafts instance-local |
 | `HED-SIM-ASSET-0001` | blocker | Packaged sim asset path escape | Pass a single basename under `static/` |
 | `HED-SIM-ASSET-0002` | blocker | Packaged sim asset missing | Use a filename that ships in `hedron_sim/static/` |
-| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.66.2,<0.67"` |
+| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=1.0.0,<1.1"` |
 | `HED-RENDER-0012` | blocker | Component render cycle | Remove self-recursion; nested same-type trees are allowed |
 | `HED-HTMX-*` / HTTP **403** on fragments | blocker | Unauthorized `HX-Target` / region | Declare `fragment_regions` — [Interaction API](../api/INTERACTION.md#errors) · [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request) |
 | `HED-HTMX-0002` | warning | Same id in `select_oob` and `OobUpdate` | Prefer explicit `OobUpdate`; omit matching `select_oob` — [Interaction API](../api/INTERACTION.md#out-of-band-updates) |
@@ -57,12 +57,12 @@ reserved for 0.47 are listed under [HED-MAP](#hed-map).
 | CSRF **403** on POST | blocker | Missing or mismatched CSRF token | Seed on GET; include token on POST — [Troubleshooting](troubleshooting.md#csrf-403-on-post-fastapi-flask) |
 | `HED-VIEW-0003` | blocker | Unbound parameterized handle mounted | Call `handle.bind(...)` before mount |
 | `HED-UPDATE-0001` | blocker | Mixed refresh and patch | Return `refresh(...)` or `patches(...)`, not both |
-| `HED-CMD-0002` | blocker | Command has no ordinary HTTP fallback | Pass `fallback=` to `@app.command` |
+| `HED-CMD-0002` | blocker | Action has no ordinary HTTP fallback | Pass `fallback=` to `@app.action` |
 | `HED-PLUGIN-0001` | blocker | Named plugin missing from entry points | Install the package or remove the name from `[tool.hedron].plugins` |
 | `HED-PLUGIN-0002` | blocker | Plugin `hedron_version` incompatible | Upgrade/downgrade the plugin or pin Hedron into its range |
 | `HED-JOB-0001` | blocker | Job observation unauthorized / unscoped | Scope jobs with `auth_subject` / `tenant_id`; use `job_authorized_http` |
 | `HED-ASSET-0004` | warning | Asset missing from manifest / disk | Re-run `hedron build` or fix the asset path |
-| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=0.66.2,<0.67"` |
+| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=1.0.0,<1.1"` |
 | Mount / cookie Path mismatch | ops | App under reverse-proxy subpath | Set `HEDRON_ROOT_PATH` / ASGI `root_path` — [Mount API](../api/MOUNT.md) |
 
 Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index below.
@@ -723,6 +723,14 @@ Phase 0.63 React migration analyzer findings.
 | `HED-MIGRATE-0671` | `HED_MIGRATE_0671` |
 | `HED-MIGRATE-0672` | `HED_MIGRATE_0672` |
 | `HED-MIGRATE-0673` | `HED_MIGRATE_0673` |
+| `HED-MIGRATE-0674` | `HED_MIGRATE_0674` |
+| `HED-MIGRATE-0675` | `HED_MIGRATE_0675` |
+| `HED-MIGRATE-0676` | `HED_MIGRATE_0676` |
+| `HED-MIGRATE-0677` | `HED_MIGRATE_0677` |
+| `HED-MIGRATE-0678` | `HED_MIGRATE_0678` |
+| `HED-MIGRATE-0679` | `HED_MIGRATE_0679` |
+| `HED-MIGRATE-0680` | `HED_MIGRATE_0680` |
+| `HED-MIGRATE-0681` | `HED_MIGRATE_0681` |
 
 ## HED-TYPE (0.44)
 

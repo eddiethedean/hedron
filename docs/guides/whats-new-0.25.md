@@ -1,10 +1,11 @@
 # What’s new in Hedron 0.25
 
+!!! note "Historical release note"
 
-!!! note "Current repository train is 0.66.x"
+    This page records the 0.x release named in its title. For current installation,
+    support, and published 1.0 status, use [Current release and support](current-release.md).
+    Keep the historical pins below only when maintaining that release line.
 
-    Pin `hedron>=0.53.0,<0.54` for this historical checkout (current PyPI pin `>=0.66.2,<0.67`). The pin below is historical for this train only.
-    See [What’s new in 0.51](whats-new-0.51.md).
 
 **Published** as `v0.25.0` (last 0.25 patch `v0.25.2`). Historical pin: `hedron>=0.25.0,<0.26`.
 

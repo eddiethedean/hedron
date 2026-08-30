@@ -2,15 +2,15 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Generator, Mapping
 from contextlib import contextmanager
-from typing import Any
+from typing import Any, cast
 
 __all__ = ["axe_scan", "axe_scan_report", "playwright", "playwright_page"]
 
 
 @contextmanager
-def playwright(*args: Any, **kwargs: Any) -> Iterator[Any]:
+def playwright(*args: Any, **kwargs: Any) -> Generator[Any, None, None]:
     """Yield a Playwright sync API instance (requires ``hedron[browser]``)."""
     try:
         import importlib
@@ -59,7 +59,12 @@ def axe_scan_report(page: Any) -> dict[str, Any]:
         }
     axe = axe_cls()
     results = axe.run(page)
-    violations = results.response.get("violations", []) if hasattr(results, "response") else []
+    response_value: object = getattr(results, "response", {})
+    response: Mapping[str, object] = (
+        cast(Mapping[str, object], response_value) if isinstance(response_value, Mapping) else {}
+    )
+    violations_value = response.get("violations", [])
+    violations = cast(list[object], violations_value) if isinstance(violations_value, list) else []
     version = getattr(axe_mod, "__version__", "unknown")
     return {
         "violations": list(violations),

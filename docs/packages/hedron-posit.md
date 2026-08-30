@@ -2,7 +2,7 @@
 
 Unified Posit Workbench / Connect deployment adapter for Hedron.
 
-**Package maturity:** Beta (`0.64.x`, `v0.64.0` published on PyPI) · extra `hedron[posit]` · pin `>=0.66.2,<0.67`
+**Package maturity:** Beta · **In-tree candidate:** `v1.0.0` · PyPI fallback `0.67.0`
 
 Installing or importing the package does **not** wrap your application.
 `RS_SERVER_URL` is discovery-only and never grants trust. Connect credential
@@ -34,10 +34,11 @@ companions [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](ht
 Dependency graph (one-way):
 
 ```text
-hedron-workbench -> hedron-posit -> hedron
+hedron-posit -> hedron + fastapi-workbench
 ```
 
-`hedron-workbench` remains a Supported compatibility package on the current
-0.66 train (`HedronWorkbench` subclass; no 0.33 deprecation warning).
+The standalone `hedron-workbench` distribution was removed in 1.0.0. Existing
+applications should migrate to `HedronPosit`; plain FastAPI applications can use
+`fastapi-workbench` directly.
 
 Supported Workbench floor is **2025.05.1**; current verified lane is **2026.07.0**.

@@ -30,7 +30,7 @@ _PUBLIC_SENSITIVE_NAMES = frozenset(
 )
 
 
-def _should_reject_cache(
+def should_reject_cache(
     *,
     scope: str,
     args: tuple[object, ...],
@@ -55,3 +55,6 @@ def _should_reject_cache(
             if type_name in {"Request", "HTTPConnection"} or "Session" in type_name:
                 return "request/session positional arg under public scope"
     return None
+
+
+_should_reject_cache = should_reject_cache

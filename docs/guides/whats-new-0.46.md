@@ -1,5 +1,11 @@
 # What's new in 0.46
 
+!!! note "Historical release note"
+
+    This page records the 0.x release named in its title. For current installation,
+    support, and published 1.0 status, use [Current release and support](current-release.md).
+    Keep the historical pins below only when maintaining that release line.
+
 **Published `v0.46.0`.** Owning decisions: D-075 / D-079.
 Tracking: [#334](https://github.com/eddiethedean/hedron/issues/334).
 

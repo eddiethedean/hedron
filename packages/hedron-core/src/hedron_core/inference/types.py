@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass
-from enum import StrEnum
 
+from hedron_core.compat import StrEnum
 from hedron_core.diagnostics import HedronError
 from hedron_core.typing_aliases import JsonValue
 
@@ -101,3 +101,4 @@ _PRIORITY_RANK = {
     InferencePriority.NORMAL: 1,
     InferencePriority.LOW: 2,
 }
+PRIORITY_RANK = _PRIORITY_RANK

@@ -5,6 +5,12 @@ hide:
 
 # Component demos
 
+!!! note "Release context"
+
+    Component contracts and demos target the published 1.0 release.
+    Registry and support details live on
+    [Current release and support](../guides/current-release.md).
+
 Every public Hedron component has a dedicated page (searchable; linked from the category
 pages below). The left nav lists **categories**, not every component — start with the
 table of ten, then open a group. Static components use real semantic HTML. Features that

@@ -6,14 +6,13 @@ from pathlib import Path
 
 from hedron_core.catalog import SurfaceProjectionProvider
 from hedron_core.identifiers import content_digest
-from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
-from hedron_core.registry import (
-    ElementFieldOwnership,
-    register_asset,
-    register_browser_module,
-    register_component,
-    register_element_definition,
+from hedron_core.plugins import (
+    PluginCapabilities,
+    PluginContext,
+    PluginDefinition,
+    PluginMeta,
 )
+from hedron_core.registry import ElementFieldOwnership
 from hedron_maps.element import Map
 from hedron_maps.pins import assert_pins_present
 
@@ -24,9 +23,9 @@ _ASSETS = _ROOT / "assets" / "maplibre"
 
 PLUGIN_META = PluginMeta(
     name="hedron_maps",
-    version="0.1.2",
+    version="1.0.0",
     distribution="hedron-maps",
-    hedron_version=">=0.67,<0.68",
+    hedron_version=">=1.0,<2.0",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
@@ -37,9 +36,9 @@ PLUGIN_META = PluginMeta(
 )
 
 
-def register(ctx: PluginContext) -> None:
+def _register_component(ctx: PluginContext) -> None:
     assert_pins_present()
-    register_component(
+    ctx.register_component(
         logical_id=f"{Map.distribution}:{Map.__module__}.{Map.logical_name}",
         name=Map.logical_name or Map.__name__,
         module=Map.__module__,
@@ -50,15 +49,18 @@ def register(ctx: PluginContext) -> None:
             "semantic table alternatives stay in .hedron-map-alternative."
         ),
     )
+
+
+def _register_map_element(ctx: PluginContext) -> None:
     if _MAP_MODULE.is_file():
-        register_asset(
+        ctx.register_asset(
             logical_id="hedron-maps:hedron-map.mjs",
             kind="js",
             path=str(_MAP_MODULE),
             digest=content_digest(_MAP_MODULE.read_bytes()),
             content_type="text/javascript",
         )
-        register_browser_module(
+        ctx.register_browser_module(
             logical_id="hedron-maps:hedron-map",
             tag_name="hedron-map",
             module_path=str(_MAP_MODULE),
@@ -74,7 +76,7 @@ def register(ctx: PluginContext) -> None:
             shadow_dom=False,
             htmx_lifecycle=True,
         )
-        register_element_definition(
+        ctx.register_element_definition(
             logical_id="hedron-map",
             tag_name="hedron-map",
             abi_version=1,
@@ -116,13 +118,16 @@ def register(ctx: PluginContext) -> None:
             first_party=True,
         )
     if _MAP_CSS.is_file():
-        register_asset(
+        ctx.register_asset(
             logical_id="hedron-maps:hedron-map.css",
             kind="css",
             path=str(_MAP_CSS),
             digest=content_digest(_MAP_CSS.read_bytes()),
             content_type="text/css",
         )
+
+
+def _register_maplibre_assets(ctx: PluginContext) -> None:
     for filename, logical, kind, ctype in (
         ("maplibre-gl-csp.js", "hedron-maps:maplibre.runtime.js", "js", "text/javascript"),
         ("maplibre-gl-csp-worker.js", "hedron-maps:maplibre.worker.js", "js", "text/javascript"),
@@ -131,7 +136,7 @@ def register(ctx: PluginContext) -> None:
     ):
         path = _ASSETS / filename
         if path.is_file():
-            register_asset(
+            ctx.register_asset(
                 logical_id=logical,
                 kind=kind,
                 path=str(path),
@@ -139,6 +144,8 @@ def register(ctx: PluginContext) -> None:
                 content_type=ctype,
             )
 
+
+def _register_catalog(ctx: PluginContext) -> None:
     ctx.register_explorer_provider(
         panel_id="hedron-maps",
         title="Maps",
@@ -171,6 +178,21 @@ def register(ctx: PluginContext) -> None:
             limitations=("Supported events are closed; ChartInteraction is not reused",),
         )
     )
+
+
+PLUGIN = PluginDefinition.from_callbacks(
+    PLUGIN_META,
+    (
+        ("component", _register_component),
+        ("map-element", _register_map_element),
+        ("maplibre-assets", _register_maplibre_assets),
+        ("catalog", _register_catalog),
+    ),
+)
+
+
+def register(ctx: PluginContext) -> None:
+    PLUGIN.register(ctx)
 
 
 register.PLUGIN_META = PLUGIN_META  # type: ignore[attr-defined]

@@ -29,9 +29,9 @@ class InferenceInterface:
     allow_submit: bool = True
     allow_clear: bool = True
     allow_stop: bool = True
-    component_overrides: Mapping[str, str] = field(default_factory=dict)
-    input_schema: Mapping[str, Any] = field(default_factory=dict)
-    output_schema: Mapping[str, Any] = field(default_factory=dict)
+    component_overrides: Mapping[str, str] = field(default_factory=dict[str, str])
+    input_schema: Mapping[str, Any] = field(default_factory=dict[str, Any])
+    output_schema: Mapping[str, Any] = field(default_factory=dict[str, Any])
     http_exposed: bool = False
     mcp_exposed: bool = False
     resource_policy: str | None = None
@@ -44,7 +44,9 @@ class ModelDemo:
 
     registry: ActionRegistry
     title: str = "Model demo"
-    _interfaces: dict[str, InferenceInterface] = field(default_factory=dict, init=False)
+    _interfaces: dict[str, InferenceInterface] = field(
+        default_factory=dict[str, InferenceInterface], init=False
+    )
 
     def build_from_action(
         self,

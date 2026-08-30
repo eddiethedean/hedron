@@ -20,6 +20,10 @@ __all__ = ["CommandResult", "OutcomeCase", "OutcomeMap", "case"]
 CommandResult = object
 
 
+def _runtime_object(value: object) -> object:
+    return value
+
+
 @dataclass(frozen=True, slots=True)
 class OutcomeCase:
     variant: type[Any]
@@ -37,7 +41,8 @@ def case(
     effects: Refreshes | Updates | None = None,
     fallback: str | None = None,
 ) -> OutcomeCase:
-    if not isinstance(status, int) or status < 100 or status > 599:
+    status_value = _runtime_object(status)
+    if not isinstance(status_value, int) or status_value < 100 or status_value > 599:
         raise error(
             HED_TYPE_0007,
             title="Invalid outcome status",
@@ -65,7 +70,8 @@ class OutcomeMap(Generic[ResultT]):
                 remediation="Map every discriminator variant explicitly.",
             )
         seen: dict[type[Any], OutcomeCase] = {}
-        for item in cases:
+        for case_value in cases:
+            item = _runtime_object(case_value)
             if not isinstance(item, OutcomeCase):
                 raise error(
                     HED_TYPE_0007,

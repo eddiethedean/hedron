@@ -11,7 +11,7 @@ status: experimental
     **experimental** (`hedron.experimental`) under Accepted 0.24 **`polling_only`**
     ([LIVE_DISPOSITION](LIVE_DISPOSITION.md)); default remains off.
 
-**Status:** Shipped in `0.10.0` (experimental)
+**Status:** Experimental on 1.0 (introduced in `0.10.0`)
 
 !!! note "Outline page"
 

@@ -1,8 +1,19 @@
-# Phase 0.62 interaction contracts
+---
+status: historical
+phase: "0.62"
+search:
+  exclude: true
+---
 
-Phase 0.62 adds bounded, opt-in contracts for navigation, optimistic edits, localized failures,
-and state identity. The server remains authoritative and ordinary HTML/HTMX navigation remains
-the fallback.
+# Legacy navigation, optimism, and failure isolation
+
+!!! warning "Historical 0.62 contract"
+
+    Use [Interaction](INTERACTION.md) and [API by task](by-task.md) for the current 1.0 API.
+
+These bounded contracts are available on 1.0 and were introduced in phase 0.62. They cover
+navigation, optimistic edits, localized failures, and state identity. The server remains
+authoritative and ordinary HTML/HTMX navigation remains the fallback.
 
 ## Navigation
 

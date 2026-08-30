@@ -9,7 +9,7 @@ status: shipped
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
 
-**Status:** Shipped in `0.4` · import from `hedron.testing`
+**Status:** Available on 1.0 (introduced in `0.4`) · import from `hedron.testing`
 
 | Helper | Signature (summary) | Returns | Purpose |
 |---|---|---|---|

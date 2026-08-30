@@ -1,5 +1,11 @@
 # What’s new in Hedron 0.12
 
+!!! note "Historical release note"
+
+    This page records the 0.x release named in its title. For current installation,
+    support, and published 1.0 status, use [Current release and support](current-release.md).
+    Keep the historical pins below only when maintaining that release line.
+
 Phase **0.12** ships data and visualization scale (D-047) with **zero Deferred** gate rows.
 
 ## Highlights

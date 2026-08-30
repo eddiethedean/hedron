@@ -11,9 +11,12 @@ authentication, authorization, or server-durability boundary.
 from __future__ import annotations
 
 import json
+import math
 import time
 from collections.abc import Mapping, MutableMapping
+from copy import deepcopy
 from dataclasses import dataclass, field
+from typing import Any
 
 from hedron_core.typing_aliases import JsonValue
 
@@ -27,6 +30,19 @@ __all__ = [
 ]
 
 _REDACTED = "[redacted]"
+
+
+def _finite_expiry(value: object, *, name: str) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f"BrowserStorage {name} must be a finite number")
+    try:
+        normalized = float(value)
+    except OverflowError as exc:
+        raise ValueError(f"BrowserStorage {name} must be a finite number") from exc
+    if not math.isfinite(normalized):
+        raise ValueError(f"BrowserStorage {name} must be a finite number")
+    return normalized
+
 
 # Cookie / header names whose values are always redacted in helpers.
 _SECRETISH_NAME_FRAGMENTS = frozenset(
@@ -107,10 +123,10 @@ class BrowserContext:
     """
 
     url: str
-    cookies: Mapping[str, str] = field(default_factory=dict)
+    cookies: Mapping[str, str] = field(default_factory=dict[str, str])
     client_address: str | None = None
-    headers: Mapping[str, str] = field(default_factory=dict)
-    embedding: Mapping[str, str] = field(default_factory=dict)
+    headers: Mapping[str, str] = field(default_factory=dict[str, str])
+    embedding: Mapping[str, str] = field(default_factory=dict[str, str])
     # --- spoofable client-reported hints (never trust for authz) ---
     locale: str | None = None
     timezone: str | None = None
@@ -156,7 +172,7 @@ class BrowserContext:
         normalized: dict[str, str] = {}
         for key, value in headers.items():
             lower = str(key).lower()
-            if lower in _HEADER_SUBSET and value is not None:
+            if lower in _HEADER_SUBSET:
                 normalized[lower] = str(value)
 
         embedding = {k: normalized[k] for k in _EMBEDDING_HEADERS if k in normalized}
@@ -228,7 +244,7 @@ class BrowserStorage:
 
     def __init__(
         self,
-        namespace: str,
+        namespace: object,
         *,
         consent_granted: bool = False,
         unavailable: bool = False,
@@ -236,8 +252,22 @@ class BrowserStorage:
         max_bytes: int = 65_536,
         initial: Mapping[str, JsonValue] | None = None,
     ) -> None:
-        if not namespace or not isinstance(namespace, str):
+        if not isinstance(namespace, str) or not namespace:
             raise ValueError("BrowserStorage namespace must be a non-empty string")
+        raw_max_entries: Any = max_entries
+        raw_max_bytes: Any = max_bytes
+        if (
+            isinstance(raw_max_entries, bool)
+            or not isinstance(raw_max_entries, int)
+            or raw_max_entries < 1
+        ):
+            raise ValueError("BrowserStorage max_entries must be a positive integer")
+        if (
+            isinstance(raw_max_bytes, bool)
+            or not isinstance(raw_max_bytes, int)
+            or raw_max_bytes < 1
+        ):
+            raise ValueError("BrowserStorage max_bytes must be a positive integer")
         self.namespace = namespace
         self.consent_granted = consent_granted
         self.unavailable = unavailable
@@ -245,8 +275,18 @@ class BrowserStorage:
         self.max_bytes = max_bytes
         self._data: MutableMapping[str, _StorageRecord] = {}
         if initial:
+            if len(initial) > self.max_entries:
+                raise StorageQuotaExceeded(
+                    f"BrowserStorage {self.namespace!r} exceeds max_entries={self.max_entries}"
+                )
             for key, value in initial.items():
-                self._data[str(key)] = _StorageRecord(value=value)
+                self._data[str(key)] = _StorageRecord(value=deepcopy(value))
+            if self._byte_size() > self.max_bytes:
+                self._data.clear()
+                raise StorageQuotaExceeded(
+                    f"BrowserStorage namespace {self.namespace!r} "
+                    f"exceeds max_bytes={self.max_bytes}"
+                )
 
     def forbid_auth_use(self) -> None:
         """BrowserStorage must never be used for authentication or authorization.
@@ -268,7 +308,16 @@ class BrowserStorage:
 
     def _byte_size(self) -> int:
         payload = {k: rec.value for k, rec in self._data.items()}
-        return len(json.dumps(payload, default=str, separators=(",", ":")))
+        try:
+            encoded = json.dumps(
+                payload,
+                separators=(",", ":"),
+                ensure_ascii=False,
+                allow_nan=False,
+            ).encode("utf-8")
+        except (TypeError, ValueError) as exc:
+            raise ValueError("BrowserStorage values must be JSON-compatible") from exc
+        return len(encoded)
 
     @staticmethod
     def _check_schema(value: JsonValue, schema: type | Mapping[str, type] | None) -> None:
@@ -307,7 +356,7 @@ class BrowserStorage:
         if record is None:
             return default
         self._check_schema(record.value, schema)
-        return record.value
+        return deepcopy(record.value)
 
     def set(
         self,
@@ -329,15 +378,15 @@ class BrowserStorage:
             )
         self._check_schema(value, schema)
         self._purge_expired()
-        expiry = expires_at
+        expiry = None if expires_at is None else _finite_expiry(expires_at, name="expires_at")
         if ttl_seconds is not None:
-            expiry = time.time() + float(ttl_seconds)
+            expiry = time.time() + _finite_expiry(ttl_seconds, name="ttl_seconds")
         if key not in self._data and len(self._data) >= self.max_entries:
             raise StorageQuotaExceeded(
                 f"BrowserStorage {self.namespace!r} exceeds max_entries={self.max_entries}"
             )
         previous = self._data.get(key)
-        self._data[key] = _StorageRecord(value=value, expires_at=expiry)
+        self._data[key] = _StorageRecord(value=deepcopy(value), expires_at=expiry)
         if self._byte_size() > self.max_bytes:
             if previous is None:
                 del self._data[key]

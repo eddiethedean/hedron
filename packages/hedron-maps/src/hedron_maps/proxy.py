@@ -56,14 +56,20 @@ def assert_ssrf_safe(url: str, policy: MapPolicy, *, resolve_dns: bool = True) -
             explanation="Userinfo and protocol-relative forms are invalid.",
             remediation="Strip credentials; keep exact HTTPS origins.",
         )
-    origin = f"{parsed.scheme}://{parsed.netloc.split('@')[-1]}"
     port = parsed.port
-    if port:
-        host = parsed.hostname or ""
-        origin = f"{parsed.scheme}://{host}"
-        # keep host:port when non-default
-        if port not in {443, 80}:
-            origin = f"{parsed.scheme}://{host}:{port}"
+    if port == 0:
+        raise error(
+            HED_MAP_POLICY_0002,
+            title="Proxy URL port rejected",
+            explanation="Port 0 is not a valid remote HTTPS destination.",
+            remediation="Use a concrete port from 1 through 65535.",
+        )
+    host = parsed.hostname or ""
+    host_for_origin = f"[{host}]" if ":" in host else host
+    origin = f"{parsed.scheme}://{host_for_origin}"
+    # HTTPS has one default port. Keeping :80 is essential to exact-origin policy.
+    if port is not None and port != 443:
+        origin = f"{origin}:{port}"
     if not policy.remote_requests_permitted:
         raise error(
             HED_MAP_POLICY_0001,

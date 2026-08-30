@@ -5,12 +5,12 @@ from __future__ import annotations
 import os
 from collections.abc import Mapping
 
+from fastapi_workbench.config import ResolvedDeployment, WorkbenchConfig
+from fastapi_workbench.diagnostics import WorkbenchError
+from fastapi_workbench.resolve import explicit_mount_hint as _explicit_mount_hint
+from fastapi_workbench.resolve import parse_rserver_url_output as _parse_rserver_url_output
+from fastapi_workbench.resolve import resolve_deployment as _resolve_deployment
 from hedron_core.diagnostics import DiagnosticSeverity, HedronError, make_diagnostic
-from hedron_posit._workbench.config import ResolvedDeployment, WorkbenchConfig
-from hedron_posit._workbench.diagnostics import WorkbenchError
-from hedron_posit._workbench.resolve import explicit_mount_hint as _explicit_mount_hint
-from hedron_posit._workbench.resolve import parse_rserver_url_output as _parse_rserver_url_output
-from hedron_posit._workbench.resolve import resolve_deployment as _resolve_deployment
 
 # Hedron launcher handoff (backward compatible with 0.29).
 RESOLVED_MOUNT_ENV = "HEDRON_WORKBENCH_RESOLVED_MOUNT"

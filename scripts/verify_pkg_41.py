@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import tomllib
-
 from _gate_041 import EXPECTED, GATE, ROOT, check
+
+from hedron_core.compat import tomllib
 
 data = tomllib.loads(GATE.read_text())
 rows = data["evidence"]

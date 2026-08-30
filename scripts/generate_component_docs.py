@@ -16,9 +16,10 @@ import difflib
 import inspect
 import re
 import sys
-import tomllib
 from dataclasses import dataclass
 from pathlib import Path
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs" / "components"
@@ -67,9 +68,9 @@ _PIN_CEILING = (
 )
 _TRAIN_PIN = f">={_PIN_FLOOR},<{_PIN_CEILING}"
 _ALPHA_PIN = ">=0.1.0,<0.2"
-_CHARTS_PIN = ">=0.2.1,<0.3"
+_CHARTS_PIN = ">=1.0.0,<2.0"
 _CHARTS_FLAGSHIP_PIN = _TRAIN_PIN
-_NATIVE_PIN = ">=0.1.2,<0.2"
+_NATIVE_PIN = ">=0.1.3,<0.2"
 
 
 def _install_requirement(package: str) -> str:
@@ -350,10 +351,22 @@ COMPONENTS = (
                 "str | None",
                 "Application class appended after `hedron-container`; the built-in theme hook is retained.",
             ),
-            p("query", "Literal['none', 'inline-size']", "Opt into an inline-size query boundary. Default: `'none'` (existing viewport behavior)."),
-            p("name", "str | None", "Validated container name, valid only with `query='inline-size'`."),
+            p(
+                "query",
+                "Literal['none', 'inline-size']",
+                "Opt into an inline-size query boundary. Default: `'none'` (existing viewport behavior).",
+            ),
+            p(
+                "name",
+                "str | None",
+                "Validated container name, valid only with `query='inline-size'`.",
+            ),
             p("max_width", "xs | sm | md | lg | xl | full | None", "Finite readable-width token."),
-            p("align", "start | center | end | None", "Inline alignment inside the containing block."),
+            p(
+                "align",
+                "start | center | end | None",
+                "Inline alignment inside the containing block.",
+            ),
             p("padding", "none | sm | md | lg | None", "Theme-owned block spacing token."),
         ),
         "The component emits an addressable div and always retains the `hedron-container` theme hook. In 0.59, `query='inline-size'` opts the boundary into container-aware responsive styling and `name=` adds a validated named-container marker. Phase 0.61 adds finite width, alignment, and spacing markers without changing the default viewport behavior. Positional nodes and `children=` use the same normalization rules, and an application class augments rather than disables the built-in layout.",
@@ -363,15 +376,36 @@ COMPONENTS = (
     ComponentDoc(
         "PageHeader",
         "layout",
-        "Eyebrow/title/description header with optional status and actions.",
-        "PageHeader(*, title, eyebrow=None, description=None, status=None, actions=None, id=None, class_=None)",
-        "PageHeader(title='Pipelines', eyebrow='Operate', description='Source to destination jobs.', actions=ActionGroup(Button('New')))",
+        "Eyebrow/title/description header with optional metadata and actions.",
+        "PageHeader(title, *, eyebrow=None, description=None, title_measure=None, description_measure=None, title_effect=None, description_effect=None, title_tracking=None, description_tracking=None, title_wrap=None, description_wrap=None, eyebrow_tone=None, eyebrow_tracking=None, eyebrow_wrap=None, actions=None, meta=None, id=None, class_=None)",
+        "PageHeader(title='Pipelines', eyebrow='Operate', description='Source to destination jobs.', title_wrap='balance', description_wrap='pretty', actions=ActionGroup(Button('New')))",
         (
             p("title", "str | NodeLike", "Primary heading text or node."),
             p("eyebrow", "str | NodeLike | None", "Optional overline label."),
             p("description", "str | NodeLike | None", "Supporting copy under the title."),
-            p("status", "NodeLike | None", "Optional status chip or badge."),
             p("actions", "NodeLike | None", "Primary action cluster (often ActionGroup)."),
+            p("meta", "NodeLike | None", "Optional metadata below the description."),
+            p(
+                "title_measure / description_measure",
+                "narrow | default | wide | None",
+                "Independent readable-width tokens.",
+            ),
+            p(
+                "title_effect / description_effect",
+                "none | subtle | display | None",
+                "Independent named text effects.",
+            ),
+            p(
+                "title_tracking / description_tracking / eyebrow_tracking",
+                "tight | normal | loose | wide | None",
+                "Finite letter-spacing choices.",
+            ),
+            p(
+                "title_wrap / description_wrap / eyebrow_wrap",
+                "normal | wrap | balance | pretty | break | truncate | clip | None",
+                "Finite text-wrap and overflow choices.",
+            ),
+            p("eyebrow_tone", "accent | muted | neutral | None", "Semantic eyebrow color."),
         ),
         "PageHeader is the workspace page pattern for title, context, and actions without application CSS.",
         "Keep one PageHeader per primary view and put long forms below it.",
@@ -575,7 +609,7 @@ COMPONENTS = (
         "HtmxLink",
         "controls",
         "Navigate with a SafeUrl href and typed HTMX attributes for in-shell swaps.",
-        "HtmxLink(label, href, *, method='get', target=None, swap='outerHTML', select=None, select_oob=None, push_url=False, preload=None, active=False, class_=None)",
+        "HtmxLink(label, href, *, method='get', target=None, swap='outerHTML', select=None, select_oob=None, push_url=False, preload=None, active=False, attrs=None, class_=None)",
         "HtmxLink('Reports', '/reports', target='#main-panel', swap='innerHTML', select='#main-panel')",
         (
             p("label", "str", "Visible link text."),
@@ -605,6 +639,11 @@ COMPONENTS = (
                 "Registers the preload extension; never a compatibility default.",
             ),
             p("active", "bool", "Optional active styling hook for current location."),
+            p(
+                "attrs",
+                "dict[str, object] | None",
+                "Safe passthrough limited to `title`, `data-*`, and `aria-*`; URL, HTMX, style, and event attributes are rejected.",
+            ),
             p("class_", "str | None", "Additional CSS classes."),
         ),
         "HtmxLink keeps ordinary anchor navigation as the progressive-enhancement path while attaching typed HTMX attrs. "
@@ -757,7 +796,7 @@ COMPONENTS = (
             p("href", "SafeUrl | str | None", "Optional same-origin GET issued on the event."),
             p("target / swap", "str | None", "Optional hx-target and hx-swap for the GET."),
         ),
-        "SseTrigger emits `hx-trigger=\"sse:<event>\"` and registers the sse extension. It does not promote live transport to Supported.",
+        'SseTrigger emits `hx-trigger="sse:<event>"` and registers the sse extension. It does not promote live transport to Supported.',
         "Announce resulting fragment swaps through existing live regions rather than inventing extra polite noise.",
         "Do not use SseTrigger for mutating methods. Prefer Poll when the stream is unavailable.",
         package="hedron",
@@ -780,13 +819,28 @@ COMPONENTS = (
         "AppShell",
         "layout",
         "Document shell with optional side nav and a MainPanel body.",
-        "AppShell(*body, *, nav=None, nav_groups=None, panel_id='main-panel', class_=None, id=None)",
+        "AppShell(*body, *, nav=None, nav_groups=None, panel_id='main-panel', content_width='default', nav_collapse='never', nav_collapsed=False, class_=None, id=None)",
         "AppShell(Heading('Home', level=1), nav=Nav(NavGroup('Workspace', NavLink('Home', '/'), NavLink('Reports', '/reports'))), panel_id='main-panel')",
         (
             p("body", "NodeLike", "Primary content placed inside MainPanel."),
             p("nav", "NodeLike | None", "Optional side navigation (often Nav of NavLinks)."),
-            p("nav_groups", "Mapping[str, Sequence[NodeLike]] | Sequence[tuple[str, Sequence[NodeLike]]] | None", "Ordered grouped navigation lowered through `NavGroup`."),
+            p(
+                "nav_groups",
+                "Mapping[str, Sequence[NodeLike]] | Sequence[tuple[str, Sequence[NodeLike]]] | None",
+                "Ordered grouped navigation lowered through `NavGroup`.",
+            ),
             p("panel_id", "str", "Id forwarded to the composed MainPanel."),
+            p(
+                "content_width",
+                "narrow | default | wide | full",
+                "Bounded content measure independent of navigation width.",
+            ),
+            p(
+                "nav_collapse",
+                "never | user | always",
+                "Desktop rail policy; `user` adds an accessible persisted toggle.",
+            ),
+            p("nav_collapsed", "bool", "Initial compact rail state."),
         ),
         "AppShell composes landmark-friendly chrome with a swappable MainPanel so full page loads and HTMX fragment swaps share one layout. "
         "Use HtmxLink/NavLink targeting the panel id for the primary swap. When side chrome must update too, return an explicit "
@@ -850,7 +904,11 @@ COMPONENTS = (
         "FlowStep('Validate schemas', status='current', description='Checking required columns')",
         (
             p("label", "str", "Discernible step name."),
-            p("status", "complete | current | pending | blocked | skipped", "Closed status vocabulary."),
+            p(
+                "status",
+                "complete | current | pending | blocked | skipped",
+                "Closed status vocabulary.",
+            ),
             p("description", "str | None", "Optional supporting copy."),
             p("status_text", "str | None", "Optional override for the default status phrase."),
         ),
@@ -866,9 +924,17 @@ COMPONENTS = (
         "ConnectorNode('Warehouse', kind='target', state='ready', detail='Destination', runtime='Postgres')",
         (
             p("label", "str", "Discernible source or destination name."),
-            p("nodes / children", "NodeLike", "Optional metadata content rendered inside the node."),
+            p(
+                "nodes / children",
+                "NodeLike",
+                "Optional metadata content rendered inside the node.",
+            ),
             p("kind", "source | target", "Connector role in the workflow."),
-            p("state", "ready | blocked | running | succeeded | failed", "Explicit operational state."),
+            p(
+                "state",
+                "ready | blocked | running | succeeded | failed",
+                "Explicit operational state.",
+            ),
             p("detail / runtime", "str | None", "Supporting context such as object or runtime."),
             p("leading", "NodeLike | None", "Optional provider mark or identity content."),
         ),
@@ -883,7 +949,11 @@ COMPONENTS = (
         "ConnectorFlow(*nodes, children=None, direction='horizontal', collapse='md', id=None, class_=None)",
         "ConnectorFlow(ConnectorNode('CSV', kind='source'), ConnectorTrack(label='Transfer'), ConnectorNode('Warehouse', kind='target'), direction='horizontal')",
         (
-            p("nodes / children", "NodeLike", "ConnectorNode and ConnectorTrack children in reading order."),
+            p(
+                "nodes / children",
+                "NodeLike",
+                "ConnectorNode and ConnectorTrack children in reading order.",
+            ),
             p("direction", "horizontal | vertical", "Primary flow orientation."),
             p("collapse", "never | sm | md | lg", "Breakpoint where a horizontal flow stacks."),
         ),
@@ -1040,18 +1110,44 @@ COMPONENTS = (
         "StyleScope",
         "surfaces",
         "Bound a subtree to theme, finite variant, color mode, and density markers only.",
-        "StyleScope(*nodes, *, theme=None, color_mode=None, density=None, variant=None, id=None, class_=None, mark=None)",
+        "StyleScope(*nodes, *, theme=None, color_mode=None, density=None, variant=None, presentation=None, recipes=(), id=None, class_=None, mark=None)",
         "StyleScope(Text('Scoped panel'), theme='aurora', variant='dense', color_mode='dark', density='compact')",
         (
             p("nodes", "NodeLike", "StyleScope body content."),
-            p("theme", "str | None", "Optional registered theme name emitted as `data-hedron-theme`."),
-            p("variant", "str | None", "Optional finite registered variant emitted as `data-hedron-variant`. Unknown names fail closed."),
-            p("color_mode", "light | dark | None", "Optional color-mode marker (`data-hedron-color-mode`)."),
-            p("density", "compact | comfortable | spacious | None", "Optional density marker (`data-hedron-density`)."),
+            p(
+                "theme",
+                "str | None",
+                "Optional registered theme name emitted as `data-hedron-theme`.",
+            ),
+            p(
+                "variant",
+                "str | None",
+                "Optional finite registered variant emitted as `data-hedron-variant`. Unknown names fail closed.",
+            ),
+            p(
+                "color_mode",
+                "light | dark | None",
+                "Optional color-mode marker (`data-hedron-color-mode`).",
+            ),
+            p(
+                "density",
+                "compact | comfortable | spacious | None",
+                "Optional density marker (`data-hedron-density`).",
+            ),
+            p(
+                "presentation",
+                "dict[str, str] | None",
+                "Finite slot-to-recipe defaults inherited by descendants.",
+            ),
+            p(
+                "recipes",
+                "Sequence[StyleRecipe]",
+                "Optional scoped recipe catalog used to resolve presentation names into bounded component markers.",
+            ),
         ),
-        "StyleScope is a visible boundary for theme, finite variant, color mode, and density only. Presentation is marker-driven (`data-hedron-*`) and styled by first-party CSS; recipe defaults are rejected.",
+        "StyleScope is a visible boundary for theme, finite variant, color mode, density, and presentation mappings. Use `presentation={'PageHeader.title': 'display', 'Heading': 'section-heading'}` to provide nearest-scope recipe defaults; explicit component settings remain authoritative.",
         "Prefer StyleScope when a region must override theme, finite variant, color mode, or density without application CSS.",
-        "Do not pass recipe defaults or arbitrary CSS; only theme, finite variant, color_mode, and density are supported.",
+        "Do not pass arbitrary CSS or unresolved selectors; use finite StyleRecipe values and documented presentation slots.",
     ),
     ComponentDoc(
         "Badge",
@@ -1101,7 +1197,11 @@ COMPONENTS = (
         "StateView('No pipelines yet', kind='empty', description='Create a pipeline to start ingesting data.', actions=Button('New pipeline'))",
         (
             p("title", "str", "Primary message for the state."),
-            p("kind", "loading | empty | error | permission | offline | success", "Closed state vocabulary."),
+            p(
+                "kind",
+                "loading | empty | error | permission | offline | success",
+                "Closed state vocabulary.",
+            ),
             p("description / detail", "str | None", "Optional supporting copy."),
             p("actions", "NodeLike | None", "Optional recovery or next-step controls."),
         ),
@@ -1136,7 +1236,7 @@ COMPONENTS = (
             p("title", "str | None", "Accessible name override when not decorative."),
             p("decorative", "bool", "When true, hide the icon from the accessibility tree."),
         ),
-        "Icon fails closed on unknown names and never accepts raw SVG markup from application authors.",
+        "Icon fails closed on unknown names and never accepts raw SVG markup from application authors. Applications may opt into the small semantic pack with `register_first_party_icons()` and then use names such as `home`, `search`, `pipeline`, `check`, and `chevron-right`; directional icons mirror automatically under RTL.",
         "Prefer decorative=True beside visible text; otherwise supply a title that names the meaning.",
         "Do not use Icon as a button—use IconButton for actionable controls.",
     ),
@@ -1152,11 +1252,23 @@ COMPONENTS = (
             p("disabled", "bool", "Prevent activation."),
             p("variant", "primary | secondary | danger", "Finite semantic styling variant."),
             p("size", "sm | md | lg | None", "Shared control size marker."),
-            p("appearance", "solid | outline | soft | ghost | plain | raised | None", "Treatment independent of meaning."),
-            p("emphasis", "primary | secondary | danger | neutral | None", "Semantic meaning independent of treatment."),
+            p(
+                "appearance",
+                "solid | outline | soft | ghost | plain | raised | None",
+                "Treatment independent of meaning.",
+            ),
+            p(
+                "emphasis",
+                "primary | secondary | danger | neutral | None",
+                "Semantic meaning independent of treatment.",
+            ),
             p("width", "content | field | full | None", "Shared width intent."),
             p("leading_icon", "str | None", "Optional registered icon name."),
-            p("attrs", "Mapping[str, HtmlAttrValue] | None", "Validated global, ARIA, data, approved HTMX, and popover/dialog-trigger attributes."),
+            p(
+                "attrs",
+                "Mapping[str, HtmlAttrValue] | None",
+                "Validated global, ARIA, data, approved HTMX, and popover/dialog-trigger attributes.",
+            ),
         ),
         "Button retains native keyboard activation and form behavior and maps the selected variant to stable theme markers. In 0.59, `size`, `appearance`, `emphasis`, and `width` share the presentation vocabulary, while `attrs=` provides a validated seam for integration attributes. Use a higher-level action binding when the command calls the server.",
         "Use a verb that states the result. Disabled controls need nearby explanation when the reason is not obvious.",
@@ -1174,9 +1286,21 @@ COMPONENTS = (
             p("href", "SafeUrl | str", "Validated destination."),
             p("size", "sm | md | lg | None", "Shared control size marker."),
             p("width", "content | field | full | None", "Shared width intent."),
-            p("appearance", "solid | outline | soft | ghost | plain | raised | None", "Treatment independent of meaning."),
-            p("emphasis", "primary | secondary | danger | neutral | None", "Semantic meaning independent of treatment."),
-            p("attrs", "Mapping[str, HtmlAttrValue] | None", "Validated global, ARIA, data, approved HTMX, and popover/dialog-trigger attributes."),
+            p(
+                "appearance",
+                "solid | outline | soft | ghost | plain | raised | None",
+                "Treatment independent of meaning.",
+            ),
+            p(
+                "emphasis",
+                "primary | secondary | danger | neutral | None",
+                "Semantic meaning independent of treatment.",
+            ),
+            p(
+                "attrs",
+                "Mapping[str, HtmlAttrValue] | None",
+                "Validated global, ARIA, data, approved HTMX, and popover/dialog-trigger attributes.",
+            ),
         ),
         "Despite its appearance, LinkButton is an anchor and preserves open-in-new-tab, copy-link, and no-JavaScript navigation behavior. Its 0.59 `size`, `width`, `appearance`, `emphasis`, and `attrs=` contract is aligned with `Button`.",
         "The label should describe the destination and focus styling must remain visible in the chosen theme.",
@@ -1232,11 +1356,19 @@ COMPONENTS = (
             p("target", "str | None", "hx-target selector (must pass safe_css_selector)."),
             p("swap", "str", "hx-swap value (must pass safe_hx_swap)."),
             p("select", "str | None", "hx-select selector."),
-            p("indicator", "str | None", "hx-indicator selector; with `busy`, a simple #id also drives Hedron aria-busy indicator."),
+            p(
+                "indicator",
+                "str | None",
+                "hx-indicator selector; with `busy`, a simple #id also drives Hedron aria-busy indicator.",
+            ),
             p("trigger", "str | None", "`hx-trigger`."),
             p("include", "str | None", "`hx-include`."),
             p("validate", "str | None", '`"native"` compiles `hx-validate="true"`.'),
-            p("busy", "'region' | 'document' | None", "Opt-in Hedron busy host (`data-hedron-busy`); unmarked requests stay idle."),
+            p(
+                "busy",
+                "'region' | 'document' | None",
+                "Opt-in Hedron busy host (`data-hedron-busy`); unmarked requests stay idle.",
+            ),
             p("vals` / `headers", "str | None", "JSON only; `js:` expressions are rejected."),
         ),
         "Prefer `hx=Hx(...)` over raw `hx-*` kwargs so unsafe selectors cannot slip through. `busy=` is opt-in generic HTMX busy (#506); it does not mark `document.body` for unmarked requests.",
@@ -1417,7 +1549,7 @@ COMPONENTS = (
             p(
                 "depends_on",
                 "str | None",
-                "Parent field name; compiles `hx-trigger=\"change from:#field-{dom_id_part(name)}\"`.",
+                'Parent field name; compiles `hx-trigger="change from:#field-{dom_id_part(name)}"`.',
             ),
             p("source", "str | None", "Child `hx-get` fragment that synthesizes options."),
         ),
@@ -1964,7 +2096,11 @@ COMPONENTS = (
         (
             p("message", "str", "Escaped toast text."),
             p("tone", "info | success | warning | danger", "Visual token."),
-            p("ttl_ms", "int | None", "Auto-dismiss delay in milliseconds; danger defaults to none."),
+            p(
+                "ttl_ms",
+                "int | None",
+                "Auto-dismiss delay in milliseconds; danger defaults to none.",
+            ),
         ),
         "Toast emits a polite status region with a tone class and optional TTL. Pair with ToastHost at frozen `#hedron-toast`. Danger toasts stay until dismissed unless `ttl_ms` is set; they render a Dismiss control (`data-hedron-toast-dismiss`) handled by `hedron-ui.mjs`.",
         "If application JavaScript removes the toast, allow enough reading time, pause any timer on hover or focus, and preserve critical messages elsewhere.",
@@ -2041,8 +2177,16 @@ COMPONENTS = (
             ),
             p("active", "str | None", "Active panel label; defaults to the first label."),
             p("appearance", "contained | underline | pills | None", "Optional visual treatment."),
-            p("density", "compact | comfortable | spacious | None", "Optional tab hit-area density."),
-            p("responsive", "scroll | stretch | compact | None", "Narrow-width behavior; `scroll` preserves all tabs."),
+            p(
+                "density",
+                "compact | comfortable | spacious | None",
+                "Optional tab hit-area density.",
+            ),
+            p(
+                "responsive",
+                "scroll | stretch | compact | None",
+                "Narrow-width behavior; `scroll` preserves all tabs.",
+            ),
             p(
                 "id",
                 "str | None",
@@ -2655,11 +2799,27 @@ COMPONENTS = (
         "Popover(Text('Details'), label='Info', placement='inline-end', collision='shift')",
         (
             p("nodes", "NodeLike", "Popover body content."),
-            p("children", "NodeLike | sequence | None", "Keyword alternative for generated or declarative child lists."),
+            p(
+                "children",
+                "NodeLike | sequence | None",
+                "Keyword alternative for generated or declarative child lists.",
+            ),
             p("label", "str", "Accessible label text shown to users. Default: `'Open'`."),
-            p("mode", "Literal['popover', 'details']", "Presentation mode for the disclosure surface. Default: `'popover'`."),
-            p("placement", "Literal['block-start', 'block-end', 'inline-start', 'inline-end', 'center']", "Logical placement. Default: `'block-end'`."),
-            p("collision", "Literal['flip', 'shift', 'static']", "Finite collision fallback. Default: `'flip'`."),
+            p(
+                "mode",
+                "Literal['popover', 'details']",
+                "Presentation mode for the disclosure surface. Default: `'popover'`.",
+            ),
+            p(
+                "placement",
+                "Literal['block-start', 'block-end', 'inline-start', 'inline-end', 'center']",
+                "Logical placement. Default: `'block-end'`.",
+            ),
+            p(
+                "collision",
+                "Literal['flip', 'shift', 'static']",
+                "Finite collision fallback. Default: `'flip'`.",
+            ),
             p("id", "str | None", "Optional DOM `id`. Default: `None`."),
             p("class_", "str | None", "Optional CSS class string. Default: `None`."),
             p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
@@ -2799,7 +2959,11 @@ COMPONENTS = (
         "AmbientBackdrop(*nodes, pattern='radial', tone='accent', intensity='subtle', id=None, class_=None, mark=None)",
         "AmbientBackdrop(Container(Text('Dashboard'), max_width='lg'), pattern='mesh', tone='accent')",
         (
-            p("nodes / children", "NodeLike", "Semantic page or surface content above the decoration."),
+            p(
+                "nodes / children",
+                "NodeLike",
+                "Semantic page or surface content above the decoration.",
+            ),
             p("pattern", "radial | dots | grid | mesh", "Finite deterministic decoration preset."),
             p("tone", "accent | muted | neutral", "Theme-owned decoration tone."),
             p("intensity", "subtle | soft", "Bounded contrast treatment."),
@@ -2815,8 +2979,16 @@ COMPONENTS = (
         "AsyncRegion(*nodes, state='idle', initial=None, pending=None, empty=None, success=None, error=None, timeout=None, cancelled=None, stale=None, retry=None, conflict=None, fallback='fragment', label=None)",
         "AsyncRegion(Text('Report ready'), state='success', pending=Text('Loading report…'), error=Text('Try again'))",
         (
-            p("state", "idle | pending | empty | success | error | timeout | cancelled | stale | conflict", "Closed server-authored presentation state."),
-            p("state slots", "NodeLike | None", "Optional initial, pending, empty, success, error, timeout, cancelled, stale, retry, and conflict content."),
+            p(
+                "state",
+                "idle | pending | empty | success | error | timeout | cancelled | stale | conflict",
+                "Closed server-authored presentation state.",
+            ),
+            p(
+                "state slots",
+                "NodeLike | None",
+                "Optional initial, pending, empty, success, error, timeout, cancelled, stale, retry, and conflict content.",
+            ),
             p("fallback", "fragment | page", "Ordinary enhancement-free response boundary."),
             p("label", "str | None", "Accessible label for the region and polite live status."),
         ),
@@ -2828,11 +3000,20 @@ COMPONENTS = (
         "NavGroup",
         "layout",
         "Standalone labelled navigation group shared by AppShell and fragment responses.",
-        "NavGroup(label=None, *items, children=None, id=None, class_=None, mark=None)",
+        "NavGroup(label=None, *items, children=None, action=None, id=None, class_=None, mark=None)",
         "NavGroup('Workspace', NavLink('Overview', '/'), NavLink('Reports', '/reports'))",
         (
-            p("label", "str | None", "Visible and accessible group label; omit when the surrounding nav owns the name."),
-            p("items / children", "NodeLike", "Links or other already-authorized navigation items."),
+            p(
+                "label",
+                "str | None",
+                "Visible and accessible group label; omit when the surrounding nav owns the name.",
+            ),
+            p(
+                "items / children",
+                "NodeLike",
+                "Links or other already-authorized navigation items.",
+            ),
+            p("action", "NodeLike | None", "Optional typed action rendered in the group header."),
         ),
         "A labelled NavGroup emits role=group, aria-label, a visible group label, and stable CSS/data hooks. AppShell nav_groups lowers through the same component.",
         "Keep the surrounding nav landmark labelled and preserve each item’s native focus and link behavior.",
@@ -2993,7 +3174,9 @@ def static_demo(spec: ComponentDoc) -> str:
     if name == "ResourceList":
         return '<div class="hdc-stack"><span><b>Orders</b><small>Open work</small></span><span><b>Sites</b><small>Ready</small></span></div>'
     if name == "ResourceRow":
-        return '<div class="hdc-stack"><span><b>North warehouse</b><small>Ready</small></span></div>'
+        return (
+            '<div class="hdc-stack"><span><b>North warehouse</b><small>Ready</small></span></div>'
+        )
     if name == "Avatar":
         return '<div class="hdc-inline"><span class="hdc-badge" aria-label="Ada Lovelace">AL</span></div>'
     if name == "Identity":
@@ -3381,7 +3564,7 @@ def page_text(spec: ComponentDoc) -> str:
     elif spec.group in {"forms", "controls", "interaction"}:
         mutation_note = (
             f"`{spec.name}` participates in interaction markup. Pair it with an explicit "
-            "`@action` / `@component` POST (and CSRF) when the control mutates state."
+            "`@app.action` POST (and CSRF) when the control mutates state."
         )
     else:
         mutation_note = (
@@ -3405,7 +3588,7 @@ def page_text(spec: ComponentDoc) -> str:
         else "[All component demos](index.md) · [Built-in API](../api/BUILT_INS.md) · [Testing](../guides/testing.md)"
     )
     phase_note = (
-        "\n!!! note \"Phase 0.61 published surface\"\n\n"
+        '\n!!! note "Phase 0.61 published surface"\n\n'
         "    This additive contract is implemented and verified for the published 0.61.x Supported "
         "surface. See "
         "[RELEASE_0_61](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_61.md).\n"
@@ -3507,6 +3690,12 @@ hide:
 ---
 
 # Component demos
+
+!!! note "Release context"
+
+    Component contracts and demos target the published 1.0 release.
+    Registry and support details live on
+    [Current release and support](../guides/current-release.md).
 
 Every public Hedron component has a dedicated page (searchable; linked from the category
 pages below). The left nav lists **categories**, not every component — start with the

@@ -44,19 +44,19 @@ explicit HTTP request, and it may swap an **HTML fragment** into a declared regi
 === "Hedron"
 
 ```python
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from hedron import Hedron, Stack, Text, html
 
 app = Hedron(title="Demo", security="standard", session_secret="dev", explorer="off")
 
 
-@app.refreshable("/status")
+@app.view("/status")
 def status():
-    stamp = datetime.now(UTC).strftime("%H:%M:%S")
+    stamp = datetime.now(timezone.utc).strftime("%H:%M:%S")
     return html.div(Text(f"ok · {stamp}"), role="status")
 
 
-@app.screen("/", title="Demo")
+@app.page("/", title="Demo")
 def home():
     return Stack(Text("Hello"), status(), status.refresh_button("Refresh"))
 ```

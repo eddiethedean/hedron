@@ -1,27 +1,30 @@
 # Public stability classifications
 
-**For adopters:** Pin `hedron>=0.66.2,<0.67` from PyPI (stable release `0.66.2`). Treat the **stable** tables below (minimal +
-expanded 0.23 CRUD/admin facade) as the compatibility promise; everything else is `beta` /
-`experimental` and may change on `0.x`. Capability readiness (Supported vs Experimental)
-lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI remains **Beta**.
+**For adopters:** The 1.0.0 candidate is in-tree but not yet on PyPI. Use the repository checkout
+for candidate evaluation, or pin the public fallback `hedron>=0.67.0,<0.68`. Treat the **stable**
+tables below as the SemVer compatibility promise; everything
+else is `beta` / `experimental` and may change on the documented schedule. Capability readiness
+(Supported vs Experimental) lives on [What’s ready](../guides/whats-ready.md). Only
+`hedron-core` and `hedron` are Stable packages in the repository; all other packages are
+independent Beta satellites.
 
 <details markdown>
 <summary>Maintainer catalog metadata</summary>
 
-**Status:** Verified published train **0.66.x** (`v0.66.2` on PyPI). The latest
-installable public release is `v0.66.2`. The `v0.67.0` train is Beta preview.
+**Status:** Verified, untagged **1.0.x** candidate (`v1.0.0`). `v0.67.0` is the public fallback
+and migration baseline; tag and upload are deferred.
 Prior: 0.50 Explorer architecture; 0.49 FastAPI/Pydantic; 0.48 HTMX; 0.25 archetype; 0.24
 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
 A **minimal `stable` tier** plus the **expanded 0.23 CRUD/admin facade** are listed below.
-D-114/D-115/D-116 now plan 1.0 after Verified 0.67, freeze its one-way task and component-engine
-graph before 0.67 runtime implementation, retain the public Web Component ABI, and supersede
+D-114/D-115/D-116/D-117 define the verified 1.0 one-way task and component-engine graph,
+retain the public Web Component ABI, and supersede
 D-038's no-calendar clause; the existing
 D-053 / RFC-0056 and D-054 / RFC-0057 evidence and stable-tier obligations remain in force.
-**Version:** `0.51.x` / catalog baseline
+**Version:** `1.0.x` / catalog baseline
 `0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`+`0.17`+`0.18`+`0.19`+`0.20`+`0.21`+`0.22`+`0.23`+`0.24`+`0.25`+`0.26`+`0.27`+`0.28`+`0.50`+`0.51`
 
 This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the
-`0.51.x` train on `main`. Levels apply to documented contracts; symbols not listed here are
+`1.0.x` repository train. Levels apply to documented contracts; symbols not listed here are
 **internal** unless a later phase explicitly promotes them.
 
 </details>
@@ -30,21 +33,23 @@ This catalog classifies Hedron's public surface beginning with `v0.8.0` and refl
 
 | Level | Meaning |
 |---|---|
-| `stable` | Compatibility-protected across `0.x` phases. Incompatible change requires an accepted decision, migration path, deprecation evidence, and at least one intervening minor phase. |
+| `stable` | Compatibility-protected throughout `1.x`. An incompatible change requires the next major release plus an accepted decision, migration path, and deprecation evidence. |
 | `beta` | Intended for production use; may receive additive changes and documented minor-phase revisions with changelog, migration, diagnostic, and evidence obligations. |
 | `experimental` | May change or be removed without a major bump. Must be labeled in docs and Explorer. Prefer polling over experimental live transports in production. |
 | `internal` | Not a public promise. Private serializer nodes, private modules, and underscore-prefixed APIs. |
 | `deferred` | Accepted design not advertised as Supported until a later decision. |
 
-Package maturity classifiers (Beta/Alpha on PyPI) describe distribution readiness; the levels above
-describe **API/artifact** promises.
+Package maturity classifiers (Stable/Beta/Alpha) describe distribution readiness; the levels above
+describe **API/artifact** promises. The stable 1.0 package boundary is `hedron-core` plus
+`hedron`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps`; host/tooling satellites keep
+their independent Beta maturity.
 
 ## Minimal `stable` tier
 
-The following contracts are **`stable`** (compatibility-protected on the 0.x train).
+The following contracts are **`stable`** (compatibility-protected throughout 1.x).
 Everything else remains `beta` / `experimental` unless listed in the
-[expanded 0.23 tier](#expanded-stable-tier-023) below. Package maturity on PyPI remains
-**Beta** — pin versions. Maturity source of truth for product claims:
+[expanded 0.23 tier](#expanded-stable-tier-023) below. Satellite packages remain Beta even
+when a capability is Supported. Maturity source of truth for product claims:
 [What’s ready](../guides/whats-ready.md). Beginner import inventory:
 [STABLE_FACADE.md](STABLE_FACADE.md). Full root `__all__` tier map:
 [SYMBOL_TIERS.md](SYMBOL_TIERS.md).
@@ -112,7 +117,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 | CLI | Compatibility-protected core: `new`, `dev`, `build`, `check`, `routes`, `components` | [CLI.md](CLI.md); additional shipped commands are API `beta` |
 | Configuration | `[tool.hedron]` schema | [CONFIGURATION.md](../CONFIGURATION.md) |
 | Diagnostics | `HED-*` codes + SARIF/JSON exporters | [DIAGNOSTICS.md](https://github.com/eddiethedean/hedron/blob/main/docs/DIAGNOSTICS.md) |
-| Plugin protocol | `PluginMeta`, `PluginCapabilities`, `PluginContext`, entry point `hedron.plugins`, `load_plugins` | [PLUGINS.md](PLUGINS.md); loader lives in `hedron-core` |
+| Plugin protocol | `PluginMeta`, `PluginCapabilities`, `PluginContext`, `PluginContribution`, `PluginDefinition`, entry point `hedron.plugins`, `load_plugins` | [PLUGINS.md](PLUGINS.md); loader lives in `hedron-core` |
 | Registry metadata | Documented fields of `ComponentMeta`, `AddressableMeta`, `RouteMeta` | Public; private Explorer-only fields are internal |
 | HDJ authoring | `.hdj` format v1, `hedron-jinja`, `TemplateSpec`, `HedronJinja` | Format frozen as v1; package is `beta`; trusted templates only |
 | Build manifests | `BUILD` / `ASSET` / `CSS_SYMBOL` manifest format versions | Versioned; digest fields public |
@@ -124,7 +129,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 
 ## Package export classifications
 
-### `hedron` (Beta distribution)
+### `hedron` (Stable distribution)
 
 - **stable:** facade re-exports of the minimal stable tier above; `Hedron` / router / CSRF helpers;
   plus the [expanded 0.23 tier](#expanded-stable-tier-023): `region` / `fragment` / `swap` /
@@ -140,7 +145,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
   primitives (`HtmxLink`/`NavLink`, `OobHost`/`AttrHost`, `AppShell`/`MainPanel`), public
   `render_interaction`, dashboard graph / patch facades, `InteractionRecorder`, and model-demo /
   inference / workflow facades re-exported from core. Phase 0.43 handle/update symbols are **beta**:
-  `@app.refreshable`, `@app.command`, `FragmentHandle`, `BoundFragment`, `ActionHandle`, `Refresh`,
+  historical `@app.refreshable`, `@app.command`, `FragmentHandle`, `BoundFragment`, `ActionHandle`, `Refresh`,
   `refresh`, `patches`, `FragmentHost`, `Patch`, `PatchSet`, `RefreshIntent`. Phase 0.44 type-driven
   authoring symbols are **beta**: `ViewParams`, `FormBody`, `Sensitive`, `InstanceKey`, `Control`,
   `Refreshes`, `Updates`, `OutcomeMap`, `case`, `CommandResult`, `RefreshableView`,
@@ -149,6 +154,9 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
   `Hedron.interactions`. Phase 0.46 package-workflow symbols are **beta**: `FeatureBundle`,
   `FeatureRequirement`, `FeatureConflictError`, `Hedron.include_feature`, `DataWorkspace`,
   `ChartInteraction`, `McpExposure`, `RemoteWorkflow`.
+  In the 1.0 canonical surface, `@app.view`, `@app.action`, and `app.include` are the ordinary
+  task paths; the machine-enumerated stable promise is maintained in
+  `docs/acceptance/stable-inventory-100.toml`.
 - **experimental:** live transports — import from `hedron.experimental`
   (`SseResponse`, `job_status_sse_response`, `sse_response`,
   `StreamingComponentResponse`, `stream_*`, `accept_page_session_channel`,
@@ -157,7 +165,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 - Lazy optional surfaces (`hedron[data]`, `hedron[charts]`, `hedron[auth]`, content helpers) inherit
   the optional package level and are **not** part of the root stable facade.
 
-### `hedron-core` (Beta)
+### `hedron-core` (Stable)
 
 - **stable:** symbols in the minimal stable tier; plus `JobBackend` / `JobStatus` /
   `JobHandle` / `JobState` / `set_job_backend` / `get_job_backend` (`hedron_core.jobs`);
@@ -173,55 +181,68 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
   governance helpers, surface validators).
 - Concrete HTML serializer node classes remain **internal**.
 
-### `hedron-data` (Beta) — `beta`
+### `hedron-data` (Stable package) — `stable` API
 
-- `DataTable` / `DataEditor`, column catalog, saved views, `TransformPlan`, grid events: **beta**
-- Dask/Snowflake sources, AG Grid Community host: **beta**
-- Spreadsheet I/O / collab helpers: **beta**
+- `DataTable` / `DataEditor`, columns, bounded source/query/result contracts, and normalization:
+  **stable**
+- Dask/Snowflake sources, AG Grid Community host, spreadsheet I/O, and collaboration helpers:
+  **experimental**
 
-### `hedron-charts` (Beta distribution; `>=0.2.0,<0.3` on 0.38)
+### `hedron-charts` (Stable distribution; `>=1.0.0,<2.0` for coordinated 1.0 artifacts)
 
-- `Chart` / `ChartSpec` / `ChartPlan`, compiler, and deterministic exports: **beta**.
-- `MatplotlibChart` / static SVG: **beta** API on Beta distribution for Supported scopes.
+- `Chart` / `ChartSpec` / `ChartPlan`, compiler, and deterministic exports: **stable**.
+- `MatplotlibChart` / static SVG: **stable** for the declared static scope.
 - `PlotlyChart` / `AltairChart`: **experimental**.
-- `LineChart` / `AreaChart` / `BarChart` / `ScatterChart`: **beta**.
-- Optional adapters + offline runtime pins: **experimental**.
+- `LineChart` / `AreaChart` / `BarChart` / `ScatterChart`: **stable**.
+- Optional vendor adapters + offline runtime pins: **experimental**.
 
-Schema acceptance is broader than specialized host painting in `hedron-charts 0.2.0`; see the
+Schema acceptance is broader than specialized host painting in `hedron-charts 1.0.0`; see the
 [Chart API coverage matrix](CHART.md#compiler-contract-versus-current-host-coverage).
 
-### `hedron-workbench` (Beta) — `beta` optional Workbench adapter
+### `hedron-maps` (Stable package) — `stable` API
 
-Install `hedron[workbench]` / `hedron-workbench>=0.66.2,<0.67`. Supported:
-`HedronWorkbench`, pre-import launcher and resolved-state handoff,
+The bounded `MapSpec` / `MapPlan` grammar, first-party `Map` component, declared sources and
+overlays, semantic fallback, exact-origin policy, deterministic compiler, and offline inventory
+are stable. Leaflet/OpenLayers, arbitrary providers and projections, drawing, terrain, globe,
+routing, geocoding, and offline-region download remain excluded rather than implicitly stable.
+
+### `edron` (Stable package) — `stable` API
+
+The root authoring surface (`App`, `Page`, `Container`, `Action`, `Fragment`, `Interaction`,
+`Outcome`, and the documented decorators/helpers) is stable. Native internals, migration
+helpers, operational backends, and optional adapter-specific surfaces remain non-stable.
+
+### `hedron-posit` (Beta satellite) — `beta` Posit adapter
+
+Install `hedron[posit]` / `hedron-posit>=1.0.0,<2.0`. Supported:
+`HedronPosit`, pre-import Workbench launcher and resolved-state handoff,
 `HEDRON_ROOT_PATH` export, wrap-once `workbenchify`, automatic URL and safe
 response-header adaptation, Hedron-owned request-time cookie repair,
 browser/durable URL separation, explicit-mount routing, topology diagnostics,
 and ordinary local Uvicorn/generic-root-path parity. Posit Connect trusted-header
-behavior remains Experimental. The launcher can hand its pre-bound listener to
-Uvicorn reload or multiple workers (not both). Excluded: Flask/Django/WSGI,
-wildcard proxy trust, arbitrary raw HTML/JavaScript rewriting, vendoring
-fastapi-workbench, and bundling `rserver-url`.
+behavior remains Experimental. The generic implementation is provided by the
+independent `fastapi-workbench>=1.0.1,<2.0` package. The removed
+`hedron-workbench` distribution and `hedron[workbench]` extra are not supported.
 
-See [production-grade-inventory-029.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/production-grade-inventory-029.toml)
-and [Posit Workbench](../guides/posit-workbench.md).
+See [Posit Workbench](../guides/posit-workbench.md) and the
+[current release](../guides/current-release.md).
 
-### `hedron-flask` / `hedron-django` (Beta) — `beta` Supported adapters
+### `hedron-flask` / `hedron-django` (Beta packages) — `beta` Supported adapters
 
 Live helpers are **experimental** (polling remains Supported fallback).
 
-### `hedron-explorer` (Beta) — `beta` for `explorer_router`; panel internals **internal**
+### `hedron-explorer` (Beta package) — `beta` for `explorer_router`; panel internals **internal**
 
-### `hedron-sample-kit` (Beta tooling-grade; `>=0.1.10,<0.2`) — `beta`
+### `hedron-sample-kit` (Beta tooling-grade; `>=0.2.3,<0.3`) — `beta`
 
-### `hedron-jinja` / HDJ (Beta) — `beta`; HDJ format v1 frozen
+### `hedron-jinja` / HDJ (Beta package) — `beta` API; HDJ format v1 frozen
 
-### `hedron-conformance` (Beta) — `beta`
+### `hedron-conformance` (Beta package) — `beta` API
 
 Language-neutral fixture kit and runner. Cross-language runtimes that consume the kit remain
 **experimental** until separately labeled Supported.
 
-### `hedron-extras` (Beta) — `beta` composition/workbenches; specialty **experimental**
+### `hedron-extras` (Beta package) — `beta` composition/workbenches; specialty **experimental**
 
 Optional curated toolkit (`hedron[extras]`). Composition UI, DataExplorer, JSONEditor,
 image tools, calendar/signature/typeahead, and display recipes are **beta**.
@@ -243,7 +264,8 @@ Optional deny-by-default MCP Streamable HTTP projection
 ([RFC-0043](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0043-MCP-PROJECTION.md)
 product contract; [RFC-0065](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md)
 graduation). D-015 separate distribution; maturity Beta / API `beta` for the declared Supported
-inventory. Pin `hedron-mcp>=0.2.0,<0.3`. Disabled and empty by default. Mutating tools remain
+inventory. The coordinated 1.0 artifact is `hedron-mcp>=0.2.4,<0.3`. Disabled and empty by
+default. Mutating tools remain
 Experimental (`allow_mutations=True`).
 
 ### `hedron-gradio` (Beta — phase 0.34 Supported inventory)
@@ -251,7 +273,8 @@ Experimental (`allow_mutations=True`).
 Optional Gradio client interoperability
 ([RFC-0049](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0049-GRADIO-ADAPTER.md)
 product contract; RFC-0067 graduation). D-015 / D-049 separate distribution; maturity Beta /
-API `beta` for declared allowlisted client interoperability. Discover is empty while disabled;
+API `beta` for declared allowlisted client interoperability. The coordinated 1.0 artifact is
+`hedron-gradio>=0.2.3,<0.3`. Discover is empty while disabled;
 absence adds no core cost. Vendor extensions and UI auto-composition remain Experimental, and
 the package does not embed Gradio's UI runtime.
 

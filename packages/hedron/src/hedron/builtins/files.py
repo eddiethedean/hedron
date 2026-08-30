@@ -8,6 +8,7 @@ from typing import Any
 
 from starlette.responses import FileResponse, Response
 
+from hedron_core.alpine import AlpineAttrs, AlpineDirective, AlpineExpression
 from hedron_core.builtins.appearance import Appearance, Density, Size, appearance_data
 from hedron_core.component import Component
 from hedron_core.html import html
@@ -145,6 +146,15 @@ class FileUpload(Component[FileUploadProps]):
             "aria": {"label": self.props.label, "describedby": " ".join(described_by)},
             "data": {"max-size": str(self.props.maximum_size)},
             "class_": "hedron-file-upload-input",
+            "alpine": AlpineAttrs(
+                directives=(
+                    AlpineDirective(
+                        "x-on:change",
+                        AlpineExpression.assign("has_files", AlpineExpression.literal(True)),
+                    ),
+                ),
+                source=f"component:FileUpload:{self.props.name}:input",
+            ),
         }
         if self.props.accept:
             input_attrs["accept"] = self.props.accept
@@ -154,6 +164,25 @@ class FileUpload(Component[FileUploadProps]):
             html.span(self.props.label, class_="hedron-file-upload-label"),
             html.input(**input_attrs),
             html.span(hint, id=hint_id, class_="hedron-file-upload-hint"),
+            html.span(
+                "File selected",
+                id=f"{status_id}-local",
+                class_="hedron-file-upload-selected",
+                hidden=True,
+                alpine=AlpineAttrs(
+                    directives=(
+                        AlpineDirective(
+                            "x-bind:hidden",
+                            AlpineExpression.binary(
+                                "!==",
+                                AlpineExpression.name("has_files"),
+                                AlpineExpression.literal(True),
+                            ),
+                        ),
+                    ),
+                    source=f"component:FileUpload:{self.props.name}:selected",
+                ),
+            ),
         ]
         if self.props.status:
             parts.append(
@@ -177,6 +206,10 @@ class FileUpload(Component[FileUploadProps]):
             *parts,
             class_="hedron-file-upload",
             data=data,
+            alpine=AlpineAttrs(
+                state={"has_files": False},
+                source=f"component:FileUpload:{self.props.name}",
+            ),
         )
 
 

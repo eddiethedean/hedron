@@ -15,7 +15,7 @@ from hedron_core.settings_disposition import (
 
 
 def test_settings_candidates_retain_custom_loader() -> None:
-    assert SETTINGS_CANDIDATES == ("fastapi-workbench", "hedron-workbench", "hedron-posit")
+    assert SETTINGS_CANDIDATES == ("fastapi-workbench", "hedron-posit")
     assert "hedron.config.HedronSettings" in NOT_CANDIDATES
     for name in SETTINGS_CANDIDATES:
         assert SETTINGS_DISPOSITIONS[name] in ALLOWED

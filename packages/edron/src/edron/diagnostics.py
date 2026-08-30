@@ -11,7 +11,7 @@ import json
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 Severity = Literal["error", "warning", "information"]
 MAX_DIAGNOSTICS = 512
@@ -55,8 +55,10 @@ def _redact(value: Any, *, depth: int = 0) -> Any:
     if value is None or isinstance(value, (bool, int, float)):
         return value
     if isinstance(value, Mapping):
-        result = {}
-        for key, item in list(value.items())[:32]:
+        result: dict[str, Any] = {}
+        mapping = cast(Mapping[Any, Any], value)
+        mapping_items: list[tuple[Any, Any]] = list(mapping.items())[:32]
+        for key, item in mapping_items:
             key_text = str(key)[:80]
             result[key_text] = (
                 "<redacted>"
@@ -68,7 +70,8 @@ def _redact(value: Any, *, depth: int = 0) -> Any:
             )
         return result
     if isinstance(value, Sequence) and not isinstance(value, (bytes, bytearray, str)):
-        return [_redact(item, depth=depth + 1) for item in list(value)[:32]]
+        sequence_items: list[Any] = list(cast(Sequence[Any], value))[:32]
+        return [_redact(item, depth=depth + 1) for item in sequence_items]
     return f"<{type(value).__name__}>"
 
 
@@ -83,7 +86,7 @@ class EdronDiagnostic:
     remediation: str = ""
     source: SourceLocation | None = None
     native_diagnostic: Any = None
-    context: Mapping[str, Any] = field(default_factory=dict)
+    context: Mapping[str, Any] = field(default_factory=lambda: dict[str, Any]())
     docs_url: str | None = None
 
     def __post_init__(self) -> None:
@@ -164,7 +167,7 @@ class DiagnosticReport:
         return "\n\n".join(item.as_text() for item in self.diagnostics) or "No findings."
 
     def to_sarif(self) -> dict[str, Any]:
-        results = []
+        results: list[dict[str, Any]] = []
         rules: dict[str, dict[str, Any]] = {}
         for item in self.diagnostics:
             rules.setdefault(

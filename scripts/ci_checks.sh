@@ -8,6 +8,7 @@
 #   scripts/ci_checks.sh test [--python 3.12]
 #   scripts/ci_checks.sh workbench [--python 3.12]
 #   scripts/ci_checks.sh docs [--python 3.12]
+#   scripts/ci_checks.sh typing [--python 3.12]
 #   scripts/ci_checks.sh quality [--python 3.12] [--skip-wheels]
 #   scripts/ci_checks.sh browser [--python 3.12]
 #   scripts/ci_checks.sh evidence [--python 3.12] [--gate-version 0.37.0]
@@ -17,29 +18,31 @@
 #   scripts/ci_checks.sh all [--python 3.12] [--gate-version 0.37.0] [options]
 #
 # Full local CI (`all`) mirrors `.github/workflows/ci.yml` job order:
-#   test (Python 3.11–3.14 by default) → workbench-dependencies → quality →
+#   test (Python 3.10–3.14 by default) → stable dependency bounds → quality →
 #   browser (Chromium; pass --all-browsers for main-branch matrix) → realwb →
 #   realconnect → evidence → packaging
 #
-# Independent checks inside a suite run concurrently (ruff / pyright / docs;
+# Independent checks inside a suite run concurrently (ruff / pyright / strict package types / docs;
 # workbench bounds; evidence bundle vs verifiers). Wheel smoke and verify-pkgs
 # stay sequential after those jobs so `uv build` / `uv run` cannot race the
 # project .venv. Suite order in `all` stays sequential for the same reason.
 #
 # `all` options (opt out of slow or credential-gated jobs):
-#   --python 3.12       Single Python for test (default matrix: 3.11–3.14)
+#   --python 3.12       Single Python for test (default matrix: 3.10–3.14)
 #   --all-pythons       Force full test matrix even after --python
 #   --jobs N            Max concurrent jobs (default: CPUs, or HEDRON_CHECK_JOBS)
 #   --skip-browser      Skip Playwright HTMX suite
-#   --skip-workbench    Skip Workbench dependency bounds matrix
+#   --skip-workbench    Skip stable dependency bounds matrix
 #   --skip-realwb       Skip REALWB-030 Docker smoke
 #   --skip-realconnect  Skip REALCONNECT-033 Docker smoke
 #   --skip-wheels       Skip `uv build --all-packages` wheel smoke (`quality` only)
 #   --all-browsers      Run Chromium + Firefox + WebKit (main / release CI)
+#   --release-gate      Treat skipped browser/adapter/backend gates as failures
 #   --with-browser      Deprecated alias (browser runs by default in `all`)
 #
 # Env:
 #   HEDRON_BROWSER / HEDRON_BROWSER_ENGINE — browser suite (default engine: chromium)
+#   HEDRON_BROWSER_REUSE — optional shared Playwright process for local runs
 #   HEDRON_GATE_VERSION — default for --gate-version
 #   HEDRON_CHECK_JOBS — default concurrency for --jobs
 #   PWB_LICENSE / CONNECT_LICENSE — optional; realwb/realconnect skip when unset
@@ -56,10 +59,23 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 export UV_NO_PROGRESS="${UV_NO_PROGRESS:-1}"
+# Keep wheel/sdist metadata and native linker identities stable across clean
+# packaging rehearsals. ZIP/DOS timestamps cannot represent dates before 1980;
+# clamp the historical Unix-epoch default so Python 3.14's zipfile remains
+# portable across time zones while preserving deterministic artifacts.
+SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-315619200}"
+if [[ "$SOURCE_DATE_EPOCH" -lt 315619200 ]]; then
+  SOURCE_DATE_EPOCH=315619200
+fi
+export SOURCE_DATE_EPOCH
+# Do not let interpreter startup create package-local bytecode that can be
+# picked up by native wheel builds and make otherwise identical artifacts
+# differ based on build order.
+export PYTHONDONTWRITEBYTECODE="${PYTHONDONTWRITEBYTECODE:-1}"
 
 PYTHON="${PYTHON:-3.12}"
-GATE_VERSION="${HEDRON_GATE_VERSION:-0.67.0}"
-CI_PYTHONS=(3.11 3.12 3.13 3.14)
+GATE_VERSION="${HEDRON_GATE_VERSION:-1.0.0}"
+CI_PYTHONS=(3.10 3.11 3.12 3.13 3.14)
 PYTHON_EXPLICIT=0
 ALL_PYTHONS=0
 ALL_BROWSERS=0
@@ -68,6 +84,8 @@ SKIP_WORKBENCH=0
 SKIP_REALWB=0
 SKIP_REALCONNECT=0
 SKIP_WHEELS=0
+RELEASE_GATE=0
+UNSUPPORTED_GATES=()
 JOBS="${HEDRON_CHECK_JOBS:-}"
 HEDRON_PYTHON_EXE=""
 
@@ -153,6 +171,10 @@ parse_args() {
         SKIP_WHEELS=1
         shift
         ;;
+      --release-gate)
+        RELEASE_GATE=1
+        shift
+        ;;
       --with-browser)
         SKIP_BROWSER=0
         shift
@@ -168,6 +190,28 @@ parse_args() {
   done
 }
 
+record_unsupported() {
+  UNSUPPORTED_GATES+=("$1")
+  echo "unsupported evidence: $1"
+}
+
+report_unsupported() {
+  if [[ "${#UNSUPPORTED_GATES[@]}" -eq 0 ]]; then
+    return 0
+  fi
+  echo
+  echo "Unsupported evidence gates:"
+  local gate
+  for gate in "${UNSUPPORTED_GATES[@]}"; do
+    echo "- $gate"
+  done
+  if [[ "$RELEASE_GATE" -eq 1 ]]; then
+    echo "release gate failed: required evidence was skipped" >&2
+    return 1
+  fi
+  return 0
+}
+
 resolve_python() {
   if [[ -n "$HEDRON_PYTHON_EXE" ]]; then
     return 0
@@ -181,6 +225,36 @@ resolve_python() {
     fi
   fi
   HEDRON_PYTHON_EXE="$(uv run --python "$PYTHON" python -c 'import sys; print(sys.executable)')"
+}
+
+secret_available() {
+  # Match the live probes' non-exporting .env lookup without sourcing secrets
+  # into this shell or printing their values.
+  local name="$1"
+  if [[ -n "${!name:-}" ]]; then
+    return 0
+  fi
+  if [[ ! -f "$ROOT/.env" ]]; then
+    return 1
+  fi
+  resolve_python
+  HEDRON_SECRET_NAME="$name" "$HEDRON_PYTHON_EXE" - "$ROOT/.env" <<'PY'
+import os
+import shlex
+import sys
+
+name = os.environ["HEDRON_SECRET_NAME"]
+prefix = f"{name}="
+for raw in open(sys.argv[1], encoding="utf-8"):
+    line = raw.strip()
+    if line.startswith("export "):
+        line = line[7:].lstrip()
+    if not line.startswith(prefix):
+        continue
+    parsed = shlex.split(line.split("=", 1)[1].strip(), comments=True, posix=True)
+    raise SystemExit(0 if len(parsed) == 1 and parsed[0] else 1)
+raise SystemExit(1)
+PY
 }
 
 run_py() {
@@ -323,6 +397,18 @@ quality_pyright() {
   run_uv pyright
 }
 
+quality_strict_package_types() {
+  # Release-gated typed packages, including selected Beta satellites, must
+  # remain warning-free under the workspace's strict Pyright configuration.
+  run_uv pyright --warnings \
+    packages/hedron-core/src/hedron_core \
+    packages/hedron/src/hedron \
+    packages/hedron-data/src/hedron_data \
+    packages/hedron-charts/src/hedron_charts \
+    packages/hedron-maps/src/hedron_maps \
+    packages/edron/src/edron
+}
+
 quality_wheels_smoke() {
   # Fresh dist avoids conflicting train wheels on local re-runs.
   # Wheel-only: the smoke venv installs `dist/*.whl`; sdists are unused.
@@ -332,17 +418,17 @@ quality_wheels_smoke() {
 
   rm -rf /tmp/hedron-smoke
   uv venv /tmp/hedron-smoke --python "$PYTHON"
-  # Keep the consumer rehearsal on the repository's in-tree wheels. Published
-  # satellite wheels may still carry constraints from an older Hedron train
-  # while the current workspace wheels are being prepared for release.
-  local beta_wheels=()
+  # Edron releases independently, so install its wheel after the rest of the
+  # prospective workspace train. This validates the dependency graph that the
+  # tag is about to publish without depending on older PyPI satellite metadata.
+  local train_wheels=()
   local wheel
   for wheel in dist/*.whl; do
-    if [[ "$(basename "$wheel")" != edron-*.whl ]]; then
-      beta_wheels+=("$wheel")
+    if [[ "$(basename "$wheel")" != edron-*.whl && "$(basename "$wheel")" != edron_sim-*.whl ]]; then
+      train_wheels+=("$wheel")
     fi
   done
-  uv pip install --python /tmp/hedron-smoke "${beta_wheels[@]}"
+  uv pip install --python /tmp/hedron-smoke "${train_wheels[@]}"
   /tmp/hedron-smoke/bin/python - <<'PY'
 from hedron_core import Page, RenderMode, Text, render
 
@@ -377,15 +463,15 @@ assert sample_kit_version
 # Adapter wheels must import without requiring FastAPI in the smoke path.
 import hedron_flask
 import hedron_django
-import hedron_workbench
+import hedron_posit
 from hedron_core import SecurityPolicy
 
 assert hedron_flask.HedronFlask is not None
 assert hedron_django.HedronSecurityHeadersMiddleware is not None
-assert hedron_workbench.workbenchify is not None
-assert issubclass(hedron_workbench.HedronWorkbench, Hedron)
+assert hedron_posit.workbenchify is not None
+assert issubclass(hedron_posit.HedronPosit, Hedron)
 assert "Content-Security-Policy" in SecurityPolicy.from_name("standard").response_headers()
-print("ok: Hedron 0.67 beta wheels install and import cleanly")
+print("ok: prospective Hedron workspace wheels install and import cleanly")
 PY
 
   local edron_wheel=(dist/edron-*.whl)
@@ -393,17 +479,21 @@ PY
     echo "missing Edron wheel for stable-train smoke" >&2
     return 1
   fi
-  rm -rf /tmp/edron-stable-smoke
-  uv venv /tmp/edron-stable-smoke --python "$PYTHON"
-  uv pip install --python /tmp/edron-stable-smoke/bin/python \
-    --find-links dist "${edron_wheel[0]}"
-  /tmp/edron-stable-smoke/bin/python - <<'PY'
+  uv pip install --python /tmp/hedron-smoke/bin/python "${edron_wheel[0]}"
+  local edron_sim_wheel=(dist/edron_sim-*.whl)
+  if [[ ! -f "${edron_sim_wheel[0]}" || "${edron_sim_wheel[0]}" == 'dist/edron_sim-*.whl' ]]; then
+    echo "missing Edron Sim wheel for stable-train smoke" >&2
+    return 1
+  fi
+  uv pip install --python /tmp/hedron-smoke/bin/python "${edron_sim_wheel[0]}"
+  /tmp/hedron-smoke/bin/python - <<'PY'
 import importlib.metadata as metadata
 
-assert metadata.version("edron") == "0.9.0"
-assert metadata.version("hedron") == "0.67.0"
-assert metadata.version("hedron-data") == "0.67.0"
-print("ok: Edron 0.9 stable-train wheel installs and imports cleanly")
+assert metadata.version("edron") == "1.0.0"
+assert metadata.version("edron-sim") == "0.1.0"
+assert metadata.version("hedron") == "1.0.0"
+assert metadata.version("hedron-data") == "1.0.0"
+print("ok: Edron 1.0 installs against the Hedron 1.0 train")
 PY
 
   # Exercise the exact standalone-wheel scaffold contract on ordinary main/PR
@@ -440,7 +530,12 @@ PY
   test ! -d node_modules
   echo "ok: no Node package tooling in repo"
   run_py scripts/check_satellite_imports.py
+  run_py scripts/check_htmx_alpine_refinement.py
   run_py scripts/check_symbol_tiers.py
+}
+
+quality_release_contract() {
+  run_py scripts/check_release_contract.py
 }
 
 quality_verify_pkgs() {
@@ -458,6 +553,9 @@ quality_docs() {
   run_py scripts/sync_status_roadmap.py --check
   run_py scripts/generate_sim_demos.py --check
   run_py scripts/generate_component_docs.py --check
+  run_py scripts/generate_htmx_alpine_component_counts.py --check
+  run_py scripts/generate_edron_api_index.py --check
+  run_py scripts/generate_example_catalog.py --check
   run_py scripts/check_docs_train_ssot.py
   run_py scripts/check_package_docs_inventory.py
   run_py scripts/check_documentation_ownership.py
@@ -509,6 +607,11 @@ cmd_docs() {
   quality_docs
 }
 
+cmd_typing() {
+  resolve_python
+  quality_strict_package_types
+}
+
 cmd_quality() {
   job_pool_init
   resolve_python
@@ -517,7 +620,9 @@ cmd_quality() {
   # with pyright / docs.
   start_job ruff quality_ruff
   start_job pyright quality_pyright
+  start_job strict-package-types quality_strict_package_types
   start_job core-neutral quality_core_neutral
+  start_job release-contract quality_release_contract
   start_job docs quality_docs
   wait_jobs
   printf '\n======== verify-pkgs ========\n'
@@ -532,33 +637,48 @@ cmd_quality() {
 cmd_browser() {
   export HEDRON_BROWSER="${HEDRON_BROWSER:-1}"
   export HEDRON_BROWSER_ENGINE="${HEDRON_BROWSER_ENGINE:-chromium}"
-  # Keep Playwright serial: xdist contention on a shared browser install flakes.
-  # One driver/browser per engine is reused for the process (tests/browser/_playwright.py).
+  # Keep Playwright serial: xdist contention on browser processes flakes.
   run_uv pytest -q -m browser --tb=short -n 0
 }
 
 cmd_workbench_bounds() {
-  # Matches ci.yml workbench-dependencies (minimum + latest Starlette/Uvicorn bounds).
+  # Matches ci.yml dependency-bounds (minimum + latest Starlette/Uvicorn bounds).
   local bounds="$1"
   local venv=".bounds-venv-${bounds}"
   echo "== workbench dependencies ($bounds) =="
   uv venv "$venv" --python "$PYTHON" --clear
   if [[ "$bounds" == minimum ]]; then
-    uv pip install --python "$venv/bin/python" \
-      -e packages/hedron-core -e packages/hedron -e packages/hedron-workbench \
-      -e packages/hedron-django \
-      pytest pytest-xdist httpx "django>=5.2,<6" "starlette==1.3.1" "uvicorn==0.32.0"
+    uv pip install --python "$venv/bin/python" --resolution lowest-direct \
+      -e packages/hedron-core -e packages/hedron -e packages/hedron-explorer \
+      -e packages/hedron-data -e packages/hedron-flask -e packages/hedron-django \
+      -e packages/hedron-jinja -e packages/hedron-conformance -e packages/hedron-extras \
+      -e packages/hedron-elements -e packages/hedron-posit -e packages/fastapi-workbench \
+      -e packages/hedron-charts -e packages/hedron-maps -e packages/edron \
+      -r release/stable-dependencies.txt \
+      "pytest>=8.3" "pytest-xdist>=3.6" "httpx>=0.28" \
+      "django>=5.2,<6" "matplotlib>=3.8,<4"
   else
-    uv pip install --python "$venv/bin/python" \
-      -e packages/hedron-core -e packages/hedron -e packages/hedron-workbench \
-      -e packages/hedron-django \
-      pytest pytest-xdist httpx "django>=5.2,<6" "starlette>=1.3.1" "uvicorn>=0.32"
+    uv pip install --python "$venv/bin/python" --resolution highest \
+      -e packages/hedron-core -e packages/hedron -e packages/hedron-explorer \
+      -e packages/hedron-data -e packages/hedron-flask -e packages/hedron-django \
+      -e packages/hedron-jinja -e packages/hedron-conformance -e packages/hedron-extras \
+      -e packages/hedron-elements -e packages/hedron-posit -e packages/fastapi-workbench \
+      -e packages/hedron-charts -e packages/hedron-maps -e packages/edron \
+      -r release/stable-dependencies.txt \
+      "pytest>=8.3" "pytest-xdist>=3.6" "httpx>=0.28" \
+      "django>=5.2,<6" "matplotlib>=3.8,<4"
   fi
+  run "$venv/bin/python" scripts/check_stable_dependency_bounds.py --verify-installed "$bounds"
   run "$venv/bin/pytest" -q \
     tests/adapters/workbench \
+    tests/adapters/flask \
+    tests/adapters/django \
     tests/integration/test_workbench_urls.py \
     tests/integration/test_workbench_runner.py \
-    tests/security/test_workbench_adversarial.py
+    tests/security/test_workbench_adversarial.py \
+    tests/unit/test_maps_047_pkg.py \
+    tests/unit/test_charts_028_static_matrix.py \
+    tests/unit/test_edron_100_packet.py
 }
 
 cmd_workbench() {
@@ -584,6 +704,13 @@ evidence_gates() {
 }
 
 evidence_verify_pkgs() {
+  if [[ "$GATE_VERSION" == "1.0.0" ]]; then
+    # 1.0 has a consolidated release packet; predecessor verifiers encode
+    # their historical package versions and are covered by their own release
+    # workflows rather than the current 1.0 evidence job.
+    run_py scripts/check_100.py --check-plan
+    return 0
+  fi
   run_py scripts/verify_pkg_34.py --allow-planned
   run_py scripts/verify_pkg_35.py --allow-planned
   # `all` already ran 36–47 during quality; skip the second verification pass.
@@ -643,6 +770,10 @@ cmd_realwb() {
 
 cmd_packaging() {
   # PKG packaging rehearsal (same verify helper as the evidence suite).
+  if [[ "$GATE_VERSION" == "1.0.0" ]]; then
+    run_py scripts/check_100.py --gate PKG-100 --verify
+    return 0
+  fi
   if [[ "${HEDRON_CI_ALL:-0}" == 1 ]]; then
     echo "skip: packaging (verify_pkg_35–49 already covered by quality + evidence)"
     return 0
@@ -680,6 +811,10 @@ cmd_all() {
 
   HEDRON_CI_ALL=1
   export HEDRON_CI_ALL
+  if [[ "$RELEASE_GATE" -eq 1 ]]; then
+    HEDRON_REQUIRED_LIVE_GATES=1
+    export HEDRON_REQUIRED_LIVE_GATES
+  fi
 
   if [[ "$ALL_PYTHONS" -eq 0 && "$PYTHON_EXPLICIT" -eq 0 ]]; then
     ALL_PYTHONS=1
@@ -717,7 +852,7 @@ NOTE
     section "workbench-dependencies"
     cmd_workbench
   else
-    echo "skip: workbench (--skip-workbench)"
+    record_unsupported "workbench dependency/adaptor matrix (--skip-workbench)"
   fi
 
   section "quality"
@@ -733,22 +868,31 @@ NOTE
       export HEDRON_BROWSER_ENGINE="$browser"
       cmd_browser
     done
+    if [[ "$ALL_BROWSERS" -eq 0 ]]; then
+      record_unsupported "Firefox/WebKit browser matrix (--all-browsers not set)"
+    fi
   else
-    echo "skip: browser (--skip-browser)"
+    record_unsupported "browser matrix (--skip-browser)"
   fi
 
   if [[ "$SKIP_REALWB" -eq 0 ]]; then
     section "realwb"
+    if ! secret_available PWB_LICENSE; then
+      record_unsupported "REALWB-030 live backend (PWB_LICENSE unavailable)"
+    fi
     cmd_realwb
   else
-    echo "skip: realwb (--skip-realwb)"
+    record_unsupported "REALWB-030 live backend (--skip-realwb)"
   fi
 
   if [[ "$SKIP_REALCONNECT" -eq 0 ]]; then
     section "realconnect"
+    if ! secret_available CONNECT_LICENSE && ! secret_available CONNECT_API_KEY; then
+      record_unsupported "REALCONNECT-033 live backend (CONNECT_LICENSE unavailable)"
+    fi
     cmd_realconnect
   else
-    echo "skip: realconnect (--skip-realconnect)"
+    record_unsupported "REALCONNECT-033 live backend (--skip-realconnect)"
   fi
 
   section "evidence"
@@ -756,6 +900,7 @@ NOTE
 
   section "packaging"
   cmd_packaging
+  report_unsupported
 }
 
 # --- dispatch ------------------------------------------------------------------
@@ -786,6 +931,7 @@ case "$SUITE" in
   test) cmd_test ;;
   workbench) cmd_workbench ;;
   docs) cmd_docs ;;
+  typing) cmd_typing ;;
   quality) cmd_quality ;;
   browser) cmd_browser ;;
   evidence) cmd_evidence ;;

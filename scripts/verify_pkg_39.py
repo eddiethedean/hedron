@@ -10,8 +10,9 @@ from __future__ import annotations
 import argparse
 import subprocess
 import sys
-import tomllib
 from pathlib import Path
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -160,7 +161,9 @@ def _workspace_version() -> str:
 def _check_versions(*, allow_planned: bool) -> None:
     version = _workspace_version()
     if allow_planned:
-        if version.startswith(("0.60.", "0.61.", "0.62.", "0.63.", "0.64.", "0.65.", "0.66.", "0.67.")):
+        if version.startswith(
+            ("0.60.", "0.61.", "0.62.", "0.63.", "0.64.", "0.65.", "0.66.", "0.67.")
+        ):
             print(f"ok: living tip {version} (0.39 allow-planned)")
             return
         if not (

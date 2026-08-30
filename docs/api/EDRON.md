@@ -2,10 +2,10 @@
 status: verified
 ---
 
-# Edron public API contract
+# Edron 1.0 design and compatibility contract
 
-**Status:** Edron `0.9.0` implemented and verified in-tree; publication pending<br>
-**Target:** Edron `0.9.0`; Hedron `0.67.0` (`>=0.67.0,<0.68`)<br>
+**Status:** Edron `1.0.0` Stable API verified in-tree; tag/PyPI publication deferred<br>
+**Target:** Edron `1.0.x`; Hedron `1.0.x` (`>=1.0.0,<1.1`)<br>
 **Historical 0.1 target metadata:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
 **Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **Authority:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
@@ -15,9 +15,11 @@ status: verified
 **Acceptance:** [Edron 0.1 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_001.md)<br>
 **Executable-design fixtures:** [Edron golden applications](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_GOLDEN_APPS.md)
 
-This document records the beginner-facing Python contract through Edron 0.9. The original 0.1
-sections remain the compatibility foundation; release and migration details are in the
-[Edron user guide](../guides/edron-user-guide.md) and [0.9 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_009.md).
+This document preserves the detailed lowering and compatibility contract behind Edron 1.0.
+For task-oriented public reference, start with [Edron API by task](EDRON_REFERENCE.md) and the
+[generated symbols](EDRON_AUTODOC.md). The original 0.1 sections remain historical design
+foundations; release and migration details are in the [Edron user guide](../guides/edron-user-guide.md)
+and [1.0 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_100.md).
 Signatures use
 Python typing notation; imported native types keep their owning Hedron package and stability level.
 
@@ -61,8 +63,9 @@ The conventional import is `import edron as ed`. Documentation does not use or r
 
 ## Contract language and stability
 
-The words **must**, **must not**, **required**, **should**, and **may** are normative. Edron `0.9.0`
-is a Beta distribution and all Edron-owned symbols in this contract remain API tier `beta`.
+The words **must**, **must not**, **required**, **should**, and **may** are normative. Edron `1.0.0`
+is a Stable distribution. Only the deliberately small root authoring surface listed in the
+stable API contract is API tier `stable`; native internals and optional adapters remain non-stable.
 Identity re-exports retain the native Hedron symbol's own tier. Experimental third-party adapters
 remain explicitly `experimental` even when reached through an Edron method.
 
@@ -76,12 +79,13 @@ The current compatibility promise covers:
 - styling precedence and native-authority behavior; and
 - stable Edron diagnostic codes listed here.
 
-Edron 0.9 additionally exposes the native Hedron 0.67 `Interaction`, `Outcome`,
+Edron exposes the native Hedron `Interaction`, `Outcome`,
 `AlpineFeatureDemand`, `BrowserFeaturePlan`, and `BrowserPlanClosure` contracts. These are identity
 re-exports: Edron does not create a parallel browser runtime, request authority, or outcome algebra.
 Use `edron.Interaction.local`, `.request`, or `.combined` for declared interactions and
-`edron.browser_plan()` for demand-driven browser assets. Hedron 1.0 is a future compatibility target;
-Edron 0.9 does not declare it as a dependency before its release and verification.
+`edron.browser_plan()` for demand-driven browser assets. Edron 1.0 registers page, view, action,
+and feature roles through the canonical Hedron 1.0 APIs and does not maintain parallel handle,
+router, lifecycle, or outcome-lowering implementations.
 
 Generated internal paths, DOM IDs, private classes, private descriptor/compiler types, buffer
 implementation, exact HTML whitespace, and private native Hedron implementation details are not
@@ -94,11 +98,12 @@ The normative artifact, dependency, capability, extras, and release requirements
 the [Edron packaging contract](EDRON_PACKAGING.md). This section freezes the public installation
 surface.
 
-The `edron` distribution supports Python 3.11 through 3.14 on the 0.9 train, matching Hedron 0.67.
+The `edron` distribution supports Python 3.10 through 3.14 on the 1.0 train.
 
-`pip install edron` requires `hedron>=0.67.0,<0.68` and `hedron-data>=0.67.0,<0.68`, plus the
+`pip install edron` requires `hedron>=1.0.0,<2.0` and `hedron-data>=1.0.0,<2.0`, plus the
 compatible `hedron-charts`, `hedron-maps`, Markdown/sanitization, and Uvicorn dependencies. The
-exact train is frozen in the [0.9 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_009.md).
+native 1.0 integration is frozen in the
+[1.0 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_100.md).
 
 The package publishes `py.typed`, wheel, and source distributions. Importing `edron` must not:
 
@@ -348,7 +353,7 @@ uvicorn app:app
 
 `App.include(...)` accepts only documented feature/provider types. In 0.1 that includes `JobFlow`
 and compatible native Hedron `FeatureProvider`/`FeatureBundle` values. It returns `None`; the native
-registered bundle for an Edron `JobFlow` is available through `app.native(flow)`. A directly
+registered bundle for an Edron `JobFlow` is available through `app.native_surface(flow)`. A directly
 included native `FeatureBundle` already is the native object and remains available through the
 Hedron catalog.
 
@@ -747,7 +752,7 @@ class BoundFragment(Generic[P]):
 ```
 
 Access through `self` returns a page-bound view of the descriptor. `.bind(...)` is useful when a
-target value is passed without mounting it. `app.native(PageClass.fragment_member)` returns the
+target value is passed without mounting it. `app.native_surface(PageClass.fragment_member)` returns the
 exact native `FragmentHandle`; a bound value returns the native bound fragment/reference.
 
 ## `action`, `Action`, and `BoundAction`
@@ -1055,9 +1060,9 @@ The initial shortcut registry is:
 
 | Capability | Direct dependencies | Equivalent shortcut | Maturity |
 |---|---|---|---|
-| pandas input | `pandas>=2.0` and `narwhals>=1.0` | `edron[pandas]` | beta data adapter |
-| Polars input | `polars>=1.0` and `narwhals>=1.0` | `edron[polars]` | beta data adapter |
-| PyArrow input | `pyarrow>=15.0` and `narwhals>=1.0` | `edron[pyarrow]` | beta data adapter |
+| pandas input | `pandas>=2.0` and `narwhals>=1.1` | `edron[pandas]` | beta data adapter |
+| Polars input | `polars>=1.0` and `narwhals>=1.1` | `edron[polars]` | beta data adapter |
+| PyArrow input | `pyarrow>=15.0` and `narwhals>=1.1` | `edron[pyarrow]` | beta data adapter |
 | Plotly | `plotly>=5.18,<7` | `edron[plotly]` | experimental |
 | Altair | `altair>=6,<7` and `vl-convert-python>=1.0` | `edron[altair]` | experimental |
 | Matplotlib | `matplotlib>=3.8,<4` | `edron[matplotlib]` | beta/static Supported scope |
@@ -1183,7 +1188,7 @@ Every Edron registration has one native authority:
 | `app.styles` | native `ApplicationStyleMeta` and asset graph |
 | `JobFlow` | native `TaskFlow`/`FeatureBundle` |
 
-`app.native(surface)` returns the exact registered native projection, not a proxy. Page, fragment,
+`app.native_surface(surface)` returns the exact registered native projection, not a proxy. Page, fragment,
 action, and bound surfaces return the handle/reference used for reverse routing, rendering,
 target/effect validation, the interaction catalog, Explorer, tests, and explanation. An Edron
 `JobFlow` returns the exact included `FeatureBundle` used by the native catalog. A surface from
@@ -1216,7 +1221,7 @@ existing public authority or add the reusable native contract and its own accept
 | `UP-004` | Default action fallback | Safe owning-screen fallback derivation that preserves unsafe method, CSRF, validation, and redirect policy |
 | `UP-005` | `confirm=` | Accessible native confirmation with keyboard, focus, cancellation, unsafe no-JS submission, and no behavior authority from styling |
 | `UP-006` | `ed.success` ordinary fallback | Native outcome presentation with equivalent HTMX and ordinary HTTP meaning without unsafe query leakage |
-| `UP-007` | `app.native(surface)` | Stable registry lookup from facade source surface/binding to the exact native handle/reference |
+| `UP-007` | `app.native_surface(surface)` | Stable registry lookup from facade source surface/binding to the exact native handle/reference |
 | `UP-008` | `JobFlow` | `TaskFlow` support for explicit backend dependency, common scope, Edron result-output adapter, terminal polling, and production gate |
 | `UP-009` | `variant=` | Registry-derived family/recipe alias metadata and explanation; no Edron-only recipe registry |
 | `UP-010` | Cross-package `ed.theme(...)` guarantee | Shared core/data/charts/maps token, mode, accessibility, and asset contract |
@@ -1372,7 +1377,7 @@ style compiler, assets, components, jobs, and response conversion continue to us
   Application mutations are not rolled back by the output buffer; transaction boundaries remain
   application-owned.
 
-## Deliberately absent or deferred from 0.1
+## Historical 0.1 exclusions and deferrals
 
 The following names/semantics are not public Edron 0.1 API:
 
@@ -1411,7 +1416,7 @@ arrive as an undocumented convenience.
 | `ed.success(...)` | Native `InteractionResult` |
 | `ed.theme(...)` | Native `DesignSystem` |
 | `app.styles(...)` | Native `ApplicationStyleMeta` |
-| `app.native(...)` | Exact native registered handle, bound reference, or `FeatureBundle` projection |
+| `app.native_surface(...)` | Exact native registered handle, bound reference, or `FeatureBundle` projection |
 | `App.include(...)` | `None` |
 
 ## See also

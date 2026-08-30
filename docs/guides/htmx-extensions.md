@@ -87,7 +87,7 @@ Hedron app and keeps each `href` usable as the non-JavaScript fallback. Add
         )
 
 
-    @app.fragment("/reports", region=panel)
+    @app.view("/reports", fragment_regions=(panel,))
     def reports():
         return swap(
             Fragment(
@@ -97,7 +97,7 @@ Hedron app and keeps each `href` usable as the non-JavaScript fallback. Add
         )
 
 
-    @app.fragment("/team", region=panel)
+    @app.view("/team", fragment_regions=(panel,))
     def team():
         return swap(
             Fragment(

@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.0] — 2026-08-27
+
+- Align conformance package metadata with the Hedron 1.0 coordinated train.
+- Broaden Pydantic compatibility to `>=2.12.0,<2.15`.
+
 ## [0.67.0] — 2026-08-27
 
 ### Changed

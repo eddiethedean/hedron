@@ -42,16 +42,23 @@ _SKIP_DIRS = frozenset(
 )
 _TEXT_SUFFIXES = frozenset(
     {
+        ".cfg",
+        ".conf",
+        ".env",
+        ".ini",
         ".toml",
         ".yaml",
         ".yml",
         ".json",
+        ".lock",
         ".hdj",
         ".html",
         ".htm",
         ".jinja",
         ".jinja2",
         ".md",
+        ".pyi",
+        ".txt",
     }
 )
 
@@ -72,7 +79,7 @@ def _line_col(source: str, offset: int) -> tuple[int, int]:
     return line, offset - last_newline
 
 
-def _iter_files(source: Path) -> tuple[Path, tuple[Path, ...]]:
+def _iter_files(source: Path, *, include_all: bool = False) -> tuple[Path, tuple[Path, ...]]:
     source = source.resolve()
     if source.is_file():
         return source.parent, (source,)
@@ -82,14 +89,9 @@ def _iter_files(source: Path) -> tuple[Path, tuple[Path, ...]]:
     for path in sorted(source.rglob("*")):
         if not path.is_file() or any(part in _SKIP_DIRS for part in path.relative_to(source).parts):
             continue
-        if path.suffix == ".py" or path.suffix.lower() in _TEXT_SUFFIXES:
+        if include_all or path.suffix == ".py" or path.suffix.lower() in _TEXT_SUFFIXES:
             files.append(path)
     return source, tuple(files)
-
-
-def _record_for(path: str) -> FutureWarningRecord | None:
-    records = PUBLIC_FUTURE_WARNINGS.for_path(path)
-    return records[0] if records else None
 
 
 @dataclass(frozen=True, slots=True)
@@ -229,6 +231,7 @@ def _finding(
     automation_status: str,
     reason: str,
     kind: str,
+    replacement: str | None = None,
 ) -> ApiMigrationFinding:
     return ApiMigrationFinding(
         path=path,
@@ -236,7 +239,7 @@ def _finding(
         column=column,
         code=record.code,
         old_path=record.old_path,
-        replacement=record.replacement,
+        replacement=replacement or record.replacement,
         owner=record.owner,
         confidence=confidence,
         automation_status=automation_status,
@@ -249,16 +252,162 @@ def _finding(
     )
 
 
+# Direct helper imports are less common than method decorators, but they are
+# still part of the public 0.67 surface. Keep this deliberately narrow:
+# unrelated symbols such as the ``Component`` node class must not be mistaken
+# for the transitional ``app.component`` route.
+_IMPORTED_API = {
+    "fragment": "app.fragment",
+    "include_feature": "app.include_feature",
+    "screen": "app.screen",
+    "refreshable": "app.refreshable",
+    "command": "app.command",
+    "form_command": "app.form_command",
+}
+
+_SYNTAX_ERROR_RECORD = FutureWarningRecord(
+    code="HED-MIGRATE-0001",
+    old_path="<syntax-error>",
+    replacement="manual review",
+    owner="hedron",
+    confidence="unknown",
+    automation_status="manual-review",
+    documentation="A syntax error prevents complete static migration analysis.",
+)
+
+
+def _import_findings(
+    tree: ast.AST,
+    *,
+    display_path: str,
+    records: Mapping[str, FutureWarningRecord],
+) -> tuple[ApiMigrationFinding, ...]:
+    """Find direct imports of transitional helpers without importing modules."""
+    out: list[ApiMigrationFinding] = []
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.ImportFrom) or node.module not in {"hedron", "hedron.app"}:
+            continue
+        for alias in node.names:
+            if alias.name == "*":
+                # A wildcard import can bring any compatibility helper into the
+                # application namespace.  Report every registered path as an
+                # opaque import instead of pretending the project is clean.
+                for record in records.values():
+                    out.append(
+                        _finding(
+                            path=display_path,
+                            line=int(getattr(node, "lineno", 1)),
+                            column=int(getattr(node, "col_offset", 0)) + 1,
+                            record=record,
+                            confidence="unknown",
+                            automation_status="manual-review",
+                            reason=(
+                                "A wildcard import may expose transitional helpers; "
+                                "the imported names cannot be proven statically."
+                            ),
+                            kind="import",
+                        )
+                    )
+                continue
+            old_path = _IMPORTED_API.get(alias.name)
+            record = records.get(old_path or "")
+            if record is None or not hasattr(node, "lineno"):
+                continue
+            # A direct import does not identify the owning application object;
+            # e.g. ``include_feature`` is an app method, not a module-level
+            # ``include`` function. Report it for review rather than emitting
+            # an invalid import rewrite.
+            confidence = "unknown"
+            automation = "manual-review"
+            reason = "A direct helper import has no statically provable application owner."
+            out.append(
+                _finding(
+                    path=display_path,
+                    line=int(getattr(node, "lineno", 1)),
+                    column=int(getattr(node, "col_offset", 0)) + 1,
+                    record=record,
+                    confidence=confidence,
+                    automation_status=automation,
+                    reason=reason,
+                    kind="import",
+                )
+            )
+    return tuple(out)
+
+
 def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMigrationFinding, ...]:
     try:
         tree = ast.parse(source, filename=str(path))
-    except (SyntaxError, ValueError):
-        return ()
+    except SyntaxError as exc:
+        return (
+            _finding(
+                path=display_path,
+                line=int(exc.lineno or 1),
+                column=int(exc.offset or 1),
+                record=_SYNTAX_ERROR_RECORD,
+                confidence="unknown",
+                automation_status="manual-review",
+                reason=f"Python syntax error prevents complete analysis: {exc.msg}.",
+                kind="error",
+            ),
+        )
+    except ValueError as exc:
+        return (
+            _finding(
+                path=display_path,
+                line=1,
+                column=1,
+                record=_SYNTAX_ERROR_RECORD,
+                confidence="unknown",
+                automation_status="manual-review",
+                reason=f"Python source could not be parsed: {exc}.",
+                kind="error",
+            ),
+        )
     out: list[ApiMigrationFinding] = []
     seen: set[tuple[int, int, str]] = set()
     records = {record.old_path: record for record in PUBLIC_FUTURE_WARNINGS.records()}
+    # ``hedron_sim.SimApp`` intentionally has its own fragment registration
+    # vocabulary and accepts simulator-only route options.  The migration
+    # checker must not mistake that package-native API for Hedron's removed
+    # application facade.  Keep this inference syntactic so checking remains
+    # non-executing; unknown receivers continue to be reported conservatively.
+    simulator_receivers: set[str] = set()
+    edron_receivers: set[str] = set()
+    adapter_receivers: dict[str, str] = {}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                if alias.name == "edron":
+                    edron_receivers.add(alias.asname or alias.name)
+            continue
+        if not isinstance(node, (ast.Assign, ast.AnnAssign)):
+            continue
+        value = node.value
+        if not isinstance(value, ast.Call):
+            continue
+        constructor = _dotted(value.func)
+        targets = node.targets if isinstance(node, ast.Assign) else (node.target,)
+        constructor_name = constructor.rsplit(".", 1)[-1] if constructor else ""
+        if constructor_name == "SimApp":
+            simulator_receivers.update(
+                target.id for target in targets if isinstance(target, ast.Name)
+            )
+        if constructor_name in {"HedronFlask", "HedronBlueprint"}:
+            adapter = "flask" if constructor_name == "HedronFlask" else "blueprint"
+            adapter_receivers.update(
+                {target.id: adapter for target in targets if isinstance(target, ast.Name)}
+            )
+    out.extend(_import_findings(tree, display_path=display_path, records=records))
+    seen.update((item.line, item.column - 1, item.old_path) for item in out)
 
-    def add(node: ast.AST, old_path: str, *, manual: bool = False) -> None:
+    def add(
+        node: ast.AST,
+        old_path: str,
+        *,
+        manual: bool = False,
+        unknown_receiver: bool = False,
+    ) -> None:
         record = records.get(old_path)
         if record is None or not hasattr(node, "lineno"):
             return
@@ -271,6 +420,7 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
             return
         seen.add(key)
         reason = "The replacement is a proven mechanical rename."
+        replacement: str | None = None
         if record.confidence != "complete":
             reason = "The replacement changes the handler contract and needs a human review."
         confidence = record.confidence
@@ -279,6 +429,37 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
             reason = "Region-specific arguments need a human review before renaming."
             confidence = "partial"
             automation = "manual-review"
+        if unknown_receiver:
+            reason = (
+                "The receiver is not statically known to be a Hedron application; "
+                "verify the owner before migrating."
+            )
+            confidence = "unknown"
+            automation = "manual-review"
+        # A component route that declares an unsafe method is an action task,
+        # not a safe view. The registry records the common GET rename; this
+        # call-site disposition prevents an unsafe route from being rewritten
+        # to a GET-oriented decorator.
+        if old_path in {"app.component", "router.component"} and isinstance(node, ast.Call):
+            methods: list[str] = []
+            for keyword in node.keywords:
+                if keyword.arg == "method" and isinstance(keyword.value, ast.Constant):
+                    methods.append(str(keyword.value.value))
+                elif keyword.arg == "methods" and isinstance(
+                    keyword.value, (ast.List, ast.Tuple, ast.Set)
+                ):
+                    methods.extend(
+                        str(item.value)
+                        for item in keyword.value.elts
+                        if isinstance(item, ast.Constant)
+                    )
+            if any(method.upper() not in {"GET", "HEAD", "OPTIONS", "TRACE"} for method in methods):
+                reason = (
+                    "Unsafe component methods are action tasks; choose the action API manually."
+                )
+                confidence = "partial"
+                automation = "manual-review"
+                replacement = old_path.replace("component", "action")
         out.append(
             _finding(
                 path=display_path,
@@ -289,23 +470,98 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
                 automation_status=automation,
                 reason=reason,
                 kind="python",
+                replacement=replacement,
             )
         )
 
     for node in ast.walk(tree):
         if isinstance(node, ast.Call):
             dotted = _dotted(node.func)
+            if isinstance(node.func, ast.Attribute):
+                receiver = node.func.value
+                if isinstance(receiver, ast.Name):
+                    adapter = adapter_receivers.get(receiver.id)
+                    if adapter is not None:
+                        dotted = f"{adapter}.{node.func.attr}"
             if dotted not in records:
+                if isinstance(node.func, ast.Attribute) and node.func.attr in {
+                    "component",
+                    "fragment",
+                    "refreshable",
+                    "command",
+                    "form_command",
+                    "include_feature",
+                }:
+                    receiver = _dotted(node.func.value)
+                    if (
+                        receiver
+                        and receiver not in simulator_receivers
+                        and receiver not in edron_receivers
+                    ):
+                        add(
+                            node,
+                            f"app.{node.func.attr}",
+                            unknown_receiver=True,
+                        )
                 continue
+            if dotted.startswith("app.") and isinstance(node.func, ast.Attribute):
+                receiver = node.func.value
+                if isinstance(receiver, ast.Name) and receiver.id in simulator_receivers:
+                    continue
             manual = dotted == "app.fragment" and any(
                 kw.arg in {"region", "regions", "fragment_regions"} for kw in node.keywords
             )
             add(node, dotted, manual=manual)
         elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
             for decorator in node.decorator_list:
-                dotted = _dotted(decorator)
+                dotted = (
+                    _dotted(decorator.func)
+                    if isinstance(decorator, ast.Call)
+                    else _dotted(decorator)
+                )
+                if isinstance(decorator, ast.Call) and isinstance(decorator.func, ast.Attribute):
+                    receiver = decorator.func.value
+                    if isinstance(receiver, ast.Name):
+                        adapter = adapter_receivers.get(receiver.id)
+                        if adapter is not None:
+                            dotted = f"{adapter}.{decorator.func.attr}"
                 if dotted in records:
-                    add(decorator, dotted)
+                    decorator_target = (
+                        decorator.func if isinstance(decorator, ast.Call) else decorator
+                    )
+                    if dotted.startswith("app.") and isinstance(decorator_target, ast.Attribute):
+                        receiver = decorator_target.value
+                        if isinstance(receiver, ast.Name) and receiver.id in simulator_receivers:
+                            continue
+                    manual = (
+                        dotted == "app.fragment"
+                        and isinstance(decorator, ast.Call)
+                        and any(
+                            kw.arg in {"region", "regions", "fragment_regions"}
+                            for kw in decorator.keywords
+                        )
+                    )
+                    add(decorator, dotted, manual=manual)
+                elif isinstance(decorator, ast.Call) and isinstance(decorator.func, ast.Attribute):
+                    if decorator.func.attr in {
+                        "component",
+                        "fragment",
+                        "refreshable",
+                        "command",
+                        "form_command",
+                        "include_feature",
+                    }:
+                        receiver = _dotted(decorator.func.value)
+                        if (
+                            receiver
+                            and receiver not in simulator_receivers
+                            and receiver not in edron_receivers
+                        ):
+                            add(
+                                decorator,
+                                f"app.{decorator.func.attr}",
+                                unknown_receiver=True,
+                            )
     # Reflection is intentionally never rewritten.  Report it as unknown so a
     # clean AST result cannot be mistaken for a complete migration proof.
     reflected = re.compile(
@@ -337,8 +593,8 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
     # Stringly configuration in Python is another opaque form.  It is not
     # rewritten because the surrounding authority cannot be inferred.
     string_paths = re.compile(
-        r"\b(app|router)\.(component|fragment|include_feature|screen|refreshable|command|"
-        r"form_command)\b"
+        r"\b(app|router|flask|blueprint)\.(component|fragment|include_feature|screen|"
+        r"refreshable|command|form_command)\b"
     )
     for node in ast.walk(tree):
         if not isinstance(node, ast.Constant) or not isinstance(node.value, str):
@@ -372,7 +628,8 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
 
 
 _TEXT_PATTERN = re.compile(
-    r"\b(app|router)\.(component|fragment|include_feature|screen|refreshable|command|form_command)\b"
+    r"\b(app|router|flask|blueprint)\.(component|fragment|include_feature|screen|"
+    r"refreshable|command|form_command)\b"
 )
 
 
@@ -462,6 +719,29 @@ def _replace_python(
         start = _offset_for_position(source, end_lineno, end_col_offset) - len(leaf)
         end = start + len(leaf)
         replacements.append((start, end, replacement))
+    # Replace only the imported identifier, preserving ``as`` aliases. The
+    # AST's ImportFrom aliases do not expose reliable end offsets on every
+    # supported Python version, so locate the token on the recorded line.
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.ImportFrom) or node.module not in {"hedron", "hedron.app"}:
+            continue
+        for alias in node.names:
+            old_path = _IMPORTED_API.get(alias.name)
+            if old_path is None:
+                continue
+            # Import aliases expose their own source span (including multiline
+            # parenthesized imports).  Match either the finding's ImportFrom
+            # line or the alias line, then replace only the imported token so
+            # ``as`` bindings remain intact.
+            alias_line = int(getattr(alias, "lineno", 0) or getattr(node, "lineno", 0))
+            node_line = int(getattr(node, "lineno", 0))
+            replacement = wanted.get((node_line, old_path)) or wanted.get((alias_line, old_path))
+            if replacement is None or not hasattr(alias, "col_offset"):
+                continue
+            start = _offset_for_position(source, alias_line, int(alias.col_offset))
+            # The alias span includes ``as name``.  Restrict replacement to the
+            # imported identifier at the beginning of that span.
+            replacements.append((start, start + len(alias.name), replacement))
     for start, end, replacement in sorted(set(replacements), reverse=True):
         source = source[:start] + replacement + source[end:]
     return source, len(set(replacements))
@@ -482,6 +762,9 @@ def _replace_text(source: str, findings: Iterable[ApiMigrationFinding] = ()) -> 
         "app.command": "app.action",
         "app.form_command": "app.action",
         "router.component": "router.view",
+        "flask.component": "flask.view",
+        "blueprint.component": "blueprint.view",
+        "blueprint.include_feature": "blueprint.include",
     }
     allowed = {
         item.old_path: item.replacement for item in findings if _replacement_for_finding(item)
@@ -512,12 +795,16 @@ def transform_api(
         return report
     if output is not None and apply:
         raise ValueError("choose --out or --apply, not both")
-    root, files = _iter_files(source_path)
+    # A generated output tree must be a lossless project copy.  The scanner
+    # intentionally restricts analysis to known text suffixes, but ``--out``
+    # also carries static assets and extensionless files forward unchanged.
+    root, files = _iter_files(source_path, include_all=output is not None)
     destination = Path(output).resolve() if output is not None else root
     if output is not None and source_path.is_file():
         targets = [(source_path, destination)]
     else:
         if output is not None:
+            destination.parent.mkdir(parents=True, exist_ok=True)
             destination.mkdir(parents=True, exist_ok=False)
         targets = [(path, destination / path.relative_to(root)) for path in files]
     changes: list[ApiMigrationChange] = []
@@ -526,27 +813,42 @@ def transform_api(
         for path in {item.path for item in report.findings}
     }
     for original, target in targets:
-        try:
-            text = original.read_text(encoding="utf-8")
-        except (OSError, UnicodeDecodeError):
-            continue
         display = original.name if source_path.is_file() else original.relative_to(root).as_posix()
         items = by_path.get(display, ())
-        if original.suffix == ".py":
-            transformed, count = _replace_python(text, original, items)
+        is_text = original.suffix == ".py" or original.suffix.lower() in _TEXT_SUFFIXES
+        changed = False
+        count = 0
+        if is_text:
+            try:
+                text = original.read_text(encoding="utf-8")
+            except (OSError, UnicodeDecodeError):
+                continue
+            if original.suffix == ".py":
+                transformed, count = _replace_python(text, original, items)
+            else:
+                transformed, count = _replace_text(text, items)
+            changed = bool(count and transformed != text)
+            if output is not None:
+                target.parent.mkdir(parents=True, exist_ok=True)
+                if target.exists():
+                    raise FileExistsError(f"refusing to overwrite {target}")
+                # ``--out`` is a complete, reviewable project tree rather than a
+                # sparse patch directory.  Preserve files that have no proven
+                # replacement so reviewers can run the generated tree directly.
+                target.write_text(transformed, encoding="utf-8")
+            elif changed:
+                target.write_text(transformed, encoding="utf-8")
         else:
-            transformed, count = _replace_text(text, items)
-        if output is not None:
-            target.parent.mkdir(parents=True, exist_ok=True)
-            if target.exists():
-                raise FileExistsError(f"refusing to overwrite {target}")
-            # ``--out`` is a complete, reviewable project tree rather than a
-            # sparse patch directory.  Preserve files that have no proven
-            # replacement so reviewers can run the generated tree directly.
-            target.write_text(transformed, encoding="utf-8")
-        elif count and transformed != text:
-            target.write_text(transformed, encoding="utf-8")
-        if count and transformed != text:
+            try:
+                raw = original.read_bytes()
+            except OSError:
+                continue
+            if output is not None:
+                target.parent.mkdir(parents=True, exist_ok=True)
+                if target.exists():
+                    raise FileExistsError(f"refusing to overwrite {target}")
+                target.write_bytes(raw)
+        if changed:
             changes.append(ApiMigrationChange(display, count))
     return ApiMigrationReport(
         source=report.source,

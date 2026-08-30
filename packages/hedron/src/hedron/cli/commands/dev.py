@@ -62,3 +62,6 @@ def _cmd_dev(args: argparse.Namespace) -> int:
     except KeyboardInterrupt:
         print("stopped", file=sys.stderr)
         return 0
+
+
+cmd_dev = _cmd_dev

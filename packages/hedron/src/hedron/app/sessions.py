@@ -12,7 +12,7 @@ from hedron.security.policy import SecurityPolicy, SecurityProfile
 DEFAULT_SESSION_SECRET = "hedron-dev-secret-change-me"
 
 
-class _SessionHost(Protocol):
+class SessionHost(Protocol):
     hedron_policy: SecurityPolicy
     state: Any
 
@@ -20,12 +20,13 @@ class _SessionHost(Protocol):
 
 
 def configure_sessions(
-    app: _SessionHost,
+    app: SessionHost,
     *,
     session_secret: str | None,
     enable_sessions: bool,
     is_prod: bool,
     mount_cookie_path: str,
+    warning_stacklevel: int = 3,
 ) -> None:
     """Install session cookies when enabled; warn or reject the development secret."""
     if enable_sessions:
@@ -46,7 +47,7 @@ def configure_sessions(
                 "Hedron is using the default development session_secret; "
                 "set session_secret explicitly before production deployment.",
                 UserWarning,
-                stacklevel=3,
+                stacklevel=warning_stacklevel,
             )
         app.add_middleware(
             SessionMiddleware,

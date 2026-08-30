@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from hedron_posit._workbench.redact import (
+from fastapi_workbench.redact import (
     redact_path,
     redact_query,
     redact_record,

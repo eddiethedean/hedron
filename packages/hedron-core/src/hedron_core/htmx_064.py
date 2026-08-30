@@ -12,8 +12,9 @@ import json
 import re
 from collections.abc import Mapping
 from dataclasses import dataclass
-from enum import StrEnum
 from typing import Final
+
+from hedron_core.compat import StrEnum
 
 __all__ = [
     "HEDRON_LIFECYCLE_SCHEMA",

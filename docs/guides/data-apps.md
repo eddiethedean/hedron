@@ -107,17 +107,17 @@ Simulates swapping a region with filter chips. For the real `DataTable` componen
         )
 
 
-    @app.fragment("/rows", region=table)
+    @app.view("/rows", fragment_regions=(table,))
     def all_rows():
         return swap(table_panel())
 
 
-    @app.fragment("/rows/admin", region=table)
+    @app.view("/rows/admin", fragment_regions=(table,))
     def admin_rows():
         return swap(table_panel("admin"))
 
 
-    @app.fragment("/rows/member", region=table)
+    @app.view("/rows/member", fragment_regions=(table,))
     def member_rows():
         return swap(table_panel("member"))
     ```
@@ -125,9 +125,9 @@ Simulates swapping a region with filter chips. For the real `DataTable` componen
 ## In-memory DataTable (requires `hedron[data]`)
 
 ```bash
-pip install "hedron[data]>=0.66.2,<0.67"
+pip install "hedron[data]>=1.0.0,<1.1"
 # optional backends
-pip install "hedron-data[pandas]>=0.66.2,<0.67"
+pip install "hedron-data[pandas]>=1.0.0,<1.1"
 ```
 
 ```python
@@ -171,7 +171,7 @@ Install the SQLAlchemy extra. **Your app owns the engine, sessions, and transact
 Hedron does not invent an ORM lifecycle.
 
 ```bash
-pip install "hedron-data[sqlalchemy]>=0.66.2,<0.67"
+pip install "hedron-data[sqlalchemy]>=1.0.0,<1.1"
 ```
 
 Minimal read-only table over a SQLAlchemy 2.x `Select` (paging uses SQL `OFFSET`/`LIMIT`;
@@ -245,8 +245,8 @@ For editable grids, supply `apply_changes` on `SQLAlchemyDataSource` (or an
 
 ## Charts
 
-Install `hedron[charts]>=0.66.2,<0.67`; the flagship extra resolves the compatible
-`hedron-charts>=0.2.1,<0.3` satellite.
+Install `hedron[charts]>=1.0.0,<1.1`; the flagship extra resolves the compatible
+`hedron-charts>=0.2.4,<0.3` satellite.
 See [Charts and HTMX](charts-and-htmx.md) and
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 

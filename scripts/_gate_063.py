@@ -6,8 +6,9 @@ import json
 import os
 import subprocess
 import sys
-import tomllib
 from pathlib import Path
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 GATE = ROOT / "docs" / "acceptance" / "release-gate-0.63.toml"

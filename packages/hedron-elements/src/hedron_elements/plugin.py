@@ -7,12 +7,11 @@ from pathlib import Path
 from typing import Any
 
 from hedron_core.identifiers import content_digest
-from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
-from hedron_core.registry import (
-    register_asset,
-    register_browser_module,
-    register_component,
-    register_element_definition,
+from hedron_core.plugins import (
+    PluginCapabilities,
+    PluginContext,
+    PluginDefinition,
+    PluginMeta,
 )
 from hedron_elements.action_async import ACTION_ASYNC_META, ActionAsync
 from hedron_elements.dialog import DIALOG_META, Dialog
@@ -39,9 +38,9 @@ _STATIC = _ROOT / "static"
 
 PLUGIN_META = PluginMeta(
     name="hedron_elements",
-    version="0.67.0",
+    version="1.0.0",
     distribution="hedron-elements",
-    hedron_version=">=0.67,<0.68",
+    hedron_version=">=1.0,<2.0",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
@@ -78,13 +77,13 @@ _STATIC_ASSETS: tuple[tuple[str, str, str], ...] = (
 )
 
 
-def _register_static_assets() -> None:
+def _register_static_assets(ctx: PluginContext) -> None:
     for logical_id, filename, content_type in _STATIC_ASSETS:
         _MODULE_FILENAMES[logical_id] = filename
         path = _STATIC / filename
         if not path.is_file():
             continue
-        register_asset(
+        ctx.register_asset(
             logical_id=logical_id,
             kind="module" if content_type.endswith("javascript") else "css",
             path=str(path),
@@ -93,14 +92,14 @@ def _register_static_assets() -> None:
         )
 
 
-def _register_component(component_type: type, meta: Mapping[str, Any]) -> None:
+def _register_component(ctx: PluginContext, component_type: type, meta: Mapping[str, Any]) -> None:
     logical = (
         f"{component_type.distribution}:{component_type.__module__}."
         f"{getattr(component_type, 'logical_name', component_type.__name__)}"
     )
     asset_id = str(meta["module_asset_id"])
     module_name = _MODULE_FILENAMES.get(asset_id, asset_id.split(":")[-1])
-    register_component(
+    ctx.register_component(
         logical_id=logical,
         name=getattr(component_type, "logical_name", component_type.__name__)
         or component_type.__name__,
@@ -112,13 +111,13 @@ def _register_component(component_type: type, meta: Mapping[str, Any]) -> None:
     )
 
 
-def _register_element(meta: Mapping[str, Any]) -> None:
+def _register_element(ctx: PluginContext, meta: Mapping[str, Any]) -> None:
     asset_id = str(meta["module_asset_id"])
     module_name = _MODULE_FILENAMES.get(asset_id, asset_id.split(":")[-1])
     module_path = _STATIC / module_name
     if not module_path.is_file():
         return
-    register_browser_module(
+    ctx.register_browser_module(
         logical_id=f"hedron-elements:{meta['tag_name']}",
         tag_name=str(meta["tag_name"]),
         module_path=str(module_path),
@@ -127,7 +126,7 @@ def _register_element(meta: Mapping[str, Any]) -> None:
         shadow_dom=False,
         htmx_lifecycle=True,
     )
-    register_element_definition(
+    ctx.register_element_definition(
         logical_id=str(meta["logical_id"]),
         tag_name=str(meta["tag_name"]),
         abi_version=int(meta["abi_version"]),
@@ -151,9 +150,7 @@ def _register_element(meta: Mapping[str, Any]) -> None:
     )
 
 
-def register(ctx: PluginContext) -> None:
-    _register_static_assets()
-
+def _register_elements(ctx: PluginContext) -> None:
     example_meta = {
         "logical_id": EXAMPLE_ID,
         "tag_name": EXAMPLE_TAG,
@@ -170,13 +167,15 @@ def register(ctx: PluginContext) -> None:
             "module_failure": "retain server content",
         },
     }
-    _register_component(Example, example_meta)
-    _register_element(example_meta)
+    _register_component(ctx, Example, example_meta)
+    _register_element(ctx, example_meta)
 
     for component_type, meta in _ELEMENT_COMPONENTS[1:]:
-        _register_component(component_type, meta)
-        _register_element(meta)
+        _register_component(ctx, component_type, meta)
+        _register_element(ctx, meta)
 
+
+def _register_feature(ctx: PluginContext) -> None:
     ctx.register_diagnostic_owner("HED-ELEMENT-")
     ctx.register_feature(
         name="web_component_abi",
@@ -188,6 +187,9 @@ def register(ctx: PluginContext) -> None:
             "CSRF/authz remain server-owned."
         ),
     )
+
+
+def _register_catalog(ctx: PluginContext) -> None:
     from hedron_core.catalog import SurfaceProjectionProvider
 
     ctx.register_projection_provider(
@@ -210,6 +212,21 @@ def register(ctx: PluginContext) -> None:
             limitations=("opt-in enhance=elements; native ActionHandle.form() remains canonical",),
         )
     )
+
+
+PLUGIN = PluginDefinition.from_callbacks(
+    PLUGIN_META,
+    (
+        ("static-assets", _register_static_assets),
+        ("elements", _register_elements),
+        ("feature", _register_feature),
+        ("catalog", _register_catalog),
+    ),
+)
+
+
+def register(ctx: PluginContext) -> None:
+    PLUGIN.register(ctx)
 
 
 register.PLUGIN_META = PLUGIN_META  # type: ignore[attr-defined]

@@ -3,21 +3,21 @@
 from __future__ import annotations
 
 import os
-import tomllib
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, cast
+from typing import cast
 
 from hedron_core.codes import (
     HED_CONFIG_INVALID,
     HED_CONFIG_UNKNOWN_KEY,
     HED_CONFIG_UNSUPPORTED_VERSION,
 )
+from hedron_core.compat import tomllib
 from hedron_core.diagnostics import HedronError, error
 from hedron_core.identifiers import content_digest
 from hedron_core.manifests import canonical_json
-from hedron_core.typing_aliases import JsonObject
+from hedron_core.typing_aliases import JsonObject, is_string_mapping
 
 __all__ = [
     "CONFIG_FORMAT_VERSION",
@@ -71,7 +71,7 @@ class HedronSettings:
     plugins: tuple[str, ...] | None = None
     explorer: str = "off"
     compiler_checks: bool = True
-    diagnostic_severities: Mapping[str, str] = field(default_factory=dict)
+    diagnostic_severities: Mapping[str, str] = field(default_factory=dict[str, str])
     source_path: str | None = None
 
     def resolved_roots(self, *, base: Path | None = None) -> tuple[Path, ...]:
@@ -123,7 +123,7 @@ def _invalid_type(key: str, expected: str, value: object) -> HedronError:
     )
 
 
-def _bool_value(raw: Mapping[str, Any], key: str, default: bool, *, prefix: str = "") -> bool:
+def _bool_value(raw: Mapping[str, object], key: str, default: bool, *, prefix: str = "") -> bool:
     value = raw.get(key, default)
     if not isinstance(value, bool):
         raise _invalid_type(f"{prefix}{key}", "a boolean", value)
@@ -131,15 +131,18 @@ def _bool_value(raw: Mapping[str, Any], key: str, default: bool, *, prefix: str 
 
 
 def _string_list(value: object, key: str) -> tuple[str, ...]:
-    if not isinstance(value, (list, tuple)) or any(not isinstance(item, str) for item in value):
+    if not isinstance(value, (list, tuple)):
         raise _invalid_type(key, "an array of strings", value)
-    return tuple(value)
+    items = cast(list[object] | tuple[object, ...], value)
+    if any(not isinstance(item, str) for item in items):
+        raise _invalid_type(key, "an array of strings", cast(object, value))
+    return cast(tuple[str, ...], tuple(items))
 
 
-def _parse_asset_policy(raw: Mapping[str, Any] | None) -> AssetPolicy:
+def _parse_asset_policy(raw: object | None) -> AssetPolicy:
     if raw is None:
         return AssetPolicy()
-    if not isinstance(raw, Mapping):
+    if not is_string_mapping(raw):
         raise _invalid_type("asset_policy", "a table", raw)
     unknown = set(raw) - _ASSET_POLICY_KEYS
     if unknown:
@@ -164,7 +167,7 @@ def _parse_asset_policy(raw: Mapping[str, Any] | None) -> AssetPolicy:
 def load_hedron_settings(
     path: Path | str | None = None,
     *,
-    overrides: Mapping[str, Any] | None = None,
+    overrides: Mapping[str, object] | None = None,
 ) -> HedronSettings:
     """Load settings from pyproject.toml ``[tool.hedron]`` with optional overrides."""
     pyproject: Path | None
@@ -183,25 +186,31 @@ def load_hedron_settings(
                 remediation="Provide a valid project path or create [tool.hedron].",
             )
 
-    raw: dict[str, Any] = {}
+    raw: dict[str, object] = {}
     source_path: str | None = None
     if pyproject is not None and pyproject.is_file():
-        data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
-        tool = data.get("tool") or {}
-        if not isinstance(tool, dict):
+        data: object = tomllib.loads(pyproject.read_text(encoding="utf-8"))
+        if not is_string_mapping(data):
+            raise error(
+                HED_CONFIG_INVALID,
+                title="Invalid configuration document",
+                explanation="pyproject.toml must decode to a table.",
+            )
+        tool_raw = cast(object, data.get("tool") or dict[str, object]())
+        if not is_string_mapping(tool_raw):
             raise error(
                 HED_CONFIG_INVALID,
                 title="Invalid tool table",
                 explanation="[tool] must be a table.",
             )
-        hedron = tool.get("hedron") or {}
-        if hedron and not isinstance(hedron, dict):
+        hedron_raw = cast(object, tool_raw.get("hedron") or dict[str, object]())
+        if not is_string_mapping(hedron_raw):
             raise error(
                 HED_CONFIG_INVALID,
                 title="Invalid hedron configuration",
                 explanation="[tool.hedron] must be a table.",
             )
-        raw = dict(hedron)
+        raw = dict(hedron_raw)
         source_path = str(pyproject.resolve())
 
     if overrides:
@@ -251,25 +260,30 @@ def load_hedron_settings(
         else _string_list(plugins_raw, "plugins")
     )
     diagnostics_raw = raw.get("diagnostic_severities", {})
-    if not isinstance(diagnostics_raw, Mapping) or any(
-        not isinstance(k, str) or not isinstance(v, str) for k, v in diagnostics_raw.items()
+    if not is_string_mapping(diagnostics_raw) or any(
+        not isinstance(value, str) for value in diagnostics_raw.values()
     ):
         raise _invalid_type("diagnostic_severities", "a string-to-string table", diagnostics_raw)
-    for key in ("build_dir", "explorer"):
-        if key in raw and not isinstance(raw[key], str):
-            raise _invalid_type(key, "a string", raw[key])
-    if "theme" in raw and raw["theme"] is not None and not isinstance(raw["theme"], str):
-        raise _invalid_type("theme", "a string or null", raw["theme"])
+    build_dir = raw.get("build_dir", ".hedron/build")
+    if not isinstance(build_dir, str):
+        raise _invalid_type("build_dir", "a string", build_dir)
+    explorer = raw.get("explorer", "off")
+    if not isinstance(explorer, str):
+        raise _invalid_type("explorer", "a string", explorer)
+    theme = raw.get("theme", "default")
+    if theme is not None and not isinstance(theme, str):
+        raise _invalid_type("theme", "a string or null", theme)
+    diagnostic_severities = {key: cast(str, value) for key, value in diagnostics_raw.items()}
 
     return HedronSettings(
         format_version=format_version,
         component_roots=component_roots,
-        build_dir=raw.get("build_dir", ".hedron/build"),
-        theme=raw.get("theme", "default"),
+        build_dir=build_dir,
+        theme=theme,
         asset_policy=_parse_asset_policy(raw.get("asset_policy")),
         plugins=plugins,
-        explorer=raw.get("explorer", "off"),
+        explorer=explorer,
         compiler_checks=_bool_value(raw, "compiler_checks", True),
-        diagnostic_severities=dict(diagnostics_raw),
+        diagnostic_severities=diagnostic_severities,
         source_path=source_path,
     )

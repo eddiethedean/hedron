@@ -193,7 +193,7 @@ async def _run_declared(
         return await _call()
     try:
         return await asyncio.wait_for(_call(), timeout=budget.deadline_seconds)
-    except TimeoutError as exc:
+    except asyncio.TimeoutError as exc:
         raise error(
             "HED-PREPARE-0002",
             title="HDJ async I/O deadline exceeded",

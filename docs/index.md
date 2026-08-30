@@ -9,7 +9,9 @@ search:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python-first application platform · stable 0.66.2 · beta 0.67.0</div>
+<img class="hedron-theme-wordmark" src="assets/hedron-logo-light.svg" alt="Hedron">
+
+<div class="hedron-eyebrow">Python-first application platform · stable 1.0 · Python 3.10–3.14</div>
 
 # Stay in Python. Build the whole application.
 
@@ -18,7 +20,7 @@ React to provide—without creating a separate frontend stack.
 { .hedron-lede }
 
 <div class="hedron-actions" markdown>
-[Build your first app](getting-started/quickstart.md){ .md-button .md-button--primary }
+[Choose your layer](getting-started/choose-layer.md){ .md-button .md-button--primary }
 [Migrate from Streamlit](guides/streamlit-migration.md){ .md-button }
 [Evaluate Hedron](guides/evaluate.md){ .md-button }
 </div>
@@ -31,7 +33,12 @@ All in Python.
   <span>Python UI</span>
   <span>FastAPI foundation</span>
   <span>Server-driven interactions</span>
+  <span>Strict core typing</span>
 </div>
+
+The `hedron-core` renderer and `hedron` FastAPI runtime are Pyright-strict. Type errors block
+release; warning-level cleanup is tracked as a separate migration until the existing workspace
+backlog is retired.
 
 <div class="hedron-choice-grid">
   <a class="hedron-choice" href="guides/streamlit-migration/">
@@ -46,20 +53,22 @@ All in Python.
   </a>
 </div>
 
-<div class="hedron-quickstart-label">Create an app in about 10 minutes</div>
+<div class="hedron-quickstart-label">Create an Edron app in about 5 minutes</div>
 
-About 10 minutes after Python 3.11+ and uv (or pip) are ready:
+About five minutes after Python 3.10+ and uv are ready:
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/
-uvx --from "hedron>=0.66.2,<0.67" hedron new my-hedron-app
-cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
-# Open http://127.0.0.1:8000 and click Refresh status
+uvx --from "edron>=0.9.0,<0.10" edron new my-app --template minimal
+cd my-app && uv sync && uv run edron run app:app --reload
+# Open http://127.0.0.1:8000
 ```
 
 Release status: [Current release and support](guides/current-release.md). Pins and extras:
 [Installation](getting-started/installation.md). Before production:
 [What’s ready](guides/whats-ready.md).
+
+<!-- hedron-release-status -->
 
 ![Hello from Hedron with Refresh status](assets/hello-refresh.jpg){ .hedron-hero-shot }
 
@@ -67,12 +76,16 @@ Release status: [Current release and support](guides/current-release.md). Pins a
 
 ## Choose your starting point
 
-Start with the path that matches the application you have today.
+Start with the authoring layer that matches the application you have today.
 
 <div class="hedron-path">
+  <a href="getting-started/edron-quickstart/">
+    <strong>Start a complete application with Edron</strong>
+    Scaffold a page-oriented dashboard, CRUD app, or data workflow.
+  </a>
   <a href="getting-started/quickstart/">
-    <strong>Start a new application</strong>
-    Scaffold a working FastAPI app, run it, and change your first screen.
+    <strong>Use Hedron directly</strong>
+    Compose components and FastAPI-native page, view, and action routes.
   </a>
   <a href="guides/streamlit-migration/">
     <strong>Move beyond Streamlit</strong>
@@ -118,10 +131,11 @@ Need a focused pattern or fix? Open the [Cookbook](guides/cookbook.md) or [Troub
 
 ## Next steps
 
-1. [Build your first app](getting-started/quickstart.md) — celebrate Refresh, then edit Hello
-2. [What is HTMX?](getting-started/what-is-htmx.md) — understand regions and HTML swaps
-3. [HTMX interactions](guides/htmx-interactions.md) — add a second region
-4. [Minimal form POST](guides/minimal-form.md) — form updates the notes counter
+1. [Choose Edron or Hedron](getting-started/choose-layer.md)
+2. [Build your first Edron app](getting-started/edron-quickstart.md) or
+   [first Hedron app](getting-started/quickstart.md)
+3. [What is HTMX?](getting-started/what-is-htmx.md) — understand regions and HTML swaps
+4. [Minimal form POST](guides/minimal-form.md) — submit data across an explicit boundary
 5. [Learning path](getting-started/learning-path.md)
 
 Already building? Jump to the [Cookbook](guides/cookbook.md) for focused snippets or
@@ -130,10 +144,12 @@ Already building? Jump to the [Cookbook](guides/cookbook.md) for focused snippet
 <details markdown>
 <summary>Package maturity and production pins</summary>
 
-The current stable release is `0.66.2`. The `0.67.0` train is Beta and intended for
-preview evaluation. Install the stable pin: `hedron>=0.66.2,<0.67`.
-For production adoption, continue with
-[What’s ready](guides/whats-ready.md) and [Evaluate Hedron](guides/evaluate.md).
+Hedron **1.0.0** is the in-tree release candidate; its Git tag and PyPI upload are deferred.
+PyPI currently resolves the older Hedron `0.67.0` and Edron `0.9.0` fallback. Edron is Stable on
+the future version line.
+Pin applications to `>=0.67.0,<0.68` until the 1.0 cut is published, then review
+capability-specific maturity before production adoption: [What’s ready](guides/whats-ready.md) and
+[Evaluate Hedron](guides/evaluate.md).
 </details>
 
 ## What you get (after Hello)

@@ -29,16 +29,16 @@ def home() -> Page:
     return Page(Text("0.49 lifetimes, binding, and TypeSchema v2."), title="FastAPI/Pydantic")
 
 
-@app.refreshable("/items")
+@app.view("/items")
 def items(filters: Annotated[Filters, ViewParams(source="query")]):
     return Text(filters.q or "all")
 
 
-@app.refreshable("/items/{item_id}")
+@app.view("/items/{item_id}")
 def item(params: Annotated[Item, ViewParams()]):
     return Text(params.item_id)
 
 
-@app.command("/save", fallback="/", authorization=RequiresScopes("write"))
+@app.action("/save", fallback="/", authorization=RequiresScopes("write"))
 def save(data: Annotated[Payload, FormBody()]):
     return Text(data.title)

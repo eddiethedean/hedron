@@ -5,7 +5,7 @@ from __future__ import annotations
 from hedron_core.codes import HED_FP_0008
 from hedron_core.diagnostics import error
 
-SETTINGS_CANDIDATES = ("fastapi-workbench", "hedron-workbench", "hedron-posit")
+SETTINGS_CANDIDATES = ("fastapi-workbench", "hedron-posit")
 NOT_CANDIDATES = ("hedron", "hedron-core", "hedron.config.HedronSettings")
 ALLOWED = ("adopt", "retain-custom-loader")
 
@@ -13,7 +13,6 @@ ALLOWED = ("adopt", "retain-custom-loader")
 # unknown-key rejection, and no import-time I/O. pydantic-settings is not adopted.
 SETTINGS_DISPOSITIONS: dict[str, str] = {
     "fastapi-workbench": "retain-custom-loader",
-    "hedron-workbench": "retain-custom-loader",
     "hedron-posit": "retain-custom-loader",
 }
 
@@ -23,6 +22,6 @@ def refuse_hedron_settings_evaluation() -> None:
     raise error(
         HED_FP_0008,
         title="HedronSettings is not a settings-spike candidate",
-        explanation="Only fastapi-workbench, hedron-workbench, and hedron-posit were evaluated.",
+        explanation="Only fastapi-workbench and hedron-posit were evaluated.",
         remediation="Keep argparse/custom loaders unless a later spike records adopt.",
     )

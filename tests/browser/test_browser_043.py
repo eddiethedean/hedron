@@ -41,11 +41,11 @@ def browser_app_url() -> Iterator[str]:
         explorer="off",
     )
 
-    @app.refreshable
+    @app.view
     def status():
         return html.div(Text("ready"), **{"data-hedron-mark": "status"})
 
-    @app.command(fallback="/")
+    @app.action("/ping", fallback="/")
     def ping():
         return refresh(status).toast("pong")
 

@@ -5,9 +5,9 @@ from __future__ import annotations
 import logging
 from collections.abc import Mapping
 from dataclasses import dataclass, field
-from enum import StrEnum
 from typing import Any, Protocol, runtime_checkable
 
+from hedron_core.compat import StrEnum
 from hedron_core.csrf import redact_secret_like
 
 __all__ = [
@@ -33,7 +33,7 @@ class SecurityAuditEventType(StrEnum):
 class SecurityAuditEvent:
     event_type: SecurityAuditEventType
     message: str
-    attributes: Mapping[str, Any] = field(default_factory=dict)
+    attributes: Mapping[str, Any] = field(default_factory=dict[str, Any])
 
 
 @runtime_checkable
@@ -87,8 +87,6 @@ def emit_security_audit(
     )
     # Redact before any sink so custom sinks cannot observe secrets.
     safe_attrs = redact_secret_like(dict(attributes or {}))
-    if not isinstance(safe_attrs, dict):
-        safe_attrs = {}
     event = SecurityAuditEvent(
         event_type=typed,
         message=message,

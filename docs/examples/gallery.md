@@ -35,7 +35,7 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000). Walkthrough:
 | [flask-reference](https://github.com/eddiethedean/hedron/tree/main/examples/flask-reference) | Flask adapter | Home + fragment |
 | [django-reference](https://github.com/eddiethedean/hedron/tree/main/examples/django-reference) | Django adapter | Home + fragment |
 | [hdj-progressive](https://github.com/eddiethedean/hedron/tree/main/examples/hdj-progressive) | Optional HDJ | Prints HTML to stdout (not a web server) |
-| [workbench-reference](https://github.com/eddiethedean/hedron/tree/main/examples/workbench-reference) | FastAPI + Workbench | Ordinary-app launcher and `HedronWorkbench` variants |
+| [workbench-reference](https://github.com/eddiethedean/hedron/tree/main/examples/workbench-reference) | FastAPI + Workbench | Ordinary-app launcher and `HedronPosit` variants |
 
 Quickstarts: [FastAPI](../getting-started/quickstart.md) ·
 [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) ·
@@ -53,7 +53,7 @@ Decorative preview chrome below is **not** a real `localhost` server.
   <div class="hedron-app-shell">
     <aside class="hedron-app-nav">
       <div class="hedron-app-brand">
-        <img src="../../assets/hedron-mark.svg" alt="">
+        <img src="../../assets/hedron-mark-light.svg" alt="">
         <span>Acme Console</span>
       </div>
       <nav aria-label="Example application">
@@ -117,7 +117,7 @@ response. Switch between the preview, declared props, and request contract below
   </div>
   <div class="hedron-explorer-shell">
     <aside class="hedron-explorer-nav" aria-label="Registered components">
-      <div class="hedron-app-brand"><img src="../../assets/hedron-mark.svg" alt=""><span>Explorer</span></div>
+      <div class="hedron-app-brand"><img src="../../assets/hedron-mark-light.svg" alt=""><span>Explorer</span></div>
       <label class="hedron-explorer-mobile-select"><span class="sr-only">Component</span>
         <select data-demo-component-select aria-label="Select component">
           <option value="UserCard" selected>UserCard</option>

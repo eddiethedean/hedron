@@ -6,10 +6,10 @@ import json
 import re
 from pathlib import Path
 
-from hedron.cli.discovery import _scaffold_dep
+from hedron.cli.discovery import scaffold_dep as _scaffold_dep
 
 
-def _scaffold_element(name: str, dest: Path) -> int:
+def scaffold_element(name: str, dest: Path) -> int:
     distribution = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-") or "element-plugin"
     package_name = re.sub(r"\W+", "_", name.lower()).strip("_") or "element_plugin"
     if package_name[0].isdigit():
@@ -29,7 +29,7 @@ def _scaffold_element(name: str, dest: Path) -> int:
         f'''[project]
 name = "{distribution}"
 version = "0.1.0"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 dependencies = [
     "{_scaffold_dep("hedron-core")}",
     "{_scaffold_dep("hedron-elements")}",
@@ -60,7 +60,7 @@ _META = PluginMeta(
     name="{package_name}",
     version="0.1.0",
     distribution="{distribution}",
-    hedron_version=">=0.60,<0.61",
+    hedron_version=">=1.0,<2.0",
     capabilities=PluginCapabilities(browser_js=True, styles=True, assets=True),
 )
 
@@ -161,3 +161,6 @@ def test_element_registers() -> None:
         )
     )
     return 0
+
+
+_scaffold_element = scaffold_element

@@ -18,6 +18,11 @@ from hedron_core.typing_aliases import HtmlAttrValue
 __all__ = ["Fragment", "Head", "Page", "PageProps", "Title"]
 
 
+def _runtime_object(value: object) -> object:
+    """Preserve validation for callers that bypass static type checking."""
+    return value
+
+
 def _validate_page_script(url: SafeUrl) -> SafeUrl:
     if url.purpose is not UrlPurpose.ASSET:
         raise error(
@@ -124,9 +129,10 @@ class Page(Component[PageProps]):
             self._slot_values["head"] = head
         validated: list[SafeUrl] = []
         for item in scripts or ():
-            if not isinstance(item, SafeUrl):
+            item_value = _runtime_object(item)
+            if not isinstance(item_value, SafeUrl):
                 raise TypeError("Page.scripts entries must be SafeUrl instances")
-            validated.append(_validate_page_script(item))
+            validated.append(_validate_page_script(item_value))
         self._scripts = tuple(validated)
         self._htmx_extensions = parse_htmx_extensions(htmx_extensions)
 

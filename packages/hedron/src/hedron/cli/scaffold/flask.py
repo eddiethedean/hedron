@@ -6,15 +6,15 @@ import argparse
 import json
 from pathlib import Path
 
-from hedron.cli.discovery import _scaffold_dep
+from hedron.cli.discovery import scaffold_dep as _scaffold_dep
 
 
-def _scaffold_flask(args: argparse.Namespace, dest: Path) -> int:
+def scaffold_flask(args: argparse.Namespace, dest: Path) -> int:
     (dest / "pyproject.toml").write_text(
         f'''[project]
 name = "{args.name}"
 version = "0.1.0"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 dependencies = [
     "{_scaffold_dep("hedron-flask")}",
     "{_scaffold_dep("hedron-core")}",
@@ -28,7 +28,7 @@ component_roots = ["components"]
     )
     (dest / "app.py").write_text(
         """import os
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from hedron_core import FragmentRegion, InteractionResult, Page, Text, html
 from hedron_core.interaction import InteractionPolicy
@@ -44,7 +44,7 @@ PANEL = FragmentRegion(id="panel", selector="#panel")
 
 
 def panel_body() -> object:
-    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
     return html.div(Text(f"Flask status · {stamp}"), id="panel")
 
 
@@ -67,7 +67,7 @@ def home() -> Page:
     )
 
 
-@app.component("/status", fragment_regions=(PANEL,))
+@app.view("/status", fragment_regions=(PANEL,))
 def status() -> InteractionResult:
     return InteractionResult(
         content=panel_body(),
@@ -100,3 +100,6 @@ flask_app = app.flask
         )
     )
     return 0
+
+
+_scaffold_flask = scaffold_flask

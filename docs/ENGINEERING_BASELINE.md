@@ -10,7 +10,9 @@ evidence maps live on GitHub under
 - `uv` manages the development workspace, lockfile, environments, and release test installs.
 - Hatchling builds wheels and source distributions.
 - Ruff provides formatting and linting.
-- Pyright runs strict type checking on public packages; documented narrow exceptions require justification.
+- Pyright runs strict type checking on public packages. `hedron-core` and `hedron` block on type
+  errors; warning-level diagnostics remain a tracked migration until the existing warning budget
+  is retired.
 - pytest, pytest-xdist, httpx, and optional Playwright browser tooling implement the test layers.
 - Relative documentation links and `mkdocs build --strict` run in CI.
 - Root `STATUS.md` must match `docs/STATUS.md` (`scripts/sync_status_roadmap.py --check`). The roadmap is only `docs/ROADMAP.md`.
@@ -29,9 +31,9 @@ the PR is classified **docs-only** by the allowlist in `.github/workflows/ci.yml
 
 | Job | Coverage |
 |---|---|
-| `quality` | ruff format + check, pyright, tip+2 `verify_pkg_*` (older packets on evidence), satellite import + symbol-tier gates, wheel build + clean-install smoke, STATUS/ROADMAP mirror check, docs train SSOT / recipe / sim checks, relative markdown link check, `mkdocs build --strict` |
+| `quality` | ruff format + check, workspace pyright, strict Pyright error gate for `hedron-core` + `hedron`, tip+2 `verify_pkg_*` (older packets on evidence), satellite import + symbol-tier gates, stable release contract, wheel build + clean-install smoke, STATUS/ROADMAP mirror check, docs train SSOT / recipe / sim checks, relative markdown link check, `mkdocs build --strict` |
 | `quality` (docs-only) | `docs` suite: train SSOT / recipe / sim checks, relative links, `mkdocs build --strict` — **no** Rust toolchain, **no** `uv build --all-packages` |
-| `test` | `pytest` with pytest-xdist (`-n auto`) on Ubuntu for Python **3.11, 3.12, 3.13, 3.14** (skipped when docs-only) |
+| `test` | `pytest` with pytest-xdist (`-n auto`) on Ubuntu for Python **3.10, 3.11, 3.12, 3.13, 3.14** (skipped when docs-only) |
 | `browser` | Playwright HTMX suite — **Chromium on PRs**; Chromium + Firefox + WebKit on `main` / workflow_dispatch (skipped when docs-only) |
 | `evidence` | Supply-chain evidence bundle scripts (skipped when docs-only) |
 
@@ -60,6 +62,17 @@ Pyright runs in `strict` mode on publishable package `src` trees. Shared aliases
 public signatures (`JsonValue`, `HtmlAttrValue`, HTMX/job/plugin TypedDicts, and related
 shapes).
 
+`hedron-core` and `hedron` have zero Pyright errors. The shared quality suite preserves that
+release gate with:
+
+```bash
+bash scripts/ci_checks.sh typing --python 3.12
+```
+
+The command runs Pyright in strict mode over both complete package trees. Warning severity remains
+visible for incremental workspace cleanup without being presented as a zero-warning release
+claim. Commit CI and release CI call the same quality suite.
+
 - Prefer `JsonValue` / `JsonObject` / TypedDict / Protocol over `Any` for structured data.
 - Prefer `HtmlAttrValue` / `HtmlAttrMap` for HTML and HTMX attribute maps end-to-end.
 - Use `object` for truly unknown values that are immediately narrowed (for example `Auto`
@@ -68,8 +81,8 @@ shapes).
   `options`) and intentionally dynamic cores (plugin entry callables, open decorator
   wrappers). Remaining sites should be obviously boundary-shaped, not lazy bags.
 - Every `# type: ignore[...]` is coded and justified at the call site.
-- `reportUnknown*` stays at warning severity until a package subtree is driven near-zero;
-  do not promote those reports to errors without a measured ratchet.
+- `reportUnknown*` stays at warning severity for packages that are still being improved.
+  The warning-fatal `hedron-core` + `hedron` ratchet must not be weakened or bypassed.
 
 ## Licensing policy
 

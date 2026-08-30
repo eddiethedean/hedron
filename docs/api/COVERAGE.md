@@ -11,7 +11,7 @@ application code. Autodoc signatures: [AUTODOC.md](AUTODOC.md). Stability catalo
 | `Hedron`, `mount_hedron_static` | [HEDRON.md](HEDRON.md), Autodoc |
 | `MountPath`, `resolve_mount_path`, `resolve_mount_path_from_environ`, `normalize_mount_path`, `cookie_path_for_mount`, `mount_from_request`, `prefix_local_path` | [MOUNT.md](MOUNT.md), [deployment](../guides/deployment.md) |
 | `HedronRouter`, `HedronRoute`, `ComponentRef`, `resolve_route_path` | [ROUTER.md](ROUTER.md), [ADDRESSABLE.md](ADDRESSABLE.md) |
-| `InteractionResult`, `FragmentRegion`, `InteractionPolicy`, `HtmxRequest`, `OobUpdate` | [INTERACTION.md](INTERACTION.md), Autodoc |
+| `InteractionResult`, `FragmentRegion`, `InteractionPolicy`, `HtmxRequest`, `HtmxAttrs`, `InteractionLowering`, `OobUpdate` | [INTERACTION.md](INTERACTION.md), [HTMX/Alpine migration](../guides/htmx-alpine-migration.md), Autodoc |
 | `ActionPhase`, `AsyncPhase`, `ActionState`, `ActionPolicy`, `OperationIdentity`, `ActionTrace`, `TraceEvent`, `ActionTransitionError` | [INTERACTION.md](INTERACTION.md#phase-061-lifecycle-contracts), [0.61 implementation](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md), [0.61 acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_61.md) |
 | `begin_operation`, `complete_operation`, `transition_action` | [INTERACTION.md](INTERACTION.md#phase-061-lifecycle-contracts), [0.61 implementation](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md) |
 | `AsyncRegion` | [INTERACTION.md](INTERACTION.md#phase-061-lifecycle-contracts), [component page](../components/async-region.md), [0.61 acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_61.md) |
@@ -174,7 +174,7 @@ Constructor/props live on the [component catalog](../components/index.md). Index
 |---|---|---|
 | `Auto` | none | [AUTO.md](AUTO.md) |
 | `DataTable`, `DataEditor`, `DataChanges`, `DataPage`, `DataQuery`, `DataSaveResult`, `InMemoryDataSource` | `hedron[data]` | [DATA.md](DATA.md), [DATA_SOURCE.md](DATA_SOURCE.md), [data-apps](../guides/data-apps.md) |
-| `LineChart`, `AreaChart`, `BarChart`, `ScatterChart`, `MatplotlibChart`, `PlotlyChart`, `AltairChart` | `hedron[charts]` (Beta; first-party/Matplotlib Supported, Plotly/Altair Experimental) | [CHART.md](CHART.md) |
+| `LineChart`, `AreaChart`, `BarChart`, `ScatterChart`, `MatplotlibChart`, `PlotlyChart`, `AltairChart` | `hedron[charts]` (Stable package; first-party/Matplotlib Supported, Plotly/Altair Experimental) | [CHART.md](CHART.md) |
 
 SQLAlchemy adapter: `hedron_data.sqlalchemy_source.SQLAlchemyDataSource` — see
 [data-apps](../guides/data-apps.md) (not a top-level `hedron` re-export).
@@ -188,7 +188,7 @@ SQLAlchemy adapter: `hedron_data.sqlalchemy_source.SQLAlchemyDataSource` — see
 | `ColorMode`, `ColorModeToggle`, `apply_color_mode_cookie`, `read_color_mode_preference`, `resolve_color_mode`, `resolved_theme_from_request` | [COLORMODE.md](COLORMODE.md), [THEME.md](THEME.md) |
 | `compile_css`, `styles_from_manifest`, `StyleSymbols` | [THEME.md](THEME.md), [CONFIGURATION.md](../CONFIGURATION.md) |
 | `compile_palette`, `contrast_diagnostics`, `contrast_ratio` | [THEME.md](THEME.md), [AUTHORING_LOOP.md](AUTHORING_LOOP.md) |
-| `get_icon`, `list_icons`, `register_icon`, `trusted_svg` | Component / theme docs; icons live in `hedron_core` |
+| `get_icon`, `list_icons`, `register_icon`, `register_first_party_icons`, `trusted_svg` | Component / theme docs; icons live in `hedron_core` |
 
 ## Async helpers and misc
 

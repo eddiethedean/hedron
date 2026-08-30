@@ -39,7 +39,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-ToggleSwitch(name: 'str', label: 'str', *, id: 'str | None' = None, checked: 'bool' = False, required: 'bool' = False, disabled: 'bool' = False, mark: 'str | None' = None, aria_describedby: 'str | None' = None, aria_invalid: 'str | None' = None, aria_required: 'str | None' = None, **kwargs: 'object') -> 'None'
+ToggleSwitch(name: 'str', label: 'str', *, id: 'str | None' = None, checked: 'bool' = False, required: 'bool' = False, disabled: 'bool' = False, mark: 'str | None' = None, aria_describedby: 'str | None' = None, aria_invalid: 'str | None' = None, aria_required: 'str | None' = None, enhance: "Literal['legacy', 'native', 'alpine']" = 'legacy', **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
@@ -54,6 +54,7 @@ ToggleSwitch(name: 'str', label: 'str', *, id: 'str | None' = None, checked: 'bo
 | `aria_describedby` | `str | None` | Optional `aria-describedby` id reference. Default: `None`. |
 | `aria_invalid` | `str | None` | Optional `aria-invalid` value. Default: `None`. |
 | `aria_required` | `str | None` | Optional `aria-required` value. Default: `None`. |
+| `enhance` | `Literal['legacy', 'native', 'alpine']` | Constructor parameter. Default: `'legacy'`. |
 
 ## Composition and backend behavior
 
@@ -61,7 +62,7 @@ Keep `ToggleSwitch` at the smallest semantic boundary. Fragment routes should re
 the replaced region and preserve stable target IDs across success, validation, empty,
 loading, and error responses.
 
-`ToggleSwitch` participates in interaction markup. Pair it with an explicit `@action` / `@component` POST (and CSRF) when the control mutates state.
+`ToggleSwitch` participates in interaction markup. Pair it with an explicit `@app.action` POST (and CSRF) when the control mutates state.
 
 ## Accessibility
 

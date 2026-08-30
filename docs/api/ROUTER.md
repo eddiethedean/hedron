@@ -9,7 +9,7 @@ status: shipped
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Accepted · **Shipped** (introduced in 0.4; current train **0.66.x**)
+**Status:** Accepted · **Shipped** (introduced in 0.4; current checkout train **1.0.x**)
 
 ```python
 from fastapi import Depends
@@ -27,17 +27,16 @@ def users_page() -> Page:
 ```
 
 `HedronRouter` extends FastAPI `APIRouter` and supports prefixes, tags, dependencies,
-responses, and metadata. It adds `page`, `refreshable`, `command`, `component`, and
-`action` registration decorators backed by `HedronRoute`. `Hedron` exposes the same
-decorators on its root router.
+responses, and metadata. It adds the canonical `page`, `view`, and `action` registration
+decorators backed by `HedronRoute`. `Hedron` exposes the same decorators on its root router.
 
 ```python
-@users.refreshable("/table")
+@users.view("/table")
 def user_table():
     return Text("Users")
 
 
-@users.command("/{user_id}")
+@users.action("/{user_id}")
 def delete_user(user_id: str):
     ...
 ```
@@ -50,7 +49,7 @@ from hedron import FragmentRegion, InteractionResult
 USERS_TABLE = FragmentRegion(id="users-table", selector="#users-table")
 
 
-@users.component("/table", fragment_regions=(USERS_TABLE,))
+@users.view("/table", fragment_regions=(USERS_TABLE,))
 async def user_table() -> InteractionResult: ...
 ```
 
@@ -62,13 +61,10 @@ conflicting `InteractionResult.policy.declared_regions` value.
 | Decorator | Typical return | Notes |
 |---|---|---|
 | `@router.page(path, **kwargs)` | `Page` / document | PAGE mode for navigation; fragment for `HX-Request`; accepts `fragment_regions` |
-| `@router.refreshable(path, **kwargs)` | Fragment / `FragmentHandle` | Golden-path GET view; use `handle.refresh_button(...)` |
-| `@router.command(path, **kwargs)` | `ActionHandle` | Golden-path CSRF mutation; use `handle.form()` / `handle.button(...)` |
-| `@router.component(path, **kwargs)` | Component / fragment | Lower-level FRAGMENT mode; accepts `fragment_regions` |
-| `@router.action(path, method=..., **kwargs)` | Component or redirect | Lower-level CSRF action; prefer `@command` for new forms |
-
-On the flagship `Hedron` app (root router), prefer `@app.refreshable` and `@app.command`.
-`app.region(...)` plus `@app.fragment(...)` remain available for explicit HTMX allowlists.
+| `@router.view(path, **kwargs)` | Component / fragment | Advanced GET view route; use `Hedron.view` for owned handles |
+| `@router.action(path, method=..., **kwargs)` | Component or redirect | Advanced CSRF action route; use `Hedron.action` for typed handles |
+On the flagship `Hedron` app (root router), use `@app.page`, `@app.view`, and `@app.action`.
+Removed 0.67 spellings are handled by the static migration tooling and are not runtime aliases.
 
 `HedronRouter` exposes the same decorators. See [Hedron](HEDRON.md) and
 [Refreshable views](REFRESHABLE_VIEWS.md).
@@ -112,7 +108,7 @@ table on [Hedron](HEDRON.md#methods) (`path`, `methods` / `method`, `name`,
 
 | API | Returns |
 |---|---|
-| `@router.page` / `@router.component` / `@router.action` | The decorated callable (route registered) |
+| `@router.page` / `@router.view` / `@router.action` | The decorated callable (route registered) |
 | Handler body | `Page`, component tree, `InteractionResult`, model JSON, or explicit `Response` |
 | `include_component(descriptor, path=...)` | Registered routes for the addressable descriptor |
 | Rendered HTMX/HTML | Hedron HTML response classes unless an explicit `Response` is returned |

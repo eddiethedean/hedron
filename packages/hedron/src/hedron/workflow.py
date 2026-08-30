@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 SCHEMA_VERSION = "hedron-workflow-manifest-1"
 UPGRADE_SCHEMA_VERSION = "hedron-upgrade-report-1"
@@ -53,9 +53,9 @@ class WorkflowManifest:
     app_id: str = "app"
     layout_regions: tuple[str, ...] = ()
     capabilities: tuple[str, ...] = ()
-    action_safety: dict[str, str] = field(default_factory=dict)
-    upload_requirements: dict[str, object] = field(default_factory=dict)
-    security_headers: dict[str, object] = field(default_factory=dict)
+    action_safety: dict[str, str] = field(default_factory=dict[str, str])
+    upload_requirements: dict[str, object] = field(default_factory=dict[str, object])
+    security_headers: dict[str, object] = field(default_factory=dict[str, object])
     migration_status: str = "legacy"
     budgets: WorkflowBudget = field(default_factory=WorkflowBudget)
     reason_codes: tuple[ReasonCode, ...] = REASON_CODES
@@ -164,10 +164,10 @@ def build_upgrade_report(
 
 
 def load_baseline(path: Path) -> dict[str, Any]:
-    data = json.loads(path.read_text(encoding="utf-8"))
+    data: object = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(data, dict):
         raise ValueError("Baseline must be a JSON object")
-    return data
+    return cast(dict[str, Any], data)
 
 
 upgrade_report_schema = {

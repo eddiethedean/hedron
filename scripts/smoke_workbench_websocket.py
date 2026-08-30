@@ -13,7 +13,12 @@ from websockets.asyncio.client import connect
 async def _probe(url: str, expected: str, authorization_key_file: str | None) -> None:
     headers = None
     if authorization_key_file:
-        key = Path(authorization_key_file).read_text(encoding="utf-8").strip()
+        key = (
+            await asyncio.to_thread(
+                Path(authorization_key_file).read_text,
+                encoding="utf-8",
+            )
+        ).strip()
         if not key:
             raise RuntimeError("authorization key file was empty")
         headers = {"Authorization": f"Key {key}"}

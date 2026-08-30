@@ -22,7 +22,7 @@ pip install "hedron-sim>=0.2.0,<0.3"
 uv add "hedron-sim>=0.2.0,<0.3"
 ```
 
-Requires Python 3.11–3.14 and `hedron` (for component imports used in demos).
+Requires Python 3.10–3.14 and `hedron` (for component imports used in demos).
 
 ## Quick start
 
@@ -55,7 +55,7 @@ def home() -> Page:
     )
 
 
-@app.fragment("/status", region=status)
+@app.fragment("/status", region=status)  # SimApp package-native simulator route
 def refresh_status():
     return swap(status_panel())
 

@@ -5,7 +5,7 @@ from __future__ import annotations
 import inspect
 import json
 from collections.abc import Callable, Mapping, Sequence
-from typing import Literal, cast
+from typing import Any, Literal, cast
 
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
@@ -83,7 +83,8 @@ def filter_writable_changes(
         updates.append(upd)
     inserts: list[dict[str, JsonValue]] = []
     for row in changes.inserts:
-        if not isinstance(row, Mapping):
+        row_value: Any = row
+        if not isinstance(row_value, Mapping):
             errors.append(
                 FieldError(
                     row_key=None,
@@ -92,9 +93,10 @@ def filter_writable_changes(
                 )
             )
             continue
+        row_mapping = cast(Mapping[str, JsonValue], row_value)
         cleaned: dict[str, JsonValue] = {
             str(k): v
-            for k, v in row.items()
+            for k, v in row_mapping.items()
             if (k == key_field or k in writable_fields)
             and k not in read_only_fields
             and k not in hidden_fields
@@ -102,11 +104,11 @@ def filter_writable_changes(
         if (
             key_field
             and key_field not in cleaned
-            and key_field in row
+            and key_field in row_mapping
             and key_field not in hidden_fields
         ):
             # Identity key may be read-only but still required on insert.
-            cleaned[key_field] = row[key_field]
+            cleaned[key_field] = row_mapping[key_field]
         inserts.append(cleaned)
     deletes: list[str] = []
     if changes.deletes:
@@ -183,7 +185,7 @@ class DataEditor(Component[DataEditorProps]):
         self._allow_deletes = allow_deletes
 
         if page is not None:
-            raw = list(page.rows)
+            raw: list[object] = list(cast(Sequence[object], page.rows))
             self._version = page.version
             self._total = page.total
         elif source is not None:
@@ -217,20 +219,30 @@ class DataEditor(Component[DataEditorProps]):
                     explanation="source.fetch must return DataPage.",
                     remediation="Return a DataPage from fetch().",
                 )
-            raw = list(fetched.rows)
-            self._version = fetched.version
-            self._total = fetched.total
+            fetched_page = cast(DataPage[dict[str, JsonValue]], fetched)
+            raw = list(cast(Sequence[object], fetched_page.rows))
+            self._version = fetched_page.version
+            self._total = fetched_page.total
         else:
-            raw = normalize_rows(rows)
+            raw = list(cast(Sequence[object], normalize_rows(rows)))
             self._version = None
             self._total = len(raw)
 
         built_rows: list[dict[str, object]] = []
         for r in raw:
             if isinstance(r, Mapping):
-                built_rows.append({str(k): v for k, v in r.items()})
+                mapping = cast(Mapping[object, object], r)
+                built_rows.append({str(k): v for k, v in mapping.items()})
+            elif isinstance(r, Model):
+                model_data = cast(Mapping[object, object], r.model_dump())
+                built_rows.append({str(k): v for k, v in model_data.items()})
             else:
-                built_rows.append(dict(r.model_dump()))  # type: ignore[union-attr]
+                raise error(
+                    "HED-DATA-0005",
+                    title="Invalid row",
+                    explanation="DataEditor rows must be mappings or Hedron models.",
+                    remediation="Pass mappings, models, a DataPage, or a valid source.",
+                )
         self._rows = built_rows
         self._columns = resolve_columns(
             row_model=row_model,
@@ -284,8 +296,9 @@ class DataEditor(Component[DataEditorProps]):
                     explanation="source.apply returned an awaitable.",
                     remediation="Await DataEditor.apply_changes_async(...) for async sources.",
                 )
-            if isinstance(result, DataSaveResult):
-                return result
+            result_value: object = result
+            if isinstance(cast(Any, result_value), DataSaveResult):
+                return result_value
             raise error(
                 "HED-DATA-0005",
                 title="Invalid apply result",
@@ -309,8 +322,9 @@ class DataEditor(Component[DataEditorProps]):
             result = self._source.apply(cleaned)  # type: ignore[union-attr]
             if inspect.isawaitable(result):
                 result = await result
-            if isinstance(result, DataSaveResult):
-                return result
+            result_value: object = result
+            if isinstance(cast(Any, result_value), DataSaveResult):
+                return result_value
             raise error(
                 "HED-DATA-0005",
                 title="Invalid apply result",

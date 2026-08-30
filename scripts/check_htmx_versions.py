@@ -143,8 +143,12 @@ def main(argv: list[str] | None = None) -> int:
         print(f"HTMX version check failed:\n- {message}", file=sys.stderr)
         return 2
 
+    # ``htmx-ext-hedron`` is a first-party local extension.  It deliberately has
+    # no npm publication; its local digest is verified by ``scripts/asset_audit.py``.
+    # Only upstream packages can be compared with npm's stable dist-tag.
+    upstream_pins = tuple(pin for pin in pins if pin.package != "htmx-ext-hedron")
     outdated, lookup_errors = check_pins(
-        pins,
+        upstream_pins,
         latest_for=lambda package: npm_latest(package, registry_base=args.registry_base),
     )
     failures = [*outdated, *lookup_errors]

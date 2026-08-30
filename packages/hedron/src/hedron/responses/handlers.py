@@ -77,8 +77,7 @@ def _status_chrome(policy: StatusPolicy) -> tuple[tuple[FragmentRegion, ...], st
 def install_interaction_handlers(app: FastAPI) -> None:
     """Register HTMX-aware exception handlers on a FastAPI/Hedron app."""
 
-    @app.exception_handler(RequestValidationError)
-    async def _validation_handler(request: Request, exc: RequestValidationError) -> Response:
+    async def validation_handler(request: Request, exc: RequestValidationError) -> Response:
         if not is_htmx_request(request):
             return JSONResponse(status_code=422, content={"detail": exc.errors()})
         policy = status_policy_for(422)
@@ -95,8 +94,7 @@ def install_interaction_handlers(app: FastAPI) -> None:
             _authorized_htmx_target=authorized,
         )
 
-    @app.exception_handler(StarletteHTTPException)
-    async def _http_handler(request: Request, exc: StarletteHTTPException) -> Response:
+    async def http_handler(request: Request, exc: StarletteHTTPException) -> Response:
         if not is_htmx_request(request):
             return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
         if exc.status_code == 204:
@@ -114,3 +112,6 @@ def install_interaction_handlers(app: FastAPI) -> None:
             allow_undeclared_targets=False,
             _authorized_htmx_target=authorized,
         )
+
+    app.exception_handler(RequestValidationError)(validation_handler)
+    app.exception_handler(StarletteHTTPException)(http_handler)

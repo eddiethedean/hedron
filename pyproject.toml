@@ -1,8 +1,8 @@
 [project]
 name = "hedron-workspace"
-version = "0.67.0"
+version = "1.0.0"
 description = "Hedron monorepo workspace"
-requires-python = ">=3.11,<3.15"
+requires-python = ">=3.10,<3.15"
 readme = "README.md"
 
 [tool.uv]
@@ -27,10 +27,10 @@ members = [
     "packages/hedron-mcp",
     "packages/hedron-gradio",
     "packages/hedron-sim",
-    "packages/hedron-workbench",
     "packages/hedron-posit",
     "packages/hedron-elements",
     "packages/edron",
+    "packages/edron-sim",
     "packages/fastapi-workbench",
 ]
 
@@ -53,13 +53,16 @@ dev = [
     "hedron-mcp",
     "hedron-gradio",
     "hedron-sim",
-    "hedron-workbench",
     "hedron-posit",
     "hedron-elements",
     "edron",
+    "edron-sim",
     "fastapi-workbench",
     "pytest>=8.3",
     "pytest-xdist>=3.6",
+    # Pyright analyzes the declared Python 3.10 floor even when CI runs on a
+    # newer interpreter, so its environment must resolve the 3.10 TOML branch.
+    "tomli>=2.0.1",
     "httpx>=0.28",
     "anyio>=4.8",
     "syrupy>=4.8",
@@ -93,6 +96,7 @@ docs = [
     "pymdown-extensions>=11.0,<12",
     "mkdocstrings[python]>=0.27,<0.31",
     "hedron-sim",
+    "edron-sim",
 ]
 
 [tool.uv.sources]
@@ -113,10 +117,10 @@ hedron-notebook = { workspace = true }
 hedron-mcp = { workspace = true }
 hedron-gradio = { workspace = true }
 hedron-sim = { workspace = true }
-hedron-workbench = { workspace = true }
 hedron-posit = { workspace = true }
 hedron-elements = { workspace = true }
 edron = { workspace = true }
+edron-sim = { workspace = true }
 fastapi-workbench = { workspace = true }
 
 [tool.pytest.ini_options]
@@ -128,16 +132,21 @@ markers = [
     "a11y: accessibility core checks",
     "performance: non-blocking benchmark foundations",
     "browser: optional Playwright Chromium evidence (HEDRON_BROWSER=1)",
+    "redis: opt-in tests against a real Redis server (HEDRON_REDIS_URL)",
 ]
 
 [tool.ruff]
-target-version = "py311"
+target-version = "py310"
 line-length = 100
-src = ["packages/hedron-core/src", "packages/hedron/src", "packages/hedron-explorer/src", "packages/hedron-sample-kit/src", "packages/hedron-data/src", "packages/hedron-charts/src", "packages/hedron-maps/src", "packages/hedron-flask/src", "packages/hedron-django/src", "packages/hedron-jinja/src", "packages/hedron-conformance/src", "packages/hedron-native/src", "packages/hedron-extras/src", "packages/hedron-notebook/src", "packages/hedron-mcp/src", "packages/hedron-gradio/src", "packages/hedron-sim/src", "packages/hedron-workbench/src", "packages/hedron-posit/src", "packages/hedron-elements/src", "packages/edron/src", "packages/fastapi-workbench/src", "tests", "examples"]
-extend-exclude = ["docs", "archive", "dist", ".venv"]
+src = ["packages/hedron-core/src", "packages/hedron/src", "packages/hedron-explorer/src", "packages/hedron-sample-kit/src", "packages/hedron-data/src", "packages/hedron-charts/src", "packages/hedron-maps/src", "packages/hedron-flask/src", "packages/hedron-django/src", "packages/hedron-jinja/src", "packages/hedron-conformance/src", "packages/hedron-native/src", "packages/hedron-extras/src", "packages/hedron-notebook/src", "packages/hedron-mcp/src", "packages/hedron-gradio/src", "packages/hedron-sim/src", "packages/hedron-posit/src", "packages/hedron-elements/src", "packages/edron/src", "packages/edron-sim/src", "packages/fastapi-workbench/src", "tests", "examples"]
+extend-exclude = ["docs", "archive", "dist", ".venv", ".bug_hunt_repros"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF100", "RUF012", "S110", "S112", "BLE001", "ASYNC", "PTH", "DTZ", "RET"]
+
+[tool.ruff.lint.isort]
+# Tests import the Python 3.10 tomli alias under the stdlib module name.
+extra-standard-library = ["tomllib"]
 
 [tool.ruff.lint.per-file-ignores]
 "examples/**/*.py" = ["B008"]
@@ -167,13 +176,13 @@ include = [
     "packages/hedron-mcp/src",
     "packages/hedron-gradio/src",
     "packages/hedron-sim/src",
-    "packages/hedron-workbench/src",
     "packages/hedron-posit/src",
     "packages/hedron-elements/src",
     "packages/edron/src",
+    "packages/edron-sim/src",
     "packages/fastapi-workbench/src",
 ]
-pythonVersion = "3.11"
+pythonVersion = "3.10"
 venvPath = "."
 venv = ".venv"
 extraPaths = [
@@ -194,10 +203,10 @@ extraPaths = [
     "packages/hedron-mcp/src",
     "packages/hedron-gradio/src",
     "packages/hedron-sim/src",
-    "packages/hedron-workbench/src",
     "packages/hedron-posit/src",
     "packages/hedron-elements/src",
     "packages/edron/src",
+    "packages/edron-sim/src",
     "packages/fastapi-workbench/src",
 ]
 typeCheckingMode = "strict"

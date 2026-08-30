@@ -14,8 +14,9 @@ from __future__ import annotations
 import argparse
 import subprocess
 import sys
-import tomllib
 from pathlib import Path
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "docs" / "acceptance" / "release-gate-0.33.toml"
@@ -69,7 +70,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.allow_planned:
         sys.path.insert(0, str(ROOT / "scripts"))
-        import check_release_gate as gate  # noqa: E402
+        import check_release_gate as gate
 
         errors = gate.check_evidence_manifest_lenient(EVIDENCE)
         if errors:

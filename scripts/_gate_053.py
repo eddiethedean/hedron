@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-import tomllib
 from pathlib import Path
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 GATE = ROOT / "docs" / "acceptance" / "release-gate-0.53.toml"
@@ -91,8 +92,7 @@ def accepted_contract_present() -> bool:
 def contract_refine_present() -> bool:
     decisions = DECISIONS.read_text(encoding="utf-8")
     combined = "\n".join(
-        path.read_text(encoding="utf-8")
-        for path in (RFC, IMPLEMENTATION, API, PACKET)
+        path.read_text(encoding="utf-8") for path in (RFC, IMPLEMENTATION, API, PACKET)
     )
     return "| D-092 | Accepted |" in decisions and all(
         marker in combined for marker in FROZEN_CONTRACT_MARKERS

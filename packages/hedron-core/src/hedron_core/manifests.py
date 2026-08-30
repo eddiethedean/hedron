@@ -6,7 +6,7 @@ import json
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import TypeVar
+from typing import TypeVar, cast
 
 from typing_extensions import TypeIs
 
@@ -48,16 +48,18 @@ def _is_json_value(value: object) -> TypeIs[JsonValue]:
     if value is None or isinstance(value, (str, int, float, bool)):
         return True
     if isinstance(value, list):
-        return all(_is_json_value(item) for item in value)
+        return all(_is_json_value(item) for item in cast(list[object], value))
     if isinstance(value, dict):
-        return all(isinstance(key, str) and _is_json_value(item) for key, item in value.items())
+        mapping = cast(dict[object, object], value)
+        return all(isinstance(key, str) and _is_json_value(item) for key, item in mapping.items())
     return False
 
 
 def _is_json_object(value: object) -> TypeIs[JsonObject]:
-    return isinstance(value, dict) and all(
-        isinstance(key, str) and _is_json_value(item) for key, item in value.items()
-    )
+    if not isinstance(value, dict):
+        return False
+    mapping = cast(dict[object, object], value)
+    return all(isinstance(key, str) and _is_json_value(item) for key, item in mapping.items())
 
 
 def _as_json_object(value: object) -> JsonObject:
@@ -65,8 +67,9 @@ def _as_json_object(value: object) -> JsonObject:
     if _is_json_object(value):
         return value
     if isinstance(value, Mapping):
+        mapping = cast(Mapping[object, object], value)
         out: JsonObject = {}
-        for key, item in value.items():
+        for key, item in mapping.items():
             if _is_json_value(item):
                 out[str(key)] = item
             else:
@@ -79,13 +82,13 @@ def _as_object_mapping(value: object) -> Mapping[str, JsonValue]:
     if _is_json_object(value):
         return value
     if isinstance(value, Mapping):
-        return _as_json_object(value)
+        return _as_json_object(cast(Mapping[object, object], value))
     return {}
 
 
 def _as_object_sequence(value: object) -> Sequence[object]:
     if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
-        return tuple(value)
+        return tuple(cast(Sequence[object], value))
     return ()
 
 
@@ -167,7 +170,7 @@ class AssetEntry:
     path: str
     digest: str
     content_type: str
-    attributes: Mapping[str, str] = field(default_factory=dict)
+    attributes: Mapping[str, str] = field(default_factory=dict[str, str])
 
     def to_dict(self) -> AssetEntryDict:
         return {
@@ -284,7 +287,7 @@ class ApplicationStyleManifest:
 
     format_version: int
     entries: tuple[JsonObject, ...] = ()
-    source_map: JsonObject = field(default_factory=dict)
+    source_map: JsonObject = field(default_factory=dict[str, JsonValue])
     digest: str = ""
     schema: str = "hedron.application-styles/1"
 

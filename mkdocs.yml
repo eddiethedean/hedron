@@ -1,17 +1,17 @@
-site_name: Hedron
-site_description: Build typed, server-rendered Python applications with FastAPI, HTML, and HTMX—without a frontend build chain.
+site_name: Edron + Hedron
+site_description: Build complete server-rendered Python applications with Edron or compose FastAPI-native interfaces with Hedron.
 site_author: Odos Matthews
 repo_url: https://github.com/eddiethedean/hedron
 repo_name: eddiethedean/hedron
-edit_uri: edit/main/docs/
+edit_uri: edit/v1.0/docs/
 docs_dir: docs
 site_url: !ENV [READTHEDOCS_CANONICAL_URL, "https://hedron.readthedocs.io/en/latest/"]
 
 theme:
   name: material
   custom_dir: docs/overrides
-  logo: assets/hedron-mark.svg
-  favicon: assets/hedron-mark.svg
+  logo: assets/hedron-mark-light.svg
+  favicon: assets/hedron-mark-light.svg
   font:
     text: Inter
     code: JetBrains Mono
@@ -64,11 +64,11 @@ plugins:
             members_order: source
             docstring_style: google
           paths:
+            - packages/edron/src
             - packages/hedron/src
             - packages/hedron-core/src
             - packages/hedron-flask/src
             - packages/hedron-django/src
-            - packages/hedron-workbench/src
             - packages/hedron-posit/src
 
 hooks:
@@ -168,6 +168,7 @@ extra_css:
   - stylesheets/component-demos.css
   - stylesheets/styling-guide.css
   - stylesheets/hello-refresh.css
+  - stylesheets/hedron-default.css
   - stylesheets/hedron-sim.css
 
 extra:
@@ -193,9 +194,12 @@ nav:
   - Home: index.md
   - Start:
     - Overview: getting-started/index.md
+    - Choose Edron or Hedron: getting-started/choose-layer.md
     - Installation: getting-started/installation.md
-    - Build your first app: getting-started/quickstart.md
+    - Build your first Edron app: getting-started/edron-quickstart.md
+    - Build your first Hedron app: getting-started/quickstart.md
     - What is HTMX?: getting-started/what-is-htmx.md
+    - What is Alpine?: getting-started/what-is-alpine.md
     - Core concepts: getting-started/core-concepts.md
     - Choose an interaction API: getting-started/interaction-apis.md
     - Learning path: getting-started/learning-path.md
@@ -206,12 +210,12 @@ nav:
     - Guided setups:
       - New developer — VS Code: getting-started/first-app-vscode.md
       - New developer — Posit Workbench: getting-started/first-app-posit-workbench.md
-  - Guides:
+  - Build:
     - Overview: guides/index.md
     - Edron user guide: guides/edron-user-guide.md
     - Cookbook: guides/cookbook.md
     - Comprehensive styling: guides/styling.md
-    - Modern CSS in 0.59: guides/modern-css-0.59.md
+    - Modern CSS: guides/modern-css.md
     - Build interactions:
       - HTMX interactions: guides/htmx-interactions.md
       - Post a minimal form: guides/minimal-form.md
@@ -233,23 +237,15 @@ nav:
       - Hardened sessions: guides/hardened-sessions.md
       - Multi-tenant isolation: guides/multi-tenant.md
     - Accessibility: guides/accessibility.md
-    - Operate an app:
-      - Ship an app: guides/ship.md
-      - Deployment: guides/deployment.md
-      - Secrets and workers: guides/secrets-and-workers.md
-      - Durable jobs: guides/jobs-celery-rq.md
-      - Test your UI: guides/testing.md
-      - Performance: guides/performance.md
-      - Observability: guides/observability.md
-      - Best practices: guides/best-practices.md
     - Extend Hedron:
       - Use plugins: guides/plugin-consumer.md
       - Author plugins: guides/plugin-authoring.md
       - Package author handbook: guides/package-author-handbook.md
       - Simulator semantics: guides/simulator-semantics.md
       - Notebook preview: guides/notebook-preview.md
-      - Curated extras (0.51): api/EXTRAS.md
+      - Curated extras: api/EXTRAS.md
     - Migrate:
+      - Edron 0.9 to 1.0: guides/edron-upgrade-1.0.md
       - From Streamlit: guides/streamlit-migration.md
       - Other frameworks:
         - Dash: guides/dash-migration.md
@@ -259,8 +255,19 @@ nav:
       - Troubleshooting: guides/troubleshooting.md
       - Error codes: guides/error-codes.md
       - FAQ: guides/faq.md
+  - Operate:
+    - Ship an app: guides/ship.md
+    - Deployment: guides/deployment.md
+    - Secrets and workers: guides/secrets-and-workers.md
+    - Durable jobs: guides/jobs-celery-rq.md
+    - Test your UI: guides/testing.md
+    - Performance: guides/performance.md
+    - Observability: guides/observability.md
+    - Best practices: guides/best-practices.md
   - Examples:
     - Overview: examples/index.md
+    - Edron examples: examples/edron.md
+    - Repository catalog: examples/catalog.md
     - Build a notes app: examples/build-notes-app.md
     - Recipe index: examples/recipes/index.md
     - Notes with SQLAlchemy: examples/notes-sqlalchemy.md
@@ -269,15 +276,20 @@ nav:
     - Try in Codespaces: examples/try-it.md
     - Runnable examples: examples/runnable.md
     - Single-file apps: examples/single-file.md
+    - Hedron Showcase: examples/showcase.md
+    - Edron Showcase: examples/edron-showcase.md
     - Simulation gallery: examples/gallery.md
     - Reference app walkthrough: examples/reference-app.md
   - Reference:
     - API by task: api/by-task.md
+    - Edron API by task: api/EDRON_REFERENCE.md
+    - Edron symbols: api/EDRON_AUTODOC.md
+    - Edron export index: api/EDRON_EXPORTS.md
+    - Edron design contract: api/EDRON.md
     - Hedron: api/HEDRON.md
     - Router: api/ROUTER.md
     - Page: api/PAGE.md
     - Interaction: api/INTERACTION.md
-    - Refreshable views: api/REFRESHABLE_VIEWS.md
     - Field: api/FIELD.md
     - Action: api/ACTION.md
     - Jobs: api/JOBS.md
@@ -287,8 +299,7 @@ nav:
     - Presentation: api/PRESENTATION.md
     - CLI: api/CLI.md
     - Workflow: api/WORKFLOW.md
-    - Phase 0.62 interaction contracts: api/INTERACTION_062.md
-    - Planned 1.0 HTMX/Alpine boundary: api/HTMX_ALPINE_BOUNDARY_1_0.md
+    - HTMX/Alpine boundary: api/HTMX_ALPINE_BOUNDARY_1_0.md
     - Components: components/index.md
     - StyleScope: components/style-scope.md
     - Configuration: CONFIGURATION.md
@@ -296,27 +307,31 @@ nav:
     - Glossary: GLOSSARY.md
     - Packages: packages/index.md
     - Autodoc: api/AUTODOC.md
-  - Project:
-    - Documentation map: guides/documentation-map.md
+  - Evaluate:
     - Why Hedron: guides/why-hedron.md
     - Evaluate Hedron: guides/evaluate.md
     - For reviewers:
       - What's ready — evidence: guides/whats-ready-evidence.md
+      - 1.0 evidence bundle: guides/evidence-bundle.md
       - Enterprise diligence: guides/enterprise-diligence.md
       - Public 1.0 readiness: guides/one-point-zero-readiness.md
       - Production adoption checklist: guides/production-adoption.md
     - What's ready today: guides/whats-ready.md
-    - Current release and support: guides/current-release.md
-    - What's new in 0.60: guides/whats-new-0.60.md
-    - What's new in 0.59: guides/whats-new-0.59.md
-    - What's new in 0.58: guides/whats-new-0.58.md
-    - Releases: guides/release-notes.md
-    - Earlier releases: guides/whats-new-archive.md
-    - Upgrade guide: guides/upgrade.md
     - Architecture: ARCHITECTURE.md
     - Security policy: SECURITY.md
     - Support: guides/support.md
+  - Versions:
+    - Current release and support: guides/current-release.md
+    - What's new in 1.0: guides/whats-new-1.0.md
+    - Releases: guides/release-notes.md
+    - Earlier releases: guides/whats-new-archive.md
+    - Upgrade guide: guides/upgrade.md
+    - Legacy 0.x refreshable API: api/REFRESHABLE_VIEWS.md
+    - Legacy 0.62 interaction contract: api/INTERACTION_062.md
+  - Project:
+    - Documentation map: guides/documentation-map.md
     - Contribute:
       - Contributor day one: guides/contributor-day-one.md
       - Full contributing guide: CONTRIBUTING.md
+      - Documentation: guides/documentation-contributing.md
     - What's next: guides/whats-next.md

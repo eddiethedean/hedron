@@ -1,16 +1,16 @@
-"""hedron-workbench launcher discovery guard (issue #159 / fastapi #144 parity)."""
+"""Posit Workbench launcher discovery guard (issue #159 / fastapi #144 parity)."""
 
 from __future__ import annotations
 
 import pytest
 
-from hedron_workbench.config import ResolvedDeployment, WorkbenchConfig, WorkbenchMode
-from hedron_workbench.resolve import (
+from hedron_posit.config import ResolvedDeployment, WorkbenchConfig, WorkbenchMode
+from hedron_posit.resolve import (
     RESOLVED_MOUNT_ENV,
     explicit_mount_hint,
     resolve_deployment,
 )
-from hedron_workbench.runner import run_target
+from hedron_posit.runner import run_target
 
 
 def test_explicit_mount_hint_includes_uvicorn_root_path_on_workbench() -> None:

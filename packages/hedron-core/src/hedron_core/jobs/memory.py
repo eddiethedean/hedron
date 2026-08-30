@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import secrets
 import threading
 import time
@@ -9,7 +10,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass, field
 
 from hedron_core.jobs.auth import job_authorized, job_authorized_http
-from hedron_core.jobs.codec import _idempotency_scope_key, _legacy_idempotency_scope_key
+from hedron_core.jobs.codec import idempotency_scope_key, legacy_idempotency_scope_key
 from hedron_core.jobs.types import JobHandle, JobState, JobStatus
 from hedron_core.typing_aliases import JsonValue
 
@@ -17,7 +18,7 @@ from hedron_core.typing_aliases import JsonValue
 @dataclass
 class _JobRecord:
     status: JobStatus
-    payload: dict[str, JsonValue] = field(default_factory=dict)
+    payload: dict[str, JsonValue] = field(default_factory=dict[str, JsonValue])
     idempotency_key: str | None = None
     idempotency_scope_key: str | None = None
 
@@ -25,7 +26,11 @@ class _JobRecord:
 class InMemoryJobBackend:
     process_local = True
 
-    def __init__(self) -> None:
+    def __init__(self, *, max_jobs: int = 10_000, max_payload_bytes: int = 1_048_576) -> None:
+        if max_jobs < 1 or max_payload_bytes < 1:
+            raise ValueError("max_jobs and max_payload_bytes must be positive")
+        self.max_jobs = max_jobs
+        self.max_payload_bytes = max_payload_bytes
         self._jobs: dict[str, _JobRecord] = {}
         self._idempotency: dict[str, str] = {}
         self._lock = threading.RLock()
@@ -40,12 +45,23 @@ class InMemoryJobBackend:
         auth_subject: str | None = None,
     ) -> JobHandle:
         with self._lock:
+            try:
+                payload_size = len(
+                    json.dumps(payload, separators=(",", ":"), allow_nan=False).encode("utf-8")
+                )
+            except (TypeError, ValueError) as exc:
+                raise ValueError("job payload must be JSON-compatible") from exc
+            if payload_size > self.max_payload_bytes:
+                raise ValueError("job payload exceeds max_payload_bytes")
+            self._trim_terminal_jobs_unlocked()
+            if len(self._jobs) >= self.max_jobs:
+                raise RuntimeError("in-memory job capacity exhausted; configure a durable backend")
             scoped: str | None = None
             if idempotency_key:
-                scoped = _idempotency_scope_key(
+                scoped = idempotency_scope_key(
                     idempotency_key, tenant_id=tenant_id, auth_subject=auth_subject
                 )
-                legacy_scoped = _legacy_idempotency_scope_key(
+                legacy_scoped = legacy_idempotency_scope_key(
                     idempotency_key, tenant_id=tenant_id, auth_subject=auth_subject
                 )
                 matched_scope = scoped
@@ -83,6 +99,21 @@ class InMemoryJobBackend:
             if scoped is not None:
                 self._idempotency[scoped] = job_id
             return JobHandle(job_id=job_id, idempotency_key=idempotency_key)
+
+    def _trim_terminal_jobs_unlocked(self) -> None:
+        """Keep local demos bounded without requiring a maintenance thread."""
+        if len(self._jobs) < self.max_jobs:
+            return
+        terminal = [
+            (record.status.updated_at, job_id)
+            for job_id, record in self._jobs.items()
+            if record.status.state in {JobState.SUCCEEDED, JobState.FAILED, JobState.CANCELLED}
+        ]
+        for _, job_id in sorted(terminal)[: max(1, len(terminal) // 10)]:
+            record = self._jobs.pop(job_id)
+            scoped = record.idempotency_scope_key
+            if scoped and self._idempotency.get(scoped) == job_id:
+                del self._idempotency[scoped]
 
     def get(
         self,

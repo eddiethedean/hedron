@@ -9,7 +9,7 @@ and marks HTML/component routes explicitly.
 |---|---|
 | `@app.page` | Included by default (`include_in_schema=True`); response `text/html` |
 | `@app.action` | Included by default |
-| `@app.component` | **Excluded** by default (`include_in_schema=False`) — internal HTMX resources |
+| `@app.view` | **Excluded** by default (`include_in_schema=False`) — internal HTMX resources |
 | Ordinary FastAPI JSON routes | Untouched |
 
 Override with `include_in_schema=True/False` on the decorator when you want a fragment

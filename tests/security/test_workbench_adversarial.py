@@ -1,4 +1,4 @@
-"""SECURITY-029 adversarial corpus for hedron-workbench."""
+"""Security adversarial corpus for the Posit Workbench adapter."""
 
 from __future__ import annotations
 
@@ -9,11 +9,11 @@ import pytest
 
 from hedron.mount import normalize_mount_path, prefix_local_path
 from hedron_core.diagnostics import HedronError
-from hedron_workbench.config import WorkbenchConfig
-from hedron_workbench.middleware import WorkbenchPathMiddleware
-from hedron_workbench.redact import redact_scope_for_log, redact_text
-from hedron_workbench.resolve import parse_rserver_url_output, resolve_deployment
-from hedron_workbench.runner import discover_rserver_url
+from hedron_posit.config import WorkbenchConfig
+from hedron_posit.middleware import WorkbenchPathMiddleware
+from hedron_posit.redact import redact_scope_for_log, redact_text
+from hedron_posit.resolve import parse_rserver_url_output, resolve_deployment
+from hedron_posit.runner import discover_rserver_url
 
 
 class _Null:

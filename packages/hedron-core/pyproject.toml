@@ -1,9 +1,9 @@
 [project]
 name = "hedron-core"
-version = "0.67.0"
+version = "1.0.0"
 description = "Framework-neutral rendering core for Hedron"
 readme = "README.md"
-requires-python = ">=3.11,<3.15"
+requires-python = ">=3.10,<3.15"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [
@@ -21,12 +21,13 @@ keywords = [
     "server-rendered",
 ]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -36,8 +37,10 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "pydantic>=2.13.4,<2.15",
-    "packaging>=24.0",
+    "pydantic>=2.12.0,<2.15",
+    "packaging>=22.0",
+    "tomli>=2.0.1; python_version < '3.11'",
+    "typing-extensions>=4.1.0",
 ]
 
 [project.urls]

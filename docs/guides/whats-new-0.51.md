@@ -1,5 +1,11 @@
 # What's new in 0.51
 
+!!! note "Historical release note"
+
+    This page records the 0.x release named in its title. For current installation,
+    support, and published 1.0 status, use [Current release and support](current-release.md).
+    Keep the historical pins below only when maintaining that release line.
+
 Published **0.51.0** on PyPI. Pin `hedron>=0.58.0,<0.60` until the 0.51.2 wheel lands.
 In-tree tip is **0.51.2**. Tracking [#507](https://github.com/eddiethedean/hedron/issues/507).
 

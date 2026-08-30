@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+import math
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Literal
+from typing import Any, Literal
 
 from hedron_core.typing_aliases import JsonValue
 
@@ -25,6 +26,23 @@ class ChannelBudget:
     debounce_ms: int = 0
     idle_timeout_seconds: float = 300.0
 
+    def __post_init__(self) -> None:
+        for name in ("max_messages", "max_message_bytes", "max_batch"):
+            value: Any = getattr(self, name)
+            if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+                raise ValueError(f"ChannelBudget.{name} must be a positive integer")
+        debounce: Any = self.debounce_ms
+        if isinstance(debounce, bool) or not isinstance(debounce, int) or debounce < 0:
+            raise ValueError("ChannelBudget.debounce_ms must be an integer >= 0")
+        idle_timeout: Any = self.idle_timeout_seconds
+        if (
+            isinstance(idle_timeout, bool)
+            or not isinstance(idle_timeout, (int, float))
+            or not math.isfinite(float(idle_timeout))
+            or idle_timeout <= 0
+        ):
+            raise ValueError("ChannelBudget.idle_timeout_seconds must be finite and positive")
+
 
 @dataclass(frozen=True, slots=True)
 class ClientStateRead:
@@ -44,7 +62,7 @@ class RegionUpdate:
 @dataclass(frozen=True, slots=True)
 class ChannelMessage:
     kind: Literal["region-update", "client-state-request", "ping", "close", "error"]
-    payload: Mapping[str, JsonValue] = field(default_factory=dict)
+    payload: Mapping[str, JsonValue] = field(default_factory=dict[str, JsonValue])
 
 
 @dataclass(slots=True)
@@ -67,14 +85,12 @@ class PageSessionChannel:
         if (component_id, field) not in allowed:
             raise ValueError(f"undeclared client read {component_id}.{field}")
 
-    def encode_region_update(self, update: RegionUpdate) -> ChannelMessage:
+    def prepare_region_update(self, update: RegionUpdate) -> ChannelMessage:
         from hedron_core.htmx_contract import safe_hx_swap
 
         self.validate_region(update.region_id)
         if not safe_hx_swap(update.swap):
             raise ValueError(f"Unsafe HTMX swap value: {update.swap!r}")
-        if self.messages_sent >= self.budget.max_messages:
-            raise RuntimeError("channel message budget exhausted")
         encoded = ChannelMessage(
             kind="region-update",
             payload={
@@ -86,10 +102,23 @@ class PageSessionChannel:
         size = len(update.html.encode("utf-8"))
         if size > self.budget.max_message_bytes:
             raise ValueError("region update exceeds max_message_bytes")
+        return encoded
+
+    def encode_region_update(self, update: RegionUpdate) -> ChannelMessage:
+        encoded = self.prepare_region_update(update)
+        return self.commit_region_update(encoded)
+
+    def commit_region_update(self, encoded: ChannelMessage) -> ChannelMessage:
+        if self.messages_sent >= self.budget.max_messages:
+            raise RuntimeError("channel message budget exhausted")
         self.messages_sent += 1
         return encoded
 
     def batch_updates(self, updates: Sequence[RegionUpdate]) -> list[ChannelMessage]:
         if len(updates) > self.budget.max_batch:
             raise ValueError("batch exceeds max_batch")
-        return [self.encode_region_update(update) for update in updates]
+        encoded = [self.prepare_region_update(update) for update in updates]
+        if self.messages_sent + len(encoded) > self.budget.max_messages:
+            raise RuntimeError("channel message budget exhausted")
+        self.messages_sent += len(encoded)
+        return encoded

@@ -66,8 +66,10 @@ class RegisteredCallableAdapter:
 class ActionRegistry:
     """Explicit registry — demos fail closed without a matching entry."""
 
-    _actions: dict[str, RegisteredAction] = field(default_factory=dict)
-    _adapters: dict[str, RegisteredCallableAdapter] = field(default_factory=dict)
+    _actions: dict[str, RegisteredAction] = field(default_factory=dict[str, RegisteredAction])
+    _adapters: dict[str, RegisteredCallableAdapter] = field(
+        default_factory=dict[str, RegisteredCallableAdapter]
+    )
 
     def register_action(self, action: RegisteredAction) -> None:
         if action.action_id in self._actions:

@@ -4,11 +4,11 @@ Use `hedron-flask` for Flask-native apps. Scaffold with the `hedron` CLI
 (`hedron new --flask`); runtime is `hedron-flask` + `hedron-core` (no FastAPI in
 the app process).
 
-**Install:** `pip install "hedron-flask>=0.66.2,<0.67"` (or `uv add "hedron-flask>=0.66.2,<0.67"`).
-Requires Python 3.11–3.14. See [Installation](installation.md).
+**Install:** `pip install "hedron-flask>=0.67.0,<0.68"` (or `uv add "hedron-flask>=0.67.0,<0.68"`).
+Requires Python 3.10–3.14. See [Installation](installation.md).
 
 Flask supports pages, fragments, and CSRF. Progressive FastAPI facades
-(`@app.screen`, `form_command`, and related symbols) are FastAPI-only — see the
+(`@app.view`, `@app.action`, and related symbols) are FastAPI-only — see the
 host matrix on [What’s ready](../guides/whats-ready.md).
 
 ## Golden path (scaffold + Refresh)
@@ -19,7 +19,7 @@ blueprints and raw `hx-*` attributes, not FastAPI `status.refresh_button(...)`.
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/getting-started/installation/
-uvx --from "hedron>=0.66.2,<0.67" hedron new my-flask-app --flask
+uvx --from "hedron>=0.67.0,<0.68" hedron new my-flask-app --flask
 cd my-flask-app && uv sync && uv run flask --app app run --port 8000
 ```
 
@@ -52,14 +52,14 @@ Set `HEDRON_SESSION_SECRET` before production.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-python -m pip install "hedron-flask>=0.66.2,<0.67"
+python -m pip install "hedron-flask>=0.67.0,<0.68"
 ```
 
 Save as `app.py`:
 
 ```python
 import os
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from flask import Flask
 
@@ -74,7 +74,7 @@ PANEL = FragmentRegion(id="panel", selector="#panel")
 
 
 def panel_body() -> object:
-    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
     return html.div(Text(f"Flask status · {stamp}"), id="panel")
 
 
@@ -138,7 +138,7 @@ Stay on Flask: extend the scaffold `HedronBlueprint` / `HedronFlask` using `view
 !!! warning "FastAPI-only continuation"
 
     [HTMX interactions](../guides/htmx-interactions.md) and
-    [Minimal form](../guides/minimal-form.md) assume `Hedron()` / `@app.refreshable` /
+    [Minimal form](../guides/minimal-form.md) assume `Hedron()` / `@app.view` /
     `status.refresh_button(...)` / `CsrfField()`. Use them after you switch hosts, not as the Flask
     next step.
 

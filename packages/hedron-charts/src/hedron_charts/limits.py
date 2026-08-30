@@ -6,6 +6,7 @@ import json
 from collections.abc import Mapping, Sequence
 from functools import lru_cache
 from pathlib import Path
+from typing import Any, cast
 
 from hedron_core.diagnostics import HedronError, error
 from hedron_core.security import contains_dangerous_scheme
@@ -32,14 +33,14 @@ __all__ = [
 @lru_cache(maxsize=1)
 def _pypi_pin_bounds() -> tuple[str, str]:
     """Read deferred-honesty pin from docs/release.toml when present in-tree."""
-    import tomllib
+    from hedron_core.compat import tomllib
 
     # packages/hedron-charts/src/hedron_charts/limits.py → repo root is parents[4]
     path = Path(__file__).resolve().parents[4] / "docs" / "release.toml"
     if not path.is_file():
         return "0.52.0", "0.53"
     data = tomllib.loads(path.read_text(encoding="utf-8"))
-    release = data.get("release") or {}
+    release = cast(Mapping[str, Any], data.get("release") or {})
     floor = str(release.get("pypi_pin_floor") or release.get("pin_floor") or "0.52.0").strip()
     ceiling = str(release.get("pypi_pin_ceiling") or release.get("pin_ceiling") or "0.53").strip()
     return floor, ceiling
@@ -115,21 +116,24 @@ _SENSITIVE_KEYS = frozenset(
 
 
 def redact_rows(rows: Sequence[Mapping[str, JsonValue]]) -> list[JsonObject]:
+    def sensitive_key(value: object) -> bool:
+        return str(value).lower().replace("-", "_") in _SENSITIVE_KEYS
+
     def redact(value: JsonValue) -> JsonValue:
         if isinstance(value, Mapping):
             return {
-                str(key): "***" if str(key).lower() in _SENSITIVE_KEYS else redact(nested)
+                str(key): "***" if sensitive_key(key) else redact(nested)
                 for key, nested in value.items()
             }
-        if isinstance(value, list):
-            return [redact(item) for item in value]
+        if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
+            return [redact(cast(JsonValue, item)) for item in cast(Sequence[object], value)]
         return value
 
     out: list[JsonObject] = []
     for row in rows:
         cleaned: JsonObject = {}
         for key, value in row.items():
-            if str(key).lower() in _SENSITIVE_KEYS:
+            if sensitive_key(key):
                 cleaned[str(key)] = "***"
             else:
                 cleaned[str(key)] = redact(value)
@@ -174,7 +178,8 @@ def reject_callbacks(obj: object) -> None:
 
 def _walk_callbacks(obj: object) -> bool:
     if isinstance(obj, Mapping):
-        for key, value in obj.items():
+        mapping = cast(Mapping[object, object], obj)
+        for key, value in mapping.items():
             key_l = str(key).lower()
             if key_l.startswith("on") and len(key_l) > 2:
                 return True
@@ -186,7 +191,7 @@ def _walk_callbacks(obj: object) -> bool:
             if _walk_callbacks(value):
                 return True
     elif isinstance(obj, (list, tuple)):
-        return any(_walk_callbacks(item) for item in obj)
+        return any(_walk_callbacks(item) for item in cast(Sequence[object], obj))
     elif isinstance(obj, str):
         return _string_looks_executable(obj)
     return False
@@ -232,14 +237,15 @@ _REMOTE_ASSET_KEYS = frozenset(
 
 def _walk_remote(obj: object) -> bool:
     if isinstance(obj, Mapping):
-        for key, value in obj.items():
+        mapping = cast(Mapping[object, object], obj)
+        for key, value in mapping.items():
             key_l = str(key).lower()
             if key_l in _REMOTE_ASSET_KEYS and isinstance(value, str) and _is_remote_url(value):
                 return True
             if _walk_remote(value):
                 return True
     elif isinstance(obj, (list, tuple)):
-        return any(_walk_remote(item) for item in obj)
+        return any(_walk_remote(item) for item in cast(Sequence[object], obj))
     return False
 
 

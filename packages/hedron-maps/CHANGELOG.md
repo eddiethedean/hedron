@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.0.0] — 2026-08-29
+
+### Changed
+
+- Graduate the bounded MapSpec/MapPlan grammar, first-party component, semantic fallback,
+  declared providers, and offline inventory to the Stable 1.0 API.
+- Keep unsupported providers, arbitrary projections, and deferred GIS features excluded.
+
+## [0.1.4] — 2026-08-28
+
+### Changed
+
+- Require `hedron-core>=1.0.0,<2.0` for the composable plugin contract.
+- Split component, element, MapLibre asset, and catalog registration into focused
+  `PluginDefinition` contributions.
+
+## [0.1.3] — 2026-08-27
+
+### Fixed
+
+- Publish the Hedron 1.0-compatible `hedron-core>=0.67.0,<2.0` metadata under a
+  new immutable patch version.
+
 ## [0.1.2] — 2026-08-26
 
 ### Fixed

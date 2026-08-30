@@ -41,7 +41,7 @@ Quickstarts: [Flask](../getting-started/flask.md) · [Django](../getting-started
 
 See the full [configuration reference](../CONFIGURATION.md).
 
-Posit Workbench / RStudio Server: use `hedron-workbench run app:app` so
+Posit Workbench / RStudio Server: use `hedron-posit run app:app` so
 `HEDRON_ROOT_PATH` is exported before import. See [Posit Workbench](posit-workbench.md).
 
 For durable multi-worker jobs, see [Celery / RQ + Redis](jobs-celery-rq.md).
@@ -92,7 +92,7 @@ A fresh scaffold is typically `pyproject.toml`, `README.md`, and `app.py` — no
 FROM python:3.12-slim
 WORKDIR /app
 COPY pyproject.toml README.md app.py ./
-RUN pip install --no-cache-dir "hedron>=0.66.2,<0.67" "uvicorn[standard]" \
+RUN pip install --no-cache-dir "hedron>=1.0.0,<1.1" "uvicorn[standard]" \
     && pip install --no-cache-dir -e . \
     && hedron build
 ENV HEDRON_ENV=production
@@ -143,7 +143,7 @@ Single-stage sketch when you already vendor a lockfile:
 FROM python:3.12-slim
 WORKDIR /app
 COPY . .
-RUN pip install --no-cache-dir "hedron>=0.66.2,<0.67" "uvicorn[standard]" \
+RUN pip install --no-cache-dir "hedron>=1.0.0,<1.1" "uvicorn[standard]" \
  && hedron build
 ENV HEDRON_ENV=production
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]

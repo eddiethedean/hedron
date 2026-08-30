@@ -1,10 +1,14 @@
 ---
 description: Modern CSS and custom-theme behavior in Hedron 0.60.
 search:
-  boost: 1.1
+  exclude: true
 ---
 
 # Modern CSS in 0.60
+
+!!! warning "Historical 0.60 note"
+
+    Use [Modern CSS in 1.0](modern-css.md) for current application guidance.
 
 The 0.60 checkout completes the 0.59 modern CSS authority with the custom theme platform. The
 existing compiler, cascade, token markers, and `default_styles=False` behavior remain authoritative.

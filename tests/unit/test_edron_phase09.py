@@ -1,4 +1,4 @@
-"""Phase 0.9 native Hedron 0.67 contracts."""
+"""Historical Phase 0.9 contracts plus the Edron 1.0 train cutover."""
 
 from __future__ import annotations
 
@@ -13,9 +13,11 @@ from edron.scaffolds import create_scaffold
 def test_public_contract_is_the_native_hedron_contract() -> None:
     assert ed.Interaction is hedron.Interaction
     assert ed.Outcome is hedron.Outcome
-    local = ed.Interaction.local("toggle", state_keys=("open",))
+    local = ed.Interaction.local("toggle", state_keys=("open",), state={"open": False})
     request = ed.Interaction.request("home-status")
-    combined = ed.Interaction.combined("toggle", "home-status", state_keys=("open",))
+    combined = ed.Interaction.combined(
+        "toggle", "home-status", state_keys=("open",), state={"open": False}
+    )
     assert local.kind is ed.InteractionKind.LOCAL
     assert request.kind is ed.InteractionKind.REQUEST
     assert combined.kind is ed.InteractionKind.COMBINED
@@ -36,18 +38,26 @@ def test_browser_plan_is_demand_driven_and_native() -> None:
 
 def test_app_records_interactions_for_explanation() -> None:
     app = ed.App(title="Phase 0.9", session_secret="test")
-    interaction = app.interaction(ed.Interaction.local("toggle", state_keys=("open",)))
+    interaction = app.interaction(
+        ed.Interaction.local("toggle", state_keys=("open",), state={"open": False})
+    )
     facts = app.explain()
     assert facts["interactions"] == [interaction.to_dict()]
-    assert facts["browser_contract"]["hedron_train"] == "0.67.0"
+    assert facts["browser_contract"]["hedron_train"] == "1.0.0"
+    assert facts["browser_contract"]["canonical_roles"] == (
+        "page",
+        "view",
+        "action",
+        "include",
+    )
 
 
-def test_scaffold_pins_edron_and_hedron_067(tmp_path: Path) -> None:
-    create_scaffold("Phase 0.9", tmp_path / "app")
+def test_scaffold_requires_the_edron_and_hedron_1_0_trains(tmp_path: Path) -> None:
+    create_scaffold("Edron 1.0", tmp_path / "app")
     project = (tmp_path / "app" / "pyproject.toml").read_text(encoding="utf-8")
-    assert '"edron>=0.9,<0.10"' in project
-    assert '"hedron>=0.67.0,<0.68"' in project
-    assert '"hedron-data>=0.67.0,<0.68"' in project
+    assert '"edron>=1.0.0,<2.0"' in project
+    assert '"hedron>=1.0.0,<2.0"' in project
+    assert '"hedron-data>=1.0.0,<2.0"' in project
 
 
 def test_deprecated_paths_are_migration_only_markers() -> None:

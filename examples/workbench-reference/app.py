@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import os
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from hedron import Hedron, Page, Stack, Text, html, refresh
 
@@ -15,9 +15,9 @@ app = Hedron(
 )
 
 
-@app.refreshable("/status")
+@app.view("/status")
 def status():
-    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
     return html.div(
         Text(f"All systems operational · refreshed {stamp}"),
         role="status",
@@ -25,7 +25,7 @@ def status():
     )
 
 
-@app.command("/ping", fallback="/")
+@app.action("/ping", fallback="/")
 def ping():
     return refresh(status).toast("pong")
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 import csv
 import io
 from collections.abc import Mapping, Sequence
+from typing import Any, cast
 
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
@@ -71,8 +72,8 @@ class DataTable(Component[DataTableProps]):
             self._version = None
         built_rows: list[dict[str, JsonValue]] = []
         for r in raw_rows:
-            if isinstance(r, Mapping):
-                built_rows.append(dict(r))
+            if isinstance(cast(Any, r), Mapping):
+                built_rows.append(dict(cast(Mapping[str, JsonValue], r)))
             else:
                 built_rows.append(dict(r.model_dump()))  # type: ignore[union-attr]
         self._rows = built_rows
@@ -88,7 +89,7 @@ class DataTable(Component[DataTableProps]):
         return list(self._rows)
 
     def to_csv(self) -> str:
-        from hedron_data.spreadsheet import _reject_or_sanitize
+        from hedron_data.spreadsheet import reject_or_sanitize
 
         visible = [c for c in self._columns if not c.hidden and not c.secret]
         buf = io.StringIO()
@@ -97,7 +98,7 @@ class DataTable(Component[DataTableProps]):
         for row in self._rows:
             writer.writerow(
                 [
-                    _reject_or_sanitize(_cell_text(row.get(c.name)), formula_policy="sanitize")
+                    reject_or_sanitize(_cell_text(row.get(c.name)), formula_policy="sanitize")
                     for c in visible
                 ]
             )
@@ -118,9 +119,9 @@ class DataTable(Component[DataTableProps]):
                 html.tbody(html.tr(html.td(self.props.empty_message, colspan=max(len(visible), 1))))
             )
         else:
-            body_rows = []
+            body_rows: list[NodeLike] = []
             for row in self._rows:
-                cells = []
+                cells: list[NodeLike] = []
                 for c in visible:
                     val = row.get(c.name)
                     text = "***" if c.secret else _cell_text(val)

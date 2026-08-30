@@ -1,14 +1,14 @@
 # Public 1.0 readiness (architectural review)
 
-**Status:** Maintainer assessment updated for Verified Beta `v0.67.0` and the Accepted,
-**Stage 0 Refined** 1.0 cut plan. This is not an implementation or release-date claim.
+**Status:** **Verified, untagged `v1.0.0` candidate.** All 17 release gates and the immutable
+`v0.67.0` compatibility bridge pass.
 [D-114–D-117](https://github.com/eddiethedean/hedron/blob/main/docs/DECISIONS.md) supersede
 D-038's no-1.0 terminus while retaining its evidence-based maturity rules.
 
-**Verdict:** Do not call Hedron `1.0` today. The cut is now bounded and executable as a plan, but
-`ENTRY-100` blocks removal work until the complete 0.67 public/task/artifact inventory, warning
-reconciliation, enumerated stable surface, dual-version corpus, exact matrix, and 0.67.x support
-window exist. The release is subtractive; it is not waiting for another runtime capability.
+**Verdict:** The repository and locally built candidate artifacts satisfy the 1.0 review. The complete 0.67 public/task/artifact
+inventory, warning reconciliation, enumerated stable surface, dual-version corpus, exact matrix,
+support window, reproducible artifacts, and regression evidence are retained in the acceptance
+packet.
 
 ## What is already strong
 
@@ -26,15 +26,15 @@ window exist. The release is subtractive; it is not waiting for another runtime 
 |---|---|
 | Technical debt | Tip≠PyPI; undeclared optional edges; stale remediation narrative; root experimental shims |
 | Over-engineering | Historical `verify_pkg_*` forever on PR quality; extras combinatorics; ROADMAP mega-ledger |
-| Under-engineering | Human AT sessions Planned; production plugin discover-all default; symbol→tier mapping incomplete |
+| Under-engineering | Human AT sessions remain outstanding; some advanced symbol→tier documentation remains intentionally narrow |
 | Leaky abstractions | Root/`hedron_core` kitchen-sink exports; satellites importing FastAPI `hedron` |
 | Scaling risks | Every phase adds permanent CI cost; soft FastAPI coupling spreads with each satellite |
 
-## Before an honest 1.0 (must)
+## 1.0 release checklist (complete)
 
 1. **Governance — refined:** RFC-0096 and D-114–D-117 supersede D-038, define the evidence-driven
    cut, and explicitly make no commercial SLA or multi-year LTS claim.
-2. **API freeze boundary — pending `ENTRY-100`:** Shrink root/`hedron_core` public surfaces; enforce
+2. **API freeze boundary — verified:** Shrink root/`hedron_core` public surfaces; enforce
    [symbol tiers](../api/SYMBOL_TIERS.md); promote only contracts you will protect across
    majors; remove experimental root aliases.
 3. **Dependency purity — release gate:** Eliminate satellite→`hedron` imports (see
@@ -50,8 +50,9 @@ window exist. The release is subtractive; it is not waiting for another runtime 
    still gates the canonical widgets.
 7. **Process prune — release gate:** Archive old packets; PR CI runs tip + recent only; generated
    remediation truth instead of stale issue tables.
-8. **Package maturity — release gate:** Flagship + claimed adapters move Beta → Stable on PyPI for the
-   **frozen inventory only**.
+8. **Package maturity — complete:** `hedron-core` and `hedron` are Stable in package metadata;
+   adapters and other satellites are explicitly Beta; the untagged `v1.0.0` candidate remains
+   pending Git tag and PyPI publication.
 
 ## Can wait until 2.0
 

@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Generic, TypeVar, get_args, get_origin
+from collections.abc import Iterable, Mapping
+from typing import Any, Generic, TypeVar, cast, get_args, get_origin, overload
 
-from pydantic import GetCoreSchemaHandler, TypeAdapter
+from pydantic import GetCoreSchemaHandler, TypeAdapter, ValidationError
 from pydantic_core import core_schema
 
 from hedron_core.diagnostics import error
@@ -30,7 +31,7 @@ def _validate_secret_inner(source_type: object, value: object) -> object:
         return value
     try:
         return TypeAdapter(inner).validate_python(value)
-    except Exception as exc:
+    except ValidationError as exc:
         raise error(
             "HED-SEC-0010",
             title="Secret value type mismatch",
@@ -60,7 +61,8 @@ class Secret(Generic[T]):
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Secret):
             return NotImplemented
-        return self.reveal() == other.reveal()
+        other_secret = cast(Secret[object], other)
+        return self.reveal() == other_secret.reveal()
 
     def __hash__(self) -> int:
         try:
@@ -78,12 +80,15 @@ class Secret(Generic[T]):
     @classmethod
     def __get_pydantic_core_schema__(
         cls,
-        source_type: Any,  # pydantic GetCoreSchemaHandler API uses Any for annotated forms
+        source_type: object,
         handler: GetCoreSchemaHandler,
     ) -> core_schema.CoreSchema:
-        def validate(value: object) -> Secret[Any]:
+        del handler
+
+        def validate(value: object) -> Secret[object]:
             if isinstance(value, Secret):
-                inner = _validate_secret_inner(source_type, value.reveal())
+                secret = cast(Secret[object], value)
+                inner = _validate_secret_inner(source_type, secret.reveal())
                 return Secret(inner)
             inner = _validate_secret_inner(source_type, value)
             return Secret(inner)
@@ -106,15 +111,16 @@ def redact_value(value: object) -> object:
     if isinstance(value, Secret):
         return _REDACTED
     if isinstance(value, list):
-        return [redact_value(v) for v in value]
+        return [redact_value(item) for item in cast(list[object], value)]
     if isinstance(value, tuple):
-        return tuple(redact_value(v) for v in value)
+        return tuple(redact_value(item) for item in cast(tuple[object, ...], value))
     if isinstance(value, dict):
-        return {k: redact_value(v) for k, v in value.items()}
+        mapping = cast(dict[object, object], value)
+        return {key: redact_value(item) for key, item in mapping.items()}
     if isinstance(value, set):
-        return {redact_value(v) for v in value}
+        return {redact_value(item) for item in cast(set[object], value)}
     if isinstance(value, frozenset):
-        return frozenset(redact_value(v) for v in value)
+        return frozenset(redact_value(item) for item in cast(frozenset[object], value))
     return value
 
 
@@ -127,7 +133,23 @@ def _secret_like_key(key: str, secret_keys: frozenset[str]) -> bool:
     return any(token in secret_keys for token in tokens)
 
 
-def redact_secret_like(value: Any, *, keys: frozenset[str] | None = None) -> Any:
+@overload
+def redact_secret_like(
+    value: Mapping[str, object], *, keys: frozenset[str] | None = None
+) -> dict[str, object]: ...
+
+
+@overload
+def redact_secret_like(
+    value: list[object], *, keys: frozenset[str] | None = None
+) -> list[object]: ...
+
+
+@overload
+def redact_secret_like(value: object, *, keys: frozenset[str] | None = None) -> object: ...
+
+
+def redact_secret_like(value: object, *, keys: frozenset[str] | None = None) -> object:
     """Redact mapping values whose keys look secret-bearing."""
     secret_keys = keys or frozenset(
         {
@@ -141,14 +163,17 @@ def redact_secret_like(value: Any, *, keys: frozenset[str] | None = None) -> Any
             "session",
         }
     )
-    if isinstance(value, dict):
-        out: dict[str, Any] = {}
-        for k, v in value.items():  # type: ignore[assignment]
-            if _secret_like_key(str(k), secret_keys):
-                out[str(k)] = "[redacted]"
+    if isinstance(value, Mapping):
+        mapping = cast(Mapping[object, object], value)
+        out: dict[str, object] = {}
+        for key, item in mapping.items():
+            if _secret_like_key(str(key), secret_keys):
+                out[str(key)] = "[redacted]"
             else:
-                out[str(k)] = redact_secret_like(v, keys=secret_keys)
+                out[str(key)] = redact_secret_like(item, keys=secret_keys)
         return out
     if isinstance(value, list):
-        return [redact_secret_like(v, keys=secret_keys) for v in value]  # type: ignore[misc]
+        return [
+            redact_secret_like(item, keys=secret_keys) for item in cast(Iterable[object], value)
+        ]
     return value

@@ -15,6 +15,11 @@ def _living_tip() -> str:
     return str(release["development_version"])
 
 
+def _runtime_versions() -> tuple[str, str]:
+    runtimes = tomllib.loads(Path("docs/release.toml").read_text(encoding="utf-8"))["runtimes"]
+    return str(runtimes["node_version"]), str(runtimes["java_version"])
+
+
 def test_pkg_052_packet_bound() -> None:
     gate = tomllib.loads(Path("docs/acceptance/release-gate-0.52.toml").read_text(encoding="utf-8"))
     rows = {row["id"]: row for row in gate["evidence"]}
@@ -35,9 +40,8 @@ def test_conformance_package_structure() -> None:
 
 
 def test_node_java_versions_bumped() -> None:
-    tip = _living_tip()
-    release = tomllib.loads(Path("docs/release.toml").read_text(encoding="utf-8"))["release"]
+    node_version, java_version = _runtime_versions()
     node = json.loads(Path("packages/hedron-runtime-node/package.json").read_text(encoding="utf-8"))
-    assert node["version"] in {tip, release["pypi_version"]}
+    assert node["version"] == node_version
     pom = Path("packages/hedron-runtime-java/pom.xml").read_text(encoding="utf-8")
-    assert any(f"<version>{version}</version>" in pom for version in (tip, release["pypi_version"]))
+    assert f"<version>{java_version}</version>" in pom

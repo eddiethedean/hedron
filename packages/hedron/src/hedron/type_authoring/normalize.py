@@ -15,6 +15,7 @@ from typing import (
     Literal,
     TypeGuard,
     Union,
+    cast,
     get_args,
     get_origin,
     get_type_hints,
@@ -60,6 +61,10 @@ _PATH_PARAM_RE = re.compile(r"\{([a-zA-Z_][a-zA-Z0-9_]*)\}")
 
 def _is_union(origin: object) -> bool:
     return origin is Union or str(origin) in {"typing.Union", "types.UnionType"}
+
+
+def _runtime_object(value: object) -> object:
+    return value
 
 
 @dataclass(frozen=True, slots=True)
@@ -530,7 +535,7 @@ def _injected_names(signature: inspect.Signature, hints: Mapping[str, object]) -
         if isinstance(parameter.default, DependsOn):
             names.add(name)
             continue
-        _, metadata = _split_annotated(annotation)
+        _, metadata = _split_annotated(cast(object, annotation))
         if any(isinstance(item, DependsParam) for item in metadata):
             names.add(name)
             continue
@@ -554,14 +559,21 @@ def _return_effects(annotation: object) -> tuple[Refreshes | None, Updates | Non
 
 
 def _class_effect_ids(fn: Callable[..., object]) -> tuple[tuple[str, ...], tuple[str, ...]]:
-    extra = getattr(fn, "__hedron_effects__", None)
+    extra: object | None = getattr(fn, "__hedron_effects__", None)
     if extra is None:
         return (), ()
-    items = extra if isinstance(extra, (tuple, list)) else (extra,)
+    items: Sequence[object] = (
+        cast(Sequence[object], extra) if isinstance(extra, (tuple, list)) else (extra,)
+    )
     refresh_ids: list[str] = []
     update_ids: list[str] = []
     for item in items:
-        ids = tuple(getattr(item, "target_ids", ()) or ())
+        target_ids: object = getattr(item, "target_ids", ()) or ()
+        ids = (
+            tuple(str(value) for value in cast(Sequence[object], target_ids))
+            if isinstance(target_ids, (tuple, list))
+            else ()
+        )
         if isinstance(item, Updates):
             update_ids.extend(ids)
         else:
@@ -822,6 +834,8 @@ def _union_count(annotation: object) -> int:
 
 
 def _inventory_disposition(annotation: object, *, depth: int) -> tuple[str, bool]:
+    runtime_annotation = _runtime_object(annotation)
+    model_annotation = _runtime_object(annotation)
     origin = get_origin(annotation)
     args = get_args(annotation)
     if origin is Annotated:
@@ -857,15 +871,15 @@ def _inventory_disposition(annotation: object, *, depth: int) -> tuple[str, bool
         return "supported", False
     if isinstance(annotation, type) and issubclass(annotation, (Secret, SecretStr)):
         return "supported", False
-    if _is_upload(annotation):
+    if _is_upload(runtime_annotation):
         return "supported", True
     if isinstance(annotation, type) and issubclass(annotation, TrustedHtml):
         return "rejected", False
     if isinstance(annotation, type) and issubclass(annotation, Component):
         return "rejected", False
-    if callable(annotation) and not isinstance(annotation, type):
+    if callable(runtime_annotation) and not isinstance(runtime_annotation, type):
         return "rejected", False
-    if _is_model(annotation):
+    if _is_model(model_annotation):
         return "override_only", False
     return "rejected", False
 

@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from enum import StrEnum
 from typing import TYPE_CHECKING, Literal
 
 from starlette.responses import Response
 
 from hedron.mount import cookie_path_for_mount, normalize_mount_path
+from hedron_core.compat import StrEnum
 from hedron_core.diagnostics import DiagnosticSeverity, HedronError, make_diagnostic
 
 if TYPE_CHECKING:

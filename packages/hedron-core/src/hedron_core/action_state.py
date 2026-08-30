@@ -9,10 +9,10 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass, field, replace
-from enum import StrEnum
 from types import MappingProxyType
 from typing import Any, Literal
 
+from hedron_core.compat import StrEnum
 from hedron_core.security.secrets import redact_secret_like
 
 __all__ = [

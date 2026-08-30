@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import ast
-import re
 import sys
 from pathlib import Path
 
@@ -87,6 +86,19 @@ def read_all(path: Path) -> list[str]:
     return []
 
 
+def declares_name(path: Path, name: str) -> bool:
+    """Return whether a module assigns a public name, regardless of value source."""
+    tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and any(
+            isinstance(target, ast.Name) and target.id == name for target in node.targets
+        ):
+            return True
+        if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name) and node.target.id == name:
+            return True
+    return False
+
+
 def main() -> int:
     errors: list[str] = []
     if not STABILITY.is_file():
@@ -137,12 +149,7 @@ def main() -> int:
             errors.append(f"{pkg}: __all__ is empty")
         total += len(names)
         # __version__ should be present in catalog packages
-        version_match = re.search(
-            r'^__version__\s*=\s*["\']([^"\']+)["\']',
-            init.read_text(encoding="utf-8"),
-            re.M,
-        )
-        if not version_match:
+        if not declares_name(init, "__version__"):
             errors.append(f"{pkg}: __version__ missing")
 
     if total < 50:

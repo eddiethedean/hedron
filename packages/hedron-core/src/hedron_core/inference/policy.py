@@ -13,7 +13,7 @@ from typing import Any, Protocol, runtime_checkable
 from hedron_core.codes import HED_INFER_0001, HED_INFER_0002, HED_INFER_0003
 from hedron_core.diagnostics import error
 from hedron_core.inference.types import (
-    _PRIORITY_RANK,
+    PRIORITY_RANK,
     BatchWindow,
     ConcurrencyGroup,
     InferenceAdmission,
@@ -101,7 +101,7 @@ class InferenceScheduler(Protocol):
 class InferencePolicy:
     """Admission and scheduling policy layered on a durable ``JobBackend``."""
 
-    groups: Mapping[str, ConcurrencyGroup] = field(default_factory=dict)
+    groups: Mapping[str, ConcurrencyGroup] = field(default_factory=dict[str, ConcurrencyGroup])
     max_queue: int = 100
     default_eta_per_item: float = 1.0
     batch: BatchWindow | None = None
@@ -112,14 +112,18 @@ class InferencePolicy:
     _inflight_ids: dict[str, deque[str]] = field(
         default_factory=lambda: defaultdict(deque), init=False, repr=False
     )
-    _queue: list[QueuedInference] = field(default_factory=list, init=False)
+    _queue: list[QueuedInference] = field(default_factory=list[QueuedInference], init=False)
     _lock: threading.RLock = field(default_factory=threading.RLock, init=False)
-    _cancel: OrderedDict[str, float] = field(default_factory=OrderedDict, init=False, repr=False)
-    _diagnostics: dict[str, InferenceDiagnostics] = field(default_factory=dict, init=False)
-    _request_jobs: dict[str, str] = field(default_factory=dict, init=False)
-    _request_groups: dict[str, str] = field(default_factory=dict, init=False)
+    _cancel: OrderedDict[str, float] = field(
+        default_factory=OrderedDict[str, float], init=False, repr=False
+    )
+    _diagnostics: dict[str, InferenceDiagnostics] = field(
+        default_factory=dict[str, InferenceDiagnostics], init=False
+    )
+    _request_jobs: dict[str, str] = field(default_factory=dict[str, str], init=False)
+    _request_groups: dict[str, str] = field(default_factory=dict[str, str], init=False)
     _request_auth: dict[str, tuple[str | None, str | None]] = field(
-        default_factory=dict, init=False
+        default_factory=dict[str, tuple[str | None, str | None]], init=False
     )
     _fair_cursor: dict[str, int] = field(default_factory=lambda: defaultdict(int), init=False)
 
@@ -212,7 +216,7 @@ class InferencePolicy:
                 )
             self._queue.append(item)
             self._request_auth[request_id] = (auth_subject, tenant_id)
-            self._queue.sort(key=lambda q: (_PRIORITY_RANK[q.priority], q.enqueued_at))
+            self._queue.sort(key=lambda q: (PRIORITY_RANK[q.priority], q.enqueued_at))
             position = next(i for i, q in enumerate(self._queue) if q.request_id == request_id)
             eta = (position + 1) * self.default_eta_per_item
             self._diagnostics[request_id] = InferenceDiagnostics(

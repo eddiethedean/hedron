@@ -31,7 +31,7 @@ python -m hedron check
 **Other fixes:**
 
 1. Re-open the terminal after install (PATH updates often need a new shell).
-2. Prefer `uv tool install "hedron>=0.66.2,<0.67"` (or `pipx install "hedron>=0.66.2,<0.67"`) so the
+2. Prefer `uv tool install "hedron>=1.0.0,<1.1"` (or `pipx install "hedron>=1.0.0,<1.1"`) so the
    tool is on PATH, then run `hedron new …`.
 3. Inside a scaffolded project, use the project environment: `uv run hedron check` (or
    activate `.venv` and run `hedron` / `python -m hedron`).
@@ -52,14 +52,14 @@ python -m hedron check
 FastAPI/Pydantic version after install.
 
 **Cause:** Another package pins FastAPI/Pydantic outside Hedron’s **declared** range
-(`fastapi>=0.141.1,<0.150`, `pydantic>=2.13.4,<2.15`), or you need the **CI-supported**
-band for a known-good first app (`fastapi>=0.141.1,<0.142`, `pydantic>=2.13.4,<2.14`).
+(`fastapi>=0.121.0,<0.150`, `pydantic>=2.12.0,<2.15`), or you need the **CI-supported**
+band for a known-good first app (`fastapi>=0.121.0,<0.142`, `pydantic>=2.12.0,<2.14`).
 Declared ranges are wider than Supported — versions outside Supported can still install
 but are not CI-proven.
 
 **Fix:** Create a **clean virtual environment** for the Hedron app (do not reuse a shared
 env that already pins an older FastAPI). Install only Hedron + uvicorn first
-(`hedron>=0.66.2,<0.67`), then add other dependencies. For first apps, prefer staying
+(`hedron>=1.0.0,<1.1`), then add other dependencies. For first apps, prefer staying
 inside the Supported band. See [Compatibility](../COMPATIBILITY.md).
 
 ## Wrong interpreter or ModuleNotFoundError for hedron
@@ -95,8 +95,8 @@ that port in the browser.
 **Symptom:** Features in the docs are missing from your install, or verify text does not match.
 
 **Fix:** Check `python -c "import hedron; print(hedron.__version__)"`.
-Expect **`0.64.0`** in both a PyPI-installed application and source checkouts.
-Upgrade an application with `pip install -U "hedron>=0.66.2,<0.67"`; use `uv sync` only
+Expect **`1.0.0`** in a PyPI-installed application and **`1.0.0`** from the repository checkout.
+Upgrade an application with `pip install -U "hedron>=1.0.0,<1.1"`; use `uv sync` only
 inside the repository.
 See [What's ready](whats-ready.md). If docs describe a feature missing from your
 install, either upgrade toward the pin that matches this documentation or switch the
@@ -112,10 +112,10 @@ docs to the tag that matches your installed release.
 
 ## Tutorial code does not match `hedron new`
 
-**Cause:** A guide still shows `app.region` / `@app.fragment` / `RefreshButton.for_region`,
-but `hedron new` generates `@app.refreshable("/status")` and `status.refresh_button(...)`.
+**Cause:** A guide still shows an older region spelling, but `hedron new` generates
+`@app.view("/status")` and `status.refresh_button(...)`.
 
-**Fix:** Keep the generated app. Add a second `@app.refreshable` as in
+**Fix:** Keep the generated app. Add a second `@app.view` as in
 [HTMX interactions](htmx-interactions.md). Do not paste a region/fragment scaffold over
 Hello. See [Which interaction API?](../getting-started/interaction-apis.md).
 
@@ -132,11 +132,11 @@ See [Secrets and workers](secrets-and-workers.md).
 **Cause:** The request’s `HX-Target` is not in the route’s declared region allowlist
 (typo in the region id / selector, or wrong fragment route).
 
-**Fix:** Prefer the generated handle: `@app.refreshable("/status")` plus
+**Fix:** Prefer the generated handle: `@app.view("/status")` plus
 `status.refresh_button(...)`. If you use the explicit allowlist path, keep one region
 object end-to-end: `status = app.region("service-status")`,
 `RefreshButton.for_region(status, href="/status", ...)`, and
-`@app.fragment("/status", region=status)`. Confirm with:
+`@app.view("/status", fragment_regions=(status,))`. Confirm with:
 
 ```bash
 curl -H 'HX-Request: true' -H 'HX-Target: #service-status' http://127.0.0.1:8000/status
@@ -206,7 +206,7 @@ curl -H 'HX-Request: true' -H 'HX-Target: #service-status' http://127.0.0.1:8000
         )
 
 
-    @app.fragment("/status", region=status)
+    @app.view("/status", fragment_regions=(status,))
     def refresh():
         return swap(status_panel())
     ```
@@ -235,8 +235,8 @@ with auth in rare cases; keep production off.
 
 **Cause:** An old CLI wrote `hedron>=0.4.0` (or another pre-0.11 floor).
 
-**Fix:** Edit `pyproject.toml` to `hedron>=0.66.2,<0.67` and `uvicorn[standard]>=0.30`, then
-reinstall. Current `hedron new` scaffolds `hedron>=0.66.2,<0.67` automatically.
+**Fix:** Edit `pyproject.toml` to `hedron>=1.0.0,<1.1` and `uvicorn[standard]>=0.30`, then
+reinstall. Current `hedron new` scaffolds `hedron>=1.0.0,<1.1` automatically.
 
 ## SSE / WebSocket / preload not working
 
@@ -261,14 +261,14 @@ setting production mode.
 
 **Cause:** `Auto` is core (`from hedron import Auto`). `DataTable` / `DataEditor` need the
 data extra. First-party charts require `hedron[charts]` on the same pin as the rest of
-Hedron (`>=0.66.2,<0.67`).
+Hedron (`>=1.0.0,<1.1`).
 
 **Fix:**
 
 ```bash
 # Auto needs no extra
-pip install "hedron[data]>=0.66.2,<0.67"      # DataTable, DataEditor
-pip install "hedron[charts]>=0.66.2,<0.67"   # chart components
+pip install "hedron[data]>=1.0.0,<1.1"      # DataTable, DataEditor
+pip install "hedron[charts]>=1.0.0,<1.1"   # chart components
 ```
 
 The old `hedron-charts 0.1.x` line is incompatible with current Hedron. See

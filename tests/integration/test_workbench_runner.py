@@ -17,10 +17,10 @@ from pathlib import Path
 import pytest
 
 from hedron_core.diagnostics import HedronError
-from hedron_workbench.config import WorkbenchConfig
-from hedron_workbench.middleware import WorkbenchPathMiddleware
-from hedron_workbench.resolve import RESOLVED_MODE_ENV, RESOLVED_MOUNT_ENV, resolve_deployment
-from hedron_workbench.runner import (
+from hedron_posit.config import WorkbenchConfig
+from hedron_posit.middleware import WorkbenchPathMiddleware
+from hedron_posit.resolve import RESOLVED_MODE_ENV, RESOLVED_MOUNT_ENV, resolve_deployment
+from hedron_posit.runner import (
     HEDRON_PUBLIC_BASE,
     bind_loopback,
     discover_rserver_url,
@@ -277,7 +277,7 @@ def test_run_target_shuts_down_on_sigterm() -> None:
         [
             sys.executable,
             "-m",
-            "hedron_workbench.cli",
+            "hedron_posit.cli",
             "run",
             "tests.integration._workbench_sample:app",
             "--mode",

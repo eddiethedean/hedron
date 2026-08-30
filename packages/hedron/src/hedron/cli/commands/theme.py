@@ -291,3 +291,13 @@ def _cmd_style_check(args: argparse.Namespace) -> int:
     else:
         print(f"ok: no application-authored CSS under {root}")
     return 1 if findings else 0
+
+
+cmd_style_check = _cmd_style_check
+cmd_theme_check = _cmd_theme_check
+cmd_theme_contract = _cmd_theme_contract
+cmd_theme_export = _cmd_theme_export
+cmd_theme_inspect = _cmd_theme_inspect
+cmd_theme_manifest = _cmd_theme_manifest
+cmd_theme_matrix = _cmd_theme_matrix
+cmd_theme_metadata = _cmd_theme_metadata

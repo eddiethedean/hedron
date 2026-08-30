@@ -60,7 +60,7 @@ Render a polite, transient-looking status message.
         )
 
 
-    @app.component("/copy-key", methods=["POST"], fragment_regions=(host,))
+    @app.action("/copy-key", method="POST", fragment_regions=(host,))
     def copy():
         return swap(Toast("API key copied.", tone="success"))
     ```

@@ -144,7 +144,7 @@ def test_hedron_run_auto_delegates_to_workbench_launcher(
         called.update(target=target, config=config)
 
     monkeypatch.setenv("RS_SERVER_URL", "https://wb.example/s/session/")
-    monkeypatch.setattr("hedron_workbench.runner.run_target", fake_run)
+    monkeypatch.setattr("hedron_posit.runner.run_target", fake_run)
     args = Namespace(
         target="sample:app",
         app=None,

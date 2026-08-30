@@ -7,18 +7,23 @@ scripts here when you add them.
 
 | Script | When to run |
 |---|---|
-| `ci_checks.sh` | **Shared CI suites** used by `.github/workflows/ci.yml` and `release.yml`. Local: `bash scripts/ci_checks.sh test\|workbench\|docs\|quality\|browser\|evidence\|packaging\|all` — `all` mirrors the full workflow. Docs-only CI calls `docs` (no wheels). Independent checks inside a suite overlap. `--jobs N` or `HEDRON_CHECK_JOBS` caps concurrency (see `ci_checks.sh --help`) |
+| `ci_checks.sh` | **Shared CI suites** used by `.github/workflows/ci.yml` and `release.yml`. Local: `bash scripts/ci_checks.sh test\|workbench\|docs\|typing\|quality\|browser\|evidence\|packaging\|all` — `typing` is the warning-fatal Pyright gate for all six Stable packages (`hedron-core`, `hedron`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps`); `all` mirrors the full workflow. Docs-only CI calls `docs` (no wheels). Independent checks inside a suite overlap. `--jobs N` or `HEDRON_CHECK_JOBS` caps concurrency (see `ci_checks.sh --help`) |
 | `ci_install_playwright.sh` | CI-only Playwright browser + OS deps install with apt-lock wait and timed retries (WebKit `install-deps` can hang on GitHub Ubuntu mirrors) |
 | `mkdocs.sh` | Docs preview / build wrapper (`./scripts/mkdocs.sh serve`) |
 | `smoke_workbench_adapter_docker.sh` | License-independent Linux smoke for mounted Workbench adapter behavior |
 | `generate_component_docs.py` | After changing the component docs manifest; `--check` in CI/PR |
+| `generate_htmx_alpine_component_counts.py` | Regenerates the built-in HTMX/Alpine usage report across the 0.66.2, 0.67.0, and 1.0.0 boundaries; `--check` in CI/PR |
+| `check_htmx_alpine_refinement.py` | Enforces the typed-builder, single-runtime, and correlated request-finalization seams |
 | `generate_sim_demos.py` | After editing `docs/demos/*.py`; regenerates sim HTML and syncs Demo/Code tabs (`--check`) |
+| `generate_edron_sim_showcase.py` | Regenerates the Edron showcase island from `examples/edron-showcase/app.py` via `edron-sim` (`--check`) |
 | `sync_demo_code_tabs.py` | Refresh guide Demo/Code tabs from `docs/demos/runnable/` (also run via `generate_sim_demos.py`) |
 | `sync_status_roadmap.py` | After editing `docs/STATUS.md` (updates root `STATUS.md`; forbids duplicate Hedron roadmap mirrors). CI: `--check` |
-| `check_docs_train_ssot.py` | Fail on stale tip claims vs `docs/release.toml`, unsafe pins, or charts/sample-kit installs missing the published compatibility floors. CI: `docs` / `quality` |
+| `check_docs_train_ssot.py` | Fail on stale tip claims vs `docs/release.toml`, contradictory 1.0 candidate/PyPI status, missing historical-release banners, unsafe pins, or charts/sample-kit installs missing the compatibility floors. CI: `docs` / `quality` |
 | `check_package_docs_inventory.py` | Keep the package catalog, README maturity labels, PyPI classifiers, and package pages aligned with the living fleet inventory. CI: quality job |
 | `check_documentation_ownership.py` | Require an owner and review cadence for every published Markdown page. CI: quality job |
 | `check_api_docs_coverage.py` | Require every `hedron.__all__` and `hedron_charts.__all__` export in public API reference. CI: quality job |
+| `generate_edron_api_index.py` | Generate the complete Edron public-export inventory from `edron.__all__`; commit the result. |
+| `generate_example_catalog.py` | Generate the public current/historical example catalog from `examples/catalog.toml`. |
 | `check_edron_docs.py` | Keep the Edron RFC, contracts, examples, inventories, roadmap, gates, upstream lock, seven machine-readable acceptance drafts, dependency ranges, and native authorities aligned. CI: docs / quality job |
 | `check_package_readme_links.py` | Reject relative links that break when package READMEs render on PyPI. CI: quality job |
 | `check_public_doc_links.py` | Reject missing public links and relative links into files excluded from MkDocs. CI: quality job |
@@ -37,6 +42,7 @@ Documentation source ownership and review rules:
 |---|---|
 | `check_release_gate.py` | Gate TOML vs claimed version (`0.10.1`, `0.11.0`, …) |
 | `check_067.py` | Phase **0.67** contract/BOM/release-packet wiring (`--check-plan`); `--verify --gate …` deliberately refuses each Planned runtime gate until its evidence implementation replaces the guard |
+| `generate_100_inventory.py` | Generate deterministic Phase 1.0 public/stable export and artifact inventories from immutable `v0.67.0` (`--baseline v0.67.0`) without importing project code |
 | `check_human_at_packet.py` | Phase **0.21** human AT protocol/schema/ledger packet (D-052). Without flags: engineering packet OK. Pass `--require-sessions` only when flipping SR/PARTICIPANT/ARTIFACT/REMEDIATE to Verified after real sessions. |
 | `verify_pkg_21.py` | Phase **0.21** historical packet verify (human AT engineering cut) |
 | `verify_pkg_22.py` | Phase **0.22** CSRF packet + focused security tests (`check_release_gate.py 0.22.0`) |

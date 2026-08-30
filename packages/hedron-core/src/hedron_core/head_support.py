@@ -91,7 +91,7 @@ def admit_head_assets(assets: Sequence[AssetRef]) -> tuple[AssetRef, ...]:
                     explanation=f"Attribute {key!r} is not admitted on registered head assets.",
                     remediation="Omit event handlers and do not invent nonces.",
                 )
-            if lowered == "srcdoc" or (isinstance(value, str) and _ON_HANDLER.search(value)):
+            if lowered == "srcdoc" or _ON_HANDLER.search(value):
                 raise error(
                     HED_EXT_0011,
                     title="Head merge rejected inline handler",

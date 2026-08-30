@@ -1,38 +1,37 @@
-"""Hedron page/component/fragment/action registration wrappers."""
+"""Hedron page/view/action registration wrappers."""
 
 from __future__ import annotations
 
 from collections.abc import Callable, Mapping, Sequence
-from typing import Any, ParamSpec, TypeVar, overload
+from contextlib import AbstractContextManager, nullcontext
+from typing import TYPE_CHECKING, Any, ParamSpec, Protocol, TypeVar, cast, overload
 
-from fastapi import params
+from fastapi import FastAPI, params
 from fastapi.routing import APIRouter
 
-from hedron.app.form_commands import (
-    FormEncoding,
-    SafeLocalPath,
-    Update,
-)
-from hedron.app.form_commands import (
-    form_command as _form_command,
-)
-from hedron.app.screens import PageOptions, ScreenHandle, ScreenLayout, ScreenResult
-from hedron.handles import ActionHandle, FragmentHandle, _as_node_like
+from hedron.fastapi_compat import cached_openapi
+from hedron.handles import ActionHandle, FragmentHandle, as_node_like
 from hedron.routing.router import HedronRouter
 from hedron.type_authoring.classes import CommandHandler, RefreshableView
-from hedron.type_authoring.markers import Control
 from hedron.type_authoring.normalize import CompiledTypeHandler
 from hedron_core.addressable import AddressableDescriptor
-from hedron_core.builtins.shell import AppShell
 from hedron_core.bundles import FeatureBundle, FeatureProvider
 from hedron_core.component import NodeLike
 from hedron_core.hosts import FragmentHost
 from hedron_core.htmx.policy import CacheHint
+from hedron_core.identifiers import component_type_id
 from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.updates import Patch, PatchSet, RefreshIntent
 
+if TYPE_CHECKING:
+    from hedron.runtime import HedronRuntimeContext
+
 P = ParamSpec("P")
 R = TypeVar("R")
+
+
+class _HandleState(Protocol):
+    hedron_handles: dict[str, object]
 
 
 def _route_dependencies(
@@ -41,13 +40,25 @@ def _route_dependencies(
     """Router APIs accept Depends only; callers may pass a wider sequence type."""
     if dependencies is None:
         return None
-    return dependencies  # type: ignore[return-value]
+    return cast(Sequence[params.Depends], dependencies)
 
 
 def _stamp(obj: object, **attrs: object) -> None:
     """Attach dynamic handler metadata without Any-casts."""
     for name, value in attrs.items():
         setattr(obj, name, value)
+
+
+def _store_handle(state: object | None, logical_id: str, handle: object) -> None:
+    """Store a generated handle on Starlette's dynamically typed application state."""
+    if state is None:
+        return
+    existing: object = getattr(state, "hedron_handles", None)
+    if existing is None:
+        existing = {}
+        cast(_HandleState, state).hedron_handles = existing
+    if isinstance(existing, dict):
+        cast(dict[str, object], existing)[logical_id] = handle
 
 
 def _apply_mapped_outcome(
@@ -72,7 +83,7 @@ def _apply_mapped_outcome(
         app_id=app_id,
     )
     if isinstance(effect_result, (RefreshIntent, Patch, PatchSet)):
-        compiled = compile_to_interaction(effect_result, expected_app_id=app_id)
+        compiled = compile_to_interaction(cast(object, effect_result), expected_app_id=app_id)
         if isinstance(compiled, InteractionResult):
             content = (
                 mapped
@@ -80,7 +91,7 @@ def _apply_mapped_outcome(
                 else compiled.content
             )
             return InteractionResult(
-                content=_as_node_like(content) if content is not None else None,
+                content=as_node_like(content) if content is not None else None,
                 status_code=status,
                 trigger=compiled.trigger,
                 oob=compiled.oob,
@@ -90,15 +101,20 @@ def _apply_mapped_outcome(
     if status != 200 and not isinstance(
         mapped, (RefreshIntent, Patch, PatchSet, InteractionResult)
     ):
-        return InteractionResult(content=_as_node_like(mapped), status_code=status)
-    return mapped
+        return InteractionResult(content=as_node_like(mapped), status_code=status)
+    return cast(object, mapped)
 
 
 class HedronPagesMixin:
     """Mixin that binds HedronRouter decorators onto the FastAPI application."""
 
     _root_router: HedronRouter
+    _hedron_runtime: HedronRuntimeContext
     router: APIRouter
+
+    def _runtime_scope(self) -> AbstractContextManager[None]:
+        runtime = getattr(self, "_hedron_runtime", None)
+        return runtime.activate() if runtime is not None else nullcontext()
 
     def _sync_root_route(self) -> None:
         if self._root_router.routes:
@@ -127,204 +143,39 @@ class HedronPagesMixin:
 
         def wrap(fn: Callable[P, R]) -> Callable[P, R]:
             decorator(fn)
+            # FeatureBundle materialization needs a stable identity for page
+            # factories, while ordinary page authoring remains function-only.
+            _stamp(
+                fn,
+                logical_id=component_type_id(
+                    "hedron",
+                    getattr(fn, "__module__", "hedron"),
+                    getattr(fn, "__name__", "page"),
+                ),
+                path=path,
+            )
             self._sync_root_route()
             return fn
 
         return wrap
 
-    def screen(
+    @overload
+    def view(
         self,
-        path: str,
-        *,
-        title: str,
-        name: str | None = None,
-        layout: ScreenLayout = "stack",
-        shell: AppShell | None = None,
-        navigation: Sequence[ScreenHandle[Any]] = (),
-        dependencies: Sequence[params.Depends] | Sequence[object] | None = None,
-        page_options: PageOptions | None = None,
-    ) -> Callable[[Callable[P, ScreenResult]], ScreenHandle[P]]:
-        """Register a beginner screen that lowers to ``Page`` + :meth:`page`.
-
-        Args:
-            path: URL path (FastAPI path syntax).
-            title: Required document title (never inferred).
-            name: Optional route/handle name; defaults to the handler name.
-            layout: Closed layout token (``stack`` / ``grid`` / ``plain``).
-            shell: Optional ``AppShell`` chrome without a pre-filled body.
-            navigation: Explicit ``ScreenHandle`` values for shell nav composition.
-            dependencies: FastAPI dependencies for the page route.
-            page_options: Extra ``Page`` constructor kwargs when wrapping nodes.
-
-        Returns:
-            Decorator that registers the page and returns a ``ScreenHandle``.
-        """
-        from hedron_core.migration import warn_legacy_path
-
-        warn_legacy_path("app.screen", stacklevel=2)
-        import functools
-        import inspect
-
-        from hedron.app.screens import normalize_screen_result, validate_screen_registration
-
-        def decorator(fn: Callable[P, ScreenResult]) -> ScreenHandle[P]:
-            resolved_name = name or fn.__name__
-            state = getattr(self, "state", None)
-            paths = getattr(state, "hedron_screen_paths", None)
-            names = getattr(state, "hedron_screen_names", None)
-            if paths is None and state is not None:
-                state.hedron_screen_paths = {}
-                paths = state.hedron_screen_paths
-            if names is None and state is not None:
-                state.hedron_screen_names = {}
-                names = state.hedron_screen_names
-            existing_paths = paths if isinstance(paths, dict) else {}
-            existing_names = names if isinstance(names, dict) else {}
-            resolved_layout = validate_screen_registration(
-                path=path,
-                name=resolved_name,
-                title=title,
-                layout=layout,
-                existing_paths=existing_paths,
-                existing_names=existing_names,
-            )
-            nav_tuple = tuple(navigation)
-
-            if inspect.iscoroutinefunction(fn):
-
-                @functools.wraps(fn)
-                async def async_endpoint(*args: Any, **kwargs: Any) -> Any:
-                    result = await fn(*args, **kwargs)
-                    return normalize_screen_result(
-                        result,
-                        title=title,
-                        layout=resolved_layout,
-                        shell=shell,
-                        navigation=nav_tuple,
-                        page_options=page_options,
-                    )
-
-                endpoint: Callable[..., Any] = async_endpoint
-            else:
-
-                @functools.wraps(fn)
-                def sync_endpoint(*args: Any, **kwargs: Any) -> Any:
-                    result = fn(*args, **kwargs)
-                    if inspect.iscoroutine(result):
-                        result.close()
-                        raise TypeError("Async screen handlers must be declared with async def")
-                    return normalize_screen_result(
-                        result,
-                        title=title,
-                        layout=resolved_layout,
-                        shell=shell,
-                        navigation=nav_tuple,
-                        page_options=page_options,
-                    )
-
-                endpoint = sync_endpoint
-
-            self.page(
-                path,
-                name=resolved_name,
-                dependencies=_route_dependencies(dependencies),
-            )(endpoint)
-            handle: ScreenHandle[P] = ScreenHandle(
-                path=path,
-                name=resolved_name,
-                title=title,
-                layout=resolved_layout,
-                handler=endpoint,
-                shell=shell,
-                navigation=nav_tuple,
-                page_options=dict(page_options or {}),
-                __wrapped__=fn,
-            )
-            if isinstance(paths, dict):
-                paths[path] = resolved_name
-            if isinstance(names, dict):
-                names[resolved_name] = path
-            handles = getattr(state, "hedron_handles", None)
-            if handles is None and state is not None:
-                state.hedron_handles = {}
-                handles = state.hedron_handles
-            if isinstance(handles, dict):
-                handles[f"screen:{resolved_name}"] = handle
-            return handle
-
-        return decorator
-
-    def form_command(
-        self,
-        path: str,
-        *,
-        name: str | None = None,
-        refreshes: Sequence[FragmentHandle[Any, Any]] = (),
-        updates: Sequence[Update] = (),
-        success: NodeLike | str | None = None,
-        outcomes: object | None = None,
-        fallback: SafeLocalPath,
-        encoding: FormEncoding = "urlencoded",
-        controls: Mapping[str, Control | NodeLike] | None = None,
-        dependencies: Sequence[params.Depends] | Sequence[object] | None = None,
-    ) -> Callable[[Callable[P, R]], ActionHandle[Any, Any]]:
-        """Register a typed form command that lowers to ``FormBody`` + :meth:`command`.
-
-        Discovers exactly one Pydantic ``BaseModel`` parameter, injects ``FormBody``,
-        and returns the ordinary ``ActionHandle`` (including ``.form()`` / ``.button()``).
-        """
-        from hedron_core.migration import warn_legacy_path
-
-        warn_legacy_path("app.form_command", stacklevel=2)
-        return _form_command(
-            self,
-            path,
-            name=name,
-            refreshes=refreshes,
-            updates=updates,
-            success=success,
-            outcomes=outcomes,
-            fallback=fallback,
-            encoding=encoding,
-            controls=controls,
-            dependencies=dependencies,
-        )
-
-    def component(
-        self,
-        path: str,
+        path: Callable[..., Any] | type[RefreshableView[Any, Any]],
         *,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         **kwargs: Any,
-    ) -> Callable[[Callable[P, R]], Callable[P, R]]:
-        """Register an addressable component / fragment route.
+    ) -> FragmentHandle[Any, Any]: ...
 
-        Args:
-            path: URL path (FastAPI path syntax).
-            fragment_regions: Declared HTMX fragment regions authorized for this route.
-            **kwargs: Forwarded to ``HedronRouter.component`` / FastAPI route options.
-
-        Returns:
-            Decorator that registers the handler and returns it unchanged.
-        """
-        emit_warning = bool(kwargs.pop("_emit_legacy_warning", True))
-        if emit_warning:
-            from hedron_core.migration import warn_legacy_path
-
-            warn_legacy_path("app.component", stacklevel=2)
-        decorator = self._root_router.component(
-            path,
-            fragment_regions=fragment_regions,
-            _emit_legacy_warning=False,
-            **kwargs,
-        )
-
-        def wrap(fn: Callable[P, R]) -> Callable[P, R]:
-            decorator(fn)
-            self._sync_root_route()
-            return fn
-
-        return wrap
+    @overload
+    def view(
+        self,
+        path: str | None = None,
+        *,
+        fragment_regions: Sequence[FragmentRegion | str] | None = None,
+        **kwargs: Any,
+    ) -> Callable[[Callable[..., Any]], FragmentHandle[Any, Any]]: ...
 
     def view(
         self,
@@ -342,7 +193,16 @@ class HedronPagesMixin:
         """
         if fragment_regions is not None:
             kwargs["fragment_regions"] = fragment_regions
-        return self.refreshable(path, _emit_legacy_warning=False, **kwargs)
+        if callable(path):
+            with self._runtime_scope():
+                return self._view(path, **kwargs)
+        decorator = self._view(path, **kwargs)
+
+        def scoped(fn: Callable[..., Any]) -> FragmentHandle[Any, Any]:
+            with self._runtime_scope():
+                return decorator(fn)
+
+        return scoped
 
     def region(
         self,
@@ -363,62 +223,58 @@ class HedronPagesMixin:
         """
         return FragmentRegion(id=id, selector=selector or f"#{id}", description=description)
 
-    def fragment(
+    def action(
         self,
         path: str,
         *,
-        region: FragmentRegion | str | None = None,
-        regions: Sequence[FragmentRegion | str] | None = None,
-        fragment_regions: Sequence[FragmentRegion | str] | None = None,
+        method: str = "POST",
+        fallback: str | None = None,
+        include_in_schema: bool = True,
         **kwargs: Any,
-    ) -> Callable[[Callable[P, R]], Callable[P, R]]:
-        """Alias of :meth:`component` that merges ``region`` / ``regions`` into the allowlist.
+    ) -> Callable[[Callable[P, object]], ActionHandle[Any, Any]]:
+        """Register the canonical typed mutation and return an ``ActionHandle``.
 
         Args:
             path: URL path (FastAPI path syntax).
-            region: Single authorized region.
-            regions: Additional authorized regions.
-            fragment_regions: Explicit allowlist merged with ``region`` / ``regions``.
-            **kwargs: Forwarded to :meth:`component`.
+            method: Unsafe HTTP verb, ``POST`` by default.
+            fallback: Optional ordinary HTTP fallback path.
+            include_in_schema: Include the action in OpenAPI (``True`` by default).
+            **kwargs: Canonical action options such as ``fragment_regions``,
+                ``authorization``, ``idempotency``, and ``outcomes``.
 
         Returns:
-            Decorator that registers the fragment handler.
+            A decorator that returns an ``ActionHandle`` after registration.
         """
-        merged: list[FragmentRegion | str] = []
-        if region is not None:
-            merged.append(region)
-        if regions is not None:
-            merged.extend(regions)
-        if fragment_regions is not None:
-            merged.extend(fragment_regions)
-        from hedron_core.migration import warn_legacy_path
-
-        warn_legacy_path("app.fragment", stacklevel=2)
-        return self.component(
+        simulator_options = {
+            "accumulate",
+            "empty",
+            "list_remove",
+            "methods",
+            "region",
+            "regions",
+            "sequence",
+            "validate",
+            "variants",
+        }
+        if simulator_options.intersection(kwargs):
+            names = ", ".join(sorted(simulator_options.intersection(kwargs)))
+            raise TypeError(
+                f"Hedron.action does not accept simulator-only options ({names}); "
+                "use hedron_sim.SimApp.action for offline demo routes."
+            )
+        decorator = self._action(
             path,
-            fragment_regions=merged or None,
-            _emit_legacy_warning=False,
+            method=method,
+            fallback=fallback,
+            include_in_schema=include_in_schema,
             **kwargs,
         )
 
-    def action(self, path: str, **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
-        """Register a mutation endpoint (typically POST) with CSRF when profiles require it.
+        def scoped(fn: Callable[P, object]) -> ActionHandle[Any, Any]:
+            with self._runtime_scope():
+                return decorator(fn)
 
-        Args:
-            path: URL path (FastAPI path syntax).
-            **kwargs: Forwarded to ``HedronRouter.action`` (for example ``method=\"POST\"``).
-
-        Returns:
-            Decorator that registers the action handler.
-        """
-        decorator = self._root_router.action(path, **kwargs)
-
-        def wrap(fn: Callable[P, R]) -> Callable[P, R]:
-            decorator(fn)
-            self._sync_root_route()
-            return fn
-
-        return wrap
+        return scoped
 
     def include_component(
         self,
@@ -433,30 +289,13 @@ class HedronPagesMixin:
 
         builder = active_builder()
         fail_closed_late_registration(
-            registry_sealed=builder._sealed,
+            registry_sealed=builder.is_sealed,
             catalog_sealed=get_sealed_catalog() is not None,
-            openapi_cached=getattr(self, "openapi_schema", None) is not None,
+            openapi_cached=cached_openapi(cast(FastAPI, self)) is not None,
         )
-        self._root_router.include_component(descriptor, path=path, **kwargs)
-        self._sync_root_route()
-
-    def include_feature(
-        self,
-        feature: FeatureBundle | FeatureProvider,
-        *,
-        capabilities: Mapping[str, bool] | None = None,
-    ) -> FeatureBundle:
-        """Include one validated FeatureBundle before registry/catalog seal.
-
-        Accepts a ``FeatureBundle`` or a ``FeatureProvider`` such as
-        ``DataWorkspace``. Beginner spelling: ``app.include_feature(orders)``.
-        """
-        from hedron_core.migration import warn_legacy_path
-
-        warn_legacy_path("app.include_feature", stacklevel=2)
-        from hedron.features import include_feature as _include
-
-        return _include(self, feature, capabilities=capabilities)
+        with self._runtime_scope():
+            self._root_router.include_component(descriptor, path=path, **kwargs)
+            self._sync_root_route()
 
     def include(
         self,
@@ -467,10 +306,11 @@ class HedronPagesMixin:
         """Include one feature bundle through the canonical 1.0 spelling."""
         from hedron.features import include_feature as _include
 
-        return _include(self, feature, capabilities=capabilities)
+        with self._hedron_runtime.activate():
+            return _include(self, feature, capabilities=capabilities)
 
     @overload
-    def refreshable(
+    def _view(
         self,
         path: Callable[..., Any] | type[RefreshableView[Any, Any]],
         *,
@@ -488,7 +328,7 @@ class HedronPagesMixin:
     ) -> FragmentHandle[Any, Any]: ...
 
     @overload
-    def refreshable(
+    def _view(
         self,
         path: str | None = None,
         *,
@@ -505,7 +345,7 @@ class HedronPagesMixin:
         **kwargs: Any,
     ) -> Callable[[Callable[..., Any]], FragmentHandle[Any, Any]]: ...
 
-    def refreshable(
+    def _view(
         self,
         path: str | Callable[P, R] | type[RefreshableView[Any, Any]] | None = None,
         *,
@@ -524,12 +364,6 @@ class HedronPagesMixin:
         """Register a GET renderer and return a ``FragmentHandle``."""
         import inspect
 
-        emit_legacy_warning = bool(kwargs.pop("_emit_legacy_warning", True))
-        if emit_legacy_warning:
-            from hedron_core.migration import warn_legacy_path
-
-            warn_legacy_path("app.refreshable", stacklevel=2)
-
         if inspect.isclass(path):
             from hedron.type_authoring import (
                 class_config_conflict,
@@ -544,7 +378,7 @@ class HedronPagesMixin:
                 decorator_path=None,
             )
             compiled = compile_view_class(view_cls)  # type: ignore[arg-type]
-            register = self.refreshable(
+            register = self._view(
                 None,
                 key=key,
                 name=name or getattr(view_cls, "__name__", None),
@@ -556,13 +390,12 @@ class HedronPagesMixin:
                 fallback=fallback or getattr(view_cls, "fallback", None),
                 include_in_schema=include_in_schema,
                 dependencies=dependencies,
-                _emit_legacy_warning=False,
                 **kwargs,
             )
             return register(compiled)
 
         if callable(path):
-            register = self.refreshable(
+            register = self._view(
                 None,
                 key=key,
                 name=name,
@@ -574,7 +407,6 @@ class HedronPagesMixin:
                 fallback=fallback,
                 include_in_schema=include_in_schema,
                 dependencies=dependencies,
-                _emit_legacy_warning=False,
                 **kwargs,
             )
             return register(path)
@@ -606,13 +438,13 @@ class HedronPagesMixin:
             mount = str(getattr(getattr(self, "state", None), "hedron_mount_path", "") or "")
             view_host = resolved_host or FragmentHost()
             if resolved_loading is not None:
-                view_host._loading = resolved_loading
+                view_host.loading = resolved_loading
             if resolved_error is not None:
-                view_host._error = resolved_error
+                view_host.error_content = resolved_error
             if resolved_empty is not None:
-                view_host._empty = resolved_empty
+                view_host.empty_content = resolved_empty
             if resolved_cache is not None:
-                view_host._cache = resolved_cache
+                view_host.cache = resolved_cache
             handle = build_view_handle(
                 handler,
                 app_id=app_id,
@@ -626,32 +458,26 @@ class HedronPagesMixin:
             )
             endpoint = wrap_endpoint_result(handle)
             extra_regions = kwargs.pop("fragment_regions", None)
-            from hedron.routing.router import _normalize_fragment_regions
+            from hedron.routing.router import normalize_fragment_regions
 
-            regions = (handle.region, *_normalize_fragment_regions(extra_regions))
-            self._root_router.component(
+            regions = (handle.region, *normalize_fragment_regions(extra_regions))
+            self._root_router.view(
                 handle.path,
                 fragment_regions=regions,
                 name=handle.name,
                 include_in_schema=include_in_schema,
                 dependencies=_route_dependencies(dependencies),
-                _emit_legacy_warning=False,
                 **kwargs,
             )(endpoint)
             self._sync_root_route()
             state = getattr(self, "state", None)
-            handles = getattr(state, "hedron_handles", None)
-            if handles is None and state is not None:
-                state.hedron_handles = {}
-                handles = state.hedron_handles
-            if isinstance(handles, dict):
-                handles[handle.logical_id] = handle
+            _store_handle(state, handle.logical_id, handle)
             return handle
 
         return decorator
 
     @overload
-    def command(
+    def _action(
         self,
         path: Callable[..., Any] | type[CommandHandler[Any, Any]],
         *,
@@ -665,7 +491,7 @@ class HedronPagesMixin:
     ) -> ActionHandle[Any, Any]: ...
 
     @overload
-    def command(
+    def _action(
         self,
         path: str | None = None,
         *,
@@ -678,7 +504,7 @@ class HedronPagesMixin:
         **kwargs: Any,
     ) -> Callable[[Callable[..., Any]], ActionHandle[Any, Any]]: ...
 
-    def command(
+    def _action(
         self,
         path: str | Callable[P, R] | type[CommandHandler[Any, Any]] | None = None,
         *,
@@ -692,12 +518,6 @@ class HedronPagesMixin:
     ) -> ActionHandle[Any, Any] | Callable[[Callable[..., Any]], ActionHandle[Any, Any]]:
         """Register a mutation and return an ``ActionHandle``."""
         import inspect
-
-        emit_legacy_warning = bool(kwargs.pop("_emit_legacy_warning", True))
-        if emit_legacy_warning:
-            from hedron_core.migration import warn_legacy_path
-
-            warn_legacy_path("app.command", stacklevel=2)
 
         authorization = kwargs.pop("authorization", None)
         if inspect.isclass(path):
@@ -714,7 +534,7 @@ class HedronPagesMixin:
                 __hedron_outcomes__=getattr(command_cls, "outcomes", None) or outcomes,
                 __hedron_effects__=getattr(command_cls, "effects", None),
             )
-            register = self.command(
+            register = self._action(
                 None,
                 method=method,
                 name=name or getattr(command_cls, "__name__", None),
@@ -723,13 +543,12 @@ class HedronPagesMixin:
                 dependencies=dependencies,
                 authorization=authorization,
                 outcomes=outcomes,
-                _emit_legacy_warning=False,
                 **kwargs,
             )
             return register(compiled)
 
         if callable(path):
-            register = self.command(
+            register = self._action(
                 None,
                 method=method,
                 name=name,
@@ -738,7 +557,6 @@ class HedronPagesMixin:
                 dependencies=dependencies,
                 authorization=authorization,
                 outcomes=outcomes,
-                _emit_legacy_warning=False,
                 **kwargs,
             )
             return register(path)
@@ -846,10 +664,10 @@ class HedronPagesMixin:
                         endpoint,
                         __signature__=compile_injected_depends(inspect.signature(handler)),
                     )
-            from hedron.routing.router import _normalize_fragment_regions
+            from hedron.routing.router import normalize_fragment_regions
 
             extra_regions = kwargs.pop("fragment_regions", None)
-            regions = (handle.region, *_normalize_fragment_regions(extra_regions))
+            regions = (handle.region, *normalize_fragment_regions(extra_regions))
             self._root_router.action(
                 handle.path,
                 method=handle.method,
@@ -861,12 +679,7 @@ class HedronPagesMixin:
             )(endpoint)
             self._sync_root_route()
             state = getattr(self, "state", None)
-            handles = getattr(state, "hedron_handles", None)
-            if handles is None and state is not None:
-                state.hedron_handles = {}
-                handles = state.hedron_handles
-            if isinstance(handles, dict):
-                handles[handle.logical_id] = handle
+            _store_handle(state, handle.logical_id, handle)
             return handle
 
         return decorator

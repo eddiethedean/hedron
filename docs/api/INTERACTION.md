@@ -9,7 +9,7 @@ status: shipped
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Shipped (fragment regions + `InteractionResult`; living train **0.66.x**)
+**Status:** Shipped (fragment regions + `InteractionResult`; living train **1.0.x**)
 
 !!! note "Phase 0.61 in-tree preview"
 
@@ -17,7 +17,7 @@ status: shipped
     published 0.60.x Supported surface. Their release status is tracked in
     [RELEASE_0_61](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_61.md).
 
-Day-to-day apps should start with [`@app.refreshable` / `@app.command`](../getting-started/interaction-apis.md).
+Day-to-day apps should start with [`@app.view` / `@app.action`](../getting-started/interaction-apis.md).
 This page documents the explicit region / `InteractionResult` contracts those handles compile to.
 
 FastAPI/HTMX request and result contracts live in `hedron.interaction` and are
@@ -44,7 +44,7 @@ Field-level detail for `InteractionResult` is below. Autodoc signatures: [AUTODO
 
 | Situation | Result | What to do |
 |---|---|---|
-| HTMX request with `HX-Target` but no route `fragment_regions` | HTTP **403** | Declare `FragmentRegion`s on `@app.component` / `@app.page`, or opt out only with `InteractionPolicy(allow_undeclared_targets=True)` |
+| HTMX request with `HX-Target` but no route `fragment_regions` | HTTP **403** | Declare `FragmentRegion`s on `@app.view` / `@app.page`, or opt out only with `InteractionPolicy(allow_undeclared_targets=True)` |
 | HTMX request with declared regions but missing `HX-Target` | HTTP **403** / `FragmentRegionError` | Send a matching `HX-Target` (no implicit first-region authorization). Exception: `HX-History-Restore-Request` may omit `HX-Target` (full-page restore). |
 | `HX-Target` / `region_id` outside the declared allowlist | HTTP **403** / `FragmentRegionError` | Match `region_id` and HTMX target to a declared `FragmentRegion.id` / selector |
 | Unsafe selector or external redirect in declared fields | Rejected before emit | Use local paths and Hedron's safe selector subset |
@@ -138,7 +138,7 @@ from hedron import FragmentRegion, InteractionResult, Text
 MAIN = FragmentRegion(id="main", selector="#main", description="Primary panel")
 
 
-@app.component("/panel", fragment_regions=(MAIN,))
+@app.view("/panel", fragment_regions=(MAIN,))
 def panel() -> InteractionResult:
     return InteractionResult(content=Text("Updated"), region_id=MAIN.id)
 ```
@@ -146,7 +146,7 @@ def panel() -> InteractionResult:
 Route-declared regions are authoritative and are merged into the result policy. HTMX
 requests that send `HX-Target` **require** declared regions by default (fail closed);
 undeclared targets or an empty allowlist receive `403`. Opt out only with
-`InteractionPolicy(allow_undeclared_targets=True)`. `page` and `component` routes accept
+`InteractionPolicy(allow_undeclared_targets=True)`. `page` and `view` routes accept
 `fragment_regions`; values may be `FragmentRegion` instances or IDs, which are normalized
 to `#id` selectors.
 
@@ -177,7 +177,7 @@ Primary fragment body with optional toast / OOB updates. Extra kwargs pass throu
 ```python
 from hedron import swap
 
-@app.fragment("/status", region=status)
+@app.view("/status", fragment_regions=(status,))
 def refresh_status():
     return swap(status_panel())
 ```
@@ -216,7 +216,7 @@ return redirect_htmx("/login")
 ### `RefreshButton.for_region(region, *, href, label=...)`
 
 Component that issues a GET to `href` targeting the declared region (HTMX swap into
-`#region.id`). Pair with `@app.fragment(path, region=...)` returning `swap(...)`.
+`#region.id`). Pair with `@app.view(path, fragment_regions=(region,))` returning `swap(...)`.
 
 ```python
 from hedron import RefreshButton

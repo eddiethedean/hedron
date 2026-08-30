@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, Generic, Literal, Protocol, TypeAlias, TypeVar
+from typing import Any, Generic, Literal, Protocol, TypeAlias, TypeVar, cast
 
 from pydantic import BaseModel
 
@@ -37,7 +37,7 @@ Dependency: TypeAlias = object
 class _TaskFlowApp(Protocol):
     """Minimal Hedron host surface for TaskFlow materialization."""
 
-    def refreshable(
+    def view(
         self,
         path: str,
         *,
@@ -45,7 +45,7 @@ class _TaskFlowApp(Protocol):
         dependencies: Sequence[object] | None = None,
     ) -> Callable[[Callable[..., object]], FragmentHandle[Any, Any]]: ...
 
-    def command(
+    def action(
         self,
         path: str,
         *,
@@ -133,6 +133,7 @@ class TaskFlow(Generic[InputT, ResultT]):
         self.status_view: object | None = None
         self.cancel_command: object | None = None
         self.result_view: object | None = None
+        self.show_cancel = False
 
     def _job_backend(self) -> JobBackend:
         return self.backend if self.backend is not None else get_job_backend()
@@ -218,7 +219,7 @@ class TaskFlow(Generic[InputT, ResultT]):
             class _JobId(BaseModel):
                 job_id: str = Field(min_length=1)
 
-            @app.refreshable(
+            @app.view(
                 f"/{flow.name}/status/{{job_id}}",
                 name=f"{flow.name}-status",
                 dependencies=flow._deps(flow.authorize_submit),
@@ -256,7 +257,19 @@ class TaskFlow(Generic[InputT, ResultT]):
                         except Exception:  # noqa: BLE001
                             return body
                     return body
-                from hedron import ComponentRef
+                from hedron import ComponentRef, Stack
+
+                content = body
+                if flow.show_cancel and flow.cancel_command is not None:
+                    cancel_form = getattr(flow.cancel_command, "form", None)
+                    if callable(cancel_form):
+                        content = Stack(
+                            body,
+                            cast(
+                                NodeLike,
+                                cancel_form(value={"job_id": job_id}, submit_label="Cancel"),
+                            ),
+                        )
 
                 ref = ComponentRef(
                     logical_id=f"{flow.name}-status",
@@ -266,7 +279,7 @@ class TaskFlow(Generic[InputT, ResultT]):
                 return Poll(
                     ref=ref,
                     interval_ms=flow.poll.interval_ms,
-                    content=body,
+                    content=content,
                 )
 
             flow.status_view = status_view
@@ -285,7 +298,7 @@ class TaskFlow(Generic[InputT, ResultT]):
             class _CancelBody(BaseModel):
                 job_id: str = Field(min_length=1)
 
-            @app.command(
+            @app.action(
                 f"/{flow.name}/cancel",
                 name=f"{flow.name}-cancel",
                 fallback=f"/{flow.name}/status",
@@ -336,7 +349,7 @@ class TaskFlow(Generic[InputT, ResultT]):
             class _JobId(BaseModel):
                 job_id: str = Field(min_length=1)
 
-            @app.refreshable(
+            @app.view(
                 f"/{flow.name}/result/{{job_id}}",
                 name=f"{flow.name}-result",
                 dependencies=flow._deps(flow.authorize_submit),

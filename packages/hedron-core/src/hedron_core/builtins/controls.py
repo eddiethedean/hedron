@@ -92,8 +92,6 @@ def _validated_control_attrs(
     out: dict[str, HtmlAttrValue] = {}
     structural = {"type", "disabled", "href", "class", "id"}
     for raw_name, value in attrs.items():
-        if not isinstance(raw_name, str):
-            raise ValueError("typed control attribute names must be strings")
         name = raw_name.lower()
         if name in structural:
             raise ValueError(f"typed control attribute {raw_name!r} is owned by the component")

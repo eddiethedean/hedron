@@ -6,7 +6,7 @@ search:
 
 # Build your first app
 
-About 10 minutes after Python **3.11–3.14** and either
+About 10 minutes after Python **3.10–3.14** and either
 [`uv`](https://docs.astral.sh/uv/getting-started/installation/) or an activated virtual
 environment. Node.js is not required.
 
@@ -14,14 +14,15 @@ If terms such as project folder, terminal, virtual environment, or development s
 use [Your first application with VS Code](first-app-vscode.md). In Posit Workbench, use the
 [`hedron-posit` beginner walkthrough](first-app-posit-workbench.md).
 
-Install from PyPI: `hedron>=0.66.2,<0.67`. Other pins and extras:
+Install from PyPI: `hedron>=0.67.0,<0.68` until the 1.0 candidate is tagged and uploaded. For a higher-level application API, start with
+[Edron](edron-quickstart.md). Other pins and extras:
 [Installation](installation.md).
 
 ## You will learn
 
 - how `hedron new` creates an ordinary Python application;
-- how a component screen becomes a complete HTML page;
-- how `@app.refreshable` returns a targeted HTML fragment;
+- how a returned component tree becomes a complete HTML page;
+- how `@app.view` returns a targeted HTML fragment handle;
 - how to make one edit, run a diagnostic check, and choose the next tutorial step.
 
 You do not need prior HTMX or JavaScript knowledge. The [core concepts](core-concepts.md)
@@ -32,7 +33,7 @@ page explains the model after you have seen it work.
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.66.2,<0.67" hedron new my-hedron-app
+    uvx --from "hedron>=0.67.0,<0.68" hedron new my-hedron-app
     cd my-hedron-app
     uv sync
     uv run uvicorn app:app --reload
@@ -46,7 +47,7 @@ page explains the model after you have seen it work.
     `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once, or `activate.bat`.
 
     ```bash
-    python -m pip install "hedron>=0.66.2,<0.67" "uvicorn[standard]"
+    python -m pip install "hedron>=0.67.0,<0.68" "uvicorn[standard]"
     python -m hedron new my-hedron-app
     cd my-hedron-app
     python -m pip install -e .
@@ -81,7 +82,7 @@ The generated `app.py` looks like this (you can paste it if scaffold is unavaila
 
 ```python
 import os
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from hedron import Hedron, Stack, Text, html
 
@@ -95,7 +96,7 @@ app = Hedron(
 
 @app.view("/status")
 def status():
-    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
     return html.div(
         Text(f"All systems operational · refreshed {stamp}"),
         role="status",
@@ -137,19 +138,21 @@ Text("Hello from Ada")
 
 Save the file. Uvicorn reloads and the browser shows the new text.
 
-## Optional: form command with validation
+## Optional: typed action form with validation
 
-For forms, keep validation in the typed action boundary with `FormBody` and explicit controls. The
-0.67 `@app.form_command` helper is warning-backed migration syntax for the same action task:
+For forms, keep validation in the typed action boundary with `FormBody` and explicit controls.
 
 ```python
+from typing import Annotated
+
 from pydantic import BaseModel, Field
+from hedron import FormBody
 
 class QuickNote(BaseModel):
     message: str = Field(min_length=1, max_length=200)
 
-@app.form_command("/notes", fallback="/", success="Saved note")
-def add_note(data: QuickNote):
+@app.action("/notes", fallback="/")
+def add_note(data: Annotated[QuickNote, FormBody()]):
     return Text(data.message)
 
 # Inside home(): add_note.form()
@@ -185,12 +188,12 @@ For Python installation, Windows commands, optional extras, proxies, and adapter
 `hedron new` writes an ordinary `app.py` and a `pyproject.toml` with a bounded Hedron pin.
 The project configuration reserves `components/` as the component root; create that
 directory when you add your first project-owned component. The generated page declares a
-refreshable view and returns a small fragment for that view.
+canonical view and returns a small fragment for that view.
 
 ```text
 my-hedron-app/
-├── app.py           # application, screen, command, and refreshable view
-└── pyproject.toml   # dependencies and bounded Hedron pin
+app.py           # application, page, action, and view handlers
+pyproject.toml   # dependencies and bounded Hedron pin
 
 # Created later when you add project-owned components:
 components/

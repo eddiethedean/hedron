@@ -1,4 +1,4 @@
-# Simulator semantics (0.54)
+# Simulator semantics
 
 `hedron-sim` is a **tooling-grade** offline HTMX docs/demo simulator. It is not a
 browser automation engine and does not silently approximate unsupported features.

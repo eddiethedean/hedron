@@ -421,6 +421,9 @@ def _exec_supervised(
             )
         )
     export_workbench_state(resolved)
+    # A Workbench runtime may provide a full public URL here. The resolved
+    # public base is handed off separately; Uvicorn expects only a path.
+    os.environ.pop("UVICORN_ROOT_PATH", None)
     os.environ[_SUPERVISED_TARGET_ENV] = target
     os.environ[_SUPERVISED_FACTORY_ENV] = "1" if factory else "0"
     sock.set_inheritable(True)

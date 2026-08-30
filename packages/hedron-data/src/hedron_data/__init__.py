@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from hedron_data._version import DATA_VERSION
 from hedron_data.a11y_spatial import SpatialAlternative, spatial_alternatives_for
 from hedron_data.advanced import (
     CellFormat,
@@ -95,7 +96,7 @@ from hedron_data.table import DataTable
 from hedron_data.views import SavedView
 from hedron_data.workspace import DataWorkspace, DataWorkspacePolicy, FeatureOverrides
 
-__version__ = "0.67.0"
+__version__ = DATA_VERSION
 
 __all__ = [
     "ABI_VERSION",

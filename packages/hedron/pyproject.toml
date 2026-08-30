@@ -1,9 +1,9 @@
 [project]
 name = "hedron"
-version = "0.67.0"
+version = "1.0.0"
 description = "FastAPI-native component framework for HTML and HTMX"
 readme = "README.md"
-requires-python = ">=3.11,<3.15"
+requires-python = ">=3.10,<3.15"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [
@@ -20,13 +20,14 @@ keywords = [
     "server-rendered",
 ]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Framework :: FastAPI",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -36,29 +37,30 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron-core>=0.67.0,<0.68",
-    "pydantic>=2.13.4,<2.15",
-    "fastapi>=0.141.1,<0.150",
-    "itsdangerous>=2.2",
-    "packaging>=24.0",
+    "hedron-core>=1.0.0,<2.0",
+    "pydantic>=2.12.0,<2.15",
+    "fastapi>=0.121.0,<0.150",
+    "starlette>=0.40.0,<2.0",
+    "itsdangerous>=2.1.2",
+    "packaging>=22.0",
     "python-multipart>=0.0.9",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "hedron-explorer>=0.67.0,<0.68",
+    "hedron-explorer>=1.0.0,<2.0",
 ]
 data = [
-    "hedron-data>=0.67.0,<0.68",
+    "hedron-data>=1.0.0,<2.0",
 ]
 charts = [
-    "hedron-charts>=0.2.2,<0.3",
+    "hedron-charts>=1.0.0,<2.0",
 ]
 maps = [
-    "hedron-maps>=0.1.2,<0.2",
+    "hedron-maps>=1.0.0,<2.0",
 ]
 markdown = [
-    "markdown>=3.5",
+    "markdown>=3.4.1",
     "nh3>=0.2",
 ]
 code = [
@@ -75,42 +77,39 @@ sanitize = [
 ]
 auth = [
     "authlib>=1.3",
-    "httpx>=0.28",
+    "httpx>=0.27",
 ]
 browser = [
     "playwright>=1.40",
     "axe-playwright-python>=0.1.4",
 ]
 jinja = [
-    "hedron-jinja>=0.67.0,<0.68",
+    "hedron-jinja>=1.0.0,<2.0",
 ]
 native = [
-    "hedron-native>=0.1.2,<0.2",
+    "hedron-native>=0.1.3,<0.2",
 ]
 conformance = [
-    "hedron-conformance>=0.67.0,<0.68",
+    "hedron-conformance>=1.0.0,<2.0",
 ]
 extras = [
-    "hedron-extras>=0.67.0,<0.68",
+    "hedron-extras>=1.0.0,<2.0",
 ]
 experimental-ui = [
-    "hedron-extras[experimental-ui]>=0.67.0,<0.68",
+    "hedron-extras[experimental-ui]>=1.0.0,<2.0",
 ]
 notebook = [
-    "hedron-notebook>=0.2.1,<0.3",
+    "hedron-notebook>=0.2.3,<0.3",
 ]
 mcp = [
-    "hedron-mcp>=0.2.2,<0.3",
+    "hedron-mcp>=0.2.4,<0.3",
 ]
-elements = ["hedron-elements>=0.67.0,<0.68"]
+elements = ["hedron-elements>=1.0.0,<2.0"]
 gradio = [
-    "hedron-gradio>=0.2.1,<0.3",
-]
-workbench = [
-    "hedron-workbench>=0.67.0,<0.68",
+    "hedron-gradio>=0.2.3,<0.3",
 ]
 posit = [
-    "hedron-posit>=0.67.0,<0.68",
+    "hedron-posit>=1.0.0,<2.0",
 ]
 otel = [
     "opentelemetry-api>=1.27,<2",

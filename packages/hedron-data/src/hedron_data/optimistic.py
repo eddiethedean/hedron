@@ -7,10 +7,10 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from enum import StrEnum
 from typing import Literal
 from uuid import uuid4
 
+from hedron_core.compat import StrEnum
 from hedron_core.security import contains_dangerous_scheme
 from hedron_core.typing_aliases import JsonValue
 

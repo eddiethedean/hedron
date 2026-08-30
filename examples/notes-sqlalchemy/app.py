@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from typing import Annotated
 
-from fastapi import HTTPException, status
+from fastapi import HTTPException
 from pydantic import BaseModel, Field
 from sqlalchemy import Column, Integer, String, create_engine, select
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
@@ -58,7 +58,7 @@ app = Hedron(
 )
 
 
-@app.refreshable("/notes")
+@app.view("/notes")
 def notes():
     with Session(engine) as db:
         rows = list(db.scalars(select(Note).order_by(Note.id.desc())).all())
@@ -80,12 +80,12 @@ def notes():
     return html.ul(*items)
 
 
-@app.command("/save", fallback="/")
+@app.action("/save", fallback="/")
 def save(data: Annotated[NoteIn, FormBody()]):
     normalized = data.body.strip()
     if not normalized:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            status_code=422,
             detail="Note body must not be blank",
         )
     with SessionLocal() as db:
@@ -94,7 +94,7 @@ def save(data: Annotated[NoteIn, FormBody()]):
     return refresh(notes)
 
 
-@app.command("/delete", fallback="/")
+@app.action("/delete", fallback="/")
 def delete(data: Annotated[DeleteNote, FormBody()]):
     with SessionLocal() as db:
         note = db.get(Note, data.note_id)

@@ -11,9 +11,10 @@ from __future__ import annotations
 
 import hashlib
 import re
-import tomllib
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
+
+from hedron_core.compat import tomllib
 
 HED_PACKAGE_DOCTOR = "HED-PACKAGE-DOCTOR"
 BOUNDARY = "package_doctor"
@@ -42,6 +43,18 @@ __all__ = [
     "authoring_loop_fingerprint",
     "diagnose_package",
 ]
+
+
+def _mapping(value: object) -> dict[str, Any]:
+    """Normalize a validated TOML table to a string-keyed mapping."""
+    if not isinstance(value, dict):
+        return {}
+    return cast(dict[str, Any], value)
+
+
+def _sequence(value: object) -> list[Any]:
+    """Normalize a validated TOML array without leaking unknown element types."""
+    return cast(list[Any], value) if isinstance(value, list) else []
 
 
 def _diagnostic(
@@ -90,15 +103,15 @@ def _relative(path: Path, root: Path) -> str:
 
 
 def _hatch_targets(config: dict[str, Any]) -> dict[str, Any]:
-    tool = dict(config.get("tool") or {})
-    hatch = dict(tool.get("hatch") or {})
-    build = dict(hatch.get("build") or {})
-    return dict(build.get("targets") or {})
+    tool = _mapping(config.get("tool"))
+    hatch = _mapping(tool.get("hatch"))
+    build = _mapping(hatch.get("build"))
+    return _mapping(build.get("targets"))
 
 
 def _package_dirs(root: Path, project: dict[str, Any], config: dict[str, Any]) -> tuple[Path, ...]:
     """Locate importable package directories without importing anything."""
-    wheel = (_hatch_targets(config).get("wheel") or {}).get("packages") or []
+    wheel = _sequence(_mapping(_hatch_targets(config).get("wheel")).get("packages"))
     found: list[Path] = []
     for entry in wheel:
         candidate = root / str(entry)
@@ -304,8 +317,8 @@ def _check_assets(
                     asset=_relative(path, root),
                 )
             )
-    sdist = _hatch_targets(config).get("sdist") or {}
-    only_include = [str(item) for item in sdist.get("only-include") or []]
+    sdist = _mapping(_hatch_targets(config).get("sdist"))
+    only_include = [str(item) for item in _sequence(sdist.get("only-include"))]
     if only_include:
         for path in assets:
             relative = _relative(path, root)
@@ -410,10 +423,10 @@ def _check_version_ranges(project: dict[str, Any]) -> tuple[dict[str, Any], list
     found: list[dict[str, Any]] = []
     rows: list[dict[str, Any]] = []
     grouped: list[tuple[str, str]] = [
-        ("dependencies", str(dep)) for dep in project.get("dependencies") or []
+        ("dependencies", str(dep)) for dep in _sequence(project.get("dependencies"))
     ]
-    for extra, deps in (project.get("optional-dependencies") or {}).items():
-        grouped.extend((f"optional-dependencies.{extra}", str(dep)) for dep in deps)
+    for extra, deps in _mapping(project.get("optional-dependencies")).items():
+        grouped.extend((f"optional-dependencies.{extra}", str(dep)) for dep in _sequence(deps))
     for group, raw in grouped:
         try:
             requirement = Requirement(str(raw))

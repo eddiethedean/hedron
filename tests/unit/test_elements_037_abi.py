@@ -6,13 +6,14 @@ import pytest
 
 from hedron_core.diagnostics import HedronError
 from hedron_core.element_form import form_contract_dict, validate_form_contract
+from hedron_core.plugins import PluginContext
 from hedron_core.registry import get_registry, reset_registry_for_tests
 from hedron_elements.form_contracts import (
     FIELD_CHOICE_CONTRACT,
     FIELD_FILE_CONTRACT,
     FIELD_TEXT_CONTRACT,
 )
-from hedron_elements.plugin import register
+from hedron_elements.plugin import PLUGIN_META, register
 
 
 @pytest.fixture(autouse=True)
@@ -58,7 +59,10 @@ def test_form_contract_none_mode_rejected() -> None:
 
 
 def test_plugin_registers_037_elements() -> None:
-    class _Ctx:
+    class _Ctx(PluginContext):
+        def __init__(self) -> None:
+            super().__init__(PLUGIN_META)
+
         def register_diagnostic_owner(self, prefix: str) -> None:
             self.prefix = prefix
 
@@ -72,7 +76,7 @@ def test_plugin_registers_037_elements() -> None:
             return None
 
     ctx = _Ctx()
-    register(ctx)  # type: ignore[arg-type]
+    register(ctx)
     reg = get_registry()
     tags = {m.tag_name for m in reg.browser_modules()}
     expected = {

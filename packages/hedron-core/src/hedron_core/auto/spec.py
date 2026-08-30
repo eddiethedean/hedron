@@ -30,7 +30,7 @@ class AutoDecision:
     selected: str
     candidates: tuple[str, ...]
     rejected: tuple[tuple[str, str], ...]
-    inspection: Mapping[str, object] = field(default_factory=dict)
+    inspection: Mapping[str, object] = field(default_factory=dict[str, object])
 
 
 @dataclass(frozen=True, slots=True)

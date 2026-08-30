@@ -5,11 +5,11 @@ Scaffold with the `hedron` CLI (`hedron new --django`); runtime is
 `hedron-django` + `hedron-core` (no FastAPI in the app process). The adapter
 mounts `/hedron-static` so PAGE responses can inject bundled HTMX.
 
-**Install:** `pip install "hedron-django>=0.66.2,<0.67"` (or `uv add "hedron-django>=0.66.2,<0.67"`).
-Requires Python 3.11–3.14. See [Installation](installation.md).
+**Install:** `pip install "hedron-django>=0.67.0,<0.68"` (or `uv add "hedron-django>=0.67.0,<0.68"`).
+Requires Python 3.10–3.14. See [Installation](installation.md).
 
 Django supports AppConfig, forms, and QuerySet DataSource. Progressive FastAPI
-facades (`@app.screen`, `form_command`, and related symbols) are FastAPI-only —
+facades (`@app.view`, `@app.action`, and related symbols) are FastAPI-only —
 see the host matrix on [What’s ready](../guides/whats-ready.md).
 
 ## Golden path (scaffold + Refresh)
@@ -20,7 +20,7 @@ and raw `hx-*` attributes, not FastAPI `status.refresh_button(...)`.
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/getting-started/installation/
-uvx --from "hedron>=0.66.2,<0.67" hedron new my-django-app --django
+uvx --from "hedron>=0.67.0,<0.68" hedron new my-django-app --django
 cd my-django-app && uv sync
 uv run waitress-serve --listen=127.0.0.1:8000 wsgi:application
 ```
@@ -59,7 +59,7 @@ ASGI: `uv run uvicorn asgi:application --host 127.0.0.1 --port 8000`.
 ## Existing Django project (add a Refresh page)
 
 ```bash
-pip install "hedron-django>=0.66.2,<0.67" "django>=5.2,<6"
+  pip install "hedron-django>=0.67.0,<0.68" "django>=5.2,<6"
 ```
 
 Add `hedron_django` to `INSTALLED_APPS` when you need forms/QuerySet helpers.
@@ -69,7 +69,7 @@ Minimal Refresh-capable view:
 
 ```python
 # demo/views.py
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from django.http import HttpRequest
 from django.urls import path
@@ -82,7 +82,7 @@ PANEL = FragmentRegion(id="panel", selector="#panel")
 
 
 def panel_body() -> object:
-    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
     return html.div(Text(f"Django status · {stamp}"), id="panel")
 
 

@@ -10,7 +10,7 @@ import hashlib
 import json
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, Final, Literal
+from typing import Final, Literal, cast
 
 from hedron_core.bundles import (
     FeatureBundle,
@@ -64,6 +64,36 @@ def _digest(payload: object) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
+def _json_plan_value(value: object, *, field_name: str) -> JsonValue:
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return value
+    if isinstance(value, list):
+        return [_json_plan_value(item, field_name=field_name) for item in cast(list[object], value)]
+    if isinstance(value, Mapping):
+        mapping = cast(Mapping[object, object], value)
+        if any(not isinstance(key, str) for key in mapping):
+            raise ValueError(f"feature explanation field {field_name!r} has non-string keys")
+        return {
+            cast(str, key): _json_plan_value(item, field_name=field_name)
+            for key, item in mapping.items()
+        }
+    raise ValueError(f"feature explanation field {field_name!r} is not JSON-compatible")
+
+
+def _json_plan_list(plan: Mapping[str, object], field_name: str) -> list[JsonValue]:
+    value = _json_plan_value(plan[field_name], field_name=field_name)
+    if not isinstance(value, list):
+        raise ValueError(f"feature explanation field {field_name!r} must be an array")
+    return value
+
+
+def _json_plan_object(plan: Mapping[str, object], field_name: str) -> dict[str, JsonValue]:
+    value = _json_plan_value(plan[field_name], field_name=field_name)
+    if not isinstance(value, dict):
+        raise ValueError(f"feature explanation field {field_name!r} must be an object")
+    return value
+
+
 def _surface_entry(
     name: str,
     *,
@@ -82,13 +112,13 @@ def _surface_entry(
 def _surfaces_from_bundle(bundle: FeatureBundle) -> list[dict[str, JsonValue]]:
     declared: list[dict[str, JsonValue]] = []
     for projection in bundle.projections:
-        data = projection.data if isinstance(projection.data, Mapping) else {}
+        data = projection.data
         raw = data.get("surfaces")
-        if isinstance(raw, Sequence) and not isinstance(raw, (str, bytes)):
+        if isinstance(raw, list):
             for item in raw:
                 if isinstance(item, str) and item:
                     declared.append(_surface_entry(item, kind="declared"))
-                elif isinstance(item, Mapping):
+                elif isinstance(item, dict):
                     name = item.get("name")
                     if isinstance(name, str) and name:
                         kind = item.get("kind")
@@ -191,9 +221,9 @@ class FeatureExplanation:
     surfaces: tuple[Mapping[str, JsonValue], ...] = ()
     routes: tuple[Mapping[str, JsonValue], ...] = ()
     effects: tuple[Mapping[str, JsonValue], ...] = ()
-    security: Mapping[str, JsonValue] = field(default_factory=dict)
+    security: Mapping[str, JsonValue] = field(default_factory=dict[str, JsonValue])
     limitations: tuple[str, ...] = ()
-    source: Mapping[str, JsonValue] = field(default_factory=dict)
+    source: Mapping[str, JsonValue] = field(default_factory=dict[str, JsonValue])
     schema: Literal["hedron.feature-explanation/1"] = EXPLANATION_SCHEMA
 
     def to_mapping(self) -> dict[str, JsonValue]:
@@ -235,7 +265,7 @@ class FeatureSourceMap:
 
 
 def explain_feature(
-    bundle_or_plan: FeatureBundle | FeatureProvider | Mapping[str, Any],
+    bundle_or_plan: FeatureBundle | FeatureProvider | Mapping[str, object],
 ) -> Mapping[str, JsonValue]:
     """Build a frozen explanation mapping without invoking application callbacks.
 
@@ -279,12 +309,12 @@ def explain_feature(
             "schema": EXPLANATION_SCHEMA,
             "logical_id": str(plan["logical_id"]),
             "kind": str(plan["kind"]),
-            "surfaces": list(plan["surfaces"]),  # type: ignore[arg-type]
-            "routes": list(plan["routes"]),  # type: ignore[arg-type]
-            "effects": list(plan["effects"]),  # type: ignore[arg-type]
-            "security": dict(plan["security"]),  # type: ignore[arg-type]
-            "limitations": list(plan["limitations"]),  # type: ignore[arg-type]
-            "source": dict(plan["source"]),  # type: ignore[arg-type]
+            "surfaces": _json_plan_list(plan, "surfaces"),
+            "routes": _json_plan_list(plan, "routes"),
+            "effects": _json_plan_list(plan, "effects"),
+            "security": _json_plan_object(plan, "security"),
+            "limitations": _json_plan_list(plan, "limitations"),
+            "source": _json_plan_object(plan, "source"),
         }
 
     bundle = resolve_feature(bundle_or_plan)

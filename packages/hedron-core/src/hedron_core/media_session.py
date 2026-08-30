@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass, field
-from enum import StrEnum
 from typing import Literal
+
+from hedron_core.compat import StrEnum
 
 __all__ = [
     "MediaChunk",

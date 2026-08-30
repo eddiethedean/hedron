@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+from hedron_core.plugins import PluginContext
 from hedron_core.registry import get_registry, reset_registry_for_tests
 from hedron_core.rendering import render
 from hedron_elements.example import Example
-from hedron_elements.plugin import register
+from hedron_elements.plugin import PLUGIN_META, register
 
 
 def setup_function() -> None:
@@ -17,7 +18,10 @@ def teardown_function() -> None:
 
 
 def test_plugin_registers_element_and_component() -> None:
-    class _Ctx:
+    class _Ctx(PluginContext):
+        def __init__(self) -> None:
+            super().__init__(PLUGIN_META)
+
         def register_diagnostic_owner(self, prefix: str) -> None:
             self.prefix = prefix
 
@@ -31,7 +35,7 @@ def test_plugin_registers_element_and_component() -> None:
             return None
 
     ctx = _Ctx()
-    register(ctx)  # type: ignore[arg-type]
+    register(ctx)
     reg = get_registry()
     assert any(m.tag_name == "hedron-example" for m in reg.browser_modules())
     assert reg.get_element_definition("hedron-example") is not None

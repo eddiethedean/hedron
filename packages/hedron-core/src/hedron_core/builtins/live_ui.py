@@ -6,6 +6,7 @@ import itertools
 import re
 from typing import ClassVar, Literal
 
+from hedron_core.alpine import AlpineAttrs, AlpineDirective, AlpineExpression
 from hedron_core.builtins._base import collect_children
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
@@ -90,7 +91,34 @@ class Dialog(Component[DialogProps]):
         ]
         if actions:
             parts.append(html.footer(*actions, class_="hedron-dialog-actions"))
-        return html.dialog(*parts, **attrs)
+        return html.dialog(
+            *parts,
+            alpine=AlpineAttrs(
+                state={"open": self.props.open},
+                directives=(
+                    AlpineDirective("x-bind:open", AlpineExpression.name("open")),
+                    AlpineDirective(
+                        "x-on:close",
+                        AlpineExpression.assign("open", AlpineExpression.literal(False)),
+                    ),
+                    AlpineDirective(
+                        "x-on:cancel",
+                        AlpineExpression.assign("open", AlpineExpression.literal(False)),
+                    ),
+                    AlpineDirective(
+                        "x-on:hedron-dialog-open",
+                        AlpineExpression.assign("open", AlpineExpression.literal(True)),
+                    ),
+                    AlpineDirective(
+                        "x-on:hedron-dialog-close",
+                        AlpineExpression.assign("open", AlpineExpression.literal(False)),
+                    ),
+                ),
+                features=("focus",),
+                source=f"component:Dialog:{dialog_id}",
+            ),
+            **attrs,
+        )
 
 
 class ChatMessageProps(Props):

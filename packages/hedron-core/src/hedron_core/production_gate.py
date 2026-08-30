@@ -94,6 +94,7 @@ def assert_durable_backends(
     *,
     production: bool | None = None,
     strict_profile: bool = False,
+    warning_stacklevel: int = 3,
 ) -> None:
     """Enforce durable backends in production; warn under strict-only profiles."""
     if is_production_env(production=production):
@@ -106,7 +107,7 @@ def assert_durable_backends(
             "security='strict' with in-memory job/cache backends is not multi-worker safe; "
             "configure set_job_backend / set_cache_backend before production.",
             UserWarning,
-            stacklevel=3,
+            stacklevel=warning_stacklevel,
         )
 
 

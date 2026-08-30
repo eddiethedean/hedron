@@ -8,6 +8,7 @@
 | First contribution | [Contributor day-one](docs/guides/contributor-day-one.md) |
 | Setup, CI path filters, PRs | [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) |
 | Docs voice / Diátaxis | [Documentation standards](docs/guides/documentation-standards.md) |
+| Release facts, generated indexes, and archives | [Documentation contribution guide](docs/guides/documentation-contributing.md) |
 | Code of Conduct | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) |
 | Readiness (adopters) | [What’s ready](docs/guides/whats-ready.md) · [What’s next](docs/guides/whats-next.md) |
 | Status / freeze (maintainers) | [docs/STATUS.md](docs/STATUS.md) — gate ledger, not getting-started |
@@ -46,6 +47,7 @@ git clone https://github.com/eddiethedean/hedron.git
 cd hedron
 uv sync
 bash scripts/ci_checks.sh test --python 3.12
+bash scripts/ci_checks.sh typing --python 3.12
 bash scripts/ci_checks.sh quality --python 3.12
 # Full CI parity (long; skip browser locally if Playwright is not installed):
 # bash scripts/ci_checks.sh all --python 3.12 --skip-browser

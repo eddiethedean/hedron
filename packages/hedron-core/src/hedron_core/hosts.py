@@ -9,6 +9,7 @@ from hedron_core.codes import HED_HOST_0001, HED_VIEW_0002
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error as raise_error
 from hedron_core.html import html
+from hedron_core.htmx.attrs import HtmxAttrs
 from hedron_core.htmx.policy import CacheHint
 from hedron_core.models import Props
 from hedron_core.typing_aliases import HtmlAttrMap, HtmlAttrValue
@@ -149,6 +150,42 @@ class FragmentHost(Component[FragmentHostProps]):
         self._fallback = fallback
         self._load_on_mount = load_on_mount
 
+    @property
+    def loading(self) -> NodeLike:
+        """Return the placeholder rendered while a fragment is loading."""
+        return self._loading
+
+    @loading.setter
+    def loading(self, value: NodeLike) -> None:
+        self._loading = value
+
+    @property
+    def cache(self) -> CacheHint | None:
+        """Return the cache hint applied to materialized fragment responses."""
+        return self._cache
+
+    @cache.setter
+    def cache(self, value: CacheHint | None) -> None:
+        self._cache = value
+
+    @property
+    def error_content(self) -> NodeLike | str | None:
+        """Return the content rendered into the fragment error template."""
+        return self._error
+
+    @error_content.setter
+    def error_content(self, value: NodeLike | str | None) -> None:
+        self._error = value
+
+    @property
+    def empty_content(self) -> NodeLike:
+        """Return the placeholder configured for an empty fragment."""
+        return self._empty
+
+    @empty_content.setter
+    def empty_content(self, value: NodeLike) -> None:
+        self._empty = value
+
     def materialize(
         self,
         content: NodeLike,
@@ -196,16 +233,20 @@ class FragmentHost(Component[FragmentHostProps]):
         if self._logical_id:
             attrs["data-hedron-handle"] = self._logical_id
         if self._get_url:
-            attrs["hx-get"] = self._get_url
-            attrs["hx-target"] = "this"
-            attrs["hx-swap"] = "outerHTML"
-            attrs["hx-sync"] = "this:drop"
-            attrs["hx-indicator"] = "this"
             trigger = f"{self._event_name} from:body" if self._event_name else None
             if self._load_on_mount:
                 trigger = f"load, {trigger}" if trigger else "load"
-            if trigger:
-                attrs["hx-trigger"] = trigger
+            attrs.update(
+                HtmxAttrs(
+                    method="get",
+                    url=self._get_url,
+                    target="this",
+                    swap="outerHTML",
+                    sync="this:drop",
+                    indicator="this",
+                    trigger=trigger,
+                ).as_html_attrs()
+            )
         if self._fallback:
             attrs["data-hedron-fallback"] = self._fallback
         if self._error is not None:

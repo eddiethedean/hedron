@@ -7,7 +7,7 @@
 **Planning baseline:** Published in-tree `v0.48.0` (D-084; original Stage 0 baseline was Published in-tree `v0.46.0`)<br>
 **Required predecessor/cut baseline:** Verified in-tree `v0.48.0`<br>
 **Tracking:** [#380](https://github.com/eddiethedean/hedron/issues/380)<br>
-**Upstream baseline:** FastAPI `>=0.141.1,<0.150`; Pydantic `>=2.13.4,<2.15`<br>
+**Upstream baseline:** FastAPI `>=0.121.0,<0.150`; Pydantic `>=2.12.0,<2.15` (D-118)<br>
 **Extends:** RFC-0001, RFC-0002, RFC-0004, RFC-0008, RFC-0009, RFC-0012,
 RFC-0013, RFC-0015, RFC-0016, RFC-0019, RFC-0020, RFC-0021, RFC-0024,
 RFC-0026, RFC-0028, RFC-0040, RFC-0043, RFC-0049, RFC-0053, RFC-0064,
@@ -240,9 +240,9 @@ bounded; no alpha API becomes foundational.
    TypeSchema `bounded_exception` stacked on
    [adapter-disposition-044.toml](../acceptance/adapter-disposition-044.toml) and
    [host-portable-facts-045.toml](../acceptance/host-portable-facts-045.toml).
-   Pins: FastAPI `>=0.141.1,<0.150` (Supported CI still `<0.142`), Pydantic
-   `>=2.13.4,<2.15`, Python 3.11–3.14. `Depends(scope=...)` exists since FastAPI
-   0.121; do not widen the Supported FastAPI matrix in Stage 0.
+   Pins: FastAPI `>=0.121.0,<0.150` (Supported CI still `<0.142`), Pydantic
+   `>=2.12.0,<2.15`, Python 3.10–3.14 (broadened for 1.0 by D-118).
+   `Depends(scope=...)` exists since FastAPI 0.121.
 4. **How do Hedron lifetime names map to FastAPI scopes?** Public Hedron values stay
    `handler` / `response`. FastAPI values are `function` / `request`, not `response`.
    `DependencyLifetime.HANDLER` → `Depends(scope="function")`.
@@ -325,4 +325,3 @@ bounded; no alpha API becomes foundational.
 Settings and research gates may conclude with explicit retain/defer/exclude dispositions; no
 unadmitted experimental feature may appear in the Supported inventory.
 The `v0.49.0` cut contains no Deferred row hidden inside a Supported claim.
-

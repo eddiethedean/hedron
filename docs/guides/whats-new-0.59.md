@@ -6,6 +6,12 @@ search:
 
 # What's new in 0.59
 
+!!! note "Historical release note"
+
+    This page records the 0.x release named in its title. For current installation,
+    support, and published 1.0 status, use [Current release and support](current-release.md).
+    Keep the historical pins below only when maintaining that release line.
+
 Hedron 0.59 is the modern CSS platform release. It keeps the 0.58 public markers and responsive
 defaults while adding explicit, opt-in capabilities for component-width layouts, theme variants,
 control attributes, logical overlay placement, print, and preference-aware presentation.
@@ -38,7 +44,7 @@ control attributes, logical overlay placement, print, and preference-aware prese
 Existing 0.58 classes, `data-hedron-*` markers, default theme behavior, viewport-responsive maps,
 and `default_styles=False` remain valid. New container behavior and theme variants are opt-in.
 Applications should review the [upgrade guide](upgrade.md) and pin the published train with
-`hedron>=0.66.2,<0.67`.
+`hedron>=1.0.0,<1.1`.
 
 The release packet remains truthful about evidence status in
 [release-gate-0.59.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.59.toml).

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import pytest
 
@@ -17,7 +17,7 @@ from hedron_core.diagnostics import HedronError
 
 
 def test_waiver_requires_fields_and_blocks_expired() -> None:
-    today = datetime.now(UTC).date()
+    today = datetime.now(timezone.utc).date()
     w = Waiver(
         id="W1",
         owner="a11y-owners",

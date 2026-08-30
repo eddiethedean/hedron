@@ -40,7 +40,7 @@ class ScriptedDependency:
     outcome: str = "success"  # success | fail | hang_until_cancel
     value: Any = None
     error: Exception | None = None
-    events: list[str] = field(default_factory=list)
+    events: list[str] = field(default_factory=list[str])
 
     async def run(self, *, cancel_event: asyncio.Event | None = None) -> Any:
         self.events.append(f"{self.name}:start")
@@ -72,7 +72,7 @@ class AsyncScenario:
     """Ordered event recorder for prepare/cancel/disconnect scenarios."""
 
     clock: ControllableClock = field(default_factory=ControllableClock)
-    events: list[str] = field(default_factory=list)
+    events: list[str] = field(default_factory=list[str])
     cancel_event: asyncio.Event = field(default_factory=asyncio.Event)
 
     def record(self, event: str) -> None:

@@ -322,6 +322,7 @@ from hedron_core.feature_explanation import (
 from hedron_core.field import Field
 from hedron_core.hosts import FRAGMENT_HOST_TAGS, FragmentHost
 from hedron_core.html import html
+from hedron_core.htmx.attrs import HtmxAttrs
 from hedron_core.htmx_064 import (
     HEDRON_LIFECYCLE_SCHEMA,
     HedronLifecycleEvent,
@@ -340,7 +341,14 @@ from hedron_core.htmx_extensions import (
     catalog_facts,
     known_extensions,
 )
-from hedron_core.icons import IconEntry, get_icon, list_icons, register_icon, trusted_svg
+from hedron_core.icons import (
+    IconEntry,
+    get_icon,
+    list_icons,
+    register_first_party_icons,
+    register_icon,
+    trusted_svg,
+)
 from hedron_core.identity import (
     IdentityRegistry,
     IdentityTarget,
@@ -388,6 +396,7 @@ from hedron_core.interaction import (
 from hedron_core.interaction_067 import (
     Interaction,
     InteractionKind,
+    InteractionLowering,
     LocalEffect,
     Outcome,
     OutcomeKind,
@@ -495,6 +504,7 @@ from hedron_core.registry import (
     ElementDefinitionMeta,
     ElementFieldOwnership,
     RouteMeta,
+    fork_registry_builder,
     get_registry,
     register_addressable,
     register_application_style,
@@ -506,6 +516,7 @@ from hedron_core.registry import (
     register_theme,
     reset_registry_for_tests,
     seal_registry,
+    use_registry_builder,
 )
 from hedron_core.rendering import (
     AssetRef,
@@ -547,6 +558,7 @@ from hedron_core.theme import (
     PRINT_SAFE_TOKENS,
     PRIVATE_SELECTORS_SUPPORTED,
     REQUIRED_A11Y_TOKENS,
+    THEME_CONTENT_WIDTHS,
     THEME_DENSITIES,
     Theme,
     aurora_theme,
@@ -608,6 +620,7 @@ from hedron_core.trace_contract import (
     encode_interaction_trace,
     profile_interaction_trace,
 )
+from hedron_core.type_markers import FormBody, ViewParams
 from hedron_core.type_schema import (
     TYPE_SCHEMA_NAMESPACE,
     TYPE_SCHEMA_VERSION,
@@ -662,7 +675,7 @@ from hedron_core.visualization_theme import (
     resolve_visualization_theme,
 )
 
-__version__ = "0.67.0"
+__version__ = "1.0.0"
 
 __all__ = [
     "__version__",
@@ -910,6 +923,7 @@ __all__ = [
     "FormField",
     "FormGrid",
     "FormModel",
+    "FormBody",
     "Fragment",
     "FRAGMENT_HOST_TAGS",
     "FragmentHost",
@@ -925,6 +939,7 @@ __all__ = [
     "get_cache_traces",
     "get_icon",
     "get_registry",
+    "fork_registry_builder",
     "get_security_audit_sink",
     "GraphRecording",
     "GraphReplayEvent",
@@ -941,6 +956,7 @@ __all__ = [
     "HtmlAttrValue",
     "htmx_eval_allowed",
     "HtmxContext",
+    "HtmxAttrs",
     "HtmxExtension",
     "HtmxLink",
     "Hx",
@@ -1084,6 +1100,7 @@ __all__ = [
     "register_component",
     "register_element_definition",
     "register_icon",
+    "register_first_party_icons",
     "register_projection_provider",
     "register_renderer",
     "register_route",
@@ -1118,6 +1135,7 @@ __all__ = [
     "scoped_identifier",
     "seal_interaction_catalog",
     "seal_registry",
+    "use_registry_builder",
     "Secret",
     "Section",
     "SecurityAuditEvent",
@@ -1195,6 +1213,7 @@ __all__ = [
     "TextInput",
     "Theme",
     "THEME_DENSITIES",
+    "THEME_CONTENT_WIDTHS",
     "theme_element_compatibility",
     "TimeInput",
     "Timeline",
@@ -1222,6 +1241,7 @@ __all__ = [
     "emit_visualization_theme_css",
     "resolve_visualization_theme",
     "Video",
+    "ViewParams",
     "is_safe_navigation_url",
     "ViewportHint",
     "VISUALIZATION_ROLES",
@@ -1256,6 +1276,7 @@ __all__ = [
     "HedronLifecycleEvent",
     "Interaction",
     "InteractionKind",
+    "InteractionLowering",
     "LifecycleFact",
     "LifecyclePolicy",
     "LifecycleState",

@@ -71,7 +71,7 @@ Browse GitHub issues labeled
 when the queue has open items. **If the label is empty**, prefer:
 
 - Typos, dead links, and Install/FAQ/Troubleshooting clarity
-- Example README fixes that match the living `0.66.x` train pins
+- Example README fixes that match the current `1.0.x` train pins
 - Small test coverage for an existing bug you hit
 
 Avoid starting with release-gate TOMLs, STATUS ledgers, or phase packets unless a
@@ -86,7 +86,7 @@ required for native wheel smoke).
 ## Plugins and RFCs (second contribution)
 
 - Plugin sample / authoring: [Plugin authoring](plugin-authoring.md) ·
-  [Using plugins](plugin-consumer.md) (`hedron-sample-kit>=0.2.1,<0.3` on the current
+  [Using plugins](plugin-consumer.md) (`hedron-sample-kit>=0.2.3,<0.3` on the current
   repository train; use the public compatibility pin documented on the package page).
 - Public contract changes: [Changing public contracts](../CONTRIBUTING.md#changing-public-contracts)
   (RFC intake steps).

@@ -82,14 +82,15 @@ class FutureWarningRegistry:
         for record in records:
             self.register(record)
 
-    def register(self, record: FutureWarningRecord) -> FutureWarningRecord:
-        if not isinstance(record, FutureWarningRecord):
+    def register(self, record: object) -> FutureWarningRecord:
+        candidate = record
+        if not isinstance(candidate, FutureWarningRecord):
             raise TypeError("warning registry accepts FutureWarningRecord values")
-        prior = self._records.get(record.code)
-        if prior is not None and prior != record:
-            raise ValueError(f"warning code {record.code!r} is already registered")
-        self._records[record.code] = record
-        return record
+        prior = self._records.get(candidate.code)
+        if prior is not None and prior != candidate:
+            raise ValueError(f"warning code {candidate.code!r} is already registered")
+        self._records[candidate.code] = candidate
+        return candidate
 
     def get(self, code: str) -> FutureWarningRecord | None:
         return self._records.get(code)
@@ -222,6 +223,39 @@ PUBLIC_FUTURE_WARNINGS = FutureWarningRegistry(
             fixture="tests/upgrade/shared.py",
             confidence="partial",
             automation_status="manual-review",
+        ),
+        FutureWarningRecord(
+            code="HED-MIGRATE-0679",
+            old_path="flask.component",
+            replacement="flask.view",
+            owner="hedron-flask",
+            source="contract-freeze-067.toml",
+            documentation="docs/rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md",
+            fixture="tests/upgrade/phase_1_0/transitional/flask_component.py",
+            confidence="complete",
+            automation_status="automatic",
+        ),
+        FutureWarningRecord(
+            code="HED-MIGRATE-0680",
+            old_path="blueprint.component",
+            replacement="blueprint.view",
+            owner="hedron-flask",
+            source="contract-freeze-067.toml",
+            documentation="docs/rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md",
+            fixture="tests/upgrade/phase_1_0/transitional/blueprint_component.py",
+            confidence="complete",
+            automation_status="automatic",
+        ),
+        FutureWarningRecord(
+            code="HED-MIGRATE-0681",
+            old_path="blueprint.include_feature",
+            replacement="blueprint.include",
+            owner="hedron-flask",
+            source="contract-freeze-067.toml",
+            documentation="docs/rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md",
+            fixture="tests/upgrade/phase_1_0/transitional/blueprint_include_feature.py",
+            confidence="complete",
+            automation_status="automatic",
         ),
     )
 )

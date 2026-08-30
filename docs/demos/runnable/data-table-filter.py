@@ -57,16 +57,16 @@ def home() -> Page:
     )
 
 
-@app.fragment("/rows", region=table)
+@app.view("/rows", fragment_regions=(table,))
 def all_rows():
     return swap(table_panel())
 
 
-@app.fragment("/rows/admin", region=table)
+@app.view("/rows/admin", fragment_regions=(table,))
 def admin_rows():
     return swap(table_panel("admin"))
 
 
-@app.fragment("/rows/member", region=table)
+@app.view("/rows/member", fragment_regions=(table,))
 def member_rows():
     return swap(table_panel("member"))

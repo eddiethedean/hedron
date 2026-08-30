@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Hedron">
+  <defs>
+    <linearGradient id="hedron-gradient" x1="10" y1="8" x2="54" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#67e8f9"/>
+      <stop offset="1" stop-color="#2dd4bf"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#hedron-gradient)" d="M32 3 56.8 17.3v29.4L32 61 7.2 46.7V17.3L32 3Z"/>
+  <path fill="#0f172a" d="m16 19 9-5v38l-9-5V19Zm23-5 9 5v28l-9 5V14Z"/>
+  <path fill="#f8fafc" d="m25 30 14-8v12l-14 8V30Z"/>
+</svg>

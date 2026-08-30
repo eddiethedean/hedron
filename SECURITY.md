@@ -2,37 +2,19 @@
 
 ## Supported versions
 
-Security fixes land on the **current published train** (`0.66.x`), which is the stable
-release channel.
-Older `0.x` lines should
-upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately previous
-minor (`0.65.x`) continues through approximately **2027-08-20** — after that, upgrade
+Security fixes land on the **current repository train** (`1.0.x`). Until the candidate is tagged
+and uploaded, public installs use the `0.67.x` fallback. Older lines should upgrade;
+there is **no multi-year LTS**. Best-effort triage for the immediately
+previous minor (`0.67.x`) continues through approximately **2027-02-27** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
-The current published train is **`0.66.x`**; pin `>=0.66.2,<0.67` from PyPI.
-The `0.67.0` Beta preview is not the production security-support channel.
+The current repository train is **`1.0.x`**, pinned in-tree as `>=1.0.0,<1.1`; the public PyPI
+fallback is `>=0.67.0,<0.68` until upload.
 
 | Version | Supported |
 |---|---|
-| `0.66.x` | Yes (current published train — pin `>=0.66.2,<0.67`; published `v0.66.2`) |
-| `0.65.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.66.x` |
-| `0.56.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.60.x` |
-| `0.55.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.56.x` / `0.57.x` |
-| `0.53.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.56.x` / `0.57.x` |
-| `0.52.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.53.x` / `0.56.x` |
-| `0.51.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.52.x` / `0.53.x` |
-| `0.50.x` | Best-effort security triage through approximately 2027-08-19; upgrade to `0.51.x` / `0.52.x` |
-| `0.49.x` | Best-effort security triage through approximately 2027-08-17; upgrade to `0.50.x` |
-| `0.48.x` | Best-effort security triage through approximately 2027-08-17; upgrade to `0.49.x` |
-| `0.47.x` | Best-effort security triage through approximately 2027-08-17; upgrade to `0.48.x` |
-| `0.46.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.47.x` |
-| `0.45.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.46.x` |
-| `0.44.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.45.x` |
-| `0.43.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.44.x` |
-| `0.42.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.43.x` |
-| `0.41.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.42.x` |
-| `0.40.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.41.x` |
-| `0.39.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.40.x` |
+| `1.0.x` | Yes (current repository train — public PyPI pin remains `>=0.67.0,<0.68`; upload deferred) |
+| `0.67.x` | Best-effort security triage through approximately 2027-02-27; upgrade to `1.0.x` |
 
 ## Reporting a vulnerability
 
@@ -51,7 +33,7 @@ publication.
 1. File the private advisory with the details below.
 2. Expect acknowledgment within a few business days (**no contractual security SLA**).
 3. Coordinated disclosure is preferred; allow reasonable time before public discussion.
-4. Fixes target the current stable repository train (`0.66.x`); see Supported versions above.
+4. Fixes target the current repository train (`1.0.x`); see Supported versions above.
 
 ### Alternate contact
 

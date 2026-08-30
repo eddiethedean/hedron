@@ -6,6 +6,10 @@ import argparse
 import json
 import sys
 from pathlib import Path
+from typing import TYPE_CHECKING, Protocol
+
+if TYPE_CHECKING:
+    from hedron.migrate.api import ApiMigrationReport
 
 from hedron.migrate.analyze import analyze_source
 from hedron.migrate.findings import finding_for_code, plan_to_diagnostics
@@ -14,8 +18,16 @@ from hedron.migrate.report import format_report
 from hedron_core.diagnostics import DiagnosticSeverity, meets_severity_threshold
 
 
+class Subparsers(Protocol):
+    """Minimal parser-factory contract required by migration subcommands."""
+
+    def add_parser(self, name: str, *, help: str | None = None) -> argparse.ArgumentParser:
+        """Create and return a named argument parser."""
+        ...
+
+
 def build_streamlit_parser(
-    subparsers: argparse._SubParsersAction[argparse.ArgumentParser],
+    subparsers: Subparsers,
 ) -> argparse.ArgumentParser:
     parser = subparsers.add_parser(
         "streamlit",
@@ -45,7 +57,7 @@ def build_streamlit_parser(
     )
     parser.add_argument(
         "--python-version",
-        choices=("3.11", "3.12", "3.13", "3.14"),
+        choices=("3.10", "3.11", "3.12", "3.13", "3.14"),
         default="3.12",
         help="Parser grammar for the input source",
     )
@@ -60,7 +72,7 @@ def build_streamlit_parser(
 
 
 def build_react_parser(
-    subparsers: argparse._SubParsersAction[argparse.ArgumentParser],
+    subparsers: Subparsers,
 ) -> argparse.ArgumentParser:
     """Register the non-executing React disposition analyzer."""
     parser = subparsers.add_parser(
@@ -74,7 +86,7 @@ def build_react_parser(
 
 
 def build_api_parser(
-    subparsers: argparse._SubParsersAction[argparse.ArgumentParser],
+    subparsers: Subparsers,
 ) -> argparse.ArgumentParser:
     """Register the 0.67-to-1.0 API migration scanner/transform."""
     parser = subparsers.add_parser(
@@ -130,7 +142,7 @@ def run_migrate_api(
     apply: bool = False,
     fmt: str = "text",
     show_diff: bool = False,
-):
+) -> ApiMigrationReport:
     """Scan and optionally transform API paths without importing target code."""
     from hedron.migrate.api import transform_api, unified_diff
     from hedron_core.diagnostics import diagnostics_to_sarif

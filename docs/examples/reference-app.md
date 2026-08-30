@@ -3,7 +3,7 @@
 Annotated tour of
 [`examples/reference-app`](https://github.com/eddiethedean/hedron/tree/main/examples/reference-app)—
 the FastAPI flagship CRUD sample and multi-worker production kitchen sink on the stable
-**0.66.x** train. Prefer [session auth](session-auth.md) and
+**1.0.x** train in this repository. Prefer [session auth](session-auth.md) and
 [notes + SQLAlchemy](notes-sqlalchemy.md) for a shorter second-hour path; use this app
 when you want the full archetype in one tree.
 
@@ -12,8 +12,7 @@ Contract: [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md). Example README
 
 Click through the pattern demos below (docs simulations for CSRF, fragments, and chart
 **panel** refresh — not a live login), then run the full app locally or via production
-compose. Outside the workspace, install `hedron[charts]>=0.66.2,<0.67` from PyPI
-(the stable repository and PyPI release are `v0.66.2`; see
+compose. Outside the workspace, install `hedron[charts]>=1.0.0,<1.1` from PyPI (see
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)).
 
 !!! warning "Credentials for this app"
@@ -196,7 +195,7 @@ user table on the dashboard:
         )
 
 
-    @app.component("/notes", methods=["POST"], fragment_regions=(listing,))
+    @app.action("/notes", method="POST", fragment_regions=(listing,))
     def add_note(request: Request, note: Annotated[str, Form()] = "") -> object:
         text = note.strip()
         if text:
@@ -204,7 +203,7 @@ user table on the dashboard:
         return render_list(request)
 
 
-    @app.component("/notes/delete", methods=["POST"], fragment_regions=(listing,))
+    @app.action("/notes/delete", method="POST", fragment_regions=(listing,))
     def delete_note(request: Request, note_id: Annotated[str, Form()] = "") -> object:
         NOTES.pop(note_id, None)
         return render_list(request)
@@ -288,7 +287,7 @@ Dashboard chart routes return `InteractionResult` fragments:
         )
 
 
-    @app.component("/charts/refresh", fragment_regions=(panel,))
+    @app.view("/charts/refresh", fragment_regions=(panel,))
     def refresh() -> InteractionResult:
         return InteractionResult(
             content=chart_panel(
@@ -339,8 +338,8 @@ Prefer this path when validating production posture —
 | Session/user gate | `require_user` + router `dependencies=[Depends(require_user)]` | Auth gate |
 | CSRF on forms | `csrf_token_for_request` + hidden field / `hx-headers` in `_create_form` | CSRF on forms |
 | Create user POST | `@users.action("", method="POST")` | Fragment list refresh |
-| Fragment table refresh | `@users.component("/table")`, addressable `user_table` | Fragment list refresh |
-| DataEditor / Auto / charts | dashboard + `/charts/*` (`hedron[charts]>=0.66.2,<0.67` or the monorepo source) | Chart panel refresh (sim) |
+| Fragment table refresh | `@users.view("/table")`, addressable `user_table` | Fragment list refresh |
+| DataEditor / Auto / charts | dashboard + `/charts/*` (`hedron[charts]>=1.0.0,<1.1` or the monorepo source) | Chart panel refresh (sim) |
 | Color mode | `ColorModeToggle` + preference cookie helpers | — |
 | Production archetype | compose + `requirements-prod.txt` + README ingredient table | — |
 

@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, v1.0]
   pull_request:
   workflow_dispatch:
 
@@ -17,7 +17,7 @@ env:
   UV_NO_PROGRESS: "1"
   UV_VERSION: "0.12.1"
   # Shared check suites live in scripts/ci_checks.sh (also used by release.yml).
-  HEDRON_GATE_VERSION: "0.67.0"
+  HEDRON_GATE_VERSION: "1.0.0"
 
 jobs:
   changes:
@@ -55,6 +55,7 @@ jobs:
               docs/*|README.md|CONTRIBUTING.md|SECURITY.md|CODE_OF_CONDUCT.md|mkdocs.yml|\
               scripts/sync_demo_code_tabs.py|scripts/generate_component_docs.py|\
               scripts/generate_sim_demos.py|scripts/check_docs_train_ssot.py|\
+              scripts/generate_edron_api_index.py|scripts/generate_example_catalog.py|examples/catalog.toml|\
               scripts/check_package_docs_inventory.py|\
               scripts/check_documentation_ownership.py|scripts/check_api_docs_coverage.py|\
               scripts/check_package_readme_links.py|scripts/check_public_doc_links.py|\
@@ -79,12 +80,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.11", "3.12", "3.13", "3.14"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
 
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - name: Install uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
@@ -103,8 +105,8 @@ jobs:
       - name: Run test suite
         run: bash scripts/ci_checks.sh test --python ${{ matrix.python-version }}
 
-  workbench-dependencies:
-    name: Workbench dependencies (${{ matrix.bounds }})
+  dependency-bounds:
+    name: Stable dependency bounds (${{ matrix.bounds }})
     needs: changes
     if: needs.changes.outputs.docs_only != 'true'
     runs-on: ubuntu-latest
@@ -131,27 +133,46 @@ jobs:
       - name: Install minimum supported dependencies
         if: matrix.bounds == 'minimum'
         run: >-
-          uv pip install --python .bounds-venv/bin/python
-          -e packages/hedron-core -e packages/hedron -e packages/hedron-workbench
-          -e packages/hedron-django
-          pytest pytest-xdist httpx "django>=5.2,<6" "starlette==1.3.1" "uvicorn==0.32.0"
+          uv pip install --python .bounds-venv/bin/python --resolution lowest-direct
+          -e packages/hedron-core -e packages/hedron -e packages/hedron-explorer
+          -e packages/hedron-data -e packages/hedron-flask -e packages/hedron-django
+          -e packages/hedron-jinja -e packages/hedron-conformance -e packages/hedron-extras
+          -e packages/hedron-elements -e packages/hedron-posit -e packages/fastapi-workbench
+          -e packages/hedron-charts -e packages/hedron-maps -e packages/edron
+          -r release/stable-dependencies.txt
+          "pytest>=8.3" "pytest-xdist>=3.6" "httpx>=0.28"
+          "django>=5.2,<6" "matplotlib>=3.8,<4"
       - name: Install latest supported dependencies
         if: matrix.bounds == 'latest'
         run: >-
-          uv pip install --python .bounds-venv/bin/python
-          -e packages/hedron-core -e packages/hedron -e packages/hedron-workbench
-          -e packages/hedron-django
-          pytest pytest-xdist httpx "django>=5.2,<6" "starlette>=1.3.1" "uvicorn>=0.32"
-      - name: Run Workbench contract suite
+          uv pip install --python .bounds-venv/bin/python --resolution highest
+          -e packages/hedron-core -e packages/hedron -e packages/hedron-explorer
+          -e packages/hedron-data -e packages/hedron-flask -e packages/hedron-django
+          -e packages/hedron-jinja -e packages/hedron-conformance -e packages/hedron-extras
+          -e packages/hedron-elements -e packages/hedron-posit -e packages/fastapi-workbench
+          -e packages/hedron-charts -e packages/hedron-maps -e packages/edron
+          -r release/stable-dependencies.txt
+          "pytest>=8.3" "pytest-xdist>=3.6" "httpx>=0.28"
+          "django>=5.2,<6" "matplotlib>=3.8,<4"
+      - name: Verify resolved direct dependency versions
+        run: >-
+          .bounds-venv/bin/python scripts/check_stable_dependency_bounds.py
+          --verify-installed ${{ matrix.bounds }}
+      - name: Run stable adapter contract suite
         run: >-
           .bounds-venv/bin/pytest -q
           tests/adapters/workbench
+          tests/adapters/flask
+          tests/adapters/django
           tests/integration/test_workbench_urls.py
           tests/integration/test_workbench_runner.py
           tests/security/test_workbench_adversarial.py
+          tests/unit/test_maps_047_pkg.py
+          tests/unit/test_charts_028_static_matrix.py
+          tests/unit/test_edron_100_packet.py
 
   quality:
-    name: Quality, docs, and packages
+    name: Quality, strict core typing, docs, and packages
     needs: changes
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -160,6 +181,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - name: Install uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
@@ -180,7 +202,7 @@ jobs:
       - name: Install docs-check dependencies
         if: needs.changes.outputs.docs_only == 'true'
         run: uv sync --locked --all-groups --python 3.12 --no-install-package hedron-native
-      - name: Run quality suite
+      - name: Run quality suite with strict package typing gate
         if: needs.changes.outputs.docs_only != 'true'
         run: bash scripts/ci_checks.sh quality --python 3.12
       - name: Run docs suite
@@ -328,6 +350,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - name: Install uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
@@ -372,6 +395,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - name: Install uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
@@ -398,3 +422,52 @@ jobs:
           node-version: "20"
       - name: Run packaging suite
         run: bash scripts/ci_checks.sh packaging --python 3.12
+
+  required:
+    name: CI required
+    if: always()
+    needs:
+      [changes, test, dependency-bounds, quality, browser, realwb, realconnect, evidence, release]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      DOCS_ONLY: ${{ needs.changes.outputs.docs_only }}
+      CHANGES_RESULT: ${{ needs.changes.result }}
+      TEST_RESULT: ${{ needs.test.result }}
+      BOUNDS_RESULT: ${{ needs.dependency-bounds.result }}
+      QUALITY_RESULT: ${{ needs.quality.result }}
+      BROWSER_RESULT: ${{ needs.browser.result }}
+      REALWB_RESULT: ${{ needs.realwb.result }}
+      REALCONNECT_RESULT: ${{ needs.realconnect.result }}
+      EVIDENCE_RESULT: ${{ needs.evidence.result }}
+      RELEASE_RESULT: ${{ needs.release.result }}
+      ALLOW_LIVE_SKIPS: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+    steps:
+      - name: Enforce required CI outcomes
+        run: |
+          set -euo pipefail
+          require_success() {
+            local name="$1"
+            local result="$2"
+            if [ "$result" != "success" ]; then
+              echo "${name} result was ${result}, expected success" >&2
+              exit 1
+            fi
+          }
+          require_success changes "$CHANGES_RESULT"
+          require_success quality "$QUALITY_RESULT"
+          if [ "$DOCS_ONLY" = "true" ]; then
+            exit 0
+          fi
+          require_success tests "$TEST_RESULT"
+          require_success dependency-bounds "$BOUNDS_RESULT"
+          require_success browser "$BROWSER_RESULT"
+          require_success evidence "$EVIDENCE_RESULT"
+          require_success packaging "$RELEASE_RESULT"
+          if [ "$ALLOW_LIVE_SKIPS" = "true" ]; then
+            [ "$REALWB_RESULT" = "success" ] || [ "$REALWB_RESULT" = "skipped" ]
+            [ "$REALCONNECT_RESULT" = "success" ] || [ "$REALCONNECT_RESULT" = "skipped" ]
+          else
+            require_success realwb "$REALWB_RESULT"
+            require_success realconnect "$REALCONNECT_RESULT"
+          fi

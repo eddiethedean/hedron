@@ -54,16 +54,19 @@ def _is_json_value(value: object) -> TypeIs[JsonValue]:
     if value is None or isinstance(value, (str, int, float, bool)):
         return True
     if isinstance(value, list):
-        return all(_is_json_value(item) for item in value)
+        return all(_is_json_value(item) for item in cast(list[object], value))
     if isinstance(value, dict):
-        return all(isinstance(key, str) and _is_json_value(item) for key, item in value.items())
+        mapping = cast(dict[object, object], value)
+        return all(isinstance(key, str) and _is_json_value(item) for key, item in mapping.items())
     return False
 
 
 def _row_mapping(row: object) -> Mapping[str, JsonValue]:
     if isinstance(row, Mapping):
+        mapping = cast(Mapping[object, object], row)
         return {
-            str(key): (value if _is_json_value(value) else str(value)) for key, value in row.items()
+            str(key): (value if _is_json_value(value) else str(value))
+            for key, value in mapping.items()
         }
     return {}
 
@@ -94,15 +97,15 @@ class DaskDataSource(Generic[T]):
         self._to_row = to_row or _default_row
         self._max_compute_rows = max_compute_rows
         # Deny-by-default: omitted allowlists become empty frozensets.
-        self._sort_allow = (
+        self._sort_allow: frozenset[str] = (
             frozenset() if allowlisted_sort_fields is None else frozenset(allowlisted_sort_fields)
         )
-        self._filter_allow = (
+        self._filter_allow: frozenset[str] = (
             frozenset()
             if allowlisted_filter_fields is None
             else frozenset(allowlisted_filter_fields)
         )
-        self._projection_allow = (
+        self._projection_allow: frozenset[str] = (
             frozenset()
             if allowlisted_projection_fields is None
             else frozenset(allowlisted_projection_fields)
@@ -181,7 +184,10 @@ class DaskDataSource(Generic[T]):
             head: Any = frame.head(window, npartitions=-1)
             if hasattr(head, "compute"):
                 head = head.compute()
-            records = head.iloc[q.offset : q.offset + q.limit].to_dict(orient="records")
+            raw_records = head.iloc[q.offset : q.offset + q.limit].to_dict(orient="records")
+            records = [
+                cast(dict[str, object], record) for record in cast(Sequence[object], raw_records)
+            ]
         if len(records) > self._max_compute_rows:
             raise error(
                 "HED-DATA-0051",

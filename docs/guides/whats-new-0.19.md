@@ -1,14 +1,15 @@
 # What’s new in 0.19
 
+!!! note "Historical release note"
 
-!!! note "Current repository train is 0.66.x"
+    This page records the 0.x release named in its title. For current installation,
+    support, and published 1.0 status, use [Current release and support](current-release.md).
+    Keep the historical pins below only when maintaining that release line.
 
-    Pin `hedron>=0.53.0,<0.54` for new apps (checkout tip; current PyPI pin `>=0.66.2,<0.67`). The pin below is historical for this train only.
-    See [What’s new in 0.51](whats-new-0.51.md).
 
-**Published as `v0.19.0`** (2026-08-07). Current published train is **0.66.x** (`v0.66.2`).
+**Published as `v0.19.0`** (2026-08-07). Current published train is **1.0.x** (`v1.0.0`).
 Historical installs for this phase used a 0.19 upper-bound pin; the current pin is
-`hedron>=0.66.2,<0.67`.
+`hedron>=1.0.0,<1.1`.
 
 Phase 0.19 delivers accessibility engineering and inclusive authoring without automatic
 WCAG / legal / VPAT claims (D-050).

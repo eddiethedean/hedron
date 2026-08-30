@@ -54,7 +54,9 @@ def prune_explorer_rate(now: float) -> None:
 async def explorer_guards(request: Request) -> None:
     """Rate-limit and audit Explorer requests."""
     client = request.client.host if request.client else "unknown"
-    now = time.time()
+    # Rate windows measure elapsed time, so wall-clock adjustments must not
+    # accidentally reset or extend a client's allowance.
+    now = time.monotonic()
     prune_explorer_rate(now)
     bucket = list(RATE.get(client, []))
     if len(bucket) >= RATE_LIMIT:

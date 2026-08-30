@@ -3,28 +3,34 @@
 [![PyPI](https://img.shields.io/pypi/v/hedron-core.svg)](https://pypi.org/project/hedron-core/)
 [![Python](https://img.shields.io/pypi/pyversions/hedron-core.svg)](https://pypi.org/project/hedron-core/)
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
+[![Pyright: strict](https://img.shields.io/badge/Pyright-strict-3178c6.svg)](https://microsoft.github.io/pyright/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 
 `hedron-core` is the framework-neutral HTML renderer. It has no FastAPI, Flask, or Django
 dependency.
 
+The stable boundary is deliberately limited to the public API documented for the 1.x line;
+undocumented internals and Beta package surfaces are not covered by that compatibility promise.
+
 Building an app? Install [`hedron`](https://pypi.org/project/hedron/) instead. Use this
 package if you are writing a host adapter or rendering components outside a web
 framework.
 
-**Package maturity:** Beta · stable published train `v0.66.2` · beta repository train `v0.67.0` · pin `>=0.66.2,<0.67` from PyPI.
+**Package maturity:** Stable · **Package line:** `1.0.x` · **Application pin:**
+`hedron-core>=1.0.0,<2.0`
+
+**Typing:** Pyright strict. Commit and release CI fail on type errors or warnings over the
+complete `hedron_core` source tree.
 
 ## Install
 
 ```bash
-pip install "hedron-core>=0.66.2,<0.67"
+pip install "hedron-core>=1.0.0,<2.0"
 # or
-uv add "hedron-core>=0.66.2,<0.67"
-# In-tree / source checkout tip:
-# pip install "hedron-core>=0.66.2,<0.67"
+uv add "hedron-core>=1.0.0,<2.0"
 ```
 
-Requires Python 3.11–3.14.
+Requires Python 3.10–3.14.
 
 ## Quick start
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
+from typing import cast
 
 from hedron_core.bundles import (
     FeatureBundle,
@@ -75,10 +76,11 @@ def _drop_routes(app: object, routes: Sequence[object]) -> None:
         live_routes = getattr(router, "routes", None)
         if not isinstance(live_routes, list):
             continue
+        typed_routes = cast(list[object], live_routes)
         for route in routes:
-            if route in live_routes:
+            if route in typed_routes:
                 with _suppress():
-                    live_routes.remove(route)
+                    typed_routes.remove(route)
 
 
 def _record_bundle_routes(app: object, logical_id: str, routes: Sequence[object]) -> None:
@@ -87,9 +89,11 @@ def _record_bundle_routes(app: object, logical_id: str, routes: Sequence[object]
         return
     recorded = getattr(state, "hedron_bundle_routes", None)
     if not isinstance(recorded, dict):
-        state.hedron_bundle_routes = {}
-        recorded = state.hedron_bundle_routes
-    recorded[logical_id] = list(routes)
+        recorded_routes: dict[str, list[object]] = {}
+        state.hedron_bundle_routes = recorded_routes
+    else:
+        recorded_routes = cast(dict[str, list[object]], recorded)
+    recorded_routes[logical_id] = list(routes)
 
 
 def rollback_materialized(
@@ -111,7 +115,7 @@ def rollback_materialized(
             continue
         unregister_handle_descriptor(ident, app_id=app_id)
         if isinstance(handles, dict):
-            handles.pop(ident, None)
+            cast(dict[str, object], handles).pop(ident, None)
 
 
 class _suppress:
@@ -168,10 +172,10 @@ def _undo_included_bundle(app: object, logical_id: str, *, app_id: str) -> None:
     state = getattr(app, "state", None)
     recorded = getattr(state, "hedron_bundles", None)
     if isinstance(recorded, dict):
-        recorded.pop(logical_id, None)
+        cast(dict[str, object], recorded).pop(logical_id, None)
     exposures = getattr(state, "hedron_mcp_exposures", None)
     if isinstance(exposures, dict):
-        exposures.pop(logical_id, None)
+        cast(dict[str, object], exposures).pop(logical_id, None)
 
 
 def include_feature(
@@ -183,8 +187,8 @@ def include_feature(
     """Include one validated bundle before registry/catalog seal.
 
     Accepts a ``FeatureBundle`` or a ``FeatureProvider`` (``to_bundle()``).
-    A ``DataWorkspace`` is a provider; beginner spelling is
-    ``app.include_feature(orders)``.
+    A ``DataWorkspace`` is a provider; the canonical application spelling is
+    ``app.include(orders)``.
     """
     from hedron_core.catalog import get_sealed_catalog
 
@@ -231,15 +235,19 @@ def include_feature(
         if state is not None:
             recorded = getattr(state, "hedron_bundles", None)
             if not isinstance(recorded, dict):
-                state.hedron_bundles = {}
-                recorded = state.hedron_bundles
-            recorded[live.logical_id] = live
+                recorded_bundles: dict[str, FeatureBundle] = {}
+                state.hedron_bundles = recorded_bundles
+            else:
+                recorded_bundles = cast(dict[str, FeatureBundle], recorded)
+            recorded_bundles[live.logical_id] = live
             if _is_mcp_exposure(feature):
                 exposures = getattr(state, "hedron_mcp_exposures", None)
                 if not isinstance(exposures, dict):
-                    state.hedron_mcp_exposures = {}
-                    exposures = state.hedron_mcp_exposures
-                exposures[live.logical_id] = feature
+                    recorded_exposures: dict[str, object] = {}
+                    state.hedron_mcp_exposures = recorded_exposures
+                else:
+                    recorded_exposures = cast(dict[str, object], exposures)
+                recorded_exposures[live.logical_id] = feature
         _record_bundle_routes(app, live.logical_id, _collect_new_routes(app, snapshot_routes))
         if live.logical_id not in already:
             _apply_optional_exposure(feature)
@@ -284,7 +292,9 @@ def explain_feature(app: object, logical_id: str) -> dict[str, object]:
         state = getattr(app, "state", None)
         recorded = getattr(state, "hedron_bundles", None)
         if isinstance(recorded, dict) and logical_id in recorded:
-            matches = [recorded[logical_id]]
+            candidate = cast(dict[str, object], recorded)[logical_id]
+            if isinstance(candidate, FeatureBundle):
+                matches = [candidate]
     if not matches:
         raise FeatureConflictError(
             make_diagnostic(
@@ -326,19 +336,27 @@ def eject_feature(
     state = getattr(app, "state", None)
     recorded = getattr(state, "hedron_bundles", None)
     if isinstance(recorded, dict):
-        recorded.pop(logical_id, None)
+        cast(dict[str, object], recorded).pop(logical_id, None)
     exposures = getattr(state, "hedron_mcp_exposures", None)
-    exposure = exposures.pop(logical_id, None) if isinstance(exposures, dict) else None
+    exposure: object | None = (
+        cast(dict[str, object], exposures).pop(logical_id, None)
+        if isinstance(exposures, dict)
+        else None
+    )
     _unapply_optional_exposure(exposure)
     routes_map = getattr(state, "hedron_bundle_routes", None)
-    extra = routes_map.pop(logical_id, []) if isinstance(routes_map, dict) else []
+    extra: list[object] = (
+        cast(dict[str, list[object]], routes_map).pop(logical_id, [])
+        if isinstance(routes_map, dict)
+        else []
+    )
     _drop_routes(app, extra)
     handles = getattr(state, "hedron_handles", None)
     if isinstance(handles, dict):
         for item in (*bundle.views, *bundle.commands):
             ident = getattr(item, "logical_id", None)
             if isinstance(ident, str):
-                handles.pop(ident, None)
+                cast(dict[str, object], handles).pop(ident, None)
     if output is not None:
         cwd = Path.cwd().resolve()
         out_dir = Path(output).expanduser().resolve()

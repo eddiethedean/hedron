@@ -35,7 +35,7 @@ explicit — Hedron does not own storage or malware scanning.
     ALLOWED = {".txt", ".csv"}
 
 
-    @app.command("/upload", fallback="/")
+    @app.action("/upload", fallback="/")
     async def upload(roster: UploadFile = File(...)) -> Page:
         name = roster.filename or "upload"
         suffix = "." + name.rsplit(".", 1)[-1].lower() if "." in name else ""
@@ -75,7 +75,7 @@ explicit — Hedron does not own storage or malware scanning.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # Windows: py -3 -m venv .venv && .\.venv\Scripts\Activate.ps1
-pip install "hedron>=0.66.2,<0.67" "uvicorn[standard]"
+pip install "hedron>=1.0.0,<1.1" "uvicorn[standard]"
 curl -fsSL https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/file-upload/app.py -o app.py
 uvicorn app:app --reload
 ```
@@ -98,9 +98,9 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000). Upload a small `.txt` or `.
 - `UploadField` + `UploadBudget` (display and enforcement stay aligned)
 - Application-owned storage (no inferred filesystem layout)
 
-## Advanced — explicit `@app.command` / FileUpload
+## Advanced — explicit `@app.action` / FileUpload
 
-Lower to `FileUpload`, `Form(enctype="multipart/form-data")`, and `@app.command` when
+Lower to `FileUpload`, `Form(enctype="multipart/form-data")`, and `@app.action` when
 ejecting. See [What’s new in 0.60](../guides/whats-new-0.60.md).
 
 Source: [`examples/file-upload`](https://github.com/eddiethedean/hedron/tree/main/examples/file-upload).

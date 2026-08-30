@@ -12,8 +12,9 @@ import hashlib
 import re
 import subprocess
 import sys
-import tomllib
 from pathlib import Path
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -209,8 +210,10 @@ def check_integrate() -> None:
 
 def check_csp() -> None:
     text = (
-        ROOT / "packages/hedron/src/hedron/static/ext/hedron.js"
-    ).read_text(encoding="utf-8").lower()
+        (ROOT / "packages/hedron/src/hedron/static/ext/hedron.js")
+        .read_text(encoding="utf-8")
+        .lower()
+    )
     for forbidden in (
         "eval(",
         "new function",

@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
-
 from fastapi import FastAPI, Request
 from starlette.middleware import Middleware
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.responses import Response
 from starlette.types import ASGIApp
+
+from hedron.fastapi_compat import append_middleware
 
 __all__ = [
     "install_authenticated_from_session",
@@ -35,14 +35,13 @@ class _AuthenticatedFromSessionMiddleware(BaseHTTPMiddleware):
         # getattr still invokes the property, so gate on scope first (#170).
         if "session" in request.scope:
             session = request.session
-            if isinstance(session, Mapping):
-                subject = session.get(self.session_key)
-                # SessionAuthFlow is generic over its serialized principal. Any
-                # non-empty application-owned session value represents a login;
-                # strings receive whitespace validation for compatibility.
-                authenticated = bool(subject.strip()) if isinstance(subject, str) else bool(subject)
-                if authenticated:
-                    mark_authenticated(request, value=True)
+            subject = session.get(self.session_key)
+            # SessionAuthFlow is generic over its serialized principal. Any
+            # non-empty application-owned session value represents a login;
+            # strings receive whitespace validation for compatibility.
+            authenticated = bool(subject.strip()) if isinstance(subject, str) else bool(subject)
+            if authenticated:
+                mark_authenticated(request, value=True)
         return await call_next(request)
 
 
@@ -59,7 +58,7 @@ def install_authenticated_from_session(
     The session value for ``session_key`` must be a non-empty serialized principal.
     """
 
-    app.user_middleware.append(
-        Middleware(_AuthenticatedFromSessionMiddleware, session_key=session_key)
+    append_middleware(
+        app,
+        Middleware(_AuthenticatedFromSessionMiddleware, session_key=session_key),
     )
-    app.middleware_stack = None

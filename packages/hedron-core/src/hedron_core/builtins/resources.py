@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Any, ClassVar
+from collections.abc import Sequence
+from typing import Any, ClassVar, cast
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.builtins.appearance import Density, appearance_data
@@ -10,6 +11,7 @@ from hedron_core.codes import HED_HTML_0006
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.html import html
+from hedron_core.models import Props
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_core.typing_aliases import HtmlAttrValue
 
@@ -31,19 +33,18 @@ _INTERACTIVE_LOGICAL_NAMES = frozenset(
 )
 
 
-def _node_is_interactive(node: NodeLike) -> bool:
+def _node_is_interactive(node: object) -> bool:
     if isinstance(node, Component):
-        name = getattr(node, "logical_name", None) or type(node).__name__
+        component = cast(Component[Props], node)
+        name = component.logical_name or type(component).__name__
         if name in _INTERACTIVE_LOGICAL_NAMES:
             return True
-        slots = getattr(node, "_slot_values", None)
-        if isinstance(slots, dict) and any(_node_is_interactive(v) for v in slots.values()):
+        if any(_node_is_interactive(value) for value in component.slot_values.values()):
             return True
-        children = getattr(node, "_children", None)
-        if isinstance(children, (list, tuple)) and any(_node_is_interactive(c) for c in children):
+        if any(_node_is_interactive(child) for child in component.child_nodes):
             return True
-    if isinstance(node, (list, tuple)):
-        return any(_node_is_interactive(item) for item in node)
+    if isinstance(node, Sequence) and not isinstance(node, (str, bytes)):
+        return any(_node_is_interactive(item) for item in cast(Sequence[object], node))
     return False
 
 

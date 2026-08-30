@@ -7,14 +7,15 @@ import os
 import shutil
 import threading
 import uuid
+from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from hedron.build.fingerprint import _relink_fingerprinted_modules
-from hedron.build.manifest import _write_build_manifest
-from hedron.build.rewrite import _rewrite_css_urls
+from hedron.build.fingerprint import relink_fingerprinted_modules
+from hedron.build.manifest import write_build_manifest
+from hedron.build.rewrite import rewrite_css_urls
 from hedron.config import HedronSettings, load_hedron_settings, settings_digest
 from hedron_core import __version__ as CORE_VERSION
 from hedron_core.assets import build_asset_manifest, fingerprint_bytes, fingerprint_file
@@ -27,6 +28,7 @@ from hedron_core.manifests import (
     APPLICATION_STYLE_MANIFEST_FORMAT,
     BUILD_MANIFEST_FORMAT,
     ApplicationStyleManifest,
+    AssetEntry,
     BuildManifest,
     CssSymbolManifest,
 )
@@ -83,7 +85,7 @@ def _atomic_promote(tmp_root: Path, final_dir: Path) -> None:
 
 
 @contextmanager
-def _build_lock(final_dir: Path):
+def _build_lock(final_dir: Path) -> Generator[None, None, None]:
     """Serialize builds for one output directory across threads and processes."""
     lock_path = final_dir.parent / f".{final_dir.name}.lock"
     with _BUILD_LOCKS_GUARD:
@@ -187,18 +189,18 @@ def _run_build_locked(
     # Build may register discovered + plugin components; restore afterward so an
     # in-process app lifespan can load plugins without duplicate registration.
     registry_snapshot = snapshot_registry_builder()
-    panel_snapshot = dict(plugins_mod._panels)
-    owner_snapshot = dict(plugins_mod._diagnostic_owners)
+    panel_snapshot = dict(plugins_mod.panels_registry)
+    owner_snapshot = dict(plugins_mod.diagnostic_owners_registry)
     from hedron_core.catalog import restore_projection_providers, snapshot_projection_providers
 
     provider_snapshot = snapshot_projection_providers()
 
     def _restore_registry() -> None:
         restore_registry_builder(registry_snapshot)
-        plugins_mod._panels.clear()
-        plugins_mod._panels.update(panel_snapshot)
-        plugins_mod._diagnostic_owners.clear()
-        plugins_mod._diagnostic_owners.update(owner_snapshot)
+        plugins_mod.panels_registry.clear()
+        plugins_mod.panels_registry.update(panel_snapshot)
+        plugins_mod.diagnostic_owners_registry.clear()
+        plugins_mod.diagnostic_owners_registry.update(owner_snapshot)
         restore_projection_providers(provider_snapshot)
 
     try:
@@ -273,7 +275,7 @@ def _execute_build(
         css_symbols: list[CssSymbolManifest] = []
         application_style_entries: list[JsonObject] = []
         application_style_source_map: JsonObject = {}
-        asset_entries = []
+        asset_entries: list[AssetEntry] = []
         module_basename_by_path: dict[str, str] = {}
 
         registry = get_registry()
@@ -311,7 +313,7 @@ def _execute_build(
                     public = f"{assets_url_prefix.rstrip('/')}/{entry.path}"
                     local_rewrites[rel] = public
                 if local_rewrites:
-                    css_text = _rewrite_css_urls(css_text, local_rewrites)
+                    css_text = rewrite_css_urls(css_text, local_rewrites)
                 css_parts.append(css_text)
                 css_symbols.append(result.manifest)
                 update_component_meta(
@@ -368,7 +370,7 @@ def _execute_build(
                 asset_entries.append(entry)
                 local_rewrites[rel] = f"{assets_url_prefix.rstrip('/')}/{entry.path}"
             if local_rewrites:
-                css_text = _rewrite_css_urls(css_text, local_rewrites)
+                css_text = rewrite_css_urls(css_text, local_rewrites)
             css_parts.append(css_text)
             for media in style.media:
                 css_parts[-1] = f"@media {media} {{\n{css_parts[-1]}\n}}\n"
@@ -452,7 +454,7 @@ def _execute_build(
                 exc,
             )
 
-        _relink_fingerprinted_modules(
+        relink_fingerprinted_modules(
             assets_dir,
             asset_entries,
             basename_by_path=module_basename_by_path,
@@ -479,7 +481,7 @@ def _execute_build(
             ),
         )
 
-        _write_build_manifest(
+        write_build_manifest(
             tmp_root,
             manifest=manifest,
             asset_manifest=asset_manifest,

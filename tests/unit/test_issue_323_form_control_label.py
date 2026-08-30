@@ -46,3 +46,17 @@ def test_generate_form_uses_pydantic_field_title() -> None:
 
     markup = render(add_note.form()).html
     assert "Summary line" in markup
+
+
+def test_generated_command_form_rejects_reserved_attribute_overrides() -> None:
+    app = make_app()
+
+    @app.command(fallback="/")
+    def add_note(data: Annotated[NoteInput, FormBody()]):
+        return Text(data.title)
+
+    markup = render(add_note.form(method="get", action="/untrusted")).html
+
+    assert 'method="post"' in markup
+    assert 'hx-post="/_hedron/commands/add-note"' in markup
+    assert "/untrusted" not in markup

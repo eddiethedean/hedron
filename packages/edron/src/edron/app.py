@@ -5,7 +5,7 @@ import re
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import replace
 from pathlib import Path
-from typing import Annotated, Any, get_args, get_origin
+from typing import Annotated, Any, cast, get_args, get_origin
 from urllib.parse import quote, urlencode, urlsplit, urlunsplit
 
 from pydantic import BaseModel
@@ -13,12 +13,13 @@ from pydantic import BaseModel
 import hedron
 from edron._internal import Frame, frame_context
 from edron.composition import MAX_PACKAGE_ASSETS, FeaturePackage, PackageConflictError
-from edron.dependencies import Dependency, Resource
+from edron.dependencies import Dependency, Resource, ResourceKind, ResourceScope
 from edron.descriptors import Action, BoundAction, BoundFragment, Fragment
 from edron.diagnostics import source_location
 from edron.errors import BindingError, RegistrationError
 from edron.navigation import LayoutSpec, NavigationError, NavigationTarget
 from edron.page import Page
+from edron.simulation import AppSimulation
 
 MAX_EXPLANATION_PAGES = 256
 MAX_EXPLANATION_SURFACES = 64
@@ -27,6 +28,8 @@ MAX_SOURCE_MAP_ENTRIES = 1024
 
 class App:
     """Class-oriented facade over exactly one native :class:`hedron.Hedron` app."""
+
+    _deployment_options: dict[str, object]
 
     def __init__(
         self,
@@ -40,7 +43,8 @@ class App:
         root_path: str | None = None,
         debug: bool = False,
     ) -> None:
-        if not isinstance(title, str) or not title.strip():
+        raw_title: object = title
+        if not isinstance(cast(Any, raw_title), str) or not raw_title.strip():
             raise RegistrationError("App.title must be a non-empty string", code="EDRON_APP_TITLE")
         kwargs: dict[str, Any] = {
             "title": title,
@@ -56,7 +60,7 @@ class App:
             kwargs["session_secret"] = session_secret
         self.title = title
         self.hedron = hedron.Hedron(**kwargs)
-        self._deployment_options = {
+        self._deployment_options: dict[str, object] = {
             key: value
             for key, value in {
                 "production": production,
@@ -84,7 +88,8 @@ class App:
 
     @classmethod
     def from_hedron(cls, app: hedron.Hedron, *, title: str | None = None) -> App:
-        if not isinstance(app, hedron.Hedron):
+        raw_app: object = app
+        if not isinstance(cast(Any, raw_app), hedron.Hedron):
             raise TypeError("from_hedron expects a Hedron instance")
         instance = cls.__new__(cls)
         instance.title = title or getattr(app, "title", "Edron application")
@@ -129,9 +134,21 @@ class App:
         """Resolve a registered Edron surface to its exact native projection."""
         return self._native_surface(surface)
 
+    def simulation(self, *, fixtures: Mapping[str, Any] | None = None) -> AppSimulation:
+        """Expose a bounded public callback boundary for simulation tooling.
+
+        The returned object invokes this app's actual registered pages,
+        fragments, and actions. It is intended for deterministic documentation
+        previews and tests; production traffic must continue through the ASGI
+        application so middleware, security policy, and dependency injection
+        remain authoritative.
+        """
+        return AppSimulation(self, fixtures=fixtures)
+
     def interaction(self, value: hedron.Interaction) -> hedron.Interaction:
-        """Register and return one native Hedron 0.67 interaction declaration."""
-        if not isinstance(value, hedron.Interaction):
+        """Register and return one native Hedron 1.0 interaction declaration."""
+        raw_value: object = value
+        if not isinstance(cast(Any, raw_value), hedron.Interaction):
             raise TypeError("interaction expects a native hedron.Interaction")
         self._ensure_open()
         self._interactions[value.fingerprint] = value
@@ -153,8 +170,8 @@ class App:
         name: str | Resource,
         factory: Callable[[], Any] | None = None,
         *,
-        kind: str = "custom",
-        scope: str = "application",
+        kind: ResourceKind = "custom",
+        scope: ResourceScope = "application",
         secret_refs: Mapping[str, str] | None = None,
         config: Mapping[str, object] | None = None,
         healthcheck: Callable[[Any], bool] | None = None,
@@ -176,8 +193,8 @@ class App:
             spec = Resource(
                 name=name,
                 factory=factory,
-                scope=scope,  # type: ignore[arg-type]
-                kind=kind,  # type: ignore[arg-type]
+                scope=scope,
+                kind=kind,
                 secret_refs=secret_refs or {},
                 config=config or {},
                 healthcheck=healthcheck,
@@ -292,12 +309,9 @@ class App:
             setattr(instance, name, value)
         return instance
 
-    @staticmethod
-    def _dependency_values(page_type: type[Page], kwargs: dict[str, Any]) -> dict[str, Any]:
+    def _dependency_values(self, page_type: type[Page], kwargs: dict[str, Any]) -> dict[str, Any]:
         values: dict[str, Any] = {}
-        for index, dependency in enumerate(
-            value for value in page_type.__dict__.values() if isinstance(value, Dependency)
-        ):
+        for index, dependency in enumerate(self._page_dependencies(page_type)):
             key = f"__edron_dep_{index}"
             if key in kwargs:
                 values[dependency.name or key] = kwargs.pop(key)
@@ -419,7 +433,12 @@ class App:
         dependencies: Sequence[Any],
     ) -> None:
         self._ensure_open()
-        if not inspect.isclass(page_type) or not issubclass(page_type, Page) or page_type is Page:
+        raw_page_type: object = page_type
+        if (
+            not isinstance(cast(Any, raw_page_type), type)
+            or not issubclass(cast(Any, raw_page_type), Page)
+            or page_type is Page
+        ):
             raise RegistrationError(
                 "@app.page must decorate a Page subclass",
                 code="EDRON_PAGE_TYPE",
@@ -443,9 +462,12 @@ class App:
                 source=source_location(page_type),
             )
 
-        page_dependencies = [
+        declared_dependencies: list[Dependency[Any]] = [
+            cast(Dependency[Any], item) for item in dependencies if isinstance(item, Dependency)
+        ]
+        page_dependencies: list[Dependency[Any]] = [
             *self._page_dependencies(page_type),
-            *[item for item in dependencies if isinstance(item, Dependency)],
+            *declared_dependencies,
         ]
         page_route_dependencies = list(dependencies)
         render_signature = self._dependency_signature(
@@ -466,7 +488,7 @@ class App:
                 if result is not None:
                     instance.include(result)
                 return hedron_core_page(
-                    *instance._resolved_output(), title=title if show_title else None
+                    *cast(Any, instance)._resolved_output(), title=title if show_title else None
                 )
 
         endpoint.__name__ = f"edron_{route_name}"
@@ -484,7 +506,7 @@ class App:
                     if result is not None:
                         instance.include(result)
                     return hedron_core_page(
-                        *instance._resolved_output(), title=title if show_title else None
+                        *cast(Any, instance)._resolved_output(), title=title if show_title else None
                     )
 
             async_endpoint.__name__ = endpoint.__name__
@@ -497,12 +519,13 @@ class App:
             dependencies=[self._native_dependency(x) for x in page_route_dependencies],
         )(endpoint)
 
-        page_record = {
+        page_record: dict[str, Any] = {
             "type": page_type,
             "path": path,
             "title": title,
             "name": route_name,
             "show_title": show_title,
+            "dependencies": tuple(page_route_dependencies),
             "source": source_location(page_type) or source_location(render),
             "native": native_page,
         }
@@ -522,7 +545,7 @@ class App:
                 )
             elif isinstance(member, Action):
                 self._register_action(
-                    member,
+                    cast(Action[Any, Any], member),
                     page_type,
                     path,
                     member_name,
@@ -562,7 +585,7 @@ class App:
                     raise RuntimeError("async fragments require the async route adapter")
                 if result is not None:
                     instance.include(result)
-                return hedron_core_fragment(*instance._resolved_output())
+                return hedron_core_fragment(*cast(Any, instance)._resolved_output())
 
         endpoint.__name__ = f"edron_fragment_{page_type.__name__}_{member_name}"
         endpoint.__module__ = page_type.__module__
@@ -578,40 +601,20 @@ class App:
                     result = await self._call_with_kwargs(definition.fn, instance, kwargs)
                     if result is not None:
                         instance.include(result)
-                    return hedron_core_fragment(*instance._resolved_output())
+                    return hedron_core_fragment(*cast(Any, instance)._resolved_output())
 
             async_endpoint.__name__ = endpoint.__name__
             async_endpoint.__module__ = endpoint.__module__
             async_endpoint.__signature__ = signature  # type: ignore[attr-defined]
             endpoint = async_endpoint
-        from hedron.handles import build_view_handle, wrap_endpoint_result
-
-        handle = build_view_handle(
-            endpoint,
-            app_id=str(getattr(self.hedron, "hedron_app_id", "") or ""),
-            path=route,
-            key=None,
+        native = self.hedron.view(
+            route,
             name=f"{page_type.__name__}_{member_name}",
-            host=None,
             fallback=definition.fallback,
             include_in_schema=False,
-            mount_path=str(
-                getattr(getattr(self.hedron, "state", None), "hedron_mount_path", "") or ""
-            ),
-        )
-        # Edron's class facade owns the handle construction itself.  Use the
-        # lower-level router decorator here so the canonical Hedron ``view``
-        # API does not wrap this already-built endpoint a second time.
-        self.hedron._root_router.view(
-            handle.path,
-            name=handle.name,
-            include_in_schema=False,
-            fragment_regions=(handle.region,),
             dependencies=[self._native_dependency(x) for x in route_dependencies],
-        )(wrap_endpoint_result(handle))
-        self.hedron._sync_root_route()
-        native = handle
-        definition._native = native
+        )(endpoint)
+        cast(Any, definition)._native = native
         self._fragments[id(definition)] = native
 
     def _register_action(
@@ -663,28 +666,15 @@ class App:
             async_endpoint.__module__ = endpoint.__module__
             async_endpoint.__signature__ = signature  # type: ignore[attr-defined]
             endpoint = async_endpoint
-        from hedron.handles import build_command_handle
-
-        handle = build_command_handle(
-            endpoint,
-            app_id=str(getattr(self.hedron, "hedron_app_id", "") or ""),
-            path=route,
+        native = self.hedron.action(
+            route,
             method=definition.method.upper(),
             name=f"{page_type.__name__}_{member_name}",
             fallback=definition.fallback,
             include_in_schema=True,
-            mount_path=str(
-                getattr(getattr(self.hedron, "state", None), "hedron_mount_path", "") or ""
-            ),
-        )
-        self.hedron.action(
-            handle.path,
-            method=handle.method,
-            name=handle.name,
             dependencies=[self._native_dependency(x) for x in route_dependencies],
         )(endpoint)
-        native = handle
-        definition._native = native
+        cast(Any, definition)._native = native
         self._actions[id(definition)] = native
 
     def _request(self) -> Any:
@@ -727,16 +717,17 @@ class App:
             native = self._actions.get(id(surface.action))
             return self._bind_action(native, surface.arguments) if native is not None else None
         if isinstance(surface, Action):
-            return self._actions.get(id(surface))
+            return self._actions.get(id(cast(Any, surface)))
         if isinstance(surface, type) and issubclass(surface, Page):
             for record in self._pages.values():
                 if record["type"] is surface:
                     return record.get("native")
-        candidate: Any = surface
-        if hasattr(candidate, "to_bundle"):
+        candidate: object = cast(object, surface)
+        to_bundle = getattr(candidate, "to_bundle", None)
+        if callable(to_bundle):
             if id(candidate) in self._bundles:
                 return self._bundles[id(candidate)]
-            return candidate.to_bundle()
+            return to_bundle()
         return None
 
     def source_map(self) -> dict[str, Any]:
@@ -763,8 +754,9 @@ class App:
                 if len(entries) >= MAX_SOURCE_MAP_ENTRIES:
                     truncated = True
                     break
-                native = member._native
-                source = member._source
+                internal_member = cast(Any, member)
+                native = internal_member._native
+                source = internal_member._source
                 entries.append(
                     {
                         "kind": "fragment" if isinstance(member, Fragment) else "action",
@@ -773,8 +765,8 @@ class App:
                         "native_id": getattr(native, "logical_id", None),
                         "source": source.to_mapping() if source is not None else None,
                         **(
-                            {"inherited_from": member._inherited_from}
-                            if member._inherited_from
+                            {"inherited_from": internal_member._inherited_from}
+                            if internal_member._inherited_from
                             else {}
                         ),
                     }
@@ -791,10 +783,11 @@ class App:
                 truncated = True
                 break
             page_type = record["type"]
-            surfaces = []
+            surfaces: list[dict[str, Any]] = []
             for member_name, member in page_type.__dict__.items():
                 if isinstance(member, Fragment):
-                    native = member._native
+                    internal_member = cast(Any, member)
+                    native = internal_member._native
                     surfaces.append(
                         {
                             "name": member_name,
@@ -802,11 +795,16 @@ class App:
                             "logical_id": member.logical_id,
                             "method": "GET",
                             "path": getattr(native, "path", None),
-                            "source": member._source.to_mapping() if member._source else None,
+                            "source": (
+                                internal_member._source.to_mapping()
+                                if internal_member._source
+                                else None
+                            ),
                         }
                     )
                 elif isinstance(member, Action):
-                    native = member._native
+                    internal_member = cast(Any, member)
+                    native = internal_member._native
                     surfaces.append(
                         {
                             "name": member_name,
@@ -814,7 +812,11 @@ class App:
                             "logical_id": member.logical_id,
                             "method": member.method.upper(),
                             "path": getattr(native, "path", None),
-                            "source": member._source.to_mapping() if member._source else None,
+                            "source": (
+                                internal_member._source.to_mapping()
+                                if internal_member._source
+                                else None
+                            ),
                         }
                     )
             if len(surfaces) > MAX_EXPLANATION_SURFACES:
@@ -878,8 +880,8 @@ class App:
                 )
             ],
             "browser_contract": {
-                "hedron_train": "0.67.0",
-                "forward_compatibility_target": "1.0.0",
+                "hedron_train": "1.0.0",
+                "canonical_roles": ("page", "view", "action", "include"),
                 "authority": "hedron",
             },
             "packages": [
@@ -918,7 +920,7 @@ class App:
             }
             for record in self._pages.values()
         ][:MAX_EXPLANATION_PAGES]
-        bundles = []
+        bundles: list[dict[str, str]] = []
         for bundle in sorted(
             self._bundles.values(), key=lambda item: getattr(item, "logical_id", "")
         ):
@@ -1084,7 +1086,7 @@ class App:
                 return None
             return self._bind_action(native, value.arguments)
         if isinstance(value, Action):
-            return self._actions.get(id(value))
+            return self._actions.get(id(cast(Any, value)))
         return value
 
     @staticmethod
@@ -1144,7 +1146,16 @@ class App:
     def include(self, feature: Any) -> Any:
         if isinstance(feature, FeaturePackage):
             return self.include_package(feature)
+        existing = self._bundles.get(id(feature))
+        if existing is not None:
+            sync = getattr(feature, "_sync_native_handles", None)
+            if callable(sync):
+                sync()
+            return existing
         bundle = self.hedron.include(feature)
+        sync = getattr(feature, "_sync_native_handles", None)
+        if callable(sync):
+            sync()
         self._bundles[id(feature)] = bundle
         return bundle
 
@@ -1155,7 +1166,16 @@ class App:
         capabilities: Mapping[str, bool] | None = None,
     ) -> Any:
         """Include a native feature through the exact Hedron transaction."""
+        existing = self._bundles.get(id(feature))
+        if existing is not None:
+            sync = getattr(feature, "_sync_native_handles", None)
+            if callable(sync):
+                sync()
+            return existing
         bundle = self.hedron.include(feature, capabilities=capabilities)
+        sync = getattr(feature, "_sync_native_handles", None)
+        if callable(sync):
+            sync()
         self._bundles[id(feature)] = bundle
         return bundle
 
@@ -1166,7 +1186,8 @@ class App:
         capabilities: Mapping[str, bool] | None = None,
     ) -> FeaturePackage:
         """Atomically register a declarative package and its native assets."""
-        if not isinstance(package, FeaturePackage):
+        raw_package: object = package
+        if not isinstance(cast(Any, raw_package), FeaturePackage):
             raise TypeError("include_package expects edron.FeaturePackage")
         self._ensure_open()
         existing = self._packages.get(package.name)
@@ -1391,9 +1412,10 @@ class App:
 
         async def save(request: Request) -> JSONResponse:
             try:
-                payload = await request.json()
-                if not isinstance(payload, Mapping):
+                payload_value = await request.json()
+                if not isinstance(payload_value, Mapping):
                     raise ValueError("editor payload must be an object")
+                payload = cast(Mapping[str, Any], payload_value)
                 intent = EditIntent.from_mapping(payload)
             except (TypeError, ValueError) as exc:
                 raise HTTPException(status_code=422, detail="invalid_data_edit") from exc

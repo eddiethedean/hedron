@@ -6,9 +6,9 @@ clients and assertions remain available beside these helpers.
 
 from __future__ import annotations
 
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, Protocol, runtime_checkable
+from typing import Any, Protocol, cast, runtime_checkable
 
 __all__ = [
     "AdapterAppFixture",
@@ -169,14 +169,14 @@ def assert_lazy_markup(response: AdapterResponse, *, contains: str | None = None
         assert contains in body, f"{contains!r} not found in lazy markup {body!r}"
 
 
-def _cookies_from_set_cookie(headers: Any) -> dict[str, str]:
+def _cookies_from_set_cookie(headers: Mapping[str, object]) -> dict[str, str]:
     values: list[str] = []
     getlist = getattr(headers, "getlist", None)
     if callable(getlist):
         for name in ("Set-Cookie", "set-cookie"):
-            raw_list = getlist(name)
+            raw_list: object = getlist(name)
             if isinstance(raw_list, (list, tuple)) and raw_list:
-                values.extend(str(v) for v in raw_list)
+                values.extend(str(value) for value in cast(Sequence[object], raw_list))
                 break
     if not values:
         raw = headers.get("Set-Cookie") or headers.get("set-cookie")

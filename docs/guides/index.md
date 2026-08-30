@@ -6,6 +6,12 @@ search:
 
 # Guides
 
+!!! note "Release context"
+
+    Guides describe the published 1.0 release. See
+    [Current release and support](current-release.md) for PyPI pins,
+    the migration baseline, package maturity, and support status.
+
 Task-oriented guidance from a working page to a maintainable Hedron project.
 
 Complete **Start** first ([Learning path](../getting-started/learning-path.md):
@@ -32,9 +38,9 @@ Shipping? [Ship](ship.md).
 ## Build interactions
 
 - [HTMX interactions](htmx-interactions.md) — add a second refreshable view
-- [Post a minimal form](minimal-form.md) — golden-path `@app.command` + CSRF
+- [Post a minimal form](minimal-form.md) — golden-path `@app.action` + CSRF
 - [Forms and actions](forms-and-actions.md) — advanced region / `InteractionResult` path
-- [Mutations](mutations.md) — when to use `@action` vs `@component` POST
+- [Mutations](mutations.md) — canonical `@app.action` mutation routes
 - [Live updates (polling)](live-interaction.md) — `Poll` is Supported; SSE/WS experimental
 - [HTMX extensions](htmx-extensions.md) — declared SSE, head-support, preload
 
@@ -42,7 +48,7 @@ Shipping? [Ship](ship.md).
 
 - [Comprehensive styling](styling.md) — visual tour of presentation tokens, layout,
   themes, recipes, scoped CSS, and styling checks
-- [Modern CSS in 0.60](modern-css-0.60.md) — compiler v2, container layout, variants,
+- [Modern CSS](modern-css-0.60.md) — compiler v2, container layout, variants,
   progressive CSS tiers, overlays, media, controls, and fallbacks
 
 ## Add data and visuals
@@ -78,7 +84,7 @@ Shipping? [Ship](ship.md).
 
 - [Use plugins](plugin-consumer.md)
 - [Author plugins](plugin-authoring.md)
-- [Curated extras (0.51)](../api/EXTRAS.md)
+- [Curated extras](../api/EXTRAS.md)
 
 ## Other
 

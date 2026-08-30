@@ -13,8 +13,8 @@ import os
 import threading
 import time
 from collections import defaultdict, deque
-from collections.abc import Callable
-from typing import Any
+from collections.abc import Callable, Collection
+from typing import Any, cast
 
 from fastapi import HTTPException, Request, status
 from starlette.responses import JSONResponse, Response
@@ -31,12 +31,13 @@ def _trusted_proxy_peers(request: Request) -> set[str]:
     peers: set[str] = set()
     raw_env = os.environ.get("HEDRON_TRUSTED_PROXIES", "")
     peers.update(part.strip() for part in raw_env.split(",") if part.strip())
-    scope = getattr(request, "scope", None)
-    app = scope.get("app") if isinstance(scope, dict) else None
+    app: object | None = request.scope.get("app")
     state = getattr(app, "state", None) if app is not None else None
     configured = getattr(state, "hedron_trusted_peers", None) if state is not None else None
     if isinstance(configured, (list, tuple, set, frozenset)):
-        peers.update(str(item).strip() for item in configured if str(item).strip())
+        peers.update(
+            str(item).strip() for item in cast(Collection[object], configured) if str(item).strip()
+        )
     return peers
 
 

@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import os
 from collections.abc import Mapping
-from enum import StrEnum
 from typing import Literal
 
+from hedron_core.compat import StrEnum
 from hedron_core.diagnostics import DiagnosticSeverity, HedronError, make_diagnostic
 from hedron_posit.detect import is_workbench_env, is_workbench_forced, rs_server_url
 

@@ -16,10 +16,10 @@ class TrustedHtml:
         raise TypeError("TrustedHtml has no public constructor; use TrustedHtml.reviewed(...)")
 
     @classmethod
-    def reviewed(cls, value: str, *, source: str) -> TrustedHtml:
+    def reviewed(cls, value: object, *, source: object) -> TrustedHtml:
         if not isinstance(value, str):
             raise TypeError("TrustedHtml value must be a string")
-        if not source or not isinstance(source, str):
+        if not isinstance(source, str) or not source:
             raise TypeError("TrustedHtml source must be a non-empty string")
         obj = object.__new__(cls)
         object.__setattr__(obj, "_value", value)
@@ -27,7 +27,7 @@ class TrustedHtml:
         return obj
 
     @classmethod
-    def nh3(cls, value: str, *, tags: set[str] | None = None) -> TrustedHtml:
+    def nh3(cls, value: object, *, tags: set[str] | None = None) -> TrustedHtml:
         """Sanitize HTML with nh3 and record policy provenance.
 
         Requires the optional ``nh3`` dependency (``pip install "hedron[sanitize]"``

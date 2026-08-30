@@ -17,7 +17,7 @@ def require_files(paths: list[Path], errors: list[str]) -> None:
 
 
 def require_inventory_supported(package: str, keys: tuple[str, ...], errors: list[str]) -> None:
-    import tomllib
+    from hedron_core.compat import tomllib
 
     inventory = ROOT / "docs" / "acceptance" / "production-grade-inventory-027.toml"
     if not inventory.is_file():

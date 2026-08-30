@@ -1,5 +1,5 @@
 import os
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from hedron import Hedron, Page, Stack, Text, html
 
@@ -13,9 +13,9 @@ app = Hedron(
 _NOTES: list[str] = []
 
 
-@app.refreshable("/status")
+@app.view("/status")
 def status():
-    stamp = datetime.now(UTC).strftime("%H:%M:%S")
+    stamp = datetime.now(timezone.utc).strftime("%H:%M:%S")
     return html.div(
         Text(f"All systems operational · refreshed {stamp}"),
         role="status",
@@ -23,7 +23,7 @@ def status():
     )
 
 
-@app.refreshable("/notes-count")
+@app.view("/notes-count")
 def notes():
     return html.div(
         Text(f"Notes saved: {len(_NOTES)}"),

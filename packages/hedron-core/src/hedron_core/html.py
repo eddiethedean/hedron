@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TypeAlias, cast
+from typing import TypeAlias, TypeGuard, cast
 
 from hedron_core._html.policy import (
     is_safe_layout_style,
@@ -26,9 +26,13 @@ _is_safe_layout_style = is_safe_layout_style
 _normalize_srcset = normalize_srcset
 _require_safe_attr_name = require_safe_attr_name
 
-__all__ = ["html"]
+__all__ = ["NativeElement", "TrustedRawNode", "html"]
 
 HtmlTagAttrValue: TypeAlias = HtmlAttrValue | AlpineAttrs | Interaction
+
+
+def _is_trusted_html(value: object) -> TypeGuard[TrustedHtml]:
+    return isinstance(value, TrustedHtml)
 
 
 class _HtmlTag:
@@ -119,6 +123,9 @@ class _NativeElement:
         )
 
 
+NativeElement = _NativeElement
+
+
 class _HtmlNamespace:
     def __getattr__(self, name: str) -> _HtmlTag:
         if name.startswith("_"):
@@ -130,7 +137,7 @@ class _HtmlNamespace:
         return _HtmlTag(name)
 
     def raw(self, value: TrustedHtml) -> _TrustedRaw:
-        if not isinstance(value, TrustedHtml):
+        if not _is_trusted_html(value):
             raise error(
                 "HED-SEC-0004",
                 title="raw() requires TrustedHtml",
@@ -151,6 +158,9 @@ class _TrustedRaw:
 
     def to_node(self) -> TrustedHtmlNode:
         return TrustedHtmlNode(html=self.trusted.value, source=self.trusted.source)
+
+
+TrustedRawNode = _TrustedRaw
 
 
 html = _HtmlNamespace()

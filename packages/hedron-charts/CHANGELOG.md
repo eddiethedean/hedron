@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.0.0] — 2026-08-29
+
+### Changed
+
+- Graduate the bounded first-party chart grammar, semantic fallbacks, deterministic exports,
+  and Matplotlib/static path to the Stable 1.0 API.
+- Keep Plotly, Altair, and wider optional adapters explicitly Experimental.
+
+## [0.2.4] — 2026-08-28
+
+### Changed
+
+- Require `hedron-core>=1.0.0,<2.0` for the composable plugin contract.
+- Split component, element, asset, renderer, and catalog registration into focused
+  `PluginDefinition` contributions.
+- Set the clean-install Pygal floor to `>=3.0.4` and include PyArrow `>=16` with
+  Datashader so current Dask can import its dataframe backend.
+
+## [0.2.3] — 2026-08-27
+
+### Fixed
+
+- Publish the Hedron 1.0-compatible `hedron-core>=0.67.0,<2.0` metadata under a
+  new immutable patch version.
+
 ## [0.2.2] — 2026-08-26
 
 ### Fixed

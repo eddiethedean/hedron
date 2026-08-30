@@ -1,0 +1,263 @@
+schema_version = 2
+description = "The deliberately small 1.0 SemVer surface. Listed exports are compatibility-protected; listed callable/class signatures are locked below when provided. All other exports remain non-stable."
+
+[packages.hedron]
+symbols = [
+  "__version__",
+  "CsrfField",
+  "CsrfStrategy",
+  "DoubleSubmitCookieCsrf",
+  "Form",
+  "FormErrors",
+  "FormField",
+  "FragmentRegion",
+  "Hedron",
+  "HedronRouter",
+  "Hx",
+  "Label",
+  "Page",
+  "Poll",
+  "RefreshButton",
+  "SecurityHeadersPolicy",
+  "SecurityPolicy",
+  "SessionTokenCsrf",
+  "Stack",
+  "SubmitButton",
+  "Text",
+  "TextArea",
+  "TextInput",
+  "html",
+  "redirect_htmx",
+  "retarget",
+  "swap",
+  "swap_oob",
+]
+
+[packages.hedron.signatures]
+CsrfField = '''(*, name: 'str | None' = None, token: 'str | None' = None, provider: 'CsrfTokenProvider | None' = None, **kwargs: 'object') -> 'None' '''
+CsrfStrategy = '''(*args, **kwargs)'''
+DoubleSubmitCookieCsrf = '''(cookie_name: 'str' = 'hedron_csrf', form_field: 'str' = 'csrf_token', header_name: 'str' = 'X-CSRF-Token', sets_cookie: 'bool' = True) -> None'''
+Form = '''(*nodes: 'NodeLike', children: 'NodeLike' = None, action: 'SafeUrl | str | object | None' = None, method: "Literal['get', 'post']" = 'post', hx: 'Hx | None' = None, **kwargs: 'HtmlAttrValue') -> 'None' '''
+FormErrors = '''(errors: 'Sequence[str]', **kwargs: 'object') -> 'None' '''
+FormField = '''(*, name: 'str', label: 'str', control: 'NodeLike', id: 'str | None' = None, help: 'str | None' = None, required: 'bool' = False, error: 'str | None' = None, **kwargs: 'object') -> 'None' '''
+FragmentRegion = '''(id: 'str', selector: 'str', description: 'str' = '') -> None'''
+Hedron = '''(*args: 'Any', security: 'SecurityProfileName | str | SecurityPolicy' = 'standard', explorer: 'ExplorerMode | str | None' = None, session_secret: 'str | None' = 'hedron-dev-secret-change-me', enable_sessions: 'bool' = True, explorer_dependencies: 'Sequence[DependsParam] | None' = None, theme: 'str | Theme | DesignSystem | None' = 'default', default_styles: 'bool' = True, demand_driven_assets: 'bool' = False, build_dir: 'str | Path | None' = None, production: 'bool | None' = None, root_path: 'str | None' = None, bootstrap_steps: 'Sequence[HedronBootstrapStep] | None' = None, cache_backend: 'CacheBackend | None' = None, job_backend: 'JobBackend | None' = None, concurrency_config: 'ConcurrencyConfig | None' = None, tracing_config: 'TraceConfig | None' = None, **kwargs: 'Any') -> 'None' '''
+HedronRouter = '''(*args: 'Any', provenance: 'str' = '', **kwargs: 'Any') -> 'None' '''
+Hx = '''(target: 'str | None' = None, swap: 'str | None' = <factory>, select: 'str | None' = None, select_oob: 'str | None' = None, push_url: 'bool | str' = False, disabled_elt: 'str | None' = None, indicator: 'str | None' = None, method: "Literal['get', 'post', 'put', 'patch', 'delete'] | None" = None, url: 'str | None' = None, preload: 'str | None' = None, trigger: 'str | None' = None, include: 'str | None' = None, validate: "Literal['native'] | bool | None" = None, vals: 'str | None' = None, headers: 'str | None' = None, busy: "Literal['region', 'document'] | None" = None, sync: 'str | None' = None, confirm: 'str | None' = None, extension: "Literal['sse', 'preload', 'head-support', 'hedron'] | None" = None) -> None'''
+Label = '''(text: 'str', *, for_: 'str | None' = None, **kwargs: 'object') -> 'None' '''
+Page = '''(*body: 'NodeLike', lang: 'str' = 'en', title: 'str | None' = None, head: 'NodeLike' = None, children: 'NodeLike' = None, data_theme: 'str | None' = None, data_hedron_theme: 'str | None' = None, dir: 'str | None' = None, scripts: 'Sequence[SafeUrl] | None' = None, script_defer: 'bool' = True, script_async: 'bool' = False, htmx_extensions: 'object' = None, **kwargs: 'object') -> 'None' '''
+Poll = '''(*, ref: 'ComponentRef', interval_ms: 'int' = 5000, target_id: 'str | None' = None, content: 'NodeLike | None' = None) -> 'None' '''
+RefreshButton = '''(label: 'str' = 'Refresh', *, ref: 'ComponentRef | None' = None, href: 'str | None' = None, target: 'str | None' = None, swap: 'str' = 'outerHTML') -> 'None' '''
+SecurityHeadersPolicy = '''(content_security_policy: 'str | None' = None, frame_options: 'str | None' = None, content_type_options: 'str | None' = None, referrer_policy: 'str | None' = None, hsts_max_age: 'int | None' = None) -> None'''
+SecurityPolicy = '''(profile: 'SecurityProfile' = <SecurityProfile.STANDARD: 'standard'>, version: 'int' = 1, csrf_enabled: 'bool' = True, csrf_cookie_name: 'str' = 'hedron_csrf', csrf_header_name: 'str' = 'X-CSRF-Token', csrf_form_field: 'str' = 'csrf_token', csrf: 'CsrfStrategy | None' = None, private_authenticated_cache: 'bool' = True, security_headers: 'SecurityHeadersMode | SecurityHeadersPolicy' = True, content_security_policy: 'str | None' = None, frame_options: 'str' = 'DENY', content_type_options: 'str' = 'nosniff', referrer_policy: 'str' = 'no-referrer', explorer_enabled: 'bool' = False, allow_external_redirects: 'bool' = False, htmx_browser_preset: 'bool' = True, allow_htmx_eval: 'bool' = False, findings: 'tuple[str, ...]' = <factory>, control_plane_version: 'int' = 1, conformance_profile_version: 'str' = 'hedron-security-1', intent_required: 'bool' = False, posture_strict: 'bool' = False, request_budget_limits: 'RequestBudgetLimits | None' = None, egress_allow_hosts: 'frozenset[str]' = <factory>, egress_deny_by_default: 'bool' = True) -> None'''
+SessionTokenCsrf = '''(get_expected: 'Callable[[object], str | None]', form_field: 'str' = 'csrf_token', header_name: 'str' = 'X-CSRF-Token', sets_cookie: 'bool' = False, cookie_name: 'str' = '') -> None'''
+Stack = '''(*nodes: 'NodeLike', children: 'NodeLike' = None, gap: 'str' = '1rem', id: 'str | None' = None, class_: 'str | None' = None, **kwargs: 'Any') -> 'None' '''
+SubmitButton = '''(label: 'str' = 'Submit', *, disabled: 'bool' = False, class_: 'str | None' = None, **kwargs: 'object') -> 'None' '''
+Text = '''(content: 'str' = '', *, as_: "Literal['p', 'span', 'strong', 'em', 'small']" = 'p', role: 'TypographyRole | None' = None, overflow: 'OverflowMode | None' = None, lines: 'int | None' = None, measure: 'TypographyMeasure | None' = None, effect: 'TypographyEffect | None' = None, tracking: 'str | None' = None, wrap: 'str | None' = None, class_: 'str | None' = None, **kwargs: 'object') -> 'None' '''
+TextArea = '''(name: 'str', *, id: 'str | None' = None, value: 'str' = '', rows: 'int' = 4, required: 'bool' = False, placeholder: 'str | None' = None, aria_describedby: 'str | None' = None, aria_invalid: 'str | None' = None, aria_required: 'str | None' = None, class_: 'str | None' = None, enhance: "Literal['legacy', 'native', 'alpine']" = 'legacy', **kwargs: 'object') -> 'None' '''
+TextInput = '''(name: 'str', *, id: 'str | None' = None, value: 'str' = '', placeholder: 'str | None' = None, required: 'bool' = False, type: "Literal['text', 'email', 'password', 'search', 'tel', 'url']" = 'text', autocomplete: 'str | None' = None, disabled: 'bool' = False, aria_describedby: 'str | None' = None, aria_invalid: 'str | None' = None, aria_required: 'str | None' = None, class_: 'str | None' = None, enhance: "Literal['legacy', 'native', 'alpine']" = 'legacy', **kwargs: 'object') -> 'None' '''
+redirect_htmx = '''(url: 'str') -> 'InteractionResult' '''
+retarget = '''(content: 'NodeLike | None', region: 'FragmentRegion | str', **kwargs: 'Any') -> 'InteractionResult' '''
+swap = '''(content: 'NodeLike | None', *, toast: 'str | NodeLike | OobUpdate | None' = None, oob: 'Sequence[OobUpdate | NodeLike]' = (), **kwargs: 'Any') -> 'InteractionResult' '''
+swap_oob = '''(content: 'NodeLike | None', *oob: 'OobUpdate | NodeLike', **kwargs: 'Any') -> 'InteractionResult' '''
+
+[packages.hedron-core]
+symbols = [
+  "Component",
+  "Page",
+  "Text",
+  "render",
+  "RenderMode",
+  "RenderContext",
+  "RenderResult",
+  "SafeUrl",
+  "TrustedHtml",
+  "Secret",
+  "FragmentRegion",
+  "InteractionResult",
+]
+
+[packages.hedron-core.signatures]
+Component = '''(props: 'PropsT | None' = None, /, **kwargs: 'object') -> 'None' '''
+Page = '''(*body: 'NodeLike', lang: 'str' = 'en', title: 'str | None' = None, head: 'NodeLike' = None, children: 'NodeLike' = None, data_theme: 'str | None' = None, data_hedron_theme: 'str | None' = None, dir: 'str | None' = None, scripts: 'Sequence[SafeUrl] | None' = None, script_defer: 'bool' = True, script_async: 'bool' = False, htmx_extensions: 'object' = None, **kwargs: 'object') -> 'None' '''
+Text = '''(content: 'str' = '', *, as_: "Literal['p', 'span', 'strong', 'em', 'small']" = 'p', role: 'TypographyRole | None' = None, overflow: 'OverflowMode | None' = None, lines: 'int | None' = None, measure: 'TypographyMeasure | None' = None, effect: 'TypographyEffect | None' = None, tracking: 'str | None' = None, wrap: 'str | None' = None, class_: 'str | None' = None, **kwargs: 'object') -> 'None' '''
+render = '''(value: 'NodeLike', *, context: 'RenderContext | None' = None, mode: 'RenderMode' = <RenderMode.FRAGMENT: 'fragment'>) -> 'RenderResult' '''
+RenderContext = '''(locale: 'str' = 'en', theme: 'str | None' = None, max_depth: 'int' = 100, max_nodes: 'int' = 50000, csrf_token: 'str | None' = None, csrf_form_field: 'str' = 'csrf_token', mount_path: 'str' = '') -> None'''
+RenderResult = '''(html: 'str', mode: 'RenderMode', assets: 'tuple[AssetRef, ...]' = (), headers: 'Mapping[str, str]' = <factory>, identity_map: 'Mapping[str, str]' = <factory>, diagnostics: 'tuple[Diagnostic, ...]' = (), trace: 'RenderTrace | Mapping[str, object] | None' = None, htmx_plan: 'object | None' = None, browser_plan: 'BrowserFeaturePlan' = <factory>, requires_htmx: 'bool' = False) -> None'''
+SafeUrl = '''(*args: 'object', **kwargs: 'object') -> 'None' '''
+TrustedHtml = '''(*args: 'object', **kwargs: 'object') -> 'None' '''
+Secret = '''(value: 'T') -> 'None' '''
+FragmentRegion = '''(id: 'str', selector: 'str', description: 'str' = '') -> None'''
+InteractionResult = '''(content: 'NodeLike | None' = None, status_code: 'int' = 200, target: 'str | None' = None, swap: 'str | None' = None, oob: 'tuple[OobUpdate, ...]' = (), trigger: 'str | Mapping[str, JsonValue] | None' = None, trigger_after_swap: 'str | Mapping[str, JsonValue] | None' = None, trigger_after_settle: 'str | Mapping[str, JsonValue] | None' = None, push_url: 'str | bool | None' = None, replace_url: 'str | bool | None' = None, redirect: 'str | None' = None, refresh: 'bool' = False, retarget: 'str | None' = None, reswap: 'str | None' = None, reselect: 'str | None' = None, location: 'str | HxLocation | Mapping[str, JsonValue] | None' = None, history: 'HistoryMode' = 'none', cache: 'CacheHint | None' = 'vary-htmx', concurrency: 'str | None' = None, action_state: 'ActionState | None' = None, action_trace: 'ActionTrace | None' = None, region_id: 'str | None' = None, policy: 'InteractionPolicy | None' = None, headers: 'Mapping[str, str]' = <factory>, explanation: 'str' = '', select_oob: 'str | None' = None) -> None'''
+
+[packages.edron]
+symbols = [
+  "__version__",
+  "App",
+  "Page",
+  "Container",
+  "Action",
+  "Fragment",
+  "Interaction",
+  "Outcome",
+  "action",
+  "fragment",
+  "expose",
+  "refresh",
+  "success",
+  "theme",
+  "create_scaffold",
+]
+
+[packages.edron.signatures]
+App = '''(*, title: 'str', theme: 'Any' = None, security: 'Any' = 'standard', session_secret: 'str | None' = None, production: 'bool | None' = None, build_dir: 'str | Path | None' = None, root_path: 'str | None' = None, debug: 'bool' = False) -> 'None' '''
+Page = '''() -> 'None' '''
+Container = '''(page: 'Page', kind: 'str' = 'stack', options: 'dict[str, Any]' = <factory>, children: 'list[Any]' = <factory>) -> None'''
+Action = '''(fn: 'Callable[..., Any]', method: 'str' = 'post', path: 'str | None' = None, name: 'str | None' = None, fallback: 'str | None' = None, idempotency: 'str' = 'optional', updates: 'Any' = None, dependencies: 'tuple[Any, ...]' = ()) -> None'''
+Fragment = '''(fn: 'Callable[..., Any]', path: 'str | None' = None, name: 'str | None' = None, fallback: 'str | None' = None, dependencies: 'tuple[Any, ...]' = ()) -> None'''
+Interaction = '''(kind: 'InteractionKind | str', event: 'str' = 'click', local_effect: 'LocalEffect | None' = None, request_effect: 'RequestEffect | None' = None, fallback: 'str' = 'native', source: 'str' = 'python', maturity: 'AlpineMaturity' = <AlpineMaturity.SUPPORTED: 'Supported'>) -> None'''
+Outcome = '''(role: 'OutcomeKind | str', payload: 'Mapping[str, object]' = <factory>) -> None'''
+action = '''(fn: 'Callable[..., Any] | None' = None, **kwargs: 'Any') -> 'Any' '''
+fragment = '''(fn: 'Callable[..., Any] | None' = None, **kwargs: 'Any') -> 'Any' '''
+expose = '''(surface: 'Fragment[P] | Action[P, Any]', *, name: 'str | None' = None, path: 'str | None' = None) -> 'Any' '''
+refresh = '''(*targets: 'Any') -> 'Outcome' '''
+success = '''(message: 'str | None' = None, *, status_code: 'int' = 200) -> 'Outcome' '''
+theme = '''(name: 'str', *, accent: 'str | Color', base: 'Theme | None' = None, density: 'Any' = 'comfortable', geometry: 'Any' = 'soft', typography: 'Any' = 'system-sans', elevation: 'Any' = 'subtle', motion: 'Any' = 'standard', navigation: 'Any' = 'default', recipes: 'tuple[StyleRecipe, ...]' = ()) -> 'DesignSystem' '''
+create_scaffold = '''(name: 'str', destination: 'str | Path', *, template: 'str' = 'minimal', overwrite: 'bool' = False) -> 'tuple[Path, ...]' '''
+
+[packages.edron.members]
+"App.page" = '''(self, path: 'str', *, title: 'str', name: 'str | None' = None, show_title: 'bool' = True, dependencies: 'Sequence[Any]' = ()) -> 'Callable[[type[Page]], type[Page]]' '''
+"App.include" = '''(self, feature: 'Any') -> 'Any' '''
+"Page.text" = '''(self, text: 'str', *, _target: 'Container | None' = None) -> 'None' '''
+"Page.button" = '''(self, label: 'str', *, action: 'Any' = None, variant: 'str' = 'primary', size: 'Any' = None, width: 'Any' = None, confirm: 'Any' = None, disabled: 'bool' = False, _target: 'Container | None' = None) -> 'None' '''
+"Page.form" = '''(self, model: 'Any' = None, *, action: 'Any', submit_label: 'str' = 'Submit', **kwargs: 'Any') -> 'None' '''
+"Page.dataframe" = '''(self, data: 'Any', *, caption: 'str | None' = None) -> 'None' '''
+"Page.chart" = '''(self, spec: 'Any', *, alternative: 'str | None' = None, _target: 'Container | None' = None) -> 'None' '''
+"Page.map" = '''(self, spec: 'Any' = None, *, center: 'tuple[float, float]' = (0.0, 0.0), zoom: 'float' = 2.0, title: 'str' = 'Map', description: 'str' = 'Geographic map', alternative: 'str | None' = None, _target: 'Container | None' = None, **kwargs: 'Any') -> 'None' '''
+"Interaction.local" = '''(action: 'str', *, event: 'str' = 'click', state_keys: 'Sequence[str]' = (), state: 'Mapping[str, object] | None' = None, scope: "Literal['self', 'ancestor']" = 'self', scope_owner: 'str | None' = None, fallback: 'str' = 'native', source: 'str' = 'python') -> 'Interaction' '''
+"Interaction.request" = '''(handle: 'str', *, event: 'str' = 'click', method: 'str' = 'POST', target: 'str | None' = None, swap: 'str' = 'outerHTML', operation: 'str | None' = None, sync: 'str | None' = None, fallback: 'str' = 'native', source: 'str' = 'python') -> 'Interaction' '''
+"Interaction.combined" = '''(action: 'str', handle: 'str', *, event: 'str' = 'click', state_keys: 'Sequence[str]' = (), state: 'Mapping[str, object] | None' = None, scope: "Literal['self', 'ancestor']" = 'self', scope_owner: 'str | None' = None, method: 'str' = 'POST', target: 'str | None' = None, swap: 'str' = 'outerHTML', operation: 'str | None' = None, sync: 'str | None' = None, fallback: 'str' = 'native', source: 'str' = 'python') -> 'Interaction' '''
+
+[packages.hedron-data]
+symbols = [
+  "__version__",
+  "Column",
+  "DataTable",
+  "DataEditor",
+  "DataPage",
+  "DataQuery",
+  "DataSaveResult",
+  "DataWorkspace",
+  "DataWorkspacePolicy",
+  "normalize_rows",
+  "resolve_columns",
+  "columns_from_model",
+]
+
+[packages.hedron-data.signatures]
+Column = '''(name: 'str', label: 'str | None' = None, editor: 'str | None' = None, read_only: 'bool' = False, hidden: 'bool' = False, secret: 'bool' = False, sortable: 'bool' = False, filterable: 'bool' = False, choices: 'tuple[JsonValue, ...] | None' = None, width: 'str | int | None' = None, display: 'str | None' = None, writable: 'bool | None' = None, format: 'str | None' = None) -> None'''
+DataTable = '''(rows: 'object' = None, *, row_model: 'type[Model] | None' = None, columns: 'Sequence[Column] | None' = None, page: 'DataPage[dict[str, JsonValue]] | None' = None, query: 'DataQuery | None' = None, caption: 'str | None' = None, empty_message: 'str' = 'No rows', page_size: 'int' = 25, allow_download: 'bool' = False, **kwargs: 'object') -> 'None' '''
+DataEditor = '''(rows: 'object' = None, *, key: 'str' = 'editor', row_model: 'type[Model] | None' = None, columns: 'Sequence[Column] | None' = None, key_field: 'str' = 'id', on_save: 'Callable[[DataChanges[dict[str, JsonValue]]], DataSaveResult[dict[str, JsonValue]]] | None' = None, source: 'DataEditorSource[dict[str, JsonValue]] | AsyncDataEditorSource[dict[str, JsonValue]] | None' = None, page: 'DataPage[dict[str, JsonValue]] | None' = None, save_mode: 'SaveMode' = 'batch', page_size: 'int' = 25, caption: 'str | None' = None, save_endpoint: 'str | None' = None, allow_deletes: 'bool' = True, **kwargs: 'object') -> 'None' '''
+DataPage = '''(rows: 'Sequence[T]', schema: 'tuple[ColumnSchema, ...]' = (), total: 'int | None' = None, next_offset: 'int | None' = None, next_cursor: 'str | None' = None, version: 'str | None' = None) -> None'''
+DataQuery = '''(offset: 'int' = 0, limit: 'int' = 25, cursor: 'str | None' = None, sort: 'tuple[tuple[str, str], ...]' = (), filters: 'Mapping[str, JsonValue]' = <factory>, projection: 'tuple[str, ...] | None' = None, search: 'str | None' = None, locale: 'str | None' = None, allowlisted_sort_fields: 'frozenset[str] | None' = None, allowlisted_filter_fields: 'frozenset[str] | None' = None, allowlisted_projection_fields: 'frozenset[str] | None' = None) -> None'''
+DataSaveResult = '''(ok: 'bool', accepted: 'DataChanges[T] | None' = None, normalized: 'Sequence[T]' = (), errors: 'tuple[FieldError, ...]' = (), conflicts: 'tuple[Conflict, ...]' = (), version: 'str | None' = None) -> None'''
+DataWorkspace = '''(name: 'str', *, model: 'type[ModelT]', source: 'DataEditorSource[RowMapping]', policy: 'DataWorkspacePolicy', create_model: 'type[BaseModel] | None' = None, edit_model: 'type[BaseModel] | None' = None, key_field: 'str' = 'id', provider: 'str' = 'hedron-data', provider_version: 'str | None' = None, columns: 'Sequence[Column | str]' = (), form_overrides: 'Mapping[str, object] | None' = None, list_override: 'Callable[..., object] | None' = None, detail_override: 'Callable[..., object] | None' = None, create_override: 'Callable[..., object] | None' = None, edit_override: 'Callable[..., object] | None' = None) -> 'None' '''
+DataWorkspacePolicy = '''(can_read: 'AuthzHook | None' = None, can_create: 'AuthzHook | None' = None, can_edit: 'AuthzHook | None' = None, delete: "Literal['disabled'] | AuthzHook" = 'disabled', optimism: "Literal['server_confirmed', 'collection_edit']" = 'server_confirmed') -> None'''
+normalize_rows = '''(data: 'object', *, max_rows: 'int' = 10000) -> 'list[dict[str, JsonValue]]' '''
+resolve_columns = '''(*, row_model: 'type[Model] | None' = None, columns: 'Sequence[Column] | None' = None, rows: 'Sequence[Mapping[str, JsonValue]] | None' = None) -> 'list[Column]' '''
+columns_from_model = '''(model: 'type[Model]') -> 'list[Column]' '''
+
+[packages.hedron-data.members]
+"DataWorkspace.to_bundle" = '''(self) -> 'FeatureBundle' '''
+
+[packages.hedron-charts]
+symbols = [
+  "__version__",
+  "Chart",
+  "ChartSpec",
+  "ChartPlan",
+  "LineChart",
+  "BarChart",
+  "AreaChart",
+  "ScatterChart",
+  "MatplotlibChart",
+  "MatplotlibAdapter",
+  "compile_chart",
+  "parse_chart_spec",
+  "beginner_to_spec",
+  "chart_from_beginner",
+  "export_csv",
+  "export_json",
+  "export_svg",
+]
+
+[packages.hedron-charts.signatures]
+Chart = '''(spec: 'ChartSpec | Mapping[str, Any] | None' = None, *, class_: 'str | None' = None, **kwargs: 'object') -> 'None' '''
+ChartSpec = '''(*, schema_version: int = 1, data: hedron_charts.spec.DataRef = <factory>, marks: tuple[hedron_charts.spec.MarkDef, ...] = (), scales: tuple[hedron_charts.spec.ScaleDef, ...] = (), guides: tuple[hedron_charts.spec.GuideDef, ...] = (), transforms: tuple[hedron_charts.spec.TransformDef, ...] = (), composition: dict[str, typing.Any] = <factory>, annotations: tuple[hedron_charts.spec.AnnotationDef, ...] = (), interaction: hedron_charts.spec.InteractionDef = <factory>, theme: hedron_charts.spec.ThemeDef = <factory>, export: hedron_charts.spec.ExportPolicy = <factory>, renderer: Literal['svg', 'canvas'] = 'svg', accessibility: hedron_charts.spec.AccessibilityDef) -> None'''
+ChartPlan = '''(*, schema_id: str = 'hedron-chart-spec/1', schema_version: int = 1, spec_fingerprint: str, data_fingerprint: str, domains: dict[str, list[typing.Any]] = <factory>, guides: tuple[hedron_charts.spec.GuideDef, ...] = (), marks: tuple[dict[str, typing.Any], ...] = (), mark_count: int = 0, renderer: hedron_charts.spec.RendererDecision, accessibility: hedron_charts.spec.AccessibilityPlan, assets: tuple[str, ...] = (), export: hedron_charts.spec.ExportPolicy = <factory>, warnings: tuple[str, ...] = (), limits: dict[str, int] = <factory>, theme: hedron_charts.spec.ThemeDef = <factory>, interaction: hedron_charts.spec.InteractionDef = <factory>, layout: dict[str, typing.Any] = <factory>, transformed_rows: tuple[dict[str, typing.Any], ...] = ()) -> None'''
+LineChart = '''(data: 'Sequence[Mapping[str, JsonValue]]', *, x: 'str', y: 'str', title: 'str', description: 'str | None' = None, alt: 'str | None' = None, waiver: 'str | None' = None, limits: 'VisualizationLimits | None' = None, **kwargs: 'object') -> 'None' '''
+BarChart = '''(data: 'Sequence[Mapping[str, JsonValue]]', *, x: 'str', y: 'str', title: 'str', description: 'str | None' = None, alt: 'str | None' = None, waiver: 'str | None' = None, limits: 'VisualizationLimits | None' = None, **kwargs: 'object') -> 'None' '''
+AreaChart = '''(data: 'Sequence[Mapping[str, JsonValue]]', *, x: 'str', y: 'str', title: 'str', description: 'str | None' = None, alt: 'str | None' = None, waiver: 'str | None' = None, limits: 'VisualizationLimits | None' = None, **kwargs: 'object') -> 'None' '''
+ScatterChart = '''(data: 'Sequence[Mapping[str, JsonValue]]', *, x: 'str', y: 'str', title: 'str', description: 'str | None' = None, alt: 'str | None' = None, waiver: 'str | None' = None, limits: 'VisualizationLimits | None' = None, **kwargs: 'object') -> 'None' '''
+MatplotlibChart = '''(figure: 'object', *, title: 'str | None' = None, description: 'str | None' = None, alt: 'str | None' = None, waiver: 'str | None' = None, fmt: 'str' = 'svg', **kwargs: 'object') -> 'None' '''
+MatplotlibAdapter = '''()'''
+compile_chart = '''(spec: 'ChartSpec | Mapping[str, object]') -> 'ChartPlan' '''
+parse_chart_spec = '''(value: 'Mapping[str, object] | ChartSpec') -> 'ChartSpec' '''
+beginner_to_spec = '''(*, kind: 'str', data: 'Sequence[Mapping[str, object]]', x: 'str', y: 'str', title: 'str', description: 'str', color: 'str | None' = None) -> 'ChartSpec' '''
+chart_from_beginner = '''(*, kind: 'str', data: 'Sequence[Mapping[str, JsonValue]]', x: 'str', y: 'str', title: 'str', description: 'str', color: 'str | None' = None, class_: 'str | None' = None) -> 'Chart' '''
+export_csv = '''(plan: 'ChartPlan', *, authorized: 'bool' = True) -> 'str' '''
+export_json = '''(plan: 'ChartPlan', *, authorized: 'bool' = True) -> 'str' '''
+export_svg = '''(plan: 'ChartPlan', *, authorized: 'bool' = True, width: 'int | None' = None) -> 'str' '''
+
+[packages.hedron-maps]
+symbols = [
+  "__version__",
+  "Map",
+  "MapSpec",
+  "MapPlan",
+  "MapPolicy",
+  "MapStyle",
+  "ViewState",
+  "Bounds",
+  "OpenStreetMap",
+  "NoBasemap",
+  "RasterTiles",
+  "TileJSON",
+  "VectorTiles",
+  "StaticImage",
+  "PMTiles",
+  "MBTiles",
+  "MarkerLayer",
+  "GeoJSONLayer",
+  "LineLayer",
+  "PolygonLayer",
+  "CircleLayer",
+  "RasterLayer",
+  "compile_map",
+  "parse_map_spec",
+]
+
+[packages.hedron-maps.signatures]
+Map = '''(spec: 'MapSpec | Mapping[str, Any] | None' = None, *, center: 'tuple[float, float]' = (0.0, 0.0), zoom: 'float' = 2.0, title: 'str' = 'Map', description: 'str' = 'Geographic map', basemap: 'object' = <object sentinel>, policy: 'MapPolicy | None' = None, layers: 'Sequence[object]' = (), tiles: 'str | None' = None, tile_allowlist: 'Sequence[str]' = (), attribution: 'str' = '', markers: 'Sequence[MarkerSpec | Mapping[str, Any]]' = (), geojson: 'Mapping[str, Any] | None' = None, max_features: 'int' = 500, class_: 'str | None' = None, **kwargs: 'object') -> 'None' '''
+MapSpec = '''(*, schema_version: int = 1, basemap: Optional[Annotated[hedron_maps.spec.OpenStreetMap | hedron_maps.spec.RasterTiles | hedron_maps.spec.TileJSON | hedron_maps.spec.VectorTiles | hedron_maps.spec.StaticImage | hedron_maps.spec.PMTiles | hedron_maps.spec.MBTiles | hedron_maps.spec.NoBasemap, FieldInfo(annotation=NoneType, required=True, discriminator='kind')]] = None, layers: tuple[typing.Annotated[hedron_maps.spec.MarkerLayer | hedron_maps.spec.GeoJSONLayer | hedron_maps.spec.LineLayer | hedron_maps.spec.PolygonLayer | hedron_maps.spec.CircleLayer | hedron_maps.spec.RasterLayer, FieldInfo(annotation=NoneType, required=True, discriminator='kind')], ...] = (), view: hedron_maps.spec.ViewState = <factory>, controls: hedron_maps.spec.ControlsDef = <factory>, theme: hedron_maps.spec.MapTheme = <factory>, accessibility: hedron_maps.spec.AccessibilityDef, policy: hedron_maps.spec.MapPolicy | None = None, interactions: tuple[str, ...] = ()) -> None'''
+MapPlan = '''(*, schema_id: str = 'hedron-map-spec/1', schema_version: int = 1, spec_fingerprint: str, plan_fingerprint: str, renderer: dict[str, object], resources: tuple[str, ...] = (), origins: tuple[str, ...] = (), csp: dict[str, str] = <factory>, attribution: tuple[str, ...] = (), fallback: dict[str, object] = <factory>, bounds: hedron_maps.spec.Bounds | None = None, view: hedron_maps.spec.ViewState = <factory>, layers: tuple[dict[str, object], ...] = (), style: dict[str, object] = <factory>, limits: dict[str, int] = <factory>, warnings: tuple[str, ...] = (), accessibility: hedron_maps.spec.AccessibilityPlan, events: tuple[str, ...] = (), failure_states: tuple[str, ...] = ('loading', 'empty', 'unsupported', 'renderer', 'source', 'partial'), source_kind: Literal['openstreetmap-standard', 'xyz-raster', 'tilejson', 'mvt-vector', 'static-image', 'pmtiles', 'mbtiles', 'none'] = 'none', preset_id: str | None = None) -> None'''
+MapPolicy = '''(*, allowed_origins: tuple[str, ...] = (), allowed_source_kinds: tuple[typing.Literal['openstreetmap-standard', 'xyz-raster', 'tilejson', 'mvt-vector', 'static-image', 'pmtiles', 'mbtiles', 'none'], ...] = ('openstreetmap-standard', 'xyz-raster', 'tilejson', 'mvt-vector', 'static-image', 'pmtiles', 'mbtiles', 'none'), remote_requests_permitted: bool = True, allow_proxy: bool = False) -> None'''
+MapStyle = '''(*, version: int = 8, name: str | None = None, sources: dict[str, dict[str, object]] = <factory>, layers: tuple[dict[str, object], ...] = (), glyphs: str | None = None, sprite: str | None = None) -> None'''
+ViewState = '''(*, center: tuple[float, float] = (0.0, 0.0), zoom: float = 2.0, bearing: float = 0.0, pitch: float = 0.0, fit: Literal['none', 'layers'] = 'none', padding: float = 0.0) -> None'''
+Bounds = '''(*, west: float, south: float, east: float, north: float) -> None'''
+OpenStreetMap = '''(*, kind: Literal['openstreetmap-standard'] = 'openstreetmap-standard', tile_url: str = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: str = '© OpenStreetMap contributors', min_zoom: int = 0, max_zoom: int = 19, tile_size: int = 256, scale: str | None = None, subdomain: str | None = None) -> None'''
+NoBasemap = '''(*, kind: Literal['none'] = 'none') -> None'''
+RasterTiles = '''(*, kind: Literal['xyz-raster'] = 'xyz-raster', url: str, attribution: str, tile_size: int = 256, min_zoom: int = 0, max_zoom: int = 18, scheme: Literal['xyz', 'tms'] = 'xyz', scale: str | None = None, subdomain: str | None = None) -> None'''
+TileJSON = '''(*, kind: Literal['tilejson'] = 'tilejson', attribution: str, url: str | None = None, document: dict[str, object] | None = None) -> None'''
+VectorTiles = '''(*, kind: Literal['mvt-vector'] = 'mvt-vector', url: str, attribution: str, min_zoom: int = 0, max_zoom: int = 14, style: hedron_maps.spec.MapStyle | None = None) -> None'''
+StaticImage = '''(*, kind: Literal['static-image'] = 'static-image', src: str, attribution: str = '', bounds: tuple[float, float, float, float] | None = None) -> None'''
+PMTiles = '''(*, kind: Literal['pmtiles'] = 'pmtiles', src: str, attribution: str = '', style: str | None = None, vector: bool = False) -> None'''
+MBTiles = '''(*, kind: Literal['mbtiles'] = 'mbtiles', archive_id: str, attribution: str = '', min_zoom: int = 0, max_zoom: int = 14, route_template: str = '/hedron-maps/mbtiles/{archive_id}/{z}/{x}/{y}') -> None'''
+MarkerLayer = '''(*, kind: Literal['marker'] = 'marker', markers: tuple[dict[str, object], ...] = ()) -> None'''
+GeoJSONLayer = '''(*, kind: Literal['geojson'] = 'geojson', data: dict[str, object], paint: dict[str, object] | None = None) -> None'''
+LineLayer = '''(*, kind: Literal['line'] = 'line', data: dict[str, object], paint: dict[str, object] | None = None) -> None'''
+PolygonLayer = '''(*, kind: Literal['polygon'] = 'polygon', data: dict[str, object], paint: dict[str, object] | None = None) -> None'''
+CircleLayer = '''(*, kind: Literal['circle'] = 'circle', data: dict[str, object], paint: dict[str, object] | None = None) -> None'''
+RasterLayer = '''(*, kind: Literal['raster'] = 'raster', source: str, paint: dict[str, object] | None = None) -> None'''
+compile_map = '''(spec: 'MapSpec | Mapping[str, object]', policy: 'MapPolicy | None' = None, *, max_features: 'int' = 500) -> 'MapPlan' '''
+parse_map_spec = '''(raw: 'MapSpec | Mapping[str, object]') -> 'MapSpec' '''

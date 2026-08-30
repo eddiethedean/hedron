@@ -541,6 +541,9 @@ HED_MIGRATE_0675 = "HED-MIGRATE-0675"  # app.screen -> app.page
 HED_MIGRATE_0676 = "HED-MIGRATE-0676"  # app.refreshable -> app.view
 HED_MIGRATE_0677 = "HED-MIGRATE-0677"  # app.command -> app.action
 HED_MIGRATE_0678 = "HED-MIGRATE-0678"  # app.form_command -> app.action
+HED_MIGRATE_0679 = "HED-MIGRATE-0679"  # flask.component -> flask.view
+HED_MIGRATE_0680 = "HED-MIGRATE-0680"  # blueprint.component -> blueprint.view
+HED_MIGRATE_0681 = "HED-MIGRATE-0681"  # blueprint.include_feature -> blueprint.include
 
 
 def registered_codes() -> frozenset[str]:

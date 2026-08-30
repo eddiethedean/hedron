@@ -4,11 +4,12 @@ from __future__ import annotations
 
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field, replace
-from enum import StrEnum
 from pathlib import PurePath
 from typing import TYPE_CHECKING, cast
 
 from packaging.version import InvalidVersion, Version
+
+from hedron_core.compat import StrEnum
 
 if TYPE_CHECKING:
     from hedron_core.typing_aliases import DiagnosticDict, JsonObject, JsonValue, SourceSpanDict
@@ -126,7 +127,7 @@ class Diagnostic:
     remediation: str = ""
     owner: str | None = None
     component_id: str | None = None
-    context: Mapping[str, object] = field(default_factory=dict)
+    context: Mapping[str, object] = field(default_factory=dict[str, object])
     docs_url: str | None = None
     span: SourceSpan | None = None
     applicability: ApplicabilityInterval | None = None

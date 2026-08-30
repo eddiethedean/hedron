@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import logging
 from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, Literal
@@ -10,53 +9,28 @@ from typing import Any, Literal
 from fastapi import FastAPI
 from fastapi.params import Depends as DependsParam
 
-from hedron.app.explorer import (
-    ExplorerMode,
-    install_explorer_bridges,
-    mount_explorer_if_enabled,
-    resolve_explorer_mode,
+from hedron.app.bootstrap import (
+    HedronBootstrapConfig,
+    HedronBootstrapper,
+    HedronBootstrapStep,
+    normalize_theme_selection,
 )
+from hedron.app.explorer import ExplorerMode
 from hedron.app.pages import HedronPagesMixin
-from hedron.app.sessions import DEFAULT_SESSION_SECRET, configure_sessions
+from hedron.app.sessions import DEFAULT_SESSION_SECRET
+from hedron.concurrency import ConcurrencyConfig, ConcurrencyLimiter
+from hedron.fastapi_compat import cached_openapi
 from hedron.lifespan import compose_lifespan
-from hedron.openapi import install_openapi
 from hedron.routing.router import HedronRouter
-from hedron.security.headers import SecurityHeadersMiddleware
-from hedron.security.plane_middleware import SecurityPlaneMiddleware
-from hedron.security.policy import SecurityPolicy, SecurityProfile, SecurityProfileName
-from hedron.static_mount import mount_build_assets, mount_hedron_static
-from hedron_core.compile_gate import is_production_env
+from hedron.runtime import HedronRuntimeContext, RuntimeContextMiddleware
+from hedron.security.policy import SecurityPolicy, SecurityProfileName
+from hedron.tracing import TraceConfig
+from hedron_core.cache.backend import CacheBackend
 from hedron_core.design_system import DesignSystem
-from hedron_core.theme import Theme, ensure_default_theme_registered, register_theme_instance
-
-logger = logging.getLogger("hedron")
+from hedron_core.jobs.backend import JobBackend
+from hedron_core.theme import Theme
 
 __all__ = ["Hedron"]
-
-
-def _normalize_theme_selection(
-    theme: str | Theme | DesignSystem | None,
-) -> tuple[str | None, DesignSystem | None]:
-    """Normalize ``str | Theme | DesignSystem | None`` to theme name + optional DesignSystem."""
-    if theme is None:
-        return None, None
-    if isinstance(theme, str):
-        return theme, None
-    from hedron_core.registry import get_registry
-
-    design: DesignSystem | None = None
-    if isinstance(theme, DesignSystem):
-        design = theme
-        theme_obj = theme.to_theme()
-    elif isinstance(theme, Theme):
-        theme_obj = theme
-    else:
-        raise TypeError(
-            f"theme must be str | Theme | DesignSystem | None; got {type(theme).__name__}"
-        )
-    if get_registry().get_theme(theme_obj.name) is None:
-        register_theme_instance(theme_obj)
-    return theme_obj.name, design
 
 
 class Hedron(HedronPagesMixin, FastAPI):
@@ -64,7 +38,7 @@ class Hedron(HedronPagesMixin, FastAPI):
 
     Installs session middleware (when enabled), CSRF-aware security profiles,
     security headers, bundled HTMX static assets, and a root ``HedronRouter`` for
-    ``@page`` / ``@component`` / ``@action`` routes.
+    ``@page`` / ``@view`` / ``@action`` routes.
 
     Args:
         security: Built-in profile name (``development`` / ``standard`` / ``strict``)
@@ -79,11 +53,22 @@ class Hedron(HedronPagesMixin, FastAPI):
         theme: Registered theme name, ``Theme``, ``DesignSystem``, or ``None``
             (no construction-time selection; lifespan may still default).
         default_styles: When ``True``, emit default theme styles on PAGE responses.
+        demand_driven_assets: When ``True``, emit HTMX, Alpine, UI, and specialist browser
+            assets only when the rendered document declares the corresponding capability.
+            ``False`` preserves the 1.0 eager-asset compatibility behavior.
         build_dir: Optional precompiled asset manifest directory for production.
         production: Force production gate behavior; ``None`` follows ``HEDRON_ENV``.
         root_path: Optional construction-time mount (cookie Path / asset prefix).
             Wins over ``HEDRON_ROOT_PATH`` when set. ASGI ``root_path`` alone does
             not scope cookies.
+        bootstrap_steps: Optional extension steps run after Hedron's mandatory
+            identity, security, middleware, routing, and integration setup.
+        cache_backend: Application-owned cache backend. If omitted, an isolated
+            in-memory backend is created for this application.
+        job_backend: Application-owned job backend. If omitted, an isolated
+            in-memory backend is created for this application.
+        concurrency_config: Application-owned concurrency policy.
+        tracing_config: Application-owned tracing policy.
         *args: Forwarded to ``FastAPI``.
         **kwargs: Forwarded to ``FastAPI`` (``lifespan`` is composed with Hedron gates).
 
@@ -104,127 +89,63 @@ class Hedron(HedronPagesMixin, FastAPI):
         explorer_dependencies: Sequence[DependsParam] | None = None,
         theme: str | Theme | DesignSystem | None = "default",
         default_styles: bool = True,
+        demand_driven_assets: bool = False,
         build_dir: str | Path | None = None,
         production: bool | None = None,
         root_path: str | None = None,
+        bootstrap_steps: Sequence[HedronBootstrapStep] | None = None,
+        cache_backend: CacheBackend | None = None,
+        job_backend: JobBackend | None = None,
+        concurrency_config: ConcurrencyConfig | None = None,
+        tracing_config: TraceConfig | None = None,
         **kwargs: Any,
     ) -> None:
+        self._hedron_runtime = HedronRuntimeContext.from_defaults()
+        if cache_backend is not None:
+            self._hedron_runtime.cache = cache_backend
+        if job_backend is not None:
+            self._hedron_runtime.jobs = job_backend
+        if concurrency_config is not None:
+            self._hedron_runtime.concurrency = concurrency_config
+            self._hedron_runtime.limiter = ConcurrencyLimiter(concurrency_config)
+        if tracing_config is not None:
+            self._hedron_runtime.tracing = tracing_config
         user_lifespan = kwargs.pop("lifespan", None)
-        resolved_theme, design_system = _normalize_theme_selection(theme)
-        kwargs.setdefault(
-            "lifespan",
-            compose_lifespan(
-                user_lifespan,
-                production=production,
-                build_dir=build_dir,
+        with self._hedron_runtime.activate():
+            resolved_theme, design_system = normalize_theme_selection(theme)
+            kwargs.setdefault(
+                "lifespan",
+                compose_lifespan(
+                    user_lifespan,
+                    production=production,
+                    build_dir=build_dir,
+                    theme=resolved_theme,
+                ),
+            )
+            super().__init__(*args, **kwargs)
+            self._explorer_dependencies = (
+                list(explorer_dependencies) if explorer_dependencies is not None else []
+            )
+            config = HedronBootstrapConfig(
+                security=security,
+                explorer=explorer,
+                session_secret=session_secret,
+                enable_sessions=enable_sessions,
+                explorer_dependencies=tuple(self._explorer_dependencies),
                 theme=resolved_theme,
-            ),
-        )
-        super().__init__(*args, **kwargs)
-
-        import secrets
-
-        self.hedron_policy = SecurityPolicy.from_name(security)
-        self.hedron_app_id = secrets.token_hex(8)
-        self.state.hedron_app_id = self.hedron_app_id
-        is_prod = is_production_env(production=production)
-        requested_explorer_mode = resolve_explorer_mode(
-            explorer,
-            explorer_enabled=self.hedron_policy.explorer_enabled,
-            is_prod=False,
-        )
-        self.hedron_explorer_mode = resolve_explorer_mode(
-            explorer,
-            explorer_enabled=self.hedron_policy.explorer_enabled,
-            is_prod=is_prod,
-        )
-
-        self.hedron_theme = resolved_theme
-        self.hedron_design_system = design_system
-        self.hedron_default_styles = default_styles
-        self.state.hedron_security = self.hedron_policy
-        self.state.hedron_theme = resolved_theme
-        self.state.hedron_design_system = design_system
-        self.state.hedron_default_styles = default_styles
-        self.state.hedron_production = production if production is not None else is_prod
-        self._explorer_dependencies = list(explorer_dependencies or [])
-
-        ensure_default_theme_registered()
-
-        from hedron_core.production_gate import (
-            assert_durable_backends,
-            assert_production_security_config,
-        )
-
-        assert_durable_backends(
-            production=is_prod,
-            strict_profile=self.hedron_policy.profile is SecurityProfile.STRICT,
-        )
-        assert_production_security_config(
-            production=is_prod,
-            security_profile=self.hedron_policy.profile.value,
-            session_secret=session_secret,
-            sessions_enabled=enable_sessions,
-            explorer_mode=requested_explorer_mode,
-            allow_external_redirects=self.hedron_policy.allow_external_redirects,
-            content_security_policy=self.hedron_policy.content_security_policy,
-        )
-
-        mount_cookie_path = "/"
-        mount_was_configured = False
-        try:
-            from hedron.mount import normalize_mount_path, resolve_mount_path_from_environ
-
-            if root_path is not None:
-                mount_was_configured = True
-                explicit = normalize_mount_path(root_path)
-                mount_cookie_path = explicit if explicit else "/"
-                self.state.hedron_mount_path = explicit
-            else:
-                env_mount = resolve_mount_path_from_environ()
-                if env_mount is not None:
-                    mount_was_configured = True
-                    mount_cookie_path = env_mount.cookie_path
-                    self.state.hedron_mount_path = env_mount.path
-                else:
-                    self.state.hedron_mount_path = ""
-        except (ImportError, OSError, ValueError, TypeError) as exc:
-            logger.debug("Mount path from environ unavailable: %s", exc)
-            self.state.hedron_mount_path = ""
-        self.state.hedron_mount_was_configured = mount_was_configured
-
-        configure_sessions(
-            self,
-            session_secret=session_secret,
-            enable_sessions=enable_sessions,
-            is_prod=is_prod,
-            mount_cookie_path=mount_cookie_path,
-        )
-        self.add_middleware(SecurityHeadersMiddleware, policy=self.hedron_policy)
-        self.add_middleware(
-            SecurityPlaneMiddleware,
-            policy=self.hedron_policy,
-            application_id=getattr(self.state, "hedron_app_id", "hedron"),
-        )
-
-        mount_hedron_static(self)
-        mount_build_assets(self, build_dir)
-
-        self._root_router = HedronRouter()
-        self._root_router._hedron_host_app = self
-        install_openapi(self)
-
-        from hedron.status_responses import install_interaction_handlers
-
-        install_interaction_handlers(self)
-
-        install_explorer_bridges(self)
-
-        mount_explorer_if_enabled(
-            self,
-            explorer_mode=self.hedron_explorer_mode,
-            explorer_dependencies=self._explorer_dependencies,
-        )
+                design_system=design_system,
+                default_styles=default_styles,
+                build_dir=build_dir,
+                production=production,
+                root_path=root_path,
+            )
+            extensions = tuple(bootstrap_steps) if bootstrap_steps is not None else ()
+            HedronBootstrapper(extension_steps=extensions).bootstrap(self, config)
+            self.state.hedron_demand_driven_assets = demand_driven_assets
+            self.add_middleware(
+                RuntimeContextMiddleware,
+                runtime=self._hedron_runtime,
+            )
 
     @property
     def interactions(self) -> object:
@@ -245,30 +166,31 @@ class Hedron(HedronPagesMixin, FastAPI):
         allowed_roots: Sequence[str | Path] | None = None,
     ) -> object:
         """Register one explicit local application stylesheet before the build seal."""
-        from hedron.registration import fail_closed_late_registration
-        from hedron_core.catalog import get_sealed_catalog
-        from hedron_core.registry import register_application_style
-        from hedron_core.registry.builder import active_builder
+        with self._hedron_runtime.activate():
+            from hedron.registration import fail_closed_late_registration
+            from hedron_core.catalog import get_sealed_catalog
+            from hedron_core.registry import register_application_style
+            from hedron_core.registry.builder import active_builder
 
-        fail_closed_late_registration(
-            registry_sealed=active_builder()._sealed,
-            catalog_sealed=get_sealed_catalog() is not None,
-            openapi_cached=self.openapi_schema is not None,
-        )
-        meta = register_application_style(
-            name=name,
-            source=source,
-            scope=scope,
-            layer=layer,
-            global_=global_,
-            media=media,
-            owner="application",
-            provenance=f"{type(self).__module__}.{type(self).__name__}",
-            allowed_roots=tuple(allowed_roots or (Path.cwd(),)),
-        )
-        existing = tuple(getattr(self.state, "hedron_application_styles", ()))
-        self.state.hedron_application_styles = (*existing, meta.logical_id)
-        return meta
+            fail_closed_late_registration(
+                registry_sealed=active_builder().is_sealed,
+                catalog_sealed=get_sealed_catalog() is not None,
+                openapi_cached=cached_openapi(self) is not None,
+            )
+            meta = register_application_style(
+                name=name,
+                source=source,
+                scope=scope,
+                layer=layer,
+                global_=global_,
+                media=media,
+                owner="application",
+                provenance=f"{type(self).__module__}.{type(self).__name__}",
+                allowed_roots=tuple(allowed_roots or (Path.cwd(),)),
+            )
+            existing = tuple(getattr(self.state, "hedron_application_styles", ()))
+            self.state.hedron_application_styles = (*existing, meta.logical_id)
+            return meta
 
     def include_router(self, router: Any, *args: Any, **kwargs: Any) -> None:  # type: ignore[override]
         from hedron.registration import fail_closed_late_registration
@@ -277,10 +199,10 @@ class Hedron(HedronPagesMixin, FastAPI):
 
         builder = active_builder()
         fail_closed_late_registration(
-            registry_sealed=builder._sealed,
+            registry_sealed=builder.is_sealed,
             catalog_sealed=get_sealed_catalog() is not None,
-            openapi_cached=self.openapi_schema is not None,
+            openapi_cached=cached_openapi(self) is not None,
         )
         if isinstance(router, HedronRouter):
-            router._hedron_host_app = self
+            router.attach_host_app(self)
         super().include_router(router, *args, **kwargs)

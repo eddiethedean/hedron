@@ -1,22 +1,30 @@
 [project]
 name = "hedron-sample-kit"
-version = "0.2.1"
+version = "0.2.3"
 description = "Third-party-shaped sample Hedron plugin package for phase 0.4"
 readme = "README.md"
-requires-python = ">=3.11,<3.15"
+requires-python = ">=3.10,<3.15"
 license = "MIT"
 license-files = ["LICENSE"]
 dependencies = [
-    "hedron-core>=0.67.0,<0.68",
+    "hedron-core>=1.0.0,<2.0",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Typing :: Typed",
 ]
 
 [project.optional-dependencies]
 authoring = [
-    "hedron-conformance>=0.67.0,<0.68",
+    "hedron-conformance>=0.67.0,<2.0",
 ]
 
 [project.entry-points."hedron.plugins"]

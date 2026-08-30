@@ -115,7 +115,7 @@ reports = TaskFlow(
     authorize_submit=Depends(allow),
     result=lambda result: Text(str(result)),
 )
-app.include_feature(reports)
+app.include(reports)
 ```
 
 Recipe: [Jobs poll](../examples/jobs-poll.md). Scaffold: `hedron new NAME --template task`.

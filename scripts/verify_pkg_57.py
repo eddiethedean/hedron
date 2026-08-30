@@ -6,8 +6,9 @@ from __future__ import annotations
 import argparse
 import subprocess
 import sys
-import tomllib
 from pathlib import Path
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -126,10 +127,11 @@ def _check_versions(*, allow_planned: bool) -> None:
         or published.startswith("0.60.")
         or published.startswith("0.61.")
         or published.startswith("0.62.")
-            or published.startswith("0.63.")
-            or published.startswith("0.64.")
-            or published.startswith("0.65.")
-            or published.startswith("0.66.")
+        or published.startswith("0.63.")
+        or published.startswith("0.64.")
+        or published.startswith("0.65.")
+        or published.startswith("0.66.")
+        or published.startswith("1.")
     ):
         print(f"ok: 0.57 historical under living published {published}")
         return
@@ -193,6 +195,7 @@ def main(argv: list[str] | None = None) -> int:
             or published.startswith("0.64.")
             or published.startswith("0.65.")
             or published.startswith("0.66.")
+            or published.startswith("1.")
         ):
             print("ok: 0.57 historical packet; skip execute-verified under living tip")
         else:

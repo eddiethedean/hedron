@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.3] — 2026-08-30
+
+### Changed
+
+- Publish the Python 3.10 wheel and metadata floor as a new immutable version instead of
+  attempting to add changed artifacts to the existing `0.1.2` release.
+- Disable path-bearing generated Rust SBOM metadata so repeated wheel and sdist builds remain
+  byte-for-byte reproducible; repository release evidence retains dependency provenance.
+
 ## [0.43.0] — 2026-08-16
 
 ### Changed

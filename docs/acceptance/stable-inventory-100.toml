@@ -1,37 +1,152 @@
 schema_version = 1
 phase = "1.0"
-status = "Draft; package and symbol census pending W0"
+status = "Verified; enumerated stable surface reviewed for the 1.0 cut"
 baseline = "v0.67.0"
-stable_rule = "SemVer applies only to this enumerated inventory; Beta and Experimental exports remain outside it."
-
-[[package]]
-name = "hedron-core"
-version = "0.67.0"
-disposition = "coordinated-cut"
+baseline_commit = "82bd0e4f8fcd2ae75fd50fd2c41e18fbd674ace6"
+stable_rule = "Every export is enumerated; only rows explicitly classified stable enter the SemVer promise."
 
 [[package]]
 name = "hedron"
+import = "hedron"
 version = "0.67.0"
 disposition = "coordinated-cut"
 
-[[package]]
-name = "hedron-explorer"
-version = "0.67.0"
-disposition = "coordinated-cut"
+[[symbol]]
+qualified = "hedron.__version__"
+maturity = "stable"
+disposition = "stable"
 
-[[package]]
-name = "hedron-jinja"
-version = "0.67.0"
-disposition = "coordinated-cut"
+[[symbol]]
+qualified = "hedron.CsrfField"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.CsrfStrategy"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.DoubleSubmitCookieCsrf"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.Form"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.FormErrors"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.FormField"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.FragmentRegion"
+maturity = "stable"
+disposition = "stable"
 
 [[symbol]]
 qualified = "hedron.Hedron"
-disposition = "canonical"
+maturity = "stable"
+disposition = "stable"
 
 [[symbol]]
-qualified = "hedron_core.Interaction"
-disposition = "canonical"
+qualified = "hedron.HedronRouter"
+maturity = "stable"
+disposition = "stable"
 
 [[symbol]]
-qualified = "hedron_core.Outcome"
-disposition = "canonical"
+qualified = "hedron.html"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.Hx"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.Label"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.Page"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.Poll"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.redirect_htmx"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.RefreshButton"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.retarget"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.SecurityHeadersPolicy"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.SecurityPolicy"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.SessionTokenCsrf"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.Stack"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.SubmitButton"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.swap"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.swap_oob"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.Text"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.TextArea"
+maturity = "stable"
+disposition = "stable"
+
+[[symbol]]
+qualified = "hedron.TextInput"
+maturity = "stable"
+disposition = "stable"

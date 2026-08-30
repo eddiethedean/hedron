@@ -66,7 +66,13 @@ class InMemoryDataSource:
         search_fields: Sequence[str] = (),
         version: str = "1",
         audit_hook: Callable[[DataChanges[dict[str, JsonValue]]], None] | None = None,
+        max_rows: int = 100_000,
     ) -> None:
+        if max_rows < 1:
+            raise ValueError("max_rows must be positive")
+        if len(rows) > max_rows:
+            raise ValueError("rows exceeds max_rows; use a query-backed data source")
+        self.max_rows = max_rows
         self._key_field = key_field
         built: dict[str, dict[str, JsonValue]] = {}
         for index, row in enumerate(rows):
@@ -102,18 +108,23 @@ class InMemoryDataSource:
         self._row_versions: dict[str, str] = {k: version for k in self._rows}
         self._schema = tuple(schema)
         # Deny-by-default: omitted writable_fields means no field is writable.
-        self._writable = frozenset() if writable_fields is None else writable_fields
+        self._writable: frozenset[str] = (
+            frozenset[str]() if writable_fields is None else writable_fields
+        )
         self._sort_allow = (
             frozenset[str]() if allowlisted_sort_fields is None else allowlisted_sort_fields
         )
+        self._sort_allow_was_omitted = allowlisted_sort_fields is None
         self._filter_allow = (
             frozenset[str]() if allowlisted_filter_fields is None else allowlisted_filter_fields
         )
+        self._filter_allow_was_omitted = allowlisted_filter_fields is None
         self._projection_allow = (
             frozenset[str]()
             if allowlisted_projection_fields is None
             else allowlisted_projection_fields
         )
+        self._projection_allow_was_omitted = allowlisted_projection_fields is None
         self._secret_fields = frozenset(c.name for c in self._schema if c.secret)
         self._search_fields = tuple(search_fields)
         self._dataset_version = version
@@ -121,15 +132,27 @@ class InMemoryDataSource:
         self._version_counter = int(version) if version.isdigit() else 1
         self._lock = threading.RLock()
 
+    def _configure_allowlists(self, fields: frozenset[str]) -> None:
+        """Fill omitted query allowlists from a trusted application schema.
+
+        Existing explicit restrictions are never widened. Secret columns remain
+        excluded from projection regardless of the supplied schema.
+        """
+        with self._lock:
+            if self._sort_allow_was_omitted:
+                self._sort_allow = fields
+                self._sort_allow_was_omitted = False
+            if self._filter_allow_was_omitted:
+                self._filter_allow = fields
+                self._filter_allow_was_omitted = False
+            if self._projection_allow_was_omitted:
+                self._projection_allow = fields - self._secret_fields
+                self._projection_allow_was_omitted = False
+
     @property
     def dataset_version(self) -> str:
         with self._lock:
             return self._dataset_version
-
-    def _next_version(self) -> str:
-        self._version_counter += 1
-        self._dataset_version = str(self._version_counter)
-        return self._dataset_version
 
     def fetch(self, query: DataQuery) -> DataPage[dict[str, JsonValue]]:
         with self._lock:
@@ -376,11 +399,23 @@ class InMemoryDataSource:
             deletes=tuple(accepted_deletes),
             dataset_version=dataset_version,
         )
-        if ok and self._audit_hook is not None:
-            # Audit is part of the transaction boundary. Do not publish the
-            # working copies until the callback has succeeded.
-            self._audit_hook(accepted)
         if ok:
+            if len(rows) > self.max_rows:
+                return DataSaveResult(
+                    ok=False,
+                    errors=(
+                        FieldError(
+                            row_key="*",
+                            field=None,
+                            message="In-memory data source row capacity exceeded",
+                        ),
+                    ),
+                    version=self._dataset_version,
+                )
+            if self._audit_hook is not None:
+                # Audit is part of the transaction boundary. Capacity checks
+                # must pass first so rejected writes are never reported as accepted.
+                self._audit_hook(accepted)
             self._rows = rows
             self._row_versions = row_versions
             self._version_counter = version_counter

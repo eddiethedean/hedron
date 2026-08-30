@@ -5,6 +5,10 @@ from __future__ import annotations
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
 from html.parser import HTMLParser
+from typing import TYPE_CHECKING, cast
+
+if TYPE_CHECKING:
+    from hedron_core.catalog import CatalogEntry, InteractionCatalog
 
 from hedron_core.interaction import FragmentRegion
 from hedron_core.testing.adapters import (
@@ -161,7 +165,7 @@ class AppScenario:
 
     _get: GetFn
     _post: PostFn
-    cookies: dict[str, str] = field(default_factory=dict)
+    cookies: dict[str, str] = field(default_factory=dict[str, str])
     last_response: AdapterResponse | None = None
 
     @classmethod
@@ -285,18 +289,28 @@ class AppScenario:
         dumped_raw = dump()
         if not isinstance(dumped_raw, Mapping):
             raise TypeError("submit_model requires model_dump() to return a mapping")
-        data = {str(key): "" if value is None else str(value) for key, value in dumped_raw.items()}
+        dumped = cast(Mapping[object, object], dumped_raw)
+        data = {str(key): "" if value is None else str(value) for key, value in dumped.items()}
         return self.fragment_post(path, data=data, target=target, headers=headers, cookies=cookies)
 
-    def catalog(self, *, app_id: str | None = None):
+    def catalog(self, *, app_id: str | None = None) -> InteractionCatalog:
+        """Compile the current interaction catalog for test assertions."""
         from hedron_core.catalog import compile_interaction_catalog
 
         return compile_interaction_catalog(app_id=app_id)
 
-    def catalog_entry(self, logical_id: str, *, app_id: str | None = None):
+    def catalog_entry(self, logical_id: str, *, app_id: str | None = None) -> CatalogEntry:
+        """Return one required catalog entry or raise its domain diagnostic."""
         return self.catalog(app_id=app_id).require(logical_id)
 
-    def assert_catalog_kind(self, logical_id: str, kind: str, *, app_id: str | None = None):
+    def assert_catalog_kind(
+        self,
+        logical_id: str,
+        kind: str,
+        *,
+        app_id: str | None = None,
+    ) -> CatalogEntry:
+        """Assert an entry kind and return the matching catalog entry."""
         entry = self.catalog_entry(logical_id, app_id=app_id)
         assert entry.kind == kind, f"{logical_id} kind {entry.kind!r} != {kind!r}"
         return entry
@@ -306,15 +320,21 @@ class AppScenario:
         rows: Sequence[object]
         if isinstance(payload, Mapping):
             detail = payload.get("detail", payload.get("errors", ()))
-            rows = detail if isinstance(detail, Sequence) else ()
+            rows = (
+                cast(Sequence[object], detail)
+                if isinstance(detail, Sequence) and not isinstance(detail, (str, bytes))
+                else ()
+            )
         else:
             rows = payload
         paths: list[str] = []
         for item in rows:
             if isinstance(item, Mapping):
-                loc = item.get("loc") or item.get("path")
-                if isinstance(loc, Sequence):
-                    paths.append(".".join(str(part) for part in loc if part not in {"body"}))
+                row = cast(Mapping[str, object], item)
+                loc = row.get("loc") or row.get("path")
+                if isinstance(loc, Sequence) and not isinstance(loc, (str, bytes)):
+                    location = cast(Sequence[object], loc)
+                    paths.append(".".join(str(part) for part in location if part not in {"body"}))
         return paths
 
     def _html(self, html: str | None) -> str:
@@ -521,16 +541,18 @@ class ModelDemoScenario:
     """
 
     app: AppScenario
-    synthetic_files: dict[str, bytes] = field(default_factory=dict)
-    synthetic_results: dict[str, Mapping[str, object]] = field(default_factory=dict)
+    synthetic_files: dict[str, bytes] = field(default_factory=dict[str, bytes])
+    synthetic_results: dict[str, Mapping[str, object]] = field(
+        default_factory=dict[str, Mapping[str, object]]
+    )
     trust_generated_output: bool = False
     max_file_bytes: int = 64_000
-    admissions: list[str] = field(default_factory=list)
-    progress_events: list[Mapping[str, object]] = field(default_factory=list)
-    cancellations: list[str] = field(default_factory=list)
+    admissions: list[str] = field(default_factory=list[str])
+    progress_events: list[Mapping[str, object]] = field(default_factory=list[Mapping[str, object]])
+    cancellations: list[str] = field(default_factory=list[str])
     consent_granted: bool = False
-    redacted_fields: list[str] = field(default_factory=list)
-    retained_record_ids: list[str] = field(default_factory=list)
+    redacted_fields: list[str] = field(default_factory=list[str])
+    retained_record_ids: list[str] = field(default_factory=list[str])
 
     def add_synthetic_file(self, name: str, content: bytes) -> None:
         if len(content) > self.max_file_bytes:

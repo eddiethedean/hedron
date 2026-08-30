@@ -12,7 +12,7 @@ renderer used by FastAPI, map portable `InteractionResult` values to native Flas
 responses, and integrate CSRF double-submit cookies with Flask sessions. Does **not**
 install FastAPI.
 
-**Package maturity:** Beta · **Stable train:** `0.66.x` (published as `v0.66.2` on PyPI) · **Beta repository train:** `0.67.0` · application pin `>=0.66.2,<0.67`; repository checkouts use `uv sync`
+**Package maturity:** Beta · **Package line:** `1.0.x` · pin `>=1.0.0,<2.0`
 
 Adapter capability readiness is **Supported** when pinned — see
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
@@ -20,17 +20,17 @@ Adapter capability readiness is **Supported** when pinned — see
 ## Install
 
 ```bash
-pip install "hedron-flask>=0.66.2,<0.67"
+pip install "hedron-flask>=1.0.0,<2.0"
 # or
-uv add "hedron-flask>=0.66.2,<0.67"
+uv add "hedron-flask>=1.0.0,<2.0"
 ```
 
-Requires Python 3.11–3.14, `hedron-core`, and Flask 3.x.
+Requires Python 3.10–3.14, `hedron-core`, and Flask 3.x.
 
 Scaffold a new Flask app:
 
 ```bash
-uvx --from "hedron>=0.66.2,<0.67" hedron new --flask my-flask-app
+uvx --from "hedron>=1.0.0,<1.1" hedron new --flask my-flask-app
 ```
 
 ## Quick start
@@ -75,7 +75,7 @@ flask --app app:create_app run --reload
 ## What this package includes
 
 - `HedronFlask` / `init_app` application integration
-- `HedronBlueprint` with `@page` / `@component` / `@action` style routing
+- `HedronBlueprint` with `@page` / `@view` / `@action` style routing
 - `component_response` / `interaction_response` helpers
 - Fragment region authorization and approved HTMX header merging
 - Portable `SecurityPolicy` headers and Flask-Login `AuthSignal` bridge

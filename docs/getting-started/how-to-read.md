@@ -19,14 +19,15 @@ the [API stability catalog](../api/STABILITY.md).
 
 | API level | Compatibility promise |
 |---|---|
-| **`stable`** | Compatibility-protected across 0.x trains; removal requires deprecation and migration guidance |
+| **`stable`** | Compatibility-protected throughout 1.x; an incompatible change requires a new major release plus migration guidance |
 | **`beta`** | Public and supported where the capability table says so; may change at a documented minor-train boundary |
 | **`experimental`** | May change or be removed at a minor boundary |
 | **`internal` / `deferred`** | Not a public application contract |
 
-Package classifiers provide additional context: the flagship, adapters, and
-`hedron-elements` (Supported inventory) are **Beta**. Always pin package versions. Package maturity
-does not override the two application questions above.
+Package classifiers provide additional context: `hedron-core`, `hedron`, `edron`, `hedron-data`,
+`hedron-charts`, and `hedron-maps` are
+**Stable** packages in 1.0, while satellites retain Beta or tooling-grade maturity. Always
+pin package versions. Package maturity does not override the two application questions above.
 
 ## Example
 
@@ -37,14 +38,14 @@ reference page before treating its signature as compatibility-protected.
 
 ## Current release
 
-The current published train is **0.66.x** (`v0.66.2` on PyPI).
-Install from PyPI:
+The current repository train is the **1.0.x** candidate (`v1.0.0`), but its Git tag/PyPI upload
+are deferred. PyPI currently serves Hedron `0.67.0` and Edron `0.9.0`. Install from PyPI:
 
 ```bash
-python -m pip install "hedron>=0.66.2,<0.67"
+python -m pip install "hedron>=0.67.0,<0.68"
 ```
 
 Pins: [Installation](installation.md).
 
-There is no commercial SLA or scheduled 1.0. See [Evaluate Hedron](../guides/evaluate.md)
+There is no commercial SLA. See [Evaluate Hedron](../guides/evaluate.md)
 for the adoption checklist and [Glossary](../GLOSSARY.md) for project terminology.

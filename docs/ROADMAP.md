@@ -7,8 +7,8 @@
     [What’s next](guides/whats-next.md). Capability maturity:
     [What’s ready today](guides/whats-ready.md).
 
-This is the **single** Hedron roadmap ledger. Stable production version: `v0.66.2`.
-Beta preview version: `v0.67.0`. Pin `hedron` for production; see
+This is the **single** Hedron roadmap ledger. Stable production version: `v1.0.0`.
+Migration baseline: `v0.67.0`. Pin `hedron` for production; see
 [What's ready today](guides/whats-ready.md) for capability maturity.
 
 ## Phase status (current train)
@@ -73,10 +73,10 @@ Beta preview version: `v0.67.0`. Pin `hedron` for production; see
 | **0.65** | Integrated styling platform and application CSS: declared local assets, public hooks, application cascade, namespaced tokens, diagnostics, ejection, eight bounded issue slices, and touched-surface fallback evidence | **Implemented and verified in-tree; release candidate `v0.65.0`** ([RFC-0092](rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md); [implementation](implementation/APPLICATION_STYLING_065.md); [scope](acceptance/application-styling-scope-065.md); [acceptance](acceptance/RELEASE_0_65.md)) |
 | **0.66** | HDJ parity and registry integration: app-scoped binding, registry-backed components/assets/themes/styles, live logical-ID interactions, portable HTMX facts, provider parity, and claim-honest evidence | **Stable `v0.66.2`** ([RFC-0093](rfcs/RFC-0093-HDJ-PARITY-AND-REGISTRY-INTEGRATION.md); [implementation](implementation/HDJ_PARITY_066.md); [acceptance](acceptance/RELEASE_0_66.md)) |
 | **0.67** | Alpine browser-local features, bidirectional Alpine/Web-Component engine dispositions, and an opt-in preview of one unified Alpine/HTMX/Hedron interaction and lifecycle model | **Beta `v0.67.0`; implemented and verified in-tree** ([RFC-0095](rfcs/RFC-0095-ALPINE-BROWSER-ENHANCEMENT.md); D-113 / D-115 / D-116; [implementation](implementation/ALPINE_INTEGRATION_067.md); [engine dispositions](implementation/COMPONENT_ENGINE_DISPOSITIONS_067_1_0.md); [acceptance](acceptance/RELEASE_0_67.md)) |
-| **1.0** | Canonical developer-interface, HTMX/Alpine interaction, and component-engine consolidation; removal of fully warned 0.67 compatibility paths | **Stage 0 Refined; implementation pending** ([RFC-0096](rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md); D-114–D-117; [implementation](implementation/HEDRON_1_0.md); [acceptance](acceptance/RELEASE_1_0.md)); every 1.0 application must run unchanged on 0.67 |
+| **1.0** | Canonical developer-interface, HTMX/Alpine interaction, and component-engine consolidation; removal of fully warned 0.67 compatibility paths | **Verified in-tree release candidate; tag/PyPI publication deferred** ([RFC-0096](rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md); D-114–D-117; [implementation](implementation/HEDRON_1_0.md); [acceptance](acceptance/RELEASE_1_0.md)); every 1.0 application runs unchanged on 0.67 |
 
-Edron is independently versioned and does not consume Hedron phase numbers. Its compatible Hedron
-train remains unassigned; see the [Edron `0.x` release roadmap](EDRON_ROADMAP.md).
+Edron is independently versioned. Edron `1.0.0` directly requires Hedron
+`>=1.0.0,<2.0`; see the [Edron release roadmap](EDRON_ROADMAP.md).
 
 ### Phase 0.64 enhancement inventory
 
@@ -158,11 +158,12 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
 
 ### What this means for you
 
-- Pin `hedron` (and extras) in production; `0.x` may still take breaking changes under the
+- Pin `hedron` (and extras) in production; 1.x follows the stable compatibility policy in
   [compatibility policy](COMPATIBILITY.md).
-- Package maturity is **Beta** for the flagship, adapters, charts, and native Supported inventories.
-- Hedron `1.0` is now planned after Verified 0.67 under D-114/D-115/D-116; D-038's earlier unscheduled status is
-  superseded. `fastapi-workbench` 1.0.0 in phase 0.30 remains an independently versioned package
+- Package maturity is **Stable** for the coordinated 1.0 inventory; satellites retain their
+  independent classifications.
+- Hedron `1.0` is implemented and Verified in-tree from the 0.67 baseline under D-114–D-117;
+  tag/PyPI publication is deferred. `fastapi-workbench` 1.0.1 remains an independently versioned package
   release, not Hedron 1.0. A **minimal + expanded (0.23) `stable` API
   tier** is catalogued in [STABILITY.md](api/STABILITY.md); most other public APIs remain `beta` or
   `experimental`.
@@ -6862,15 +6863,15 @@ tag-by-tag recommendations are the
 
 ## Hedron 1.0 — interface and HTMX/Alpine interaction consolidation
 
-**Status:** **Stage 0 Refined; implementation pending.** Verified Beta `v0.67.0` is the immutable
-planning baseline and required predecessor. D-117 turns the D-114–D-116 architecture and 0.67
+**Status:** **Published `v1.0.0` on PyPI.** Verified Beta
+`v0.67.0` is the immutable planning baseline and required predecessor. D-117 turns the D-114–D-116 architecture and 0.67
 freeze into an executable cut packet: the [implementation plan](implementation/HEDRON_1_0.md),
 [acceptance plan](acceptance/RELEASE_1_0.md), [machine release gate](acceptance/release-gate-1.0.toml),
 [cut contract](acceptance/one-zero-cut-contract.toml), and
-[upgrade fixture ledger](acceptance/upgrade-fixtures-1.0.md). This refinement changes no runtime,
-package version, maturity classifier, or release claim. `ENTRY-100` remains Planned and blocks
-removal work until the generated 0.67 public/task/artifact inventory is reconciled with the warning
-registry and the enumerated stable 1.0 inventory is frozen.
+[upgrade fixture ledger](acceptance/upgrade-fixtures-1.0.md). The refinement itself changes no
+package version, maturity classifier, or release claim; the completed implementation records one
+compatibility-preserving authorization correction explicitly. The complete inventory, warning,
+stable-surface, compatibility, artifact, and regression evidence is retained; all 17 rows are Verified.
 
 Hedron 1.0 makes the previewed unified interaction model canonical and enforces one stable public
 path per developer task and abstraction level. Function handlers are the only route-authoring
@@ -6916,10 +6917,8 @@ browser, tooling, configuration, HDJ, and fixture matrix is the
    argument, config/CLI/HDJ/markup form, generated spelling, root shim, controller, or tag needs a
    complete 0.67 warning/finding and before/after fixture. Partial or unknown analysis may diagnose
    risk but cannot authorize deletion.
-3. **Known inventory gap is explicit.** The in-tree warning registry currently contains the three
-   route/include records for `app.component`, `app.fragment`, and `app.include_feature`. They are a
-   fixture floor, not proof that every proposed 1.0 removal has warning coverage. W0 generates and
-   reconciles the complete public surface before `ENTRY-100` can pass.
+3. **Inventory closure is explicit.** The eleven in-tree route/include and adapter warning records
+   are reconciled against the complete public surface; `ENTRY-100` is Verified.
 4. **Stable means enumerated.** SemVer protects the accepted canonical stable inventory, not every
    importable Beta/Experimental symbol. Advanced and package-native paths remain only for distinct
    capabilities or honest optional ownership.
@@ -6928,7 +6927,7 @@ browser, tooling, configuration, HDJ, and fixture matrix is the
 6. **Claim boundary.** The cut does not imply a commercial SLA, multi-year LTS, human-AT result,
    blanket WCAG conformance, promotion of experimental live transports, or Stable maturity for
    every satellite/capability.
-7. **Support and rollback.** The 0.67.x migration-support window must be published before cut.
+7. **Support and rollback.** The 0.67.x migration-support window is published before cut.
    Before publication the release stops on a failed invariant; after publication, fixes move
    forward in 1.0.x rather than retagging or silently restoring aliases.
 
@@ -6942,6 +6941,5 @@ performance after shim removal. W8 runs the same canonical corpus on immutable 0
 environments plus the fleet. W9 builds reproducible artifacts and authorizes the cut only after all
 17 rows in `release-gate-1.0.toml` are Verified.
 
-The planning checker is `python scripts/check_100.py --check-plan`. It validates cross-artifact
-consistency and rejects a version/release claim; it deliberately refuses `--verify` while a selected
-release gate is Planned.
+The packet checker is `python scripts/check_100.py --check-plan`; each executable slice is available
+through `python scripts/check_100.py --gate <GATE-ID> --verify`.

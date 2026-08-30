@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.0] — 2026-08-27
+
+- Add canonical `view`, `page`, and `action` decorators.
+
 ## [0.67.0] — 2026-08-27
 
 ### Changed

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
+from typing import cast
 
 from hedron.type_authoring.normalize import CompiledTypeHandler
 from hedron_core.codes import HED_TYPE_0006
@@ -61,7 +62,7 @@ def assert_declared_effects(
                 "Add the handles to Refreshes(...)/Updates(...) or return a declared subset."
             ),
         )
-    for target in _targets(result):
+    for target in _targets(cast(object, result)):
         owner = str(getattr(target, "app_id", "") or "")
         if owner and owner != app_id:
             raise error(

@@ -12,9 +12,11 @@ from flask import Flask, Request, Response
 from flask import session as flask_session
 from flask.typing import RouteCallable
 
-from hedron_core.adapter import FLASK_CAPABILITIES, AuthSignal
+from hedron_core.adapter import FLASK_CAPABILITIES, AuthSignal, CapabilityRecord
 from hedron_core.component import Component, NodeLike
+from hedron_core.htmx_contract import HtmxContext
 from hedron_core.interaction import FragmentRegion, InteractionResult
+from hedron_core.interaction_067 import Outcome
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult
 from hedron_core.security_policy import SecurityPolicy, SecurityProfileName
 from hedron_flask.blueprint import attach_hedron_to_flask
@@ -26,7 +28,7 @@ from hedron_flask.csrf import (
     validate_csrf,
 )
 from hedron_flask.htmx import htmx_context, render_mode_for_request
-from hedron_flask.responses import component_response, interaction_response
+from hedron_flask.responses import _outcome_response, component_response, interaction_response
 from hedron_flask.routing import FlaskUrlReverser
 from hedron_flask.static_mount import mount_hedron_static
 
@@ -121,10 +123,12 @@ class HedronFlask:
         return app
 
     @property
-    def capabilities(self):
+    def capabilities(self) -> CapabilityRecord:
+        """Return the immutable capability declaration for the Flask adapter."""
         return FLASK_CAPABILITIES
 
-    def route(self, rule: str, **options: Any):
+    def route(self, rule: str, **options: Any) -> Callable[[RouteCallable], RouteCallable]:
+        """Delegate native route registration to the bound Flask application."""
         if self.flask is None:
             raise RuntimeError("HedronFlask.init_app(app) must be called before route()")
         return self.flask.route(rule, **options)
@@ -154,7 +158,7 @@ class HedronFlask:
 
         return decorator
 
-    def component(self, rule: str, **options: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
+    def _view_route(self, rule: str, **options: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
         from hedron_flask.blueprint import wrap_hedron_view
 
         methods = list(options.pop("methods", ("GET",)))
@@ -164,7 +168,7 @@ class HedronFlask:
 
         def decorator(view: Callable[P, R]) -> Callable[P, R]:
             if self.flask is None:
-                raise RuntimeError("HedronFlask.init_app(app) must be called before component()")
+                raise RuntimeError("HedronFlask.init_app(app) must be called before view()")
             wrapped = wrap_hedron_view(
                 view,
                 require_csrf=require_csrf,
@@ -182,11 +186,10 @@ class HedronFlask:
         """Register the canonical replaceable view route.
 
         Flask has no separate response type for a fragment, so the adapter's
-        canonical ``view`` surface shares the component response lowering while
-        keeping ``page`` available for full-document routes.  ``component`` is
-        retained as the 0.67 compatibility spelling.
+        canonical ``view`` surface shares the fragment response lowering while
+        keeping ``page`` available for full-document routes.
         """
-        return self.component(rule, **options)
+        return self._view_route(rule, **options)
 
     def action(self, rule: str, **options: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
         from hedron_flask.blueprint import wrap_hedron_view
@@ -210,6 +213,12 @@ class HedronFlask:
             return view
 
         return decorator
+
+    def include(self, feature: object, *, app_id: str | None = None) -> object:
+        """Include one validated feature bundle through the canonical 1.0 spelling."""
+        from hedron_flask.catalog import include_feature
+
+        return include_feature(feature, app_id=app_id or self.hedron_app_id)  # type: ignore[arg-type]
 
     def render(
         self,
@@ -240,7 +249,13 @@ class HedronFlask:
         extra_headers: Mapping[str, str] | None = None,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         allow_undeclared_targets: bool = False,
-    ):
+    ) -> Response:
+        """Render a Hedron value as a synchronous Flask response.
+
+        Raises:
+            RuntimeError: If called from a running event loop. Async views must
+                await :meth:`respond_async` so component preparation is not lost.
+        """
         from hedron_core.async_bridge import running_loop
 
         if running_loop():
@@ -267,6 +282,14 @@ class HedronFlask:
             return FlaskResponse(str(exc), status=status, content_type="text/plain")
         if isinstance(compiled, InteractionResult):
             value = compiled
+        if isinstance(compiled, Outcome):
+            return _outcome_response(
+                compiled,
+                authenticated=self.auth_signal(request).authenticated,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+                app_id=self.hedron_app_id,
+            )
         if isinstance(value, InteractionResult):
             return interaction_response(
                 value,
@@ -299,7 +322,7 @@ class HedronFlask:
         extra_headers: Mapping[str, str] | None = None,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         allow_undeclared_targets: bool = False,
-    ):
+    ) -> Response:
         """Async-safe respond that awaits ``prepare_tree`` before rendering."""
         from hedron_core.prepare import prepare_tree
 
@@ -322,6 +345,14 @@ class HedronFlask:
             return FlaskResponse(str(exc), status=status, content_type="text/plain")
         if isinstance(compiled, InteractionResult):
             value = compiled
+        if isinstance(compiled, Outcome):
+            return _outcome_response(
+                compiled,
+                authenticated=self.auth_signal(request).authenticated,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+                app_id=self.hedron_app_id,
+            )
         if isinstance(value, InteractionResult):
             if value.content is not None:
                 await prepare_tree(value.content)
@@ -434,5 +465,6 @@ class HedronFlask:
         )
         return value
 
-    def htmx(self, request: Request):
+    def htmx(self, request: Request) -> HtmxContext:
+        """Parse the request's approved HTMX headers into a typed context."""
         return htmx_context(dict(request.headers))

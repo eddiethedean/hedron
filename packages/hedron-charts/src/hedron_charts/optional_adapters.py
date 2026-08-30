@@ -7,7 +7,7 @@ import json
 import logging
 import re
 from collections.abc import Mapping, Sequence
-from typing import Any
+from typing import Any, cast
 from urllib.parse import unquote
 
 from hedron_charts.host_render import (
@@ -57,6 +57,10 @@ __all__ = [
 _logger = logging.getLogger("hedron.charts")
 
 
+def _mapping(value: Any) -> Mapping[str, Any]:
+    return cast(Mapping[str, Any], value)
+
+
 def _json_output(
     *,
     kind: str,
@@ -81,18 +85,6 @@ def _json_output(
     )
 
 
-def _render_json(output: ChartOutput) -> NodeLike:
-    """Legacy dump used only for static/debug adapters."""
-    acc = output.accessibility
-    return html.figure(
-        html.h2(acc.title),
-        html.p(acc.description or acc.alt or ""),
-        html.pre(str(output.body)[:2000]),
-        class_=f"hedron-chart hedron-chart-{output.kind}",
-        **{"role": "img", "aria-label": acc.alt or acc.title},
-    )
-
-
 def _render_host(output: ChartOutput, host: str) -> NodeLike:
     return render_host_figure(output, host=host)
 
@@ -102,8 +94,9 @@ class VegaLiteAdapter:
     optional_package = "altair"
 
     def supports(self, value: object) -> bool:
-        return isinstance(value, Mapping) and (
-            value.get("$schema", "").find("vega-lite") >= 0 or "mark" in value
+        mapping = _mapping(value) if isinstance(value, Mapping) else None
+        return mapping is not None and (
+            str(mapping.get("$schema", "")).find("vega-lite") >= 0 or "mark" in mapping
         )
 
     def compile(
@@ -117,7 +110,7 @@ class VegaLiteAdapter:
             raise TypeError("Vega-Lite adapter expects a mapping spec")
         return _json_output(
             kind="vega-lite",
-            body=dict(value),
+            body=dict(_mapping(value)),
             accessibility=accessibility,
             limits=limits,
             metadata={"adapter": self.name},
@@ -143,12 +136,14 @@ class VegaTransformAdapter:
     ) -> ChartOutput:
         if not isinstance(value, Mapping):
             raise TypeError(f"{self.name} adapter expected a mapping; got {type(value).__name__}")
-        transforms = value.get("transform") or []
-        if not isinstance(transforms, list):
+        mapping = _mapping(value)
+        transforms_value: object = mapping.get("transform") or []
+        if not isinstance(transforms_value, list):
             raise TypeError("transform must be a list")
+        transforms: list[Any] = cast(list[Any], transforms_value)
         return _json_output(
             kind="vega-lite",
-            body=dict(value),
+            body=dict(mapping),
             accessibility=accessibility,
             limits=limits,
             metadata={"adapter": self.name, "server_transforms": transforms},
@@ -163,8 +158,9 @@ class PyDeckAdapter:
     optional_package = "pydeck"
 
     def supports(self, value: object) -> bool:
-        return "pydeck" in type(value).__module__ or (
-            isinstance(value, Mapping) and "layers" in value
+        mapping = _mapping(value) if isinstance(value, Mapping) else None
+        return "pydeck" in type(cast(object, value)).__module__ or (
+            mapping is not None and "layers" in mapping
         )
 
     def compile(
@@ -175,7 +171,7 @@ class PyDeckAdapter:
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
         if isinstance(value, Mapping):
-            raw_body: Mapping[str, Any] = dict(value)
+            raw_body: Mapping[str, Any] = dict(_mapping(value))
         else:
             try:
                 importlib.import_module("pydeck")
@@ -187,7 +183,7 @@ class PyDeckAdapter:
                 parsed = json.loads(raw)
                 if not isinstance(parsed, Mapping):
                     raise TypeError("PyDeck to_json() must return a mapping")
-                raw_body = parsed
+                raw_body = cast(Mapping[str, Any], parsed)
             else:
                 raise TypeError(
                     "PyDeck value must expose to_json() returning MapLibre-compatible JSON"
@@ -210,7 +206,8 @@ class MapLibreAdapter:
     optional_package = None
 
     def supports(self, value: object) -> bool:
-        return isinstance(value, Mapping) and ("style" in value or "maplibre" in value)
+        mapping = _mapping(value) if isinstance(value, Mapping) else None
+        return mapping is not None and ("style" in mapping or "maplibre" in mapping)
 
     def compile(
         self,
@@ -221,7 +218,7 @@ class MapLibreAdapter:
     ) -> ChartOutput:
         if not isinstance(value, Mapping):
             raise TypeError(f"{self.name} adapter expected a mapping; got {type(value).__name__}")
-        body = dict(value)
+        body = dict(_mapping(value))
         body.setdefault("coord_order", "lnglat")
         return _json_output(
             kind="maplibre",
@@ -240,8 +237,9 @@ class FoliumAdapter:
     optional_package = "folium"
 
     def supports(self, value: object) -> bool:
-        return "folium" in type(value).__module__ or (
-            isinstance(value, Mapping) and value.get("type") == "folium"
+        mapping = _mapping(value) if isinstance(value, Mapping) else None
+        return "folium" in type(cast(object, value)).__module__ or (
+            mapping is not None and mapping.get("type") == "folium"
         )
 
     def compile(
@@ -256,7 +254,7 @@ class FoliumAdapter:
                 importlib.import_module("folium")
             except ImportError as exc:
                 raise missing_extra("folium") from exc
-        body = extract_folium_payload(value)
+        body = extract_folium_payload(cast(object, value))
         return _json_output(
             kind="maplibre",
             body=body,
@@ -274,7 +272,8 @@ class GeospatialLayerAdapter:
     optional_package = None
 
     def supports(self, value: object) -> bool:
-        return isinstance(value, Mapping) and value.get("type") in {
+        mapping = _mapping(value) if isinstance(value, Mapping) else None
+        return mapping is not None and mapping.get("type") in {
             "FeatureCollection",
             "Feature",
             "GeometryCollection",
@@ -291,7 +290,7 @@ class GeospatialLayerAdapter:
             raise TypeError(f"{self.name} adapter expected a mapping; got {type(value).__name__}")
         return _json_output(
             kind="maplibre",
-            body={"geojson": dict(value)},
+            body={"geojson": dict(_mapping(value))},
             accessibility=accessibility,
             limits=limits,
             metadata={"adapter": self.name},
@@ -411,7 +410,8 @@ class ChartJsAdapter:
     optional_package = None
 
     def supports(self, value: object) -> bool:
-        return isinstance(value, Mapping) and value.get("type") in {
+        mapping = _mapping(value) if isinstance(value, Mapping) else None
+        return mapping is not None and mapping.get("type") in {
             "bar",
             "line",
             "pie",
@@ -431,7 +431,7 @@ class ChartJsAdapter:
             raise TypeError(f"{self.name} adapter expected a mapping; got {type(value).__name__}")
         return _json_output(
             kind="chartjs",
-            body=dict(value),
+            body=dict(_mapping(value)),
             accessibility=accessibility,
             limits=limits,
             metadata={"adapter": self.name},
@@ -456,7 +456,11 @@ class GreatTablesAdapter:
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
         if isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
-            rows = [dict(row) for row in value if isinstance(row, Mapping)]
+            rows = [
+                dict(_mapping(row))
+                for row in cast(Sequence[object], value)
+                if isinstance(row, Mapping)
+            ]
             body = json.dumps(redact_rows(rows))
             ensure_limits(rows, body, limits=limits)
             return ChartOutput(
@@ -492,7 +496,11 @@ class GreatTablesAdapter:
             try:
                 parsed = json.loads(body)
                 if isinstance(parsed, list):
-                    rows = [dict(r) for r in parsed if isinstance(r, Mapping)]
+                    rows = [
+                        dict(_mapping(row))
+                        for row in cast(list[object], parsed)
+                        if isinstance(row, Mapping)
+                    ]
             except json.JSONDecodeError:
                 rows = []
         table_children: list[NodeLike] = []
@@ -514,10 +522,11 @@ class SigmaAdapter:
     optional_package = "networkx"
 
     def supports(self, value: object) -> bool:
+        mapping = _mapping(value) if isinstance(value, Mapping) else None
         return (
-            isinstance(value, Mapping)
-            and {"nodes", "edges"} <= set(value)
-            or ("networkx" in type(value).__module__)
+            mapping is not None
+            and {"nodes", "edges"} <= set(mapping)
+            or ("networkx" in type(cast(object, value)).__module__)
         )
 
     def compile(
@@ -528,7 +537,7 @@ class SigmaAdapter:
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
         if isinstance(value, Mapping):
-            body = dict(value)
+            body = dict(_mapping(value))
         else:
             try:
                 nx = importlib.import_module("networkx")
@@ -561,7 +570,8 @@ class ThreeJsAdapter:
     _ALLOWED = frozenset({".gltf", ".glb", ".obj", ".stl", ".ply", ".fbx"})
 
     def supports(self, value: object) -> bool:
-        return isinstance(value, Mapping) and "model_url" in value
+        mapping = _mapping(value) if isinstance(value, Mapping) else None
+        return mapping is not None and "model_url" in mapping
 
     def compile(
         self,
@@ -572,7 +582,8 @@ class ThreeJsAdapter:
     ) -> ChartOutput:
         if not isinstance(value, Mapping):
             raise TypeError(f"{self.name} adapter expected a mapping; got {type(value).__name__}")
-        url = str(value.get("model_url") or "").strip()
+        mapping = _mapping(value)
+        url = str(mapping.get("model_url") or "").strip()
         lower = url.lower()
         if not any(lower.endswith(ext) for ext in self._ALLOWED):
             raise ValueError(f"Model format not allowlisted: {url!r}")
@@ -589,7 +600,7 @@ class ThreeJsAdapter:
         local = Path(decoded)
         if local.is_file():
             measured = local.stat().st_size
-        raw_bytes = value.get("bytes")
+        raw_bytes = mapping.get("bytes")
         claimed: int | None = None
         if raw_bytes is not None and str(raw_bytes).strip() != "":
             claimed = int(raw_bytes)
@@ -601,7 +612,7 @@ class ThreeJsAdapter:
             raise ValueError("Model exceeds size budget")
         return _json_output(
             kind="html",
-            body=dict(value),
+            body=dict(mapping),
             accessibility=accessibility,
             limits=limits,
             metadata={"adapter": self.name},
@@ -616,7 +627,8 @@ class EChartsAdapter:
     optional_package = None
 
     def supports(self, value: object) -> bool:
-        return isinstance(value, Mapping) and ("series" in value or "xAxis" in value)
+        mapping = _mapping(value) if isinstance(value, Mapping) else None
+        return mapping is not None and ("series" in mapping or "xAxis" in mapping)
 
     def compile(
         self,
@@ -629,7 +641,7 @@ class EChartsAdapter:
             raise TypeError(f"{self.name} adapter expected a mapping; got {type(value).__name__}")
         return _json_output(
             kind="html",
-            body=dict(value),
+            body=dict(_mapping(value)),
             accessibility=accessibility,
             limits=limits,
             metadata={"adapter": self.name},
@@ -644,8 +656,9 @@ class DatashaderAdapter:
     optional_package = "datashader"
 
     def supports(self, value: object) -> bool:
-        return "datashader" in type(value).__module__ or (
-            isinstance(value, Mapping) and value.get("type") == "datashader"
+        mapping = _mapping(value) if isinstance(value, Mapping) else None
+        return "datashader" in type(cast(object, value)).__module__ or (
+            mapping is not None and mapping.get("type") == "datashader"
         )
 
     def compile(
@@ -676,8 +689,9 @@ class BokehAdapter:
     optional_package = "bokeh"
 
     def supports(self, value: object) -> bool:
-        return "bokeh" in type(value).__module__ or (
-            isinstance(value, Mapping) and value.get("type") == "bokeh"
+        mapping = _mapping(value) if isinstance(value, Mapping) else None
+        return "bokeh" in type(cast(object, value)).__module__ or (
+            mapping is not None and mapping.get("type") == "bokeh"
         )
 
     def compile(
@@ -692,7 +706,7 @@ class BokehAdapter:
         except ImportError as exc:
             if not isinstance(value, Mapping):
                 raise missing_extra("bokeh") from exc
-        body = dict(value) if isinstance(value, Mapping) else {"repr": str(value)}
+        body = dict(_mapping(value)) if isinstance(value, Mapping) else {"repr": str(value)}
         return _json_output(
             kind="html",
             body=body,
@@ -710,8 +724,9 @@ class HoloViewsAdapter:
     optional_package = "holoviews"
 
     def supports(self, value: object) -> bool:
-        return "holoviews" in type(value).__module__ or (
-            isinstance(value, Mapping) and value.get("type") == "holoviews"
+        mapping = _mapping(value) if isinstance(value, Mapping) else None
+        return "holoviews" in type(cast(object, value)).__module__ or (
+            mapping is not None and mapping.get("type") == "holoviews"
         )
 
     def compile(
@@ -726,7 +741,7 @@ class HoloViewsAdapter:
         except ImportError as exc:
             if not isinstance(value, Mapping):
                 raise missing_extra("holoviews") from exc
-        body = dict(value) if isinstance(value, Mapping) else {"repr": str(value)}
+        body = dict(_mapping(value)) if isinstance(value, Mapping) else {"repr": str(value)}
         return _json_output(
             kind="html",
             body=body,
@@ -744,8 +759,9 @@ class PygalAdapter:
     optional_package = "pygal"
 
     def supports(self, value: object) -> bool:
-        return "pygal" in type(value).__module__ or (
-            isinstance(value, Mapping) and value.get("type") == "pygal"
+        mapping = _mapping(value) if isinstance(value, Mapping) else None
+        return "pygal" in type(cast(object, value)).__module__ or (
+            mapping is not None and mapping.get("type") == "pygal"
         )
 
     def compile(
@@ -756,18 +772,18 @@ class PygalAdapter:
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
         if isinstance(value, Mapping) and "svg" in value:
-            svg = str(value["svg"])
+            svg = str(_mapping(value)["svg"])
         else:
             try:
                 importlib.import_module("pygal")
             except ImportError as exc:
                 raise missing_extra("pygal") from exc
-            render = getattr(value, "render", None)
+            render = getattr(cast(object, value), "render", None)
             if callable(render):
                 rendered = render()
                 svg = rendered.decode("utf-8") if isinstance(rendered, bytes) else str(rendered)
             else:
-                svg = str(value)
+                svg = str(cast(object, value))
         ensure_limits(None, svg, limits=limits)
         reject_active_svg(svg)
         return ChartOutput(
@@ -795,7 +811,8 @@ class PlotlyResamplingAdapter:
     optional_package = "plotly"
 
     def supports(self, value: object) -> bool:
-        return isinstance(value, Mapping) and value.get("resample") is not None
+        mapping = _mapping(value) if isinstance(value, Mapping) else None
+        return mapping is not None and mapping.get("resample") is not None
 
     def compile(
         self,
@@ -806,7 +823,8 @@ class PlotlyResamplingAdapter:
     ) -> ChartOutput:
         if not isinstance(value, Mapping):
             raise TypeError(f"{self.name} adapter expected a mapping; got {type(value).__name__}")
-        raw_max = value.get("max_points", 1000)
+        mapping = _mapping(value)
+        raw_max = mapping.get("max_points", 1000)
         try:
             max_points = int(raw_max)  # type: ignore[arg-type]
         except (TypeError, ValueError) as exc:
@@ -823,7 +841,7 @@ class PlotlyResamplingAdapter:
                 explanation=f"max_points must be a positive integer; got {max_points}.",
                 remediation="Pass max_points >= 1 or omit it to use the default of 1000.",
             )
-        body = downsample_plotly_body(dict(value), max_points=max_points)
+        body = downsample_plotly_body(dict(mapping), max_points=max_points)
         return _json_output(
             kind="plotly-json",
             body=body,

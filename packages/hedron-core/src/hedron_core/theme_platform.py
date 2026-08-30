@@ -17,7 +17,12 @@ from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
 from io import BytesIO
 from types import MappingProxyType
-from typing import Any, Literal, cast
+from typing import TYPE_CHECKING, Literal, Protocol, cast
+
+from hedron_core.typing_aliases import is_object_list, is_string_mapping
+
+if TYPE_CHECKING:
+    from hedron_core.theme import Theme
 
 __all__ = [
     "Color",
@@ -59,51 +64,179 @@ MAX_THEME_TOTAL_BYTES = 4 * 1024 * 1024
 MAX_THEME_COMPRESSION_RATIO = 200.0
 
 
+def _is_safe_name(value: object) -> bool:
+    return isinstance(value, str) and _NAME.fullmatch(value) is not None
+
+
+def _is_hex_color(value: object) -> bool:
+    return isinstance(value, str) and _HEX.fullmatch(value.strip()) is not None
+
+
+def _is_nonempty_mapping(value: object) -> bool:
+    if not isinstance(value, Mapping):
+        return False
+    return len(cast(Mapping[object, object], value)) > 0
+
+
 def _canonical(value: object) -> str:
-    def thaw(item: Any) -> Any:
+    def thaw(item: object) -> object:
         if isinstance(item, Mapping):
-            return {str(key): thaw(child) for key, child in item.items()}
+            mapping = cast(Mapping[object, object], item)
+            return {str(key): thaw(child) for key, child in mapping.items()}
         if isinstance(item, (tuple, list, set, frozenset)):
-            return [thaw(child) for child in item]
+            iterable = cast(Iterable[object], item)
+            return [thaw(child) for child in iterable]
         return item
 
     return json.dumps(thaw(value), sort_keys=True, separators=(",", ":"), ensure_ascii=True)
 
 
-def _freeze_mapping(value: Mapping[str, Any] | None) -> Mapping[str, Any]:
+def _freeze_mapping(value: Mapping[str, object] | None) -> Mapping[str, object]:
     return MappingProxyType(
         {str(key): _freeze_value(item) for key, item in sorted((value or {}).items())}
     )
 
 
-def _freeze_value(value: Any) -> Any:
+def _freeze_value(value: object) -> object:
     if isinstance(value, Mapping):
-        return _freeze_mapping(cast(Mapping[str, Any], value))
+        mapping = cast(Mapping[object, object], value)
+        return MappingProxyType(
+            {str(key): _freeze_value(item) for key, item in sorted(mapping.items(), key=str)}
+        )
     if isinstance(value, (list, tuple, set, frozenset)):
-        return tuple(_freeze_value(item) for item in value)
+        iterable = cast(Iterable[object], value)
+        return tuple(_freeze_value(item) for item in iterable)
     return value
 
 
+def _empty_string_dict() -> dict[str, str]:
+    return {}
+
+
+def _empty_nested_string_dict() -> dict[str, Mapping[str, str]]:
+    return {}
+
+
+def _empty_integer_dict() -> dict[str, int]:
+    return {}
+
+
+def _empty_nested_integer_dict() -> dict[str, Mapping[str, int]]:
+    return {}
+
+
+def _empty_object_dict() -> dict[str, object]:
+    return {}
+
+
+def _string_mapping(value: object, *, field_name: str) -> dict[str, str]:
+    if not is_string_mapping(value):
+        raise ValueError(f"{field_name} must be a mapping")
+    normalized: dict[str, str] = {}
+    for key, item in value.items():
+        if not isinstance(item, str):
+            raise ValueError(f"{field_name}[{key!r}] must be a string")
+        normalized[key] = item
+    return normalized
+
+
+def _nested_string_mapping(
+    value: object,
+    *,
+    field_name: str,
+) -> dict[str, Mapping[str, str]]:
+    if not is_string_mapping(value):
+        raise ValueError(f"{field_name} must be a mapping")
+    return {
+        key: _string_mapping(item, field_name=f"{field_name}[{key!r}]")
+        for key, item in value.items()
+    }
+
+
+def _integer_mapping(value: object, *, field_name: str) -> dict[str, int]:
+    if not is_string_mapping(value):
+        raise ValueError(f"{field_name} must be a mapping")
+    normalized: dict[str, int] = {}
+    for key, item in value.items():
+        if not isinstance(item, int) or isinstance(item, bool):
+            raise ValueError(f"{field_name}[{key!r}] must be an integer")
+        normalized[key] = item
+    return normalized
+
+
+def _nested_integer_mapping(
+    value: object,
+    *,
+    field_name: str,
+) -> dict[str, Mapping[str, int]]:
+    if not is_string_mapping(value):
+        raise ValueError(f"{field_name} must be a mapping")
+    return {
+        key: _integer_mapping(item, field_name=f"{field_name}[{key!r}]")
+        for key, item in value.items()
+    }
+
+
+def _object_mapping(value: object, *, field_name: str) -> dict[str, object]:
+    if not is_string_mapping(value):
+        raise ValueError(f"{field_name} must be a mapping")
+    return dict(value)
+
+
+def _mapping_sequence(value: object, *, field_name: str) -> tuple[Mapping[str, object], ...]:
+    if not is_object_list(value):
+        raise ValueError(f"{field_name} must be a list of mappings")
+    normalized: list[Mapping[str, object]] = []
+    for item in value:
+        if not is_string_mapping(item):
+            raise ValueError(f"{field_name} must contain only mappings")
+        normalized.append(dict(item))
+    return tuple(normalized)
+
+
+class _ThemeLike(Protocol):
+    @property
+    def name(self) -> str: ...
+
+    @property
+    def tokens(self) -> Mapping[str, str]: ...
+
+    @property
+    def modes(self) -> Mapping[str, Mapping[str, str]]: ...
+
+    @property
+    def accessibility_modes(self) -> Mapping[str, Mapping[str, str]]: ...
+
+    @property
+    def content_width(self) -> str | None: ...
+
+    @property
+    def typography_features(self) -> Mapping[str, int]: ...
+
+    @property
+    def typography_role_features(self) -> Mapping[str, Mapping[str, int]]: ...
+
+
 def _validate_mode_values(
-    modes: Mapping[str, Mapping[str, str]],
+    modes: object,
     *,
     allow_aliases: bool = False,
     field_name: str,
-) -> None:
-    for mode, values in modes.items():
-        if not isinstance(mode, str) or not _MODE_NAME.fullmatch(mode):
+) -> dict[str, Mapping[str, str]]:
+    normalized = _nested_string_mapping(modes, field_name=field_name)
+    for mode, values in normalized.items():
+        if not _MODE_NAME.fullmatch(mode):
             raise ValueError(f"{field_name} name must be a safe identifier: {mode!r}")
-        if not isinstance(values, Mapping):
-            raise ValueError(f"{field_name}[{mode!r}] must be a mapping")
         for key, value in values.items():
-            if not isinstance(key, str) or not _NAME.fullmatch(key):
+            if not _NAME.fullmatch(key):
                 raise ValueError(f"invalid {field_name}[{mode!r}] token key: {key!r}")
-            if not isinstance(value, str) or not value.strip():
+            if not value.strip():
                 raise ValueError(f"{field_name}[{mode!r}][{key!r}] must be a non-empty string")
             if allow_aliases and value.startswith("@") and _NAME.fullmatch(value[1:]):
                 continue
             if _UNSAFE_CSS_VALUE.search(value):
                 raise ValueError(f"unsafe theme value for {field_name}[{mode!r}][{key!r}]")
+    return normalized
 
 
 def _number(raw: str, *, scale: float = 1.0, percent: bool = False) -> float:
@@ -253,7 +386,7 @@ class Color:
 
     @classmethod
     def hex(cls, value: str) -> Color:
-        if not isinstance(value, str) or not _HEX.fullmatch(value.strip()):
+        if not _is_hex_color(value):
             raise ValueError(f"invalid hex color: {value!r}")
         digits = value.strip()[1:]
         if len(digits) in (3, 4):
@@ -380,55 +513,100 @@ class ThemeSpec:
 
     name: str
     tokens: Mapping[str, str]
-    modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
-    accessibility_modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
-    aliases: Mapping[str, str] = field(default_factory=dict)
-    groups: Mapping[str, str] = field(default_factory=dict)
-    recipes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
-    metadata: Mapping[str, Any] = field(default_factory=dict)
+    modes: Mapping[str, Mapping[str, str]] = field(default_factory=_empty_nested_string_dict)
+    accessibility_modes: Mapping[str, Mapping[str, str]] = field(
+        default_factory=_empty_nested_string_dict
+    )
+    aliases: Mapping[str, str] = field(default_factory=_empty_string_dict)
+    groups: Mapping[str, str] = field(default_factory=_empty_string_dict)
+    recipes: Mapping[str, Mapping[str, str]] = field(default_factory=_empty_nested_string_dict)
+    content_width: str | None = None
+    typography_features: Mapping[str, int] = field(default_factory=_empty_integer_dict)
+    typography_role_features: Mapping[str, Mapping[str, int]] = field(
+        default_factory=_empty_nested_integer_dict
+    )
+    metadata: Mapping[str, object] = field(default_factory=_empty_object_dict)
     schema: str = "hedron.theme-spec/1"
     profile: str = "core"
-    provenance: tuple[Mapping[str, Any], ...] = ()
+    provenance: tuple[Mapping[str, object], ...] = ()
 
     def __post_init__(self) -> None:
-        if not isinstance(self.name, str) or not _NAME.fullmatch(self.name):
+        if not _NAME.fullmatch(self.name):
             raise ValueError("theme spec name must be a safe identifier")
         if self.profile not in THEME_COVERAGE_PROFILES:
             raise ValueError(f"unknown theme coverage profile: {self.profile}")
-        for field_name, mapping in (("tokens", self.tokens), ("aliases", self.aliases)):
+        tokens = _string_mapping(self.tokens, field_name="tokens")
+        aliases = _string_mapping(self.aliases, field_name="aliases")
+        for field_name, mapping in (("tokens", tokens), ("aliases", aliases)):
             for key, value in mapping.items():
-                if not isinstance(key, str) or not _NAME.fullmatch(key):
+                if not _NAME.fullmatch(key):
                     raise ValueError(f"invalid {field_name} key: {key!r}")
-                if not isinstance(value, str) or not value.strip():
+                if not value.strip():
                     raise ValueError(f"{field_name}[{key!r}] must be a non-empty string")
                 if any(char in value for char in ";{}<>") or "url(" in value.lower():
                     raise ValueError(f"unsafe theme value for {field_name}[{key!r}]")
-        _validate_mode_values(self.modes, allow_aliases=True, field_name="mode")
-        _validate_mode_values(self.accessibility_modes, field_name="accessibility mode")
-        for key, value in self.groups.items():
-            if (
-                not _NAME.fullmatch(str(key))
-                or not isinstance(value, str)
-                or not _NAME.fullmatch(value)
-            ):
+        modes = _validate_mode_values(self.modes, allow_aliases=True, field_name="mode")
+        accessibility_modes = _validate_mode_values(
+            self.accessibility_modes, field_name="accessibility mode"
+        )
+        groups = _string_mapping(self.groups, field_name="groups")
+        for key, value in groups.items():
+            if not _NAME.fullmatch(key) or not _NAME.fullmatch(value):
                 raise ValueError("theme groups must use safe identifiers")
-        for family, values in self.recipes.items():
-            if not _NAME.fullmatch(str(family)) or not isinstance(values, Mapping):
+        recipes = _nested_string_mapping(self.recipes, field_name="recipes")
+        for family, values in recipes.items():
+            if not _NAME.fullmatch(family):
                 raise ValueError("theme recipe families must use safe identifiers")
             for key, value in values.items():
-                if (
-                    not _NAME.fullmatch(str(key))
-                    or not isinstance(value, str)
-                    or not _NAME.fullmatch(value)
-                ):
+                if not _NAME.fullmatch(key) or not _NAME.fullmatch(value):
                     raise ValueError("theme recipe values must use safe identifiers")
-        object.__setattr__(self, "tokens", _freeze_mapping(self.tokens))
-        object.__setattr__(self, "modes", _freeze_mapping(self.modes))
-        object.__setattr__(self, "accessibility_modes", _freeze_mapping(self.accessibility_modes))
-        object.__setattr__(self, "aliases", _freeze_mapping(self.aliases))
-        object.__setattr__(self, "groups", _freeze_mapping(self.groups))
-        object.__setattr__(self, "recipes", _freeze_mapping(self.recipes))
-        object.__setattr__(self, "metadata", _freeze_mapping(self.metadata))
+        if self.content_width is not None and (
+            not self.content_width.strip()
+            or any(char in self.content_width for char in ";{}<>")
+            or "url(" in self.content_width.lower()
+        ):
+            raise ValueError("theme content width must be a safe non-empty value")
+        typography_features = _integer_mapping(
+            self.typography_features, field_name="typography_features"
+        )
+        if any(
+            re.fullmatch(r"[A-Za-z0-9]{4}", key) is None or value < 0 or value > 99
+            for key, value in typography_features.items()
+        ):
+            raise ValueError(
+                "theme typography features require four-character tags and values 0..99"
+            )
+        typography_role_features: dict[str, Mapping[str, int]] = {}
+        role_features = _nested_integer_mapping(
+            self.typography_role_features,
+            field_name="typography_role_features",
+        )
+        for role, normalized in role_features.items():
+            if role not in {"body", "display", "code", "tabular"} or any(
+                re.fullmatch(r"[A-Za-z0-9]{4}", key) is None or value < 0 or value > 99
+                for key, value in normalized.items()
+            ):
+                raise ValueError("theme role typography features are invalid")
+            typography_role_features[role] = MappingProxyType(dict(sorted(normalized.items())))
+        object.__setattr__(self, "tokens", _freeze_mapping(tokens))
+        object.__setattr__(self, "modes", _freeze_mapping(modes))
+        object.__setattr__(self, "accessibility_modes", _freeze_mapping(accessibility_modes))
+        object.__setattr__(self, "aliases", _freeze_mapping(aliases))
+        object.__setattr__(self, "groups", _freeze_mapping(groups))
+        object.__setattr__(self, "recipes", _freeze_mapping(recipes))
+        object.__setattr__(
+            self, "typography_features", MappingProxyType(dict(sorted(typography_features.items())))
+        )
+        object.__setattr__(
+            self,
+            "typography_role_features",
+            MappingProxyType(dict(sorted(typography_role_features.items()))),
+        )
+        object.__setattr__(
+            self,
+            "metadata",
+            _freeze_mapping(_object_mapping(self.metadata, field_name="metadata")),
+        )
         object.__setattr__(
             self,
             "provenance",
@@ -449,7 +627,7 @@ class ThemeSpec:
         if value is None:
             raise ValueError(f"unknown theme token: {key}")
         seen: set[str] = set()
-        while isinstance(value, str) and value.startswith("@"):
+        while value.startswith("@"):
             target = value[1:]
             if target in seen:
                 raise ValueError(f"theme token alias cycle at {target!r}")
@@ -464,27 +642,48 @@ class ThemeSpec:
         return MappingProxyType({key: self.resolve_token(key) for key in sorted(self.tokens)})
 
     @classmethod
-    def from_dict(cls, data: Mapping[str, Any]) -> ThemeSpec:
+    def from_dict(cls, data: Mapping[str, object]) -> ThemeSpec:
         """Rehydrate a package payload while checking its canonical fingerprint."""
-        if not isinstance(data, Mapping):
+        raw_data: object = data
+        if not is_string_mapping(raw_data):
             raise ValueError("theme spec payload must be an object")
+        name = raw_data.get("name", "")
+        content_width = raw_data.get("content_width")
+        schema = raw_data.get("schema", "hedron.theme-spec/1")
+        profile = raw_data.get("profile", "core")
+        if not isinstance(name, str):
+            raise ValueError("theme spec name must be a string")
+        if content_width is not None and not isinstance(content_width, str):
+            raise ValueError("theme content_width must be a string or null")
+        if not isinstance(schema, str) or not isinstance(profile, str):
+            raise ValueError("theme schema and profile must be strings")
         spec = cls(
-            name=str(data.get("name", "")),
-            tokens=cast(Mapping[str, str], data.get("tokens", {})),
-            modes=cast(Mapping[str, Mapping[str, str]], data.get("modes", {})),
-            accessibility_modes=cast(
-                Mapping[str, Mapping[str, str]], data.get("accessibility_modes", {})
+            name=name,
+            tokens=_string_mapping(raw_data.get("tokens", {}), field_name="tokens"),
+            modes=_nested_string_mapping(raw_data.get("modes", {}), field_name="modes"),
+            accessibility_modes=_nested_string_mapping(
+                raw_data.get("accessibility_modes", {}),
+                field_name="accessibility_modes",
             ),
-            aliases=cast(Mapping[str, str], data.get("aliases", {})),
-            groups=cast(Mapping[str, str], data.get("groups", {})),
-            recipes=cast(Mapping[str, Mapping[str, str]], data.get("recipes", {})),
-            metadata=cast(Mapping[str, Any], data.get("metadata", {})),
-            schema=str(data.get("schema", "hedron.theme-spec/1")),
-            profile=str(data.get("profile", "core")),
-            provenance=tuple(cast(Iterable[Mapping[str, Any]], data.get("provenance", ()))),
+            aliases=_string_mapping(raw_data.get("aliases", {}), field_name="aliases"),
+            groups=_string_mapping(raw_data.get("groups", {}), field_name="groups"),
+            recipes=_nested_string_mapping(raw_data.get("recipes", {}), field_name="recipes"),
+            content_width=content_width,
+            typography_features=_integer_mapping(
+                raw_data.get("typography_features", {}),
+                field_name="typography_features",
+            ),
+            typography_role_features=_nested_integer_mapping(
+                raw_data.get("typography_role_features", {}),
+                field_name="typography_role_features",
+            ),
+            metadata=_object_mapping(raw_data.get("metadata", {}), field_name="metadata"),
+            schema=schema,
+            profile=profile,
+            provenance=_mapping_sequence(raw_data.get("provenance", []), field_name="provenance"),
         )
-        fingerprint = data.get("fingerprint")
-        if fingerprint is not None and str(fingerprint) != spec.fingerprint:
+        fingerprint = raw_data.get("fingerprint")
+        if fingerprint is not None and fingerprint != spec.fingerprint:
             raise ValueError("theme spec fingerprint does not match canonical payload")
         return spec
 
@@ -493,8 +692,8 @@ class ThemeSpec:
         payload = self.to_dict(include_fingerprint=False)
         return hashlib.sha256(_canonical(payload).encode()).hexdigest()
 
-    def to_dict(self, *, include_fingerprint: bool = True) -> dict[str, Any]:
-        data: dict[str, Any] = {
+    def to_dict(self, *, include_fingerprint: bool = True) -> dict[str, object]:
+        data: dict[str, object] = {
             "schema": self.schema,
             "name": self.name,
             "tokens": dict(self.tokens),
@@ -505,6 +704,11 @@ class ThemeSpec:
             "aliases": dict(self.aliases),
             "groups": dict(self.groups),
             "recipes": {key: dict(value) for key, value in self.recipes.items()},
+            "content_width": self.content_width,
+            "typography_features": dict(self.typography_features),
+            "typography_role_features": {
+                key: dict(value) for key, value in self.typography_role_features.items()
+            },
             "metadata": dict(self.metadata),
             "profile": self.profile,
             "provenance": [dict(item) for item in self.provenance],
@@ -524,7 +728,7 @@ class ThemeSpec:
         groups: Mapping[str, str] | None = None,
         recipes: Mapping[str, Mapping[str, str]] | None = None,
         base_fingerprint: str | None = None,
-        provenance: Iterable[Mapping[str, Any]] = (),
+        provenance: Iterable[Mapping[str, object]] = (),
     ) -> ThemeSpec:
         """Apply one bounded immutable patch and return a new specification."""
         return ThemePatch(
@@ -546,7 +750,7 @@ class ThemeSpec:
             result = patch.apply(result)
         return result
 
-    def to_theme(self) -> Any:
+    def to_theme(self) -> Theme:
         """Bridge to the compatible 0.59 ``Theme`` object."""
         from hedron_core.theme import Theme
 
@@ -560,6 +764,11 @@ class ThemeSpec:
             accessibility_modes={
                 mode: dict(values) for mode, values in self.accessibility_modes.items()
             },
+            content_width=self.content_width,
+            typography_features=dict(self.typography_features),
+            typography_role_features={
+                key: dict(value) for key, value in self.typography_role_features.items()
+            },
         )
 
 
@@ -569,14 +778,16 @@ class ThemePatch:
 
     name: str
     base: str | None = None
-    tokens: Mapping[str, str] = field(default_factory=dict)
-    modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
-    accessibility_modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
-    aliases: Mapping[str, str] = field(default_factory=dict)
-    groups: Mapping[str, str] = field(default_factory=dict)
-    recipes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
+    tokens: Mapping[str, str] = field(default_factory=_empty_string_dict)
+    modes: Mapping[str, Mapping[str, str]] = field(default_factory=_empty_nested_string_dict)
+    accessibility_modes: Mapping[str, Mapping[str, str]] = field(
+        default_factory=_empty_nested_string_dict
+    )
+    aliases: Mapping[str, str] = field(default_factory=_empty_string_dict)
+    groups: Mapping[str, str] = field(default_factory=_empty_string_dict)
+    recipes: Mapping[str, Mapping[str, str]] = field(default_factory=_empty_nested_string_dict)
     base_fingerprint: str | None = None
-    provenance: tuple[Mapping[str, Any], ...] = ()
+    provenance: tuple[Mapping[str, object], ...] = ()
 
     def apply(self, spec: ThemeSpec) -> ThemeSpec:
         if self.base is not None and self.base not in {spec.name, spec.fingerprint}:
@@ -597,12 +808,17 @@ class ThemePatch:
             aliases={**dict(spec.aliases), **dict(self.aliases)},
             groups={**dict(spec.groups), **dict(self.groups)},
             recipes={**dict(spec.recipes), **dict(self.recipes)},
+            content_width=spec.content_width,
+            typography_features=dict(spec.typography_features),
+            typography_role_features={
+                key: dict(value) for key, value in spec.typography_role_features.items()
+            },
             metadata={**dict(spec.metadata), "last_patch": self.name},
             profile=spec.profile,
             provenance=(*spec.provenance, *self.provenance, {"patch": self.name}),
         )
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "schema": "hedron.theme-patch/1",
             "name": self.name,
@@ -627,16 +843,18 @@ class ThemeBuilder:
     pleasant while making a builder safe to retain as a reusable base.
     """
 
-    def __init__(self, name: str, *, base: ThemeSpec | Any | None = None) -> None:
+    def __init__(self, name: str, *, base: ThemeSpec | _ThemeLike | None = None) -> None:
         if isinstance(base, ThemeSpec):
             source = base
         elif base is not None:
             source = ThemeSpec(
                 name=name,
-                tokens=dict(getattr(base, "tokens", {})),
-                modes=dict(getattr(base, "modes", {})),
-                accessibility_modes=dict(getattr(base, "accessibility_modes", {})),
-                metadata=dict(getattr(base, "metadata", {})),
+                tokens=dict(base.tokens),
+                modes=dict(base.modes),
+                accessibility_modes=dict(base.accessibility_modes),
+                content_width=base.content_width,
+                typography_features=dict(base.typography_features),
+                typography_role_features=dict(base.typography_role_features),
             )
         else:
             source = ThemeSpec(name=name, tokens={})
@@ -645,8 +863,13 @@ class ThemeBuilder:
         self._modes = {key: dict(value) for key, value in source.modes.items()}
         self._a11y = {key: dict(value) for key, value in source.accessibility_modes.items()}
         self._aliases = dict(source.aliases)
-        self._groups = dict(getattr(source, "groups", {}))
-        self._recipes = {key: dict(value) for key, value in getattr(source, "recipes", {}).items()}
+        self._groups = dict(source.groups)
+        self._recipes = {key: dict(value) for key, value in source.recipes.items()}
+        self._content_width = source.content_width
+        self._typography_features = dict(source.typography_features)
+        self._typography_role_features = {
+            key: dict(value) for key, value in source.typography_role_features.items()
+        }
         self._metadata = dict(source.metadata)
         self._profile = source.profile
         self._provenance = list(source.provenance)
@@ -660,6 +883,11 @@ class ThemeBuilder:
         clone._aliases = dict(self._aliases)
         clone._groups = dict(self._groups)
         clone._recipes = {key: dict(value) for key, value in self._recipes.items()}
+        clone._content_width = self._content_width
+        clone._typography_features = dict(self._typography_features)
+        clone._typography_role_features = {
+            key: dict(value) for key, value in self._typography_role_features.items()
+        }
         clone._metadata = dict(self._metadata)
         clone._profile = self._profile
         clone._provenance = list(self._provenance)
@@ -670,14 +898,17 @@ class ThemeBuilder:
         return cls(spec.name, base=spec)
 
     @classmethod
-    def from_theme(cls, theme: Any) -> ThemeBuilder:
+    def from_theme(cls, theme: _ThemeLike) -> ThemeBuilder:
         return cls(
             theme.name,
             base=ThemeSpec(
                 name=theme.name,
                 tokens=dict(theme.tokens),
                 modes=dict(theme.modes),
-                accessibility_modes=dict(getattr(theme, "accessibility_modes", {})),
+                accessibility_modes=dict(theme.accessibility_modes),
+                content_width=theme.content_width,
+                typography_features=dict(theme.typography_features),
+                typography_role_features=dict(theme.typography_role_features),
             ),
         )
 
@@ -710,11 +941,7 @@ class ThemeBuilder:
     def groups(self, **groups: str) -> ThemeBuilder:
         builder = self._clone()
         for name, value in groups.items():
-            if (
-                not _NAME.fullmatch(name)
-                or not isinstance(value, str)
-                or not _NAME.fullmatch(value)
-            ):
+            if not _is_safe_name(name) or not _is_safe_name(value):
                 raise ValueError("theme groups must use safe identifiers")
             builder._groups[name] = value
         return builder
@@ -765,9 +992,24 @@ class ThemeBuilder:
         )
         return builder
 
-    def metadata(self, **values: Any) -> ThemeBuilder:
+    def metadata(self, **values: object) -> ThemeBuilder:
         builder = self._clone()
         builder._metadata.update(values)
+        return builder
+
+    def content_width(self, value: str | None) -> ThemeBuilder:
+        builder = self._clone()
+        builder._content_width = value
+        return builder
+
+    def typography_features(self, **features: int) -> ThemeBuilder:
+        builder = self._clone()
+        builder._typography_features.update(features)
+        return builder
+
+    def typography_role_features(self, role: str, **features: int) -> ThemeBuilder:
+        builder = self._clone()
+        builder._typography_role_features.setdefault(role, {}).update(features)
         return builder
 
     def profile(self, profile: str) -> ThemeBuilder:
@@ -777,7 +1019,7 @@ class ThemeBuilder:
         builder._profile = profile
         return builder
 
-    def provenance(self, **entry: Any) -> ThemeBuilder:
+    def provenance(self, **entry: object) -> ThemeBuilder:
         builder = self._clone()
         builder._provenance.append(dict(entry))
         return builder
@@ -791,6 +1033,9 @@ class ThemeBuilder:
             aliases=self._aliases,
             groups=self._groups,
             recipes=self._recipes,
+            content_width=self._content_width,
+            typography_features=self._typography_features,
+            typography_role_features=self._typography_role_features,
             metadata=self._metadata,
             profile=self._profile,
             provenance=tuple(self._provenance),
@@ -875,8 +1120,11 @@ def registered_recipe_families() -> tuple[RecipeFamily, ...]:
 class StyleContext:
     """Serializable recipe context with explicit-component precedence."""
 
-    recipes: Mapping[str, str] = field(default_factory=dict)
-    presentation: Mapping[str, str] = field(default_factory=dict)
+    recipes: Mapping[str, str] = field(default_factory=_empty_string_dict)
+    presentation: Mapping[str, str] = field(default_factory=_empty_string_dict)
+    recipe_values: Mapping[str, Mapping[str, str]] = field(
+        default_factory=_empty_nested_string_dict
+    )
     parent: StyleContext | None = None
 
     def __post_init__(self) -> None:
@@ -895,6 +1143,21 @@ class StyleContext:
         object.__setattr__(
             self, "presentation", MappingProxyType(dict(sorted(presentation.items())))
         )
+        recipe_values: dict[str, Mapping[str, str]] = {}
+        for name, values in self.recipe_values.items():
+            normalized_name = str(name)
+            normalized_values = {str(key): str(value) for key, value in values.items()}
+            if not _NAME.fullmatch(normalized_name) or any(
+                not _NAME.fullmatch(key) or not _NAME.fullmatch(value)
+                for key, value in normalized_values.items()
+            ):
+                raise ValueError("style context recipe values must use safe identifiers")
+            recipe_values[normalized_name] = MappingProxyType(
+                dict(sorted(normalized_values.items()))
+            )
+        object.__setattr__(
+            self, "recipe_values", MappingProxyType(dict(sorted(recipe_values.items())))
+        )
 
     def resolve(self, family: str, explicit: str | None = None) -> str | None:
         if explicit is not None:
@@ -911,10 +1174,13 @@ class StyleContext:
             current = current.parent
         return None
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "recipes": dict(self.recipes),
             "presentation": dict(self.presentation),
+            "recipe_values": {
+                key: dict(value) for key, value in sorted(self.recipe_values.items())
+            },
             "parent": self.parent.to_dict() if self.parent is not None else None,
         }
 
@@ -933,6 +1199,24 @@ class StyleContext:
             current = current.parent
         return None
 
+    def resolve_presentation_values(self, slot: str) -> Mapping[str, str]:
+        """Resolve the nearest mapped recipe into bounded presentation values."""
+        recipe = self.resolve_presentation(slot)
+        if recipe is None:
+            return MappingProxyType({})
+        current: StyleContext | None = self
+        seen: set[int] = set()
+        while current is not None:
+            marker = id(current)
+            if marker in seen:
+                raise ValueError("style context parent cycle")
+            seen.add(marker)
+            values = current.recipe_values.get(recipe)
+            if values is not None:
+                return values
+            current = current.parent
+        return MappingProxyType({})
+
 
 @dataclass(frozen=True, slots=True)
 class ComponentThemeContract:
@@ -943,8 +1227,8 @@ class ComponentThemeContract:
     required_tokens: tuple[str, ...] = ()
     roles: tuple[str, ...] = ()
     contrast_relationships: tuple[Mapping[str, str], ...] = ()
-    accessibility_behavior: Mapping[str, str] = field(default_factory=dict)
-    fallback_policy: Mapping[str, str] = field(default_factory=dict)
+    accessibility_behavior: Mapping[str, str] = field(default_factory=_empty_string_dict)
+    fallback_policy: Mapping[str, str] = field(default_factory=_empty_string_dict)
     profile: str = "core"
 
     def __post_init__(self) -> None:
@@ -959,11 +1243,11 @@ class ComponentThemeContract:
             ("required_tokens", self.required_tokens),
             ("roles", self.roles),
         ):
-            if any(not isinstance(value, str) or not _NAME.fullmatch(value) for value in values):
+            if any(not _is_safe_name(value) for value in values):
                 raise ValueError(f"component contract {field_name} must use safe identifiers")
         relationships: list[Mapping[str, str]] = []
         for relationship in self.contrast_relationships:
-            if not isinstance(relationship, Mapping) or not relationship:
+            if not _is_nonempty_mapping(relationship):
                 raise ValueError("contrast relationships must be non-empty mappings")
             normalized = {str(key): str(value) for key, value in relationship.items()}
             if any(
@@ -1025,9 +1309,9 @@ class ThemeValidationReport:
     schema: str
     theme: str
     profile: str
-    errors: tuple[Mapping[str, Any], ...] = ()
-    warnings: tuple[Mapping[str, Any], ...] = ()
-    adjustments: tuple[Mapping[str, Any], ...] = ()
+    errors: tuple[Mapping[str, object], ...] = ()
+    warnings: tuple[Mapping[str, object], ...] = ()
+    adjustments: tuple[Mapping[str, object], ...] = ()
 
     @property
     def ok(self) -> bool:
@@ -1037,7 +1321,7 @@ class ThemeValidationReport:
     def digest(self) -> str:
         return hashlib.sha256(_canonical(self._without_digest()).encode()).hexdigest()
 
-    def _without_digest(self) -> dict[str, Any]:
+    def _without_digest(self) -> dict[str, object]:
         return {
             "schema": self.schema,
             "theme": self.theme,
@@ -1048,7 +1332,7 @@ class ThemeValidationReport:
             "adjustments": [dict(item) for item in self.adjustments],
         }
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         return {**self._without_digest(), "digest": self.digest}
 
 
@@ -1060,8 +1344,8 @@ def validate_theme_spec(
 ) -> ThemeValidationReport:
     if profile not in THEME_COVERAGE_PROFILES:
         raise ValueError(f"unknown theme coverage profile: {profile}")
-    errors: list[Mapping[str, Any]] = []
-    warnings: list[Mapping[str, Any]] = []
+    errors: list[Mapping[str, object]] = []
+    warnings: list[Mapping[str, object]] = []
     required = {"color.bg", "color.fg", "color.focus", "font.family", "font.size", "space.unit"}
     missing = sorted(required - set(spec.tokens))
     if missing:
@@ -1100,20 +1384,11 @@ def validate_theme_spec(
         ("accessibility", spec.accessibility_modes),
     ):
         for mode, values in mapping.items():
-            for token, value in values.items():
+            for token in values:
                 if token not in spec.tokens and token not in spec.aliases:
                     warnings.append(
                         {
                             "code": "THEME-UNKNOWN-OVERRIDE",
-                            "mapping": mapping_name,
-                            "mode": mode,
-                            "token": token,
-                        }
-                    )
-                if not isinstance(value, str) or not value.strip():
-                    errors.append(
-                        {
-                            "code": "THEME-EMPTY-VALUE",
                             "mapping": mapping_name,
                             "mode": mode,
                             "token": token,
@@ -1130,7 +1405,7 @@ def validate_theme_spec(
 
 @dataclass(frozen=True, slots=True)
 class ThemePackage:
-    manifest: Mapping[str, Any]
+    manifest: Mapping[str, object]
     archive: bytes
 
     @property
@@ -1155,7 +1430,7 @@ def package_theme(
     if not report.ok:
         raise ValueError(f"theme validation failed: {report.to_dict()}")
     payload = _canonical(spec.to_dict()).encode()
-    manifest = {
+    manifest: dict[str, object] = {
         "schema": "hedron.theme-package/1",
         "name": spec.name,
         "version": "1",
@@ -1184,8 +1459,6 @@ def package_theme(
 def load_theme_package(archive: bytes | ThemePackage) -> ThemeSpec:
     """Load and verify a data-only theme package without executing package code."""
     raw = archive.archive if isinstance(archive, ThemePackage) else archive
-    if not isinstance(raw, bytes):
-        raise ValueError("theme package must be bytes or ThemePackage")
     if len(raw) > MAX_THEME_ARCHIVE_BYTES:
         raise ValueError("theme package archive exceeds the compressed-size limit")
 
@@ -1223,45 +1496,54 @@ def load_theme_package(archive: bytes | ThemePackage) -> ThemeSpec:
             names = {info.filename for info in infos}
             if names != {"manifest.json", "theme.json"}:
                 raise ValueError("theme package contains unexpected or missing files")
-            manifest = json.loads(read_bounded(bundle, "manifest.json"))
+            manifest_data: object = json.loads(read_bounded(bundle, "manifest.json"))
             payload = read_bounded(bundle, "theme.json")
-            if len(payload) + len(json.dumps(manifest).encode()) > MAX_THEME_TOTAL_BYTES:
+            if len(payload) + len(json.dumps(manifest_data).encode()) > MAX_THEME_TOTAL_BYTES:
                 raise ValueError("theme package exceeds the total decompressed-size limit")
     except (OSError, KeyError, ValueError, json.JSONDecodeError) as exc:
         raise ValueError("invalid theme package archive") from exc
-    if not isinstance(manifest, dict) or manifest.get("schema") != "hedron.theme-package/1":
+    if not is_string_mapping(manifest_data):
+        raise ValueError("theme package manifest must contain an object")
+    manifest = manifest_data
+    if manifest.get("schema") != "hedron.theme-package/1":
         raise ValueError("unsupported theme package manifest")
     if manifest.get("version") != "1":
         raise ValueError("unsupported theme package version")
-    if not isinstance(manifest.get("name"), str) or not _NAME.fullmatch(manifest["name"]):
+    manifest_name = manifest.get("name")
+    if not isinstance(manifest_name, str) or not _NAME.fullmatch(manifest_name):
         raise ValueError("theme package name is missing or unsafe")
-    if not isinstance(manifest.get("specs"), list) or manifest["specs"] != ["theme.json"]:
+    specs = manifest.get("specs")
+    if not is_object_list(specs) or specs != ["theme.json"]:
         raise ValueError("theme package must declare exactly theme.json")
     compatibility = manifest.get("compatibility")
     if (
-        not isinstance(compatibility, dict)
+        not is_string_mapping(compatibility)
         or compatibility.get("hedron") != THEME_PACKAGE_COMPATIBILITY
     ):
         raise ValueError("theme package Hedron compatibility is unsupported")
-    if not isinstance(manifest.get("licenses"), list) or not manifest["licenses"]:
+    licenses = manifest.get("licenses")
+    if not is_object_list(licenses) or not licenses:
         raise ValueError("theme package must declare at least one license")
-    if not all(isinstance(item, str) and item.strip() for item in manifest["licenses"]):
+    if not all(isinstance(item, str) and item.strip() for item in licenses):
         raise ValueError("theme package licenses must be non-empty strings")
     if manifest.get("hooks") != [] or manifest.get("assets") != {}:
         raise ValueError("theme packages cannot contain executable hooks or remote assets")
     files = manifest.get("files")
     if (
-        not isinstance(files, dict)
+        not is_string_mapping(files)
         or files.get("theme.json") != hashlib.sha256(payload).hexdigest()
     ):
         raise ValueError("theme package theme.json hash does not match manifest")
-    spec = ThemeSpec.from_dict(cast(Mapping[str, Any], json.loads(payload)))
+    decoded_spec: object = json.loads(payload)
+    if not is_string_mapping(decoded_spec):
+        raise ValueError("theme package theme.json must contain an object")
+    spec = ThemeSpec.from_dict(decoded_spec)
     if manifest.get("name") != spec.name:
         raise ValueError("theme package name does not match theme.json")
     if manifest.get("fingerprint") != spec.fingerprint:
         raise ValueError("theme package fingerprint does not match theme.json")
-    profile = str(manifest.get("profile", "core"))
-    if profile not in THEME_COVERAGE_PROFILES:
+    profile = manifest.get("profile", "core")
+    if not isinstance(profile, str) or profile not in THEME_COVERAGE_PROFILES:
         raise ValueError(f"theme package uses unknown coverage profile: {profile}")
     report = validate_theme_spec(spec, profile=profile)
     if manifest.get("validation") != report.digest or not report.ok:
@@ -1278,10 +1560,10 @@ def register_theme_package(archive: bytes | ThemePackage) -> ThemeSpec:
     return spec
 
 
-def diff_theme_specs(left: ThemeSpec, right: ThemeSpec) -> dict[str, Any]:
+def diff_theme_specs(left: ThemeSpec, right: ThemeSpec) -> dict[str, object]:
     """Return a deterministic, read-only semantic diff for two theme specs."""
 
-    def changes(a: Mapping[str, Any], b: Mapping[str, Any]) -> dict[str, Any]:
+    def changes(a: Mapping[str, object], b: Mapping[str, object]) -> dict[str, object]:
         added = {key: b[key] for key in sorted(set(b) - set(a))}
         removed = {key: a[key] for key in sorted(set(a) - set(b))}
         changed = {
@@ -1304,7 +1586,7 @@ def diff_theme_specs(left: ThemeSpec, right: ThemeSpec) -> dict[str, Any]:
     }
 
 
-def explain_theme_spec(spec: ThemeSpec) -> dict[str, Any]:
+def explain_theme_spec(spec: ThemeSpec) -> dict[str, object]:
     """Return source/provenance and resolved-token facts for diagnostics and tooling."""
     return {
         "schema": "hedron.theme-explanation/1",
@@ -1323,7 +1605,7 @@ def explain_theme_spec(spec: ThemeSpec) -> dict[str, Any]:
     }
 
 
-def conformance_report(spec: ThemeSpec, *, profile: str | None = None) -> dict[str, Any]:
+def conformance_report(spec: ThemeSpec, *, profile: str | None = None) -> dict[str, object]:
     """Build the portable declared-profile conformance result."""
     selected = profile or spec.profile
     report = validate_theme_spec(spec, profile=selected)

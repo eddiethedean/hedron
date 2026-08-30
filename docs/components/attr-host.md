@@ -69,7 +69,7 @@ Stable element that can receive attribute-only OOB updates.
         )
 
 
-    @app.fragment("/status-attrs", region=host)
+    @app.view("/status-attrs", fragment_regions=(host,))
     def attrs():
         return swap(host_node("ready"))
     ```

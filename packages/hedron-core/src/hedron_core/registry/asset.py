@@ -15,7 +15,7 @@ class AssetMeta:
     path: str
     digest: str
     content_type: str
-    attributes: Mapping[str, str] = field(default_factory=dict)
+    attributes: Mapping[str, str] = field(default_factory=dict[str, str])
     depends_on: tuple[str, ...] = ()
     placement: str = "head"
 

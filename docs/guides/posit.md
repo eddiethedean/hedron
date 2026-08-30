@@ -8,10 +8,10 @@ New to application development or Workbench? Start with
 installs `hedron-posit`, constructs `HedronPosit`, and uses the Workbench-aware launcher before
 returning here for the deployment contract.
 
-**Requires:** `hedron-posit>=0.67.0` (or `hedron[posit]>=0.67.0`).
-Compatibility package: `hedron-workbench>=0.66.2,<0.67` (or `hedron[workbench]`).
-Hedron's Workbench ASGI behavior is owned by `hedron-posit`; no standalone
-`fastapi-workbench` installation is required.
+**In-tree candidate:** `hedron-posit` is not yet published at 1.0.0. Use the repository
+checkout for the candidate, or the public fallback `hedron-posit>=0.67.0,<0.68` when
+available. For plain FastAPI/ASGI applications,
+use the independent `fastapi-workbench>=1.0.1,<2.0` package instead.
 
 If `python3.11` is unavailable, follow the [Python 3.11 pyenv fallback](../getting-started/first-app-posit-workbench.md#python-311-fallback)
 before creating the virtual environment. When finished, return to [Preferred facade](#preferred-facade).
@@ -65,20 +65,18 @@ With no Posit evidence the app matches ordinary `Hedron` routing and cookies.
 ```bash
 hedron run app:app
 hedron-posit run app:app
-hedron-workbench run app:app   # compatibility CLI
 ```
 
-Workbench mode uses the discovery and path normalization owned by `hedron-posit`
-through `hedron-posit`. Session URLs remain ephemeral — use
+Workbench mode uses the discovery and path normalization provided by `hedron-posit`.
+Session URLs remain ephemeral — use
 `external_base_url` or Connect for durable email/OAuth callbacks.
 
 Supported Workbench floor is **2025.05.1** (linux/amd64). Current verified lane is
 Workbench **2026.07.0**. Live evidence: `docs/acceptance/realwb-030-202505/RESULT.log`
 and `docs/acceptance/realwb-030/RESULT.log`.
 
-See also [Posit Workbench](posit-workbench.md) for the compatibility
-`HedronWorkbench` surface (supported through at least 0.35; no 0.33 deprecation
-warning).
+See also [Posit Workbench](posit-workbench.md) for launcher, mount, and diagnostics
+details.
 
 ## Native Connect
 
@@ -114,21 +112,13 @@ evidence recorded `BRIDGE_DECISION=drop_supported` (native cookies OK on
 2025.06.0 and 2026.07.0). Do not enable a Supported bridge until a future Accepted decision
 reproduces native request-cookie loss on a named topology.
 
-## Migration from `hedron-workbench`
+## Migration from the removed `hedron-workbench` package
 
-```python
-# Before (still supported)
-from hedron_workbench import HedronWorkbench
-app = HedronWorkbench(...)
-
-# Preferred
-from hedron_posit import HedronPosit
-app = HedronPosit(...)
-```
-
-`HedronWorkbench` is a thin subclass of `HedronPosit`. Existing
-`workbench_*` constructor keywords, imports, CLI, and `hedron[workbench]` remain
-supported.
+The standalone `hedron-workbench` distribution and `hedron[workbench]` extra were
+removed in 1.0.0. Replace `hedron_workbench` imports with `hedron_posit`, use
+`HedronPosit`, and launch with `hedron-posit run` (or `hedron run --workbench` from
+the flagship package). Existing applications that need a generic ASGI adapter can
+install `fastapi-workbench` and import `workbenchify` from `fastapi_workbench`.
 
 ## Operations and diagnostics
 
@@ -141,4 +131,4 @@ supported.
 
 - Connect credentials / user-session headers are never Hedron authentication.
 - Product resolution never auto-enables bridge or peer trust.
-- See [threat model](threat-model.md) and [RELEASE_0_33](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_33.md).
+- See [threat model](threat-model.md) and [current release](current-release.md).

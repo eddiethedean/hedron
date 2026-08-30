@@ -1,0 +1,226 @@
+# Public example metadata. Keep current examples on the 1.0 contract and label historical
+# phase evidence explicitly so it never appears to be a recommended starting point.
+
+[[example]]
+path = "chrome-zero-css"
+outcome = "Zero-application-CSS component gallery"
+layer = "Hedron"
+difficulty = "Intermediate"
+minutes = 15
+status = "current"
+
+[[example]]
+path = "connect-reference"
+outcome = "Posit Connect deployment reference"
+layer = "Hedron"
+difficulty = "Advanced"
+minutes = 30
+status = "current"
+
+[[example]]
+path = "dashboard-0.17"
+outcome = "Historical dashboard phase evidence"
+layer = "Hedron"
+difficulty = "Historical"
+minutes = 0
+status = "historical"
+
+[[example]]
+path = "data-app-0.15"
+outcome = "Historical data-app phase evidence"
+layer = "Hedron"
+difficulty = "Historical"
+minutes = 0
+status = "historical"
+
+[[example]]
+path = "data-app-0.16"
+outcome = "Historical data-app phase evidence"
+layer = "Hedron"
+difficulty = "Historical"
+minutes = 0
+status = "historical"
+
+[[example]]
+path = "django-reference"
+outcome = "Django host integration"
+layer = "Hedron"
+difficulty = "Intermediate"
+minutes = 20
+status = "current"
+
+[[example]]
+path = "element-author-plugin"
+outcome = "Web Component author package"
+layer = "Hedron"
+difficulty = "Advanced"
+minutes = 30
+status = "current"
+
+[[example]]
+path = "fastapi-pydantic"
+outcome = "FastAPI and Pydantic integration"
+layer = "Hedron"
+difficulty = "Intermediate"
+minutes = 20
+status = "current"
+
+[[example]]
+path = "fastapi-workbench-reference"
+outcome = "Generic ASGI Workbench deployment"
+layer = "Hedron"
+difficulty = "Advanced"
+minutes = 30
+status = "current"
+
+[[example]]
+path = "file-upload"
+outcome = "Validated file upload"
+layer = "Hedron"
+difficulty = "Intermediate"
+minutes = 20
+status = "current"
+
+[[example]]
+path = "flask-reference"
+outcome = "Flask host integration"
+layer = "Hedron"
+difficulty = "Intermediate"
+minutes = 20
+status = "current"
+
+[[example]]
+path = "hdj-progressive"
+outcome = "HDJ/Jinja progressive interaction"
+layer = "Hedron"
+difficulty = "Advanced"
+minutes = 25
+status = "current"
+
+[[example]]
+path = "htmx-extensions"
+outcome = "Demand-driven HTMX extensions"
+layer = "Hedron"
+difficulty = "Advanced"
+minutes = 25
+status = "current"
+
+[[example]]
+path = "jobs-poll"
+outcome = "Durable job status with polling"
+layer = "Hedron"
+difficulty = "Intermediate"
+minutes = 20
+status = "current"
+
+[[example]]
+path = "live-interaction"
+outcome = "Experimental live interaction with fallback"
+layer = "Hedron"
+difficulty = "Advanced"
+minutes = 30
+status = "current"
+
+[[example]]
+path = "model-demo-0.18"
+outcome = "Historical model-demo phase evidence"
+layer = "Hedron"
+difficulty = "Historical"
+minutes = 0
+status = "historical"
+
+[[example]]
+path = "notes-sqlalchemy"
+outcome = "Persistent notes with SQLAlchemy"
+layer = "Hedron"
+difficulty = "Intermediate"
+minutes = 30
+status = "current"
+
+[[example]]
+path = "oidc"
+outcome = "OIDC authentication boundary"
+layer = "Hedron"
+difficulty = "Advanced"
+minutes = 30
+status = "current"
+
+[[example]]
+path = "package-workflows"
+outcome = "Package author workflow"
+layer = "Hedron"
+difficulty = "Advanced"
+minutes = 30
+status = "current"
+
+[[example]]
+path = "reference-app"
+outcome = "Production architecture kitchen sink"
+layer = "Hedron"
+difficulty = "Advanced"
+minutes = 60
+status = "current"
+
+[[example]]
+path = "sample-kit-consumer"
+outcome = "Third-party component package consumption"
+layer = "Hedron"
+difficulty = "Intermediate"
+minutes = 20
+status = "current"
+
+[[example]]
+path = "showcase"
+outcome = "Full-feature server-rendered operations console"
+layer = "Hedron"
+difficulty = "Intermediate"
+minutes = 15
+status = "current"
+
+[[example]]
+path = "edron-showcase"
+outcome = "Full-feature class-oriented operations console"
+layer = "Edron"
+difficulty = "Intermediate"
+minutes = 15
+status = "current"
+
+[[example]]
+path = "session-auth"
+outcome = "Session login and protected pages"
+layer = "Hedron"
+difficulty = "Intermediate"
+minutes = 25
+status = "current"
+
+[[example]]
+path = "streamlit-migration"
+outcome = "Review-first Streamlit migration"
+layer = "Edron"
+difficulty = "Intermediate"
+minutes = 30
+status = "current"
+
+[[example]]
+path = "theme-gallery"
+outcome = "Theme and appearance gallery"
+layer = "Hedron"
+difficulty = "Intermediate"
+minutes = 20
+status = "current"
+
+[[example]]
+path = "workbench-reference"
+outcome = "Posit Workbench application"
+layer = "Hedron"
+difficulty = "Advanced"
+minutes = 30
+status = "current"
+
+[[example]]
+path = "workflow-055"
+outcome = "Historical secure-workflow phase evidence"
+layer = "Hedron"
+difficulty = "Historical"
+minutes = 0
+status = "historical"

@@ -9,29 +9,44 @@ import inspect
 import logging
 import secrets
 import time
-from collections.abc import Callable, Coroutine
-from typing import Any, Protocol, TypeAlias, runtime_checkable
+from collections.abc import Callable, Collection, Coroutine, Sequence
+from typing import Any, Protocol, TypeAlias, cast, runtime_checkable
 
 from fastapi import Request
 from fastapi.routing import APIRoute
+from starlette.datastructures import State
 from starlette.responses import Response as StarletteResponse
 
 from hedron.async_utils import await_if_needed
 from hedron.context import render_context_from_request
 from hedron.responses import (
     HTML,
-    _fragment_region_http_detail,
+    fragment_region_http_detail,
     render_component_response,
     render_interaction,
 )
 from hedron.security.csrf import ensure_csrf_cookie
 from hedron.security.policy import SecurityPolicy
 from hedron_core.alpine import BrowserPlanClosure
+from hedron_core.codes import HED_UPDATE_0003
 from hedron_core.component import Component, NodeLike
-from hedron_core.interaction import FragmentRegion, FragmentRegionError, InteractionResult
+from hedron_core.htmx.policy import InteractionPolicy
+from hedron_core.interaction import (
+    FragmentRegion,
+    FragmentRegionError,
+    InteractionResult,
+    resolve_fragment_region,
+)
 from hedron_core.interaction_067 import Outcome, OutcomeKind
 from hedron_core.models import Model
 from hedron_core.rendering import RenderMode
+from hedron_core.typing_aliases import JsonValue
+from hedron_core.updates import (
+    list_handle_descriptors,
+    matches_declared_host,
+    refresh_event_name,
+    safe_dom_id,
+)
 
 _logger = logging.getLogger("hedron.routing.route")
 
@@ -88,11 +103,11 @@ class HedronRoute(APIRoute):
             if request is None:
                 for arg in args:
                     if isinstance(arg, Request):
-                        request = arg
+                        request = cast(Request[State], arg)
                         break
                 maybe = kwargs.get("request")
                 if isinstance(maybe, Request):
-                    request = maybe
+                    request = cast(Request[State], maybe)
             if request is None:
                 raise RuntimeError("Hedron HTML/Component returns require an active Request")
             kind = "page"
@@ -135,11 +150,7 @@ class HedronRoute(APIRoute):
                 current_request.reset(token)
                 reset_htmx_eval_allowed(eval_token)
 
-            if not isinstance(response, StarletteResponse):
-                response = await self.convert_endpoint_result(
-                    request, response, mode=None, kind=self.hedron_kind or "page"
-                )
-            elif policy.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
+            if policy.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
                 ensure_csrf_cookie(response, policy, request=request)
             return response
 
@@ -215,7 +226,7 @@ class HedronRoute(APIRoute):
                 allow_undeclared_targets=allow_undeclared_targets,
                 allow_missing_target=kind == "action",
             )
-            await _prepare_endpoint_value(result.value, request=request)
+            await prepare_endpoint_value(result.value, request=request)
             response = render_component_response(
                 result,
                 request=request,
@@ -246,7 +257,7 @@ class HedronRoute(APIRoute):
             force = mode
             if kind == "component":
                 force = force or RenderMode.FRAGMENT
-            await _prepare_endpoint_value(result, request=request)  # type: ignore[arg-type]
+            await prepare_endpoint_value(result, request=request)  # type: ignore[arg-type]
             response = render_component_response(
                 result,  # type: ignore[arg-type]
                 request=request,
@@ -290,9 +301,67 @@ class HedronRoute(APIRoute):
                 allow_undeclared_targets=allow_undeclared_targets,
             )
         if role is OutcomeKind.REFRESH:
+            handles = payload["handles"]
+            if not isinstance(handles, list):
+                raise TypeError("refresh outcome handles must be a list")
+            app_id = str(getattr(getattr(request.app, "state", None), "hedron_app_id", "") or "")
+            descriptors = list_handle_descriptors(app_id=app_id)
+            by_name = {
+                key: descriptor
+                for descriptor in descriptors
+                if descriptor.kind == "view"
+                for key in (
+                    descriptor.logical_id,
+                    descriptor.name,
+                    safe_dom_id(descriptor.logical_id),
+                )
+            }
+            events: dict[str, JsonValue] = {}
+            regions: list[FragmentRegion] = []
+            for raw_handle in cast(list[object], handles):
+                if not isinstance(raw_handle, str):
+                    raise TypeError("refresh outcome handles must be strings")
+                candidate = raw_handle.strip()
+                descriptor = by_name.get(candidate)
+                dom_id = safe_dom_id(descriptor.logical_id) if descriptor else ""
+                if descriptor is None:
+                    # Bound view handles carry a validated instance suffix. Do
+                    # not accept arbitrary lookalike ids or allow command
+                    # handles to become refresh targets.
+                    for view in descriptors:
+                        if view.kind != "view":
+                            continue
+                        base = safe_dom_id(view.logical_id)
+                        if candidate == base or not candidate.startswith(f"{base}-"):
+                            continue
+                        region = FragmentRegion(id=base, selector=f"#{base}")
+                        if matches_declared_host(region, f"#{candidate}"):
+                            descriptor = view
+                            dom_id = candidate
+                            break
+                if descriptor is None:
+                    from fastapi import HTTPException
+
+                    raise HTTPException(
+                        status_code=403,
+                        detail=(
+                            f"{HED_UPDATE_0003}: Outcome.refresh target {raw_handle!r} "
+                            "is not an owned view handle."
+                        ),
+                    )
+                events[refresh_event_name(dom_id)] = {}
+                regions.append(FragmentRegion(id=dom_id, selector=f"#{dom_id}"))
             return await render_interaction(
                 request,
-                InteractionResult(content=None, status_code=200, refresh=True),
+                InteractionResult(
+                    content=None,
+                    status_code=200,
+                    trigger=events,
+                    policy=InteractionPolicy(
+                        declared_regions=tuple(regions),
+                        allow_undeclared_targets=False,
+                    ),
+                ),
                 mode=mode,
                 kind=kind,
                 fragment_regions=fragment_regions,
@@ -360,21 +429,25 @@ def _prepare_deadline_header_trusted(request: Request) -> bool:
     peers: set[str] = set()
     raw_env = os.environ.get("HEDRON_TRUSTED_PROXIES", "")
     peers.update(part.strip() for part in raw_env.split(",") if part.strip())
-    app = request.scope.get("app") if isinstance(request.scope, dict) else None
+    app: object | None = request.scope.get("app")
     state = getattr(app, "state", None) if app is not None else None
     configured = getattr(state, "hedron_trusted_peers", None) if state is not None else None
     if isinstance(configured, (list, tuple, set, frozenset)):
-        peers.update(str(item).strip() for item in configured if str(item).strip())
+        peers.update(
+            str(item).strip() for item in cast(Collection[object], configured) if str(item).strip()
+        )
     if not peers:
         return False
-    client = request.scope.get("client") if isinstance(request.scope, dict) else None
-    peer = client[0] if isinstance(client, (list, tuple)) and client else None
+    client: object = request.scope.get("client")
+    peer = (
+        cast(Sequence[object], client)[0] if isinstance(client, (list, tuple)) and client else None
+    )
     return peer is not None and peer in peers
 
 
-async def _prepare_endpoint_value(value: NodeLike, *, request: Request) -> None:
+async def prepare_endpoint_value(value: NodeLike, *, request: Request) -> None:
     """Run optional prepare() hooks before sync render."""
-    from hedron.concurrency import _get_limiter, get_concurrency_config
+    from hedron.concurrency import get_concurrency_config, get_limiter
     from hedron.tracing import span
     from hedron_core.prepare import PrepareContext, prepare_tree
 
@@ -414,7 +487,7 @@ async def _prepare_endpoint_value(value: NodeLike, *, request: Request) -> None:
     watcher = asyncio.create_task(_watch_disconnect())
     try:
         with span("hedron.prepare", route=str(request.url.path)):
-            limiter = _get_limiter()
+            limiter = get_limiter()
             await prepare_tree(
                 value,
                 context=ctx,
@@ -456,6 +529,23 @@ def _authorize_component_fragment(
         if target and any(matches_declared_host(region, target) for region in handle_hosts):
             return
         if target:
+            # A canonical ``view`` may explicitly authorize additional
+            # application-owned regions (for example a shared OOB/status
+            # sink) in addition to its generated handle host.  The handle
+            # host remains protected, but it must not shadow those declared
+            # regions and make the allowlist unusable.
+            declared_regions = tuple(
+                region for region in fragment_regions if region not in handle_hosts
+            )
+            if declared_regions:
+                try:
+                    resolve_fragment_region(
+                        InteractionPolicy(declared_regions=declared_regions), target
+                    )
+                except FragmentRegionError:
+                    pass
+                else:
+                    return
             from hedron_core.audit import SecurityAuditEventType, emit_security_audit
 
             mismatch = FragmentRegionError(
@@ -470,7 +560,7 @@ def _authorize_component_fragment(
             )
             raise HTTPException(
                 status_code=403,
-                detail=_fragment_region_http_detail(mismatch, request=request),
+                detail=fragment_region_http_detail(mismatch, request=request),
             )
     # Empty fragment_regions still fail closed when the client sends HX-Target
     # (same contract as InteractionResult / authorize_htmx_target).
@@ -495,5 +585,5 @@ def _authorize_component_fragment(
         )
         raise HTTPException(
             status_code=403,
-            detail=_fragment_region_http_detail(exc, request=request),
+            detail=fragment_region_http_detail(exc, request=request),
         ) from exc

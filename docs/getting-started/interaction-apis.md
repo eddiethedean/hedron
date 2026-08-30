@@ -56,7 +56,7 @@ def status_panel():
     return html.div(Text("ok"), id=status.id)
 
 
-@app.fragment("/status", region=status)
+@app.view("/status", fragment_regions=(status,))
 def refresh_status():
     return swap(status_panel())
 ```
@@ -65,5 +65,5 @@ Continue: [Interaction](../api/INTERACTION.md).
 
 ## Flask and Django
 
-Adapter hosts use `hedron_route` / `hedron_view` rather than `@app.refreshable`.
+Adapter hosts use `hedron_route` / `hedron_view` rather than FastAPI's `@app.view`.
 See [Flask](flask.md) and [Django](django.md).

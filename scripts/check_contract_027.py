@@ -5,8 +5,9 @@ from __future__ import annotations
 
 import importlib
 import sys
-import tomllib
 from pathlib import Path
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 INVENTORY = ROOT / "docs" / "acceptance" / "production-grade-inventory-027.toml"

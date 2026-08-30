@@ -8,6 +8,34 @@ from fastapi.testclient import TestClient
 
 import edron as ed
 from edron.errors import BindingError
+from hedron import ActionHandle, FragmentHandle
+
+
+def test_surfaces_use_hedron_1_0_canonical_handles() -> None:
+    app = ed.App(title="canonical", session_secret="test-secret")
+
+    @app.page("/", title="Home")
+    class Home(ed.Page):
+        @ed.fragment
+        def status(self) -> None:
+            self.text("ready")
+
+        @ed.action
+        def save(self) -> ed.Outcome:
+            return ed.refresh(self.status)
+
+        def render(self) -> None:
+            self.status()
+            self.button("Save", action=self.save)
+
+    fragment = app.native_surface(Home.status)
+    action = app.native_surface(Home.save)
+    assert isinstance(fragment, FragmentHandle)
+    assert isinstance(action, ActionHandle)
+    assert fragment is Home.status._native
+    assert action is Home.save._native
+    assert app.native.state.hedron_handles[fragment.logical_id] is fragment
+    assert app.native.state.hedron_handles[action.logical_id] is action
 
 
 def test_fragment_dependencies_are_lowered_to_native_route() -> None:

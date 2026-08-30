@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from enum import StrEnum
-from typing import Any, Literal
+from typing import Literal
 
-from hedron_core.component import Component
+from hedron_core.compat import StrEnum
+from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
 from hedron_core.typing_aliases import HtmlAttrMap
@@ -67,9 +67,9 @@ class ColorModeToggle(Component[ColorModeToggleProps]):
         self._action = action
         self._csrf_token = csrf_token
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         control_id = self.props.id or f"hedron-color-mode-{self.render_instance_id()[2:10]}"
-        options = []
+        options: list[NodeLike] = []
         for mode in (ColorMode.LIGHT, ColorMode.DARK, ColorMode.SYSTEM):
             opts: HtmlAttrMap = {"value": mode.value}
             if self.props.preference == mode.value:
@@ -89,7 +89,7 @@ class ColorModeToggle(Component[ColorModeToggleProps]):
                 if isinstance(self._action, SafeUrl)
                 else SafeUrl.parse(str(self._action), purpose=UrlPurpose.FORM_ACTION)
             )
-        fields: list[Any] = [
+        fields: list[NodeLike] = [
             html.label(self.props.label, for_=control_id),
             html.select(*options, id=control_id, **select_attrs),
         ]

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+from dataclasses import replace
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -82,6 +83,18 @@ def test_posit_workbench_pages_accept_the_matching_beta_bridge_pin() -> None:
         assert not ssot.check_text(path, f'pip install "hedron{pin}"')
 
 
+def test_edron_1_0_accepts_its_explicit_hedron_1_x_pin() -> None:
+    command = 'pip install "hedron>=1.0.0,<2.0" "hedron-data>=1.0.0,<2.0"'
+    assert not ssot.check_text(Path("packages/edron/README.md"), command)
+    assert ssot.check_text(Path("fixture.md"), command)
+
+
+def test_package_readmes_accept_their_bounded_semver_line() -> None:
+    command = 'pip install "hedron-core>=1.0.0,<2.0"'
+    assert not ssot.check_text(Path("packages/hedron-core/README.md"), command)
+    assert ssot.check_text(Path("docs/guides/fixture.md"), command)
+
+
 def test_pypi_latest_claim_is_allowed_when_registry_is_deferred() -> None:
     if not ssot.FACTS.registry_deferred:
         return
@@ -108,6 +121,10 @@ def test_first_run_pages_must_disclose_deferred_pypi() -> None:
     assert not ok
 
 
+def test_package_readmes_are_not_transient_registry_honesty_pages() -> None:
+    assert Path("packages/hedron-core/README.md") not in ssot.REGISTRY_HONESTY_PATHS
+
+
 def test_first_run_install_commands_require_current_pin() -> None:
     path = Path("README.md")
     if ssot.FACTS.registry_deferred:
@@ -120,6 +137,31 @@ def test_first_run_install_commands_require_current_pin() -> None:
         assert not ssot.check_text(install, f'pip install "hedron{ssot.FACTS.pypi_pin}"')
         return
     assert not ssot.check_text(path, f'uvx --from "hedron{ssot.FACTS.pin}" hedron new demo')
+
+
+def test_artifact_readmes_document_the_version_their_wheels_ship() -> None:
+    hedron_readme = Path("packages/hedron/README.md")
+    edron_readme = Path("packages/edron/README.md")
+
+    assert not ssot.check_text(
+        hedron_readme,
+        f'uvx --from "hedron{ssot.FACTS.pin}" hedron new demo',
+    )
+    assert not ssot.check_text(
+        edron_readme,
+        f'uvx --from "edron{ssot.FACTS.edron_pin}" edron new demo',
+    )
+
+    if ssot.FACTS.registry_deferred:
+        assert ssot.check_text(
+            hedron_readme,
+            f'uvx --from "hedron{ssot.FACTS.pypi_pin}" hedron new demo',
+        )
+    if ssot.FACTS.edron_registry_status == "deferred":
+        assert ssot.check_text(
+            edron_readme,
+            f'uvx --from "edron{ssot.FACTS.edron_pypi_pin}" edron new demo',
+        )
 
 
 def test_in_tree_deferred_boilerplate_is_restricted() -> None:
@@ -149,6 +191,57 @@ def test_historical_install_can_be_skipped_without_skipping_current_claims() -> 
         Path("historical.md"),
         "The current train is 0.20.x.",
         check_installs=False,
+    )
+
+
+def test_verified_candidate_status_rejects_implementation_and_registry_contradictions() -> None:
+    path = Path("docs/guides/example.md")
+    assert ssot.check_release_candidate_status(
+        path, "The 1.0 cut is not implemented and release evidence is pending."
+    )
+    assert ssot.check_release_candidate_status(path, "Use the living .1.0.x train.")
+
+    deferred = replace(ssot.FACTS, registry_status="deferred")
+    assert ssot.check_release_candidate_status(
+        path,
+        "The v1.0.0 candidate is published on PyPI.",
+        deferred,
+    )
+    assert not ssot.check_release_candidate_status(
+        path,
+        "The v1.0.0 repository candidate is verified; PyPI remains on v0.66.2.",
+        deferred,
+    )
+
+    uploaded = replace(ssot.FACTS, registry_status="uploaded")
+    assert ssot.check_release_candidate_status(
+        path,
+        "The v1.0.0 candidate is awaiting publication.",
+        uploaded,
+    )
+    assert not ssot.check_release_candidate_status(
+        path,
+        "Hedron v1.0.0 is published on PyPI.",
+        uploaded,
+    )
+
+
+def test_historical_release_pages_require_current_status_banner() -> None:
+    path = Path("docs/guides/whats-new-0.42.md")
+    assert ssot.check_historical_release_banner(path, "# What's new in 0.42\n")
+    assert not ssot.check_historical_release_banner(
+        path,
+        '# What\'s new in 0.42\n\n!!! note "Historical release note"\n'
+        "\n    See [Current release](current-release.md).\n",
+    )
+
+
+def test_section_landings_require_release_context_and_status_link() -> None:
+    path = Path("docs/guides/index.md")
+    assert ssot.check_section_landing(path, "# Guides\n")
+    assert not ssot.check_section_landing(
+        path,
+        "# Guides\n\nTargets 1.0. See [status](current-release.md).\n",
     )
 
 

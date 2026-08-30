@@ -33,8 +33,8 @@ services:
       RS_SERVER_URL: http://workbench:8787/
       PYTHONPATH: /src/examples/workbench-reference
     command: >
-      bash -lc "pip install -q uv && cd /src && uv sync --frozen --package hedron-workbench
-      && uv run hedron-workbench run app_facade:app --host 0.0.0.0 --allow-external-bind
+      bash -lc "pip install -q uv && cd /src && uv sync --frozen --package hedron-posit
+      && uv run hedron-posit run app_facade:app --host 0.0.0.0 --allow-external-bind
       --port 8050 --mount /s/demo/p/9"
     depends_on:
       workbench:

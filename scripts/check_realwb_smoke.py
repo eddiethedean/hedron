@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""REALWB-030: Docker Workbench smoke evidence for hedron-workbench, hedron-posit, and fastapi-workbench.
+"""REALWB-030: Docker Workbench smoke evidence for the three integration packages.
 
 Default: validate redacted RESULT.log files (no Docker on every CI run).
 Live: ``--live`` or ``HEDRON_REALWB=1`` runs ``scripts/realwb_smoke.sh`` (current 2026.07.0 lane).
@@ -15,7 +15,7 @@ import os
 import re
 import subprocess
 import sys
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -92,6 +92,14 @@ SKIP_EXIT_CODE = 42
 MAX_AGE = timedelta(days=45)
 
 
+def _live_gate_required() -> bool:
+    return os.environ.get("HEDRON_REQUIRED_LIVE_GATES", "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+    }
+
+
 def _secret_errors(text: str, label: str) -> list[str]:
     errors: list[str] = []
     for needle in FORBIDDEN:
@@ -124,8 +132,8 @@ def _validate_floor_log(text: str) -> list[str]:
     if not match:
         errors.append("realwb-030-202505 RESULT.log missing start timestamp")
         return errors
-    started = datetime.strptime(match.group(1), "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC)
-    age = datetime.now(UTC) - started
+    started = datetime.strptime(match.group(1), "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+    age = datetime.now(timezone.utc) - started
     if age > MAX_AGE:
         errors.append(
             f"realwb-030-202505 RESULT.log is stale ({age.days} days); refresh live smoke"
@@ -160,6 +168,12 @@ def main(argv: list[str] | None = None) -> int:
             subprocess.check_call(["bash", str(SCRIPT)], cwd=ROOT)
         except subprocess.CalledProcessError as exc:
             if exc.returncode == SKIP_EXIT_CODE:
+                if _live_gate_required():
+                    print(
+                        "REALWB-030 is required but PWB_LICENSE is unavailable",
+                        file=sys.stderr,
+                    )
+                    return 1
                 print("skip: REALWB-030 (PWB_LICENSE unavailable)")
                 return 0
             print(f"realwb_smoke.sh failed ({exc.returncode})", file=sys.stderr)

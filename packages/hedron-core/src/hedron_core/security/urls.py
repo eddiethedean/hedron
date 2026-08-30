@@ -6,9 +6,9 @@ import html as html_stdlib
 import posixpath
 import re
 import unicodedata
-from enum import StrEnum
 from urllib.parse import unquote, urlsplit
 
+from hedron_core.compat import StrEnum
 from hedron_core.diagnostics import HedronError, error
 
 _DECODE_ROUNDS = 3
@@ -57,7 +57,7 @@ def _normalize_for_scheme_scan(value: str) -> str:
         unescaped = html_stdlib.unescape(current)
         try:
             decoded = unquote(unescaped, errors="strict")
-        except Exception:  # noqa: BLE001
+        except UnicodeDecodeError:
             decoded = unquote(unescaped)
         # Collapse whitespace used to break scheme detection; drop format chars each round.
         collapsed = nfkc_strip_format(re.sub(r"\s+", "", decoded))
@@ -86,7 +86,7 @@ def _contains_encoded_dot_pair(value: str) -> bool:
             return True
         try:
             decoded = unquote(unescaped, errors="strict")
-        except Exception:  # noqa: BLE001
+        except UnicodeDecodeError:
             decoded = unquote(unescaped)
         if decoded == current:
             break
@@ -204,7 +204,7 @@ class SafeUrl:
     @classmethod
     def parse(
         cls,
-        value: str,
+        value: object,
         *,
         purpose: UrlPurpose,
         allow_external: bool = False,

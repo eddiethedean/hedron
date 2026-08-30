@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 from tests.unit._helpers_046 import csrf_headers, make_app, reset_046
 
 from hedron import Page
-from hedron_data import DataWorkspace, DataWorkspacePolicy, InMemoryDataSource
+from hedron_data import DataWorkspace, DataWorkspacePolicy, InMemoryDataSource, __version__
 
 
 def setup_function() -> None:
@@ -59,6 +59,10 @@ def test_workspace_include_and_list() -> None:
 
     html = TestClient(app).get("/").text
     assert "1" in html
+
+
+def test_workspace_provenance_defaults_to_installed_package_version() -> None:
+    assert _workspace().provider_version == __version__
 
 
 def test_workspace_create_edit_and_forbidden() -> None:

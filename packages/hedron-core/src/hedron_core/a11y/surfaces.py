@@ -73,10 +73,10 @@ class StructureReport:
     title: str | None = None
     lang: str | None = None
     dir: str | None = None
-    landmarks: list[str] = field(default_factory=list)
-    headings: list[str] = field(default_factory=list)
+    landmarks: list[str] = field(default_factory=list[str])
+    headings: list[str] = field(default_factory=list[str])
     has_skip_link: bool = False
-    issues: list[str] = field(default_factory=list)
+    issues: list[str] = field(default_factory=list[str])
 
     @property
     def ok(self) -> bool:

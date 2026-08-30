@@ -1,10 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Hedron">
   <defs>
     <linearGradient id="hedron-gradient" x1="10" y1="8" x2="54" y2="56" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#67e8f9"/>
-      <stop offset="1" stop-color="#14b8a6"/>
+      <stop class="hedron-gradient-start" stop-color="#0e7490"/>
+      <stop class="hedron-gradient-end" offset="1" stop-color="#0f766e"/>
     </linearGradient>
+    <style>
+      @media (prefers-color-scheme: dark) {
+        .hedron-gradient-start { stop-color: #67e8f9; }
+        .hedron-gradient-end { stop-color: #2dd4bf; }
+        .hedron-pillar { fill: #0f172a; }
+        .hedron-bridge { fill: #f8fafc; }
+      }
+    </style>
   </defs>
-  <path fill="url(#hedron-gradient)" d="M32 3 56.8 17.3v29.4L32 61 7.2 46.7V17.3L32 3Zm0 7.2L13.4 20.9v22.2L32 53.8l18.6-10.7V20.9L32 10.2Z"/>
-  <path fill="currentColor" d="M21 19h7.2v9.2h7.6V19H43v26h-7.2V34.8h-7.6V45H21V19Z"/>
+  <path fill="url(#hedron-gradient)" d="M32 3 56.8 17.3v29.4L32 61 7.2 46.7V17.3L32 3Z"/>
+  <path class="hedron-pillar" fill="#f8fafc" d="m16 19 9-5v38l-9-5V19Zm23-5 9 5v28l-9 5V14Z"/>
+  <path class="hedron-bridge" fill="#a5f3fc" d="m25 30 14-8v12l-14 8V30Z"/>
 </svg>

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from typing import cast
 
 from hedron_core.htmx.policy import (
     FragmentRegion,
@@ -315,17 +316,18 @@ def authorize_location_selectors(
     if not text or text[0] != "{":
         return
     try:
-        payload = json.loads(text)
+        payload: object = json.loads(text)
     except json.JSONDecodeError as exc:
         raise ValueError("HX-Location must be a local path or JSON object") from exc
     if not isinstance(payload, dict):
         raise ValueError("HX-Location JSON must be an object")
-    target = payload.get("target")
+    location = cast(dict[str, object], payload)
+    target = location.get("target")
     if target is not None:
         if not isinstance(target, str):
             raise ValueError("HX-Location target must be a string selector")
         authorize_response_selector(policy, target, header_name="HX-Location target")
-    select = payload.get("select")
+    select = location.get("select")
     if select is not None:
         if not isinstance(select, str):
             raise ValueError("HX-Location select must be a string selector")

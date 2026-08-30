@@ -10,7 +10,7 @@ from hedron_core.jobs.types import JobState, JobStatus
 from hedron_core.typing_aliases import JobStatusDict, JsonValue
 
 
-def _idempotency_scope_key(
+def idempotency_scope_key(
     idempotency_key: str,
     *,
     tenant_id: str | None,
@@ -21,7 +21,7 @@ def _idempotency_scope_key(
     return json.dumps([tenant_id, auth_subject, idempotency_key], separators=(",", ":"))
 
 
-def _legacy_idempotency_scope_key(
+def legacy_idempotency_scope_key(
     idempotency_key: str,
     *,
     tenant_id: str | None,
@@ -37,7 +37,7 @@ def _optional_str(value: object) -> str | None:
     return str(value)
 
 
-def _status_from_dict(data: Mapping[str, object]) -> JobStatus:
+def status_from_dict(data: Mapping[str, object]) -> JobStatus:
     cancel_requested = data.get("cancel_requested", False)
     if not isinstance(cancel_requested, bool):
         raise ValueError("cancel_requested must be a boolean")
@@ -56,7 +56,7 @@ def _status_from_dict(data: Mapping[str, object]) -> JobStatus:
     )
 
 
-def _status_to_dict(
+def status_to_dict(
     status: JobStatus,
     *,
     payload: Mapping[str, JsonValue] | None = None,
@@ -77,3 +77,10 @@ def _status_to_dict(
     if payload is not None:
         data["payload"] = dict(payload)
     return data
+
+
+# Pre-1.0 compatibility aliases retained for callers that imported internals.
+_idempotency_scope_key = idempotency_scope_key
+_legacy_idempotency_scope_key = legacy_idempotency_scope_key
+_status_from_dict = status_from_dict
+_status_to_dict = status_to_dict

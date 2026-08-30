@@ -67,7 +67,7 @@ class PageRequest:
     offset: int = 0
     limit: int = DEFAULT_PAGE_SIZE
     sort: tuple[tuple[str, Literal["asc", "desc"]], ...] = ()
-    filters: Mapping[str, JsonValue] = field(default_factory=dict)
+    filters: Mapping[str, JsonValue] = field(default_factory=lambda: dict[str, JsonValue]())
     search: str | None = None
     projection: tuple[str, ...] | None = None
 
@@ -123,27 +123,32 @@ class EditIntent:
     @classmethod
     def from_mapping(cls, payload: Mapping[str, Any]) -> EditIntent:
         """Validate the finite JSON shape emitted by the native editor host."""
-        raw_updates = payload.get("updates") or ()
-        raw_inserts = payload.get("inserts") or ()
-        raw_deletes = payload.get("deletes") or ()
-        for name, value in (
-            ("updates", raw_updates),
-            ("inserts", raw_inserts),
-            ("deletes", raw_deletes),
-        ):
+
+        def array(name: str) -> Sequence[Any]:
+            value = payload.get(name)
+            if value is None:
+                return ()
             if not isinstance(value, Sequence) or isinstance(value, (str, bytes)):
                 raise ValueError(f"{name} must be an array")
+            return cast(Sequence[Any], value)
+
+        raw_updates = array("updates")
+        raw_inserts = array("inserts")
+        raw_deletes = array("deletes")
         updates: list[CellEdit] = []
         for item in raw_updates:
             if not isinstance(item, Mapping):
                 raise ValueError("each update must be an object")
+            update = cast(Mapping[str, Any], item)
             updates.append(
                 CellEdit(
-                    row_key=str(item.get("row_key", "")),
-                    field=str(item.get("field", "")),
-                    value=cast(JsonValue, item.get("value")),
+                    row_key=str(update.get("row_key", "")),
+                    field=str(update.get("field", "")),
+                    value=cast(JsonValue, update.get("value")),
                     row_version=(
-                        str(item["row_version"]) if item.get("row_version") is not None else None
+                        str(update["row_version"])
+                        if update.get("row_version") is not None
+                        else None
                     ),
                 )
             )
@@ -151,7 +156,8 @@ class EditIntent:
         for item in raw_inserts:
             if not isinstance(item, Mapping):
                 raise ValueError("each insert must be an object")
-            inserts.append({str(key): cast(JsonValue, value) for key, value in item.items()})
+            insert = cast(Mapping[str, Any], item)
+            inserts.append({str(key): cast(JsonValue, value) for key, value in insert.items()})
         return cls(
             updates=tuple(updates),
             inserts=tuple(inserts),
@@ -331,24 +337,24 @@ class DataSource(Generic[T]):
         return cls(native, adapter="sqlalchemy")
 
     def fetch(self, query: DataQuery) -> NativeDataPage[T]:
-        result = self._native.fetch(query)
+        result = cast(object, self._native.fetch(query))
         if inspect.isawaitable(result):
             if inspect.iscoroutine(result):
                 result.close()
             raise TypeError("async sources must be awaited before constructing an Edron workspace")
         if not isinstance(result, NativeDataPage):
             raise TypeError("source.fetch() must return hedron_data.DataPage")
-        return result
+        return cast(NativeDataPage[T], result)
 
     def apply(self, changes: DataChanges[T]) -> DataSaveResult[T]:
-        result = self._native.apply(changes)
+        result = cast(object, self._native.apply(changes))
         if inspect.isawaitable(result):
             if inspect.iscoroutine(result):
                 result.close()
             raise TypeError("async sources require an explicit application action")
         if not isinstance(result, DataSaveResult):
             raise TypeError("source.apply() must return hedron_data.DataSaveResult")
-        return result
+        return cast(DataSaveResult[T], result)
 
 
 def _invoke_hook(hook: Callable[..., Any], **values: Any) -> Any:
@@ -403,7 +409,9 @@ class DataWorkspace:
         if key_field not in column_names:
             raise ValueError("workspace key_field must be present in columns")
         self.name = name
-        self.source = source if isinstance(source, DataSource) else DataSource(source)
+        self.source: DataSource[Any] = (
+            source if isinstance(source, DataSource) else DataSource[Any](source)
+        )
         self.columns = tuple(columns)
         self.key_field = key_field
         self.page_size = page_size
@@ -463,10 +471,14 @@ class DataWorkspace:
             if values.get(name) not in (None, "")
         }
         try:
-            offset = int(values.get("offset", 0) or 0)
-            limit = int(values.get("limit", self.page_size) or self.page_size)
+            raw_offset = values.get("offset", 0)
+            raw_limit = values.get("limit", self.page_size)
+            offset = int(0 if raw_offset in (None, "") else raw_offset)
+            limit = int(self.page_size if raw_limit in (None, "") else raw_limit)
         except (TypeError, ValueError) as exc:
             raise BindingError("invalid workspace paging", code="EDRON_DATA_QUERY") from exc
+        if offset < 0 or limit < 1 or limit > self.max_page_size:
+            raise BindingError("invalid workspace paging", code="EDRON_DATA_QUERY")
         return PageRequest(
             offset=offset,
             limit=limit,
@@ -677,11 +689,13 @@ class DataWorkspace:
         """Read the host-established principal without creating identity state."""
         scope = getattr(request, "scope", None)
         if isinstance(scope, Mapping):
+            scope = cast(Mapping[str, Any], scope)
             principal = scope.get("user")
             if principal not in (None, False, ""):
                 return principal
             session = scope.get("session")
             if isinstance(session, Mapping):
+                session = cast(Mapping[str, Any], session)
                 for key in ("user", "username", "principal", "sub", "user_id", "_user_id"):
                     value = session.get(key)
                     if value not in (None, False, ""):

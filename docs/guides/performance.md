@@ -1,6 +1,6 @@
 # Performance
 
-Application-oriented guidance for the living **0.66.x** train. CI soft ceilings live in
+Application-oriented guidance for the current **1.0.x** train. CI soft ceilings live in
 [PERFORMANCE_BUDGETS.md](https://github.com/eddiethedean/hedron/blob/main/docs/PERFORMANCE_BUDGETS.md)
 (maintainer evidence), not as product SLOs. Full load/proxy backpressure proof for SSE/WS
 remains incomplete — prefer polling when that proof is required before you rely on live
@@ -40,7 +40,7 @@ cache keys — see [Threat model](threat-model.md).
 ## Data and charts
 
 - Install `hedron[data]` only when needed. Charts require
-  `hedron[charts]>=0.66.2,<0.67` ([Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor))
+  `hedron[charts]>=1.0.0,<1.1` ([Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor))
 - Bound `Auto` inspection; do not feed unbounded lazy queries into inference
 - Paginate DataTable sources; avoid shipping entire datasets to the browser
 

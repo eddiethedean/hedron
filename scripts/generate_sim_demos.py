@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate docs HTMX simulation islands from hedron-sim demos.
+"""Generate docs HTMX simulation islands from hedron-sim and edron-sim demos.
 
 Writes HTML snippets under ``docs/includes/sim/`` and syncs JS/CSS assets.
 """
@@ -62,14 +62,23 @@ def main(argv: list[str] | None = None) -> int:
 
     copy_assets(DOCS / "javascript", DOCS / "stylesheets")
 
+    # The Edron showcase is generated from its real application source by the
+    # package-specific builder. Keep it in this single docs-generation gate so
+    # normal docs checks catch drift in either simulator family.
+    from generate_edron_sim_showcase import main as generate_edron_showcase
+
+    edron_rc = generate_edron_showcase(["--check"] if args.check else [])
+    if edron_rc != 0:
+        return edron_rc
+
     demos = {
         "hello-refresh.html": build_hello_refresh_demo(
             status_id="service-status",
-            logo_src="assets/hedron-mark.svg",
+            logo_src="../../assets/hedron-mark-light.svg",
         ),
         "hello-refresh-quickstart.html": build_hello_refresh_demo(
             status_id="qs-service-status",
-            logo_src="../assets/hedron-mark.svg",
+            logo_src="../../assets/hedron-mark-light.svg",
             caption=(
                 "Docs simulation — click <strong>Refresh status</strong> for an "
                 "HTMX-style fragment swap (no server)."

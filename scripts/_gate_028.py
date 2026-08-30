@@ -18,7 +18,7 @@ def require_files(paths: list[Path], errors: list[str]) -> None:
 
 
 def require_inventory_supported(package: str, keys: tuple[str, ...], errors: list[str]) -> None:
-    import tomllib
+    from hedron_core.compat import tomllib
 
     if not INVENTORY.is_file():
         errors.append("missing production-grade-inventory-028.toml")
@@ -35,7 +35,7 @@ def require_inventory_supported(package: str, keys: tuple[str, ...], errors: lis
 
 
 def require_inventory_experimental(package: str, keys: tuple[str, ...], errors: list[str]) -> None:
-    import tomllib
+    from hedron_core.compat import tomllib
 
     if not INVENTORY.is_file():
         errors.append("missing production-grade-inventory-028.toml")

@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.0] — 2026-08-27
+
+- Align HDJ package metadata with the Hedron 1.0 coordinated train.
+- Broaden MarkupSafe compatibility to `>=2.1.1,<4`.
+
 ## [0.67.0] — 2026-08-27
 
 ### Changed

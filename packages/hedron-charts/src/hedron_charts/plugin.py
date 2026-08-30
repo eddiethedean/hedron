@@ -16,17 +16,16 @@ from hedron_charts.components import (
     ScatterChart,
 )
 from hedron_charts.pins import assert_pins_present
-from hedron_core.auto import RendererSpec, register_renderer
+from hedron_core.auto import RendererSpec
 from hedron_core.component import NodeLike
 from hedron_core.identifiers import content_digest
-from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
-from hedron_core.registry import (
-    ElementFieldOwnership,
-    register_asset,
-    register_browser_module,
-    register_component,
-    register_element_definition,
+from hedron_core.plugins import (
+    PluginCapabilities,
+    PluginContext,
+    PluginDefinition,
+    PluginMeta,
 )
+from hedron_core.registry import ElementFieldOwnership
 
 _ROOT = Path(__file__).resolve().parent
 _PLOTLY_HOST = _ROOT / "assets" / "plotly" / "host.js"
@@ -52,9 +51,9 @@ _OPTIONAL_RUNTIMES = (
 
 PLUGIN_META = PluginMeta(
     name="hedron_charts",
-    version="0.2.2",
+    version="1.0.0",
     distribution="hedron-charts",
-    hedron_version=">=0.67,<0.68",
+    hedron_version=">=1.0,<2.0",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
@@ -77,7 +76,7 @@ def _factory_altair(value: object) -> NodeLike:
     return AltairChart(value, description="Auto-rendered Altair chart")
 
 
-def register(ctx: PluginContext) -> None:
+def _register_components(ctx: PluginContext) -> None:
     assert_pins_present()
     for cls in (
         LineChart,
@@ -90,7 +89,7 @@ def register(ctx: PluginContext) -> None:
         Chart,
     ):
         logical = f"{cls.distribution}:{cls.__module__}.{cls.logical_name}"
-        register_component(
+        ctx.register_component(
             logical_id=logical,
             name=cls.logical_name or cls.__name__,
             module=cls.__module__,
@@ -101,15 +100,17 @@ def register(ctx: PluginContext) -> None:
             ),
         )
 
+
+def _register_primary_element(ctx: PluginContext) -> None:
     if _CHART_MODULE.is_file():
-        register_asset(
+        ctx.register_asset(
             logical_id="hedron-charts:hedron-chart.mjs",
             kind="js",
             path=str(_CHART_MODULE),
             digest=content_digest(_CHART_MODULE.read_bytes()),
             content_type="text/javascript",
         )
-        register_browser_module(
+        ctx.register_browser_module(
             logical_id="hedron-charts:hedron-chart",
             tag_name="hedron-chart",
             module_path=str(_CHART_MODULE),
@@ -129,7 +130,7 @@ def register(ctx: PluginContext) -> None:
             shadow_dom=False,
             htmx_lifecycle=True,
         )
-        register_element_definition(
+        ctx.register_element_definition(
             logical_id="hedron-chart",
             tag_name="hedron-chart",
             abi_version=1,
@@ -179,7 +180,7 @@ def register(ctx: PluginContext) -> None:
             first_party=True,
         )
     if _CHART_CSS.is_file():
-        register_asset(
+        ctx.register_asset(
             logical_id="hedron-charts:hedron-chart.css",
             kind="css",
             path=str(_CHART_CSS),
@@ -187,13 +188,15 @@ def register(ctx: PluginContext) -> None:
             content_type="text/css",
         )
 
+
+def _register_runtime_assets(ctx: PluginContext) -> None:
     for path, logical_id, kind in (
         (_PLOTLY_HOST, "hedron-charts:plotly.host.js", "js"),
         (_VEGA_HOST, "hedron-charts:vega.host.js", "js"),
     ):
         if path.is_file():
             digest = content_digest(path.read_bytes())
-            register_asset(
+            ctx.register_asset(
                 logical_id=logical_id,
                 kind=kind,
                 path=str(path),
@@ -202,7 +205,7 @@ def register(ctx: PluginContext) -> None:
             )
     for path, logical_id, _host in _OPTIONAL_HOSTS:
         if path.is_file():
-            register_asset(
+            ctx.register_asset(
                 logical_id=logical_id,
                 kind="js",
                 path=str(path),
@@ -211,7 +214,7 @@ def register(ctx: PluginContext) -> None:
             )
     for path, logical_id in _OPTIONAL_RUNTIMES:
         if path.is_file():
-            register_asset(
+            ctx.register_asset(
                 logical_id=logical_id,
                 kind="js",
                 path=str(path),
@@ -219,7 +222,9 @@ def register(ctx: PluginContext) -> None:
                 content_type="text/javascript",
             )
 
-    _CHART_EVENTS = (
+
+def _register_vendor_hosts(ctx: PluginContext) -> None:
+    chart_events = (
         "hedron-chart-hover",
         "hedron-chart-click",
         "hedron-chart-select",
@@ -227,26 +232,28 @@ def register(ctx: PluginContext) -> None:
         "hedron-chart-restyle",
     )
     if _PLOTLY_HOST.is_file():
-        register_browser_module(
+        ctx.register_browser_module(
             logical_id="hedron-charts:plotly-host",
             tag_name="hedron-plotly-chart",
             module_path=str(_PLOTLY_HOST),
             observed_attributes=("data-hedron-payload",),
-            events=_CHART_EVENTS,
+            events=chart_events,
             shadow_dom=False,
             htmx_lifecycle=True,
         )
     if _VEGA_HOST.is_file():
-        register_browser_module(
+        ctx.register_browser_module(
             logical_id="hedron-charts:vega-host",
             tag_name="hedron-vega-chart",
             module_path=str(_VEGA_HOST),
             observed_attributes=("data-hedron-payload",),
-            events=_CHART_EVENTS,
+            events=chart_events,
             shadow_dom=False,
             htmx_lifecycle=True,
         )
 
+
+def _register_renderers(ctx: PluginContext) -> None:
     # Matplotlib is the Supported production Auto default (INTERACTIVE-028).
     # Plotly/Altair remain registered for explicit as_= opt-in only.
     # Replace core chart-stub so fail-closed copy mentions Experimental opt-in
@@ -269,7 +276,7 @@ def register(ctx: PluginContext) -> None:
             ),
         )
 
-    register_renderer(
+    ctx.register_renderer(
         RendererSpec(
             name="matplotlib",
             priority=910,
@@ -280,7 +287,7 @@ def register(ctx: PluginContext) -> None:
             maturity="supported",
         )
     )
-    register_renderer(
+    ctx.register_renderer(
         RendererSpec(
             name="plotly",
             priority=920,
@@ -291,7 +298,7 @@ def register(ctx: PluginContext) -> None:
             maturity="experimental",
         )
     )
-    register_renderer(
+    ctx.register_renderer(
         RendererSpec(
             name="altair",
             priority=915,
@@ -302,7 +309,7 @@ def register(ctx: PluginContext) -> None:
             maturity="experimental",
         )
     )
-    register_renderer(
+    ctx.register_renderer(
         RendererSpec(
             name="chart-stub",
             priority=900,
@@ -318,6 +325,8 @@ def register(ctx: PluginContext) -> None:
         )
     )
 
+
+def _register_catalog(ctx: PluginContext) -> None:
     ctx.register_explorer_provider(
         panel_id="hedron-charts-viz",
         title="Visualization",
@@ -346,6 +355,23 @@ def register(ctx: PluginContext) -> None:
             limitations=("Supported events: select, inspect, focus, reset",),
         )
     )
+
+
+PLUGIN = PluginDefinition.from_callbacks(
+    PLUGIN_META,
+    (
+        ("components", _register_components),
+        ("primary-element", _register_primary_element),
+        ("runtime-assets", _register_runtime_assets),
+        ("vendor-hosts", _register_vendor_hosts),
+        ("renderers", _register_renderers),
+        ("catalog", _register_catalog),
+    ),
+)
+
+
+def register(ctx: PluginContext) -> None:
+    PLUGIN.register(ctx)
 
 
 register.PLUGIN_META = PLUGIN_META  # type: ignore[attr-defined]

@@ -6,12 +6,7 @@ import argparse
 import json
 from pathlib import Path
 
-from hedron.cli.discovery import _scaffold_dep
-
-# Historical spellings remain mentioned here solely so generated projects can
-# point migration tooling at the exact 0.67 examples.  New scaffolds below use
-# the canonical 1.0 names (`view`, `action`, `page`, and `include`).
-# Legacy example: @app.refreshable("/status") / refresh_button.
+from hedron.cli.discovery import scaffold_dep as _scaffold_dep
 
 
 def _pyproject(*, name: str, extra_deps: list[str] | None = None) -> str:
@@ -24,7 +19,7 @@ def _pyproject(*, name: str, extra_deps: list[str] | None = None) -> str:
     return f'''[project]
 name = "{name}"
 version = "0.1.0"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 dependencies = [
 {dep_lines},
 ]
@@ -38,12 +33,9 @@ explorer = "off"
 
 def _app_minimal() -> str:
     return """import os
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from hedron import CsrfField, Hedron, SafeUrl, Stack, Text, UrlPurpose, html
-
-# 1.0 migration note: @app.refreshable and refresh_button are transitional
-# 0.67 spellings; use app.view and an ordinary HTML button instead.
 
 app = Hedron(
     title="Hedron App",
@@ -59,7 +51,7 @@ app = Hedron(
 
 @app.view("/status")
 def status():
-    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
     return html.div(
         Text(f"All systems operational · refreshed {stamp}"),
         role="status",
@@ -305,7 +297,7 @@ _TEMPLATES = {
 }
 
 
-def _scaffold_fastapi(args: argparse.Namespace, dest: Path) -> int:
+def scaffold_fastapi(args: argparse.Namespace, dest: Path) -> int:
     template = str(getattr(args, "template", None) or "minimal")
     if template not in _TEMPLATES:
         raise SystemExit(f"Unknown --template {template!r}")
@@ -327,3 +319,6 @@ def _scaffold_fastapi(args: argparse.Namespace, dest: Path) -> int:
         )
     )
     return 0
+
+
+_scaffold_fastapi = scaffold_fastapi

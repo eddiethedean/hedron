@@ -30,6 +30,7 @@ packages = [
   "hedron-posit",
   "hedron-elements",
   "edron",
+  "edron-sim",
   "fastapi-workbench",
   "hedron-runtime-node",
   "hedron-runtime-java",
@@ -331,3 +332,14 @@ disposition = "incubator"
 supported = ["class_pages", "native_fragments", "native_actions", "native_inputs"]
 experimental = ["optional_adapters", "job_flow"]
 excluded = ["production_grade_until_edron_acceptance_packet_is_verified"]
+
+[edron-sim]
+owner = "edron-sim"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.1.0,<0.2"
+evidence = "release/support-matrix.toml"
+disposition = "production_grade"
+supported = ["real_edron_callback_replay", "static_html_embeds", "bounded_refresh_effects"]
+experimental = []
+excluded = ["live_server_emulation", "database_auth_queue_emulation", "arbitrary_browser_javascript"]

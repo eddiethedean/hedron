@@ -99,8 +99,9 @@ def _redact_json(value: object, *, depth: int = 0) -> object:
     if isinstance(value, Secret):
         return "***"
     if isinstance(value, Mapping):
+        mapping = cast(Mapping[object, object], value)
         out: dict[str, object] = {}
-        for k, v in value.items():
+        for k, v in mapping.items():
             key = str(k)
             if "secret" in key.lower() or "password" in key.lower() or "token" in key.lower():
                 out[key] = "***"
@@ -108,7 +109,8 @@ def _redact_json(value: object, *, depth: int = 0) -> object:
                 out[key] = _redact_json(v, depth=depth + 1)
         return out
     if isinstance(value, list):
-        return [_redact_json(v, depth=depth + 1) for v in value[:500]]
+        values = cast(list[object], value)
+        return [_redact_json(item, depth=depth + 1) for item in values[:500]]
     return value
 
 
@@ -433,6 +435,7 @@ class ToastHost(Component[ToastHostProps]):
 class ExpanderProps(ElementProps):
     title: str
     open: bool = False
+    enhance: Literal["legacy", "native", "alpine"] = "legacy"
 
 
 class Expander(Component[ExpanderProps]):
@@ -446,11 +449,21 @@ class Expander(Component[ExpanderProps]):
         *nodes: NodeLike,
         children: NodeLike = None,
         open: bool = False,
+        enhance: Literal["legacy", "native", "alpine"] = "legacy",
         id: str | None = None,
         class_: str | None = None,
         **kwargs: Any,
     ) -> None:
-        super().__init__(ExpanderProps(title=title, open=open, id=id, class_=class_, **kwargs))
+        super().__init__(
+            ExpanderProps(
+                title=title,
+                open=open,
+                enhance=enhance,
+                id=id,
+                class_=class_,
+                **kwargs,
+            )
+        )
         self._body = collect_children(*nodes, children=children)
 
     def render(self) -> NodeLike:
@@ -463,7 +476,48 @@ class Expander(Component[ExpanderProps]):
         body = self._slot_values.get("body", self._body)
         if not isinstance(body, tuple):
             body = (body,)
-        return html.details(html.summary(self.props.title), *body, **attrs)
+        if self.props.enhance == "native":
+            return html.details(
+                html.summary(self.props.title),
+                html.div(*body, data={"hedron-optional": "true"}),
+                **attrs,
+            )
+        open_state = AlpineExpression.name("open")
+        toggle_open = AlpineExpression.assign(
+            "open",
+            AlpineExpression.binary("!==", open_state, AlpineExpression.literal(True)),
+        )
+        return html.details(
+            html.summary(
+                self.props.title,
+                alpine=AlpineAttrs(
+                    directives=(
+                        AlpineDirective("x-on:click.prevent", toggle_open),
+                        AlpineDirective("x-bind:aria-expanded", open_state),
+                    ),
+                    source=(
+                        f"component:Expander:{self.props.id or self.render_instance_id()}:summary"
+                    ),
+                ),
+            ),
+            html.div(
+                *body,
+                data={"hedron-optional": "true"},
+                alpine=AlpineAttrs(
+                    directives=(
+                        AlpineDirective("x-show", open_state),
+                        AlpineDirective("x-collapse", features=("collapse",)),
+                    ),
+                    source=f"component:Expander:{self.props.id or self.render_instance_id()}:body",
+                ),
+            ),
+            alpine=AlpineAttrs(
+                state={"open": self.props.open},
+                directives=(AlpineDirective("x-bind:open", open_state),),
+                source=f"component:Expander:{self.props.id or self.render_instance_id()}",
+            ),
+            **attrs,
+        )
 
 
 class TabsProps(ElementProps):
@@ -527,9 +581,8 @@ class Tabs(Component[TabsProps]):
             )
         tabs_id = self.props.id or f"tabs-{self.render_instance_id()}"
         active = self.props.active or self._panels[0][0]
-        tablist = []
-        panels = []
-        root_alpine = AlpineAttrs.data({"active": active}, source=f"component:Tabs:{tabs_id}")
+        tablist: list[NodeLike] = []
+        panels: list[NodeLike] = []
         for idx, (name, content) in enumerate(self._panels):
             tab_id = f"{tabs_id}-tab-{idx}"
             panel_id = f"{tabs_id}-panel-{idx}"
@@ -540,23 +593,6 @@ class Tabs(Component[TabsProps]):
                     type="button",
                     role="tab",
                     id=tab_id,
-                    alpine=AlpineAttrs(
-                        directives=(
-                            AlpineDirective(
-                                "x-on:click",
-                                AlpineExpression.assign("active", AlpineExpression.literal(name)),
-                            ),
-                            AlpineDirective(
-                                "x-bind:aria-selected",
-                                AlpineExpression.binary(
-                                    "===",
-                                    AlpineExpression.name("active"),
-                                    AlpineExpression.literal(name),
-                                ),
-                            ),
-                        ),
-                        source=f"component:Tabs:{tabs_id}:tab:{idx}",
-                    ),
                     aria={
                         "selected": "true" if selected else "false",
                         "controls": panel_id,
@@ -570,27 +606,6 @@ class Tabs(Component[TabsProps]):
                     role="tabpanel",
                     id=panel_id,
                     aria={"labelledby": tab_id},
-                    alpine=AlpineAttrs(
-                        directives=(
-                            AlpineDirective(
-                                "x-show",
-                                AlpineExpression.binary(
-                                    "===",
-                                    AlpineExpression.name("active"),
-                                    AlpineExpression.literal(name),
-                                ),
-                            ),
-                            AlpineDirective(
-                                "x-bind:hidden",
-                                AlpineExpression.binary(
-                                    "!==",
-                                    AlpineExpression.name("active"),
-                                    AlpineExpression.literal(name),
-                                ),
-                            ),
-                        ),
-                        source=f"component:Tabs:{tabs_id}:panel:{idx}",
-                    ),
                 )
             )
         return html.div(
@@ -604,7 +619,6 @@ class Tabs(Component[TabsProps]):
                 "hedron-density": self.props.density,
                 "hedron-responsive": self.props.responsive,
             },
-            alpine=root_alpine,
         )
 
 

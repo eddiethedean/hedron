@@ -6,6 +6,9 @@
 - Accept full Workbench `rserver-url` values in `UVICORN_ROOT_PATH` and rediscover
   the mount when an inherited hint targets a different bound listener port.
 
+### Changed
+- Broaden direct Starlette compatibility to `>=0.40.0`.
+
 ## [0.43.0] — 2026-08-16
 
 ### Changed

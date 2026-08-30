@@ -36,6 +36,7 @@ jobs:
         env:
           PWB_LICENSE: ${{ secrets.PWB_LICENSE }}
           HEDRON_REALWB: "1"
+          HEDRON_REQUIRED_LIVE_GATES: "1"
         run: python scripts/check_realwb_smoke.py --live
       - name: Upload redacted RESULT.log
         if: always()

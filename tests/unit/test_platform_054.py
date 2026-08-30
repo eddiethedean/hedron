@@ -18,7 +18,7 @@ def test_platform_054_packet_bound() -> None:
 
 
 def test_python_version_supported() -> None:
-    assert sys.version_info >= (3, 11)
+    assert sys.version_info >= (3, 10)
     assert sys.version_info < (3, 15)
 
 

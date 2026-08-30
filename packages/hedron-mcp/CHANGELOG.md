@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.2.4] — 2026-08-28
+
+### Changed
+
+- Require `hedron-core>=1.0.0,<2.0` and expose feature and catalog registration as
+  separate `PluginDefinition` contributions.
+- Broaden direct Starlette compatibility to `>=0.40.0,<2`.
+
+## [0.2.3] — 2026-08-27
+
+### Fixed
+
+- Publish the Hedron 1.0-compatible `hedron-core>=0.67.0,<2.0` metadata under a
+  new immutable patch version.
+
 ## [0.2.2] — 2026-08-24
 
 ### Changed

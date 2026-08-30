@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass, field
-from enum import StrEnum
 from typing import Any
 
+from hedron_core.compat import StrEnum
 from hedron_core.diagnostics import HedronError
 from hedron_core.typing_aliases import JsonValue
 
@@ -59,7 +59,7 @@ class WorkflowNode:
     label: str
     ports: tuple[WorkflowPort, ...] = ()
     action_id: str | None = None
-    parameters: Mapping[str, JsonValue] = field(default_factory=dict)
+    parameters: Mapping[str, JsonValue] = field(default_factory=dict[str, JsonValue])
     secret_refs: tuple[str, ...] = ()
 
 
@@ -70,7 +70,7 @@ class PublishedRevision:
     published_at: float
     publisher: str
     immutable: bool = True
-    snapshot: Mapping[str, Any] = field(default_factory=dict)
+    snapshot: Mapping[str, Any] = field(default_factory=dict[str, Any])
 
 
 @dataclass(frozen=True, slots=True)
@@ -89,7 +89,7 @@ class WorkflowNodeResult:
     status: str  # "ok" | "skipped" | "failed" | "cancelled"
     output: Any = None
     error: str | None = None
-    provenance: Mapping[str, Any] = field(default_factory=dict)
+    provenance: Mapping[str, Any] = field(default_factory=dict[str, Any])
 
 
 @dataclass(frozen=True, slots=True)
@@ -99,7 +99,7 @@ class WorkflowRunResult:
     workflow_id: str
     status: str  # "completed" | "partial" | "cancelled" | "failed"
     nodes: tuple[WorkflowNodeResult, ...]
-    outputs: Mapping[str, Any] = field(default_factory=dict)
+    outputs: Mapping[str, Any] = field(default_factory=dict[str, Any])
     request_id: str | None = None
 
 
@@ -117,3 +117,4 @@ _FORBIDDEN_PARAM_KEYS = frozenset(
         "shell",
     }
 )
+FORBIDDEN_PARAM_KEYS = _FORBIDDEN_PARAM_KEYS

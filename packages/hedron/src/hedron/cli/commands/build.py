@@ -9,12 +9,12 @@ from pathlib import Path
 
 def _cmd_build(args: argparse.Namespace) -> int:
     from hedron.build import run_build
-    from hedron.cli.discovery import _load_app
+    from hedron.cli.discovery import load_app
     from hedron.config import load_hedron_settings
 
     base = Path(args.project or Path.cwd()).resolve()
     if getattr(args, "app", None):
-        _load_app(args.app)
+        load_app(args.app)
     settings = load_hedron_settings(base)
     result = run_build(project_dir=base, settings=settings, production=not args.dev)
     print(
@@ -29,3 +29,6 @@ def _cmd_build(args: argparse.Namespace) -> int:
         )
     )
     return 0
+
+
+cmd_build = _cmd_build

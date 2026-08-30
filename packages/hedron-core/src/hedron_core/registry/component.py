@@ -21,11 +21,13 @@ class ComponentMeta:
     styles_path: str | None = None
     browser_modules: tuple[str, ...] = ()
     asset_roots: tuple[str, ...] = ()
-    style_symbols: Mapping[str, str] = field(default_factory=dict)
+    style_symbols: Mapping[str, str] = field(default_factory=dict[str, str])
     folder_path: str | None = None
 
 
-_COMPONENT_UPDATE_KEYS = frozenset(f.name for f in fields(ComponentMeta)) - {"logical_id"}
+COMPONENT_UPDATE_KEYS = frozenset(f.name for f in fields(ComponentMeta)) - {"logical_id"}
+# Compatibility for code that imported the pre-1.0 private name.
+_COMPONENT_UPDATE_KEYS = COMPONENT_UPDATE_KEYS
 
 
 def register_component(

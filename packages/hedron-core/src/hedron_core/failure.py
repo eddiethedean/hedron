@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
-from enum import StrEnum
 
 from hedron_core.action_state import OperationIdentity
+from hedron_core.compat import StrEnum
 
 __all__ = [
     "BoundaryDecision",

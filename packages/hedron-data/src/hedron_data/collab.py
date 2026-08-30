@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from hedron_core.typing_aliases import JsonValue
 from hedron_data.sources import CellUpdate, Conflict, DataChanges, DataSaveResult, FieldError
@@ -28,7 +28,7 @@ class EditProvenance:
         return cls(
             actor_id=actor_id,
             client_id=client_id,
-            timestamp_iso=datetime.now(UTC).isoformat(),
+            timestamp_iso=datetime.now(timezone.utc).isoformat(),
         )
 
 
@@ -72,8 +72,8 @@ def merge_changes(
             return str(row["id"])
         return str(next(iter(row.values()), ""))
 
-    local_inserts = {_insert_key(row) for row in local.inserts if isinstance(row, Mapping)}
-    remote_inserts = {_insert_key(row) for row in remote.inserts if isinstance(row, Mapping)}
+    local_inserts = {_insert_key(row) for row in local.inserts}
+    remote_inserts = {_insert_key(row) for row in remote.inserts}
     local_deletes = set(local.deletes)
     remote_deletes = set(remote.deletes)
     local_update_rows = {u.row_key for u in local.updates}

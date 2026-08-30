@@ -7,6 +7,7 @@ import json
 import re
 import tempfile
 from pathlib import Path
+from typing import cast
 
 from edron.migrate.report import report_payload, review_markdown
 from hedron.migrate.ir import StreamlitCall, StreamlitMigrationPlan
@@ -29,8 +30,11 @@ def _literal(call: StreamlitCall, key: str, fallback: object) -> object:
 
 def _control(call: StreamlitCall) -> str | None:
     if call.symbol == "st.selectbox":
-        options = _literal(call, "arg1", ["All"])
-        if not isinstance(options, list) or not options:
+        raw_options = _literal(call, "arg1", ["All"])
+        options: list[object] = (
+            cast(list[object], raw_options) if isinstance(raw_options, list) else ["All"]
+        )
+        if not options:
             options = ["All"]
         options = [item for item in options if isinstance(item, (str, int, float, bool))]
         label = _literal(call, "arg0", "Select")
@@ -138,12 +142,12 @@ def _pyproject(name: str) -> str:
     return f'''[project]
 name = "{name}"
 version = "0.1.0"
-requires-python = ">=3.11,<3.15"
+requires-python = ">=3.10,<3.15"
 dependencies = [
-    "edron>=0.9,<0.10",
-    "hedron>=0.67.0,<0.68",
-    "hedron-data>=0.67.0,<0.68",
-    "uvicorn>=0.52.1",
+    "edron>=1.0.0,<2.0",
+    "hedron>=1.0.0,<2.0",
+    "hedron-data>=1.0.0,<2.0",
+    "uvicorn>=0.32",
 ]
 
 [tool.edron]

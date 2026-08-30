@@ -1,0 +1,96 @@
+[release]
+train = "1.0"
+python = ["3.10", "3.11", "3.12", "3.13", "3.14"]
+fastapi = ">=0.121.0,<0.150"
+starlette = ">=0.40.0,<2.0"
+pydantic = ">=2.12.0,<2.15"
+uvicorn = ">=0.32,<1.0"
+htmx = ">=2.0,<3.0 (bundled exact release asset)"
+alpine = "pinned CSP build (official runtime; compatibility fallback in 1.1)"
+browsers = ["chromium", "firefox", "webkit"]
+dependency_evidence = ["minimum", "latest"]
+optional_backend_evidence = ["flask", "django", "posit-workbench", "posit-connect"]
+
+[packages."hedron-core"]
+maturity = "stable"
+api = "stable"
+
+[packages.hedron]
+maturity = "stable"
+api = "stable"
+
+[packages.edron]
+maturity = "stable"
+api = "stable"
+
+[packages.hedron-explorer]
+maturity = "beta"
+api = "beta"
+
+[packages.hedron-data]
+maturity = "stable"
+api = "stable"
+
+[packages.hedron-flask]
+maturity = "beta"
+api = "beta"
+
+[packages.hedron-django]
+maturity = "beta"
+api = "beta"
+
+[packages.hedron-jinja]
+maturity = "beta"
+api = "beta"
+
+[packages.hedron-conformance]
+maturity = "beta"
+api = "beta"
+
+[packages.hedron-extras]
+maturity = "beta"
+api = "beta"
+
+[packages.hedron-elements]
+maturity = "beta"
+api = "beta"
+
+[packages.hedron-posit]
+maturity = "beta"
+api = "beta"
+
+[packages.edron-sim]
+maturity = "beta"
+api = "beta"
+
+[packages.hedron-charts]
+maturity = "stable"
+api = "stable"
+
+[packages.hedron-maps]
+maturity = "stable"
+api = "stable"
+
+[packages.hedron-native]
+maturity = "beta"
+api = "beta"
+
+[packages.hedron-notebook]
+maturity = "beta"
+api = "beta"
+
+[packages.hedron-mcp]
+maturity = "beta"
+api = "beta"
+
+[packages.hedron-gradio]
+maturity = "beta"
+api = "beta"
+
+[packages.hedron-sim]
+maturity = "beta"
+api = "beta"
+
+[packages.fastapi-workbench]
+maturity = "beta"
+api = "beta"

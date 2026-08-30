@@ -1,0 +1,87 @@
+{
+  "schema": "hedron.verification-evidence/1",
+  "phase": "1.0",
+  "target": "v1.0.0",
+  "source_commit": "cd29381a00d2293f875663e1403d0e8594f7936d",
+  "retained_command_output": false,
+  "checks": [
+    {
+      "id": "PHASE-100-UNIT",
+      "command": ".venv/bin/pytest -q tests/unit/test_phase_1_0_packet.py tests/unit/test_docs_train_ssot.py tests/unit/test_quality_upgrade_phase1.py tests/upgrade/test_phase_1_0_fixtures.py tests/unit/test_migrate_api_100.py tests/unit/test_cli_check_compat.py --tb=short",
+      "status": "passed",
+      "summary": "phase, migration, fixture, and release-contract tests passed"
+    },
+    {
+      "id": "BRIDGE-100",
+      "command": ".venv/bin/python scripts/check_upgrade_100.py --baseline v0.67.0 --json",
+      "status": "passed",
+      "summary": "immutable baseline and current canonical Python/HDJ/HTTP probes, all closed Outcome lowerings, and type-checks matched"
+    },
+    {
+      "id": "TYPE-100",
+      "command": "PYTHONPATH=packages/hedron/src:packages/hedron-core/src:packages/hedron-jinja/src .venv/bin/pyright tests/upgrade/phase_1_0/canonical/app.py",
+      "status": "passed",
+      "summary": "canonical 1.0 fixture type-checks with 0 errors and 0 warnings"
+    },
+    {
+      "id": "QUALITY-100",
+      "command": "bash scripts/ci_checks.sh quality --python 3.12 --skip-wheels",
+      "status": "passed",
+      "summary": "Ruff, Pyright (0 errors), strict Stable-package typing (0 errors and 0 warnings), core-neutral checks, strict docs, package verification, Edron compatibility, and quickstart passed; reproducible artifacts are covered by BUILD-100"
+    },
+    {
+      "id": "DEPENDENCY-BOUNDS-100",
+      "command": ".venv/bin/python scripts/check_stable_dependency_bounds.py --check",
+      "status": "passed",
+      "summary": "all Stable-package direct dependencies have bounded 1.0 support ranges matching the published support matrix"
+    },
+    {
+      "id": "REALWB-100",
+      "command": ".venv/bin/python scripts/check_realwb_smoke.py",
+      "status": "passed",
+      "summary": "retained licensed Workbench evidence passed for the current 2026.07.0 lane and the supported 2025.05.1 floor"
+    },
+    {
+      "id": "REALCONNECT-100",
+      "command": ".venv/bin/python scripts/check_realconnect_033.py",
+      "status": "passed",
+      "summary": "retained licensed Connect evidence passed for native-cookie deployment on the pinned supported backend"
+    },
+    {
+      "id": "BROWSER-100",
+      "command": "HEDRON_BROWSER=1 HEDRON_BROWSER_ENGINE=chromium bash scripts/ci_checks.sh browser --python 3.12",
+      "status": "passed",
+      "summary": "Chromium: 118 passed, 61 skipped, 3994 deselected"
+    },
+    {
+      "id": "BROWSER-FIREFOX-100",
+      "command": "HEDRON_BROWSER=1 HEDRON_BROWSER_ENGINE=firefox bash scripts/ci_checks.sh browser --python 3.12",
+      "status": "passed",
+      "summary": "Firefox: 116 passed, 63 skipped, 3994 deselected"
+    },
+    {
+      "id": "BROWSER-WEBKIT-100",
+      "command": "HEDRON_BROWSER=1 HEDRON_BROWSER_ENGINE=webkit bash scripts/ci_checks.sh browser --python 3.12",
+      "status": "passed",
+      "summary": "WebKit: 116 passed, 63 skipped, 3994 deselected"
+    },
+    {
+      "id": "BUILD-100",
+      "command": "SOURCE_DATE_EPOCH=315619200 PYTHONDONTWRITEBYTECODE=1 uv build --all-packages (repeated twice)",
+      "status": "passed",
+      "summary": "44 publishable workspace artifacts matched byte-for-byte across two builds; 26 coordinated 1.0.0 hashes retained"
+    },
+    {
+      "id": "REGRESS-100",
+      "command": ".venv/bin/pytest -q --tb=short -n 0",
+      "status": "passed",
+      "summary": "3658 passed, 515 skipped; historical 0.x alias fixtures are retired on the 1.0 train and remain runnable against v0.67"
+    },
+    {
+      "id": "RELEASE-100",
+      "command": ".venv/bin/python scripts/check_100.py --gate ENTRY-100 --verify --json",
+      "status": "passed",
+      "summary": "all 17 release-gate rows are Verified and the retained compatibility/artifact evidence is approved"
+    }
+  ]
+}

@@ -11,7 +11,7 @@ on:
         type: string
         default: ""
       publish_only:
-        description: "Skip test/quality/browser/evidence; only build, publish remaining packages, and create/update the GitHub Release."
+        description: "Emergency recovery only: skip full test/quality/browser/evidence, but enforce typing, release-contract, and import-boundary gates before publishing."
         type: boolean
         default: false
 
@@ -24,9 +24,12 @@ concurrency:
 
 env:
   UV_NO_PROGRESS: "1"
+  # Reproducible wheel/sdist metadata and native Mach-O IDs.
+  SOURCE_DATE_EPOCH: "315619200"
+  PYTHONDONTWRITEBYTECODE: "1"
   UV_VERSION: "0.12.1"
   # Shared check suites live in scripts/ci_checks.sh (also used by ci.yml).
-  HEDRON_GATE_VERSION: "0.67.0"
+  HEDRON_GATE_VERSION: "1.0.0"
 
 jobs:
   test:
@@ -37,11 +40,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.11", "3.12", "3.13", "3.14"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
@@ -60,13 +64,14 @@ jobs:
         run: bash scripts/ci_checks.sh test --python ${{ matrix.python-version }}
 
   quality:
-    name: Quality, docs, and packages
+    name: Quality, strict core typing, docs, and packages
     if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_only) }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
@@ -81,8 +86,100 @@ jobs:
           toolchain: stable
       - name: Install all dependency groups
         run: uv sync --locked --all-groups --python 3.12
-      - name: Run quality suite
+      - name: Run quality suite with strict package typing gate
         run: bash scripts/ci_checks.sh quality --python 3.12
+
+  dependency_bounds:
+    name: Stable dependency bounds (minimum and latest)
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_only) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Run minimum/latest Stable dependency matrix
+        run: bash scripts/ci_checks.sh workbench --python 3.12
+
+  realwb:
+    name: Required Workbench backend gate
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_only) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: ${{ env.UV_VERSION }}
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install dependencies
+        run: uv sync --locked --python 3.12
+      - name: Run required Workbench Docker smoke
+        env:
+          PWB_LICENSE: ${{ secrets.PWB_LICENSE }}
+          HEDRON_REALWB: "1"
+          HEDRON_REQUIRED_LIVE_GATES: "1"
+        run: bash scripts/ci_checks.sh realwb --python 3.12
+
+  realconnect:
+    name: Required Connect backend gate
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_only) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: ${{ env.UV_VERSION }}
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install dependencies
+        run: uv sync --locked --python 3.12
+      - name: Run required Connect Docker smoke
+        env:
+          CONNECT_LICENSE: ${{ secrets.CONNECT_LICENSE }}
+          HEDRON_REALCONNECT: "1"
+          HEDRON_REQUIRED_LIVE_GATES: "1"
+        run: bash scripts/ci_checks.sh realconnect --python 3.12
+
+  publish_only_typing:
+    name: Recovery release gates (publish-only)
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_only }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.publish_tag }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install typing dependencies
+        run: uv sync --locked --all-groups --python 3.12
+      - name: Run strict package typing gate
+        run: bash scripts/ci_checks.sh typing --python 3.12
+      - name: Run stable release contract gate
+        run: uv run --python 3.12 python scripts/check_release_contract.py
+      - name: Run satellite import boundary gate
+        run: uv run --python 3.12 python scripts/check_satellite_imports.py
 
   browser:
     name: Browser HTMX (${{ matrix.browser }})
@@ -98,6 +195,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
@@ -132,6 +230,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
@@ -172,7 +271,17 @@ jobs:
 
   publish:
     name: Publish to PyPI
-    needs: [test, quality, browser, evidence]
+    needs:
+      [
+        test,
+        quality,
+        dependency_bounds,
+        realwb,
+        realconnect,
+        publish_only_typing,
+        browser,
+        evidence,
+      ]
     if: |
       always() &&
       !cancelled() &&
@@ -182,9 +291,14 @@ jobs:
       ) &&
       (needs.test.result == 'success' || needs.test.result == 'skipped') &&
       (needs.quality.result == 'success' || needs.quality.result == 'skipped') &&
+      (needs.dependency_bounds.result == 'success' || needs.dependency_bounds.result == 'skipped') &&
+      (needs.realwb.result == 'success' || needs.realwb.result == 'skipped') &&
+      (needs.realconnect.result == 'success' || needs.realconnect.result == 'skipped') &&
+      (needs.publish_only_typing.result == 'success' || needs.publish_only_typing.result == 'skipped') &&
       (needs.browser.result == 'success' || needs.browser.result == 'skipped') &&
       (needs.evidence.result == 'success' || needs.evidence.result == 'skipped')
     runs-on: ubuntu-latest
+    environment: release
     # PyPI caps new-project creates (~4/day). Retries wait up to ~6h on 429.
     timeout-minutes: 420
     permissions:
@@ -214,6 +328,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ steps.ref.outputs.tag }}
+          fetch-depth: 0
           persist-credentials: false
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
@@ -221,9 +336,9 @@ jobs:
           enable-cache: true
           cache-dependency-glob: uv.lock
       - name: Set up Python
-        run: uv python install 3.11
+        run: uv python install 3.12
       - name: Sync
-        run: uv sync --locked --python 3.11
+        run: uv sync --locked --python 3.12
       - name: Verify tag, versions, license, and changelog
         run: |
           set -euo pipefail
@@ -231,16 +346,16 @@ jobs:
           # 0.28+ capability gates are Verified — do not pass --allow-planned.
           version="${{ steps.ref.outputs.version }}"
           if [[ "$version" == 0.21* ]]; then
-            uv run --python 3.11 python scripts/check_release_gate.py \
+            uv run --python 3.12 python scripts/check_release_gate.py \
               "$version" --allow-planned
           else
-            uv run --python 3.11 python scripts/check_release_gate.py "$version"
+            uv run --python 3.12 python scripts/check_release_gate.py "$version"
           fi
       - name: Build evidence bundle
         run: |
-          uv run --python 3.11 python scripts/build_evidence_bundle.py \
+          uv run --python 3.12 python scripts/build_evidence_bundle.py \
             --version "${{ steps.ref.outputs.version }}"
-          uv run --python 3.11 --with pip-audit python scripts/dep_audit.py
+          uv run --python 3.12 --with pip-audit python scripts/dep_audit.py
       - name: Build all workspace packages
         run: |
           set -euo pipefail
@@ -252,17 +367,28 @@ jobs:
               echo "Skipping Edron; publish it only from edron-v* tags"
               continue
             fi
+            if [ "$pkg" = "edron-sim" ]; then
+              echo "Skipping edron-sim; publish it only from the Edron release workflow"
+              continue
+            fi
+            if [ "$pkg" = "hedron-native" ]; then
+              echo "Skipping hedron-native; publish it only from native-wheels.yml"
+              continue
+            fi
             echo "Building $pkg"
             uv build --package "$pkg"
           done
           ls -la dist
       - name: Verify built quick start before publication
         run: >
-          uv run --python 3.11 python scripts/check_published_quickstart.py
+          uv run --python 3.12 python scripts/check_published_quickstart.py
           "${{ steps.ref.outputs.version }}" --dist-dir dist --attempts 1
+      - name: Verify exact approved candidate artifacts
+        if: ${{ steps.ref.outputs.version == '1.0.0' }}
+        run: uv run --python 3.12 python scripts/verify_release_artifacts.py
       - name: Write release checksum manifest
         run: >
-          uv run --python 3.11 python scripts/write_release_manifest.py
+          uv run --python 3.12 python scripts/write_release_manifest.py
           "${{ steps.ref.outputs.version }}"
       - name: Attest build provenance
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
@@ -298,7 +424,15 @@ jobs:
               echo "Skipping Edron; publish it only from edron-v* tags"
               continue
             fi
-            read -r name pkg_version <<<"$(uv run --python 3.11 python - <<PY
+            if [ "$pkg" = "edron-sim" ]; then
+              echo "Skipping edron-sim; publish it only from the Edron release workflow"
+              continue
+            fi
+            if [ "$pkg" = "hedron-native" ]; then
+              echo "Skipping hedron-native; publish it only from native-wheels.yml"
+              continue
+            fi
+            read -r name pkg_version <<<"$(uv run --python 3.12 python - <<PY
           import tomllib
           from pathlib import Path
           data = tomllib.loads(Path("${pyproject}").read_text())["project"]
@@ -329,23 +463,40 @@ jobs:
             fi
           done
 
-          # Publish pure-Python / non-native new projects first so a native
-          # manylinux/rate-limit issue does not block notebook/sim creates.
-          if ((${#new_names[@]})); then
-            ordered_new=()
-            for name in "${new_names[@]}"; do
-              case "$name" in
-                *-native|hedron-native) ;;
-                *) ordered_new+=("$name") ;;
-              esac
+          mapfile -t publish_order < <(
+            uv run --python 3.12 python scripts/release_publish_order.py
+          )
+          order_names() {
+            local -n input_names="$1"
+            local -n output_names="$2"
+            output_names=()
+            local ordered candidate found
+            for ordered in "${publish_order[@]}"; do
+              for candidate in "${input_names[@]}"; do
+                if [ "$candidate" = "$ordered" ]; then
+                  output_names+=("$candidate")
+                fi
+              done
             done
-            for name in "${new_names[@]}"; do
-              case "$name" in
-                *-native|hedron-native) ordered_new+=("$name") ;;
-              esac
+            for candidate in "${input_names[@]}"; do
+              found=0
+              for ordered in "${publish_order[@]}"; do
+                if [ "$candidate" = "$ordered" ]; then
+                  found=1
+                  break
+                fi
+              done
+              if [ "$found" -eq 0 ]; then
+                output_names+=("$candidate")
+              fi
             done
-            new_names=("${ordered_new[@]}")
-          fi
+          }
+          ordered_existing=()
+          ordered_new=()
+          order_names existing_names ordered_existing
+          order_names new_names ordered_new
+          existing_names=("${ordered_existing[@]}")
+          new_names=("${ordered_new[@]}")
 
           echo "Existing PyPI projects to publish: ${existing_names[*]:-none}"
           echo "New PyPI projects to publish: ${new_names[*]:-none}"
@@ -422,8 +573,12 @@ jobs:
 
           for name in "${existing_names[@]}"; do
             if ! publish_one "$name" "existing"; then
-              echo "WARN: publish failed for existing project ${name}; continuing with next package" >&2
+              echo "WARN: publish failed for existing project ${name}" >&2
               failed_names+=("$name")
+              if [ "$name" = "hedron-core" ] || [ "$name" = "hedron" ]; then
+                echo "Foundational package failed; refusing to publish dependents" >&2
+                break
+              fi
             fi
           done
 
@@ -443,11 +598,15 @@ jobs:
               published_new=1
               uploaded_new+=("$name")
             else
-              echo "WARN: publish failed for NEW project ${name}; continuing with next package" >&2
+              echo "WARN: publish failed for NEW project ${name}" >&2
               failed_names+=("$name")
               # Do not set published_new — only successful creates consume the quota spacing.
               if [ "${PUBLISH_ONLY}" = "true" ] && [ "$published_new" -eq 0 ]; then
                 echo "WARN: aborting further NEW creates after early failure in publish_only" >&2
+                break
+              fi
+              if [ "$name" = "hedron-core" ] || [ "$name" = "hedron" ]; then
+                echo "Foundational package failed; refusing to create dependents" >&2
                 break
               fi
             fi
@@ -499,35 +658,6 @@ jobs:
             exit 1
           fi
           echo "publish_failed=0" >> "$GITHUB_OUTPUT"
-      - name: Install Rust for crates.io publish
-        uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # v1
-        with:
-          toolchain: stable
-      - name: Publish hedron-native to crates.io
-        id: crates
-        env:
-          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
-        working-directory: packages/hedron-native
-        run: |
-          set -euo pipefail
-          if [ -z "${CARGO_REGISTRY_TOKEN:-}" ]; then
-            echo "CARGO_REGISTRY_TOKEN secret is not set" >&2
-            exit 1
-          fi
-          cargo publish --dry-run
-          set +e
-          out="$(cargo publish 2>&1)"
-          status=$?
-          set -e
-          printf '%s\n' "$out"
-          if [ "$status" -eq 0 ]; then
-            exit 0
-          fi
-          if printf '%s' "$out" | grep -Eqi 'already exists|already uploaded'; then
-            echo "INFO: crates.io already has this version; treating as success"
-            exit 0
-          fi
-          exit "$status"
       - name: Publish hedron-runtime-node to npm
         id: npm_runtime
         env:
@@ -576,7 +706,7 @@ jobs:
         id: verify_quickstart
         if: ${{ !cancelled() && steps.pypi.outcome == 'success' && steps.pypi.outputs.publish_failed != '1' }}
         run: >
-          uv run --python 3.11 python scripts/check_published_quickstart.py
+          uv run --python 3.12 python scripts/check_published_quickstart.py
           "${{ steps.ref.outputs.version }}"
       - name: Create GitHub Release
         if: ${{ !cancelled() && steps.pypi.outcome == 'success' && steps.pypi.outputs.publish_failed != '1' && steps.verify_quickstart.outcome == 'success' }}
@@ -587,7 +717,7 @@ jobs:
           set -euo pipefail
           TAG="${{ steps.ref.outputs.tag }}"
           VERSION="${{ steps.ref.outputs.version }}"
-          NOTES="$(uv run --python 3.11 python scripts/release_notes.py "$VERSION" --package hedron)"
+          NOTES="$(uv run --python 3.12 python scripts/release_notes.py "$VERSION" --package hedron)"
           shopt -s nullglob
           # SUPPLY: omit plain linux_* wheels (PyPI rejects them); keep manylinux/musllinux.
           artifacts=()

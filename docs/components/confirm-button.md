@@ -66,7 +66,7 @@ Button with explicit confirmation prompt (not authorization).
         )
 
 
-    @app.fragment("/items/1", region=row, methods=["DELETE"])
+    @app.action("/items/1", method="DELETE", fragment_regions=(row,))
     def delete():
         return swap(
             html.div(

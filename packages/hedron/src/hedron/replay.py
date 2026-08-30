@@ -7,8 +7,9 @@ import json
 import threading
 import time
 from dataclasses import dataclass
-from enum import StrEnum
-from typing import Any, Literal, Protocol
+from typing import Any, Literal, Protocol, cast
+
+from hedron_core.compat import StrEnum
 
 
 class ReplayState(StrEnum):
@@ -199,7 +200,7 @@ async def extract_idempotency_key(request: Any, policy: IdempotencyPolicy) -> st
             except (RuntimeError, ValueError, TypeError, AttributeError, OSError):
                 form = None
     if isinstance(form, dict) and policy.form_field in form:
-        value = form[policy.form_field]
+        value: object = cast(dict[str, object], form)[policy.form_field]
         if hasattr(value, "read"):
             return None
         return str(value).strip() or None

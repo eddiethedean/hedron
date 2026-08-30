@@ -9,7 +9,7 @@ import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from dataclasses import replace as dc_replace
-from typing import Any, Final, Literal, TypeVar, cast
+from typing import Any, Final, Literal, TypeGuard, TypeVar
 
 from hedron_core.builtins.appearance import (
     APPEARANCES,
@@ -21,6 +21,8 @@ from hedron_core.builtins.appearance import (
     PADDINGS,
     RESPONSIVE_POLICIES,
     SIZES,
+    TEXT_WRAPS,
+    TRACKING,
     TYPE_EFFECTS,
     TYPE_MEASURES,
     TYPOGRAPHY_ROLES,
@@ -113,7 +115,7 @@ _FAMILY_FIELDS: Final[Mapping[StyleFamily, frozenset[str]]] = {
     "surface": frozenset({"appearance", "density", "padding", "elevation"}),
     "data": frozenset({"density", "responsive"}),
     "status": frozenset({"size", "appearance"}),
-    "content": frozenset({"role", "overflow", "measure", "effect"}),
+    "content": frozenset({"role", "overflow", "measure", "effect", "tracking", "wrap"}),
 }
 
 _FAMILY_COMPONENTS: Final[Mapping[StyleFamily, frozenset[str]]] = {
@@ -133,13 +135,13 @@ _COMPONENT_FIELDS: Final[Mapping[str, frozenset[str]]] = {
     "Card": frozenset({"appearance", "density", "padding", "elevation"}),
     "Table": frozenset({"density", "responsive"}),
     "DescriptionList": frozenset({"density"}),
-    "PageHeader": frozenset({"density", "measure", "effect"}),
+    "PageHeader": frozenset({"density", "measure", "effect", "tracking", "wrap"}),
     "FormGrid": frozenset({"density"}),
     "Badge": frozenset({"size", "appearance"}),
     "Alert": frozenset({"size", "appearance"}),
     "Status": frozenset({"size", "appearance"}),
-    "Text": frozenset({"role", "overflow", "measure", "effect"}),
-    "Heading": frozenset({"role", "overflow", "measure", "effect"}),
+    "Text": frozenset({"role", "overflow", "measure", "effect", "tracking", "wrap"}),
+    "Heading": frozenset({"role", "overflow", "measure", "effect", "tracking", "wrap"}),
 }
 
 _GEOMETRY_SHAPE: Final[Mapping[GeometryPreset, Mapping[str, str]]] = {
@@ -187,6 +189,8 @@ _FIELD_VOCABULARIES: Final[Mapping[str, tuple[str, ...]]] = {
     "overflow": OVERFLOW_MODES,
     "measure": TYPE_MEASURES,
     "effect": TYPE_EFFECTS,
+    "tracking": TRACKING,
+    "wrap": TEXT_WRAPS,
 }
 
 _RESPONSIVE_RECIPE_FIELDS: Final[Mapping[str, tuple[str, ...]]] = {
@@ -237,8 +241,24 @@ def _canonical_json(value: object) -> str:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), default=str)
 
 
+def _is_string(value: object) -> TypeGuard[str]:
+    return isinstance(value, str)
+
+
+def _is_theme(value: object) -> TypeGuard[Theme]:
+    return isinstance(value, Theme)
+
+
+def _is_style_recipe(value: object) -> TypeGuard[StyleRecipe]:
+    return isinstance(value, StyleRecipe)
+
+
+def _is_component(value: object) -> TypeGuard[Component[Any]]:
+    return isinstance(value, Component)
+
+
 def _normalize_name(name: str, *, label: str) -> str:
-    if not isinstance(name, str) or not name.strip():
+    if not _is_string(name) or not name.strip():
         raise error(
             HED_DESIGN_0001,
             title=f"Invalid {label} name",
@@ -260,7 +280,7 @@ def _normalize_hex(value: str | Color) -> str:
     """Normalize legacy hex and safe 0.60 absolute colors to sRGB hex."""
     if isinstance(value, Color):
         return value.to_hex()[:7]
-    if not isinstance(value, str) or not _HEX_COLOR.match(value.strip()):
+    if not _is_string(value) or not _HEX_COLOR.match(value.strip()):
         raise error(
             HED_BRAND_0001,
             title="Invalid brand accent",
@@ -398,27 +418,15 @@ def _theme_summary(theme: Theme) -> dict[str, object]:
         "density": theme.density,
         "shape": dict(sorted(theme.shape.items())),
         "nav_width": theme.nav_width,
+        "content_width": theme.content_width,
+        "typography_features": dict(sorted(theme.typography_features.items())),
+        "typography_role_features": {
+            key: dict(sorted(value.items()))
+            for key, value in sorted(theme.typography_role_features.items())
+        },
         "elevation": dict(sorted(theme.elevation.items())),
         "parent": theme.parent,
     }
-
-
-def _clone_component(component: ComponentT, props: object) -> ComponentT:
-    bound = component.__class__.__new__(component.__class__)
-    Component.__init__(bound, props)
-    for attr_name, attr_value in vars(component).items():
-        if attr_name in {"_props", "_children", "_slot_values", "_key"}:
-            continue
-        setattr(bound, attr_name, attr_value)
-    # Copy containers so DesignSystem.apply does not share mutable structure.
-    target = cast(Any, bound)
-    target._children = list(component._children)
-    target._slot_values = {
-        key: (list(value) if isinstance(value, list) else value)
-        for key, value in component._slot_values.items()
-    }
-    target._key = component._key
-    return bound
 
 
 @dataclass(frozen=True, slots=True)
@@ -428,8 +436,10 @@ class StyleRecipe:
     name: str
     family: StyleFamily
     extends: str | None = None
-    values: Mapping[str, str] = field(default_factory=dict)
-    responsive: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
+    values: Mapping[str, str] = field(default_factory=dict[str, str])
+    responsive: Mapping[str, Mapping[str, str]] = field(
+        default_factory=dict[str, Mapping[str, str]]
+    )
 
     def __post_init__(self) -> None:
         normalized_name = _normalize_name(self.name, label="recipe")
@@ -603,6 +613,8 @@ class StyleRecipe:
         overflow: OverflowMode | None = None,
         measure: TypographyMeasure | None = None,
         effect: TypographyEffect | None = None,
+        tracking: str | None = None,
+        wrap: str | None = None,
     ) -> StyleRecipe:
         values = {
             key: value
@@ -611,6 +623,8 @@ class StyleRecipe:
                 ("overflow", overflow),
                 ("measure", measure),
                 ("effect", effect),
+                ("tracking", tracking),
+                ("wrap", wrap),
             )
             if value is not None
         }
@@ -781,8 +795,8 @@ class DesignSystem:
     _theme: Theme
     recipes: tuple[StyleRecipe, ...] = ()
     base_theme: str = "default"
-    inputs: Mapping[str, object] = field(default_factory=dict)
-    groups: Mapping[str, str] = field(default_factory=dict)
+    inputs: Mapping[str, object] = field(default_factory=dict[str, object])
+    groups: Mapping[str, str] = field(default_factory=dict[str, str])
     provenance: tuple[Mapping[str, object], ...] = ()
     adjustments: tuple[Mapping[str, object], ...] = ()
     limitations: tuple[str, ...] = ()
@@ -823,6 +837,7 @@ class DesignSystem:
         elevation: ElevationPreset = "subtle",
         motion: MotionPreset = "standard",
         navigation: NavigationPreset = "default",
+        content_width: str = "default",
         recipes: Sequence[StyleRecipe] = (),
     ) -> DesignSystem:
         design_name = _normalize_name(name, label="design")
@@ -842,6 +857,13 @@ class DesignSystem:
                 remediation="Pass a safe absolute color such as '#2f6fed' or Color.oklch(...).",
             ) from exc
         require_choice(density, DENSITIES, label="density")
+        if content_width not in ("narrow", "default", "wide", "full"):
+            raise error(
+                HED_DESIGN_0001,
+                title="Invalid content width preset",
+                explanation=f"content_width={content_width!r} is not supported.",
+                remediation="Use narrow, default, wide, or full.",
+            )
         if geometry not in _GEOMETRY_SHAPE:
             raise error(
                 HED_DESIGN_0001,
@@ -920,6 +942,7 @@ class DesignSystem:
                 density=density,
                 shape=dict(_GEOMETRY_SHAPE[geometry]),
                 nav_width=_NAV_WIDTH[navigation],
+                content_width=content_width,
                 elevation=dict(_ELEVATION_MAP[elevation]),
                 parent=base_theme.name,
             )
@@ -1026,6 +1049,7 @@ class DesignSystem:
                 "elevation": elevation,
                 "motion": motion,
                 "navigation": navigation,
+                "content_width": content_width,
             },
             groups=groups,
             provenance=tuple(provenance),
@@ -1045,7 +1069,7 @@ class DesignSystem:
         *,
         recipes: Sequence[StyleRecipe] = (),
     ) -> DesignSystem:
-        if not isinstance(theme, Theme):
+        if not _is_theme(theme):
             raise error(
                 HED_DESIGN_0003,
                 title="Invalid theme bridge input",
@@ -1063,6 +1087,20 @@ class DesignSystem:
                 for key, value in (
                     ("density", theme.density),
                     ("nav_width", theme.nav_width),
+                    ("content_width", theme.content_width),
+                    (
+                        "typography_features",
+                        ",".join(f"{k}={v}" for k, v in sorted(theme.typography_features.items()))
+                        or None,
+                    ),
+                    (
+                        "typography_role_features",
+                        ";".join(
+                            f"{role}:" + ",".join(f"{k}={v}" for k, v in sorted(values.items()))
+                            for role, values in sorted(theme.typography_role_features.items())
+                        )
+                        or None,
+                    ),
                 )
                 if value is not None
             },
@@ -1085,7 +1123,7 @@ class DesignSystem:
     def with_recipes(self, *recipes: StyleRecipe, replace: bool = False) -> DesignSystem:
         merged: dict[str, StyleRecipe] = {item.name: item for item in self.recipes}
         for recipe in recipes:
-            if not isinstance(recipe, StyleRecipe):
+            if not _is_style_recipe(recipe):
                 raise error(
                     HED_DESIGN_0001,
                     title="Invalid recipe",
@@ -1133,9 +1171,9 @@ class DesignSystem:
     def _resolve_inheritance(self, leaf: StyleRecipe) -> StyleRecipe:
         catalog = self._recipe_catalog()
         chain: list[StyleRecipe] = []
-        current: StyleRecipe | None = leaf
+        current = leaf
         seen: set[str] = set()
-        while current is not None:
+        while True:
             if current.name in seen:
                 raise error(
                     HED_RECIPE_0003,
@@ -1195,7 +1233,7 @@ class DesignSystem:
         )
 
     def apply(self, recipe: str | StyleRecipe, component: ComponentT, /) -> ComponentT:
-        if not isinstance(component, Component):
+        if not _is_component(component):
             raise error(
                 HED_RECIPE_0002,
                 title="Recipe apply target invalid",
@@ -1240,9 +1278,9 @@ class DesignSystem:
                 continue
             updates[key] = value
         if not updates:
-            return _clone_component(component, props)
+            return component.copy_with_props(props)
         new_props = props.model_copy(update=updates)
-        return _clone_component(component, new_props)
+        return component.copy_with_props(new_props)
 
     def explain(self) -> DesignSystemPlan:
         # Prefer instance overrides in declared order; otherwise list builtins.

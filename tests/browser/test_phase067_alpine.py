@@ -31,9 +31,14 @@ def _free_port() -> int:
 @pytest.fixture(scope="module")
 def browser_app_url() -> Iterator[str]:
     uvicorn = pytest.importorskip("uvicorn")
-    from hedron import Hedron, Page, Tabs
+    from hedron import FileUpload, Hedron, InteractionResult, Page, Tabs
     from hedron_core.alpine import AlpineAttrs, AlpineDirective, AlpineExpression
+    from hedron_core.builtins.forms import Checkbox, Select, TextArea, TextInput
+    from hedron_core.builtins.forms_extra import DirectoryUpload
+    from hedron_core.builtins.live_ui import Dialog
+    from hedron_core.builtins.utilities import Expander
     from hedron_core.html import html
+    from hedron_core.interaction_067 import Interaction
 
     reset_browser_plugin_state()
     app = Hedron(
@@ -42,12 +47,35 @@ def browser_app_url() -> Iterator[str]:
         session_secret="phase067-browser-secret",
         explorer="off",
     )
+    panel_region = app.region("panel", selector="#panel", description="Saved panel")
 
     @app.page("/")
     def home() -> Page:
         return Page(
             html.main(
                 html.h1("Alpine smoke"),
+                Expander(
+                    "More details",
+                    html.p("Expanded semantic content", id="browser-expander-body"),
+                    id="browser-expander",
+                ),
+                Dialog(
+                    "Browser dialog",
+                    html.p("Dialog semantic content", id="browser-dialog-body"),
+                    id="browser-dialog",
+                ),
+                html.button(
+                    "Open dialog",
+                    type="button",
+                    id="open-browser-dialog",
+                    data={"hedron-dialog-open": "#browser-dialog"},
+                ),
+                TextInput("browser-name", id="browser-name", value="Ada"),
+                TextArea("browser-bio", id="browser-bio", value="Engineer"),
+                Select("browser-role", (("admin", "Admin"),), id="browser-role", value="admin"),
+                Checkbox("browser-enabled", "Enabled", id="browser-enabled", checked=True),
+                DirectoryUpload(name="browser-directory", id="browser-directory"),
+                FileUpload(name="browser-file", label="Upload browser file"),
                 Tabs(
                     ("First", html.p("First panel")),
                     ("Second", html.p("Second panel")),
@@ -132,6 +160,21 @@ def browser_app_url() -> Iterator[str]:
                         source="browser:phase067:create-detail",
                     ),
                 ),
+                html.button(
+                    "Save and open",
+                    type="button",
+                    id="combined-save",
+                    interaction=Interaction.combined(
+                        "toggle",
+                        "save",
+                        state_keys=("open",),
+                        state={"open": False},
+                        method="GET",
+                        target="#panel",
+                        swap="outerHTML",
+                        source="browser:phase067:combined-save",
+                    ),
+                ),
                 html.div(
                     "Focus trap",
                     id="trap",
@@ -164,6 +207,10 @@ def browser_app_url() -> Iterator[str]:
             ),
             title="Phase 0.67 Alpine",
         )
+
+    @app.view("/save", fragment_regions=(panel_region,))
+    def save() -> InteractionResult:
+        return InteractionResult(content=html.p("Saved", id="panel"))
 
     port = _free_port()
     server = uvicorn.Server(uvicorn.Config(app, host="127.0.0.1", port=port, log_level="warning"))
@@ -212,6 +259,19 @@ def test_alpine_core_and_focus_plugin_are_demand_loaded(browser_app_url: str, en
             page.wait_for_function(
                 "() => document.querySelector('#panel')?.style.display === 'none'"
             )
+            page.locator("#browser-expander > summary").click()
+            page.locator("#browser-expander-body").wait_for(state="visible")
+            page.locator("#browser-expander > summary").click()
+            page.locator("#browser-expander-body").wait_for(state="hidden")
+            page.get_by_role("button", name="Open dialog").click()
+            page.locator("#browser-dialog").wait_for(state="visible")
+            assert page.locator("#browser-dialog").get_attribute("open") is not None
+            page.get_by_role("button", name="Close").click()
+            page.locator("#browser-dialog").wait_for(state="hidden")
+            page.locator("input[type=file][name='browser-file']").set_input_files(
+                {"name": "readme.txt", "mimeType": "text/plain", "buffer": b"hello"}
+            )
+            page.locator("#hedron-file-upload-status-browser-file-local").wait_for(state="visible")
             assert page.locator("#name-output").inner_text() == "Ada"
             page.locator("#name-input").fill("Grace")
             page.wait_for_function(
@@ -263,6 +323,31 @@ def test_semantic_content_survives_alpine_asset_failure(browser_app_url: str) ->
             assert page.locator("#name-input").is_visible()
         finally:
             context.close()
+            browser.close()
+
+
+def test_combined_interaction_has_one_local_transition_and_one_request(
+    browser_app_url: str,
+) -> None:
+    with sync_playwright() as pw:
+        browser = getattr(pw, os.environ.get("HEDRON_BROWSER_ENGINE") or "chromium").launch(
+            headless=True
+        )
+        page = browser.new_page()
+        requests: list[str] = []
+        page.on("request", lambda request: requests.append(request.url))
+        try:
+            response = page.goto(browser_app_url + "/")
+            assert response is not None and response.ok
+            with page.expect_response(lambda candidate: candidate.url.endswith("/save")) as saved:
+                page.get_by_role("button", name="Save and open").click()
+            assert saved.value.ok
+            page.wait_for_selector("#panel")
+            page.wait_for_function(
+                "() => document.querySelector('#panel')?.textContent === 'Saved'"
+            )
+            assert sum(url.endswith("/save") for url in requests) == 1
+        finally:
             browser.close()
 
 

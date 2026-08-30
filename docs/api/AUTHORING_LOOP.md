@@ -1,7 +1,7 @@
 # Authoring loop and chrome API (`v0.54`)
 
-**Status:** Stage 1 Implemented (D-093 / D-094 / RFC-0081). The current package
-train is `0.64.x` (`v0.64.0` published on PyPI).
+**Status:** Implemented (D-093 / D-094 / RFC-0081), introduced in `v0.54.0` and
+available on the published `1.0.x` train.
 
 ## Shared schema
 

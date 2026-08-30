@@ -1,11 +1,12 @@
 ---
-status: draft
+status: verified
 ---
 
-# Edron 0.1 packaging contract
+# Edron packaging contract
 
-**Status:** Draft design contract; Edron is not implemented or published<br>
-**Target:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
+**Status:** In-tree `1.0.0` Stable candidate; PyPI publication is deferred<br>
+**Target:** Edron `1.0.x`; Hedron `>=1.0.0,<1.1`<br>
+**Historical 0.1 target metadata:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
 **Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **Public API:** [Edron 0.1 public API](EDRON.md)<br>
 **State and interaction:** [Edron 0.1 state and interaction](EDRON_STATE_INTERACTION.md)<br>
@@ -15,7 +16,8 @@ status: draft
 **Architecture:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
 **Fixtures:** [Edron golden applications](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_GOLDEN_APPS.md)
 
-This document defines what installing Edron installs, how Edron composes separately owned Hedron
+This document began as the 0.1 packaging design and now defines what installing Edron installs
+through 1.0, how Edron composes separately owned Hedron
 packages, how optional third-party capabilities activate, and what artifacts and evidence are
 required for release. It complements the Python and interaction contracts. Python packaging
 metadata remains the installation authority; native Hedron packages remain the implementation,
@@ -23,10 +25,10 @@ plugin, component, asset, and runtime authorities for their features.
 
 ## Installation promise
 
-The beginner path is one ordinary command:
+The candidate beginner path is one ordinary command once the authorized 1.0 publication occurs:
 
 ```console
-pip install edron
+pip install "edron>=1.0.0,<1.1"
 ```
 
 That command must be sufficient to import Edron, run the development server, and use every
@@ -41,7 +43,7 @@ same Plotly adapter:
 
 ```console
 pip install "plotly>=5.18,<7"
-pip install "edron[plotly]"
+pip install "edron[plotly]>=1.0.0,<1.1"
 ```
 
 The second command is only an installation shortcut. Edron does not require, record, or inspect
@@ -186,7 +188,7 @@ shipping a degraded private replacement.
 ## Required version train
 
 Edron supports the same Python range as its compatible Hedron train. The first release targets
-Python 3.11 through 3.14 unless the accepted upstream packet changes the complete train
+Python 3.10 through 3.14 unless the accepted upstream packet changes the complete train
 consistently.
 
 Before RFC acceptance, the packaging packet freezes:
@@ -232,9 +234,9 @@ The initial curated shortcut registry is:
 
 | Capability ID | Direct requirements | Shortcut | Native owner/maturity |
 |---|---|---|---|
-| `data.pandas` | `pandas>=2.0`, `narwhals>=1.0` | `edron[pandas]` | `hedron-data`, beta |
-| `data.polars` | `polars>=1.0`, `narwhals>=1.0` | `edron[polars]` | `hedron-data`, beta |
-| `data.pyarrow` | `pyarrow>=15.0`, `narwhals>=1.0` | `edron[pyarrow]` | `hedron-data`, beta |
+| `data.pandas` | `pandas>=2.0`, `narwhals>=1.1` | `edron[pandas]` | `hedron-data`, beta |
+| `data.polars` | `polars>=1.0`, `narwhals>=1.1` | `edron[polars]` | `hedron-data`, beta |
+| `data.pyarrow` | `pyarrow>=15.0`, `narwhals>=1.1` | `edron[pyarrow]` | `hedron-data`, beta |
 | `chart.plotly` | `plotly>=5.18,<7` | `edron[plotly]` | `hedron-charts`, experimental |
 | `chart.altair` | `altair>=6,<7`, `vl-convert-python>=1.0` | `edron[altair]` | `hedron-charts`, experimental |
 | `chart.matplotlib` | `matplotlib>=3.8,<4` | `edron[matplotlib]` | `hedron-charts`, beta/static Supported scope |
@@ -327,9 +329,9 @@ EDR-CAP-0001: Plotly support is not installed
 Capability: chart.plotly
 Required: plotly>=5.18,<7
 Direct:   pip install "plotly>=5.18,<7"
-Shortcut: pip install "edron[plotly]"
+Shortcut: pip install "edron[plotly]>=1.0.0,<1.1"
 uv:       uv add "plotly>=5.18,<7"
-Shortcut: uv add "edron[plotly]"
+Shortcut: uv add "edron[plotly]>=1.0.0,<1.1"
 Restart the Edron process after changing the environment.
 ```
 

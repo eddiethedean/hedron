@@ -2,23 +2,51 @@
   "schema": "hedron.compatibility-report/1",
   "baseline": "v0.67.0",
   "target": "v1.0.0",
-  "status": "blocked",
-  "source_commit": "3611cde4",
+  "status": "passed",
+  "source_commit": "cd29381a00d2293f875663e1403d0e8594f7936d",
   "canonical_fixture": {
     "command": ".venv/bin/python -m pytest -n 0 tests/upgrade/test_phase_1_0_fixtures.py",
-    "result": "4 passed",
-    "environment": "in-tree 0.67 implementation"
+    "result": "9 passed, 1 warning",
+    "environment": "immutable v0.67 source snapshot plus current v1.0.0 checkout"
   },
   "baseline_build": {
     "command": "uv build --all-packages --out-dir <temporary-evidence-dir> --no-build-logs",
-    "result": "22 coordinated and satellite distributions built successfully",
-    "versions": "workspace metadata remains 0.67.0; independent satellites retain declared versions",
-    "artifact_retention": "temporary run only; immutable digests are still required for COMPAT-100/PKG-100"
+    "result": "22 Python distributions produced 44 publishable wheel/sdist artifacts twice",
+    "versions": "coordinated workspace metadata declares 1.0.0; independent satellites retain their declared versions",
+    "artifact_retention": "candidate artifacts retained in isolated temporary release directories; the coordinated SHA-256 ledger is committed in local-build-evidence.json",
+    "reproducibility": "all 44 publishable artifacts, including the hedron-native Mach-O extension, matched byte-for-byte across two SOURCE_DATE_EPOCH=315619200 builds; final platform attestations are produced by the tag workflow"
+  },
+  "bridge_run": {
+    "command": "python scripts/check_upgrade_100.py --baseline v0.67.0 --json",
+    "result": "baseline and current canonical Python/HDJ/HTTP probes and type-checks passed",
+    "baseline_commit": "82bd0e4f8fcd2ae75fd50fd2c41e18fbd674ace6",
+    "facts": {
+      "http_status": 200,
+      "contains_ready": true,
+      "interaction_marker": true,
+      "local_interaction_marker": true,
+      "combined_interaction_marker": true,
+      "outcomes": {
+        "ping": {"status": 200, "role": null, "refresh": false, "redirect": null, "job": null, "download": null},
+        "no-content": {"status": 204, "role": null, "refresh": false, "redirect": null, "job": null, "download": null},
+        "refresh": {"status": 200, "role": null, "refresh": true, "redirect": null, "job": null, "download": null},
+        "patch": {"status": 200, "role": "patch", "refresh": false, "redirect": null, "job": null, "download": null},
+        "redirect": {"status": 200, "role": null, "refresh": false, "redirect": "/status", "job": null, "download": null},
+        "job": {"status": 202, "role": null, "refresh": false, "redirect": null, "job": "job-1", "download": null},
+        "validation": {"status": 422, "role": "validation", "refresh": false, "redirect": null, "job": null, "download": null},
+        "conflict": {"status": 409, "role": "conflict", "refresh": false, "redirect": null, "job": null, "download": null},
+        "download": {"status": 200, "role": null, "refresh": false, "redirect": null, "job": null, "download": "/download/report.csv"}
+      },
+      "hdj_format_version": 1,
+      "hdj_kind": "fragment"
+    },
+    "baseline_typecheck": {"returncode": 0},
+    "current_typecheck": {"returncode": 0}
   },
   "target_artifact": {
-    "available": false,
-    "reason": "No reproducible v1.0.0 wheel/sdist and lock are present yet",
+    "available": true,
+    "reason": "Reproducible v1.0.0 candidate wheels/sdists were built twice from source commit cd29381a; 26 coordinated hashes, four Edron-lane hashes, and the exact lock are committed",
     "required_before": ["COMPAT-100", "FLEET-100", "PKG-100", "RELEASE-100"]
   },
-  "release_claim": false
+  "release_claim": true
 }

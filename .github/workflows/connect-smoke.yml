@@ -36,6 +36,7 @@ jobs:
         env:
           CONNECT_LICENSE: ${{ secrets.CONNECT_LICENSE }}
           HEDRON_REALCONNECT: "1"
+          HEDRON_REQUIRED_LIVE_GATES: "1"
         run: python scripts/check_realconnect_033.py --live
       - name: Upload redacted RESULT.log
         if: always()

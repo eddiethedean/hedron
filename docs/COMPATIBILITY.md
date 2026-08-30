@@ -1,16 +1,16 @@
 # Compatibility policy
 
-**Status:** Accepted for the stable **0.66.x** train; the latest public PyPI release is
-`v0.66.2`. The `v0.67.0` train is Beta preview.
-**Reviewed:** 2026-08-18
+**Status:** Accepted for the verified, untagged **1.0.x** candidate (`v1.0.0`); public
+publication is deferred.
+**Reviewed:** 2026-08-28
 
 ## Current train (read this first)
 
 | Dependency | Supported matrix (tested) | Declared range | Notes |
 |---|---|---|---|
-| Python | CPython 3.11–3.14 | `>=3.11,<3.15` | |
-| FastAPI | `>=0.141.1,<0.142` | `>=0.141.1,<0.150` (`hedron`) | Not required by `hedron-core` |
-| Pydantic | `>=2.13.4,<2.14` | `>=2.13.4,<2.15` | Required by `hedron-core` / `hedron` |
+| Python | CPython 3.10–3.14 | `>=3.10,<3.15` | |
+| FastAPI | `>=0.121.0,<0.142` | `>=0.121.0,<0.150` (`hedron`, `hedron-explorer`) | Not required by `hedron-core` |
+| Pydantic | `>=2.12.0,<2.14` | `>=2.12.0,<2.15` | Required by `hedron-core` / `hedron` |
 | HTMX | Bundled 2.0.10; contract `>=2.0,<3.0` | same | Injected on PAGE responses |
 | Flask | `>=3.0,<4` via `hedron-flask` | same | Waitress `>=3,<4` reference WSGI |
 | Django | `>=5.2,<6` via `hedron-django` | same | WSGI + ASGI |
@@ -18,28 +18,27 @@
 
 The **Supported matrix** is the CI-tested range. Package metadata may declare a **wider**
 compatible range; versions outside the Supported column are installable but unsupported
-until evidence is green. Beta packages (`hedron`, `hedron-core`, `hedron-data`,
-`hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-explorer`, `hedron-conformance`,
-`hedron-extras`, `hedron-workbench`, `hedron-posit`, `hedron-elements`)
-stay on the published `0.64.x` train (`v0.64.0` on PyPI). Independent Beta packages
-`hedron-maps`, `hedron-charts`, `hedron-native`, `hedron-mcp`, and `hedron-gradio` version on satellite
-lines. Beta tooling-grade packages `hedron-sample-kit`, `hedron-notebook`, and `hedron-sim`
-also version independently. Independent `fastapi-workbench>=1.0.0,<2` is not on the
-coordinated 0.51 train. `hedron-elements` is Beta for the declared Supported
-inventory only.
+until evidence is green. In the 1.0 boundary, `hedron-core`, `hedron`, `edron`, `hedron-data`,
+`hedron-charts`, and `hedron-maps` are Stable
+platform packages. Host adapters, Explorer, elements, extras, Posit, conformance, Workbench,
+native, MCP, Gradio, notebook, sample-kit, and simulation packages are independent Beta
+satellites; experimental adapter surfaces remain outside the Stable API even when their owning
+package is Stable. The repository resolves the coordinated 1.0.0 workspace; the public index may
+continue to serve the documented 0.x fallback until publication.
 
 ### Charts and sample-kit compatibility floor
 
-`hedron-charts>=0.2.1,<0.3` and `hedron-sample-kit>=0.2.1,<0.3` are compatible with
-`hedron-core>=0.66.2,<0.67`. The flagship `hedron[charts]>=0.66.2,<0.67` extra enforces
-that chart floor.
+`hedron-charts>=0.2.4,<0.3` and `hedron-sample-kit>=0.2.3,<0.3` require
+`hedron-core>=1.0.0,<2.0` for the composable plugin contract. The public 0.66 train uses
+`hedron-charts==0.2.3` and `hedron-sample-kit==0.2.2` instead.
 
 !!! warning "Exclude older satellite wheels"
 
     Satellite versions through `0.1.6` require an older `hedron-core` bound; historical
     `0.11.0` requires `hedron-core==0.11.0`. Do not loosen the current lower bound below
     `0.2.0` for sample-kit (and `0.2.0` for charts). Use a clean virtual environment when
-    replacing an older chart or sample-kit installation.
+    replacing an older chart or sample-kit installation. Do not pair a 1.0-only satellite
+    patch with Hedron 0.x.
 
 Pure-Python behavior remains the conformance reference when optional `hedron-native`
 acceleration is present or absent (D-001 / D-048).
@@ -68,8 +67,8 @@ Hedron declares wider FastAPI/Pydantic ranges than the Supported matrix CI prove
 
 | Package | Supported (tested) | Declared |
 |---|---|---|
-| FastAPI | `>=0.141.1,<0.142` | `>=0.141.1,<0.150` |
-| Pydantic | `>=2.13.4,<2.14` | `>=2.13.4,<2.15` |
+| FastAPI | `>=0.121.0,<0.142` | `>=0.121.0,<0.150` |
+| Pydantic | `>=2.12.0,<2.14` | `>=2.12.0,<2.15` |
 
 **First app:** use a clean virtualenv so an older shared pin does not block install.
 
@@ -84,16 +83,16 @@ Hedron declares wider FastAPI/Pydantic ranges than the Supported matrix CI prove
 See [Installation](getting-started/installation.md) and
 [Troubleshooting](guides/troubleshooting.md#fastapi-version-conflict-on-install).
 
-## Initial runtime ranges
+## 1.0 runtime ranges
 
-| Dependency | `v0.13.0` compatibility baseline | Policy |
+| Dependency | `v1.0.0` compatibility baseline | Policy |
 |---|---|---|
-| Python | CPython 3.11, 3.12, 3.13, and 3.14 | `requires-python = ">=3.11,<3.15"`; 3.15 prereleases are not supported. |
-| FastAPI | Supported `>=0.141.1,<0.142`; declared `>=0.141.1,<0.150` | Required by `hedron`, not `hedron-core`; expand Supported only after adapter conformance. |
-| Pydantic | Supported `>=2.13.4,<2.14`; declared `>=2.13.4,<2.15` | Required by `hedron-core`; Hedron shields public contracts from Pydantic internals. |
-| Starlette | FastAPI-managed compatible version | No independent direct pin unless implementation use requires one; test the resolved FastAPI set. |
+| Python | CPython 3.10, 3.11, 3.12, 3.13, and 3.14 | `requires-python = ">=3.10,<3.15"`; 3.15 prereleases are not supported. |
+| FastAPI | Supported `>=0.121.0,<0.142`; declared `>=0.121.0,<0.150` | Required by `hedron`, not `hedron-core`; 0.121.0 introduced the scoped dependency API Hedron uses. |
+| Pydantic | Supported `>=2.12.0,<2.14`; declared `>=2.12.0,<2.15` | Required by `hedron-core`; 2.12 is the first line with official Python 3.14 support. |
+| Starlette | `>=0.40.0` where directly declared | FastAPI 0.121 requires `>=0.40`; deployment adapters share that floor. |
 | HTMX | Bundled 2.0.10; compatible contract `>=2.0,<3.0` | Official assets pin an exact reviewed version per Hedron release; PAGE responses inject `/hedron-static/htmx.min.js`. |
-| Matplotlib | `>=3.8,<4` via `hedron-charts[matplotlib]` | Install with `hedron[charts]>=0.66.2,<0.67`; Matplotlib/static charts are the conservative default. |
+| Matplotlib | `>=3.8,<4` via `hedron-charts[matplotlib]` | Install with `hedron[charts]>=1.0.0,<1.1`; Matplotlib/static charts are the conservative default. |
 | Plotly | `>=5.18,<7` via `hedron-charts[plotly]` | Experimental; local host asset, no CDN callbacks. |
 | Altair | `>=6.0,<7` via `hedron-charts[altair]` | Experimental; Python 3.14 requires Altair 6+ (TypedDict fix). |
 | nh3 | `>=0.2` via `hedron[sanitize]` / `[markdown]` | TrustedHtml.nh3 named constructor. |
@@ -104,6 +103,11 @@ See [Installation](getting-started/installation.md) and
 | SQLModel | `>=0.0.22` via `hedron-data[sqlmodel]` | Optional on top of SQLAlchemy. |
 | Authlib | `>=1.3` via `hedron[auth]` | Convenience helpers only; no identity ownership. |
 | Jinja | `>=3.1,<4` via `hedron[jinja]` / `hedron-jinja` | Optional trusted-template integration; not imported by `hedron-core`. |
+
+The lower-bound audit also verifies Packaging `>=22`, MarkupSafe `>=2.1.1`, Markdown
+`>=3.4.1`, Uvicorn `>=0.32`, HTTPX `>=0.27`, and itsdangerous `>=2.1.2`. Optional data
+adapters require Narwhals `>=1.1` and Dask `>=2024.5`; optional chart installs require
+Pygal `>=3.0.4`, and the Datashader extra includes PyArrow `>=16` so a clean install imports.
 
 ## Phase 0.11 compatibility baseline
 
@@ -173,7 +177,10 @@ The framework capability matrix labels each guarantee as portable, ASGI, WSGI, o
 framework-specific. A version appearing in dependency metadata is not considered supported until
 its native conformance slice is green.
 
-Python 3.11 and 3.12 remain supported by upstream security fixes through 2027 and 2028 respectively; 3.13 and 3.14 are in bugfix support. Python 3.15 is prerelease as of this review. FastAPI 0.141.1 and Pydantic 2.13.4 are the latest stable releases reviewed for the baseline. HTMX’s official repository documents 2.0.10, while later major-line work is not used for the initial contract.
+Every declared Python minor from 3.10 through 3.14 is exercised by CI. Python 3.15 is outside
+the current contract. FastAPI 0.121.0 and Pydantic 2.12.0 are the verified lower bounds;
+FastAPI 0.141.1 is the latest stable release reviewed for the baseline. HTMX's official
+repository documents 2.0.10, while later major-line work is not used for the initial contract.
 
 The exact lockfile records full transitive versions. Patch releases enter through dependency-update pull requests and must pass the complete compatibility suite before the supported range or bundled asset changes.
 
@@ -184,10 +191,11 @@ Hedron uses documented public upstream APIs. Compatibility shims are isolated by
 Authoritative classifications live in [api/STABILITY.md](api/STABILITY.md)
 (`stable` | `beta` | `experimental` | `internal` | `deferred`).
 
-- The current public/stable and Beta preview trains remain `0.x`. RFC-0096 and D-114–D-117 define
-  a **Stage 0 Refined, not implemented or released** subtractive 1.0 cut from Verified Beta
-  `v0.67.0`; the enumerated stable inventory and removal evidence remain gated by `ENTRY-100`.
-- `stable` contracts are compatibility-protected regardless of the distribution's `0.x` version.
+- RFC-0096 and D-114–D-117 define the implemented and Verified subtractive 1.0 cut from the
+  immutable `v0.67.0` baseline. Its enumerated stable inventory, removal evidence, and all
+  17 technical release gates are complete; Git tagging and PyPI publication remain deferred.
+- Coordinated `stable` contracts are compatibility-protected throughout 1.x; independently
+  versioned 0.x satellites retain the compatibility policy stated on their package pages.
   An incompatible change requires an accepted RFC/decision, migration tooling or guidance, a
   deprecation diagnostic when feasible, and at least one intervening minor phase before removal.
 - `beta` contracts may change at a minor phase boundary with the same changelog, migration, and
@@ -201,7 +209,7 @@ Authoritative classifications live in [api/STABILITY.md](api/STABILITY.md)
   - **PATCH** — compatible bug/security fixes, dependency changes within the declared range, and
     documentation;
   - **MAJOR** — requires an Accepted RFC demonstrating a real ecosystem-wide compatibility
-    boundary. RFC-0096 governs the planned 1.0 consolidation; a version number alone never
+    boundary. RFC-0096 governs the 1.0 consolidation; a version number alone never
     authorizes incompatible change.
 - Bundled browser-asset pin changes (exact HTMX version/digest) are at least a **MINOR** and require
   the three-engine browser suite plus asset audit evidence.
@@ -221,7 +229,7 @@ Authoritative classifications live in [api/STABILITY.md](api/STABILITY.md)
 | Dimension | 0.8 baseline |
 |---|---|
 | Python | CPython 3.11–3.14 |
-| FastAPI flagship | FastAPI `>=0.141.1,<0.142` + Uvicorn workers |
+| FastAPI flagship | FastAPI `>=0.121.0,<0.142` + Uvicorn workers |
 | Flask adapter | Flask/Werkzeug `>=3,<4`; Waitress `>=3,<4` |
 | Django adapter | Django `>=5.2,<6`; asgiref `>=3.8,<4`; WSGI + ASGI |
 | Browsers | Chromium, Firefox, WebKit (Playwright) |

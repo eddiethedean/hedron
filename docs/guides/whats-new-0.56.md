@@ -1,13 +1,19 @@
 # What’s new in 0.56
 
+!!! note "Historical release note"
+
+    This page records the 0.x release named in its title. For current installation,
+    support, and published 1.0 status, use [Current release and support](current-release.md).
+    Keep the historical pins below only when maintaining that release line.
+
 Published **0.56.0** on PyPI. This is a historical train; the current published
-train is **0.66.x** — see [What’s next](whats-next.md). Pin
-`hedron>=0.66.2,<0.67` from PyPI for current applications.
+train is **1.0.x** — see [What’s next](whats-next.md). Pin
+`hedron>=1.0.0,<1.1` from PyPI for current applications.
 
 ## 0.56.1
 
 Historical in-tree quality patch (superseded by living tip 0.57.0). Install from PyPI with
-`hedron>=0.66.2,<0.67`.
+`hedron>=1.0.0,<1.1`.
 
 - Workspace Python quality upgrade: typing debt burn-down across routing, data, charts,
   maps, and adapters; safer best-effort exception logging; ASYNC/PTH/DTZ/RET ruff rules;

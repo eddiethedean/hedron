@@ -4,14 +4,14 @@ status: verified
 
 # Edron release roadmap
 
-**Status:** Edron `0.9.0` implemented and release-verified in-tree (publication pending); `edron-v0.3.0` remains the latest published release<br>
-**Edron release line:** `0.6` reusable composition and capability promotion<br>
-**Latest in-tree release:** Edron `0.9.0`; Hedron `0.67.0` (`>=0.67.0,<0.68`)<br>
-**Latest published release:** Edron `0.3.0`; the `0.9.0` target train is Hedron `0.67.0`<br>
+**Status:** Edron `1.0.0` implemented and verified in-tree; tag/PyPI publication deferred<br>
+**Edron release line:** `1.0` canonical Hedron 1.0 adoption<br>
+**Latest in-tree release:** Edron `1.0.0`; Hedron `>=1.0.0,<1.1`<br>
+**Latest published release:** Edron `0.9.0` on PyPI; `1.0.0` candidate is untagged<br>
 **Architecture:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
-**Public API:** [Edron 0.3 data workspaces](api/EDRON_03.md)<br>
-**State and interaction:** [Edron 0.1 state and interaction](api/EDRON_STATE_INTERACTION.md)<br>
-**Packaging:** [Edron 0.1 packaging](api/EDRON_PACKAGING.md)<br>
+**Public API:** [Edron 1.0 API by task](api/EDRON_REFERENCE.md)<br>
+**State and interaction:** [Edron 1.0 state and interaction](api/EDRON_STATE_INTERACTION.md)<br>
+**Packaging:** [Edron 1.0 packaging](api/EDRON_PACKAGING.md)<br>
 **Acceptance:** [Edron 0.3 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_003.md)
 
 This is the release roadmap for the separately versioned `edron` distribution. It does not assign
@@ -19,8 +19,8 @@ Hedron release numbers, change the Hedron capability roadmap, authorize implemen
 that a planned capability exists. Edron may consume a later compatible Hedron train, but Edron and
 Hedron phase numbers do not need to match.
 
-No Edron `1.x` phase is planned. Phase `0.9` is a long-lived `0.x` consolidation phase, not a
-countdown or commitment to `1.0`.
+Edron `1.0` is the first release that directly adopts Hedron's canonical 1.0 interface. Historical
+0.x phases remain immutable evidence for their original package trains.
 
 ## Phase summary
 
@@ -36,8 +36,9 @@ countdown or commitment to `1.0`.
 | **0.7** | Streamlit migration assistance, codemods, examples, and adoption tooling | **Implemented in-tree; release evidence required** |
 | **0.8** | Deployment profiles, host integration evidence, and production operations guidance | **Implemented and release-verified in-tree; publication pending** |
 | **0.9** | Long-lived `0.x` compatibility, selected stable-tier promotion, performance, security, and accessibility consolidation on Hedron `0.67.0` | Implemented and release-verified in-tree; publication pending |
+| **1.0** | Canonical Hedron 1.0 page/view/action/include adoption and removal of duplicate route-handle ownership | **Stable API verified in-tree; untagged candidate** (`edron-v1.0.0`; publication deferred) |
 
-Candidate phases after `0.1` are directional themes, not accepted API contracts. A capability may
+Historical phases after `0.1` were directional themes until their contracts were accepted. A capability may
 move, narrow, remain native-only, or be rejected during its design review. Patch releases fix and
 harden an owning phase; they do not silently introduce the next phase's public surface.
 
@@ -504,19 +505,33 @@ supervisor, runtime package installer, secret manager, distributed state/job bac
 public-URL discovery, arbitrary forwarded-header trust, Flask/Django page-class parity, notebook
 production hosting, or a new renderer, router, asset, security, or observability authority.
 
+## Release 1.0 — canonical Hedron 1.0 adoption
+
+Edron 1.0 requires `hedron>=1.0.0,<2.0` and `hedron-data>=1.0.0,<2.0`. Its class-oriented
+authoring vocabulary remains small, while native registration is now exclusively owned by
+Hedron's canonical `page`, `view`, `action`, and `include` roles. Edron no longer constructs
+parallel view/action handles or synchronizes Hedron's private root router.
+
+The 1.0 release retains the native interaction, outcome, browser-plan, lifecycle, component,
+style, data, cache, resource, TaskFlow, and specialist host contracts already admitted by 0.9,
+but exercises them against Hedron 1.0 as the minimum runtime. Scaffolds and Streamlit migration
+output declare the same bounded 1.x requirements. See
+[EDRON_100.md](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_100.md) and
+[edron-100.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/edron-100.toml).
+
 ## Phase 0.9 — long-lived `0.x` consolidation on Hedron `0.67.0`
 
 Phase `0.9` is the Edron consolidation and compatibility phase on the Hedron `0.67.0` train. Its
-release target is Edron `0.9.0` with `hedron>=0.67.0,<0.68` and a lockfile that resolves
+release target is Edron `0.9.1` with `hedron>=0.67.0,<2.0` and a baseline lockfile that resolves
 `hedron==0.67.0` (including the coordinated `hedron-core` and `hedron-data` 0.67.0 packages when
 those capabilities are exercised). The same Edron 0.9 source and public contract must remain
-forward-compatible with Hedron `1.0.0` once that release is available and its compatibility fixture
-passes. Hedron 1.0 is a future compatibility target, not a dependency claim before publication;
-the 0.9 release artifact remains pinned to the 0.67.0 evidence train. Edron `0.8.x` remains pinned
+forward-compatible with Hedron `1.0.0`; its compatibility fixture passes against the release
+candidate. The 0.9.1 patch declares that verified range while retaining the 0.67.0 baseline
+evidence train. Edron `0.8.x` remains pinned
 to the Hedron `0.66.2` train; no Phase 0.9 planning change widens or retrofits the already released
 0.8 contract. Phase 0.9 turns the accepted `0.1`–`0.8`
 surface into a deliberately classified, measurable, and maintainable `0.x` contract. The
-implementation is accepted in-tree; publication and the `edron-v0.9.0` tag remain maintainer-controlled.
+implementation is accepted in-tree; publication and the `edron-v0.9.1` tag remain maintainer-controlled.
 
 The release must be built and tested from the Hedron `v0.67.0` baseline or an equivalent immutable
 source/lock snapshot. A moving `main` checkout, an unbounded `hedron` requirement, or evidence
@@ -623,7 +638,7 @@ live transports, host-specific behavior, or internal serializer details automati
 Phase `0.9` implementation entry requires the `0.8` acceptance packet to be release-verified, a
 frozen public-surface inventory, named native owners, a compatibility baseline for Hedron `0.67.0`
 and a forward-compatibility target for Hedron `1.0.0`, and the machine-readable [phase 0.9 gate
-lock](acceptance/edron-phase09.toml). The lock must carry the exact 0.67.0 evidence target, the
+lock](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/edron-phase09.toml). The lock must carry the exact 0.67.0 evidence target, the
 future 1.0.0 compatibility policy, package requirement bounds, supported Python/host/browser matrix,
 budget units, deprecation windows, and explicit deferred dispositions. Release exit requires, at
 minimum:

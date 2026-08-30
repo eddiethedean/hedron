@@ -54,7 +54,7 @@ def browser_app_url() -> Iterator[str]:
         source=InMemoryDataSource([{"id": "1", "title": "hello"}], key_field="id"),
         policy=DataWorkspacePolicy(can_read=lambda: True),
     )
-    app.include_feature(workspace)
+    app.include(workspace)
 
     @app.page("/")
     def home():

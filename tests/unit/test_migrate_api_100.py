@@ -43,10 +43,97 @@ def test_scan_flags_only_registered_legacy_paths(tmp_path: Path) -> None:
     assert report.findings[0].fixture == "tests/upgrade/shared.py"
 
 
+def test_scan_does_not_treat_simapp_fragment_as_hedron_legacy_api(tmp_path: Path) -> None:
+    source = tmp_path / "sim.py"
+    source.write_text(
+        "from hedron_sim import SimApp\n"
+        "app = SimApp(demo_id='offline')\n"
+        "@app.fragment('/status', region='panel')\n"
+        "def status(): pass\n",
+        encoding="utf-8",
+    )
+
+    assert scan_api(source).findings == ()
+
+
+def test_scan_does_not_treat_edron_fragment_as_hedron_legacy_api(tmp_path: Path) -> None:
+    source = tmp_path / "edron.py"
+    source.write_text(
+        "\n".join(
+            (
+                "import edron as ed",
+                "@ed.fragment(path='/status')",
+                "def status(): pass",
+            )
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    assert scan_api(source).findings == ()
+
+
+def test_scan_infers_removed_flask_adapter_methods(tmp_path: Path) -> None:
+    source = tmp_path / "flask_adapter.py"
+    source.write_text(
+        "from hedron_flask import HedronBlueprint\n"
+        "blueprint = HedronBlueprint('ui', __name__)\n"
+        "@blueprint.component('/status')\n"
+        "def status(): pass\n"
+        "blueprint.include_feature(bundle)\n",
+        encoding="utf-8",
+    )
+
+    report = scan_api(source)
+
+    assert [(item.old_path, item.replacement) for item in report.findings] == [
+        ("blueprint.component", "blueprint.view"),
+        ("blueprint.include_feature", "blueprint.include"),
+    ]
+    output = tmp_path / "migrated.py"
+    transform_api(source, output=output)
+    migrated = output.read_text(encoding="utf-8")
+    assert "@blueprint.view('/status')" in migrated
+    assert "blueprint.include(bundle)" in migrated
+
+
 def test_scan_keeps_same_line_calls_as_separate_call_sites(tmp_path: Path) -> None:
     source = tmp_path / "same_line.py"
     source.write_text("app.component('/a'); app.component('/b')\n", encoding="utf-8")
     assert len(scan_api(source).findings) == 2
+
+
+def test_scan_and_transform_direct_legacy_helper_imports(tmp_path: Path) -> None:
+    source = tmp_path / "imports.py"
+    source.write_text(
+        "from hedron import include_feature, refreshable\ninclude_feature(bundle)\n",
+        encoding="utf-8",
+    )
+
+    report = scan_api(source)
+
+    assert [(item.kind, item.old_path, item.confidence) for item in report.findings] == [
+        ("import", "app.include_feature", "unknown"),
+        ("import", "app.refreshable", "unknown"),
+    ]
+    output = tmp_path / "migrated.py"
+    transform_api(source, output=output)
+    assert output.read_text(encoding="utf-8").startswith(
+        "from hedron import include_feature, refreshable\n"
+    )
+
+
+def test_wildcard_import_is_unknown_for_every_registered_legacy_path(tmp_path: Path) -> None:
+    source = tmp_path / "wildcard.py"
+    source.write_text("from hedron import *\n", encoding="utf-8")
+
+    findings = scan_api(source).findings
+
+    assert len(findings) == len(PUBLIC_FUTURE_WARNINGS.records())
+    assert {item.confidence for item in findings} == {"unknown"}
+    assert {item.automation_status for item in findings} == {"manual-review"}
+    assert {item.kind for item in findings} == {"import"}
+    assert unified_diff(source) == ""
 
 
 def test_region_fragment_is_reported_partial_and_not_rewritten(tmp_path: Path) -> None:
@@ -61,6 +148,21 @@ def test_region_fragment_is_reported_partial_and_not_rewritten(tmp_path: Path) -
     assert unified_diff(source) == ""
 
 
+def test_unsafe_component_route_is_manual_action_migration(tmp_path: Path) -> None:
+    source = tmp_path / "unsafe.py"
+    source.write_text(
+        "@app.component('/save', methods=['POST'])\ndef save(): pass\n",
+        encoding="utf-8",
+    )
+
+    finding = scan_api(source).findings[0]
+
+    assert finding.replacement == "app.action"
+    assert finding.confidence == "partial"
+    assert finding.automation_status == "manual-review"
+    assert unified_diff(source) == ""
+
+
 def test_reflection_is_unknown_and_never_rewritten(tmp_path: Path) -> None:
     source = tmp_path / "dynamic.py"
     source.write_text("handler = getattr(app, 'component')\n", encoding="utf-8")
@@ -68,6 +170,33 @@ def test_reflection_is_unknown_and_never_rewritten(tmp_path: Path) -> None:
     assert finding.confidence == "unknown"
     assert finding.automation_status == "manual-review"
     assert unified_diff(source) == ""
+
+
+def test_syntax_errors_are_unknown_and_require_review(tmp_path: Path) -> None:
+    source = tmp_path / "broken.py"
+    source.write_text("@app.component('/')\ndef broken(\n", encoding="utf-8")
+
+    report = scan_api(source)
+
+    assert report.requires_review is True
+    assert len(report.findings) == 1
+    assert report.findings[0].confidence == "unknown"
+    assert report.findings[0].kind == "error"
+
+
+def test_unknown_legacy_receiver_is_reported_for_manual_review(tmp_path: Path) -> None:
+    source = tmp_path / "aliased.py"
+    source.write_text(
+        "from hedron import Hedron\nsite = Hedron()\n@site.component('/')\ndef old(): pass\n",
+        encoding="utf-8",
+    )
+
+    report = scan_api(source)
+
+    assert report.requires_review is True
+    assert len(report.findings) == 1
+    assert report.findings[0].confidence == "unknown"
+    assert report.findings[0].automation_status == "manual-review"
 
 
 def test_transform_is_non_executing_idempotent_and_refuses_overwrite(tmp_path: Path) -> None:
@@ -97,6 +226,42 @@ def test_transform_output_is_a_complete_reviewable_tree(tmp_path: Path) -> None:
     assert report.changes[0].path == "app.py"
     assert (output / "app.py").read_text(encoding="utf-8") == "app.include(bundle)\n"
     assert (output / "README.md").read_text(encoding="utf-8") == "unchanged project notes\n"
+
+
+def test_transform_output_preserves_unanalyzed_binary_assets(tmp_path: Path) -> None:
+    source = tmp_path / "project"
+    source.mkdir()
+    (source / "app.py").write_text("app.include_feature(bundle)\n", encoding="utf-8")
+    asset = bytes((0, 159, 146, 150, 255, 1))
+    (source / "static.bin").write_bytes(asset)
+    output = tmp_path / "migrated"
+
+    transform_api(source, output=output)
+
+    assert (output / "static.bin").read_bytes() == asset
+
+
+def test_transform_output_creates_nested_destination_parent(tmp_path: Path) -> None:
+    source = tmp_path / "project"
+    source.mkdir()
+    (source / "app.py").write_text("app.include_feature(bundle)\n", encoding="utf-8")
+    output = tmp_path / "artifacts" / "migrated"
+
+    transform_api(source, output=output)
+
+    assert (output / "app.py").read_text(encoding="utf-8") == "app.include(bundle)\n"
+
+
+@pytest.mark.parametrize("suffix", [".pyi", ".ini", ".cfg", ".conf", ".env", ".lock"])
+def test_scan_covers_project_text_artifact_suffixes(tmp_path: Path, suffix: str) -> None:
+    source = tmp_path / f"settings{suffix}"
+    source.write_text("app.include_feature(bundle)\n", encoding="utf-8")
+
+    findings = scan_api(source).findings
+
+    assert len(findings) == 1
+    assert findings[0].kind == "text"
+    assert findings[0].old_path == "app.include_feature"
 
 
 def test_json_is_stable_and_advertises_schema(tmp_path: Path) -> None:

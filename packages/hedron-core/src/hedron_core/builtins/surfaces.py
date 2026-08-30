@@ -18,6 +18,7 @@ from hedron_core.builtins.appearance import (
     appearance_data,
     require_choice,
 )
+from hedron_core.builtins.style_scope import presentation_data
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
@@ -110,11 +111,7 @@ class AmbientLayer:
             (self.scale, ("sm", "md", "lg"), "scale"),
         ):
             require_choice(value, choices, label=label)
-        if (
-            isinstance(self.order, bool)
-            or not isinstance(self.order, int)
-            or not 0 <= self.order <= 8
-        ):
+        if isinstance(self.order, bool) or not 0 <= self.order <= 8:
             raise ValueError("AmbientLayer order must be an integer between 0 and 8")
 
 
@@ -147,9 +144,6 @@ class AmbientBackdrop(Component[AmbientBackdropProps]):
         require_choice(tone, ("accent", "muted", "neutral"), label="tone")
         require_choice(intensity, ("subtle", "soft"), label="intensity")
         resolved_layers = tuple(layers or ())
-        for layer in resolved_layers:
-            if not isinstance(layer, AmbientLayer):
-                raise TypeError("AmbientBackdrop layers must contain AmbientLayer values")
         if not resolved_layers:
             resolved_layers = (AmbientLayer(pattern=pattern, tone=tone, intensity=intensity),)
         super().__init__(
@@ -252,7 +246,10 @@ class Card(Component[CardProps]):
                 html.div(
                     self._slot_values["header"],
                     class_="hedron-card-header",
-                    data=application_style_hook_data("Card", "heading", state="default"),
+                    data={
+                        **application_style_hook_data("Card", "heading", state="default"),
+                        **presentation_data("Card.heading"),
+                    },
                 )
             )
         elif self.props.title:
@@ -260,14 +257,20 @@ class Card(Component[CardProps]):
                 html.div(
                     html.h3(self.props.title),
                     class_="hedron-card-header",
-                    data=application_style_hook_data("Card", "heading", state="default"),
+                    data={
+                        **application_style_hook_data("Card", "heading", state="default"),
+                        **presentation_data("Card.heading"),
+                    },
                 )
             )
         parts.append(
             html.div(
                 *self._children,
                 class_="hedron-card-body",
-                data=application_style_hook_data("Card", "supporting-copy", state="default"),
+                data={
+                    **application_style_hook_data("Card", "supporting-copy", state="default"),
+                    **presentation_data("Card.supporting-copy"),
+                },
             )
         )
         if "footer" in self._slot_values:
@@ -275,7 +278,10 @@ class Card(Component[CardProps]):
                 html.div(
                     self._slot_values["footer"],
                     class_="hedron-card-footer",
-                    data=application_style_hook_data("Card", "metadata", state="default"),
+                    data={
+                        **application_style_hook_data("Card", "metadata", state="default"),
+                        **presentation_data("Card.metadata"),
+                    },
                 )
             )
         data = {

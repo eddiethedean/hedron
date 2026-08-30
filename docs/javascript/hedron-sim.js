@@ -290,6 +290,20 @@
     }
   }
 
+  function applyEffects(root, effects) {
+    var handledPrimary = false;
+    var items = Array.isArray(effects) ? effects : [];
+    for (var i = 0; i < items.length; i += 1) {
+      var effect = items[i] || {};
+      var target = resolveTarget(root, effect.target);
+      if (effect.type === "refresh" && target) {
+        performSwap(target, applyTokens(effect.html || "", null), "outerHTML");
+        handledPrimary = true;
+      }
+    }
+    return handledPrimary;
+  }
+
   function handleRequest(root, table, control, formData) {
     var method = hxMethod(control);
     var path = hxPath(control, method);
@@ -303,6 +317,12 @@
     }
 
     var targetSel = control.getAttribute("hx-target");
+    // Edron page navigation intentionally leaves the target implicit in the
+    // source API. A static app preview has one bounded stage, so page links
+    // replace that stage rather than the clicked link itself.
+    if (!targetSel && control.matches && control.matches("[data-hedron-nav-link]")) {
+      targetSel = "[data-hedron-sim-stage]";
+    }
     var swap = control.getAttribute("hx-swap") || "innerHTML";
     var key = method + " " + path;
     var route = table.routes && table.routes[key];
@@ -328,6 +348,7 @@
       var target = resolveTarget(root, targetSel) || control;
       var html;
       var status = route.status || 200;
+      var handledPrimary = false;
 
       if (route.accumulate) {
         var store = listStore(root, targetSel || route.accumulate.field);
@@ -350,6 +371,7 @@
         var payload = resolveRoutePayload(root, route, key, formData);
         status = payload.status || route.status || 200;
         html = applyTokens(payload.html || "", formData);
+        handledPrimary = applyEffects(root, payload.effects, formData);
         var liveWrap = document.createElement("div");
         liveWrap.innerHTML = html;
         applyOob(root, liveWrap);
@@ -360,7 +382,7 @@
         html = primaryWrap.innerHTML;
       }
 
-      performSwap(target, html, swap);
+      if (!handledPrimary) performSwap(target, html, swap);
 
       var label = status >= 400 ? true : false;
       setTrace(root, method + " " + path + " → " + status + " fragment", label);

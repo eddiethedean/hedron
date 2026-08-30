@@ -6,8 +6,10 @@ from pathlib import Path
 
 from hedron.build import _relink_fingerprinted_modules, _rewrite_module_imports
 from hedron_core.assets import fingerprint_file
+from hedron_core.plugins import PluginContext
 from hedron_core.registry import reset_registry_for_tests
 from hedron_elements.assets import bridge_path, example_module_path
+from hedron_elements.plugin import PLUGIN_META
 from hedron_elements.plugin import register as register_elements
 
 
@@ -88,7 +90,10 @@ def test_production_build_relinks_elements_modules(tmp_path: Path) -> None:
     from hedron.build import run_build
     from hedron.config import HedronSettings
 
-    class _Ctx:
+    class _Ctx(PluginContext):
+        def __init__(self) -> None:
+            super().__init__(PLUGIN_META)
+
         def register_diagnostic_owner(self, prefix: str) -> None:
             self.prefix = prefix
 
@@ -103,7 +108,7 @@ def test_production_build_relinks_elements_modules(tmp_path: Path) -> None:
 
     reset_registry_for_tests()
     try:
-        register_elements(_Ctx())  # type: ignore[arg-type]
+        register_elements(_Ctx())
         result = run_build(
             project_dir=tmp_path,
             settings=HedronSettings(

@@ -9,11 +9,12 @@ from __future__ import annotations
 
 import logging
 import re
-import tomllib
 from collections.abc import Mapping
 from importlib.metadata import PackageNotFoundError, distributions, entry_points, version
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
+
+from hedron_core.compat import tomllib
 
 _LOG = logging.getLogger("hedron.fleet")
 
@@ -33,7 +34,6 @@ _TRAIN_DISTS = (
     "hedron-jinja",
     "hedron-conformance",
     "hedron-extras",
-    "hedron-workbench",
     "hedron-posit",
     "hedron-elements",
 )
@@ -47,7 +47,6 @@ _EXTRA_DISTS = (
     "hedron-django",
     "hedron-explorer",
     "hedron-conformance",
-    "hedron-workbench",
     "hedron-posit",
     "hedron-native",
     "hedron-maps",
@@ -55,6 +54,10 @@ _EXTRA_DISTS = (
     "hedron-gradio",
     "hedron-notebook",
 )
+
+
+def _mapping(value: object) -> dict[str, Any]:
+    return cast(dict[str, Any], value) if isinstance(value, dict) else {}
 
 
 def looks_like_secret_env(name: str) -> bool:
@@ -95,7 +98,7 @@ def _train_skew_note(dist_versions: dict[str, str]) -> dict[str, Any] | None:
         data = tomllib.loads(path.read_text(encoding="utf-8"))
     except (OSError, tomllib.TOMLDecodeError):
         return None
-    release = data.get("release") or {}
+    release = _mapping(data.get("release"))
     published = release.get("published_version")
     development = release.get("development_version")
     expected = str(published or development or "").strip()
@@ -222,7 +225,7 @@ def _recommendations(
             }
         )
     if train_skew and train_skew.get("multi_version_train"):
-        versions = train_skew.get("train_versions") or {}
+        versions = _mapping(train_skew.get("train_versions"))
         recs.append(
             {
                 "evidence": f"train packages report multiple versions: {versions}",

@@ -1,12 +1,13 @@
 # What’s ready today
 
 **Ship today (pinned CRUD / admin on FastAPI, Flask, or Django):** pages, HTMX
-fragments, CSRF, polling job status, DataTable, first-party charts.
+fragments, CSRF, polling job status, DataTable, first-party charts, and maps.
 **Do not treat as production defaults:** SSE, WebSocket, Plotly/Altair, human
-screen-reader claims. Packages are **Beta**. There is no SLA; the Stage 0 Refined 1.0 cut has no
-scheduled release date and is not implemented.
+screen-reader claims. `hedron-core`, `hedron`, `edron`, `hedron-data`, `hedron-charts`, and
+`hedron-maps` are **Stable** packages in the 1.0 inventory; host, tooling, and vendor-adapter
+satellites remain Beta. There is no SLA.
 
-This page is the **adopter** maturity summary for the stable **0.66.x** train
+This page is the **adopter** maturity summary for the verified, not-yet-published **1.0.0** candidate
 ([Current release and support](current-release.md)). Full capability matrices and
 maintainer gate notes:
 [What’s ready — evidence](whats-ready-evidence.md).
@@ -27,8 +28,15 @@ maintainer gate notes:
 | **Experimental** | Public; may change; prefer documented fallbacks (usually polling) |
 | **Deferred** | Documented, not ready — do not treat as Supported |
 
-The stable release is **0.66.2**. The **0.67.0** train is Beta preview-only. Package maturity, capability readiness, API compatibility, and
-package maturity are three axes — [Maturity labels](../getting-started/how-to-read.md).
+Hedron, Edron, data, charts, and maps **1.0.0** are the coordinated Stable train. Older 0.x
+packages remain migration fallbacks only.
+Package maturity, capability
+readiness, and API compatibility are separate axes —
+[Maturity labels](../getting-started/how-to-read.md).
+
+The two foundational runtime distributions, `hedron-core` and `hedron`, are checked in
+Pyright strict mode with type errors blocked in CI. Commit and release CI use a strict package gate,
+so new type diagnostics cannot accumulate behind an otherwise green build.
 
 Human accessibility testing protocol engineering is on the train; **compensated
 screen-reader sessions are not Supported yet**.
@@ -44,11 +52,12 @@ screen-reader sessions are not Supported yet**.
 | Job | Status | Start here |
 |---|---|---|
 | CRUD / admin / forms | **Supported** | [First app](../getting-started/quickstart.md) |
-| Progressive screens (`@app.screen`) | **Supported** (FastAPI; API `beta`) | [What’s new in 0.60](whats-new-0.60.md) |
-| HTMX refreshable views / commands (`@app.refreshable`) | **Supported** | [Which interaction API?](../getting-started/interaction-apis.md) |
+| Pages (`@app.page`) | **Supported** | [Quickstart](../getting-started/quickstart.md) |
+| HTMX views / actions (`@app.view` / `@app.action`) | **Supported** | [Which interaction API?](../getting-started/interaction-apis.md) |
 | Multi-worker durable jobs (polling) | **Supported** with shared Redis | [Jobs](../api/JOBS.md) |
-| DataTable / DataEditor | **Supported** (`hedron[data]`) | [Data apps](data-apps.md) |
+| DataTable / DataEditor | **Supported** (`hedron-data`) | [Data apps](data-apps.md) |
 | Charts (first-party / Matplotlib) | **Supported**; Plotly/Altair **Experimental** | [Chart API](../api/CHART.md) |
+| Maps (bounded first-party inventory) | **Supported**; unsupported providers/features remain excluded | [Maps API](../api/MAPS.md) |
 | Flask / Django hosts | **Supported** (host CSRF/pages; not FastAPI facade parity) | [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) |
 | Live SSE / WebSocket | **Experimental** | Prefer [polling](live-interaction.md) |
 | Human screen-reader AT | **Not Supported** yet | Protocol engineering only — [evidence](whats-ready-evidence.md) |
@@ -58,7 +67,7 @@ screen-reader sessions are not Supported yet**.
 | Capability | FastAPI (`hedron`) | Flask (`hedron-flask`) | Django (`hedron-django`) |
 |---|---|---|---|
 | Pages + HTMX fragments + CSRF | Supported | Supported | Supported |
-| `@app.screen` / `form_command` facades | Supported (API `beta`) | Not on this host | Not on this host |
+| `@app.page` / `@app.action` facades | Supported | Not on this host | Not on this host |
 | Polling job status | Supported | Supported | Supported |
 | Live SSE / WebSocket helpers | Experimental | Prefer polling | Prefer polling |
 | DataTable / charts extras | Supported with pins | Supported with pins | Supported with pins |
@@ -71,7 +80,7 @@ Use [What’s ready — evidence](whats-ready-evidence.md).
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.66.2,<0.67" hedron new my-app
+    uvx --from "hedron>=0.67.0,<0.68" hedron new my-app
     cd my-app && uv sync
     uv run uvicorn app:app --reload
     ```
@@ -79,15 +88,15 @@ Use [What’s ready — evidence](whats-ready-evidence.md).
 === "pip"
 
     ```bash
-    pip install "hedron>=0.66.2,<0.67" "uvicorn[standard]"
+    pip install "hedron>=0.67.0,<0.68" "uvicorn[standard]"
     python -m hedron new my-app
     cd my-app && pip install -e .
     uvicorn app:app --reload
     ```
 
-Pin the stable release: `hedron>=0.66.2,<0.67`. Extras and public-index notes:
+Until the candidate is published, pin the public fallback: `hedron>=0.67.0,<0.68`. Extras and compatibility notes:
 [Installation](../getting-started/installation.md). Sample kit:
-`hedron-sample-kit>=0.2.1,<0.3`.
+`hedron-sample-kit>=0.2.3,<0.3`.
 
 ## Next
 

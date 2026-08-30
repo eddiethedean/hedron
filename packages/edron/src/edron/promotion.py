@@ -108,13 +108,13 @@ class CapabilityPromotion:
 
 PROMOTED_CAPABILITIES: dict[str, CapabilityPromotion] = {
     "data": CapabilityPromotion(
-        "data", "hedron-data", "hedron_data", "0.67.0", ">=0.67.0,<0.68", "hedron_data"
+        "data", "hedron-data", "hedron_data", "0.67.0", ">=0.67.0,<2.0", "hedron_data"
     ),
     "charts": CapabilityPromotion(
-        "charts", "hedron-charts", "hedron_charts", "0.2.2", ">=0.2.2,<0.3", "hedron_charts"
+        "charts", "hedron-charts", "hedron_charts", "1.0.0", ">=1.0.0,<2.0", "hedron_charts"
     ),
     "maps": CapabilityPromotion(
-        "maps", "hedron-maps", "hedron_maps", "0.1.2", ">=0.1.2,<0.2", "hedron_maps"
+        "maps", "hedron-maps", "hedron_maps", "1.0.0", ">=1.0.0,<2.0", "hedron_maps"
     ),
 }
 

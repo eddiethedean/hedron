@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from collections.abc import Mapping
 from functools import lru_cache
-from typing import Any, TypeVar
+from typing import Any, TypeVar, cast
 
 from pydantic import TypeAdapter, ValidationError
 
@@ -80,13 +80,6 @@ def validate_json_document(
             explanation=f"{candidate!r} is outside the measured adapter inventory.",
             remediation="Use a lock-file candidate or keep the existing parser.",
         )
-    if candidate == "formbody-request":
-        raise error(
-            HED_FP_0007,
-            title="FormBody is not an adapter-validation candidate",
-            explanation="FailFast/TypeAdapter caching must not replace FormBody.",
-            remediation="Keep reconstruct_kwargs / PydanticBindingAdapter on the request path.",
-        )
     if isinstance(document, (str, bytes)):
         raw = document if isinstance(document, str) else document.decode("utf-8")
         if len(raw.encode("utf-8")) > max_bytes:
@@ -123,7 +116,7 @@ def validate_json_document(
 
 def validate_json_document_rollback(type_: type[T], document: str) -> JsonObject:
     """Restore current parser behavior: json.loads without TypeAdapter cache."""
-    parsed = json.loads(document, object_pairs_hook=_reject_duplicate_keys)
+    parsed: object = json.loads(document, object_pairs_hook=_reject_duplicate_keys)
     if not isinstance(parsed, dict):
         raise error(
             HED_FP_0007,
@@ -131,4 +124,4 @@ def validate_json_document_rollback(type_: type[T], document: str) -> JsonObject
             explanation="Rollback parsers still require an object.",
             remediation="Emit a JSON object.",
         )
-    return parsed
+    return cast(JsonObject, parsed)

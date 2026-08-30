@@ -5,7 +5,9 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from collections.abc import Mapping, Sequence
 from pathlib import Path
+from typing import cast
 
 from hedron.workflow import WorkflowManifest, build_upgrade_report, load_baseline
 
@@ -13,16 +15,35 @@ from hedron.workflow import WorkflowManifest, build_upgrade_report, load_baselin
 def _load_manifest(path: str | None) -> WorkflowManifest | None:
     if not path:
         return None
-    data = json.loads(Path(path).read_text(encoding="utf-8"))
-    if not isinstance(data, dict):
+    decoded: object = json.loads(Path(path).read_text(encoding="utf-8"))
+    if not isinstance(decoded, dict):
         raise SystemExit("manifest must be a JSON object")
+    data = cast(dict[str, object], decoded)
+
+    def string_tuple(key: str) -> tuple[str, ...]:
+        value = data.get(key, ())
+        if not isinstance(value, Sequence) or isinstance(value, (str, bytes)):
+            raise ValueError(f"manifest {key!r} must be an array")
+        if not all(isinstance(item, str) for item in cast(Sequence[object], value)):
+            raise ValueError(f"manifest {key!r} must contain only strings")
+        return tuple(cast(Sequence[str], value))
+
+    def mapping(key: str) -> dict[str, object]:
+        value = data.get(key, {})
+        if not isinstance(value, Mapping):
+            raise ValueError(f"manifest {key!r} must be an object")
+        return {str(name): item for name, item in cast(Mapping[object, object], value).items()}
+
+    action_safety_values = mapping("action_safety")
+    if not all(isinstance(value, str) for value in action_safety_values.values()):
+        raise ValueError("manifest 'action_safety' values must be strings")
     return WorkflowManifest(
         app_id=str(data.get("app_id") or "app"),
-        layout_regions=tuple(data.get("layout_regions") or ()),
-        capabilities=tuple(data.get("capabilities") or ()),
-        action_safety=dict(data.get("action_safety") or {}),
-        upload_requirements=dict(data.get("upload_requirements") or {}),
-        security_headers=dict(data.get("security_headers") or {}),
+        layout_regions=string_tuple("layout_regions"),
+        capabilities=string_tuple("capabilities"),
+        action_safety=cast(dict[str, str], action_safety_values),
+        upload_requirements=mapping("upload_requirements"),
+        security_headers=mapping("security_headers"),
         migration_status=str(data.get("migration_status") or "legacy"),
     )
 
@@ -47,3 +68,6 @@ def _cmd_upgrade_report(args: argparse.Namespace) -> None:
     else:
         sys.stdout.write(text + "\n")
     raise SystemExit(report.exit_code(fail_on_definite=not args.allow_definite))
+
+
+cmd_upgrade_report = _cmd_upgrade_report

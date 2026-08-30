@@ -9,7 +9,7 @@ Paste into a new project after the [quickstart](../getting-started/quickstart.md
 
 ## Prerequisites
 
-- [Build your first app](../getting-started/quickstart.md) (`@app.screen` + Refresh)
+- [Build your first app](../getting-started/quickstart.md) (`@app.page` + view refresh)
 - Optional: [Minimal form](../guides/minimal-form.md) for Advanced explicit `Form` / CSRF
 
 ## Golden path — `DataWorkspace.with_screen`
@@ -55,19 +55,19 @@ notes = DataWorkspace(
         can_edit=lambda: True,
     ),
 ).with_screen(path="/notes", title="Notes")
-app.include_feature(notes)
+app.include(notes)
 
 
 class QuickNote(BaseModel):
     message: str = Field(min_length=1, max_length=200)
 
 
-@app.form_command("/quick-note", fallback="/", success="Saved note")
+@app.action("/quick-note", method="POST", fallback="/")
 def add_quick_note(data: QuickNote):
     return Text(data.message)
 
 
-@app.screen("/", title="Home")
+@app.page("/", title="Home")
 def home():
     return Stack(
         Text("Open /notes for the DataWorkspace screen."),
@@ -82,7 +82,7 @@ declares it.
 ## Run
 
 ```bash
-python -m pip install "hedron[data]>=0.66.2,<0.67" "uvicorn[standard]"
+python -m pip install "hedron[data]>=1.0.0,<1.1" "uvicorn[standard]"
 uvicorn app:app --reload
 ```
 
@@ -91,7 +91,7 @@ Open [http://127.0.0.1:8000/notes](http://127.0.0.1:8000/notes).
 ## What it shows
 
 - `DataWorkspace.with_screen` for list/detail/create/edit composition
-- `@app.form_command` for a validated side form on the home screen
+- `@app.action` for a validated side form on the home page
 - `DesignSystem.brand` as the ordinary theme input
 
 ## Pattern warm-ups (simulated)
@@ -114,7 +114,7 @@ above for new apps.
 
     ```python title="app.py"
     import os
-    from datetime import UTC, datetime
+    from datetime import datetime, timezone
 
     from fastapi import Form as FastAPIForm
 
@@ -141,9 +141,9 @@ above for new apps.
     _NOTES: list[str] = []
 
 
-    @app.refreshable("/status")
+    @app.view("/status")
     def status():
-        stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+        stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
         return html.div(
             Text(f"All systems operational · refreshed {stamp}"),
             role="status",
@@ -151,7 +151,7 @@ above for new apps.
         )
 
 
-    @app.refreshable("/notes-count")
+    @app.view("/notes-count")
     def notes():
         return html.div(
             Text(f"Notes saved: {len(_NOTES)}"),
@@ -248,7 +248,7 @@ above for new apps.
         )
 
 
-    @app.component("/save", methods=["POST"], fragment_regions=(result,))
+    @app.action("/save", method="POST", fragment_regions=(result,))
     def save(note: Annotated[str, Form()] = "") -> object:
         return html.div(html.strong("Saved in region"), Text(note))
     ```
@@ -334,7 +334,7 @@ above for new apps.
         )
 
 
-    @app.component("/notes", methods=["POST"], fragment_regions=(listing,))
+    @app.action("/notes", method="POST", fragment_regions=(listing,))
     def add_note(request: Request, note: Annotated[str, Form()] = "") -> object:
         text = note.strip()
         if text:
@@ -342,7 +342,7 @@ above for new apps.
         return render_list(request)
 
 
-    @app.component("/notes/delete", methods=["POST"], fragment_regions=(listing,))
+    @app.action("/notes/delete", method="POST", fragment_regions=(listing,))
     def delete_note(request: Request, note_id: Annotated[str, Form()] = "") -> object:
         NOTES.pop(note_id, None)
         return render_list(request)
@@ -354,7 +354,7 @@ This tutorial **replaces** the generated `app.py` with a complete notes app. Tha
 deliberate — not the golden-path “edit the Hello string” flow.
 
 ```bash
-python -m pip install "hedron>=0.66.2,<0.67" "uvicorn[standard]"
+python -m pip install "hedron>=1.0.0,<1.1" "uvicorn[standard]"
 python -m hedron new crud-notes
 cd crud-notes
 python -m pip install -e .
@@ -391,7 +391,7 @@ class DeleteNote(BaseModel):
     note_id: str
 
 
-@app.refreshable("/notes")
+@app.view("/notes")
 def notes():
     if not NOTES:
         items = [html.li(Text("No notes yet."))]
@@ -411,7 +411,7 @@ def notes():
     return html.ul(*items, id="notes-list")
 
 
-@app.command("/notes", fallback="/")
+@app.action("/notes", method="POST", fallback="/")
 def create_note(data: Annotated[NoteIn, FormBody()]):
     text = data.body.strip()
     if text:
@@ -419,7 +419,7 @@ def create_note(data: Annotated[NoteIn, FormBody()]):
     return refresh(notes)
 
 
-@app.command("/notes/delete", fallback="/")
+@app.action("/notes/delete", method="POST", fallback="/")
 def delete(data: Annotated[DeleteNote, FormBody()]):
     NOTES.pop(data.note_id, None)
     return refresh(notes)
@@ -454,7 +454,7 @@ class UpdateNote(BaseModel):
     body: Annotated[str, Field(min_length=1), Control(label="Note")]
 
 
-@app.command("/notes/update", fallback="/")
+@app.action("/notes/update", method="POST", fallback="/")
 def update_note(data: Annotated[UpdateNote, FormBody()]):
     text = data.body.strip()
     if data.note_id in NOTES and text:
@@ -472,8 +472,8 @@ For a fuller admin surface (auth + create/update/delete on users), see the
 
 | Concept | Where |
 |---|---|
-| Refreshable list | `@app.refreshable` / `notes()` |
-| Commands | `@app.command` + `refresh(notes)` |
+| Replaceable list | `@app.view` / `notes()` |
+| Actions | `@app.action` + `refresh(notes)` |
 | Generated form | `create_note.form()` (`FormBody`) |
 | Per-row delete | `Form(action=delete)` |
 
@@ -487,8 +487,8 @@ For a fuller admin surface (auth + create/update/delete on users), see the
 
 ## Advanced — explicit `@app.page` / handles
 
-When you eject or need full `Page` control, lower to `@app.page`, `@app.refreshable`, and
-`@app.command` with explicit `FormBody` / regions. See [DATA.md](../api/DATA.md) and the
+When you eject or need full `Page` control, lower to `@app.page`, `@app.view`, and
+`@app.action` with explicit `FormBody` / regions. See [DATA.md](../api/DATA.md) and the
 [reference app](reference-app.md) for authenticated create/update/delete admin patterns.
 
 ## Next

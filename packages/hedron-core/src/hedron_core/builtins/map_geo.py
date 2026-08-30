@@ -13,7 +13,7 @@ from __future__ import annotations
 import json
 import math
 from collections.abc import Mapping, Sequence
-from typing import Any, cast
+from typing import TypeGuard, cast
 
 from pydantic import field_validator
 
@@ -21,9 +21,16 @@ from hedron_core.builtins._base import ElementProps, class_names, mark_data
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.html import html
+from hedron_core.htmx.attrs import HtmxAttrs
 from hedron_core.models import Model
 from hedron_core.security import SafeUrl, UrlPurpose
-from hedron_core.typing_aliases import HtmlAttrMap, HtmlAttrValue, JsonObject, JsonValue
+from hedron_core.typing_aliases import (
+    HtmlAttrMap,
+    HtmlAttrValue,
+    JsonObject,
+    JsonValue,
+    is_string_mapping,
+)
 
 DEFAULT_MAX_FEATURES = 500
 
@@ -43,6 +50,10 @@ _DANGEROUS_PROP_KEYS = frozenset(
         "onerror",
     }
 )
+
+
+def _is_object_sequence(value: object) -> TypeGuard[Sequence[object]]:
+    return isinstance(value, (list, tuple))
 
 
 class MarkerSpec(Model):
@@ -89,7 +100,7 @@ class GeoJSONLayer:
 
     def __init__(
         self,
-        geojson: Mapping[str, Any] | None,
+        geojson: Mapping[str, object] | None,
         *,
         max_features: int = DEFAULT_MAX_FEATURES,
     ) -> None:
@@ -134,34 +145,41 @@ def _require_finite(value: object, *, what: str) -> float:
     return number
 
 
+def _sanitize_property_value(value: object) -> tuple[bool, JsonValue]:
+    if _looks_like_script(value):
+        return False, None
+    if isinstance(value, Mapping):
+        return True, _sanitize_properties(cast(Mapping[object, object], value))
+    if _is_object_sequence(value):
+        cleaned: list[JsonValue] = []
+        for item in value:
+            keep, sanitized = _sanitize_property_value(item)
+            if keep:
+                cleaned.append(sanitized)
+        return True, cleaned
+    if isinstance(value, float) and not math.isfinite(value):
+        return False, None
+    if isinstance(value, (str, int, float, bool)) or value is None:
+        return True, value
+    return True, str(value)
+
+
 def _sanitize_properties(props: object) -> dict[str, JsonValue]:
     if not isinstance(props, Mapping):
         return {}
+    mapping = cast(Mapping[object, object], props)
     cleaned: dict[str, JsonValue] = {}
-    for key, value in props.items():
+    for key, value in mapping.items():
         key_s = str(key)
         if _is_dangerous_key(key_s):
             continue
-        if _looks_like_script(value):
-            continue
-        if isinstance(value, Mapping):
-            cleaned[key_s] = _sanitize_properties(value)
-        elif isinstance(value, (list, tuple)):
-            cleaned[key_s] = [
-                _sanitize_properties(item) if isinstance(item, Mapping) else item
-                for item in value
-                if not _looks_like_script(item)
-            ]
-        elif isinstance(value, (str, int, float, bool)) or value is None:
-            if isinstance(value, float) and not math.isfinite(value):
-                continue
-            cleaned[key_s] = value
-        else:
-            cleaned[key_s] = str(value)
+        keep, sanitized = _sanitize_property_value(value)
+        if keep:
+            cleaned[key_s] = sanitized
     return cleaned
 
 
-def _validate_coordinates(coords: object, *, depth: int = 0) -> Any:
+def _validate_coordinates(coords: object, *, depth: int = 0) -> JsonValue:
     if depth > 8:
         raise error(
             "HED-MAP-0003",
@@ -169,7 +187,7 @@ def _validate_coordinates(coords: object, *, depth: int = 0) -> Any:
             explanation="GeoJSON coordinate nesting exceeds the supported depth.",
             remediation="Simplify geometries or reduce nesting.",
         )
-    if isinstance(coords, (list, tuple)):
+    if _is_object_sequence(coords):
         if coords and isinstance(coords[0], (int, float)) and not isinstance(coords[0], bool):
             if len(coords) < 2:
                 raise error(
@@ -195,7 +213,7 @@ def _validate_coordinates(coords: object, *, depth: int = 0) -> Any:
 def _sanitize_geometry(geometry: object) -> JsonObject | None:
     if geometry is None:
         return None
-    if not isinstance(geometry, Mapping):
+    if not is_string_mapping(geometry):
         raise error(
             "HED-MAP-0003",
             title="Invalid map coordinate",
@@ -204,8 +222,10 @@ def _sanitize_geometry(geometry: object) -> JsonObject | None:
         )
     gtype = geometry.get("type")
     if gtype == "GeometryCollection":
-        geoms = geometry.get("geometries") or []
-        if not isinstance(geoms, (list, tuple)):
+        geoms = geometry.get("geometries")
+        if geoms is None:
+            geoms = ()
+        if not _is_object_sequence(geoms):
             raise error(
                 "HED-MAP-0003",
                 title="Invalid map coordinate",
@@ -223,25 +243,46 @@ def _sanitize_geometry(geometry: object) -> JsonObject | None:
     return out
 
 
+def _sanitize_feature_id(value: object) -> str | int | float:
+    if isinstance(value, bool) or not isinstance(value, (str, int, float)):
+        if isinstance(value, bool):
+            raise error(
+                "HED-MAP-0003",
+                title="Invalid GeoJSON feature id",
+                explanation="GeoJSON feature ids must be strings or finite numbers, not bool.",
+                remediation="Provide a string or finite numeric feature id.",
+            )
+        return str(value)
+    if isinstance(value, float) and not math.isfinite(value):
+        raise error(
+            "HED-MAP-0003",
+            title="Invalid GeoJSON feature id",
+            explanation="GeoJSON feature ids must be finite (rejected NaN/Inf).",
+            remediation="Provide a string or finite numeric feature id.",
+        )
+    return value
+
+
 def sanitize_geojson(
-    geojson: Mapping[str, Any] | None,
+    geojson: Mapping[str, object] | None,
     *,
     max_features: int = DEFAULT_MAX_FEATURES,
 ) -> tuple[JsonObject | None, list[JsonObject]]:
     """Validate feature budget/coordinates and strip dangerous properties."""
     if geojson is None:
         return None, []
-    if not isinstance(geojson, Mapping):
+    raw_geojson: object = geojson
+    if not is_string_mapping(raw_geojson):
         raise error(
             "HED-MAP-0001",
             title="Invalid GeoJSON",
             explanation="geojson must be a FeatureCollection mapping or None.",
             remediation="Pass a GeoJSON FeatureCollection dict.",
         )
-    features_raw = geojson.get("features")
+    features_raw = raw_geojson.get("features")
     if features_raw is None:
-        features_raw = []
-    if not isinstance(features_raw, (list, tuple)):
+        features_raw = ()
+    if not _is_object_sequence(features_raw):
         raise error(
             "HED-MAP-0001",
             title="Invalid GeoJSON",
@@ -257,7 +298,7 @@ def sanitize_geojson(
         )
     features: list[JsonObject] = []
     for index, feature in enumerate(features_raw):
-        if not isinstance(feature, Mapping):
+        if not is_string_mapping(feature):
             continue
         props = _sanitize_properties(feature.get("properties"))
         geometry = _sanitize_geometry(feature.get("geometry"))
@@ -265,7 +306,7 @@ def sanitize_geojson(
         features.append(
             {
                 "type": "Feature",
-                "id": fid if isinstance(fid, (str, int, float)) else str(fid),
+                "id": _sanitize_feature_id(fid),
                 "properties": props,
                 "geometry": geometry,
             }
@@ -328,7 +369,7 @@ def _ensure_tile_allowed(tiles: str | None, allowlist: Sequence[str]) -> str | N
     return tiles
 
 
-def _coerce_marker(marker: MarkerSpec | Mapping[str, Any]) -> MarkerSpec:
+def _coerce_marker(marker: MarkerSpec | Mapping[str, object]) -> MarkerSpec:
     if isinstance(marker, MarkerSpec):
         lat = _require_finite(marker.lat, what="marker.lat")
         lon = _require_finite(marker.lon, what="marker.lon")
@@ -369,9 +410,9 @@ def _coerce_marker(marker: MarkerSpec | Mapping[str, Any]) -> MarkerSpec:
     )
 
 
-def _feature_label(feature: Mapping[str, Any], index: int) -> str:
+def _feature_label(feature: Mapping[str, object], index: int) -> str:
     props = feature.get("properties")
-    if isinstance(props, Mapping):
+    if is_string_mapping(props):
         for key in ("name", "title", "label", "id"):
             value = props.get(key)
             if isinstance(value, str) and value.strip():
@@ -382,13 +423,13 @@ def _feature_label(feature: Mapping[str, Any], index: int) -> str:
     return f"Feature {index + 1}"
 
 
-def _feature_lat_lon(feature: Mapping[str, Any]) -> tuple[str, str]:
+def _feature_lat_lon(feature: Mapping[str, object]) -> tuple[str, str]:
     geometry = feature.get("geometry")
-    if not isinstance(geometry, Mapping):
+    if not is_string_mapping(geometry):
         return ("", "")
     coords = geometry.get("coordinates")
     gtype = geometry.get("type")
-    if gtype == "Point" and isinstance(coords, (list, tuple)) and len(coords) >= 2:
+    if gtype == "Point" and _is_object_sequence(coords) and len(coords) >= 2:
         return (str(coords[1]), str(coords[0]))
     return ("", "")
 
@@ -415,8 +456,8 @@ class Map(Component[MapProps]):
         tile_allowlist: Sequence[str] = (),
         tiles: str | None = None,
         attribution: str = "",
-        markers: Sequence[MarkerSpec | Mapping[str, Any]] = (),
-        geojson: Mapping[str, Any] | GeoJSONLayer | None = None,
+        markers: Sequence[MarkerSpec | Mapping[str, object]] = (),
+        geojson: Mapping[str, object] | GeoJSONLayer | None = None,
         max_features: int = DEFAULT_MAX_FEATURES,
         id: str | None = None,
         class_: str | None = None,
@@ -502,7 +543,11 @@ class Map(Component[MapProps]):
                 separators=(",", ":"),
             )
         if self._geojson is not None:
-            data["geojson"] = json.dumps(self._geojson, separators=(",", ":"))
+            data["geojson"] = json.dumps(
+                self._geojson,
+                separators=(",", ":"),
+                allow_nan=False,
+            )
 
         enhance = html.div(**enhance_attrs)
         parts: list[NodeLike] = [enhance, table]
@@ -538,8 +583,9 @@ class Map(Component[MapProps]):
                 link_cell = html.a(marker.label or marker.id or "Open", href=marker.href)
             elif marker.action:
                 link_cell = html.span(marker.action)
-                row_attrs["hx-get"] = marker.action
-                row_attrs["hx-swap"] = "none"
+                row_attrs.update(
+                    HtmxAttrs(method="get", url=marker.action, swap="none").as_html_attrs()
+                )
             else:
                 link_cell = html.span("")
             rows.append(

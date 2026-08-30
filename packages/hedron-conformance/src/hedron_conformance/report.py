@@ -7,7 +7,7 @@ import hmac
 import json
 import xml.etree.ElementTree as ET
 from collections.abc import Mapping, Sequence
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from typing import Any
 
 from hedron_conformance.runner import KitReport
@@ -73,7 +73,7 @@ def build_result_envelope(
         "provenance": {
             "algorithm": algorithm,
             "digest": digest,
-            "generated_at": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         },
     }
 

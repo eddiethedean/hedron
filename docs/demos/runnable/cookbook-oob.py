@@ -75,7 +75,7 @@ def home() -> Page:
     )
 
 
-@app.component("/settings", methods=["POST"], fragment_regions=(main, host))
+@app.action("/settings", method="POST", fragment_regions=(main, host))
 def save() -> InteractionResult:
     return InteractionResult(
         content=primary(False),

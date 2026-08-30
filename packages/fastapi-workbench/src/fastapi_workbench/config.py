@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from enum import StrEnum
 from typing import Literal
+
+from fastapi_workbench._compat import StrEnum
 
 DEFAULT_RSERVER_URL = "/usr/lib/rstudio-server/bin/rserver-url"
 DEFAULT_HOST = "127.0.0.1"

@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import json
 import logging
+import math
 from collections.abc import Iterable
 from typing import Any, Protocol, cast, runtime_checkable
 
-from hedron_core.cache import CacheBackend
+from hedron_core.cache.backend import CacheBackend, validate_cache_ttl
 
 __all__ = ["RedisCacheBackend"]
 
@@ -17,6 +18,17 @@ _logger = logging.getLogger("hedron.core.redis_cache")
 # with the legacy cache prefix ``h1:`` nests ``job:{id}`` onto live job records (#252).
 REDIS_CACHE_PREFIX = "h1:c:"
 REDIS_JOB_PREFIX = "h1:job:"
+
+
+def _reject_json_constant(value: str) -> None:
+    raise ValueError(f"non-standard JSON constant {value}")
+
+
+def _parse_finite_json_float(value: str) -> float:
+    parsed = float(value)
+    if not math.isfinite(parsed):
+        raise ValueError(f"JSON number {value} exceeds the finite float range")
+    return parsed
 
 
 def _keyspace_overlaps(left: str, right: str) -> bool:
@@ -164,8 +176,12 @@ class RedisCacheBackend(CacheBackend):
         if isinstance(raw, bytes):
             raw = raw.decode("utf-8")
         try:
-            return True, json.loads(raw)
-        except json.JSONDecodeError as exc:
+            return True, json.loads(
+                raw,
+                parse_constant=_reject_json_constant,
+                parse_float=_parse_finite_json_float,
+            )
+        except (json.JSONDecodeError, ValueError) as exc:
             raise ValueError(f"Corrupt cache value for {key}") from exc
 
     def set(
@@ -177,19 +193,20 @@ class RedisCacheBackend(CacheBackend):
         tags: tuple[str, ...] = (),
     ) -> None:
         _reject_reserved_cache_key(key)
+        normalized_ttl = validate_cache_ttl(ttl)
         try:
-            payload = json.dumps(value, separators=(",", ":"))
+            payload = json.dumps(value, separators=(",", ":"), allow_nan=False)
         except (TypeError, ValueError) as exc:
             raise ValueError("Cache value is not JSON-serializable") from exc
         redis_key = self._key(key)
         ktags_key = self._ktags_key(key)
         prior = self._prior_tags(key)
         # Match InMemoryCacheBackend: ttl<=0 means already expired / do not keep (#242).
-        if ttl is not None and ttl <= 0:
+        if normalized_ttl is not None and normalized_ttl <= 0:
             self._drop_membership(key, prior)
             return
 
-        px_ms = max(1, int(ttl * 1000)) if ttl is not None else None
+        px_ms = max(1, int(normalized_ttl * 1000)) if normalized_ttl is not None else None
         stale = prior.difference(tags)
         pipe_factory = getattr(self._client, "pipeline", None)
         if not callable(pipe_factory):

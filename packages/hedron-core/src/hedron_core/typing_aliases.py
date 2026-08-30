@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from typing import NotRequired, TypeAlias, TypedDict
+from collections.abc import Mapping
+from typing import TypeAlias, TypedDict, TypeGuard, cast
+
+from typing_extensions import NotRequired
 
 from hedron_core.security import SafeUrl
 
@@ -15,6 +18,8 @@ __all__ = [
     "HxLocation",
     "HxTriggerPayload",
     "InteractionTrace",
+    "is_object_list",
+    "is_string_mapping",
     "JobStatusDict",
     "JsonObject",
     "JsonPrimitive",
@@ -27,6 +32,24 @@ __all__ = [
 JsonPrimitive: TypeAlias = str | int | float | bool | None
 JsonValue: TypeAlias = JsonPrimitive | list["JsonValue"] | dict[str, "JsonValue"]
 JsonObject: TypeAlias = dict[str, JsonValue]
+
+
+def is_string_mapping(value: object) -> TypeGuard[Mapping[str, object]]:
+    """Return whether *value* is a mapping whose keys are all strings.
+
+    The guard is intended for JSON, TOML, and plugin boundaries where static
+    types cannot describe decoded input before its container is validated.
+    """
+    if not isinstance(value, Mapping):
+        return False
+    mapping = cast(Mapping[object, object], value)
+    return all(isinstance(key, str) for key in mapping)
+
+
+def is_object_list(value: object) -> TypeGuard[list[object]]:
+    """Narrow a decoded value to a mutable list with unknown element values."""
+    return isinstance(value, list)
+
 
 HtmlAttrValue: TypeAlias = (
     str | bool | int | float | SafeUrl | None | dict[str, str | bool | int | float | None]

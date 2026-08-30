@@ -8,7 +8,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from _gate_030 import FWB_PKG, HED_WB_PKG, require_files, run_pytest, workbench_pytest_paths  # noqa: E402
+from _gate_030 import (  # noqa: E402
+    FWB_PKG,
+    HED_WB_PKG,
+    require_files,
+    run_pytest,
+    workbench_pytest_paths,
+)
 
 
 def main() -> int:

@@ -1,6 +1,6 @@
 # Single-file apps (pip evaluators)
 
-Run these without cloning the monorepo. Requires Python 3.11+ and a working network for
+Run these without cloning the monorepo. Requires Python 3.10+ and a working network for
 `pip install`. Prefer [Build your first app](../getting-started/quickstart.md)
 (`hedron new`) for the interactive Hello + Refresh first-hour path.
 
@@ -20,7 +20,7 @@ Same scaffold as `hedron new` — includes HTMX Refresh.
 
     ```python title="app.py"
     import os
-    from datetime import UTC, datetime
+    from datetime import datetime, timezone
 
     from hedron import Hedron, Page, Stack, Text, html
 
@@ -32,9 +32,9 @@ Same scaffold as `hedron new` — includes HTMX Refresh.
     )
 
 
-    @app.refreshable("/status")
+    @app.view("/status")
     def status():
-        stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+        stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
         return html.div(
             Text(f"All systems operational · refreshed {stamp}"),
             role="status",
@@ -42,7 +42,7 @@ Same scaffold as `hedron new` — includes HTMX Refresh.
         )
 
 
-    @app.command(fallback="/")
+    @app.action("/ping", fallback="/")
     def ping():
         from hedron import refresh
 
@@ -62,12 +62,12 @@ Same scaffold as `hedron new` — includes HTMX Refresh.
         )
     ```
 
-Prefer `@app.screen` for new apps. Use explicit `Page` + `@app.page` only when you need
-full `Page` constructor control — see the
+Use `@app.page`, `@app.view`, and `@app.action` as the canonical 1.0 function roles. Use
+explicit `Page` + `@app.page` when you need full `Page` constructor control — see the
 [Hedron API](../api/HEDRON.md).
 
 ```bash
-pip install "hedron>=0.66.2,<0.67" "uvicorn[standard]"
+pip install "hedron>=1.0.0,<1.1" "uvicorn[standard]"
 # paste the Code tab into app.py, then:
 uvicorn app:app --reload
 ```
@@ -77,7 +77,7 @@ uvicorn app:app --reload
 Minimal page with **no** HTMX Refresh — use only if you want the smallest possible file.
 
 ```bash
-pip install "hedron>=0.66.2,<0.67" "uvicorn[standard]"
+pip install "hedron>=1.0.0,<1.1" "uvicorn[standard]"
 ```
 
 Save as `app.py`:
@@ -88,7 +88,7 @@ from hedron import Hedron, Text
 app = Hedron(title="Demo", security="standard", session_secret="replace-me")
 
 
-@app.screen("/", title="Demo")
+@app.page("/")
 def home():
     return Text("Hello, Hedron")
 ```
@@ -101,8 +101,8 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
 ## CSRF form
 
-Prefer `@app.form_command` for validated forms (see [quickstart](../getting-started/quickstart.md)
-CRUD scaffold). Follow the pasteable advanced form in
+Prefer `@app.action` with a typed `FormBody` boundary for validated forms (see
+[quickstart](../getting-started/quickstart.md) CRUD scaffold). Follow the pasteable form in
 [Minimal form POST](../guides/minimal-form.md) when you need explicit `Form` / `CsrfField`.
 
 ## Live clock (polling)

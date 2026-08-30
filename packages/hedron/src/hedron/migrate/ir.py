@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from enum import StrEnum
 from typing import Any
+
+from hedron_core.compat import StrEnum
 
 
 class Disposition(StrEnum):
@@ -54,10 +55,10 @@ class StreamlitCall:
     span: SourceSpan
     disposition: Disposition
     confidence: Confidence
-    args_summary: dict[str, Any] = field(default_factory=dict)
+    args_summary: dict[str, Any] = field(default_factory=dict[str, Any])
     assigned_to: str | None = None
     in_sidebar: bool = False
-    findings: list[str] = field(default_factory=list)
+    findings: list[str] = field(default_factory=list[str])
     hedron_hint: str | None = None
 
 
@@ -69,8 +70,8 @@ class StreamlitMigrationPlan:
     source_units: list[SourceUnit]
     calls: list[StreamlitCall]
     page_title: str | None = None
-    extras: list[str] = field(default_factory=list)
-    tool_errors: list[str] = field(default_factory=list)
+    extras: list[str] = field(default_factory=list[str])
+    tool_errors: list[str] = field(default_factory=list[str])
 
     def to_dict(self) -> dict[str, Any]:
         return {

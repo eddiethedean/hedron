@@ -67,8 +67,21 @@ Unknown variant names fail closed. The base theme remains the fallback when no v
 Theme(
     name="acme",
     tokens={"color.accent": "#..."},
+    content_width="wide",
+    typography_features={"kern": 1, "liga": 1},
+    typography_role_features={
+        "code": {"zero": 1},
+        "tabular": {"tnum": 1},
+    },
 )
 ```
+
+`content_width` is independent from `nav_width` and accepts `narrow`, `default`, `wide`,
+`full`, or a validated CSS length. OpenType feature tags contain exactly four ASCII
+letters/digits and values are integers from 0 through 99; booleans are rejected. Global features
+inherit through the document, while the finite `body`, `display`, `code`, and `tabular` role maps
+provide scoped overrides. Theme exports and data-only theme packages preserve these structured
+fields during round trips.
 
 ## Built-in presentation
 

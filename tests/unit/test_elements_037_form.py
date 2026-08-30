@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from hedron_core.plugins import PluginContext
 from hedron_core.registry import get_registry, reset_registry_for_tests
 from hedron_core.rendering import render
 from hedron_elements.field_choice import FieldChoice
@@ -12,7 +13,7 @@ from hedron_elements.form_contracts import (
     FIELD_FILE_CONTRACT,
     FIELD_TEXT_CONTRACT,
 )
-from hedron_elements.plugin import register
+from hedron_elements.plugin import PLUGIN_META, register
 
 
 def setup_function() -> None:
@@ -24,7 +25,10 @@ def teardown_function() -> None:
 
 
 def _register() -> None:
-    class _Ctx:
+    class _Ctx(PluginContext):
+        def __init__(self) -> None:
+            super().__init__(PLUGIN_META)
+
         def register_diagnostic_owner(self, prefix: str) -> None:
             return None
 
@@ -37,7 +41,7 @@ def _register() -> None:
         def register_projection_provider(self, provider: object) -> None:
             return None
 
-    register(_Ctx())  # type: ignore[arg-type]
+    register(_Ctx())
 
 
 def test_field_text_ssr_and_contract() -> None:

@@ -19,17 +19,17 @@ Known Deferred rows: [What's ready — evidence](whats-ready-evidence.md).
 Report vulnerabilities privately — see [SECURITY.md](../SECURITY.md). Do not file public
 issues for undisclosed security problems.
 
-## What “Beta” means for operators
+## What package maturity means for operators
 
-Package maturity **Beta** means the public API is usable and tested, but breaking changes
-may still land on the `0.x` line under the [compatibility policy](../COMPATIBILITY.md).
-Pin versions in production, read [upgrade](upgrade.md) notes before bumping trains, and
-treat the Beta `hedron-elements` Supported inventory as still more volatile than CRUD
-pages. Charts require `hedron-charts>=0.2.1,<0.3`. The sample kit requires
-`hedron-sample-kit>=0.2.1,<0.3` — see [Compatibility](../COMPATIBILITY.md).
+The Stable 1.0 package boundary is `hedron-core`, `hedron`, `edron`, `hedron-data`,
+`hedron-charts`, and `hedron-maps`; every other satellite remains Beta or tooling-grade.
+API-level `beta` and `experimental` classifications still apply within the stable packages.
+Pin versions in production and read [upgrade](upgrade.md) notes before bumping trains. Charts
+require `hedron-charts>=1.0.0,<2.0`. The sample kit requires
+`hedron-sample-kit>=0.2.3,<0.3` — see [Compatibility](../COMPATIBILITY.md).
 
-**Support window:** security fixes target the current published train (`0.66.x`).
-Previous minors receive best-effort triage as documented in
+**Support window:** security fixes target the current repository train (`1.0.x`) while its
+public upload is deferred. The public fallback is `hedron>=0.67.0,<0.68`. Previous minors receive best-effort triage as documented in
 [SECURITY.md](../SECURITY.md) (no multi-year LTS). Version and pin SoT:
 [Current release and support](current-release.md). Public-index notes:
 [Installation](../getting-started/installation.md). Community GitHub support only;

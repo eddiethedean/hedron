@@ -1,18 +1,18 @@
-"""Reference app using one HedronWorkbench object locally and on Workbench."""
+"""Reference app using one HedronPosit object locally and on Workbench."""
 
 from __future__ import annotations
 
 import os
 import secrets
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from fastapi import Request, WebSocket
 from starlette.responses import JSONResponse
 
 from hedron import Page, Stack, Text, html, redirect_local, refresh
-from hedron_workbench import HedronWorkbench
+from hedron_posit import HedronPosit
 
-app = HedronWorkbench(
+app = HedronPosit(
     title="Workbench facade reference",
     security="standard",
     explorer="off",
@@ -20,9 +20,9 @@ app = HedronWorkbench(
 )
 
 
-@app.refreshable("/status")
+@app.view("/status")
 def status():
-    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
     return html.div(
         Text(f"All systems operational · refreshed {stamp}"),
         role="status",
@@ -30,7 +30,7 @@ def status():
     )
 
 
-@app.command("/ping", fallback="/")
+@app.action("/ping", fallback="/")
 def ping():
     return refresh(status).toast("pong")
 

@@ -8,6 +8,7 @@ from hedron.builtins.hx import safe_target
 from hedron.routing.reverse import ComponentRef
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
+from hedron_core.htmx.attrs import HtmxAttrs
 from hedron_core.interaction import FragmentRegion
 from hedron_core.models import Props
 from hedron_core.security import SafeUrl, UrlPurpose
@@ -61,15 +62,13 @@ class RefreshButton(Component[Props]):
     def render(self) -> NodeLike:
         attrs: HtmlAttrMap = {"type": "button"}
         if self.ref is not None:
-            attrs.update(self.ref.hx_attrs())
-            if self.target:
-                attrs["hx-target"] = self.target
-            attrs["hx-swap"] = self.swap
+            attrs.update(self.ref.htmx_attributes(target=self.target, swap=self.swap))
         elif self.href:
-            attrs["hx-get"] = SafeUrl.parse(self.href, purpose=UrlPurpose.NAVIGATION)
-            if self.target:
-                attrs["hx-target"] = self.target
-            attrs["hx-swap"] = self.swap
+            attrs.update(
+                HtmxAttrs(
+                    method="get", url=self.href, target=self.target, swap=self.swap
+                ).as_html_attrs()
+            )
         return html.button(self.label, **attrs)
 
 
@@ -96,13 +95,12 @@ class Lazy(Component[Props]):
         body_id = f"{target_id}-body"
         attrs: HtmlAttrMap = {
             "id": target_id,
-            "hx-trigger": "load",
-            "hx-swap": "innerHTML",
             "aria-busy": "true",
             "aria-live": "polite",
         }
-        attrs.update(self.ref.hx_attrs())
-        attrs["hx-target"] = f"#{body_id}"
+        attrs.update(
+            self.ref.htmx_attributes(target=f"#{body_id}", swap="innerHTML", trigger="load")
+        )
         children: list[NodeLike] = []
         if self.error is not None:
             attrs["data-hedron-error-slot"] = "true"
@@ -134,13 +132,14 @@ class Poll(Component[Props]):
 
     def render(self) -> NodeLike:
         target_id = self.target_id or f"poll-{self.render_instance_id()}"
-        attrs: HtmlAttrMap = {
-            "id": target_id,
-            "hx-trigger": f"every {self.interval_ms}ms",
-            "hx-swap": "innerHTML",
-        }
-        attrs.update(self.ref.hx_attrs())
-        attrs["hx-target"] = f"#{target_id}"
+        attrs: HtmlAttrMap = {"id": target_id}
+        attrs.update(
+            self.ref.htmx_attributes(
+                target=f"#{target_id}",
+                swap="innerHTML",
+                trigger=f"every {self.interval_ms}ms",
+            )
+        )
         body = self.content if self.content is not None else Loading("Polling…")
         return html.div(body, **attrs)
 
@@ -164,13 +163,9 @@ class InfiniteScroll(Component[Props]):
         self.swap = swap
 
     def render(self) -> NodeLike:
-        attrs: HtmlAttrMap = {
-            "hx-trigger": "revealed",
-            "hx-swap": self.swap,
-        }
-        attrs.update(self.ref.hx_attrs())
-        if self.target:
-            attrs["hx-target"] = self.target
+        attrs: HtmlAttrMap = dict(
+            self.ref.htmx_attributes(target=self.target, swap=self.swap, trigger="revealed")
+        )
         return html.div("Load more", **attrs, class_="hedron-infinite-scroll")
 
 
@@ -214,13 +209,15 @@ class ErrorState(Component[Props]):
             html.p(self.message, role="alert"),
         ]
         if self.retry_href:
-            attrs: HtmlAttrMap = {
-                "type": "button",
-                "hx-get": SafeUrl.parse(self.retry_href, purpose=UrlPurpose.NAVIGATION),
-                "hx-swap": "outerHTML",
-            }
-            if self.target:
-                attrs["hx-target"] = self.target
+            attrs: HtmlAttrMap = {"type": "button"}
+            attrs.update(
+                HtmxAttrs(
+                    method="get",
+                    url=self.retry_href,
+                    target=self.target,
+                    swap="outerHTML",
+                ).as_html_attrs()
+            )
             children.append(html.button(self.retry_label, **attrs))
         return html.div(*children, class_="hedron-error", role="group")
 
@@ -261,11 +258,12 @@ class Pagination(Component[Props]):
             attrs: HtmlAttrMap = {"href": href}
             if self.target:
                 attrs.update(
-                    {
-                        "hx-get": href,
-                        "hx-target": self.target,
-                        "hx-swap": "innerHTML",
-                    }
+                    HtmxAttrs(
+                        method="get",
+                        url=str(href),
+                        target=self.target,
+                        swap="innerHTML",
+                    ).as_html_attrs()
                 )
             label = f"Page {number}" + (" (current)" if number == self.page else "")
             links.append(html.a(str(number), **attrs, aria={"label": label}))
