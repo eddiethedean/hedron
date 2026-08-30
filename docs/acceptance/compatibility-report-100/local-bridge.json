@@ -3,7 +3,7 @@
   "baseline": "v0.67.0",
   "target": "v1.0.0",
   "status": "passed",
-  "source_commit": "1418780d38be1b6156a4de80269ae6d7b1676ba4",
+  "source_commit": "c2336d8433b66533f0c6613370bf5c7ef995dc4a",
   "canonical_fixture": {
     "command": ".venv/bin/python -m pytest -n 0 tests/upgrade/test_phase_1_0_fixtures.py",
     "result": "9 passed, 1 warning",
@@ -45,7 +45,7 @@
   },
   "target_artifact": {
     "available": true,
-    "reason": "Reproducible v1.0.0 candidate wheels/sdists were built twice from source commit 1418780d; 26 coordinated hashes, four Edron-lane hashes, and the exact lock are committed",
+    "reason": "Reproducible v1.0.0 candidate wheels/sdists were built twice from source commit c2336d84; 26 coordinated hashes, four Edron-lane hashes, and the exact lock are committed",
     "required_before": ["COMPAT-100", "FLEET-100", "PKG-100", "RELEASE-100"]
   },
   "release_claim": true
