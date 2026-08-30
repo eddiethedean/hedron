@@ -43,7 +43,8 @@ pip install "hedron-charts>=1.0.0,<2.0"
 pip install "hedron-charts[matplotlib]>=1.0.0,<2.0"
 ```
 
-Pin the living charts line at `>=0.2.0,<0.3` on the 0.51 train.
+For applications, keep the flagship extra on the `1.0.x` train; direct package consumers may
+use the Stable `hedron-charts>=1.0.0,<2.0` SemVer range.
 ### Optional backends
 
 | Extra | Backend |

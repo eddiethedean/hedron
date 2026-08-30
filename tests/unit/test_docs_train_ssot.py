@@ -89,6 +89,12 @@ def test_edron_1_0_accepts_its_explicit_hedron_1_x_pin() -> None:
     assert ssot.check_text(Path("fixture.md"), command)
 
 
+def test_package_readmes_accept_their_bounded_semver_line() -> None:
+    command = 'pip install "hedron-core>=1.0.0,<2.0"'
+    assert not ssot.check_text(Path("packages/hedron-core/README.md"), command)
+    assert ssot.check_text(Path("docs/guides/fixture.md"), command)
+
+
 def test_pypi_latest_claim_is_allowed_when_registry_is_deferred() -> None:
     if not ssot.FACTS.registry_deferred:
         return
@@ -113,6 +119,10 @@ def test_first_run_pages_must_disclose_deferred_pypi() -> None:
         {path: honest for path in ssot.REGISTRY_HONESTY_PATHS}
     )
     assert not ok
+
+
+def test_package_readmes_are_not_transient_registry_honesty_pages() -> None:
+    assert Path("packages/hedron-core/README.md") not in ssot.REGISTRY_HONESTY_PATHS
 
 
 def test_first_run_install_commands_require_current_pin() -> None:

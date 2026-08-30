@@ -5,7 +5,7 @@ First-class maps, offline geospatial presentation, and `MapInteraction` for Hedr
 **Package maturity:** Stable · **Package version:** `1.0.0` · requires
 `hedron-core>=1.0.0,<2.0`
 
-Install with the 0.51 train extra `hedron[maps]` or independently:
+Install with the `1.0.x` flagship extra `hedron[maps]` or independently:
 
 ```bash
 pip install "hedron-maps>=1.0.0,<2.0"

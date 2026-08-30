@@ -38,9 +38,7 @@ def test_edron_release_artifact_verifier_authenticates_exact_inventory(
         encoding="utf-8",
     )
     monkeypatch.setattr(verify_edron_release_artifacts, "EVIDENCE", evidence)
-    monkeypatch.setattr(
-        verify_edron_release_artifacts, "evidence_source_errors", lambda _: []
-    )
+    monkeypatch.setattr(verify_edron_release_artifacts, "evidence_source_errors", lambda _: [])
     monkeypatch.setattr(sys, "argv", ["verify", "--dist-dir", str(dist)])
 
     assert verify_edron_release_artifacts.main() == 0

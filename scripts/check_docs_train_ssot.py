@@ -329,7 +329,7 @@ def _train_minor(value: str) -> str:
 
 def _is_inventory_page(path: Path) -> bool:
     return (path.parts[:2] == ("docs", "packages")) or (
-        len(path.parts) == 2 and path.parts[0] == "packages" and path.name == "README.md"
+        len(path.parts) == 3 and path.parts[0] == "packages" and path.name == "README.md"
     )
 
 
@@ -371,11 +371,11 @@ FIRST_RUN_INSTALL_PATHS = frozenset(
     }
 )
 
-# Deferred-upload honesty lives here — not on every first-run page.
+# Deferred-upload honesty lives on the canonical install page. Package READMEs
+# are release artifacts and must remain timeless after their immutable upload.
 REGISTRY_HONESTY_PATHS = frozenset(
     {
         CANONICAL_INSTALL_PAGE,
-        Path("packages/hedron-core/README.md"),
     }
 )
 
@@ -488,6 +488,11 @@ def _allowed_install_pins(facts: ReleaseFacts, path: Path | None = None) -> set[
     if path == Path("packages/edron/README.md"):
         return {facts.pin, ">=1.0.0,<2.0"}
     allowed = {facts.pin}
+    if path is not None and _is_inventory_page(path):
+        # Distribution READMEs are embedded in immutable package artifacts.
+        # Stable and Beta 1.0 distributions may document their bounded SemVer
+        # line even while adopter-facing first-run pages retain a narrower pin.
+        allowed.add(">=1.0.0,<2.0")
     if path in POSIT_WORKBENCH_PATHS:
         allowed.add(">=0.67.0,<0.68")
     # Edron 1.0 directly consumes Hedron 1.x and therefore documents its own
