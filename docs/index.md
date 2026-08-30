@@ -95,7 +95,8 @@ Every primary route in these docs leads through Hedron's public API.
 </div>
 
 Need a focused pattern? Open the [Cookbook](guides/cookbook.md). Diagnosing a failure?
-Start with [Troubleshooting](guides/troubleshooting.md).
+Start with [Troubleshooting](guides/troubleshooting.md). Building with an AI coding agent?
+Give it the [Hedron field guide for coding agents](getting-started/coding-agents.md).
 
 ### Prefer a higher-level authoring facade?
 
