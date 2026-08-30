@@ -12,6 +12,7 @@ from hedron_core.plugins import (
     PluginMeta,
 )
 from hedron_core.registry import ElementFieldOwnership
+from hedron_data._version import DATA_VERSION
 from hedron_data.editor import DATA_EDITOR_EVENTS, DataEditor
 from hedron_data.table import DataTable
 
@@ -21,7 +22,7 @@ _CSS = _ROOT / "assets" / "tabulator" / "editor.css"
 
 PLUGIN_META = PluginMeta(
     name="hedron_data",
-    version="1.0.0",
+    version=DATA_VERSION,
     distribution="hedron-data",
     hedron_version=">=1.0,<2.0",
     capabilities=PluginCapabilities(

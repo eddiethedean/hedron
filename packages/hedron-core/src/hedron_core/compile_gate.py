@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import os
+import threading
 from collections.abc import Generator
 from contextlib import contextmanager
 from contextvars import ContextVar
+from dataclasses import dataclass
 from typing import Any
 
 from hedron_core.codes import HED_BUILD_RUNTIME_COMPILE
@@ -13,14 +15,31 @@ from hedron_core.diagnostics import error
 
 __all__ = [
     "assert_runtime_compile_allowed",
+    "deny_runtime_compile",
     "force_runtime_compile",
     "is_production_env",
+    "RuntimeCompilePolicy",
     "set_runtime_compile_allowed",
+    "use_runtime_compile_policy",
 ]
 
-# Process-wide flag flipped by production lifespan. Build/CLI force-allow via context.
+
+@dataclass(slots=True)
+class RuntimeCompilePolicy:
+    """Application-owned permission for mutable runtime build inputs."""
+
+    allowed: bool = True
+
+
+# Compatibility fallback for core-only callers. Hedron applications bind an owned
+# RuntimeCompilePolicy through their runtime context.
 _process_allow_runtime_compile: bool = True
+_process_denials = 0
+_process_lock = threading.RLock()
 _force_allow: ContextVar[bool] = ContextVar("hedron_force_runtime_compile", default=False)
+_runtime_policy: ContextVar[RuntimeCompilePolicy | None] = ContextVar(
+    "hedron_runtime_compile_policy", default=None
+)
 
 
 def is_production_env(*, production: bool | None = None) -> bool:
@@ -32,9 +51,33 @@ def is_production_env(*, production: bool | None = None) -> bool:
 
 
 def set_runtime_compile_allowed(allowed: bool) -> None:
-    """Process-wide allow/deny for runtime build-input compilation."""
+    """Set the core-only process fallback for runtime build-input compilation."""
     global _process_allow_runtime_compile
-    _process_allow_runtime_compile = allowed
+    with _process_lock:
+        _process_allow_runtime_compile = allowed
+
+
+@contextmanager
+def deny_runtime_compile() -> Generator[None, None, None]:
+    """Deny process-fallback compilation until every overlapping scope exits."""
+    global _process_denials
+    with _process_lock:
+        _process_denials += 1
+    try:
+        yield
+    finally:
+        with _process_lock:
+            _process_denials = max(0, _process_denials - 1)
+
+
+@contextmanager
+def use_runtime_compile_policy(policy: RuntimeCompilePolicy) -> Generator[None, None, None]:
+    """Bind an application-owned compile policy for the current execution context."""
+    token = _runtime_policy.set(policy)
+    try:
+        yield
+    finally:
+        _runtime_policy.reset(token)
 
 
 @contextmanager
@@ -52,7 +95,15 @@ def assert_runtime_compile_allowed(*, production: bool | None = None, what: str 
         return
     if production is False:
         return
-    blocked = production is True or not _process_allow_runtime_compile or is_production_env()
+    policy = _runtime_policy.get()
+    with _process_lock:
+        process_blocked = not _process_allow_runtime_compile or _process_denials > 0
+    blocked = (
+        production is True
+        or (policy is not None and not policy.allowed)
+        or (policy is None and process_blocked)
+        or is_production_env()
+    )
     if blocked:
         raise error(
             HED_BUILD_RUNTIME_COMPILE,

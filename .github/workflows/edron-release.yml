@@ -18,9 +18,13 @@ env:
 
 jobs:
   test:
-    name: Test Edron
+    name: Test Edron (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
     permissions:
       contents: read
 
@@ -39,14 +43,14 @@ jobs:
           cache-dependency-glob: uv.lock
 
       - name: Set up Python
-        run: uv python install 3.12
+        run: uv python install ${{ matrix.python-version }}
 
       - name: Sync locked workspace
-        run: uv sync --locked --python 3.12
+        run: uv sync --locked --python ${{ matrix.python-version }}
 
       - name: Run Edron regression tests
         run: >-
-          uv run --python 3.12 pytest -q
+          uv run --python ${{ matrix.python-version }} pytest -q
           tests/unit/test_edron_phase05.py
           tests/unit/test_phase07_edron.py
           tests/unit/test_phase08_edron.py
@@ -65,6 +69,7 @@ jobs:
           tests/ops/test_packaging_isolation.py::test_all_packages_declare_license_and_version
 
       - name: Lint Edron release surface
+        if: matrix.python-version == '3.12'
         run: >-
           uv run --python 3.12 ruff check
           packages/edron/src/edron
@@ -83,23 +88,61 @@ jobs:
           tests/unit/test_edron_phase02.py
 
       - name: Run Stable package typing gate
+        if: matrix.python-version == '3.12'
         run: bash scripts/ci_checks.sh typing --python 3.12
 
-      - name: Install Chromium for the Stable browser gate
-        run: bash scripts/ci_install_playwright.sh chromium 3.12
+      - name: Verify Edron 1.0 packet
+        if: matrix.python-version == '3.12'
+        run: uv run --python 3.12 python scripts/verify_edron_100.py
 
+  dependency_bounds:
+    name: Edron Stable dependency bounds
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: ${{ env.UV_VERSION }}
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Run minimum/latest matrix
+        run: bash scripts/ci_checks.sh workbench --python 3.12
+
+  browser:
+    name: Edron browser (${{ matrix.browser }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: ${{ env.UV_VERSION }}
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Sync locked workspace
+        run: uv sync --locked --python 3.12
+      - name: Install browser
+        run: bash scripts/ci_install_playwright.sh ${{ matrix.browser }} 3.12
       - name: Run Stable browser gate
         env:
           HEDRON_BROWSER: "1"
-          HEDRON_BROWSER_ENGINE: chromium
+          HEDRON_BROWSER_ENGINE: ${{ matrix.browser }}
         run: bash scripts/ci_checks.sh browser --python 3.12
-
-      - name: Verify Edron 1.0 packet
-        run: uv run --python 3.12 python scripts/verify_edron_100.py
 
   publish:
     name: Build and publish Edron
-    needs: test
+    needs: [test, dependency_bounds, browser]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -176,6 +219,15 @@ jobs:
           subject-path: |
             dist/edron-*.whl
             dist/edron-*.tar.gz
+
+      - name: Preflight published Stable dependencies from PyPI
+        run: |
+          set -euo pipefail
+          uv venv .edron-release-preflight --python 3.12
+          uv pip install --python .edron-release-preflight/bin/python \
+            dist/edron-*.whl
+          .edron-release-preflight/bin/python -c \
+            "import edron, hedron, hedron_data, hedron_charts, hedron_maps"
 
       - name: Publish Edron to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1

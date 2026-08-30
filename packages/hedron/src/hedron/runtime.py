@@ -14,6 +14,7 @@ from typing import Any
 
 from hedron.concurrency import ConcurrencyConfig, ConcurrencyLimiter, use_limiter
 from hedron.tracing import TraceConfig, use_trace_config
+from hedron_core.bundles import new_bundle_registry, use_bundle_registry
 from hedron_core.cache import (
     CacheTraceState,
     get_cache_backend,
@@ -29,6 +30,7 @@ from hedron_core.catalog import (
     use_catalog_context,
     use_projection_registry,
 )
+from hedron_core.compile_gate import RuntimeCompilePolicy, use_runtime_compile_policy
 from hedron_core.durability import is_process_local
 from hedron_core.jobs import get_job_backend, use_job_backend
 from hedron_core.jobs.backend import JobBackend
@@ -38,6 +40,7 @@ from hedron_core.plugins.explorer import (
     use_plugin_registry,
 )
 from hedron_core.registry import RegistryBuilder, fork_registry_builder, use_registry_builder
+from hedron_core.updates import new_handle_registry, use_handle_registry
 
 __all__ = ["HedronRuntimeContext", "RuntimeContextMiddleware"]
 
@@ -65,6 +68,9 @@ class HedronRuntimeContext:
         self.plugins = plugins
         self.projections = projections
         self.cache_traces = cache_traces
+        self.compile_policy = RuntimeCompilePolicy()
+        self.bundles = new_bundle_registry()
+        self.handles = new_handle_registry()
         self.limiter = ConcurrencyLimiter(concurrency)
         self.catalog: InteractionCatalog | None = None
 
@@ -122,6 +128,9 @@ class HedronRuntimeContext:
         stack.enter_context(use_job_backend(self.jobs))
         stack.enter_context(use_limiter(self.limiter))
         stack.enter_context(use_trace_config(self.tracing))
+        stack.enter_context(use_runtime_compile_policy(self.compile_policy))
+        stack.enter_context(use_bundle_registry(self.bundles))
+        stack.enter_context(use_handle_registry(self.handles))
         return stack
 
 

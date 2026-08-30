@@ -339,8 +339,19 @@ def _check_package_metadata() -> list[str]:
         init = package_dir / "src" / module / "__init__.py"
         if not init.is_file():
             errors.append(f"{distribution}: missing package __init__")
-        elif '__version__ = "1.0.0"' not in init.read_text(encoding="utf-8"):
-            errors.append(f"{distribution}: __version__ is not 1.0.0")
+        else:
+            init_source = init.read_text(encoding="utf-8")
+            literal_version = '__version__ = "1.0.0"' in init_source
+            delegated_version = False
+            version_module = init.with_name("_version.py")
+            if version_module.is_file():
+                version_source = version_module.read_text(encoding="utf-8")
+                delegated_version = any(
+                    f"__version__ = {name}" in init_source and f'{name} = "1.0.0"' in version_source
+                    for name in ("VERSION", "DATA_VERSION", "PACKAGE_VERSION")
+                )
+            if not (literal_version or delegated_version):
+                errors.append(f"{distribution}: __version__ is not 1.0.0")
 
     for distribution in INDEPENDENT_SATELLITES:
         pyproject = ROOT / "packages" / distribution / "pyproject.toml"
@@ -826,6 +837,9 @@ def check_plan() -> list[str]:
             "BRIDGE-100",
             "TYPE-100",
             "QUALITY-100",
+            "DEPENDENCY-BOUNDS-100",
+            "REALWB-100",
+            "REALCONNECT-100",
             "BROWSER-100",
             "BROWSER-FIREFOX-100",
             "BROWSER-WEBKIT-100",
@@ -835,8 +849,8 @@ def check_plan() -> list[str]:
         }
         if check_ids != required_checks:
             errors.append(
-                "verification evidence must cover phase, bridge, quality, browser, build, "
-                "regression, and release checks"
+                "verification evidence must cover phase, bridge, quality, dependency bounds, "
+                "live backends, browser, build, regression, and release checks"
             )
         for row in verification_checks:
             if not isinstance(row, dict):
@@ -847,6 +861,12 @@ def check_plan() -> list[str]:
                 errors.append(f"verification check {check_id} lacks command or summary")
             if str(row.get("status", "")) not in {"passed", "blocked"}:
                 errors.append(f"verification check {check_id} has an invalid status")
+        if build_evidence.get("release_claim") is True and any(
+            str(row.get("status", "")) != "passed"
+            for row in verification_checks
+            if isinstance(row, dict)
+        ):
+            errors.append("verification release claim requires every retained check to pass")
     bridge_run = compatibility.get("bridge_run")
     if not isinstance(bridge_run, dict):
         errors.append("compatibility report must retain the executable baseline bridge run")

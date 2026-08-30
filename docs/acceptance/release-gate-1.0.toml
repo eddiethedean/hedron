@@ -118,7 +118,7 @@ ci_job = "quality"
 [[evidence]]
 id = "REGRESS-100"
 state = "Verified"
-command = "bash scripts/ci_checks.sh all --python 3.12 --all-browsers --gate-version 1.0.0 --jobs 1"
+command = "bash scripts/ci_checks.sh all --python 3.12 --all-browsers --release-gate --gate-version 1.0.0 --jobs 1"
 owner = "release"
 ci_job = "test"
 

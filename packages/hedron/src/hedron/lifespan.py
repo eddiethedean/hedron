@@ -9,7 +9,7 @@ from pathlib import Path
 
 from fastapi import FastAPI
 
-from hedron_core.compile_gate import is_production_env, set_runtime_compile_allowed
+from hedron_core.compile_gate import deny_runtime_compile, is_production_env
 from hedron_core.registry import seal_registry
 from hedron_core.theme import ensure_default_theme_registered
 
@@ -48,9 +48,6 @@ def _configure_startup(
 
     is_production = is_production_env(production=production)
     app.state.hedron_production = is_production
-    if is_production:
-        set_runtime_compile_allowed(False)
-
     # A FastAPI ``TestClient`` (and some ASGI servers) may enter the same
     # application lifespan more than once.  Plugin registration and registry
     # sealing are one-time operations for an application runtime; replaying
@@ -182,10 +179,16 @@ def compose_lifespan(
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
-        is_production = False
+        is_production = is_production_env(production=production)
         runtime = getattr(app, "_hedron_runtime", None)
         scope = runtime.activate() if runtime is not None else nullcontext()
-        with scope:
+        previous_compile_allowed = runtime.compile_policy.allowed if runtime is not None else True
+        if runtime is not None:
+            runtime.compile_policy.allowed = not is_production
+        compile_scope = (
+            deny_runtime_compile() if is_production and runtime is None else nullcontext()
+        )
+        with scope, compile_scope:
             try:
                 is_production = _configure_startup(
                     app,
@@ -206,7 +209,7 @@ def compose_lifespan(
                     with suppress(Exception):
                         loader.shutdown()
                     app.state.hedron_plugin_loader = None
-                if is_production:
-                    set_runtime_compile_allowed(True)
+                if runtime is not None:
+                    runtime.compile_policy.allowed = previous_compile_allowed
 
     return lifespan

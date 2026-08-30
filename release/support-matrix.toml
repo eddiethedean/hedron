@@ -4,6 +4,7 @@ python = ["3.10", "3.11", "3.12", "3.13", "3.14"]
 fastapi = ">=0.121.0,<0.150"
 starlette = ">=0.40.0,<1.0"
 pydantic = ">=2.12.0,<2.15"
+uvicorn = ">=0.32,<1.0"
 htmx = ">=2.0,<3.0 (bundled exact release asset)"
 alpine = "pinned CSP build (official runtime; compatibility fallback in 1.1)"
 browsers = ["chromium", "firefox", "webkit"]

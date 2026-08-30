@@ -7,8 +7,10 @@ executors and not FeatureManifest. Handle materialization stays on the host.
 from __future__ import annotations
 
 import threading
-from collections.abc import Mapping, Sequence
-from dataclasses import dataclass
+from collections.abc import Generator, Mapping, Sequence
+from contextlib import contextmanager
+from contextvars import ContextVar
+from dataclasses import dataclass, field
 from typing import Literal, Protocol, runtime_checkable
 
 from hedron_core.catalog import (
@@ -52,12 +54,15 @@ __all__ = [
     "FeatureConflictError",
     "FeatureProvider",
     "FeatureRequirement",
+    "BundleRegistryState",
     "eject_bundle",
     "eject_source",
     "include_bundle",
     "included_bundles",
+    "new_bundle_registry",
     "reset_bundles_for_tests",
     "resolve_feature",
+    "use_bundle_registry",
 ]
 
 
@@ -118,6 +123,41 @@ class FeatureBundle:
             )
 
 
+@dataclass(slots=True)
+class BundleRegistryState:
+    """Application-owned FeatureBundle and projection registration state."""
+
+    bundles: dict[tuple[str, str], FeatureBundle] = field(
+        default_factory=lambda: dict[tuple[str, str], FeatureBundle]()
+    )
+    projection_namespaces: dict[tuple[str, str], tuple[str, ...]] = field(
+        default_factory=lambda: dict[tuple[str, str], tuple[str, ...]]()
+    )
+
+
+_GLOBAL_STATE = BundleRegistryState()
+_ACTIVE_STATE: ContextVar[BundleRegistryState | None] = ContextVar(
+    "hedron_bundle_registry", default=None
+)
+
+
+def new_bundle_registry() -> BundleRegistryState:
+    return BundleRegistryState()
+
+
+def _active_state() -> BundleRegistryState:
+    return _ACTIVE_STATE.get() or _GLOBAL_STATE
+
+
+@contextmanager
+def use_bundle_registry(state: BundleRegistryState) -> Generator[None, None, None]:
+    token = _ACTIVE_STATE.set(state)
+    try:
+        yield
+    finally:
+        _ACTIVE_STATE.reset(token)
+
+
 def _bundle_error(
     code: str,
     *,
@@ -137,8 +177,6 @@ def _bundle_error(
 
 
 _LOCK = threading.RLock()
-_BUNDLES: dict[tuple[str, str], FeatureBundle] = {}
-_PROJECTION_NAMESPACES: dict[tuple[str, str], tuple[str, ...]] = {}
 
 
 def resolve_feature(feature: FeatureBundle | FeatureProvider) -> FeatureBundle:
@@ -169,10 +207,11 @@ def _sealed() -> bool:
 
 def included_bundles(*, app_id: str | None = None) -> tuple[FeatureBundle, ...]:
     with _LOCK:
+        bundles = _active_state().bundles
         rows = (
-            list(_BUNDLES.values())
+            list(bundles.values())
             if app_id is None
-            else [b for (aid, _), b in _BUNDLES.items() if aid == app_id]
+            else [b for (aid, _), b in bundles.items() if aid == app_id]
         )
         return tuple(sorted(rows, key=lambda item: item.logical_id))
 
@@ -212,7 +251,11 @@ def include_bundle(
     caps = dict(capabilities or {})
     caps.setdefault(bundle.provider, True)
     with _LOCK:
-        if len(_BUNDLES) >= MAX_BUNDLES:
+        state = _active_state()
+        bundles = state.bundles
+        projection_namespaces = state.projection_namespaces
+        app_bundle_count = sum(1 for registered_app, _ in bundles if registered_app == app_id)
+        if app_bundle_count >= MAX_BUNDLES:
             raise _bundle_error(
                 HED_BUNDLE_0005,
                 title="FeatureBundle count bound exceeded",
@@ -220,8 +263,8 @@ def include_bundle(
                 remediation="Eject unused bundles or split applications.",
             )
         slot = (app_id, bundle.logical_id)
-        if slot in _BUNDLES:
-            existing = _BUNDLES[slot]
+        if slot in bundles:
+            existing = bundles[slot]
             if existing == bundle:
                 return existing
             raise _bundle_error(
@@ -314,9 +357,9 @@ def include_bundle(
                         remediation="Use a distinct logical id or eject the existing bundle first.",
                     )
                 claimed.append(logical)
-        snapshot_ids = tuple(_BUNDLES)
+        snapshot_ids = tuple(bundles)
         try:
-            _BUNDLES[slot] = bundle
+            bundles[slot] = bundle
             registered: list[str] = []
             for projection in bundle.projections:
                 namespace = projection.namespace
@@ -354,10 +397,10 @@ def include_bundle(
 
                 register_projection_provider(_Provider(projection), plugin=bundle.provider)
                 registered.append(namespace)
-            _PROJECTION_NAMESPACES[slot] = tuple(registered)
+            projection_namespaces[slot] = tuple(registered)
         except Exception as exc:
-            _BUNDLES.pop(slot, None)
-            for namespace in _PROJECTION_NAMESPACES.pop(slot, ()):
+            bundles.pop(slot, None)
+            for namespace in projection_namespaces.pop(slot, ()):
                 unregister_projection_provider(namespace)
             extra = str(exc)
             raise _bundle_error(
@@ -366,7 +409,7 @@ def include_bundle(
                 explanation=f"Including {bundle.logical_id!r} failed: {extra}",
                 remediation="Fix the conflict and include again; no partial artifacts remain.",
             ) from exc
-        if len(_BUNDLES) > MAX_BUNDLES:
+        if sum(1 for registered_app, _ in bundles if registered_app == app_id) > MAX_BUNDLES:
             eject_bundle(bundle.logical_id, app_id=app_id)
             raise _bundle_error(
                 HED_BUNDLE_0005,
@@ -388,7 +431,8 @@ def eject_bundle(logical_id: str, *, app_id: str) -> FeatureBundle:
         )
     slot = (app_id, logical_id)
     with _LOCK:
-        bundle = _BUNDLES.pop(slot, None)
+        state = _active_state()
+        bundle = state.bundles.pop(slot, None)
         if bundle is None:
             raise _bundle_error(
                 HED_BUNDLE_0009,
@@ -402,14 +446,14 @@ def eject_bundle(logical_id: str, *, app_id: str) -> FeatureBundle:
             if logical_id in item.dependencies
         ]
         if dependents:
-            _BUNDLES[slot] = bundle
+            state.bundles[slot] = bundle
             raise _bundle_error(
                 HED_BUNDLE_0003,
                 title="Cannot eject a required FeatureBundle dependency",
                 explanation=f"{logical_id!r} is required by {dependents}.",
                 remediation="Eject dependents first.",
             )
-        for namespace in _PROJECTION_NAMESPACES.pop(slot, ()):
+        for namespace in state.projection_namespaces.pop(slot, ()):
             unregister_projection_provider(namespace)
         for item in (*bundle.views, *bundle.commands):
             ident = getattr(item, "logical_id", None)
@@ -445,15 +489,17 @@ def eject_source(bundle: FeatureBundle) -> str:
 
 def reset_bundles_for_tests() -> None:
     with _LOCK:
-        _BUNDLES.clear()
-        _PROJECTION_NAMESPACES.clear()
+        state = _active_state()
+        state.bundles.clear()
+        state.projection_namespaces.clear()
 
 
 def snapshot_bundles() -> tuple[
     dict[tuple[str, str], FeatureBundle], dict[tuple[str, str], tuple[str, ...]]
 ]:
     with _LOCK:
-        return dict(_BUNDLES), dict(_PROJECTION_NAMESPACES)
+        state = _active_state()
+        return dict(state.bundles), dict(state.projection_namespaces)
 
 
 def restore_bundles(
@@ -461,7 +507,8 @@ def restore_bundles(
     namespaces: Mapping[tuple[str, str], tuple[str, ...]],
 ) -> None:
     with _LOCK:
-        _BUNDLES.clear()
-        _BUNDLES.update(bundles)
-        _PROJECTION_NAMESPACES.clear()
-        _PROJECTION_NAMESPACES.update(namespaces)
+        state = _active_state()
+        state.bundles.clear()
+        state.bundles.update(bundles)
+        state.projection_namespaces.clear()
+        state.projection_namespaces.update(namespaces)

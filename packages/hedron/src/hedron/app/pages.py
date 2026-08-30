@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Mapping, Sequence
-from typing import Any, ParamSpec, Protocol, TypeVar, cast, overload
+from contextlib import AbstractContextManager, nullcontext
+from typing import TYPE_CHECKING, Any, ParamSpec, Protocol, TypeVar, cast, overload
 
 from fastapi import FastAPI, params
 from fastapi.routing import APIRouter
@@ -21,6 +22,9 @@ from hedron_core.htmx.policy import CacheHint
 from hedron_core.identifiers import component_type_id
 from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.updates import Patch, PatchSet, RefreshIntent
+
+if TYPE_CHECKING:
+    from hedron.runtime import HedronRuntimeContext
 
 P = ParamSpec("P")
 R = TypeVar("R")
@@ -105,7 +109,12 @@ class HedronPagesMixin:
     """Mixin that binds HedronRouter decorators onto the FastAPI application."""
 
     _root_router: HedronRouter
+    _hedron_runtime: HedronRuntimeContext
     router: APIRouter
+
+    def _runtime_scope(self) -> AbstractContextManager[None]:
+        runtime = getattr(self, "_hedron_runtime", None)
+        return runtime.activate() if runtime is not None else nullcontext()
 
     def _sync_root_route(self) -> None:
         if self._root_router.routes:
@@ -184,7 +193,16 @@ class HedronPagesMixin:
         """
         if fragment_regions is not None:
             kwargs["fragment_regions"] = fragment_regions
-        return self._view(path, **kwargs)
+        if callable(path):
+            with self._runtime_scope():
+                return self._view(path, **kwargs)
+        decorator = self._view(path, **kwargs)
+
+        def scoped(fn: Callable[..., Any]) -> FragmentHandle[Any, Any]:
+            with self._runtime_scope():
+                return decorator(fn)
+
+        return scoped
 
     def region(
         self,
@@ -244,13 +262,19 @@ class HedronPagesMixin:
                 f"Hedron.action does not accept simulator-only options ({names}); "
                 "use hedron_sim.SimApp.action for offline demo routes."
             )
-        return self._action(
+        decorator = self._action(
             path,
             method=method,
             fallback=fallback,
             include_in_schema=include_in_schema,
             **kwargs,
         )
+
+        def scoped(fn: Callable[P, object]) -> ActionHandle[Any, Any]:
+            with self._runtime_scope():
+                return decorator(fn)
+
+        return scoped
 
     def include_component(
         self,
@@ -269,8 +293,9 @@ class HedronPagesMixin:
             catalog_sealed=get_sealed_catalog() is not None,
             openapi_cached=cached_openapi(cast(FastAPI, self)) is not None,
         )
-        self._root_router.include_component(descriptor, path=path, **kwargs)
-        self._sync_root_route()
+        with self._runtime_scope():
+            self._root_router.include_component(descriptor, path=path, **kwargs)
+            self._sync_root_route()
 
     def include(
         self,
@@ -281,7 +306,8 @@ class HedronPagesMixin:
         """Include one feature bundle through the canonical 1.0 spelling."""
         from hedron.features import include_feature as _include
 
-        return _include(self, feature, capabilities=capabilities)
+        with self._hedron_runtime.activate():
+            return _include(self, feature, capabilities=capabilities)
 
     @overload
     def _view(

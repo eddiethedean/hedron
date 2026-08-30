@@ -25,6 +25,7 @@ from hedron_core.request_context import current_request
 from hedron_core.type_markers import FormBody, ViewParams
 from hedron_core.typing_aliases import JsonValue
 from hedron_core.updates import RefreshIntent, UpdateTarget
+from hedron_data._version import DATA_VERSION
 from hedron_data.columns import Column
 from hedron_data.sources import (
     HARD_MAX_PAGE_SIZE,
@@ -130,7 +131,7 @@ class DataWorkspace(Generic[ModelT]):
         edit_model: type[BaseModel] | None = None,
         key_field: str = "id",
         provider: str = "hedron-data",
-        provider_version: str = "0.60.2",
+        provider_version: str | None = None,
         columns: Sequence[Column | str] = (),
         form_overrides: Mapping[str, object] | None = None,
         list_override: Callable[..., object] | None = None,
@@ -163,7 +164,7 @@ class DataWorkspace(Generic[ModelT]):
         self.edit_model = edit_model or model
         self.key_field = key_field
         self.provider = provider
-        self.provider_version = provider_version
+        self.provider_version = DATA_VERSION if provider_version is None else provider_version
         self.columns = tuple(columns)
         self.form_overrides = dict(form_overrides or {})
         self.list_override = list_override

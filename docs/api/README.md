@@ -65,7 +65,7 @@ is **`v0.67.0`**. Until publication, public-index users should pin `hedron>=0.67
 
 ### Edron facade
 
-- [Edron release roadmap](../EDRON_ROADMAP.md) — separately versioned Beta facade
+- [Edron release roadmap](../EDRON_ROADMAP.md) — separately versioned Stable facade
 - [Edron public API](EDRON.md) — Edron `1.0.0`, implemented and verified in-tree
 - [Edron state and interaction](EDRON_STATE_INTERACTION.md)
 - [Edron packaging](EDRON_PACKAGING.md)

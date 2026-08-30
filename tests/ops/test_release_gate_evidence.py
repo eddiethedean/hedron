@@ -98,8 +98,16 @@ def test_edron_has_an_independent_release_path() -> None:
 
     assert general.count('echo "Skipping Edron; publish it only from edron-v* tags"') == 2
     assert '"edron-v*.*.*"' in edron
-    assert "needs: test" in edron
+    assert "needs: [test, dependency_bounds, browser]" in edron
+    assert "Preflight published Stable dependencies from PyPI" in edron
     assert "tests/unit/test_edron_runtime.py" in edron
     assert "tests/unit/test_edron_phase02.py" in edron
     assert "id-token: write" in edron
     assert "pypa/gh-action-pypi-publish@release/v1" in edron
+
+
+def test_v1_branch_has_one_stable_required_ci_context() -> None:
+    workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
+    assert "branches: [main, v1.0]" in workflow
+    assert "name: CI required" in workflow
+    assert "needs:\n      [changes, test, dependency-bounds" in workflow

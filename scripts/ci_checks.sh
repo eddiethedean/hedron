@@ -618,22 +618,27 @@ cmd_workbench_bounds() {
   echo "== workbench dependencies ($bounds) =="
   uv venv "$venv" --python "$PYTHON" --clear
   if [[ "$bounds" == minimum ]]; then
-    uv pip install --python "$venv/bin/python" \
+    uv pip install --python "$venv/bin/python" --resolution lowest-direct \
       -e packages/hedron-core -e packages/hedron -e packages/hedron-explorer \
       -e packages/hedron-data -e packages/hedron-flask -e packages/hedron-django \
       -e packages/hedron-jinja -e packages/hedron-conformance -e packages/hedron-extras \
       -e packages/hedron-elements -e packages/hedron-posit -e packages/fastapi-workbench \
       -e packages/hedron-charts -e packages/hedron-maps -e packages/edron \
-      pytest pytest-xdist httpx "django>=5.2,<6" "starlette==0.40.0" "uvicorn==0.32.0" "matplotlib>=3.8,<4"
+      -r release/stable-dependencies.txt \
+      "pytest>=8.3" "pytest-xdist>=3.6" "httpx>=0.28" \
+      "django>=5.2,<6" "matplotlib>=3.8,<4"
   else
-    uv pip install --python "$venv/bin/python" \
+    uv pip install --python "$venv/bin/python" --resolution highest \
       -e packages/hedron-core -e packages/hedron -e packages/hedron-explorer \
       -e packages/hedron-data -e packages/hedron-flask -e packages/hedron-django \
       -e packages/hedron-jinja -e packages/hedron-conformance -e packages/hedron-extras \
       -e packages/hedron-elements -e packages/hedron-posit -e packages/fastapi-workbench \
       -e packages/hedron-charts -e packages/hedron-maps -e packages/edron \
-      pytest pytest-xdist httpx "django>=5.2,<6" "starlette>=0.40.0" "uvicorn>=0.32" "matplotlib>=3.8,<4"
+      -r release/stable-dependencies.txt \
+      "pytest>=8.3" "pytest-xdist>=3.6" "httpx>=0.28" \
+      "django>=5.2,<6" "matplotlib>=3.8,<4"
   fi
+  run "$venv/bin/python" scripts/check_stable_dependency_bounds.py --verify-installed "$bounds"
   run "$venv/bin/pytest" -q \
     tests/adapters/workbench \
     tests/adapters/flask \

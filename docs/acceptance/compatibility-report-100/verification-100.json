@@ -30,6 +30,24 @@
       "summary": "Ruff, Pyright (0 errors), strict Stable-package typing (0 errors and 0 warnings), core-neutral checks, strict docs, package verification, Edron compatibility, and quickstart passed; reproducible artifacts are covered by BUILD-100"
     },
     {
+      "id": "DEPENDENCY-BOUNDS-100",
+      "command": ".venv/bin/python scripts/check_stable_dependency_bounds.py --check",
+      "status": "passed",
+      "summary": "all Stable-package direct dependencies have bounded 1.0 support ranges matching the published support matrix"
+    },
+    {
+      "id": "REALWB-100",
+      "command": ".venv/bin/python scripts/check_realwb_smoke.py",
+      "status": "passed",
+      "summary": "retained licensed Workbench evidence passed for the current 2026.07.0 lane and the supported 2025.05.1 floor"
+    },
+    {
+      "id": "REALCONNECT-100",
+      "command": ".venv/bin/python scripts/check_realconnect_033.py",
+      "status": "passed",
+      "summary": "retained licensed Connect evidence passed for native-cookie deployment on the pinned supported backend"
+    },
+    {
       "id": "BROWSER-100",
       "command": "HEDRON_BROWSER=1 HEDRON_BROWSER_ENGINE=chromium bash scripts/ci_checks.sh browser --python 3.12",
       "status": "passed",

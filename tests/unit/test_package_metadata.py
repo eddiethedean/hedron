@@ -189,6 +189,7 @@ def test_flagship_declares_direct_pydantic_dependency() -> None:
     )["project"]
     assert "pydantic>=2.12.0,<2.15" in project["dependencies"]
     assert "fastapi>=0.121.0,<0.150" in project["dependencies"]
+    assert "starlette>=0.40.0,<1.0" in project["dependencies"]
 
 
 def test_audited_dependency_floors_are_declared() -> None:
@@ -197,7 +198,8 @@ def test_audited_dependency_floors_are_declared() -> None:
             (ROOT / "packages" / package / "pyproject.toml").read_text(encoding="utf-8")
         )["project"]
 
-    assert "starlette>=0.40.0" in project("fastapi-workbench")["dependencies"]
+    assert "starlette>=0.40.0,<1.0" in project("fastapi-workbench")["dependencies"]
+    assert "uvicorn[standard]>=0.32,<1.0" in project("fastapi-workbench")["dependencies"]
     assert "starlette>=0.40.0,<2" in project("hedron-mcp")["dependencies"]
     assert "markupsafe>=2.1.1,<4" in project("hedron-jinja")["dependencies"]
 

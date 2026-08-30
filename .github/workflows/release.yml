@@ -25,7 +25,7 @@ concurrency:
 env:
   UV_NO_PROGRESS: "1"
   # Reproducible wheel/sdist metadata and native Mach-O IDs.
-  SOURCE_DATE_EPOCH: "0"
+  SOURCE_DATE_EPOCH: "315619200"
   PYTHONDONTWRITEBYTECODE: "1"
   UV_VERSION: "0.12.1"
   # Shared check suites live in scripts/ci_checks.sh (also used by ci.yml).
@@ -88,6 +88,71 @@ jobs:
         run: uv sync --locked --all-groups --python 3.12
       - name: Run quality suite with strict package typing gate
         run: bash scripts/ci_checks.sh quality --python 3.12
+
+  dependency_bounds:
+    name: Stable dependency bounds (minimum and latest)
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_only) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Run minimum/latest Stable dependency matrix
+        run: bash scripts/ci_checks.sh workbench --python 3.12
+
+  realwb:
+    name: Required Workbench backend gate
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_only) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: ${{ env.UV_VERSION }}
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install dependencies
+        run: uv sync --locked --python 3.12
+      - name: Run required Workbench Docker smoke
+        env:
+          PWB_LICENSE: ${{ secrets.PWB_LICENSE }}
+          HEDRON_REALWB: "1"
+          HEDRON_REQUIRED_LIVE_GATES: "1"
+        run: bash scripts/ci_checks.sh realwb --python 3.12
+
+  realconnect:
+    name: Required Connect backend gate
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_only) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: ${{ env.UV_VERSION }}
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install dependencies
+        run: uv sync --locked --python 3.12
+      - name: Run required Connect Docker smoke
+        env:
+          CONNECT_LICENSE: ${{ secrets.CONNECT_LICENSE }}
+          HEDRON_REALCONNECT: "1"
+          HEDRON_REQUIRED_LIVE_GATES: "1"
+        run: bash scripts/ci_checks.sh realconnect --python 3.12
 
   publish_only_typing:
     name: Recovery release gates (publish-only)
@@ -206,7 +271,17 @@ jobs:
 
   publish:
     name: Publish to PyPI
-    needs: [test, quality, publish_only_typing, browser, evidence]
+    needs:
+      [
+        test,
+        quality,
+        dependency_bounds,
+        realwb,
+        realconnect,
+        publish_only_typing,
+        browser,
+        evidence,
+      ]
     if: |
       always() &&
       !cancelled() &&
@@ -216,6 +291,9 @@ jobs:
       ) &&
       (needs.test.result == 'success' || needs.test.result == 'skipped') &&
       (needs.quality.result == 'success' || needs.quality.result == 'skipped') &&
+      (needs.dependency_bounds.result == 'success' || needs.dependency_bounds.result == 'skipped') &&
+      (needs.realwb.result == 'success' || needs.realwb.result == 'skipped') &&
+      (needs.realconnect.result == 'success' || needs.realconnect.result == 'skipped') &&
       (needs.publish_only_typing.result == 'success' || needs.publish_only_typing.result == 'skipped') &&
       (needs.browser.result == 'success' || needs.browser.result == 'skipped') &&
       (needs.evidence.result == 'success' || needs.evidence.result == 'skipped')
@@ -300,6 +378,9 @@ jobs:
         run: >
           uv run --python 3.12 python scripts/check_published_quickstart.py
           "${{ steps.ref.outputs.version }}" --dist-dir dist --attempts 1
+      - name: Verify exact approved candidate artifacts
+        if: ${{ steps.ref.outputs.version == '1.0.0' }}
+        run: uv run --python 3.12 python scripts/verify_release_artifacts.py
       - name: Write release checksum manifest
         run: >
           uv run --python 3.12 python scripts/write_release_manifest.py

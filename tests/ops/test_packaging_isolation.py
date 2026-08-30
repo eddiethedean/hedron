@@ -93,14 +93,27 @@ def test_first_party_plugin_meta_matches_package_version() -> None:
     for pyproject in sorted((ROOT / "packages").glob("*/pyproject.toml")):
         project = tomllib.loads(pyproject.read_text(encoding="utf-8"))["project"]
         for module in (pyproject.parent / "src").rglob("*.py"):
+            source = module.read_text(encoding="utf-8")
             match = re.search(
-                r"PLUGIN_META\s*=\s*PluginMeta\(.*?\bversion\s*=\s*[\"']([^\"']+)[\"']",
-                module.read_text(encoding="utf-8"),
+                r"PLUGIN_META\s*=\s*PluginMeta\(.*?\bversion\s*=\s*(?:[\"']([^\"']+)[\"']|([A-Za-z_]\w*))",
+                source,
                 re.S,
             )
             if match:
                 seen.add(str(project["name"]))
-                assert match.group(1) == project["version"], module
+                plugin_version = match.group(1)
+                if plugin_version is None:
+                    version_module = module.with_name("_version.py")
+                    assert version_module.is_file(), module
+                    name = re.escape(str(match.group(2)))
+                    constant = re.search(
+                        rf'^{name}\s*=\s*["\']([^"\']+)["\']',
+                        version_module.read_text(encoding="utf-8"),
+                        re.M,
+                    )
+                    assert constant is not None, module
+                    plugin_version = constant.group(1)
+                assert plugin_version == project["version"], module
     assert seen == {
         "hedron-charts",
         "hedron-data",

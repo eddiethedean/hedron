@@ -213,19 +213,50 @@ def check_packages(tag_version: str) -> list[str]:
             continue
         init_text = init.read_text(encoding="utf-8")
         match = re.search(r'^__version__\s*=\s*["\']([^"\']+)["\']', init_text, re.M)
-        if not match:
+        resolved_version = match.group(1) if match else None
+        if resolved_version is None:
+            delegated = re.search(r"^__version__\s*=\s*([A-Za-z_]\w*)", init_text, re.M)
+            version_module = init.with_name("_version.py")
+            if delegated and version_module.is_file():
+                constant_name = re.escape(delegated.group(1))
+                constant = re.search(
+                    rf'^{constant_name}\s*=\s*["\']([^"\']+)["\']',
+                    version_module.read_text(encoding="utf-8"),
+                    re.M,
+                )
+                if constant:
+                    resolved_version = constant.group(1)
+        if resolved_version is None:
             errors.append(f"{name}: __version__ not found in {init}")
-        elif match.group(1) != expected:
-            errors.append(f"{name}: __version__ {match.group(1)!r} != package {expected!r}")
+        elif resolved_version != expected:
+            errors.append(f"{name}: __version__ {resolved_version!r} != package {expected!r}")
         for plugin in init.parent.rglob("*.py"):
+            plugin_source = plugin.read_text(encoding="utf-8")
             plugin_match = re.search(
-                r"PLUGIN_META\s*=\s*PluginMeta\(.*?\bversion\s*=\s*[\"']([^\"']+)[\"']",
-                plugin.read_text(encoding="utf-8"),
+                r"PLUGIN_META\s*=\s*PluginMeta\(.*?\bversion\s*=\s*(?:[\"']([^\"']+)[\"']|([A-Za-z_]\w*))",
+                plugin_source,
                 re.S,
             )
-            if plugin_match and plugin_match.group(1) != version:
+            plugin_version = plugin_match.group(1) if plugin_match else None
+            if plugin_match and plugin_version is None:
+                version_module = plugin.with_name("_version.py")
+                if version_module.is_file():
+                    constant_name = re.escape(str(plugin_match.group(2)))
+                    constant = re.search(
+                        rf'^{constant_name}\s*=\s*["\']([^"\']+)["\']',
+                        version_module.read_text(encoding="utf-8"),
+                        re.M,
+                    )
+                    if constant:
+                        plugin_version = constant.group(1)
+            if plugin_match and plugin_version is None:
                 errors.append(
-                    f"{name}: PluginMeta version {plugin_match.group(1)!r} in "
+                    f"{name}: PluginMeta version cannot be resolved in "
+                    f"{plugin.relative_to(pkg_dir)}"
+                )
+            elif plugin_version is not None and plugin_version != version:
+                errors.append(
+                    f"{name}: PluginMeta version {plugin_version!r} in "
                     f"{plugin.relative_to(pkg_dir)} != package {version!r}"
                 )
         changelog = pkg_dir / "CHANGELOG.md"

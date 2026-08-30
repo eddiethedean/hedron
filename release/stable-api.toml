@@ -125,6 +125,19 @@ success = '''(message: 'str | None' = None, *, status_code: 'int' = 200) -> 'Out
 theme = '''(name: 'str', *, accent: 'str | Color', base: 'Theme | None' = None, density: 'Any' = 'comfortable', geometry: 'Any' = 'soft', typography: 'Any' = 'system-sans', elevation: 'Any' = 'subtle', motion: 'Any' = 'standard', navigation: 'Any' = 'default', recipes: 'tuple[StyleRecipe, ...]' = ()) -> 'DesignSystem' '''
 create_scaffold = '''(name: 'str', destination: 'str | Path', *, template: 'str' = 'minimal', overwrite: 'bool' = False) -> 'tuple[Path, ...]' '''
 
+[packages.edron.members]
+"App.page" = '''(self, path: 'str', *, title: 'str', name: 'str | None' = None, show_title: 'bool' = True, dependencies: 'Sequence[Any]' = ()) -> 'Callable[[type[Page]], type[Page]]' '''
+"App.include" = '''(self, feature: 'Any') -> 'Any' '''
+"Page.text" = '''(self, text: 'str', *, _target: 'Container | None' = None) -> 'None' '''
+"Page.button" = '''(self, label: 'str', *, action: 'Any' = None, variant: 'str' = 'primary', size: 'Any' = None, width: 'Any' = None, confirm: 'Any' = None, disabled: 'bool' = False, _target: 'Container | None' = None) -> 'None' '''
+"Page.form" = '''(self, model: 'Any' = None, *, action: 'Any', submit_label: 'str' = 'Submit', **kwargs: 'Any') -> 'None' '''
+"Page.dataframe" = '''(self, data: 'Any', *, caption: 'str | None' = None) -> 'None' '''
+"Page.chart" = '''(self, spec: 'Any', *, alternative: 'str | None' = None, _target: 'Container | None' = None) -> 'None' '''
+"Page.map" = '''(self, spec: 'Any' = None, *, center: 'tuple[float, float]' = (0.0, 0.0), zoom: 'float' = 2.0, title: 'str' = 'Map', description: 'str' = 'Geographic map', alternative: 'str | None' = None, _target: 'Container | None' = None, **kwargs: 'Any') -> 'None' '''
+"Interaction.local" = '''(action: 'str', *, event: 'str' = 'click', state_keys: 'Sequence[str]' = (), state: 'Mapping[str, object] | None' = None, scope: "Literal['self', 'ancestor']" = 'self', scope_owner: 'str | None' = None, fallback: 'str' = 'native', source: 'str' = 'python') -> 'Interaction' '''
+"Interaction.request" = '''(handle: 'str', *, event: 'str' = 'click', method: 'str' = 'POST', target: 'str | None' = None, swap: 'str' = 'outerHTML', operation: 'str | None' = None, sync: 'str | None' = None, fallback: 'str' = 'native', source: 'str' = 'python') -> 'Interaction' '''
+"Interaction.combined" = '''(action: 'str', handle: 'str', *, event: 'str' = 'click', state_keys: 'Sequence[str]' = (), state: 'Mapping[str, object] | None' = None, scope: "Literal['self', 'ancestor']" = 'self', scope_owner: 'str | None' = None, method: 'str' = 'POST', target: 'str | None' = None, swap: 'str' = 'outerHTML', operation: 'str | None' = None, sync: 'str | None' = None, fallback: 'str' = 'native', source: 'str' = 'python') -> 'Interaction' '''
+
 [packages.hedron-data]
 symbols = [
   "__version__",
@@ -148,11 +161,14 @@ DataEditor = '''(rows: 'object' = None, *, key: 'str' = 'editor', row_model: 'ty
 DataPage = '''(rows: 'Sequence[T]', schema: 'tuple[ColumnSchema, ...]' = (), total: 'int | None' = None, next_offset: 'int | None' = None, next_cursor: 'str | None' = None, version: 'str | None' = None) -> None'''
 DataQuery = '''(offset: 'int' = 0, limit: 'int' = 25, cursor: 'str | None' = None, sort: 'tuple[tuple[str, str], ...]' = (), filters: 'Mapping[str, JsonValue]' = <factory>, projection: 'tuple[str, ...] | None' = None, search: 'str | None' = None, locale: 'str | None' = None, allowlisted_sort_fields: 'frozenset[str] | None' = None, allowlisted_filter_fields: 'frozenset[str] | None' = None, allowlisted_projection_fields: 'frozenset[str] | None' = None) -> None'''
 DataSaveResult = '''(ok: 'bool', accepted: 'DataChanges[T] | None' = None, normalized: 'Sequence[T]' = (), errors: 'tuple[FieldError, ...]' = (), conflicts: 'tuple[Conflict, ...]' = (), version: 'str | None' = None) -> None'''
-DataWorkspace = '''(name: 'str', *, model: 'type[ModelT]', source: 'DataEditorSource[RowMapping]', policy: 'DataWorkspacePolicy', create_model: 'type[BaseModel] | None' = None, edit_model: 'type[BaseModel] | None' = None, key_field: 'str' = 'id', provider: 'str' = 'hedron-data', provider_version: 'str' = '0.60.2', columns: 'Sequence[Column | str]' = (), form_overrides: 'Mapping[str, object] | None' = None, list_override: 'Callable[..., object] | None' = None, detail_override: 'Callable[..., object] | None' = None, create_override: 'Callable[..., object] | None' = None, edit_override: 'Callable[..., object] | None' = None) -> 'None' '''
+DataWorkspace = '''(name: 'str', *, model: 'type[ModelT]', source: 'DataEditorSource[RowMapping]', policy: 'DataWorkspacePolicy', create_model: 'type[BaseModel] | None' = None, edit_model: 'type[BaseModel] | None' = None, key_field: 'str' = 'id', provider: 'str' = 'hedron-data', provider_version: 'str | None' = None, columns: 'Sequence[Column | str]' = (), form_overrides: 'Mapping[str, object] | None' = None, list_override: 'Callable[..., object] | None' = None, detail_override: 'Callable[..., object] | None' = None, create_override: 'Callable[..., object] | None' = None, edit_override: 'Callable[..., object] | None' = None) -> 'None' '''
 DataWorkspacePolicy = '''(can_read: 'AuthzHook | None' = None, can_create: 'AuthzHook | None' = None, can_edit: 'AuthzHook | None' = None, delete: "Literal['disabled'] | AuthzHook" = 'disabled', optimism: "Literal['server_confirmed', 'collection_edit']" = 'server_confirmed') -> None'''
 normalize_rows = '''(data: 'object', *, max_rows: 'int' = 10000) -> 'list[dict[str, JsonValue]]' '''
 resolve_columns = '''(*, row_model: 'type[Model] | None' = None, columns: 'Sequence[Column] | None' = None, rows: 'Sequence[Mapping[str, JsonValue]] | None' = None) -> 'list[Column]' '''
 columns_from_model = '''(model: 'type[Model]') -> 'list[Column]' '''
+
+[packages.hedron-data.members]
+"DataWorkspace.to_bundle" = '''(self) -> 'FeatureBundle' '''
 
 [packages.hedron-charts]
 symbols = [

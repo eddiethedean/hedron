@@ -92,6 +92,34 @@ def test_phase_1_0_keeps_verified_067_as_immutable_predecessor() -> None:
     assert workspace["project"]["version"] == "1.0.0"
 
 
+def test_phase_1_0_publishes_one_exact_stable_package_boundary() -> None:
+    support = _toml("release/support-matrix.toml")
+    stable = {
+        name for name, contract in support["packages"].items() if contract["maturity"] == "stable"
+    }
+    assert stable == {
+        "hedron-core",
+        "hedron",
+        "edron",
+        "hedron-data",
+        "hedron-charts",
+        "hedron-maps",
+    }
+    release = (ROOT / "docs/acceptance/RELEASE_1_0.md").read_text(encoding="utf-8")
+    policy = (ROOT / "docs/acceptance/support-policy-100.md").read_text(encoding="utf-8")
+    for package in stable:
+        assert f"`{package}`" in release
+        assert f"`{package}`" in policy
+    for relative in (
+        "docs/api/EDRON.md",
+        "docs/api/EDRON_STATE_INTERACTION.md",
+        "docs/api/EDRON_PACKAGING.md",
+    ):
+        current_status = "\n".join((ROOT / relative).read_text(encoding="utf-8").splitlines()[:12])
+        assert "Edron remains Beta" not in current_status
+        assert "Beta satellite" not in current_status
+
+
 def test_phase_1_0_packet_names_verified_warning_floor() -> None:
     upgrade = (ROOT / "docs/acceptance/upgrade-fixtures-1.0.md").read_text(encoding="utf-8")
     contract = _toml("docs/acceptance/one-zero-cut-contract.toml")

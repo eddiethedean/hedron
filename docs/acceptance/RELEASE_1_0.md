@@ -64,10 +64,13 @@ complete removal evidence.
 
 ## Release shape
 
-Only `hedron-core` and `hedron` form the stable 1.0 platform cut. Beta satellites may share the
-version number or release independently, and must publish exact Hedron 0.67/1.x ranges. SemVer
-protects the enumerated stable 1.x inventory; Beta/Experimental surfaces stay visibly outside that
-promise. The cut makes no commercial SLA, multi-year LTS, human-AT, or blanket WCAG claim.
+The Stable 1.0 package boundary is `hedron-core`, `hedron`, `edron`, `hedron-data`,
+`hedron-charts`, and `hedron-maps`. Edron publishes from its independent `edron-v*` tag only after
+the coordinated Hedron packages are available. Every other satellite remains Beta, may share the
+version number or release independently, and must publish an explicit compatible Hedron range.
+SemVer protects only the enumerated stable 1.x inventory; Beta/Experimental surfaces stay visibly
+outside that promise. The cut makes no commercial SLA, multi-year LTS, human-AT, or blanket WCAG
+claim.
 
 ## Prerelease checkpoints
 
