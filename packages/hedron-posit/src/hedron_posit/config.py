@@ -73,9 +73,9 @@ class PositConfig:
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "product", PositProduct.parse(self.product))
-        if not isinstance(self.workbench, WorkbenchConfig):
+        if not isinstance(self.workbench, WorkbenchConfig):  # pyright: ignore[reportUnnecessaryIsInstance]  # runtime boundary validation
             raise TypeError("workbench must be a WorkbenchConfig")
-        if not isinstance(self.connect, ConnectConfig):
+        if not isinstance(self.connect, ConnectConfig):  # pyright: ignore[reportUnnecessaryIsInstance]  # runtime boundary validation
             raise TypeError("connect must be a ConnectConfig")
         object.__setattr__(self, "hands_off", bool(self.hands_off))
 

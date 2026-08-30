@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, TypeVar
+from typing import Any, TypeVar, cast
 
 from fastapi import Request
 
@@ -152,8 +152,8 @@ def graph_json(request: Request | None = None) -> dict[str, Any]:
     query = None if request is None else request.query_params.get("q")
     nodes = search_filter(nodes, query, key=lambda n: f"{n['id']} {n['name']}")
     page = _page_or_all(nodes, request, default=COMPONENTS_LIMIT, cap=COMPONENTS_LIMIT)
-    kept = {str(item["id"]) for item in page.items if isinstance(item, dict)}
-    edges = []
+    kept = {str(item["id"]) for item in page.items}
+    edges: list[dict[str, Any]] = []
     for c in get_registry().components():
         if c.logical_id not in kept:
             continue
@@ -205,9 +205,10 @@ def handle_graph_json(request: Request) -> dict[str, Any]:
 
     app_id = str(getattr(getattr(request.app, "state", None), "hedron_app_id", "") or "")
     payload = handle_graph_payload(app_id=app_id or None)
-    handles = getattr(getattr(request.app, "state", None), "hedron_handles", {}) or {}
-    redacted = []
-    for handle in handles.values() if isinstance(handles, dict) else []:
+    handles = cast(object, getattr(getattr(request.app, "state", None), "hedron_handles", {}))
+    redacted: list[Any] = []
+    typed_handles = cast(dict[object, object], handles) if isinstance(handles, dict) else {}
+    for handle in typed_handles.values():
         descriptor = getattr(handle, "descriptor", None)
         if descriptor is not None:
             redacted.append(redacted_descriptor_view(descriptor))

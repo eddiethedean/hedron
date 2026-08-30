@@ -131,7 +131,7 @@ class TwoPhaseStream:
 @dataclass(slots=True)
 class _SlotCollector:
     component_alias: str
-    values: dict[str, list[str]] = field(default_factory=dict)
+    values: dict[str, list[str]] = field(default_factory=lambda: cast(dict[str, list[str]], {}))
 
 
 @dataclass(slots=True)
@@ -149,11 +149,15 @@ class _RenderSession:
     max_output_chars: int
     max_metadata_items: int
     component_invocations: int = 0
-    assets: dict[tuple[str, str], AssetRef] = field(default_factory=dict)
-    headers: dict[str, str] = field(default_factory=dict)
-    diagnostics: list[Diagnostic] = field(default_factory=list)
-    traces: list[RenderTrace | Mapping[str, object]] = field(default_factory=list)
-    slot_stack: list[_SlotCollector] = field(default_factory=list)
+    assets: dict[tuple[str, str], AssetRef] = field(
+        default_factory=lambda: cast(dict[tuple[str, str], AssetRef], {})
+    )
+    headers: dict[str, str] = field(default_factory=lambda: cast(dict[str, str], {}))
+    diagnostics: list[Diagnostic] = field(default_factory=lambda: cast(list[Diagnostic], []))
+    traces: list[RenderTrace | Mapping[str, object]] = field(
+        default_factory=lambda: cast(list[RenderTrace | Mapping[str, object]], [])
+    )
+    slot_stack: list[_SlotCollector] = field(default_factory=lambda: cast(list[_SlotCollector], []))
 
     def merge(self, result: RenderResult) -> None:
         for asset in result.assets:
@@ -215,7 +219,12 @@ def _environment_binding(environment: Environment) -> HedronJinja | None:
 class HedronJinjaExtension(Extension):
     """The small HDJ grammar: guard, components, slots, and conditional assets."""
 
-    tags: ClassVar[set[str]] = {"hdj_guard", "hedron", "slot", "hedron_asset"}
+    tags: ClassVar[set[str]] = {  # pyright: ignore[reportIncompatibleVariableOverride]
+        "hdj_guard",
+        "hedron",
+        "slot",
+        "hedron_asset",
+    }
 
     def parse(self, parser: Parser) -> nodes.Node:
         token = next(parser.stream)
@@ -249,7 +258,9 @@ class HedronJinjaExtension(Extension):
             parser.fail("`with body` must be the final part of a Hedron tag", lineno)
         binding = _environment_binding(self.environment)
         if binding is not None:
-            binding._validate_component_call(alias.value, prop_names, lineno)
+            binding._validate_component_call(  # pyright: ignore[reportPrivateUsage]
+                alias.value, prop_names, lineno
+            )
         call = self.call_method("_render_component", [nodes.ContextReference(), alias], kwargs)
         if not with_body:
             return nodes.Output([call]).set_lineno(lineno)
@@ -282,13 +293,19 @@ class HedronJinjaExtension(Extension):
         caller: _JinjaCaller | None = None,
         **props: object,
     ) -> Markup:
-        return _runtime_binding(context)._render_component(alias, props, caller=caller)
+        return _runtime_binding(context)._render_component(  # pyright: ignore[reportPrivateUsage]
+            alias, props, caller=caller
+        )
 
     def _render_slot(self, context: Context, name: str, caller: _JinjaCaller) -> Markup:
-        return _runtime_binding(context)._render_slot(name, caller)
+        return _runtime_binding(context)._render_slot(  # pyright: ignore[reportPrivateUsage]
+            name, caller
+        )
 
     def _require_asset(self, context: Context, logical_id: str) -> Markup:
-        return _runtime_binding(context)._require_asset(logical_id)
+        return _runtime_binding(context)._require_asset(  # pyright: ignore[reportPrivateUsage]
+            logical_id
+        )
 
 
 def _runtime_binding(context: Context) -> HedronJinja:
@@ -340,7 +357,11 @@ class HedronJinja:
         invalid_limits = [
             name
             for name, value in limits.items()
-            if isinstance(value, bool) or not isinstance(value, int) or value <= 0
+            if isinstance(value, bool)
+            or not isinstance(  # pyright: ignore[reportUnnecessaryIsInstance]
+                value, int
+            )
+            or value <= 0
         ]
         if invalid_limits:
             raise ValueError(f"HDJ limits must be positive: {', '.join(invalid_limits)}")
@@ -509,7 +530,9 @@ class HedronJinja:
                 explanation=f"Alias {alias!r} is already registered.",
                 remediation="Register each alias exactly once.",
             )
-        if not isinstance(factory, type) or not issubclass(factory, Component):
+        if not isinstance(factory, type) or not issubclass(  # pyright: ignore[reportUnnecessaryIsInstance]
+            factory, Component
+        ):  # pyright: ignore[reportUnnecessaryIsInstance]
             raise error(
                 "HED-JINJA-0003",
                 title="Component binding needs a typed component",
@@ -520,7 +543,9 @@ class HedronJinja:
 
     def register_asset(self, logical_id: str, asset: AssetRef) -> None:
         self._require_mutable("asset", logical_id)
-        if not _LOGICAL_ID_RE.fullmatch(logical_id) or not isinstance(asset, AssetRef):
+        if not _LOGICAL_ID_RE.fullmatch(logical_id) or not isinstance(  # pyright: ignore[reportUnnecessaryIsInstance]
+            asset, AssetRef
+        ):
             raise error(
                 "HED-JINJA-0019",
                 title="Invalid HDJ asset binding",
@@ -809,8 +834,9 @@ class HedronJinja:
         return name, spec, graph, tuple(diagnostics), render_mode
 
     def _resolve(self, spec_or_name: TemplateSpec[Model] | str) -> tuple[str, TemplateSpec[Model]]:
-        spec = (
-            spec_or_name if isinstance(spec_or_name, TemplateSpec) else TemplateSpec(spec_or_name)
+        spec = cast(
+            TemplateSpec[Model],
+            spec_or_name if isinstance(spec_or_name, TemplateSpec) else TemplateSpec(spec_or_name),
         )
         validate_template_name(spec.name)
         if spec.source is TemplateSource.PACKAGE:
@@ -1226,7 +1252,11 @@ class HedronJinja:
             }
             HedronJinja._validate_json_fact(facts)
             return MappingProxyType(facts)
-        if len(value) > 32 or any(not isinstance(key, str) or not key for key in value):
+        if len(value) > 32 or any(
+            not isinstance(key, str)  # pyright: ignore[reportUnnecessaryIsInstance]
+            or not key
+            for key in value
+        ):
             raise ValueError("HDJ HTMX facts require at most 32 non-empty string keys")
         facts = dict(value)
         HedronJinja._validate_json_fact(facts)
@@ -1245,12 +1275,16 @@ class HedronJinja:
         if value is None or isinstance(value, (bool, int, float)):
             return
         if isinstance(value, Mapping):
-            if len(value) > 32 or any(not isinstance(key, str) or not key for key in value):
+            if len(value) > 32 or any(
+                not isinstance(key, str)  # pyright: ignore[reportUnnecessaryIsInstance]
+                or not key
+                for key in value
+            ):
                 raise ValueError("HDJ HTMX fact objects require at most 32 non-empty string keys")
             for item in value.values():
                 HedronJinja._validate_json_fact(item, depth=depth + 1)
             return
-        if isinstance(value, (list, tuple)):
+        if isinstance(value, (list, tuple)):  # pyright: ignore[reportUnnecessaryIsInstance]
             if len(value) > 32:
                 raise ValueError("HDJ HTMX fact arrays may contain at most 32 values")
             for item in value:
@@ -1371,7 +1405,11 @@ class HedronJinja:
         app_binding = self.app_binding
         if app_binding is None:
             raise RuntimeError("h_command_form requires an app-scoped JinjaBinding")
-        field_values = fields if isinstance(fields, (list, tuple)) else None
+        field_values = (
+            cast(list[object] | tuple[object, ...], fields)
+            if isinstance(fields, (list, tuple))
+            else None
+        )
         return self._render_node(
             app_binding.command_form(target, fields=field_values, **form_kwargs)
         )

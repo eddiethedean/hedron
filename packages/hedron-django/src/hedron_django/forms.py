@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
-from typing import Literal
+from collections.abc import Iterable, Mapping
+from typing import Literal, cast
 
 from django.forms import BaseForm, BaseFormSet, BoundField
 from django.http import HttpRequest
@@ -89,12 +89,14 @@ def _choices(bound: BoundField) -> tuple[tuple[str, str], ...]:
     if raw is None:
         return ()
     flat: list[tuple[str, str]] = []
-    for entry in raw:
+    for entry in cast(Iterable[tuple[object, object]], raw):
         if not entry:
             continue
         value, label = entry[0], entry[1]
         if isinstance(label, (list, tuple)):
-            for sub_value, sub_label in label:
+            for sub_value, sub_label in cast(
+                list[tuple[object, object]] | tuple[tuple[object, object], ...], label
+            ):
                 flat.append((str(sub_value), str(sub_label)))
         else:
             flat.append((str(value), str(label)))
@@ -104,9 +106,7 @@ def _choices(bound: BoundField) -> tuple[tuple[str, str], ...]:
 def form_fields(form: BaseForm) -> list[NodeLike]:
     """Render visible bound fields as Hedron form controls."""
     nodes: list[NodeLike] = []
-    for bound in form:  # type: ignore[assignment]
-        if not isinstance(bound, BoundField):
-            continue
+    for bound in form:
         if bound.is_hidden:
             nodes.append(html.raw(TrustedHtml.reviewed(str(bound), source="django.forms.hidden")))
             continue
@@ -186,7 +186,7 @@ def form_to_nodes(
 
 
 def formset_to_nodes(
-    formset: BaseFormSet,
+    formset: BaseFormSet[BaseForm],
     *,
     request: HttpRequest | None = None,
     include_csrf: bool = True,

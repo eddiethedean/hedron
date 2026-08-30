@@ -22,6 +22,10 @@ SECURITY_PROFILE_ID = "security-control-plane"
 SECURITY_PROFILE_VERSION = CONFORMANCE_PROFILE_VERSION
 
 
+def _empty_payload() -> dict[str, Any]:
+    return {}
+
+
 @dataclass(frozen=True, slots=True)
 class SecurityConformanceCase:
     id: str
@@ -29,7 +33,7 @@ class SecurityConformanceCase:
     invariant: str
     earliest_enforcement: str
     expect: str  # pass | fail_closed
-    payload: Mapping[str, Any] = field(default_factory=dict)
+    payload: Mapping[str, Any] = field(default_factory=_empty_payload)
 
 
 @dataclass(frozen=True, slots=True)

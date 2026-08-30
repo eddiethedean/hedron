@@ -8,7 +8,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, cast
 
 from hedron_core.plugins import PluginContext
 from hedron_core.plugins.meta import StabilityLabel
@@ -48,7 +48,7 @@ class ExtrasFeature:
     assets: tuple[str, ...] = ()
     optional_dependencies: tuple[str, ...] = ()
     fallback: str = "http"
-    limits: dict[str, int | str] = field(default_factory=dict)
+    limits: dict[str, int | str] = field(default_factory=lambda: cast(dict[str, int | str], {}))
     maturity: str = "beta"
     accessibility_contract: str = ""
     explorer_projection: str = "packages-panel"

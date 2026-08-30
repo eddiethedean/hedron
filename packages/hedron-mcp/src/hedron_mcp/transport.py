@@ -38,9 +38,11 @@ def _is_json_value(value: object) -> TypeIs[JsonValue]:
     if value is None or isinstance(value, (str, int, float, bool)):
         return True
     if isinstance(value, list):
-        return all(_is_json_value(item) for item in value)
+        items = cast(list[object], value)
+        return all(_is_json_value(item) for item in items)
     if isinstance(value, dict):
-        return all(isinstance(key, str) and _is_json_value(item) for key, item in value.items())
+        mapping = cast(dict[object, object], value)
+        return all(isinstance(key, str) and _is_json_value(item) for key, item in mapping.items())
     return False
 
 
@@ -52,12 +54,14 @@ def _rpc_id(value: object) -> JsonValue:
 
 def _as_json_object(value: object) -> JsonObject:
     if isinstance(value, dict) and all(
-        isinstance(key, str) and _is_json_value(item) for key, item in value.items()
+        isinstance(key, str) and _is_json_value(item)
+        for key, item in cast(dict[object, object], value).items()
     ):
-        return value
+        return cast(JsonObject, value)
     if isinstance(value, Mapping):
         out: JsonObject = {}
-        for key, item in value.items():
+        mapping = cast(Mapping[object, object], value)
+        for key, item in mapping.items():
             out[str(key)] = item if _is_json_value(item) else str(item)
         return out
     return {}
@@ -232,7 +236,7 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
     if not isinstance(body, dict):
         return _json_response(_error(None, -32600, "invalid request"), status_code=400)
 
-    body_obj = _as_json_object(body)
+    body_obj = _as_json_object(cast(dict[str, object], body))
     req_id = body_obj.get("id")
     method = str(body_obj.get("method") or "")
     raw_params = body_obj.get("params")
@@ -514,10 +518,10 @@ def mount_streamable_http(
     router = getattr(app, "router", None)
     router_routes = getattr(router, "routes", None) if router is not None else None
     if isinstance(router_routes, list):
-        router_routes.append(route)
+        cast(list[object], router_routes).append(route)
         return
     app_routes = getattr(app, "routes", None)
     if isinstance(app_routes, list):
-        app_routes.append(route)
+        cast(list[object], app_routes).append(route)
         return
     raise TypeError("mount_mcp requires a Starlette/FastAPI-like application")

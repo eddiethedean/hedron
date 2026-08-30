@@ -398,15 +398,35 @@ quality_pyright() {
 }
 
 quality_strict_package_types() {
-  # Release-gated typed packages, including selected Beta satellites, must
-  # remain warning-free under the workspace's strict Pyright configuration.
+  # Every shipped Python package must remain warning-free under the workspace's
+  # strict Pyright configuration. Keeping paths explicit makes additions reviewable.
+  if rg -n '# pyright:.*reportUnknown[A-Za-z]*Type=false' packages --glob '*.py'; then
+    echo "Package-wide unknown-type suppressions are forbidden; type or cast the boundary instead." >&2
+    return 1
+  fi
   run_uv pyright --warnings \
     packages/hedron-core/src/hedron_core \
     packages/hedron/src/hedron \
     packages/hedron-data/src/hedron_data \
     packages/hedron-charts/src/hedron_charts \
     packages/hedron-maps/src/hedron_maps \
-    packages/edron/src/edron
+    packages/edron/src/edron \
+    packages/hedron-explorer/src/hedron_explorer \
+    packages/hedron-sample-kit/src/hedron_sample_kit \
+    packages/hedron-flask/src/hedron_flask \
+    packages/hedron-django/src/hedron_django \
+    packages/hedron-jinja/src/hedron_jinja \
+    packages/hedron-conformance/src/hedron_conformance \
+    packages/hedron-native/src/hedron_native \
+    packages/hedron-extras/src/hedron_extras \
+    packages/hedron-notebook/src/hedron_notebook \
+    packages/hedron-mcp/src/hedron_mcp \
+    packages/hedron-gradio/src/hedron_gradio \
+    packages/hedron-sim/src/hedron_sim \
+    packages/hedron-posit/src/hedron_posit \
+    packages/hedron-elements/src/hedron_elements \
+    packages/edron-sim/src/edron_sim \
+    packages/fastapi-workbench/src/fastapi_workbench
 }
 
 quality_wheels_smoke() {

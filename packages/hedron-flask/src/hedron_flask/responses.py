@@ -40,7 +40,7 @@ __all__ = [
 ]
 
 
-def _outcome_response(
+def _outcome_response(  # pyright: ignore[reportUnusedFunction]
     result: Outcome,
     *,
     authenticated: bool = False,
@@ -85,7 +85,7 @@ def _outcome_response(
         }
         events: dict[str, JsonValue] = {}
         regions: list[FragmentRegion] = []
-        for raw_handle in handles:
+        for raw_handle in cast(list[object], handles):
             if not isinstance(raw_handle, str):
                 return Response(
                     "refresh outcome handles must be strings", status=400, mimetype="text/plain"
@@ -168,7 +168,7 @@ def _header_value(headers: Mapping[str, str], name: str) -> str | None:
 
 def _fragment_value(value: NodeLike | Component[Any]) -> NodeLike | Component[Any]:
     if isinstance(value, Page):
-        children = list(value._children)
+        children = list(value._children)  # pyright: ignore[reportPrivateUsage]
         if len(children) == 1:
             return children[0]  # type: ignore[no-any-return]
         return children  # type: ignore[return-value]
@@ -379,7 +379,7 @@ def _inject_page_html(
         static_href=_flask_static_href,
         theme=theme,
         plan=resolved,
-        assets=assets if isinstance(assets, tuple) else None,
+        assets=assets if isinstance(assets, tuple) else None,  # pyright: ignore[reportUnknownArgumentType]
         browser_plan=browser_plan,
     )
 

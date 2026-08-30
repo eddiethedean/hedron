@@ -70,10 +70,14 @@ class JinjaBinding:
     """
 
     app_id: str
-    components: Mapping[str, type[Component[Any]]] = field(default_factory=dict)
-    assets: Mapping[str, AssetRef] = field(default_factory=dict)
-    handles: Mapping[str, object] = field(default_factory=dict)
-    providers: Mapping[str, ProviderManifest] = field(default_factory=dict)
+    components: Mapping[str, type[Component[Any]]] = field(
+        default_factory=lambda: cast(Mapping[str, type[Component[Any]]], {})
+    )
+    assets: Mapping[str, AssetRef] = field(default_factory=lambda: cast(Mapping[str, AssetRef], {}))
+    handles: Mapping[str, object] = field(default_factory=lambda: cast(Mapping[str, object], {}))
+    providers: Mapping[str, ProviderManifest] = field(
+        default_factory=lambda: cast(Mapping[str, ProviderManifest], {})
+    )
     themes: tuple[str, ...] = ()
     application_styles: tuple[ApplicationStyleFact, ...] = ()
 
@@ -85,7 +89,9 @@ class JinjaBinding:
         for alias, component in self.components.items():
             if not _ALIAS_RE.fullmatch(alias):
                 raise ValueError(f"invalid HDJ component alias: {alias!r}")
-            if not isinstance(component, type) or not issubclass(component, Component):
+            if not isinstance(component, type) or not issubclass(  # pyright: ignore[reportUnnecessaryIsInstance]
+                component, Component
+            ):  # pyright: ignore[reportUnnecessaryIsInstance]
                 raise TypeError(f"HDJ component {alias!r} must be a Component subclass")
         for logical_id, handle in self.handles.items():
             actual = getattr(handle, "logical_id", None)
@@ -99,7 +105,7 @@ class JinjaBinding:
                     f"handle {logical_id!r} belongs to app {handle_app_id!r}, not {self.app_id!r}"
                 )
         for feature_id, manifest in self.providers.items():
-            if not isinstance(manifest, ProviderManifest):
+            if not isinstance(manifest, ProviderManifest):  # pyright: ignore[reportUnnecessaryIsInstance]
                 raise TypeError(f"HDJ provider {feature_id!r} must be a ProviderManifest")
             if manifest.feature_id != feature_id:
                 raise ValueError(

@@ -1,5 +1,7 @@
 """Capability-labeled live helpers for Django (phase 0.11)."""
 
+# pyright: reportUnnecessaryIsInstance=false
+
 from __future__ import annotations
 
 import warnings

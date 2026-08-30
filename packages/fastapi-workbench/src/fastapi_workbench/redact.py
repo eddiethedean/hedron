@@ -32,11 +32,12 @@ _REDACTED = "***"
 
 def _redact_nested(value: object) -> object:
     if isinstance(value, list):
-        return [_redact_nested(item) for item in value]
+        return [_redact_nested(item) for item in cast(list[object], value)]
     if isinstance(value, tuple):
-        return tuple(_redact_nested(item) for item in value)
+        return tuple(_redact_nested(item) for item in cast(tuple[object, ...], value))
     if isinstance(value, dict):
-        return {key: _redact_nested(item) for key, item in value.items()}
+        mapping = cast(dict[object, object], value)
+        return {key: _redact_nested(item) for key, item in mapping.items()}
     return value
 
 

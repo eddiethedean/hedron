@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Sequence
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 from pydantic import Field
 
@@ -247,12 +247,12 @@ class ImageCrop(Component[ImageCropProps]):
 
 class RegionProps(Props):
     kind: Literal["box", "lasso"] = "box"
-    points: list[list[float]] = Field(default_factory=list)
+    points: list[list[float]] = Field(default_factory=lambda: cast(list[list[float]], []))
 
 
 class ImageRegionSelectProps(ElementProps):
     src: SafeUrl
-    regions: list[RegionProps] = Field(default_factory=list)
+    regions: list[RegionProps] = Field(default_factory=lambda: cast(list[RegionProps], []))
     name: str = "region"
     mode: Literal["box", "lasso"] = "box"
 
@@ -271,7 +271,7 @@ class ImageRegionSelect(Component[ImageRegionSelectProps]):
         mode: Literal["box", "lasso"] = "box",
         **kwargs: Any,
     ) -> None:
-        parsed = [
+        parsed: list[RegionProps] = [
             r if isinstance(r, RegionProps) else RegionProps.model_validate(r)
             for r in (regions or [])
         ]
@@ -331,7 +331,9 @@ class AnnotationProps(Props):
 
 class ImageAnnotationsProps(ElementProps):
     src: SafeUrl
-    annotations: list[AnnotationProps] = Field(default_factory=list)
+    annotations: list[AnnotationProps] = Field(
+        default_factory=lambda: cast(list[AnnotationProps], [])
+    )
     name: str = "annotations"
 
 

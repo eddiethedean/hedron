@@ -11,6 +11,7 @@ import json
 import logging
 from collections.abc import Iterable
 from dataclasses import dataclass
+from typing import Any, cast
 
 from hedron_conformance.schema import (
     CONTRACT_VERSION,
@@ -193,7 +194,7 @@ def _load_subdirectory_markers(names: frozenset[str]) -> list[ConformanceFixture
                 data = json.loads(path.read_text(encoding="utf-8"))
             except (OSError, json.JSONDecodeError):
                 continue
-            items = data if isinstance(data, list) else [data]
+            items = cast(list[Any], data) if isinstance(data, list) else [data]
             for item in items:
                 if not isinstance(item, dict) or "capability" not in item or "id" not in item:
                     continue

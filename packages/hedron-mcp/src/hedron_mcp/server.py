@@ -7,6 +7,7 @@ import json
 import unicodedata
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
+from typing import Any, cast
 from urllib.parse import unquote, urlparse
 
 from hedron_core.typing_aliases import JsonObject, JsonValue
@@ -15,7 +16,7 @@ from hedron_mcp.bounds import BoundsError, McpBounds
 from hedron_mcp.compat import SDK_PIN, sdk_version
 
 
-def _package_version() -> str:
+def package_version() -> str:
     from importlib.metadata import PackageNotFoundError, version
 
     try:
@@ -83,7 +84,9 @@ class McpResource:
     name: str
     description: str = ""
     mime_type: str = "application/json"
-    metadata: Mapping[str, JsonValue] = field(default_factory=dict)
+    metadata: Mapping[str, JsonValue] = field(
+        default_factory=lambda: cast(Mapping[str, JsonValue], {})
+    )
     reader: ResourceReader | None = None
     authorize: AuthzHook | None = None
 
@@ -111,15 +114,19 @@ class McpProjection:
 
     enabled: bool = False
     allow_mutations: bool = False
-    package_version: str = field(default_factory=_package_version)
+    package_version: str = field(default_factory=package_version)
     principal_resolver: PrincipalResolver | None = None
     authz_hook: AuthzHook | None = None
     tenant_hook: TenantHook | None = None
     allowed_origins: frozenset[str] | None = None
     bounds: McpBounds = field(default_factory=McpBounds)
     audit: McpAuditLog = field(default_factory=McpAuditLog)
-    _resources: dict[str, McpResource] = field(default_factory=dict, init=False, repr=False)
-    _tools: dict[str, McpTool] = field(default_factory=dict, init=False, repr=False)
+    _resources: dict[str, McpResource] = field(
+        default_factory=lambda: cast(dict[str, McpResource], {}), init=False, repr=False
+    )
+    _tools: dict[str, McpTool] = field(
+        default_factory=lambda: cast(dict[str, McpTool], {}), init=False, repr=False
+    )
     _mounted: bool = field(default=False, init=False, repr=False)
 
     @property
@@ -133,6 +140,14 @@ class McpProjection:
         if not self.enabled:
             return ()
         return tuple(self._tools.values())
+
+    @property
+    def mounted(self) -> bool:
+        return self._mounted
+
+    def mark_mounted(self, mounted: bool) -> None:
+        """Record whether the optional HTTP transport was attached."""
+        self._mounted = mounted
 
     def register_resource(self, resource: McpResource) -> None:
         self._assert_safe_uri(resource.uri)
@@ -204,8 +219,9 @@ class McpProjection:
             return None
         session = getattr(request, "session", None)
         if isinstance(session, Mapping):
+            session_mapping = cast(Mapping[str, object], session)
             for key in ("user", "username", "principal", "sub"):
-                value = session.get(key)
+                value = session_mapping.get(key)
                 if isinstance(value, str) and value.strip():
                     return value
         return None
@@ -377,7 +393,7 @@ class McpProjection:
             raise RuntimeError("jsonschema is required to validate MCP tool arguments") from exc
         try:
             validator = Draft202012Validator(dict(schema))
-            errors = sorted(validator.iter_errors(payload), key=lambda e: list(e.path))
+            errors = sorted(cast(Any, validator).iter_errors(payload), key=lambda e: list(e.path))
         except SchemaError as exc:
             raise InvalidParamsError(
                 f"Tool {tool.name!r} has an invalid inputSchema: {exc.message}"
@@ -429,13 +445,13 @@ def mount_mcp(app: object, projection: McpProjection, *, path: str = "/mcp") -> 
         from hedron_mcp.transport import mount_streamable_http
 
         mount_streamable_http(app, projection, path=path)
-        projection._mounted = True
+        projection.mark_mounted(True)
     else:
         # Non-ASGI hosts / unit fixtures may attach the projection marker only.
-        projection._mounted = False
+        projection.mark_mounted(False)
     projection.audit.emit(
         code="HED-MCP-MOUNT",
         kind="registration",
         principal=None,
-        detail={"path": path, "sdk": sdk_version(), "http_mounted": projection._mounted},
+        detail={"path": path, "sdk": sdk_version(), "http_mounted": projection.mounted},
     )

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import Any, ClassVar, Literal
+from typing import Any, ClassVar, Literal, cast
 
 from pydantic import Field, field_validator
 
@@ -104,7 +104,7 @@ class ChoiceCards(Component[ChoiceCardsProps]):
 class TreeNodeProps(Props):
     id: str
     label: str
-    children: list[TreeNodeProps] = Field(default_factory=list)
+    children: list[TreeNodeProps] = Field(default_factory=lambda: cast(list[TreeNodeProps], []))
     selectable: bool = True
 
 
@@ -489,7 +489,9 @@ class KeyboardShortcuts(Component[KeyboardShortcutsProps]):
                 raw if isinstance(raw, ShortcutBinding) else ShortcutBinding.model_validate(raw)
             )
             # Re-parse to apply SafeUrl coercion when constructed with a raw str href.
-            if binding.href is not None and not isinstance(binding.href, SafeUrl):
+            if binding.href is not None and not isinstance(  # pyright: ignore[reportUnnecessaryIsInstance]  # runtime coercion boundary
+                binding.href, SafeUrl
+            ):
                 binding = ShortcutBinding(
                     keys=binding.keys,
                     action=binding.action,

@@ -20,7 +20,7 @@ from fastapi_workbench.detect import (
     path_has_encoded_absolute_url,
 )
 from fastapi_workbench.mount import (
-    _path_has_traversal,
+    _path_has_traversal,  # pyright: ignore[reportPrivateUsage]  # shared security primitive
     is_local_path,
     normalize_mount_path,
     prefix_local_path,

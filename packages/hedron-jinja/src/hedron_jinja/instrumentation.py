@@ -7,7 +7,7 @@ import json
 from collections.abc import Iterable, Mapping
 from contextvars import ContextVar
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, cast
 
 from hedron_core.diagnostics import (
     Diagnostic,
@@ -56,7 +56,7 @@ class ExtensionEvidence:
     extension_id: str
     version: str
     digest: str
-    csp: Mapping[str, str] = field(default_factory=dict)
+    csp: Mapping[str, str] = field(default_factory=lambda: cast(Mapping[str, str], {}))
     load_order: int = 0
     kind: str = "jinja"  # "jinja" | "htmx"
 
@@ -193,7 +193,7 @@ def checker_fixture_from_diagnostics(
     contract_version: str = "hedron-portable-1",
 ) -> dict[str, Any]:
     """Emit a portable SARIF-shaped checker fixture payload."""
-    results = []
+    results: list[dict[str, Any]] = []
     for diag in diagnostics:
         results.append(
             {

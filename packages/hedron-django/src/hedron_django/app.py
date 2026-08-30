@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import Any
+from typing import Any, cast
 
 from django.http import HttpRequest, HttpResponse
 
@@ -16,8 +16,8 @@ from hedron_core.rendering import RenderContext, RenderMode, RenderResult
 from hedron_django.csrf import csrf_token_for_request
 from hedron_django.htmx import htmx_context, render_mode_for_request
 from hedron_django.responses import (
-    _headers_mapping,
-    _outcome_response,
+    _headers_mapping,  # pyright: ignore[reportPrivateUsage]
+    _outcome_response,  # pyright: ignore[reportPrivateUsage]
     component_response,
     interaction_response,
 )
@@ -50,7 +50,7 @@ class HedronDjango:
         mode: RenderMode | None = None,
     ) -> str:
         """Render a Hedron value to HTML using request-derived render mode."""
-        from hedron_django.responses import _render_body
+        from hedron_django.responses import _render_body  # pyright: ignore[reportPrivateUsage]
 
         result = _render_body(
             value,
@@ -208,7 +208,7 @@ class HedronDjango:
         ) and not isinstance(value, RenderResult):
             await prepare_tree(value)  # type: ignore[arg-type]
         return component_response(
-            value,
+            cast(NodeLike | Component[Any] | RenderResult, value),
             request=request,
             context=context,
             mode=mode,

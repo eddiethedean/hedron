@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from collections.abc import Mapping, MutableSequence
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, cast
 
 _SECRET_KEYS = frozenset(
     {
@@ -24,12 +24,14 @@ _SECRET_RE = re.compile(r"(?i)(password|secret|token|api[_-]?key|bearer)\s*[:=]\
 
 def redact_value(value: Any) -> Any:
     if isinstance(value, Mapping):
+        mapping = cast(Mapping[object, Any], value)
         return {
             str(k): ("[REDACTED]" if str(k).lower() in _SECRET_KEYS else redact_value(v))
-            for k, v in value.items()
+            for k, v in mapping.items()
         }
     if isinstance(value, list):
-        return [redact_value(item) for item in value]
+        items = cast(list[Any], value)
+        return [redact_value(item) for item in items]
     if isinstance(value, str):
         return _SECRET_RE.sub(r"\1=[REDACTED]", value)
     return value
@@ -42,7 +44,7 @@ class McpAuditEvent:
     code: str
     kind: str
     principal: str | None
-    detail: Mapping[str, Any] = field(default_factory=dict)
+    detail: Mapping[str, Any] = field(default_factory=lambda: cast(Mapping[str, Any], {}))
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -57,7 +59,9 @@ class McpAuditEvent:
 class McpAuditLog:
     """Process-local audit buffer; multi-worker apps must attach an external sink."""
 
-    events: MutableSequence[McpAuditEvent] = field(default_factory=list)
+    events: MutableSequence[McpAuditEvent] = field(
+        default_factory=lambda: cast(MutableSequence[McpAuditEvent], [])
+    )
     sink: Any | None = None
 
     def emit(

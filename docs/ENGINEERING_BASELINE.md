@@ -62,16 +62,17 @@ Pyright runs in `strict` mode on publishable package `src` trees. Shared aliases
 public signatures (`JsonValue`, `HtmlAttrValue`, HTMX/job/plugin TypedDicts, and related
 shapes).
 
-`hedron-core` and `hedron` have zero Pyright errors. The shared quality suite preserves that
-release gate with:
+All shipped Python packages have zero Pyright errors and warnings. The shared quality suite
+preserves that release gate with:
 
 ```bash
 bash scripts/ci_checks.sh typing --python 3.12
 ```
 
-The command runs Pyright in strict mode over both complete package trees. Warning severity remains
-visible for incremental workspace cleanup without being presented as a zero-warning release
-claim. Commit CI and release CI call the same quality suite.
+The command runs Pyright in strict mode over every publishable package tree. Framework adapter
+modules may locally identify third-party dynamic boundaries where upstream stubs are incomplete;
+the workspace-level strict policy remains warning-enabled everywhere else. Commit CI and release
+CI call the same quality suite.
 
 - Prefer `JsonValue` / `JsonObject` / TypedDict / Protocol over `Any` for structured data.
 - Prefer `HtmlAttrValue` / `HtmlAttrMap` for HTML and HTMX attribute maps end-to-end.
@@ -81,8 +82,9 @@ claim. Commit CI and release CI call the same quality suite.
   `options`) and intentionally dynamic cores (plugin entry callables, open decorator
   wrappers). Remaining sites should be obviously boundary-shaped, not lazy bags.
 - Every `# type: ignore[...]` is coded and justified at the call site.
-- `reportUnknown*` stays at warning severity for packages that are still being improved.
-  The warning-fatal `hedron-core` + `hedron` ratchet must not be weakened or bypassed.
+- `reportUnknown*` stays at warning severity at the workspace level; dynamic adapter boundaries
+  must be explicit and local.
+- The warning-fatal package gate must not be weakened or bypassed.
 
 ## Licensing policy
 

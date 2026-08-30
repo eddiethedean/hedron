@@ -26,7 +26,11 @@ class ProviderManifest:
             raise ValueError("provider package and version must be non-empty")
         assets = tuple(self.assets)
         capabilities = tuple(self.capabilities)
-        if any(not isinstance(item, str) or not item.strip() for item in (*assets, *capabilities)):
+        if any(
+            not isinstance(item, str)  # pyright: ignore[reportUnnecessaryIsInstance]
+            or not item.strip()
+            for item in (*assets, *capabilities)
+        ):
             raise ValueError("provider assets and capabilities must be non-empty strings")
         if len(assets) != len(set(assets)) or len(capabilities) != len(set(capabilities)):
             raise ValueError("provider assets and capabilities must be unique")

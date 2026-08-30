@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Mapping
 from dataclasses import replace
-from typing import Any
+from typing import Any, cast
 
 from django.http import HttpRequest, HttpResponse
 
@@ -55,7 +55,10 @@ def security_policy_from_settings(settings: Any | None = None) -> SecurityPolicy
     if isinstance(headers, SecurityHeadersPolicy):
         return replace(policy, security_headers=headers)
     if isinstance(headers, Mapping):
-        return replace(policy, security_headers=_headers_policy_from_mapping(headers))
+        return replace(
+            policy,
+            security_headers=_headers_policy_from_mapping(cast(Mapping[str, Any], headers)),
+        )
     return policy
 
 

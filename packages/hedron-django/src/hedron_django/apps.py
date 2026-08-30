@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import ClassVar
-
 from django.apps import AppConfig
 from django.core.checks import CheckMessage, Error, Warning, register
 
@@ -18,7 +16,7 @@ class HedronDjangoConfig(AppConfig):
     name = "hedron_django"
     label = "hedron_django"
     verbose_name = "Hedron Django"
-    default_auto_field: ClassVar[str] = "django.db.models.AutoField"
+    default_auto_field = "django.db.models.AutoField"  # pyright: ignore[reportIncompatibleVariableOverride]
 
     def ready(self) -> None:
         register_checks()
@@ -69,7 +67,9 @@ def register_checks() -> None:
     _checks_registered = True
 
     @register(deploy=True)  # type: ignore[misc,untyped-decorator]
-    def hedron_django_version_check(app_configs: object, **kwargs: object) -> list[CheckMessage]:
+    def hedron_django_version_check(  # pyright: ignore[reportUnusedFunction]
+        app_configs: object, **kwargs: object
+    ) -> list[CheckMessage]:
         del app_configs, kwargs
         messages: list[CheckMessage] = []
         import django
@@ -85,7 +85,9 @@ def register_checks() -> None:
         return messages
 
     @register()  # type: ignore[misc,untyped-decorator]
-    def hedron_middleware_check(app_configs: object, **kwargs: object) -> list[CheckMessage]:
+    def hedron_middleware_check(  # pyright: ignore[reportUnusedFunction]
+        app_configs: object, **kwargs: object
+    ) -> list[CheckMessage]:
         del app_configs, kwargs
         from django.conf import settings
 
@@ -120,7 +122,7 @@ def register_checks() -> None:
         return messages
 
     @register()  # type: ignore[misc,untyped-decorator]
-    def hedron_capability_honesty_check(
+    def hedron_capability_honesty_check(  # pyright: ignore[reportUnusedFunction]
         app_configs: object, **kwargs: object
     ) -> list[CheckMessage]:
         del app_configs, kwargs

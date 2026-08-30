@@ -1,9 +1,12 @@
 """Thin Explorer HTTP router. Business logic lives in services/ and views/."""
+# Pyright cannot observe that FastAPI decorators retain nested route handlers.
+# pyright: reportUnusedFunction=false
 
 from __future__ import annotations
 
 from collections.abc import Mapping
 from pathlib import Path
+from typing import Any, cast
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
@@ -98,25 +101,13 @@ def explorer_router() -> APIRouter:
         ("/interactions", pages.interactions_view),
         ("/features", pages.features_view),
         ("/theme-lab", pages.theme_lab_view),
+        ("/component/{name}", pages.component_detail),
+        ("/elements/{logical_id:path}", pages.element_detail_view),
     )
     for path, handler in html_pages:
         router.add_api_route(
             path, handler, methods=["GET"], response_class=HTMLResponse, include_in_schema=False
         )
-    router.add_api_route(
-        "/component/{name}",
-        pages.component_detail,
-        methods=["GET"],
-        response_class=HTMLResponse,
-        include_in_schema=False,
-    )
-    router.add_api_route(
-        "/elements/{logical_id:path}",
-        pages.element_detail_view,
-        methods=["GET"],
-        response_class=HTMLResponse,
-        include_in_schema=False,
-    )
 
     # Precise return types are not Pydantic response fields; keep schema omitted.
     @router.get("/api/routes", include_in_schema=False, response_model=None)
@@ -157,10 +148,11 @@ def explorer_router() -> APIRouter:
         if isinstance(result, JSONResponse):
             return result
         if isinstance(result, dict) and "route" in result:
+            result = cast(dict[str, Any], result)
             result["scenario"] = redacted_app_scenario(
                 route=str(result.get("route")), ok=bool(result.get("ok"))
             )
-        return result
+        return cast(JsonObject, result)
 
     @router.post("/api/element-simulate", include_in_schema=False, response_model=None)
     async def api_element_simulate(request: Request) -> JSONResponse | JsonObject:
@@ -185,7 +177,7 @@ def explorer_router() -> APIRouter:
         if not isolated.get("ok"):
             return isolated
         result = isolated.get("result")
-        return result if isinstance(result, dict) else {"result": result}
+        return cast(dict[str, object], result) if isinstance(result, dict) else {"result": result}
 
     @router.get("/api/theme-lab", include_in_schema=False, response_model=None)
     async def api_theme_lab(request: Request) -> dict[str, object]:

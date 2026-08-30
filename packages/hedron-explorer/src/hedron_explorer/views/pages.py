@@ -5,7 +5,7 @@ from __future__ import annotations
 import html as html_lib
 import logging
 from pathlib import Path
-from typing import cast
+from typing import Any, cast
 
 from fastapi import HTTPException, Request
 
@@ -122,13 +122,19 @@ async def graph_view(request: Request) -> str:
         truncated=bool(payload["truncated"]),
         diagnostic=diagnostic if isinstance(diagnostic, str) else None,
     )
-    items = "".join(
-        f"<li>{html_lib.escape(str(edge.get('from')))} → "
-        f"{html_lib.escape(str(edge.get('kind')))} "
-        f"{html_lib.escape(str(edge.get('to')))}</li>"
-        for edge in payload.get("edges") or []
-        if isinstance(edge, dict)
-    )
+    edges_raw = payload.get("edges")
+    edges = cast(list[Any], edges_raw) if isinstance(edges_raw, list) else []
+    edge_rows: list[str] = []
+    for edge in edges:
+        if not isinstance(edge, dict):
+            continue
+        typed_edge = cast(dict[str, Any], edge)
+        edge_rows.append(
+            f"<li>{html_lib.escape(str(typed_edge.get('from')))} → "
+            f"{html_lib.escape(str(typed_edge.get('kind')))} "
+            f"{html_lib.escape(str(typed_edge.get('to')))}</li>"
+        )
+    items = "".join(edge_rows)
     return shell(
         "Graph",
         (
@@ -144,9 +150,11 @@ async def graph_view(request: Request) -> str:
 
 async def security_view(request: Request) -> str:
     payload = security_json(request)
-    findings = payload.get("findings") or []
+    findings_raw = payload.get("findings")
+    findings = cast(list[Any], findings_raw) if isinstance(findings_raw, list) else []
     items = "".join(f"<li>{html_lib.escape(str(f))}</li>" for f in findings)
-    audit = payload.get("audit_tail") or []
+    audit_raw = payload.get("audit_tail")
+    audit = cast(list[Any], audit_raw) if isinstance(audit_raw, list) else []
     audit_items = "".join(f"<li><pre>{html_lib.escape(str(entry))}</pre></li>" for entry in audit)
     return shell(
         "Security",
@@ -529,7 +537,11 @@ def _map_plan_facts_html(request: Request) -> str:
     plans: list[MapPlan] = []
     stored = getattr(getattr(request.app, "state", None), "hedron_map_plans", None)
     if isinstance(stored, (list, tuple)):
-        plans.extend(item for item in stored if isinstance(item, MapPlan))
+        plans.extend(
+            item
+            for item in cast(list[object] | tuple[object, ...], stored)
+            if isinstance(item, MapPlan)
+        )
     single = getattr(getattr(request.app, "state", None), "hedron_map_plan", None)
     if isinstance(single, MapPlan):
         plans.append(single)
@@ -613,7 +625,7 @@ async def packages_view(request: Request) -> str:
 
 
 async def elements_view(request: Request) -> str:
-    rows = []
+    rows: list[str] = []
     for meta in get_registry().element_definitions():
         href = explorer_href(request, f"/hedron-explorer/elements/{meta.logical_id}")
         events = html_lib.escape(", ".join(meta.events) or "—")
@@ -786,10 +798,11 @@ async def theme_lab_view(request: Request) -> str:
         right=request.query_params.get("right") or "aurora",
         profile=request.query_params.get("profile") or "core",
     )
-    cards = []
-    for theme in report["themes"]:
-        validation = theme["validation"]
-        tokens = theme["spec"]["tokens"]
+    cards: list[str] = []
+    for theme in cast(list[dict[str, Any]], report["themes"]):
+        validation = cast(dict[str, Any], theme["validation"])
+        spec = cast(dict[str, Any], theme["spec"])
+        tokens = cast(dict[str, Any], spec["tokens"])
         rows = "".join(
             f"<tr><th>{html_lib.escape(str(key))}</th><td><code>{html_lib.escape(str(value))}</code></td></tr>"
             for key, value in sorted(tokens.items())
@@ -827,7 +840,7 @@ async def theme_lab_view(request: Request) -> str:
 async def interactions_view(request: Request) -> str:
     catalog = app_catalog(request.app)
     page = page_interactions(request, catalog)
-    rows = []
+    rows: list[str] = []
     for entry in page.items:
         ident = html_lib.escape(entry.logical_id)
         kind = html_lib.escape(entry.kind)
@@ -869,7 +882,7 @@ async def features_view(request: Request) -> str:
     from hedron_core.bundles import included_bundles
 
     app_id = str(getattr(getattr(request.app, "state", None), "hedron_app_id", "") or "")
-    rows = []
+    rows: list[str] = []
     for bundle in included_bundles(app_id=app_id or None):
         ident = html_lib.escape(bundle.logical_id)
         provider = html_lib.escape(f"{bundle.provider} {bundle.provider_version}")

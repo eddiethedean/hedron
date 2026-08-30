@@ -34,6 +34,10 @@ _TOKEN_LIKE = re.compile(
 )
 
 
+def _default_allowed_hosts() -> frozenset[str]:
+    return frozenset()
+
+
 def normalize_host(host: str) -> str:
     return host.strip().lower().rstrip(".")
 
@@ -122,7 +126,7 @@ class GradioRemoteConfig:
     """Frozen remote policy for a declared Gradio destination."""
 
     base_url: str
-    allowed_hosts: frozenset[str] = field(default_factory=frozenset)
+    allowed_hosts: frozenset[str] = field(default_factory=_default_allowed_hosts)
     allowed_schemes: frozenset[str] = frozenset({"https"})
     allow_private_hosts: bool = False
     max_redirect_hops: int = 0

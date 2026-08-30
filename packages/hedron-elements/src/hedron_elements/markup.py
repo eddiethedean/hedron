@@ -6,11 +6,14 @@ import json
 import re
 from collections.abc import Mapping
 from html import escape
-from typing import Any, NoReturn
+from typing import Any, NoReturn, cast
 
 from hedron_core._html_meta import FORBIDDEN_ATTRS, URL_ATTRS
 from hedron_core.diagnostics import HedronError, error
-from hedron_core.html import _is_safe_layout_style, _normalize_srcset
+from hedron_core.html import (  # pyright: ignore[reportPrivateUsage]  # security parity seam
+    _is_safe_layout_style,  # pyright: ignore[reportPrivateUsage]
+    _normalize_srcset,  # pyright: ignore[reportPrivateUsage]
+)
 from hedron_core.htmx_eval import (
     canonical_hx_attribute,
     hx_attribute_is_url,
@@ -157,9 +160,11 @@ def _depth(value: object, current: int = 0) -> int:
     if current > MAX_STRUCTURED_DEPTH:
         return current
     if isinstance(value, Mapping):
-        return max((_depth(v, current + 1) for v in value.values()), default=current)
+        values = cast(Mapping[object, object], value).values()
+        return max((_depth(item, current + 1) for item in values), default=current)
     if isinstance(value, (list, tuple)):
-        return max((_depth(v, current + 1) for v in value), default=current)
+        values = cast(list[object] | tuple[object, ...], value)
+        return max((_depth(item, current + 1) for item in values), default=current)
     return current
 
 
@@ -181,7 +186,7 @@ def encode_structured_input(payload: Mapping[str, Any], *, instance_id: str) -> 
             explanation=f"Payload exceeds {MAX_STRUCTURED_BYTES} bytes.",
             remediation="Move large datasets to page/job endpoints.",
         )
-    if isinstance(payload, Mapping) and len(payload) > MAX_STRUCTURED_ITEMS:
+    if len(payload) > MAX_STRUCTURED_ITEMS:
         raise error(
             "HED-ELEMENT-0005",
             title="Structured input item limit",

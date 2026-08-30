@@ -21,6 +21,10 @@ from hedron_conformance.schema import (
 Evaluator = Callable[[ConformanceFixture], ExpectedOutcome]
 
 
+def _new_fixture_results() -> list[FixtureResult]:
+    return []
+
+
 @dataclass(frozen=True)
 class FixtureResult:
     fixture_id: str
@@ -35,7 +39,7 @@ class CapabilityResult:
     capability: Capability
     passed: int = 0
     failed: int = 0
-    results: list[FixtureResult] = field(default_factory=list)
+    results: list[FixtureResult] = field(default_factory=_new_fixture_results)
 
     @property
     def ok(self) -> bool:

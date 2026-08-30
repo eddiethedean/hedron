@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import html as html_lib
+from typing import Any, cast
 
 from fastapi import Request
 
@@ -148,17 +149,19 @@ def handle_graph_html(request: Request) -> str:
 
     app_id = str(getattr(getattr(request.app, "state", None), "hedron_app_id", "") or "")
     payload = handle_graph_payload(app_id=app_id or None)
-    nodes = payload.get("nodes") or []
-    if not isinstance(nodes, list) or not nodes:
+    nodes_raw = payload.get("nodes")
+    if not isinstance(nodes_raw, list) or not nodes_raw:
         return "<p>No refreshable views or commands registered.</p>"
-    rows = []
+    nodes = cast(list[Any], nodes_raw)
+    rows: list[str] = []
     for node in nodes:
         if not isinstance(node, dict):
             continue
-        kind = html_lib.escape(str(node.get("kind", "")))
-        effect = html_lib.escape(str(node.get("effect", "dynamic")))
-        ident = html_lib.escape(str(node.get("id", "")))
-        path = html_lib.escape(str(node.get("path", "")))
+        typed_node = cast(dict[str, Any], node)
+        kind = html_lib.escape(str(typed_node.get("kind", "")))
+        effect = html_lib.escape(str(typed_node.get("effect", "dynamic")))
+        ident = html_lib.escape(str(typed_node.get("id", "")))
+        path = html_lib.escape(str(typed_node.get("path", "")))
         rows.append(f"<tr><td>{ident}</td><td>{kind}</td><td>{effect}</td><td>{path}</td></tr>")
     body = "".join(rows)
     return (

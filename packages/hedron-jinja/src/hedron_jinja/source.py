@@ -98,7 +98,9 @@ EXPLICIT_FEATURES = frozenset(
         "alpine.plugins",
     }
 )
-KNOWN_FEATURES = frozenset().union(*PROFILE_FEATURES.values()) | EXPLICIT_FEATURES
+KNOWN_FEATURES: frozenset[str] = cast(
+    frozenset[str], frozenset().union(*PROFILE_FEATURES.values()) | EXPLICIT_FEATURES
+)
 # Inventory manifest types exist, but HDJ v1 has no dynamic/foreign loader authority.
 DEFERRED_V1_FEATURES: frozenset[str] = frozenset({"jinja.dynamic-dependencies", "jinja.foreign"})
 
@@ -550,8 +552,13 @@ def _constant_template_names(expr: nodes.Expr) -> tuple[str, ...] | None:
     if isinstance(expr, nodes.Const):
         if isinstance(expr.value, str):
             return (expr.value,)
-        if isinstance(expr.value, (tuple, list)) and all(isinstance(v, str) for v in expr.value):
-            return tuple(expr.value)
+        if isinstance(expr.value, (tuple, list)):
+            raw_values = cast(
+                tuple[object, ...] | list[object],
+                cast(Any, expr.value),  # pyright: ignore[reportUnknownMemberType]
+            )
+            if all(isinstance(v, str) for v in raw_values):
+                return tuple(cast(tuple[str, ...] | list[str], raw_values))
         return None
     if isinstance(expr, (nodes.Tuple, nodes.List)):
         values: list[str] = []

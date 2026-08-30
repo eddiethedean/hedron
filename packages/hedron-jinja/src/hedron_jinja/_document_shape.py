@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import re
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from html.parser import HTMLParser
+from typing import Any, cast
 
 _PAGE_DOCTYPE_RE = re.compile(r"^\s*<!doctype\s+html\b", re.IGNORECASE)
 
@@ -53,11 +54,14 @@ def document_tokens(rendered: str) -> tuple[str, ...]:
 def fingerprint_policy(value: object) -> object:
     """Build a hashable fingerprint of a policy/config value for cache keys."""
     if isinstance(value, Mapping):
-        return tuple(sorted((str(key), fingerprint_policy(item)) for key, item in value.items()))
+        mapping = cast(Mapping[Any, Any], value)
+        return tuple(sorted((str(key), fingerprint_policy(item)) for key, item in mapping.items()))
     if isinstance(value, (list, tuple)):
-        return tuple(fingerprint_policy(item) for item in value)
+        sequence = cast(Sequence[Any], value)
+        return tuple(fingerprint_policy(item) for item in sequence)
     if isinstance(value, (set, frozenset)):
-        return tuple(sorted(repr(fingerprint_policy(item)) for item in value))
+        items = cast(Sequence[Any], list(cast(set[Any] | frozenset[Any], value)))
+        return tuple(sorted(repr(fingerprint_policy(item)) for item in items))
     if isinstance(value, (str, int, float, bool, type(None))):
         return value
     return (type(value).__qualname__, id(value))

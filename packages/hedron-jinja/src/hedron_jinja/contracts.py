@@ -6,7 +6,7 @@ import re
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from types import MappingProxyType
-from typing import Generic, TypeVar
+from typing import Any, Generic, TypeVar, cast
 
 from hedron_core import Model, RenderMode, SafeUrl, TrustedHtml
 from hedron_core.compat import StrEnum
@@ -19,9 +19,11 @@ _REGION_ID_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_.:-]*$")
 
 def _deep_freeze(value: object) -> object:
     if isinstance(value, Mapping):
-        return MappingProxyType({str(key): _deep_freeze(item) for key, item in value.items()})
+        mapping = cast(Mapping[Any, Any], value)
+        return MappingProxyType({str(key): _deep_freeze(item) for key, item in mapping.items()})
     if isinstance(value, (list, tuple)):
-        return tuple(_deep_freeze(item) for item in value)
+        sequence = cast(tuple[Any, ...] | list[Any], value)
+        return tuple(_deep_freeze(item) for item in sequence)
     return value
 
 
@@ -66,15 +68,18 @@ class TemplateSpec(Generic[ViewT]):
         validate_template_name(self.name)
         if not self.name.endswith(".hdj"):
             raise ValueError("HDJ template names must end with '.hdj'")
-        if self.view_type is not None and (
-            not isinstance(self.view_type, type) or not issubclass(self.view_type, Model)
+        if self.view_type is not None and (  # pyright: ignore[reportUnnecessaryIsInstance]
+            not isinstance(self.view_type, type)  # pyright: ignore[reportUnnecessaryIsInstance]
+            or not issubclass(self.view_type, Model)  # pyright: ignore[reportUnnecessaryIsInstance]
         ):
             raise TypeError("view_type must be a Hedron Model subclass")
-        if self.mode is not None and not isinstance(self.mode, RenderMode):
+        if self.mode is not None and not isinstance(  # pyright: ignore[reportUnnecessaryIsInstance]
+            self.mode, RenderMode
+        ):
             raise TypeError("mode must be a RenderMode")
-        if not isinstance(self.source, TemplateSource):
+        if not isinstance(self.source, TemplateSource):  # pyright: ignore[reportUnnecessaryIsInstance]
             raise TypeError("source must be a TemplateSource")
-        if not isinstance(self.strict, bool):
+        if not isinstance(self.strict, bool):  # pyright: ignore[reportUnnecessaryIsInstance]
             raise TypeError("strict must be a bool")
         if self.logical_id is None:
             object.__setattr__(self, "logical_id", f"{self.source.value}:{self.name}")
@@ -82,15 +87,17 @@ class TemplateSpec(Generic[ViewT]):
             raise ValueError("logical_id must be a canonical non-empty ID")
         assets = tuple(self.assets)
         invalid_assets = any(
-            not isinstance(asset, str) or not _LOGICAL_ID_RE.fullmatch(asset) for asset in assets
+            not isinstance(asset, str)  # pyright: ignore[reportUnnecessaryIsInstance]
+            or not _LOGICAL_ID_RE.fullmatch(asset)
+            for asset in assets
         )
         if invalid_assets or len(assets) != len(set(assets)):
             raise ValueError("assets must contain unique canonical logical IDs")
         regions = dict(self.fragment_regions)
         if any(
-            not isinstance(region_id, str)
+            not isinstance(region_id, str)  # pyright: ignore[reportUnnecessaryIsInstance]
             or not _REGION_ID_RE.fullmatch(region_id)
-            or not isinstance(selector, str)
+            or not isinstance(selector, str)  # pyright: ignore[reportUnnecessaryIsInstance]
             or not selector.strip()
             for region_id, selector in regions.items()
         ):
@@ -235,7 +242,9 @@ class HdjContext:
         """Validate a static attribute name/value for template helpers (phase 0.14)."""
         import re
 
-        if not isinstance(name, str) or not re.fullmatch(r"[A-Za-z_][\w.-]*", name):
+        if not isinstance(name, str) or not re.fullmatch(  # pyright: ignore[reportUnnecessaryIsInstance]
+            r"[A-Za-z_][\w.-]*", name
+        ):
             raise ValueError(f"unsafe attribute name: {name!r}")
         lower = name.lower()
         if lower.startswith("on") or lower in {"style", "srcdoc"}:

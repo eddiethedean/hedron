@@ -13,6 +13,7 @@ in Django settings (as the reference app does). Form posts may use either
 ``csrfmiddlewaretoken`` (Django) or ``csrf_token`` (Hedron portable).
 """
 
+# Django request/META and middleware APIs are dynamic without django-stubs.
 from __future__ import annotations
 
 import logging
@@ -124,7 +125,7 @@ def validate_csrf(request: HttpRequest) -> None:
                 mutable = None
             if mutable is not None:
                 mutable["csrfmiddlewaretoken"] = portable
-                request.POST = mutable
+                request.__dict__["POST"] = mutable
             elif not (request.META.get(django_hdr) or request.META.get(portable_hdr)):
                 raise DjangoCsrfError(
                     "CSRF validation failed: could not read csrf_token from the POST "
@@ -138,10 +139,8 @@ def validate_csrf(request: HttpRequest) -> None:
     def _forbidden(_req: DjangoHttpRequest) -> HttpResponse:
         return HttpResponseForbidden(b"CSRF")
 
-    def _noop_view(
-        _req: DjangoHttpRequest, *_args: object, **_kwargs: object
-    ) -> HttpResponse | None:
-        return None
+    def _noop_view(_req: DjangoHttpRequest, *_args: object, **_kwargs: object) -> HttpResponse:
+        return HttpResponse()
 
     middleware = CsrfViewMiddleware(_forbidden)
     rejected = middleware.process_view(request, _noop_view, (), {})

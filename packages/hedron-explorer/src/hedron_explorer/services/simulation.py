@@ -34,19 +34,22 @@ def parse_regions(inference: dict[str, Any]) -> dict[str, str]:
     regions_raw = inference.get("fragment_regions")
     regions: dict[str, str] = {}
     if isinstance(regions_raw, list):
-        for item in regions_raw:
+        for item in cast(list[object], regions_raw):
             if not isinstance(item, dict):
                 continue
-            rid = item.get("id")
-            selector = item.get("selector")
+            typed_item = cast(dict[str, Any], item)
+            rid = typed_item.get("id")
+            selector = typed_item.get("selector")
             if isinstance(rid, str) and rid and isinstance(selector, str) and selector:
                 regions[rid] = selector
         return regions
     if isinstance(regions_raw, dict):
-        for key, value in regions_raw.items():
+        for key, value in cast(dict[object, object], regions_raw).items():
             if isinstance(value, dict):
-                selector = value.get("selector")
-                regions[str(key)] = str(selector) if selector is not None else str(value)
+                selector = cast(dict[str, Any], value).get("selector")
+                regions[str(key)] = (
+                    str(selector) if selector is not None else str(cast(object, value))
+                )
             else:
                 regions[str(key)] = str(value)
         return regions
@@ -58,7 +61,7 @@ def parse_regions(inference: dict[str, Any]) -> dict[str, str]:
         except (SyntaxError, ValueError):
             parsed = {}
         if isinstance(parsed, dict):
-            regions = {str(k): str(v) for k, v in parsed.items()}
+            regions = {str(k): str(v) for k, v in cast(dict[object, object], parsed).items()}
     return regions
 
 
@@ -154,6 +157,7 @@ async def simulate(request: Request) -> Any:
         return JSONResponse({"detail": "Invalid JSON body"}, status_code=400)
     if not isinstance(payload, dict):
         return JSONResponse({"detail": "JSON object required"}, status_code=400)
+    payload = cast(dict[str, Any], payload)
     unknown = set(payload) - SIMULATE_KEYS
     if unknown:
         return JSONResponse(
@@ -264,6 +268,7 @@ async def element_simulate(request: Request) -> Any:
         return JSONResponse({"detail": "Invalid JSON body"}, status_code=400)
     if not isinstance(payload, dict):
         return JSONResponse({"detail": "JSON object required"}, status_code=400)
+    payload = cast(dict[str, Any], payload)
     logical_id = payload.get("logical_id")
     failure = payload.get("failure", "none")
     if not isinstance(logical_id, str) or not logical_id:

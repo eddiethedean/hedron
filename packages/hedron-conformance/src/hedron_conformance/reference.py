@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import html as html_stdlib
-from typing import Any
+from typing import Any, cast
 
 from hedron_conformance.normalize import normalize_html, normalize_identity
 from hedron_conformance.schema import Capability, ConformanceFixture, ExpectedOutcome
@@ -29,10 +29,11 @@ def _render_node(node: dict[str, Any]) -> str:
         safe = str(node.get("text", "")).replace("--", " - - ")
         return f"<!--{safe}-->"
     if kind == "fragment":
-        return "".join(_render_node(child) for child in node.get("children", []))
+        children = cast(list[dict[str, Any]], node.get("children", []))
+        return "".join(_render_node(child) for child in children)
     if kind == "element":
         tag = str(node.get("tag", "div")).lower()
-        attrs = node.get("attributes") or {}
+        attrs = cast(dict[str, Any], node.get("attributes") or {})
         attr_parts: list[str] = []
         for name in sorted(attrs.keys()):
             value = attrs[name]
@@ -60,7 +61,8 @@ def _render_node(node: dict[str, Any]) -> str:
         }
         if void:
             return f"<{tag}{attr_str}>"
-        inner = "".join(_render_node(child) for child in node.get("children", []))
+        children = cast(list[dict[str, Any]], node.get("children", []))
+        inner = "".join(_render_node(child) for child in children)
         return f"<{tag}{attr_str}>{inner}</{tag}>"
     raise ValueError(f"unknown node kind: {kind!r}")
 
@@ -105,7 +107,7 @@ def _a11y_ok(tree: dict[str, Any]) -> bool:
         if node.get("kind") != "element":
             return all(walk(c) for c in node.get("children", []))
         tag = str(node.get("tag", "")).lower()
-        attrs = node.get("attributes") or {}
+        attrs = cast(dict[str, Any], node.get("attributes") or {})
         element_id = attrs.get("id")
         if isinstance(element_id, str) and element_id in seen_ids:
             return False
@@ -114,13 +116,14 @@ def _a11y_ok(tree: dict[str, Any]) -> bool:
         if tag == "img" and "alt" not in attrs:
             return False
         if tag == "button":
-            children = node.get("children") or []
+            children = cast(list[dict[str, Any]], node.get("children") or [])
             text = "".join(
                 str(c.get("text", "")) for c in children if c.get("kind") == "text"
             ).strip()
             aria = attrs.get("aria-label") or attrs.get("aria-labelledby")
             if not text and not aria:
                 return False
-        return all(walk(c) for c in node.get("children", []))
+        children = cast(list[dict[str, Any]], node.get("children", []))
+        return all(walk(child) for child in children)
 
     return walk(tree)

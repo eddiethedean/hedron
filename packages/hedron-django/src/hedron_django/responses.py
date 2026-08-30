@@ -26,7 +26,7 @@ from hedron_core.interaction import (
 from hedron_core.interaction_067 import Outcome, OutcomeKind
 from hedron_core.mount import normalize_mount_path, prefix_local_path
 from hedron_core.page_assets import inject_page_assets
-from hedron_core.rendering import RenderContext, RenderMode, RenderResult, render
+from hedron_core.rendering import AssetRef, RenderContext, RenderMode, RenderResult, render
 from hedron_core.security_policy import SecurityPolicy
 from hedron_core.typing_aliases import JsonValue
 from hedron_django.htmx import render_mode_for_request
@@ -39,7 +39,7 @@ __all__ = [
 ]
 
 
-def _outcome_response(
+def _outcome_response(  # pyright: ignore[reportUnusedFunction]
     result: Outcome,
     *,
     request: HttpRequest | None = None,
@@ -86,7 +86,7 @@ def _outcome_response(
         }
         events: dict[str, JsonValue] = {}
         regions: list[FragmentRegion] = []
-        for raw_handle in handles:
+        for raw_handle in cast(list[object], handles):
             if not isinstance(raw_handle, str):
                 return HttpResponse(
                     b"refresh outcome handles must be strings",
@@ -161,17 +161,7 @@ def _outcome_response(
 def _headers_mapping(request: HttpRequest | None) -> dict[str, str]:
     if request is None:
         return {}
-    headers = getattr(request, "headers", None)
-    items = getattr(headers, "items", None)
-    if not callable(items):
-        return {}
-    raw_items = items()
-    if not isinstance(raw_items, (list, tuple)):
-        try:
-            raw_items = list(raw_items)  # type: ignore[arg-type]
-        except TypeError:
-            return {}
-    return {str(k): str(v) for k, v in raw_items}
+    return {str(key): str(value) for key, value in request.headers.items()}
 
 
 def _header_value(headers: Mapping[str, str], name: str) -> str | None:
@@ -188,7 +178,7 @@ def _header_value(headers: Mapping[str, str], name: str) -> str | None:
 
 def _fragment_value(value: NodeLike | Component[Any]) -> NodeLike | Component[Any]:
     if isinstance(value, Page):
-        children = list(value._children)
+        children = list(value.child_nodes)
         if len(children) == 1:
             return children[0]  # type: ignore[no-any-return]
         return children  # type: ignore[return-value]
@@ -280,7 +270,7 @@ def _default_render_context(request: HttpRequest | None) -> RenderContext:
         from django.middleware.csrf import get_token
 
         token = get_token(request)
-        if isinstance(token, str) and token:
+        if token:
             csrf_token = token
     except ImproperlyConfigured:
         csrf_token = None
@@ -385,7 +375,7 @@ def _inject_page_html(
         static_href=_django_static_href,
         theme=theme,
         plan=resolved,
-        assets=assets if isinstance(assets, tuple) else None,
+        assets=cast(tuple[AssetRef, ...], assets) if isinstance(assets, tuple) else None,
         browser_plan=browser_plan,
     )
 

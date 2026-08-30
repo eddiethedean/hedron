@@ -70,7 +70,7 @@ class LogConsole(Component[LogConsoleProps]):
         )
 
     def render(self) -> NodeLike:
-        rows = []
+        rows: list[NodeLike] = []
         for line in self.props.lines:
             text = _redact_log_text(line.text) if self.props.redact else line.text
             rows.append(

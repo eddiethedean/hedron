@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import secrets
-from typing import TYPE_CHECKING
+from collections.abc import Sequence
+from typing import TYPE_CHECKING, cast
 
 from werkzeug.exceptions import Forbidden
 
@@ -101,11 +102,13 @@ def _trusted_proxy_peers(request: Request) -> set[str]:
         if isinstance(configured, str):
             peers.update(part.strip() for part in configured.split(",") if part.strip())
         elif isinstance(configured, (list, tuple, set, frozenset)):
-            peers.update(str(item).strip() for item in configured if str(item).strip())
+            configured_values = cast(Sequence[object], configured)
+            peers.update(str(item).strip() for item in configured_values if str(item).strip())
         extension = app.extensions.get("hedron") if hasattr(app, "extensions") else None
         ext_peers = getattr(extension, "trusted_peers", None) if extension is not None else None
         if isinstance(ext_peers, (list, tuple, set, frozenset)):
-            peers.update(str(item).strip() for item in ext_peers if str(item).strip())
+            extension_values = cast(Sequence[object], ext_peers)
+            peers.update(str(item).strip() for item in extension_values if str(item).strip())
     return peers
 
 

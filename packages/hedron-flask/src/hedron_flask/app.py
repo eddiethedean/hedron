@@ -28,7 +28,11 @@ from hedron_flask.csrf import (
     validate_csrf,
 )
 from hedron_flask.htmx import htmx_context, render_mode_for_request
-from hedron_flask.responses import _outcome_response, component_response, interaction_response
+from hedron_flask.responses import (  # pyright: ignore[reportPrivateUsage]
+    _outcome_response,  # pyright: ignore[reportPrivateUsage]
+    component_response,
+    interaction_response,
+)
 from hedron_flask.routing import FlaskUrlReverser
 from hedron_flask.static_mount import mount_hedron_static
 
@@ -228,7 +232,7 @@ class HedronFlask:
         context: RenderContext | None = None,
         mode: RenderMode | None = None,
     ) -> str:
-        from hedron_flask.responses import _render_body
+        from hedron_flask.responses import _render_body  # pyright: ignore[reportPrivateUsage]
 
         headers = dict(request.headers)
         result = _render_body(
@@ -374,7 +378,7 @@ class HedronFlask:
         ) and not isinstance(value, RenderResult):
             await prepare_tree(value)  # type: ignore[arg-type]
         return component_response(
-            value,
+            cast(NodeLike | Component[Any] | RenderResult | None, value),
             context=context,
             mode=mode,
             extra_headers=extra_headers,
@@ -418,7 +422,15 @@ class HedronFlask:
                 tenant_id=None,
             )
         scopes_raw = flask_session.get("scopes", ())
-        scopes = tuple(scopes_raw) if isinstance(scopes_raw, (list, tuple)) else ()
+        scopes = (
+            tuple(
+                item
+                for item in cast(list[object] | tuple[object, ...], scopes_raw)
+                if isinstance(item, str)
+            )
+            if isinstance(scopes_raw, (list, tuple))
+            else ()
+        )
         tenant_id = flask_session.get("tenant_id")
         return AuthSignal(
             authenticated=authenticated,

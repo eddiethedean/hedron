@@ -111,7 +111,7 @@ def _token_presentation(
 
 
 def _tokens_match(expected: str, provided: str | None) -> bool:
-    if provided is None or not isinstance(provided, str):
+    if provided is None:
         return False
     if len(provided) != len(expected):
         # Keep a digest work unit so length mismatches are not free.

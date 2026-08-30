@@ -16,7 +16,11 @@ from hedron_core.interaction_067 import Outcome
 from hedron_core.mount import prefix_local_path
 from hedron_core.rendering import RenderResult
 from hedron_flask.csrf import DEFAULT_CSRF_COOKIE, validate_csrf
-from hedron_flask.responses import _outcome_response, component_response, interaction_response
+from hedron_flask.responses import (  # pyright: ignore[reportPrivateUsage]
+    _outcome_response,  # pyright: ignore[reportPrivateUsage]
+    component_response,
+    interaction_response,
+)
 
 __all__ = [
     "FlaskUrlReverser",
@@ -30,12 +34,12 @@ _SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS", "TRACE"})
 
 def _as_node_like(value: object) -> NodeLike | Component[Any]:
     if isinstance(value, Component):
-        return value
+        return cast(Component[Any], value)
     if isinstance(value, ComponentNode):
         return value
     if isinstance(value, (str, int, float, bool)) or value is None:
         return value
-    return cast(NodeLike, value)
+    return cast(NodeLike | Component[Any], value)
 
 
 class FlaskUrlReverser:
@@ -143,7 +147,7 @@ def hedron_route(
                 value, "__hedron_component__"
             ):
                 return component_response(
-                    _as_node_like(value),
+                    _as_node_like(cast(object, value)),
                     authenticated=authenticated,
                     fragment_regions=fragment_regions,
                     allow_undeclared_targets=allow_undeclared_targets,

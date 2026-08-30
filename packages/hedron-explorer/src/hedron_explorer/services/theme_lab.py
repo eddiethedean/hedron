@@ -62,7 +62,7 @@ def theme_lab_report(
 
     left_spec = available[names[0]]
     right_spec = available[names[1]] if len(names) > 1 else left_spec
-    warnings = []
+    warnings: list[dict[str, str]] = []
     for name, spec in ((names[0], left_spec), (names[1], right_spec)):
         for token, value in spec.tokens.items():
             if isinstance(value, str) and ("color(" in value or "var(" in value):

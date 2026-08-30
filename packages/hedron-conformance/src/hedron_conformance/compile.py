@@ -4,9 +4,14 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass, field
+from typing import cast
 
 from hedron_conformance.compat import check_contract_version, check_fixture_version
 from hedron_conformance.schema import Capability, ConformanceFixture
+
+
+def _new_errors() -> list[str]:
+    return []
 
 
 @dataclass
@@ -14,9 +19,9 @@ class CompileReport:
     """Result of compiling (validating) a fixture suite."""
 
     ok: bool
-    errors: list[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=_new_errors)
     fixture_count: int = 0
-    fixture_ids: list[str] = field(default_factory=list)
+    fixture_ids: list[str] = field(default_factory=_new_errors)
 
 
 def compile_suite(fixtures: Sequence[ConformanceFixture]) -> CompileReport:
@@ -36,11 +41,8 @@ def compile_suite(fixtures: Sequence[ConformanceFixture]) -> CompileReport:
         if not fixture.id.strip():
             errors.append(f"{prefix}: empty fixture id")
 
-        cap_value = (
-            fixture.capability.value
-            if isinstance(fixture.capability, Capability)
-            else str(fixture.capability)
-        )
+        capability = cast(object, fixture.capability)
+        cap_value = capability.value if isinstance(capability, Capability) else str(capability)
         if cap_value not in known_capabilities:
             errors.append(f"{prefix}: unknown capability {cap_value!r}")
 

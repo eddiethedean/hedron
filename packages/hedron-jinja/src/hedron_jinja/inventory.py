@@ -252,10 +252,10 @@ def reconcile_csp(
 
 @dataclass
 class ProductionInventory:
-    templates: list[JsonObject] = field(default_factory=list)
+    templates: list[JsonObject] = field(default_factory=lambda: cast(list[JsonObject], []))
     dynamic_manifest_fingerprint: str | None = None
-    capabilities: list[str] = field(default_factory=list)
-    foreign_namespaces: list[str] = field(default_factory=list)
+    capabilities: list[str] = field(default_factory=lambda: cast(list[str], []))
+    foreign_namespaces: list[str] = field(default_factory=lambda: cast(list[str], []))
 
     def as_dict(self) -> JsonObject:
         return {

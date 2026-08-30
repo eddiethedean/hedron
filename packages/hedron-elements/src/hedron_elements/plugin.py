@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from hedron_core.identifiers import content_digest
 from hedron_core.plugins import (
@@ -93,19 +93,20 @@ def _register_static_assets(ctx: PluginContext) -> None:
 
 
 def _register_component(ctx: PluginContext, component_type: type, meta: Mapping[str, Any]) -> None:
+    typed_component = cast(Any, component_type)
     logical = (
-        f"{component_type.distribution}:{component_type.__module__}."
-        f"{getattr(component_type, 'logical_name', component_type.__name__)}"
+        f"{typed_component.distribution}:{typed_component.__module__}."
+        f"{getattr(typed_component, 'logical_name', typed_component.__name__)}"
     )
     asset_id = str(meta["module_asset_id"])
     module_name = _MODULE_FILENAMES.get(asset_id, asset_id.split(":")[-1])
     ctx.register_component(
         logical_id=logical,
-        name=getattr(component_type, "logical_name", component_type.__name__)
-        or component_type.__name__,
-        module=component_type.__module__,
-        distribution=component_type.distribution,
-        props_model=component_type.props_type.__name__,
+        name=getattr(typed_component, "logical_name", typed_component.__name__)
+        or typed_component.__name__,
+        module=typed_component.__module__,
+        distribution=typed_component.distribution,
+        props_model=typed_component.props_type.__name__,
         browser_modules=(str(_STATIC / module_name),),
         accessibility_notes="Progressive-enhancement Web Component with native fallback.",
     )

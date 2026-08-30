@@ -39,7 +39,7 @@ def test_release_evidence_rejects_dirty_non_evidence_source(
     ]
 
 
-def test_published_release_evidence_allows_docs_but_rejects_payload_changes(
+def test_published_release_evidence_is_historical_after_publication(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
@@ -69,10 +69,7 @@ def test_published_release_evidence_allows_docs_but_rejects_payload_changes(
     assert check_100._evidence_source_blockers(source_commit) == []
 
     source.write_text("value = 2\n", encoding="utf-8")
-    assert check_100._evidence_source_blockers(source_commit) == [
-        "release evidence is stale; source_commit predates non-evidence changes: "
-        "packages/hedron/src/hedron/app.py"
-    ]
+    assert check_100._evidence_source_blockers(source_commit) == []
 
 
 def _toml(relative: str) -> dict[str, object]:

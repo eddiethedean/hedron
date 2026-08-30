@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from importlib import resources
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from pydantic import BaseModel, ConfigDict
 
@@ -78,7 +78,9 @@ def load_bundled_fixtures() -> list[ConformanceFixture]:
     for path in sorted(directory.glob("*.json")):
         data = json.loads(path.read_text(encoding="utf-8"))
         if isinstance(data, list):
-            fixtures.extend(ConformanceFixture.model_validate(item) for item in data)
+            fixtures.extend(
+                ConformanceFixture.model_validate(item) for item in cast(list[Any], data)
+            )
         else:
             fixtures.append(ConformanceFixture.model_validate(data))
     return fixtures

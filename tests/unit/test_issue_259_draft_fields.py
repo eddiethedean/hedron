@@ -42,6 +42,23 @@ def test_exact_forbidden_tokens_still_rejected() -> None:
         _envelope({"html_preview": "<p>"})
 
 
+def test_runtime_constructed_identity_fields_must_still_be_strings() -> None:
+    envelope = DraftTransferEnvelope(
+        app=1,  # type: ignore[arg-type]
+        route_family="r",
+        element_contract="c",
+        schema_version="1",
+        subject="s",
+        fields={},
+        created_at=100,
+        expires_at=200,
+        operation_id="op1",
+    )
+
+    with pytest.raises(ValueError, match="non-empty strings"):
+        envelope.validate(now=100)
+
+
 def test_js_valid_draft_uses_exact_token_set() -> None:
     source = STATIC.read_text(encoding="utf-8")
     assert "forbidden.test(key)" not in source

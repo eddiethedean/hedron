@@ -6,6 +6,7 @@ import html as html_stdlib
 import logging
 import os
 from collections.abc import Callable
+from typing import cast
 
 __version__ = "0.1.3"
 
@@ -29,9 +30,10 @@ def _py_escape_attr(value: str) -> str:
 
 def _load_extension() -> tuple[Callable[[str], str] | None, Callable[[str], str] | None]:
     try:
-        from hedron_native._native import escape_attr as native_attr
-        from hedron_native._native import escape_text as native_text
+        import hedron_native._native as extension
 
+        native_text = cast(Callable[[str], str], extension.escape_text)  # pyright: ignore[reportUnknownMemberType]
+        native_attr = cast(Callable[[str], str], extension.escape_attr)  # pyright: ignore[reportUnknownMemberType]
         return native_text, native_attr
     except (ImportError, OSError) as exc:
         _logger.debug("hedron_native extension unavailable; using Python escape: %s", exc)

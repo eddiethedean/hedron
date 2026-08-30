@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 AUTHORING_LOOP_SCHEMA_VERSION = "hedron-authoring-loop-1"
 
@@ -32,6 +32,10 @@ Boundary = Literal[
 ]
 
 
+def _empty_details() -> dict[str, Any]:
+    return {}
+
+
 @dataclass(frozen=True, slots=True)
 class AuthoringLoopDiagnostic:
     """Machine-readable diagnostic that survives tool boundaries."""
@@ -40,7 +44,7 @@ class AuthoringLoopDiagnostic:
     message: str
     boundary: Boundary
     severity: Literal["error", "warning", "information"] = "error"
-    details: dict[str, Any] = field(default_factory=dict)
+    details: dict[str, Any] = field(default_factory=_empty_details)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -68,6 +72,7 @@ class AuthoringLoopFixture:
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> AuthoringLoopFixture:
         version = str(data.get("schema_version") or AUTHORING_LOOP_SCHEMA_VERSION)
+        raw_diagnostics = cast(list[dict[str, Any]], data.get("diagnostics") or [])
         diagnostics = tuple(
             AuthoringLoopDiagnostic(
                 code=str(row["code"]),
@@ -76,7 +81,7 @@ class AuthoringLoopFixture:
                 severity=row.get("severity", "error"),  # type: ignore[arg-type]
                 details=dict(row.get("details") or {}),
             )
-            for row in (data.get("diagnostics") or [])
+            for row in raw_diagnostics
         )
         return cls(
             fixture_id=str(data["fixture_id"]),

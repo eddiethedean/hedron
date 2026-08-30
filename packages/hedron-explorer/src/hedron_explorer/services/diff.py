@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any
+from typing import Any, cast
 
 from hedron_core.catalog import compile_interaction_catalog, get_sealed_catalog
 from hedron_core.registry import get_registry
@@ -74,8 +74,8 @@ def diff_baselines(
             changes[key] = {"added": [], "removed": [], "changed": False}
             continue
         if isinstance(old, list) and isinstance(new, list):
-            old_set = set(old)
-            new_set = set(new)
+            old_set = set(cast(list[Any], old))
+            new_set = set(cast(list[Any], new))
             changes[key] = {
                 "added": sorted(new_set - old_set),
                 "removed": sorted(old_set - new_set),
@@ -108,7 +108,7 @@ def stored_baseline(holder: object | None = None) -> dict[str, Any]:
     state = getattr(holder, "state", None)
     existing = getattr(state, _STATE_ATTR, None) if state is not None else None
     if isinstance(existing, dict):
-        return existing
+        return cast(dict[str, Any], existing)
     return snapshot_diff_baseline(holder)
 
 
@@ -124,15 +124,20 @@ def format_diff_html(report: Mapping[str, Any]) -> str:
     if not isinstance(changes, dict):
         return "<p>No catalog diff.</p>"
     rows: list[str] = []
-    for key, change in changes.items():
+    for key, change in cast(dict[object, object], changes).items():
         if not isinstance(change, dict):
             continue
-        added = ", ".join(str(item) for item in change.get("added") or []) or "—"
-        removed = ", ".join(str(item) for item in change.get("removed") or []) or "—"
+        typed_change = cast(dict[str, Any], change)
+        added_raw = typed_change.get("added")
+        removed_raw = typed_change.get("removed")
+        added_values = cast(list[Any], added_raw) if isinstance(added_raw, list) else []
+        removed_values = cast(list[Any], removed_raw) if isinstance(removed_raw, list) else []
+        added = ", ".join(str(item) for item in added_values) or "—"
+        removed = ", ".join(str(item) for item in removed_values) or "—"
         rows.append(
             "<tr>"
             f"<td>{html_lib.escape(str(key))}</td>"
-            f"<td>{html_lib.escape(str(change.get('changed')))}</td>"
+            f"<td>{html_lib.escape(str(typed_change.get('changed')))}</td>"
             f"<td>{html_lib.escape(added)}</td>"
             f"<td>{html_lib.escape(removed)}</td>"
             "</tr>"

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
+from typing import cast
 
 from fastapi import Request
 
@@ -17,7 +18,7 @@ def project_component_roots(request: Request | None) -> list[Path]:
         return roots
     configured = getattr(request.app.state, "hedron_component_roots", None)
     if configured:
-        roots.extend(Path(p).resolve() for p in configured)
+        roots.extend(Path(str(p)).resolve() for p in cast(list[object], configured))
     project_root = getattr(request.app.state, "hedron_project_root", None)
     if project_root:
         try:
@@ -33,7 +34,9 @@ def project_component_roots(request: Request | None) -> list[Path]:
             if callable(resolved):
                 extra = resolved(base=Path(project_root))
                 if isinstance(extra, (list, tuple)):
-                    roots.extend(Path(p) for p in extra)
+                    roots.extend(
+                        Path(str(p)) for p in cast(list[object] | tuple[object, ...], extra)
+                    )
         except Exception as exc:  # noqa: BLE001
             _logger.debug("Explorer component roots from settings unavailable: %s", exc)
     return roots

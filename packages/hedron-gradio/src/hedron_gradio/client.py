@@ -6,7 +6,7 @@ import logging
 import re
 from collections.abc import Callable, Iterator, Mapping
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, cast
 
 from hedron_gradio.artifacts import ArtifactStore
 from hedron_gradio.errors import GradioRemoteError
@@ -20,6 +20,11 @@ _GRADIO_CLIENT_IMPORT_ERROR = (
 )
 
 _VERSION_RE = re.compile(r"^(\d+)\.(\d+)(?:\.(\d+))?")
+
+
+def _new_session_state() -> dict[str, Any]:
+    return {}
+
 
 __all__ = [
     "GradioClientAdapter",
@@ -51,7 +56,7 @@ class GradioClientAdapter:
     auth_subject: str | None = None
     _transport: Callable[..., Any] | None = field(default=None, repr=False)
     _offline: bool = field(default=False, repr=False)
-    session_state: dict[str, Any] = field(default_factory=dict)
+    session_state: dict[str, Any] = field(default_factory=_new_session_state)
     _artifact_store: ArtifactStore | None = field(default=None, repr=False)
     _job_manager: GradioJobManager | None = field(default=None, repr=False)
 
@@ -128,7 +133,7 @@ class GradioClientAdapter:
         if self._transport is not None:
             result = self._transport("predict", endpoint=endpoint, payload=dict(payload))
             if isinstance(result, dict):
-                return result
+                return cast(dict[str, Any], result)
             return {"result": result}
         if self.endpoints:
             return {"endpoint": endpoint.name, "payload": dict(payload), "status": "ok"}
@@ -156,16 +161,21 @@ class GradioClientAdapter:
                 endpoint_name="",
                 payload={},
             )
-            if isinstance(raw, dict) and raw.get("status") == "complete":
+            raw_mapping: Mapping[str, Any] = (
+                cast(Mapping[str, Any], raw) if isinstance(raw, dict) else {}
+            )
+            if raw_mapping.get("status") == "complete":
                 status = job_manager.complete(
                     job_id,
                     scope_key=self.scope_key,
-                    result=dict(raw.get("result") or raw),
+                    result=cast(dict[str, Any], raw_mapping.get("result") or raw_mapping),
                 )
                 return status.as_dict()
         status = job_manager.poll(job_id, scope_key=self.scope_key)
         if status.status == "running" and self.endpoints:
-            record = job_manager._get_scoped(job_id, self.scope_key)
+            record = job_manager._get_scoped(  # pyright: ignore[reportPrivateUsage]  # scoped adapter seam
+                job_id, self.scope_key
+            )
             status = job_manager.complete(
                 job_id,
                 scope_key=self.scope_key,
@@ -259,7 +269,7 @@ class GradioClientAdapter:
         result = self._transport("discover", base_url=self.base_url)
         if not isinstance(result, list):
             return []
-        return [item for item in result if isinstance(item, GradioEndpoint)]
+        return [item for item in cast(list[Any], result) if isinstance(item, GradioEndpoint)]
 
     def _discover_via_gradio_client(self) -> list[GradioEndpoint]:
         try:
@@ -277,7 +287,7 @@ class GradioClientAdapter:
             client_kwargs: dict[str, Any] = {}
             if self.auth_token:
                 client_kwargs["hf_token"] = self.auth_token
-            client = Client(self.base_url, **client_kwargs)
+            client = cast(Any, Client(self.base_url, **client_kwargs))
         except Exception as exc:
             message = redact_sensitive_text(str(exc))
             raise GradioRemoteError(f"Failed to connect to Gradio app: {message}") from exc
@@ -314,39 +324,51 @@ class GradioClientAdapter:
         if info is None:
             config = getattr(client, "config", None)
             if isinstance(config, Mapping):
-                info = config
+                info = cast(Mapping[str, Any], config)
 
         named: dict[str, Any] = {}
         if isinstance(info, Mapping):
+            info_mapping = cast(Mapping[str, Any], info)
             for key in ("named_endpoints", "endpoints", "api"):
-                block = info.get(key)
+                block = info_mapping.get(key)
                 if isinstance(block, Mapping):
-                    named.update(dict(block))
-            deps = info.get("dependencies")
+                    named.update(dict(cast(Mapping[str, Any], block)))
+            deps = info_mapping.get("dependencies")
             if isinstance(deps, list):
-                for idx, dep in enumerate(deps):
+                typed_deps = cast(list[Any], deps)
+                for idx, dep in enumerate(typed_deps):
                     if not isinstance(dep, Mapping):
                         continue
-                    api_name = str(dep.get("api_name") or dep.get("name") or f"/fn_{idx}")
-                    named[api_name] = dep
+                    dep_mapping = cast(Mapping[str, Any], dep)
+                    api_name = str(
+                        dep_mapping.get("api_name") or dep_mapping.get("name") or f"/fn_{idx}"
+                    )
+                    named[api_name] = dep_mapping
         elif isinstance(info, list):
-            for idx, dep in enumerate(info):
+            for idx, dep in enumerate(cast(list[Any], info)):
                 if isinstance(dep, Mapping):
-                    api_name = str(dep.get("api_name") or dep.get("name") or f"/fn_{idx}")
-                    named[api_name] = dep
+                    dep_mapping = cast(Mapping[str, Any], dep)
+                    api_name = str(
+                        dep_mapping.get("api_name") or dep_mapping.get("name") or f"/fn_{idx}"
+                    )
+                    named[api_name] = dep_mapping
 
         endpoints: list[GradioEndpoint] = []
         for api_name, meta in named.items():
             if not isinstance(meta, Mapping):
                 continue
-            name = str(meta.get("name") or api_name).lstrip("/")
-            params = meta.get("parameters") or meta.get("inputs") or {}
-            if not isinstance(params, Mapping):
-                params = {"items": params}
+            meta_mapping = cast(Mapping[str, Any], meta)
+            name = str(meta_mapping.get("name") or api_name).lstrip("/")
+            raw_params: Any = meta_mapping.get("parameters") or meta_mapping.get("inputs") or {}
+            params: Mapping[str, Any] = (
+                cast(Mapping[str, Any], raw_params)
+                if isinstance(raw_params, Mapping)
+                else {"items": raw_params}
+            )
             supports_stream = bool(
-                meta.get("supports_stream")
-                or meta.get("streaming")
-                or "stream" in str(meta.get("type", "")).lower()
+                meta_mapping.get("supports_stream")
+                or meta_mapping.get("streaming")
+                or "stream" in str(meta_mapping.get("type", "")).lower()
             )
             endpoints.append(
                 GradioEndpoint(

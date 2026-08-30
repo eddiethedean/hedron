@@ -59,3 +59,19 @@ def test_compile_rejects_unknown_contract_version() -> None:
     report = compile_suite([bad])
     assert not report.ok
     assert any("contract_version" in err for err in report.errors)
+
+
+def test_compile_reports_runtime_constructed_unknown_capability() -> None:
+    malformed = ConformanceFixture.model_construct(
+        id="bad-capability",
+        capability="unknown",
+        contract_version="hedron-portable-1",
+        fixture_version="1",
+        input=FixtureInput(kind="diagnostic"),
+        expected=ExpectedOutcome(),
+    )
+
+    report = compile_suite([malformed])
+
+    assert not report.ok
+    assert any("unknown capability 'unknown'" in error for error in report.errors)

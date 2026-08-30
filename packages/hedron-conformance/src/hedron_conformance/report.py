@@ -8,7 +8,7 @@ import json
 import xml.etree.ElementTree as ET
 from collections.abc import Mapping, Sequence
 from datetime import datetime, timezone
-from typing import Any
+from typing import Any, cast
 
 from hedron_conformance.runner import KitReport
 from hedron_conformance.schema import CONTRACT_VERSION
@@ -173,8 +173,8 @@ def verify_envelope_digest(
     body = envelope.get("report")
     if not isinstance(body, dict):
         return False
-    canonical = _canonical_json(body)
-    provenance = envelope.get("provenance") or {}
+    canonical = _canonical_json(cast(dict[str, Any], body))
+    provenance = cast(dict[str, Any], envelope.get("provenance") or {})
     expected = str(provenance.get("digest", ""))
     algorithm = str(provenance.get("algorithm", ""))
     if algorithm == "hmac-sha256":

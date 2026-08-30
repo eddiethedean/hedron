@@ -23,8 +23,8 @@ from hedron_posit.resolve import (
     RESOLVED_MOUNT_ENV,
     RESOLVED_PUBLIC_BASE_ENV,
     RESOLVED_SOURCE_ENV,
-    _merge_environ,
-    _translate_error,
+    _merge_environ,  # pyright: ignore[reportPrivateUsage]  # adapter compatibility seam
+    _translate_error,  # pyright: ignore[reportPrivateUsage]  # adapter compatibility seam
     explicit_mount_hint,
     resolve_deployment,
 )

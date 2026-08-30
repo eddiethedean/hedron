@@ -10,7 +10,7 @@ from hedron_core.bundles import FeatureBundle, FeatureConflictError, FeatureRequ
 from hedron_core.catalog import PackageProjection, ProjectionCapability
 from hedron_core.codes import HED_BUNDLE_0002, HED_BUNDLE_0007
 from hedron_core.diagnostics import DiagnosticSeverity, make_diagnostic
-from hedron_mcp.server import McpProjection, McpResource, McpTool, _package_version
+from hedron_mcp.server import McpProjection, McpResource, McpTool, package_version
 
 __all__ = ["McpExposure"]
 
@@ -109,12 +109,12 @@ class McpExposure:
         return FeatureBundle(
             logical_id=f"hedron-mcp:{self.name}",
             provider="hedron-mcp",
-            provider_version=_package_version(),
+            provider_version=package_version(),
             projections=(
                 PackageProjection(
                     namespace=f"hedron.mcp.exposure.{self.name}",
                     provider="hedron-mcp",
-                    provider_version=_package_version(),
+                    provider_version=package_version(),
                     capabilities=(ProjectionCapability(name="McpExposure", support="supported"),),
                     data={
                         "catalog_id": self.catalog_id,

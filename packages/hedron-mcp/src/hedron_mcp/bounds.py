@@ -7,7 +7,7 @@ import time
 import uuid
 from collections import OrderedDict
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, cast
 
 
 class BoundsError(PermissionError):
@@ -38,11 +38,19 @@ class McpBounds:
     _inflight: int = field(default=0, init=False, repr=False)
     _lock: threading.Lock = field(default_factory=threading.Lock, init=False, repr=False)
     _rate_buckets: OrderedDict[str, list[float]] = field(
-        default_factory=OrderedDict, init=False, repr=False
+        default_factory=lambda: cast(OrderedDict[str, list[float]], OrderedDict()),
+        init=False,
+        repr=False,
     )
-    _cancelled: OrderedDict[str, float] = field(default_factory=OrderedDict, init=False, repr=False)
+    _cancelled: OrderedDict[str, float] = field(
+        default_factory=lambda: cast(OrderedDict[str, float], OrderedDict()),
+        init=False,
+        repr=False,
+    )
     _sessions: OrderedDict[str, dict[str, Any]] = field(
-        default_factory=OrderedDict, init=False, repr=False
+        default_factory=lambda: cast(OrderedDict[str, dict[str, Any]], OrderedDict()),
+        init=False,
+        repr=False,
     )
 
     def __post_init__(self) -> None:

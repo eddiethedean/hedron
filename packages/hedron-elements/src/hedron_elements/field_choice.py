@@ -53,7 +53,7 @@ class FieldChoice(Component[FieldChoiceProps]):
 
     def render(self) -> NodeLike:
         selected = set(self.props.value)
-        inputs = []
+        inputs: list[NodeLike] = []
         for val, label in self.props.options:
             inputs.append(
                 html.label(

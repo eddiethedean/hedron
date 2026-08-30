@@ -15,7 +15,7 @@ import time
 from collections.abc import Mapping
 from dataclasses import dataclass
 from hashlib import sha256
-from typing import Any
+from typing import Any, cast
 from urllib.parse import quote
 
 FORBIDDEN_FIELD_TOKENS = frozenset(
@@ -105,22 +105,26 @@ class DraftTransferEnvelope:
             data = json.loads(raw)
         except json.JSONDecodeError as exc:
             raise ValueError("invalid draft transfer JSON") from exc
-        if not isinstance(data, dict) or data.get("version") != 1:
+        if not isinstance(data, dict):
             raise ValueError("unsupported draft transfer version")
-        fields = data.get("fields")
+        typed_data = cast(dict[str, Any], data)
+        if typed_data.get("version") != 1:
+            raise ValueError("unsupported draft transfer version")
+        fields = typed_data.get("fields")
         if not isinstance(fields, dict):
             raise ValueError("draft transfer fields must be an object")
+        typed_fields = cast(dict[str, Any], fields)
         try:
             envelope = cls(
-                app=str(data["app"]),
-                route_family=str(data["routeFamily"]),
-                element_contract=str(data["elementContract"]),
-                schema_version=str(data["schemaVersion"]),
-                subject=str(data["subject"]),
-                fields=fields,
-                created_at=int(data["createdAt"]),
-                expires_at=int(data["expiresAt"]),
-                operation_id=str(data["operationId"]),
+                app=str(typed_data["app"]),
+                route_family=str(typed_data["routeFamily"]),
+                element_contract=str(typed_data["elementContract"]),
+                schema_version=str(typed_data["schemaVersion"]),
+                subject=str(typed_data["subject"]),
+                fields=typed_fields,
+                created_at=int(typed_data["createdAt"]),
+                expires_at=int(typed_data["expiresAt"]),
+                operation_id=str(typed_data["operationId"]),
             )
         except (KeyError, TypeError, ValueError) as exc:
             raise ValueError("draft transfer envelope is missing required fields") from exc
@@ -146,7 +150,10 @@ class DraftTransferEnvelope:
             self.subject,
             self.operation_id,
         )
-        if not all(isinstance(value, str) and value for value in required):
+        if not all(
+            isinstance(value, str) and bool(value)  # pyright: ignore[reportUnnecessaryIsInstance]
+            for value in required
+        ):
             raise ValueError("draft transfer identity fields must be non-empty strings")
         timestamp = int(time.time() * 1000) if now is None else int(now)
         if self.expires_at <= timestamp or self.expires_at - self.created_at > MAX_TTL_MS:

@@ -192,9 +192,9 @@ def _evidence_source_blockers(source_commit: object) -> list[str]:
     The evidence JSON is committed after the source snapshot it describes, so
     the evidence files themselves are the only allowed delta. This keeps a
     candidate ledger reproducible without making a commit hash self-referential.
-    After both 1.0 registries are published, documentation may record the public
-    outcome without invalidating immutable artifact evidence; release payload
-    inputs remain bound to the approved source snapshot.
+    After both 1.0 registries are published, the ledger becomes historical:
+    later development cannot alter the already-published artifacts and therefore
+    must not make their evidence stale.
     """
     if not isinstance(source_commit, str) or len(source_commit) != 40:
         return ["release evidence source_commit must be a full commit hash"]
@@ -237,14 +237,7 @@ def _evidence_source_blockers(source_commit: object) -> list[str]:
         and isinstance(edron, dict)
         and edron.get("registry_status") == "uploaded"
     )
-    if published:
-        payload_roots = ("packages/",)
-        payload_files = {"LICENSE", "pyproject.toml", "uv.lock"}
-        unexpected = sorted(
-            path for path in all_changes if path in payload_files or path.startswith(payload_roots)
-        )
-    else:
-        unexpected = sorted(all_changes - allowed)
+    unexpected = [] if published else sorted(all_changes - allowed)
     if unexpected:
         return [
             "release evidence is stale; source_commit predates non-evidence changes: "

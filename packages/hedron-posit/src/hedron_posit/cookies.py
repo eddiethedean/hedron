@@ -79,7 +79,7 @@ class CookieRegistry:
     def __init__(self, app: HedronPosit) -> None:
         self._app = app
         self._specs: dict[str, CookieSpec] = {}
-        for name in app._owned_cookie_names():
+        for name in app._owned_cookie_names():  # pyright: ignore[reportPrivateUsage]  # adapter-owned lifecycle seam
             self._specs[name] = CookieSpec(name=name)
 
     def register(self, spec: CookieSpec) -> None:

@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import inspect
 from collections.abc import Callable, Sequence
+from typing import cast
 
+from django.http import HttpRequest, HttpResponseBase
 from django.urls import URLPattern, URLResolver, path
 
 from hedron_core.addressable import AddressableDescriptor
@@ -20,7 +22,8 @@ def component_path(
     name: str,
 ) -> URLPattern | URLResolver:
     """Wrap ``view`` with :func:`hedron_view` and return a named ``path``."""
-    return path(route, hedron_view(view), name=name)
+    wrapped = cast(Callable[..., HttpResponseBase], hedron_view(view))
+    return path(route, wrapped, name=name)
 
 
 def include_component_path(
@@ -33,7 +36,7 @@ def include_component_path(
 
     ep = name or f"hedron_{descriptor.logical_id.replace(':', '_').replace('.', '_')}"
 
-    def view(request: object, **kwargs: object) -> object:
+    def view(request: HttpRequest, **kwargs: object) -> object:
         factory = descriptor.factory
         try:
             signature = inspect.signature(factory)
@@ -43,7 +46,8 @@ def include_component_path(
             return factory(request=request, **kwargs)
         return factory(**kwargs)
 
-    return path(route, hedron_view(view), name=ep)
+    wrapped = cast(Callable[..., HttpResponseBase], hedron_view(view))
+    return path(route, wrapped, name=ep)
 
 
 def hedron_paths(patterns: Sequence[URLPattern | URLResolver]) -> list[URLPattern | URLResolver]:

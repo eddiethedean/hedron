@@ -16,7 +16,11 @@ from hedron_core.interaction_067 import Outcome
 from hedron_core.rendering import RenderResult
 from hedron_core.security_policy import SecurityPolicy, SecurityProfile
 from hedron_flask.csrf import DEFAULT_CSRF_COOKIE, assert_flask_csrf_strategy, validate_csrf
-from hedron_flask.responses import _outcome_response, component_response, interaction_response
+from hedron_flask.responses import (  # pyright: ignore[reportPrivateUsage]
+    _outcome_response,  # pyright: ignore[reportPrivateUsage]
+    component_response,
+    interaction_response,
+)
 
 if TYPE_CHECKING:
     from hedron_core.bundles import FeatureBundle, FeatureProvider
@@ -436,7 +440,7 @@ def attach_hedron_to_flask(
     from hedron_core.request_plane import bind_request_security, unbind_request_security
 
     @app.before_request
-    def _hedron_bind_security_plane() -> None:
+    def _hedron_bind_security_plane() -> None:  # pyright: ignore[reportUnusedFunction]
         app_id = str(getattr(ext, "hedron_app_id", "") or "hedron-flask")
         g.hedron_security_binding = bind_request_security(
             policy=policy,
@@ -445,14 +449,16 @@ def attach_hedron_to_flask(
         )
 
     @app.teardown_request
-    def _hedron_unbind_security_plane(exc: BaseException | None) -> None:
+    def _hedron_unbind_security_plane(  # pyright: ignore[reportUnusedFunction]
+        exc: BaseException | None,
+    ) -> None:
         binding = getattr(g, "hedron_security_binding", None)
         if binding is not None:
             unbind_request_security(binding)
             g.hedron_security_binding = None
 
     @app.after_request
-    def _hedron_after_request(response: Response) -> Response:
+    def _hedron_after_request(response: Response) -> Response:  # pyright: ignore[reportUnusedFunction]
         authenticated = False
         auth_fn = getattr(ext, "auth_signal", None)
         if callable(auth_fn):

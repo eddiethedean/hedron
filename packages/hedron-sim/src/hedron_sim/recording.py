@@ -9,7 +9,7 @@ imported scenario cannot exhaust memory or wall clock.
 from __future__ import annotations
 
 import json
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Any, Literal, cast
 
@@ -132,9 +132,11 @@ def _bounded_payload_depth(value: Any, limits: SimLimits, *, depth: int = 1) -> 
         deepest = max(deepest, current_depth)
         limits.check_depth(current_depth)
         if isinstance(current, Mapping):
-            stack.extend((child, current_depth + 1) for child in current.values())
+            mapping = cast(Mapping[Any, Any], current)
+            stack.extend((child, current_depth + 1) for child in mapping.values())
         elif isinstance(current, (list, tuple)):
-            stack.extend((child, current_depth + 1) for child in current)
+            sequence = cast(Sequence[Any], current)
+            stack.extend((child, current_depth + 1) for child in sequence)
     return deepest
 
 
@@ -149,11 +151,14 @@ def _mapping_json_size(value: Any, limits: SimLimits) -> int:
             active.remove(cast(int, current))
             continue
         if isinstance(current, Mapping):
-            identity = id(current)
+            mapping = cast(Mapping[Any, Any], current)
+            identity = id(cast(object, current))
             if identity in active:
                 raise ValueError("circular reference in sim scenario mapping")
             active.add(identity)
-            items = sorted(current.items())
+            items = sorted(
+                cast(Iterable[tuple[Any, Any]], mapping.items()), key=lambda item: repr(item[0])
+            )
             size += 2 + max(0, len(items) - 1) * 2
             stack.append(("exit", identity))
             for key, child in reversed(items):
@@ -173,13 +178,14 @@ def _mapping_json_size(value: Any, limits: SimLimits) -> int:
                 size += len(encoded_key.encode("utf-8")) + 2
                 stack.append(("value", child))
         elif isinstance(current, (list, tuple)):
-            identity = id(current)
+            sequence = cast(Sequence[Any], current)
+            identity = id(cast(object, current))
             if identity in active:
                 raise ValueError("circular reference in sim scenario mapping")
             active.add(identity)
-            size += 2 + max(0, len(current) - 1) * 2
+            size += 2 + max(0, len(sequence) - 1) * 2
             stack.append(("exit", identity))
-            stack.extend(("value", child) for child in reversed(current))
+            stack.extend(("value", child) for child in reversed(sequence))
         else:
             size += len(json.dumps(current, sort_keys=True, allow_nan=False).encode("utf-8"))
         limits.check_bytes(size)
@@ -213,7 +219,7 @@ class SimEvent:
     kind: EventKind
     name: str
     at_ms: int = 0
-    detail: dict[str, Any] = field(default_factory=dict)
+    detail: dict[str, Any] = field(default_factory=lambda: cast(dict[str, Any], {}))
 
     def as_dict(self) -> dict[str, Any]:
         return {

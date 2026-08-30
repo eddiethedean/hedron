@@ -51,7 +51,7 @@ def sse_response(
 
     def generate() -> Iterator[str]:
         for item in events:
-            if not isinstance(item, SseEvent):
+            if not isinstance(item, SseEvent):  # pyright: ignore[reportUnnecessaryIsInstance]
                 raise TypeError(
                     "hedron_flask.live.sse_response accepts only SseEvent values; "
                     f"got {type(item)!r}"
