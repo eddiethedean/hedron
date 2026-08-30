@@ -15,16 +15,19 @@ maintaining their own release story.
 
 | Package | Version | Maturity | Application pin | Role |
 |---|---:|---|---|---|
-| `edron` | `1.0.0` candidate | Beta | In-tree only; public fallback `edron>=0.9.0,<0.10` | Batteries-included application authoring |
+| `edron` | `1.0.0` | Stable | `edron>=1.0.0,<1.1` | Batteries-included application authoring |
 | `hedron` | `1.0.0` candidate | Stable | In-tree only; public fallback `hedron>=0.67.0,<0.68` | FastAPI-native component and route authoring |
+| `hedron-data` | `1.0.0` | Stable | `hedron-data>=1.0.0,<1.1` | DataTable, DataEditor, and bounded data contracts |
+| `hedron-charts` | `1.0.0` | Stable | `hedron-charts>=1.0.0,<2.0` | First-party charts and static/Matplotlib output |
+| `hedron-maps` | `1.0.0` | Stable | `hedron-maps>=1.0.0,<2.0` | Bounded first-party maps and offline presentation |
 
 The coordinated candidate supports CPython **3.10–3.14**. Package maturity, capability
 readiness, and individual API stability are separate: a stable package may contain a
 clearly labeled experimental capability.
 
 The exact 1.0 package and API boundary is maintained in the repository’s
-[`release/support-matrix.toml`](https://github.com/eddiethedean/hedron/blob/main/release/support-matrix.toml). Beta satellites are
-opt-in compatibility surfaces, not part of the stable platform contract.
+[`release/support-matrix.toml`](https://github.com/eddiethedean/hedron/blob/main/release/support-matrix.toml). Beta
+host/tooling satellites are opt-in compatibility surfaces, not part of the stable platform contract.
 
 ## What should I install?
 
@@ -62,9 +65,9 @@ major release. See [Stability](../api/STABILITY.md) and [Upgrade](upgrade.md).
 
 ## Coordinated and independent packages
 
-`hedron-core`, `hedron`, and Edron use the coordinated 1.0 version line in the repository;
-only the first two are Stable packages. The candidate is not yet published. Other satellite
-packages retain independent versions and Beta maturity.
+`hedron-core`, `hedron`, Edron, `hedron-data`, `hedron-charts`, and `hedron-maps` use the
+coordinated 1.0 Stable contract in the repository. Host adapters and vendor/tooling satellites
+retain independent versions and Beta maturity.
 Do not infer satellite compatibility from a similar
 version number; use the [compatibility matrix](../COMPATIBILITY.md).
 

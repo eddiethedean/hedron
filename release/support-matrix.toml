@@ -19,16 +19,16 @@ maturity = "stable"
 api = "stable"
 
 [packages.edron]
-maturity = "beta"
-api = "beta"
+maturity = "stable"
+api = "stable"
 
 [packages.hedron-explorer]
 maturity = "beta"
 api = "beta"
 
 [packages.hedron-data]
-maturity = "beta"
-api = "beta"
+maturity = "stable"
+api = "stable"
 
 [packages.hedron-flask]
 maturity = "beta"
@@ -63,12 +63,12 @@ maturity = "beta"
 api = "beta"
 
 [packages.hedron-charts]
-maturity = "beta"
-api = "beta"
+maturity = "stable"
+api = "stable"
 
 [packages.hedron-maps]
-maturity = "beta"
-api = "beta"
+maturity = "stable"
+api = "stable"
 
 [packages.hedron-native]
 maturity = "beta"

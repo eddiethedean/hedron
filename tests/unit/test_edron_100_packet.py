@@ -21,6 +21,8 @@ def test_edron_100_packet_requires_the_canonical_hedron_train() -> None:
     assert gates["hedron_train"] == "1.0.0"
     assert gates["hedron_requirement"] == ">=1.0.0,<2.0"
     assert gates["hedron_data_requirement"] == ">=1.0.0,<2.0"
+    assert gates["hedron_charts_requirement"] == ">=1.0.0,<2.0"
+    assert gates["hedron_maps_requirement"] == ">=1.0.0,<2.0"
     assert gates["canonical_roles"] == ["page", "view", "action", "include"]
     assert all(row["state"] == "Implemented" for row in gates["gate"])
 

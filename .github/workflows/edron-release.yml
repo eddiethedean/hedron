@@ -57,9 +57,11 @@ jobs:
           tests/unit/test_edron_phase04.py
           tests/unit/test_edron_phase03.py
           tests/unit/test_edron_phase02.py
+          tests/unit/test_package_metadata.py
           tests/unit/test_edron_runtime.py
           tests/unit/test_edron_docs_checker.py
           tests/unit/test_hedron_import_surface.py
+          tests/unit/test_maps_047_pkg.py
           tests/unit/test_package_metadata.py
           tests/ops/test_packaging_isolation.py::test_all_packages_declare_license_and_version
 
@@ -80,7 +82,18 @@ jobs:
           tests/unit/test_edron_phase04.py
           tests/unit/test_edron_phase03.py
           tests/unit/test_edron_phase02.py
-          tests/unit/test_package_metadata.py
+
+      - name: Run Stable package typing gate
+        run: bash scripts/ci_checks.sh typing --python 3.12
+
+      - name: Install Chromium for the Stable browser gate
+        run: bash scripts/ci_install_playwright.sh chromium 3.12
+
+      - name: Run Stable browser gate
+        env:
+          HEDRON_BROWSER: "1"
+          HEDRON_BROWSER_ENGINE: chromium
+        run: bash scripts/ci_checks.sh browser --python 3.12
 
       - name: Verify Edron 1.0 packet
         run: uv run --python 3.12 python scripts/verify_edron_100.py

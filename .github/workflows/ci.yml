@@ -138,7 +138,8 @@ jobs:
           -e packages/hedron-data -e packages/hedron-flask -e packages/hedron-django
           -e packages/hedron-jinja -e packages/hedron-conformance -e packages/hedron-extras
           -e packages/hedron-elements -e packages/hedron-posit -e packages/fastapi-workbench
-          pytest pytest-xdist httpx "django>=5.2,<6" "starlette==0.40.0" "uvicorn==0.32.0"
+          -e packages/hedron-charts -e packages/hedron-maps -e packages/edron
+          pytest pytest-xdist httpx "django>=5.2,<6" "starlette==0.40.0" "uvicorn==0.32.0" "matplotlib>=3.8,<4"
       - name: Install latest supported dependencies
         if: matrix.bounds == 'latest'
         run: >-
@@ -147,7 +148,8 @@ jobs:
           -e packages/hedron-data -e packages/hedron-flask -e packages/hedron-django
           -e packages/hedron-jinja -e packages/hedron-conformance -e packages/hedron-extras
           -e packages/hedron-elements -e packages/hedron-posit -e packages/fastapi-workbench
-          pytest pytest-xdist httpx "django>=5.2,<6" "starlette>=0.40.0" "uvicorn>=0.32"
+          -e packages/hedron-charts -e packages/hedron-maps -e packages/edron
+          pytest pytest-xdist httpx "django>=5.2,<6" "starlette>=0.40.0" "uvicorn>=0.32" "matplotlib>=3.8,<4"
       - name: Run stable adapter contract suite
         run: >-
           .bounds-venv/bin/pytest -q
@@ -157,6 +159,9 @@ jobs:
           tests/integration/test_workbench_urls.py
           tests/integration/test_workbench_runner.py
           tests/security/test_workbench_adversarial.py
+          tests/unit/test_maps_047_pkg.py
+          tests/unit/test_charts_028_static_matrix.py
+          tests/unit/test_edron_100_packet.py
 
   quality:
     name: Quality, strict core typing, docs, and packages

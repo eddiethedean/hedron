@@ -1,11 +1,11 @@
 # What’s ready today
 
 **Ship today (pinned CRUD / admin on FastAPI, Flask, or Django):** pages, HTMX
-fragments, CSRF, polling job status, DataTable, first-party charts.
+fragments, CSRF, polling job status, DataTable, first-party charts, and maps.
 **Do not treat as production defaults:** SSE, WebSocket, Plotly/Altair, human
-screen-reader claims. Only `hedron-core` and `hedron` are **Stable** packages in the 1.0
-inventory; all other packages, including Edron and host/data/tooling adapters, remain Beta
-satellites. There is no SLA.
+screen-reader claims. `hedron-core`, `hedron`, `edron`, `hedron-data`, `hedron-charts`, and
+`hedron-maps` are **Stable** packages in the 1.0 inventory; host, tooling, and vendor-adapter
+satellites remain Beta. There is no SLA.
 
 This page is the **adopter** maturity summary for the verified, not-yet-published **1.0.0** candidate
 ([Current release and support](current-release.md)). Full capability matrices and
@@ -28,8 +28,8 @@ maintainer gate notes:
 | **Experimental** | Public; may change; prefer documented fallbacks (usually polling) |
 | **Deferred** | Documented, not ready — do not treat as Supported |
 
-Edron and Hedron **1.0.0** are verified in-tree but not yet published. The public **0.67.0**
-Hedron / **0.9.0** Edron versions remain the installable fallback until authorized publication.
+Hedron, Edron, data, charts, and maps **1.0.0** are the coordinated Stable train. Older 0.x
+packages remain migration fallbacks only.
 Package maturity, capability
 readiness, and API compatibility are separate axes —
 [Maturity labels](../getting-started/how-to-read.md).
@@ -55,8 +55,9 @@ screen-reader sessions are not Supported yet**.
 | Pages (`@app.page`) | **Supported** | [Quickstart](../getting-started/quickstart.md) |
 | HTMX views / actions (`@app.view` / `@app.action`) | **Supported** | [Which interaction API?](../getting-started/interaction-apis.md) |
 | Multi-worker durable jobs (polling) | **Supported** with shared Redis | [Jobs](../api/JOBS.md) |
-| DataTable / DataEditor | **Supported** (`hedron[data]`) | [Data apps](data-apps.md) |
+| DataTable / DataEditor | **Supported** (`hedron-data`) | [Data apps](data-apps.md) |
 | Charts (first-party / Matplotlib) | **Supported**; Plotly/Altair **Experimental** | [Chart API](../api/CHART.md) |
+| Maps (bounded first-party inventory) | **Supported**; unsupported providers/features remain excluded | [Maps API](../api/MAPS.md) |
 | Flask / Django hosts | **Supported** (host CSRF/pages; not FastAPI facade parity) | [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) |
 | Live SSE / WebSocket | **Experimental** | Prefer [polling](live-interaction.md) |
 | Human screen-reader AT | **Not Supported** yet | Protocol engineering only — [evidence](whats-ready-evidence.md) |

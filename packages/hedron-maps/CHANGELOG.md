@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.0] — 2026-08-29
+
+### Changed
+
+- Graduate the bounded MapSpec/MapPlan grammar, first-party component, semantic fallback,
+  declared providers, and offline inventory to the Stable 1.0 API.
+- Keep unsupported providers, arbitrary projections, and deferred GIS features excluded.
+
 ## [0.1.4] — 2026-08-28
 
 ### Changed

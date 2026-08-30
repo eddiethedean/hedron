@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 
 
-_BETA_PACKAGES = {
+_TRAIN_ALIGNED_PACKAGES = {
     "hedron",
     "hedron-core",
     "hedron-data",
@@ -24,13 +24,11 @@ _BETA_PACKAGES = {
 }
 _INDEPENDENT_BETA = {
     "hedron-native",
-    "hedron-maps",
     "edron-sim",
 }
 _INDEPENDENT_BETA_02 = {
     "hedron-mcp",
     "hedron-gradio",
-    "hedron-charts",
     "hedron-sample-kit",
     "hedron-sim",
     "hedron-notebook",
@@ -40,6 +38,10 @@ _INDEPENDENT_BETA_067 = {
 }
 _INDEPENDENT_BETA_05 = {
     "edron",
+}
+_STABLE_INDEPENDENT = {
+    "hedron-charts",
+    "hedron-maps",
 }
 _INDEPENDENT_MAJOR = {
     "fastapi-workbench",
@@ -55,13 +57,13 @@ def test_all_packages_declare_license_and_version() -> None:
     for pyproject in sorted((ROOT / "packages").glob("*/pyproject.toml")):
         project = tomllib.loads(pyproject.read_text(encoding="utf-8"))["project"]
         name = project["name"]
-        if name in _BETA_PACKAGES or name in _TRAIN_ALIGNED_ALPHA:
+        if name in _TRAIN_ALIGNED_PACKAGES or name in _TRAIN_ALIGNED_ALPHA:
             assert project["version"] == workspace_version, pyproject
         elif name in _INDEPENDENT_BETA_02:
             assert str(project["version"]).startswith("0.2."), pyproject
         elif name in _INDEPENDENT_BETA_067:
             assert str(project["version"]).startswith("0.67."), pyproject
-        elif name == "edron":
+        elif name in _STABLE_INDEPENDENT or name == "edron":
             assert project["version"] == "1.0.0", pyproject
         elif name in _INDEPENDENT_BETA_05:
             assert str(project["version"]).startswith("0.5."), pyproject
@@ -121,7 +123,7 @@ def test_025_satellites_have_installable_patch_floors() -> None:
         (ROOT / "packages" / "hedron-extras" / "pyproject.toml").read_text(encoding="utf-8")
     )["project"]
 
-    charts_pin = "hedron-charts>=0.2.4,<0.3"
+    charts_pin = "hedron-charts>=1.0.0,<2.0"
     assert hedron["optional-dependencies"]["charts"] == [charts_pin]
     assert charts_pin in extras["optional-dependencies"]["chart_workbench"]
     assert charts_pin in extras["optional-dependencies"]["all"]
@@ -132,8 +134,7 @@ def test_025_satellites_have_installable_patch_floors() -> None:
         (ROOT / "packages" / "hedron-sample-kit" / "pyproject.toml").read_text(encoding="utf-8")
     )["project"]
     # Tip may patch above the floor; the 1.0 plugin contract starts at these patches.
-    assert charts["version"].startswith("0.2.")
-    assert tuple(int(p) for p in charts["version"].split(".")) >= (0, 2, 0)
+    assert charts["version"] == "1.0.0"
     assert sample["version"] == "0.2.3"
 
 

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Mapping, Sequence
-from typing import Any
+from typing import Any, cast
 
 from hedron_charts.compile import beginner_to_spec, compile_chart
 from hedron_charts.export import export_csv, export_svg
@@ -96,7 +96,9 @@ class Chart(Component[ChartProps]):
         else:
             payload = dict(spec)
             raw_acc = payload.get("accessibility")
-            acc = raw_acc if isinstance(raw_acc, dict) else {}
+            acc: Mapping[str, Any] = (
+                cast(Mapping[str, Any], raw_acc) if isinstance(raw_acc, dict) else {}
+            )
             title = str(acc.get("title") or "Chart")
         super().__init__(ChartProps(title=title, class_=class_, **kwargs))
         self._spec = payload

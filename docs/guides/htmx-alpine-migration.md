@@ -1,8 +1,9 @@
 # HTMX/Alpine 1.1 migration guide
 
 This guide describes the compatibility transition from the Hedron 1.0 interaction surface to the
-smaller 1.1 implementation. `hedron-core` and `hedron` remain the stable packages. Satellite
-packages, including `edron`, remain Beta and are not part of the stable platform promise.
+smaller 1.1 implementation. The 1.0 Stable package boundary includes `hedron-core`, `hedron`,
+`edron`, `hedron-data`, `hedron-charts`, and `hedron-maps`. Host and vendor-adapter packages
+remain Beta and are not part of the stable platform promise.
 
 ## Migration table
 

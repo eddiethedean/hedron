@@ -4,12 +4,13 @@ from __future__ import annotations
 
 import html as html_stdlib
 from collections.abc import Mapping, Sequence
+from typing import Any
 
 from hedron_charts.adapters import (
     AltairAdapter,
     MatplotlibAdapter,
     PlotlyAdapter,
-    _fallback_table,
+    _fallback_table,  # pyright: ignore[reportPrivateUsage]
     compile_figure,
 )
 from hedron_charts.limits import (
@@ -56,7 +57,7 @@ __all__ = [
 from hedron_charts.element import Chart  # noqa: E402
 
 
-def _xy_fallback_figure(
+def _xy_fallback_figure(  # pyright: ignore[reportUnusedFunction]
     *,
     data: Sequence[Mapping[str, JsonValue]],
     x: str,
@@ -82,7 +83,10 @@ def _xy_fallback_figure(
         matplotlib.use("Agg", force=False)
         import matplotlib.pyplot as plt
 
-        fig, ax = plt.subplots()
+        fig: object
+        ax: object
+        fig, ax = plt.subplots()  # type: ignore[reportUnknownMemberType]
+        axes: Any = ax
         xs_raw = [row.get(x) for row in data]
         ys = [_coerce_float(row.get(y)) for row in data]
         labels = [str(v) for v in xs_raw]
@@ -97,24 +101,24 @@ def _xy_fallback_figure(
         if kind == "bar" or categorical:
             ax_x = list(range(len(ys)))
             if kind == "bar":
-                ax.bar(ax_x, ys)
+                axes.bar(ax_x, ys)
             elif kind == "scatter":
-                ax.scatter(ax_x, ys)
+                axes.scatter(ax_x, ys)
             elif kind == "area":
-                ax.fill_between(ax_x, ys)
+                axes.fill_between(ax_x, ys)
             else:
-                ax.plot(ax_x, ys)
-            ax.set_xticks(ax_x)
-            ax.set_xticklabels(labels)
+                axes.plot(ax_x, ys)
+            axes.set_xticks(ax_x)
+            axes.set_xticklabels(labels)
         elif kind == "scatter":
-            ax.scatter(numeric_xs, ys)
+            axes.scatter(numeric_xs, ys)
         elif kind == "area":
-            ax.fill_between(numeric_xs, ys)
+            axes.fill_between(numeric_xs, ys)
         else:
-            ax.plot(numeric_xs, ys)
-        ax.set_xlabel(x)
-        ax.set_ylabel(y)
-        ax.set_title(acc.title)
+            axes.plot(numeric_xs, ys)
+        axes.set_xlabel(x)
+        axes.set_ylabel(y)
+        axes.set_title(acc.title)
         adapter = MatplotlibAdapter()
         output = adapter.compile(fig, accessibility=acc, limits=limits)
         plt.close(fig)
@@ -172,7 +176,7 @@ def _xy_fallback_figure(
                 py = _py(yv)
                 shapes.append(f'<circle cx="{px:.1f}" cy="{py:.1f}" r="3" fill="currentColor"/>')
         else:
-            points = []
+            points: list[str] = []
             for xv, yv in zip(xs_plot, ys, strict=False):
                 px = _px(float(xv))
                 py = _py(yv)

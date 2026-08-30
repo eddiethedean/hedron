@@ -1,5 +1,5 @@
 schema_version = 2
-description = "The deliberately small 1.0 SemVer surface. Every callable/class signature is locked below; all other exports remain non-stable."
+description = "The deliberately small 1.0 SemVer surface. Listed exports are compatibility-protected; listed callable/class signatures are locked below when provided. All other exports remain non-stable."
 
 [packages.hedron]
 symbols = [
@@ -89,3 +89,87 @@ TrustedHtml = '''(*args: 'object', **kwargs: 'object') -> 'None' '''
 Secret = '''(value: 'T') -> 'None' '''
 FragmentRegion = '''(id: 'str', selector: 'str', description: 'str' = '') -> None'''
 InteractionResult = '''(content: 'NodeLike | None' = None, status_code: 'int' = 200, target: 'str | None' = None, swap: 'str | None' = None, oob: 'tuple[OobUpdate, ...]' = (), trigger: 'str | Mapping[str, JsonValue] | None' = None, trigger_after_swap: 'str | Mapping[str, JsonValue] | None' = None, trigger_after_settle: 'str | Mapping[str, JsonValue] | None' = None, push_url: 'str | bool | None' = None, replace_url: 'str | bool | None' = None, redirect: 'str | None' = None, refresh: 'bool' = False, retarget: 'str | None' = None, reswap: 'str | None' = None, reselect: 'str | None' = None, location: 'str | HxLocation | Mapping[str, JsonValue] | None' = None, history: 'HistoryMode' = 'none', cache: 'CacheHint | None' = 'vary-htmx', concurrency: 'str | None' = None, action_state: 'ActionState | None' = None, action_trace: 'ActionTrace | None' = None, region_id: 'str | None' = None, policy: 'InteractionPolicy | None' = None, headers: 'Mapping[str, str]' = <factory>, explanation: 'str' = '', select_oob: 'str | None' = None) -> None'''
+
+[packages.edron]
+symbols = [
+  "__version__",
+  "App",
+  "Page",
+  "Container",
+  "Action",
+  "Fragment",
+  "Interaction",
+  "Outcome",
+  "action",
+  "fragment",
+  "expose",
+  "refresh",
+  "success",
+  "theme",
+  "create_scaffold",
+]
+
+[packages.hedron-data]
+symbols = [
+  "__version__",
+  "Column",
+  "DataTable",
+  "DataEditor",
+  "DataPage",
+  "DataQuery",
+  "DataSaveResult",
+  "DataWorkspace",
+  "DataWorkspacePolicy",
+  "normalize_rows",
+  "resolve_columns",
+  "columns_from_model",
+]
+
+[packages.hedron-charts]
+symbols = [
+  "__version__",
+  "Chart",
+  "ChartSpec",
+  "ChartPlan",
+  "LineChart",
+  "BarChart",
+  "AreaChart",
+  "ScatterChart",
+  "MatplotlibChart",
+  "MatplotlibAdapter",
+  "compile_chart",
+  "parse_chart_spec",
+  "beginner_to_spec",
+  "chart_from_beginner",
+  "export_csv",
+  "export_json",
+  "export_svg",
+]
+
+[packages.hedron-maps]
+symbols = [
+  "__version__",
+  "Map",
+  "MapSpec",
+  "MapPlan",
+  "MapPolicy",
+  "MapStyle",
+  "ViewState",
+  "Bounds",
+  "OpenStreetMap",
+  "NoBasemap",
+  "RasterTiles",
+  "TileJSON",
+  "VectorTiles",
+  "StaticImage",
+  "PMTiles",
+  "MBTiles",
+  "MarkerLayer",
+  "GeoJSONLayer",
+  "LineLayer",
+  "PolygonLayer",
+  "CircleLayer",
+  "RasterLayer",
+  "compile_map",
+  "parse_map_spec",
+]

@@ -15,7 +15,8 @@ uv add "hedron>=0.67.0,<0.68"
 ```
 
 Always use an upper bound so a future minor train cannot install by accident.
-Only `hedron-core` and `hedron` are **Stable** packages in 1.0; satellite packages remain Beta,
+`hedron-core`, `hedron`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps` are **Stable**
+packages in 1.0; host adapters and vendor/tooling satellites remain Beta,
 and no package has a commercial SLA. Capability detail:
 [What’s ready](whats-ready.md).
 

@@ -21,8 +21,9 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 <!-- hedron-install-matrix -->
 
 The repository contains the **1.0.0 release candidate**, but its Git tag and PyPI upload are
-deferred. PyPI currently resolves Hedron **0.67.0** and Edron **0.9.0**. Always use an upper
-bound so a future minor train cannot install by accident. Only `hedron-core` and `hedron` are **Stable** packages; independently versioned
+deferred. PyPI currently resolves the older Hedron **0.67.0** and Edron **0.9.0** fallback. Always
+use an upper bound so a future minor train cannot install by accident. `hedron-core`, `hedron`,
+`edron`, `hedron-data`, `hedron-charts`, and `hedron-maps` are **Stable** packages; host/tooling
 satellites retain their documented Beta or tooling-grade maturity. Capability detail:
 [What’s ready](../guides/whats-ready.md).
 

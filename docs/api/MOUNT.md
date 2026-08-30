@@ -5,7 +5,7 @@
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
     Mount helpers are part of the production security floor (0.20+) and remain on the
     current **1.0.x** train. Only `hedron-core` and `hedron` are Stable packages in 1.0;
-    host adapters and other satellites remain Beta.
+    host adapters and other vendor/tooling satellites remain Beta.
 
 **Status:** Shipped · public exports from `hedron`
 

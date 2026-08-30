@@ -7,6 +7,8 @@ required_predecessor = "edron-v0.9.1"
 hedron_train = "1.0.0"
 hedron_requirement = ">=1.0.0,<2.0"
 hedron_data_requirement = ">=1.0.0,<2.0"
+hedron_charts_requirement = ">=1.0.0,<2.0"
+hedron_maps_requirement = ">=1.0.0,<2.0"
 canonical_roles = ["page", "view", "action", "include"]
 native_authority = "Hedron 1.x and the owning hedron-* packages"
 compatibility_policy = "no Hedron 0.67 runtime dependency or compatibility aliases"

@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.0] — 2026-08-29
+
+### Changed
+
+- Graduate the bounded first-party chart grammar, semantic fallbacks, deterministic exports,
+  and Matplotlib/static path to the Stable 1.0 API.
+- Keep Plotly, Altair, and wider optional adapters explicitly Experimental.
+
 ## [0.2.4] — 2026-08-28
 
 ### Changed

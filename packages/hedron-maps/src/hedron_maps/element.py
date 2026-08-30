@@ -8,6 +8,7 @@ from typing import Any
 
 from hedron_core.builtins.map_geo import DEFAULT_MAX_FEATURES, MarkerSpec, sanitize_geojson
 from hedron_core.component import Component, NodeLike
+from hedron_core.diagnostics import error
 from hedron_core.html import html
 from hedron_core.models import Props
 from hedron_core.security import SafeUrl, UrlPurpose
@@ -28,6 +29,37 @@ ABI_VERSION = 1
 TAG_NAME = "hedron-map"
 ELEMENT_ID = "hedron-map"
 _UNSET = object()
+
+
+def _ensure_tile_allowed(tiles: str | None, allowlist: Sequence[str]) -> str | None:
+    """Validate a construction-time tile template against explicit prefixes."""
+    if tiles is None:
+        return None
+    prefixes = [str(raw).strip() for raw in allowlist]
+    if any(not prefix for prefix in prefixes) or not prefixes:
+        raise error(
+            "HED-MAP-0002",
+            title="Disallowed map tile source",
+            explanation="tile_allowlist entries must be non-empty URL prefixes.",
+            remediation="Pass concrete allowlisted origins or path prefixes.",
+        )
+    if not any(
+        tiles.startswith(prefix)
+        and (
+            prefix.endswith(("/", "?", "#"))
+            or tiles[len(prefix) :] == ""
+            or tiles[len(prefix)] in "/?#"
+        )
+        for prefix in prefixes
+    ):
+        raise error(
+            "HED-MAP-0002",
+            title="Disallowed map tile source",
+            explanation=f"Tile template {tiles!r} is not covered by {prefixes!r}.",
+            remediation="Pass an allowlisted tile URL prefix or omit tiles.",
+        )
+    return tiles
+
 
 __all__ = [
     "ABI_VERSION",
@@ -153,8 +185,6 @@ class Map(Component[MapProps]):
         resolved_basemap: object
         resolved_policy = policy
         if tiles is not None:
-            from hedron_core.builtins.map_geo import _ensure_tile_allowed
-
             _ensure_tile_allowed(tiles, tile_allowlist)
             resolved_basemap = RasterTiles(url=tiles, attribution=attribution or "Tiles")
             origin = None
@@ -185,6 +215,10 @@ class Map(Component[MapProps]):
 
     def compile_plan(self) -> MapPlan:
         return compile_map(self._spec, policy=self._spec.policy, max_features=self._max_features)
+
+    def register_interaction(self, event: str, path: str) -> None:
+        """Register a generated event endpoint for the map host."""
+        self._interaction_commands[event] = path
 
     def render(self) -> NodeLike:
         plan = self.compile_plan()

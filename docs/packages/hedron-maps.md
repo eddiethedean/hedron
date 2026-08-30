@@ -1,16 +1,14 @@
 ---
-description: Independent Beta first-class maps for Hedron.
+description: Stable first-class maps for Hedron.
 ---
 
 # `hedron-maps`
 
-**Package maturity:** Beta · **Repository package version:** `0.1.4` · extra `hedron[maps]`
-The source tree requires the Hedron 1.0 candidate; public-index flagship installs remain
-`hedron>=0.67.0,<0.68` until the coordinated 1.0 release is published.
+**Package maturity:** Stable · **Repository package version:** `1.0.0` · extra `hedron[maps]`
+The package follows the Hedron 1.x compatibility train.
 
-Package `0.1.0` introduced the phase 0.47 map contract. The coordinated 1.0 workspace
-uses the compatible `0.1.4` patch release; new applications should not select the
-historical floor when current artifacts are available.
+The original `0.1.0` release introduced the phase 0.47 map contract; `1.0.0` is the
+Stable compatibility cut for that bounded inventory.
 
 `hedron-maps` provides an explicit map grammar, deterministic compilation, a pinned MapLibre
 5.6.1 strict-CSP host, custom raster/vector tile sources, and static/offline basemaps

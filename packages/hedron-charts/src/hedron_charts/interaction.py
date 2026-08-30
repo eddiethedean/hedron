@@ -152,10 +152,11 @@ class ChartInteraction:
             def on_chart_event(payload: object) -> object:
                 typed = payload
                 validator = getattr(payload_type, "model_validate", None)
-                if callable(validator) and not isinstance(payload, payload_type):
+                if callable(validator) and not isinstance(payload, cast(Any, payload_type)):
                     typed = validator(payload)
-                ids = getattr(typed, "ids", None)
-                if isinstance(ids, list) and len(ids) > max_items:
+                ids_value: object = getattr(typed, "ids", None)
+                ids = cast(list[Any], ids_value) if isinstance(ids_value, list) else []
+                if len(ids) > max_items:
                     copier = getattr(typed, "model_copy", None)
                     if callable(copier):
                         typed = copier(update={"ids": ids[:max_items]})

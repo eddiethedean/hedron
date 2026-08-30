@@ -6,6 +6,7 @@ import hashlib
 import json
 import re
 from collections.abc import Mapping, Sequence
+from typing import cast
 from urllib.parse import urlparse
 
 from typing_extensions import TypeIs
@@ -97,7 +98,8 @@ def _fingerprint(payload: object) -> str:
 
 def _reject_pollution(obj: object, path: str = "$") -> None:
     if isinstance(obj, Mapping):
-        for key, value in obj.items():
+        mapping = cast(Mapping[object, object], obj)
+        for key, value in mapping.items():
             key_s = str(key)
             if key_s in {"__proto__", "constructor", "prototype"}:
                 raise _map_error(
@@ -108,7 +110,8 @@ def _reject_pollution(obj: object, path: str = "$") -> None:
                 )
             _reject_pollution(value, f"{path}.{key_s}")
     elif isinstance(obj, (list, tuple)):
-        for index, item in enumerate(obj):
+        sequence = cast(Sequence[object], obj)
+        for index, item in enumerate(sequence):
             _reject_pollution(item, f"{path}[{index}]")
 
 
@@ -287,9 +290,10 @@ def _is_json_value(value: object) -> TypeIs[JsonValue]:
     if value is None or isinstance(value, (str, int, float, bool)):
         return True
     if isinstance(value, list):
-        return all(_is_json_value(item) for item in value)
+        return all(_is_json_value(item) for item in cast(list[object], value))
     if isinstance(value, dict):
-        return all(isinstance(key, str) and _is_json_value(item) for key, item in value.items())
+        items = cast(dict[object, object], value)
+        return all(isinstance(key, str) and _is_json_value(item) for key, item in items.items())
     return False
 
 
@@ -302,11 +306,13 @@ def _as_json(value: object) -> JsonValue:
 
 def _as_json_object(value: object) -> JsonObject:
     if isinstance(value, dict) and all(
-        isinstance(key, str) and _is_json_value(item) for key, item in value.items()
+        isinstance(key, str) and _is_json_value(item)
+        for key, item in cast(dict[object, object], value).items()
     ):
-        return value
+        return cast(JsonObject, value)
     if isinstance(value, Mapping):
-        return {str(key): _as_json(item) for key, item in value.items()}
+        mapping = cast(Mapping[object, object], value)
+        return {str(key): _as_json(item) for key, item in mapping.items()}
     return {}
 
 
@@ -329,7 +335,7 @@ def _as_float(value: object) -> float | None:
 
 def _iter_json_array(value: object) -> Sequence[object]:
     if isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
-        return value
+        return cast(Sequence[object], value)
     return ()
 
 
@@ -393,15 +399,16 @@ def _count_coords(obj: object, *, depth: int = 0) -> int:
     if depth > 8:
         return 0
     if isinstance(obj, Sequence) and not isinstance(obj, (str, bytes)):
-        if obj and all(isinstance(item, (int, float)) for item in obj):
+        sequence = cast(Sequence[object], obj)
+        if sequence and all(isinstance(item, (int, float)) for item in sequence):
             return 1
-        return sum(_count_coords(item, depth=depth + 1) for item in obj)
+        return sum(_count_coords(item, depth=depth + 1) for item in sequence)
     return 0
 
 
 def _layer_geojson(layer: Layer) -> Mapping[str, object] | None:
     data = getattr(layer, "data", None)
-    return data if isinstance(data, Mapping) else None
+    return cast(Mapping[str, object], data) if isinstance(data, Mapping) else None
 
 
 def _sanitize_layer(layer: Layer, *, max_features: int) -> JsonObject:
@@ -464,11 +471,14 @@ def _style_subset(
                 "Remove callbacks, eval, and prototype keys from MapStyle.",
             )
     for layer in _iter_json_array(dumped.get("layers")):
-        if isinstance(layer, Mapping) and layer.get("type") not in ALLOWED_STYLE_LAYER_TYPES:
+        layer_type: object = None
+        if isinstance(layer, Mapping):
+            layer_type = cast(Mapping[object, object], layer).get("type")
+        if isinstance(layer, Mapping) and layer_type not in ALLOWED_STYLE_LAYER_TYPES:
             raise _map_error(
                 HED_MAP_STYLE_0001,
                 "Unsupported style layer type",
-                f"Layer type {layer.get('type')!r} is outside the locked subset.",
+                f"Layer type {layer_type!r} is outside the locked subset.",
                 "Use fill/line/symbol/circle/raster/background layers.",
             )
     for field in ("glyphs", "sprite"):
@@ -512,7 +522,8 @@ def _close_style_url(url: str, *, origins: list[str], policy: MapPolicy) -> str:
 def _close_style_source(source: object, *, origins: list[str], policy: MapPolicy) -> JsonValue:
     if not isinstance(source, Mapping):
         return _as_json(source)
-    closed: JsonObject = {str(key): _as_json(value) for key, value in source.items()}
+    mapping = cast(Mapping[object, object], source)
+    closed: JsonObject = {str(key): _as_json(value) for key, value in mapping.items()}
     tiles = closed.get("tiles")
     if isinstance(tiles, Sequence) and not isinstance(tiles, (str, bytes)):
         closed["tiles"] = [
@@ -633,7 +644,8 @@ def _basemap_facts(
             _reject_pollution(basemap.document)
             tiles = basemap.document.get("tiles")
             if isinstance(tiles, Sequence) and not isinstance(tiles, (str, bytes)):
-                for tile in tiles:
+                tile_values = cast(Sequence[object], tiles)
+                for tile in tile_values:
                     if isinstance(tile, str):
                         _validate_url(tile)
                         origin = _origin_of(tile)
@@ -641,7 +653,7 @@ def _basemap_facts(
                         if origin and origin not in origins:
                             origins.append(origin)
                         resources.append(tile)
-                tile_urls = [tile for tile in tiles if isinstance(tile, str)]
+                tile_urls = [tile for tile in tile_values if isinstance(tile, str)]
                 if tile_urls:
                     source_type = "raster"
                     declared = str(basemap.document.get("type") or "raster")
@@ -776,10 +788,10 @@ def _basemap_facts(
         )
         return basemap.kind, None, resources, origins, attribution, style, warnings
 
-    if isinstance(basemap, NoBasemap):
+    if isinstance(basemap, NoBasemap):  # pyright: ignore[reportUnnecessaryIsInstance]
         return basemap.kind, None, resources, origins, attribution, style, warnings
 
-    if isinstance(basemap, OfflineMapBundle):
+    if isinstance(basemap, OfflineMapBundle):  # pyright: ignore[reportUnnecessaryIsInstance]
         for field in ("archive_or_image", "style", "sprites", "glyphs"):
             value = getattr(basemap, field, None)
             if isinstance(value, str) and value:
@@ -831,20 +843,21 @@ def _apply_overlay_style(
             for marker in _iter_json_array(layer.get("markers")):
                 if not isinstance(marker, Mapping):
                     continue
+                marker_mapping = cast(Mapping[object, object], marker)
                 features.append(
                     {
                         "type": "Feature",
-                        "id": _as_json(marker.get("id")),
+                        "id": _as_json(marker_mapping.get("id")),
                         "properties": {
-                            "id": _as_json(marker.get("id")),
-                            "name": _as_json(marker.get("label")),
-                            "label": _as_json(marker.get("label")),
+                            "id": _as_json(marker_mapping.get("id")),
+                            "name": _as_json(marker_mapping.get("label")),
+                            "label": _as_json(marker_mapping.get("label")),
                         },
                         "geometry": {
                             "type": "Point",
                             "coordinates": [
-                                _as_json(marker.get("lon")),
-                                _as_json(marker.get("lat")),
+                                _as_json(marker_mapping.get("lon")),
+                                _as_json(marker_mapping.get("lat")),
                             ],
                         },
                     }
@@ -1019,7 +1032,8 @@ def compile_map(
             for item in _iter_json_array(marker.get("markers")):
                 if not isinstance(item, Mapping):
                     continue
-                if item.get("action") and item.get("href"):
+                item_mapping = cast(Mapping[object, object], item)
+                if item_mapping.get("action") and item_mapping.get("href"):
                     raise _map_error(
                         HED_MAP_0004,
                         "Marker cannot mix href and action",
@@ -1028,12 +1042,12 @@ def compile_map(
                     )
                 marker_spec = MarkerSpec.model_validate(
                     {
-                        "id": str(item.get("id") or "marker"),
-                        "lat": item.get("lat") or 0.0,
-                        "lon": item.get("lon") or 0.0,
-                        "label": str(item.get("label") or ""),
-                        "href": item.get("href"),
-                        "action": item.get("action"),
+                        "id": str(item_mapping.get("id") or "marker"),
+                        "lat": item_mapping.get("lat") or 0.0,
+                        "lon": item_mapping.get("lon") or 0.0,
+                        "label": str(item_mapping.get("label") or ""),
+                        "href": item_mapping.get("href"),
+                        "action": item_mapping.get("action"),
                     }
                 )
                 sanitized.append(

@@ -23,7 +23,7 @@ def _xyz_to_tms(z: int, y: int) -> int:
 
 
 def read_tile(path: Path, *, z: int, x: int, y: int) -> bytes | None:
-    if not isinstance(z, int) or not isinstance(x, int) or not isinstance(y, int):
+    if type(z) is not int or type(x) is not int or type(y) is not int:
         raise error(
             HED_MAP_OFFLINE_0002,
             title="MBTiles XYZ must be integers",
@@ -49,7 +49,11 @@ def read_tile(path: Path, *, z: int, x: int, y: int) -> bytes | None:
     if row is None:
         return None
     data = row[0]
-    return bytes(data) if isinstance(data, (bytes, memoryview)) else None
+    if isinstance(data, bytes):
+        return data
+    if isinstance(data, memoryview):
+        return bytes(cast(memoryview[Any], data))
+    return None
 
 
 @dataclass(frozen=True, slots=True)

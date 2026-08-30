@@ -368,12 +368,14 @@ quality_pyright() {
 }
 
 quality_strict_package_types() {
-  # The stable framework packages and the Edron authoring facade must remain
-  # warning-free under the workspace's strict Pyright configuration.
+  # Release-gated typed packages, including selected Beta satellites, must
+  # remain warning-free under the workspace's strict Pyright configuration.
   run_uv pyright --warnings \
     packages/hedron-core/src/hedron_core \
     packages/hedron/src/hedron \
     packages/hedron-data/src/hedron_data \
+    packages/hedron-charts/src/hedron_charts \
+    packages/hedron-maps/src/hedron_maps \
     packages/edron/src/edron
 }
 
@@ -621,14 +623,16 @@ cmd_workbench_bounds() {
       -e packages/hedron-data -e packages/hedron-flask -e packages/hedron-django \
       -e packages/hedron-jinja -e packages/hedron-conformance -e packages/hedron-extras \
       -e packages/hedron-elements -e packages/hedron-posit -e packages/fastapi-workbench \
-      pytest pytest-xdist httpx "django>=5.2,<6" "starlette==0.40.0" "uvicorn==0.32.0"
+      -e packages/hedron-charts -e packages/hedron-maps -e packages/edron \
+      pytest pytest-xdist httpx "django>=5.2,<6" "starlette==0.40.0" "uvicorn==0.32.0" "matplotlib>=3.8,<4"
   else
     uv pip install --python "$venv/bin/python" \
       -e packages/hedron-core -e packages/hedron -e packages/hedron-explorer \
       -e packages/hedron-data -e packages/hedron-flask -e packages/hedron-django \
       -e packages/hedron-jinja -e packages/hedron-conformance -e packages/hedron-extras \
       -e packages/hedron-elements -e packages/hedron-posit -e packages/fastapi-workbench \
-      pytest pytest-xdist httpx "django>=5.2,<6" "starlette>=0.40.0" "uvicorn>=0.32"
+      -e packages/hedron-charts -e packages/hedron-maps -e packages/edron \
+      pytest pytest-xdist httpx "django>=5.2,<6" "starlette>=0.40.0" "uvicorn>=0.32" "matplotlib>=3.8,<4"
   fi
   run "$venv/bin/pytest" -q \
     tests/adapters/workbench \
@@ -636,7 +640,10 @@ cmd_workbench_bounds() {
     tests/adapters/django \
     tests/integration/test_workbench_urls.py \
     tests/integration/test_workbench_runner.py \
-    tests/security/test_workbench_adversarial.py
+    tests/security/test_workbench_adversarial.py \
+    tests/unit/test_maps_047_pkg.py \
+    tests/unit/test_charts_028_static_matrix.py \
+    tests/unit/test_edron_100_packet.py
 }
 
 cmd_workbench() {

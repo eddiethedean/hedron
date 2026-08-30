@@ -5,7 +5,7 @@ from __future__ import annotations
 import inspect
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Any, Protocol, cast
+from typing import Any, cast
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -85,10 +85,6 @@ class MapLoaded(_Payload):
 class MapFailed(_Payload):
     code: str
     message: str = ""
-
-
-class _CommandHost(Protocol):
-    _interaction_commands: dict[str, str]
 
 
 EVENT_PAYLOADS: dict[str, type[BaseModel]] = {
@@ -214,16 +210,13 @@ class MapInteraction:
         refresh_targets = tuple(self.refreshes)
         map_ref = self.map
         path = f"/maps/{ident}/{event}"
-        commands = getattr(map_ref, "_interaction_commands", None)
-        if not isinstance(commands, dict):
-            try:
-                host = cast(_CommandHost, map_ref)
-                host._interaction_commands = {}
-                commands = host._interaction_commands
-            except (AttributeError, TypeError):
-                commands = None
-        if isinstance(commands, dict):
-            commands[event] = path
+        register_interaction = getattr(map_ref, "register_interaction", None)
+        if callable(register_interaction):
+            register_interaction(event, path)
+        else:
+            commands = getattr(map_ref, "_interaction_commands", None)
+            if isinstance(commands, dict):
+                commands[event] = path
 
         def event_command(app: object) -> object:
             def on_map_event(payload: object) -> object:
@@ -240,10 +233,11 @@ class MapInteraction:
                         "Reduce selected ids or viewport metadata.",
                     )
                 ids = getattr(typed, "ids", None)
-                if isinstance(ids, list) and len(ids) > max_items:
+                bounded_ids = cast(list[object], ids) if isinstance(ids, list) else None
+                if bounded_ids is not None and len(bounded_ids) > max_items:
                     copier = getattr(typed, "model_copy", None)
                     if callable(copier):
-                        typed = copier(update={"ids": ids[:max_items]})
+                        typed = copier(update={"ids": bounded_ids[:max_items]})
                 handler = getattr(command, "__wrapped__", None) or getattr(command, "handler", None)
                 result = _invoke_command(command, handler, typed)
                 if result is not None:

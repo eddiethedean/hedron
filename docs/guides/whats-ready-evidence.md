@@ -60,7 +60,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | Posit Workbench / RStudio Server | **Supported** (`hedron[posit]`) | [Posit Workbench](posit-workbench.md) · [Posit deployments](posit.md) — Workbench **2025.05.1**–**2026.07.0**; `HedronPosit`; no import auto-wrap |
 | Posit Connect (native GUID) | **Supported** (`hedron[posit]`) | [Posit deployments](posit.md) — Connect **2025.06.0**–**2026.07.0**; native cookies |
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
-| Charts | **Supported** first-party and Matplotlib/static paths on Beta satellite package | Public PyPI applications use the fallback `hedron[charts]>=0.67.0,<0.68`; the 1.0 workspace coordinates `hedron-charts` `0.2.4`. `ChartSpec` / `hedron-chart` and Matplotlib/static are Supported; Plotly / Altair remain **Experimental** ([Chart API](../api/CHART.md)) |
+| Charts | **Supported** first-party and Matplotlib/static paths on Stable package | The 1.0 workspace coordinates `hedron-charts>=1.0.0,<2.0`. `ChartSpec` / `hedron-chart` and Matplotlib/static are Supported; Plotly / Altair remain **Experimental** ([Chart API](../api/CHART.md)) |
 | Model demos / inference workflows | **Supported** capability (fail-closed; APIs `beta`) | Runnable [model-demo example](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18) — [Model demos](model-demos.md) · [Recipes](../examples/recipes/index.md) |
 | MCP projection | **Supported** inventory on Beta `hedron-mcp` `0.2.4` | Deny-by-default; pin `hedron[mcp]`; mutations Experimental |
 | Notebook preview | **Supported tooling-grade scope** | Localhost preview only; not Supported production hosting |
@@ -129,6 +129,7 @@ Only `hedron-core` and `hedron` are **Stable** in the 1.0 inventory; satellite p
 | Explorer accessibility workspace | `hedron[dev]` / `hedron-explorer` | Supported for local diagnostics (`/hedron-explorer/a11y`) |
 | Automated Playwright/axe accessibility matrix | `hedron[browser]` | Supported automation evidence; **not equivalent to human assistive-technology testing** |
 | Remote Gradio / HF Space client interop | `hedron[gradio]` / `hedron-gradio` | Supported for declared allowlisted destinations; coordinated 1.0 artifact `0.2.3` |
+| First-party maps | `hedron-maps` / `hedron[maps]` | Stable package; bounded MapSpec/MapPlan, semantic fallback, declared providers, and offline inventory |
 
 Pin package versions in production. “Supported” does not mean a commercial SLA or
 guaranteed multi-worker live-transport proof.
@@ -159,7 +160,7 @@ guaranteed multi-worker live-transport proof.
 |---|---|
 | `hedron[mcp]` / `hedron-mcp` | Beta `0.2.4` (`>=0.2.4,<0.3` for coordinated 1.0 artifacts); deny-by-default Supported inventory; mutations Experimental |
 | `hedron[gradio]` / `hedron-gradio` | Beta `0.2.3` (`>=0.2.3,<0.3` for coordinated 1.0 artifacts); allowlisted remote predict/stream/file transport |
-| `hedron[charts]` / `hedron-charts` | Beta `0.2.4` (`>=0.2.4,<0.3` for coordinated 1.0 artifacts); first-party `ChartSpec` / `hedron-chart` and Matplotlib/static Supported; Plotly/Altair Experimental |
+| `hedron[charts]` / `hedron-charts` | Stable `1.0.0` (`>=1.0.0,<2.0` for coordinated 1.0 artifacts); first-party `ChartSpec` / `hedron-chart` and Matplotlib/static Supported; Plotly/Altair Experimental |
 | `hedron[native]` / `hedron-native` | Optional Rust HTML-escape accel; pure-Python fallback Supported |
 
 ## Deferred (do not market as Supported)

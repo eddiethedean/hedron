@@ -11,7 +11,7 @@ Hedron.
 Beginner `LineChart` / `BarChart` / `AreaChart` / `ScatterChart`, Matplotlib static
 SVG/PNG, Plotly interactive JSON, and Altair/Vega-Lite specifications.
 
-**Package maturity:** Beta · **Package version:** `0.2.4` · requires
+**Package maturity:** Stable · **Package version:** `1.0.0` · requires
 `hedron-core>=1.0.0,<2.0`
 
 Interactive Plotly/Vega **full browser runtimes** remain **experimental**: Hedron
@@ -38,9 +38,9 @@ and the
 # flagship extra:
 pip install "hedron[charts]>=0.67.0,<0.68"
 # independent satellite:
-pip install "hedron-charts>=0.2.4,<0.3"
+pip install "hedron-charts>=1.0.0,<2.0"
 # Add a backend when needed:
-pip install "hedron-charts[matplotlib]>=0.2.4,<0.3"
+pip install "hedron-charts[matplotlib]>=1.0.0,<2.0"
 ```
 
 Pin the living charts line at `>=0.2.0,<0.3` on the 0.51 train.

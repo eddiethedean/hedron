@@ -4,7 +4,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/edron.svg)](https://pypi.org/project/edron/)
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
 [![Docs](https://readthedocs.org/projects/hedron/badge/?version=latest)](https://hedron.readthedocs.io/en/latest/guides/edron-user-guide/)
-[![Status: Beta](https://img.shields.io/badge/status-beta-orange.svg)](https://pypi.org/project/edron/)
+[![Status: Stable](https://img.shields.io/badge/status-stable-brightgreen.svg)](https://pypi.org/project/edron/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/packages/edron/LICENSE)
 
 **Build dashboards, internal tools, CRUD applications, and data workflows in Python—with a
@@ -19,10 +19,11 @@ that renders accessible HTML and adds partial-page interaction through HTMX.
 - No second router, renderer, state store, or security authority
 - Full access to the native Hedron application when you need it
 
-**Package maturity:** Beta · **In-tree release:** `1.0.x` · **Public fallback:** `0.9.x` · **Python:** 3.10–3.14
+**Package maturity:** Stable · **Release:** `1.0.0` · **Python:** 3.10–3.14
 
-Edron is a Beta satellite. The stable 1.0 platform boundary is limited to
-`hedron-core` and `hedron`; Edron's API and release cadence remain independent.
+Edron is a Stable authoring facade on the Hedron 1.x train. Its contract is the
+small root API documented below; native package internals and experimental
+adapters remain outside the compatibility promise.
 
 Pin the minor train in applications and upgrade deliberately after reading the release notes.
 

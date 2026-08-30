@@ -41,7 +41,8 @@ This catalog classifies Hedron's public surface beginning with `v0.8.0` and refl
 
 Package maturity classifiers (Stable/Beta/Alpha) describe distribution readiness; the levels above
 describe **API/artifact** promises. The stable 1.0 package boundary is `hedron-core` plus
-`hedron`; satellites keep their independent Beta maturity.
+`hedron`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps`; host/tooling satellites keep
+their independent Beta maturity.
 
 ## Minimal `stable` tier
 
@@ -128,7 +129,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 
 ## Package export classifications
 
-### `hedron` (Beta distribution)
+### `hedron` (Stable distribution)
 
 - **stable:** facade re-exports of the minimal stable tier above; `Hedron` / router / CSRF helpers;
   plus the [expanded 0.23 tier](#expanded-stable-tier-023): `region` / `fragment` / `swap` /
@@ -164,7 +165,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 - Lazy optional surfaces (`hedron[data]`, `hedron[charts]`, `hedron[auth]`, content helpers) inherit
   the optional package level and are **not** part of the root stable facade.
 
-### `hedron-core` (Beta)
+### `hedron-core` (Stable)
 
 - **stable:** symbols in the minimal stable tier; plus `JobBackend` / `JobStatus` /
   `JobHandle` / `JobState` / `set_job_backend` / `get_job_backend` (`hedron_core.jobs`);
@@ -180,22 +181,36 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
   governance helpers, surface validators).
 - Concrete HTML serializer node classes remain **internal**.
 
-### `hedron-data` (Beta package) — `beta` API
+### `hedron-data` (Stable package) — `stable` API
 
-- `DataTable` / `DataEditor`, column catalog, saved views, `TransformPlan`, grid events: **beta**
-- Dask/Snowflake sources, AG Grid Community host: **beta**
-- Spreadsheet I/O / collab helpers: **beta**
+- `DataTable` / `DataEditor`, columns, bounded source/query/result contracts, and normalization:
+  **stable**
+- Dask/Snowflake sources, AG Grid Community host, spreadsheet I/O, and collaboration helpers:
+  **experimental**
 
-### `hedron-charts` (Beta distribution; `>=0.2.4,<0.3` for coordinated 1.0 artifacts)
+### `hedron-charts` (Stable distribution; `>=1.0.0,<2.0` for coordinated 1.0 artifacts)
 
-- `Chart` / `ChartSpec` / `ChartPlan`, compiler, and deterministic exports: **beta**.
-- `MatplotlibChart` / static SVG: **beta** API on Beta distribution for Supported scopes.
+- `Chart` / `ChartSpec` / `ChartPlan`, compiler, and deterministic exports: **stable**.
+- `MatplotlibChart` / static SVG: **stable** for the declared static scope.
 - `PlotlyChart` / `AltairChart`: **experimental**.
-- `LineChart` / `AreaChart` / `BarChart` / `ScatterChart`: **beta**.
-- Optional adapters + offline runtime pins: **experimental**.
+- `LineChart` / `AreaChart` / `BarChart` / `ScatterChart`: **stable**.
+- Optional vendor adapters + offline runtime pins: **experimental**.
 
-Schema acceptance is broader than specialized host painting in `hedron-charts 0.2.4`; see the
+Schema acceptance is broader than specialized host painting in `hedron-charts 1.0.0`; see the
 [Chart API coverage matrix](CHART.md#compiler-contract-versus-current-host-coverage).
+
+### `hedron-maps` (Stable package) — `stable` API
+
+The bounded `MapSpec` / `MapPlan` grammar, first-party `Map` component, declared sources and
+overlays, semantic fallback, exact-origin policy, deterministic compiler, and offline inventory
+are stable. Leaflet/OpenLayers, arbitrary providers and projections, drawing, terrain, globe,
+routing, geocoding, and offline-region download remain excluded rather than implicitly stable.
+
+### `edron` (Stable package) — `stable` API
+
+The root authoring surface (`App`, `Page`, `Container`, `Action`, `Fragment`, `Interaction`,
+`Outcome`, and the documented decorators/helpers) is stable. Native internals, migration
+helpers, operational backends, and optional adapter-specific surfaces remain non-stable.
 
 ### `hedron-posit` (Beta satellite) — `beta` Posit adapter
 

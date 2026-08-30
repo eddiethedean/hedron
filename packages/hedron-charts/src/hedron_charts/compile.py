@@ -7,7 +7,7 @@ import json
 import math
 import statistics
 from collections.abc import Mapping, Sequence
-from typing import Any
+from typing import Any, cast
 
 from hedron_charts.operators import (
     ALLOWED_OPERATORS,
@@ -70,7 +70,8 @@ def _fingerprint(payload: object) -> str:
 
 def _reject_pollution(obj: object, path: str = "$") -> None:
     if isinstance(obj, Mapping):
-        for key, value in obj.items():
+        mapping = cast(Mapping[object, object], obj)
+        for key, value in mapping.items():
             key_s = str(key)
             if key_s in {"__proto__", "constructor", "prototype"}:
                 raise _chart_error(
@@ -81,7 +82,8 @@ def _reject_pollution(obj: object, path: str = "$") -> None:
                 )
             _reject_pollution(value, f"{path}.{key_s}")
     elif isinstance(obj, (list, tuple)):
-        for i, item in enumerate(obj):
+        sequence = cast(Sequence[object], obj)
+        for i, item in enumerate(sequence):
             _reject_pollution(item, f"{path}[{i}]")
 
 
@@ -245,15 +247,15 @@ def _as_int(value: object, *, default: int = 0) -> int:
 
 def _as_str_list(value: object) -> list[str]:
     if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
-        return [str(item) for item in value]
+        return [str(item) for item in cast(Sequence[object], value)]
     return []
 
 
 def _as_object_list(value: object) -> list[object]:
     if isinstance(value, list):
-        return value
+        return cast(list[object], value)
     if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
-        return list(value)
+        return list(cast(Sequence[object], value))
     return []
 
 
@@ -261,9 +263,10 @@ def _as_metric_dicts(value: object) -> list[dict[str, object]]:
     if not isinstance(value, list):
         return [{"op": "count", "as": "count"}]
     out: list[dict[str, object]] = []
-    for item in value:
+    for item in cast(list[object], value):
         if isinstance(item, dict):
-            out.append({str(key): val for key, val in item.items()})
+            mapping = cast(Mapping[object, object], item)
+            out.append({str(key): val for key, val in mapping.items()})
     return out or [{"op": "count", "as": "count"}]
 
 
@@ -271,9 +274,9 @@ def _membership_container(value: object) -> Sequence[object] | set[object] | fro
     if value is None:
         return ()
     if isinstance(value, (set, frozenset)):
-        return value
+        return cast(set[object] | frozenset[object], value)
     if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
-        return value
+        return cast(Sequence[object], value)
     return ()
 
 
@@ -690,12 +693,13 @@ def compile_chart(spec: ChartSpec | Mapping[str, object]) -> ChartPlan:
 
     warnings: list[str] = []
     transformed = apply_transforms(rows, parsed.transforms)
-    facets = parsed.composition.get("facet")
-    if isinstance(facets, list) and len(facets) > MAX_FACETS:
+    facets: object = parsed.composition.get("facet")
+    facet_list = cast(list[Any], facets) if isinstance(facets, list) else []
+    if len(facet_list) > MAX_FACETS:
         raise _chart_error(
             "HED-CHART-0071",
             "Facet limit exceeded",
-            f"Received {len(facets)} facets; max is {MAX_FACETS}.",
+            f"Received {len(facet_list)} facets; max is {MAX_FACETS}.",
             "Reduce facets.",
         )
 

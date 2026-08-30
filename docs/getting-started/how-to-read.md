@@ -24,7 +24,8 @@ the [API stability catalog](../api/STABILITY.md).
 | **`experimental`** | May change or be removed at a minor boundary |
 | **`internal` / `deferred`** | Not a public application contract |
 
-Package classifiers provide additional context: only `hedron-core` and `hedron` are
+Package classifiers provide additional context: `hedron-core`, `hedron`, `edron`, `hedron-data`,
+`hedron-charts`, and `hedron-maps` are
 **Stable** packages in 1.0, while satellites retain Beta or tooling-grade maturity. Always
 pin package versions. Package maturity does not override the two application questions above.
 

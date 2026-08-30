@@ -28,7 +28,7 @@ def test_version_is_synchronized() -> None:
     assert project["version"] == __version__
     changelog = (PKG / "CHANGELOG.md").read_text(encoding="utf-8")
     assert f"[{__version__}]" in changelog
-    beta_packages = (
+    train_packages = (
         "hedron",
         "hedron-data",
         "hedron-flask",
@@ -36,7 +36,7 @@ def test_version_is_synchronized() -> None:
         "hedron-jinja",
         "hedron-explorer",
     )
-    for name in beta_packages:
+    for name in train_packages:
         other = tomllib.loads(
             (ROOT / "packages" / name / "pyproject.toml").read_text(encoding="utf-8")
         )["project"]
@@ -56,7 +56,6 @@ def test_version_is_synchronized() -> None:
     independent_beta_02 = (
         "hedron-mcp",
         "hedron-gradio",
-        "hedron-charts",
         "hedron-sample-kit",
         "hedron-sim",
         "hedron-notebook",
@@ -72,10 +71,7 @@ def test_version_is_synchronized() -> None:
         ]
         assert development_status == ["Development Status :: 4 - Beta"], name
         assert str(other["version"]).startswith("0.2."), name
-    independent_beta = (
-        "hedron-native",
-        "hedron-maps",
-    )
+    independent_beta = ("hedron-native",)
     for name in independent_beta:
         other = tomllib.loads(
             (ROOT / "packages" / name / "pyproject.toml").read_text(encoding="utf-8")
@@ -91,6 +87,17 @@ def test_version_is_synchronized() -> None:
         (ROOT / "packages" / "edron" / "pyproject.toml").read_text(encoding="utf-8")
     )["project"]
     assert edron["version"] == "1.0.0"
+    for stable_name in ("hedron-charts", "hedron-maps"):
+        stable = tomllib.loads(
+            (ROOT / "packages" / stable_name / "pyproject.toml").read_text(encoding="utf-8")
+        )["project"]
+        assert stable["version"] == "1.0.0"
+        stable_status = [
+            classifier
+            for classifier in stable["classifiers"]
+            if classifier.startswith("Development Status ::")
+        ]
+        assert stable_status == ["Development Status :: 5 - Production/Stable"]
     mcp = tomllib.loads(
         (ROOT / "packages" / "hedron-mcp" / "pyproject.toml").read_text(encoding="utf-8")
     )["project"]
@@ -151,17 +158,18 @@ def test_package_maturity_classifiers() -> None:
     expected = {
         "hedron": "Development Status :: 5 - Production/Stable",
         "hedron-core": "Development Status :: 5 - Production/Stable",
-        "hedron-data": "Development Status :: 4 - Beta",
+        "hedron-data": "Development Status :: 5 - Production/Stable",
         "hedron-django": "Development Status :: 4 - Beta",
         "hedron-explorer": "Development Status :: 4 - Beta",
         "hedron-flask": "Development Status :: 4 - Beta",
-        "hedron-charts": "Development Status :: 4 - Beta",
+        "hedron-charts": "Development Status :: 5 - Production/Stable",
         "hedron-native": "Development Status :: 4 - Beta",
         "hedron-sample-kit": "Development Status :: 4 - Beta",
         "hedron-sim": "Development Status :: 4 - Beta",
         "hedron-notebook": "Development Status :: 4 - Beta",
         "hedron-jinja": "Development Status :: 4 - Beta",
-        "edron": "Development Status :: 4 - Beta",
+        "hedron-maps": "Development Status :: 5 - Production/Stable",
+        "edron": "Development Status :: 5 - Production/Stable",
     }
     for package, maturity in expected.items():
         project = tomllib.loads(

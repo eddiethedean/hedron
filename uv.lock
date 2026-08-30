@@ -1314,7 +1314,7 @@ provides-extras = ["dev", "data", "charts", "maps", "markdown", "code", "images"
 
 [[package]]
 name = "hedron-charts"
-version = "0.2.4"
+version = "1.0.0"
 source = { editable = "packages/hedron-charts" }
 dependencies = [
     { name = "hedron-core" },
@@ -1641,7 +1641,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-maps"
-version = "0.1.4"
+version = "1.0.0"
 source = { editable = "packages/hedron-maps" }
 dependencies = [
     { name = "hedron-core" },

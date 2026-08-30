@@ -174,7 +174,7 @@ Constructor/props live on the [component catalog](../components/index.md). Index
 |---|---|---|
 | `Auto` | none | [AUTO.md](AUTO.md) |
 | `DataTable`, `DataEditor`, `DataChanges`, `DataPage`, `DataQuery`, `DataSaveResult`, `InMemoryDataSource` | `hedron[data]` | [DATA.md](DATA.md), [DATA_SOURCE.md](DATA_SOURCE.md), [data-apps](../guides/data-apps.md) |
-| `LineChart`, `AreaChart`, `BarChart`, `ScatterChart`, `MatplotlibChart`, `PlotlyChart`, `AltairChart` | `hedron[charts]` (Beta; first-party/Matplotlib Supported, Plotly/Altair Experimental) | [CHART.md](CHART.md) |
+| `LineChart`, `AreaChart`, `BarChart`, `ScatterChart`, `MatplotlibChart`, `PlotlyChart`, `AltairChart` | `hedron[charts]` (Stable package; first-party/Matplotlib Supported, Plotly/Altair Experimental) | [CHART.md](CHART.md) |
 
 SQLAlchemy adapter: `hedron_data.sqlalchemy_source.SQLAlchemyDataSource` — see
 [data-apps](../guides/data-apps.md) (not a top-level `hedron` re-export).

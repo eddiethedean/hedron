@@ -10,7 +10,7 @@ authors = [{ name = "Odos Matthews", email = "odosmatthews@gmail.com" }]
 maintainers = [{ name = "Odos Matthews", email = "odosmatthews@gmail.com" }]
 keywords = ["fastapi", "htmx", "python", "server-rendered", "dashboard"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Framework :: FastAPI",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
@@ -26,8 +26,8 @@ classifiers = [
 dependencies = [
     "hedron>=1.0.0,<2.0",
     "hedron-data>=1.0.0,<2.0",
-    "hedron-charts>=0.2.4,<0.3",
-    "hedron-maps>=0.1.4,<0.2",
+    "hedron-charts>=1.0.0,<2.0",
+    "hedron-maps>=1.0.0,<2.0",
     "markdown>=3.4.1",
     "nh3>=0.2",
     "uvicorn>=0.32",

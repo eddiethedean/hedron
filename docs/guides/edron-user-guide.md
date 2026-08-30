@@ -10,9 +10,9 @@ Edron is a typed, server-rendered Python facade over one native Hedron applicati
 for dashboards, internal tools, data workspaces, and workflows that should remain useful with
 ordinary HTTP and without a separate frontend build system.
 
-This guide targets the verified Edron and Hedron `1.0.x` candidate. Until publication, install
-the public fallback Edron `>=0.9.0,<0.10` and Hedron `>=0.67.0,<0.68`; use `uv sync` from the
-repository to exercise the candidate. Keep the supported surface explicit, and treat
+This guide targets the Edron and Hedron `1.0.x` Stable contract. Until publication, install
+the public fallback only when required; use `uv sync` from the repository to exercise the
+candidate. Keep the supported surface explicit, and treat
 undocumented imports as internal.
 
 ## The operating model

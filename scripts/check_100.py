@@ -353,6 +353,13 @@ def _check_package_metadata() -> list[str]:
         if distribution == "edron":
             if "hedron>=1.0.0,<2.0" not in joined:
                 errors.append("edron: Hedron dependency must require the canonical 1.x train")
+            for dependency in (
+                "hedron-data>=1.0.0,<2.0",
+                "hedron-charts>=1.0.0,<2.0",
+                "hedron-maps>=1.0.0,<2.0",
+            ):
+                if dependency not in joined:
+                    errors.append(f"edron: Stable 1.0 facade must require {dependency}")
         elif distribution == "edron-sim":
             if "edron>=1.0.0,<2.0" not in joined:
                 errors.append("edron-sim: Edron dependency must require the canonical 1.x train")

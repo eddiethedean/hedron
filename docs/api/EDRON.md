@@ -64,7 +64,8 @@ The conventional import is `import edron as ed`. Documentation does not use or r
 ## Contract language and stability
 
 The words **must**, **must not**, **required**, **should**, and **may** are normative. Edron `1.0.0`
-is a Beta distribution and all Edron-owned symbols in this contract remain API tier `beta`.
+is a Stable distribution. Only the deliberately small root authoring surface listed in the
+stable API contract is API tier `stable`; native internals and optional adapters remain non-stable.
 Identity re-exports retain the native Hedron symbol's own tier. Experimental third-party adapters
 remain explicitly `experimental` even when reached through an Edron method.
 

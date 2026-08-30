@@ -18,12 +18,13 @@ publication is deferred.
 
 The **Supported matrix** is the CI-tested range. Package metadata may declare a **wider**
 compatible range; versions outside the Supported column are installable but unsupported
-until evidence is green. In the 1.0 boundary, only `hedron-core` and `hedron` are Stable
-platform packages. `edron`, host adapters, data, Explorer, elements, extras, Posit,
-conformance, Workbench, charts, maps, native, MCP, Gradio, notebook, sample-kit, and
-simulation packages are independent Beta satellites; their capability-level “Supported”
-claims do not promote them into the stable platform. The public registry resolves the
-1.0.0 `hedron-core`/`hedron` pair.
+until evidence is green. In the 1.0 boundary, `hedron-core`, `hedron`, `edron`, `hedron-data`,
+`hedron-charts`, and `hedron-maps` are Stable
+platform packages. Host adapters, Explorer, elements, extras, Posit, conformance, Workbench,
+native, MCP, Gradio, notebook, sample-kit, and simulation packages are independent Beta
+satellites; experimental adapter surfaces remain outside the Stable API even when their owning
+package is Stable. The repository resolves the coordinated 1.0.0 workspace; the public index may
+continue to serve the documented 0.x fallback until publication.
 
 ### Charts and sample-kit compatibility floor
 

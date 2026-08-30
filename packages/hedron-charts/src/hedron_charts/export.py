@@ -6,7 +6,7 @@ import csv
 import io
 import json
 from collections.abc import Mapping
-from typing import Any
+from typing import Any, cast
 
 from hedron_charts.spec import ChartPlan
 from hedron_core.diagnostics import error
@@ -74,10 +74,13 @@ def export_svg(plan: ChartPlan, *, authorized: bool = True, width: int | None = 
     title = plan.accessibility.title
     desc = plan.accessibility.description
     # Deterministic first-party static SVG (semantic equivalence, not pixel identity).
-    points = []
+    points: list[str] = []
     y_values: list[float] = []
     for mark in plan.marks:
-        vals = mark.get("values") or {}
+        raw_vals = mark.get("values")
+        vals: Mapping[str, Any] = (
+            cast(Mapping[str, Any], raw_vals) if isinstance(raw_vals, Mapping) else {}
+        )
         y = vals.get("y")
         try:
             y_values.append(float(y))  # type: ignore[arg-type]
@@ -90,7 +93,10 @@ def export_svg(plan: ChartPlan, *, authorized: bool = True, width: int | None = 
     plot_w = max(1, w - 2 * margin)
     plot_h = max(1, h - 2 * margin)
     for i, mark in enumerate(plan.marks):
-        vals = mark.get("values") or {}
+        raw_vals = mark.get("values")
+        vals: Mapping[str, Any] = (
+            cast(Mapping[str, Any], raw_vals) if isinstance(raw_vals, Mapping) else {}
+        )
         try:
             y = float(vals.get("y"))  # type: ignore[arg-type]
         except (TypeError, ValueError):

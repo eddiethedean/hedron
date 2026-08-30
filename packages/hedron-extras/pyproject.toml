@@ -45,7 +45,7 @@ dependencies = [
 code_editor = []  # deprecated empty stub (CodeEditor remains host textarea)
 json_editor = []
 data_explorer = ["hedron-data>=1.0.0,<2.0"]
-chart_workbench = ["hedron-data>=1.0.0,<2.0", "hedron-charts>=0.2.4,<0.3"]
+chart_workbench = ["hedron-data>=1.0.0,<2.0", "hedron-charts>=1.0.0,<2.0"]
 image_tools = []
 calendar = []
 signature = []
@@ -56,7 +56,7 @@ joystick = []
 experimental-ui = []
 all = [
     "hedron-data>=1.0.0,<2.0",
-    "hedron-charts>=0.2.4,<0.3",
+    "hedron-charts>=1.0.0,<2.0",
 ]
 
 [project.entry-points."hedron.plugins"]

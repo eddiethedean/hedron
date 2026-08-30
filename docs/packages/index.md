@@ -9,7 +9,7 @@ Start with the flagship and adapters if you are new; use this catalog for **extr
 |---|---|---|
 | [`hedron`](https://pypi.org/project/hedron/) | FastAPI flagship | [First app](../getting-started/quickstart.md) · [Hedron API](../api/HEDRON.md) |
 | [`hedron-core`](https://pypi.org/project/hedron-core/) | Framework-neutral renderer | [Architecture](../ARCHITECTURE.md) |
-| [`edron`](https://pypi.org/project/edron/) | Beta class-oriented authoring satellite | [Edron quick start](../getting-started/edron-quickstart.md) |
+| [`edron`](https://pypi.org/project/edron/) | Stable class-oriented authoring facade | [Edron quick start](../getting-started/edron-quickstart.md) |
 | [`hedron-flask`](https://pypi.org/project/hedron-flask/) | Flask host adapter | [Flask](../getting-started/flask.md) · [Adapters](../api/ADAPTERS.md) |
 | [`hedron-django`](https://pypi.org/project/hedron-django/) | Django host adapter | [Django](../getting-started/django.md) · [Adapters](../api/ADAPTERS.md) |
 | [`fastapi-workbench`](https://pypi.org/project/fastapi-workbench/) | Independent 1.x Posit Workbench adapter for plain FastAPI/ASGI apps | [FastAPI Workbench](../guides/fastapi-workbench.md) |
@@ -20,7 +20,7 @@ inventory. Edron and the coordinated Hedron inventory are published on the 1.0 t
 
 !!! note "Maturity"
 
-    Package maturity (Beta / Alpha) ≠ capability readiness (Supported / Experimental).
+    Package maturity (Stable / Beta / Alpha) ≠ capability readiness (Supported / Experimental).
     See [How to read](../getting-started/how-to-read.md) and
     [What’s ready](../guides/whats-ready.md). Use the documented upper bound for every
     coordinated or independent distribution.
@@ -34,10 +34,10 @@ inventory. Edron and the coordinated Hedron inventory are published on the 1.0 t
 | [hedron-explorer](hedron-explorer.md) | `hedron[dev]` | Development Component Explorer |
 | [hedron-extras](hedron-extras.md) | `hedron[extras]` | Curated toolkit (specialty widgets may be Experimental/stub) |
 | [hedron-conformance](hedron-conformance.md) | `hedron[conformance]` | Language-neutral conformance kit |
-| [hedron-charts](hedron-charts.md) | `hedron[charts]` | First-party charts and visualization adapters; `>=0.2.4,<0.3` on the 1.0 train |
+| [hedron-charts](hedron-charts.md) | `hedron[charts]` | First-party charts and visualization adapters; `>=1.0.0,<2.0` on the 1.0 train |
 | [hedron-native](hedron-native.md) | `hedron[native]` | Optional Rust HTML-escape acceleration |
 | [hedron-posit](hedron-posit.md) | `hedron[posit]` | Preferred Posit Workbench / Connect facade (`HedronPosit`) |
-| [hedron-maps](hedron-maps.md) | `hedron[maps]` | First-class custom-server, MapLibre, and offline maps (`hedron-maps` `0.1.4`) |
+| [hedron-maps](hedron-maps.md) | `hedron[maps]` | First-class custom-server, MapLibre, and offline maps (`hedron-maps` `1.0.0`) |
 | [hedron-elements](hedron-elements.md) | `hedron[elements]` | Beta Web Component ABI; production-grade for the locked Supported inventory only |
 
 ```bash

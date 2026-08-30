@@ -9,7 +9,7 @@ status: beta
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Beta package on 1.0 · `hedron-charts` `0.2.4`; first-party and Matplotlib
+**Status:** Stable package on 1.0 · `hedron-charts` `1.0.0`; first-party and Matplotlib
 paths Supported, Plotly/Altair Experimental
 
 !!! info "Phase 0.38 first-party charts"
@@ -21,7 +21,7 @@ paths Supported, Plotly/Altair Experimental
 
 ## Availability
 
-Install `hedron[charts]>=1.0.0,<2.0` (or `hedron-charts>=0.2.4,<0.3`). See
+Install `hedron[charts]>=1.0.0,<2.0` (or `hedron-charts>=1.0.0,<2.0`). See
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ## Public surface
@@ -41,8 +41,8 @@ versioned charts package, not the Hedron flagship version.
 | `export_svg`, `export_csv`, `export_json`, `plan_export_bundle` | Deterministic, policy-checked server-side exports | Beta |
 | `compile_figure`, `apply_annotations`, `optional_adapters` | Figure compilation, annotation, and optional-adapter discovery | Beta or adapter-specific |
 | `RUNTIME_PINS`, `pinned_runtime`, `verify_pin`, `ensure_pin_stubs` | Inspect and verify vendored runtime metadata; the legacy stub name now validates real assets | Beta |
-| `TAG_NAME` | The first-party custom-element tag (`hedron-chart`) | Beta ABI |
-| `__version__` | Installed `hedron-charts` distribution version | Beta |
+| `TAG_NAME` | The first-party custom-element tag (`hedron-chart`) | Stable ABI |
+| `__version__` | Installed `hedron-charts` distribution version | Stable |
 
 Core signatures:
 

@@ -15,5 +15,6 @@ Continue with:
 - [Ship a Hedron app](ship.md)
 - [Evaluate Hedron](evaluate.md)
 
-Only `hedron-core` and `hedron` are Stable in the 1.0 platform. Satellite packages remain Beta,
+`hedron-core`, `hedron`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps` are Stable in
+the 1.0 platform. Host adapters and vendor/tooling satellites remain Beta,
 and Hedron has no commercial SLA.

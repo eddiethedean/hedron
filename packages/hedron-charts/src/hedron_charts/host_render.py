@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Mapping, Sequence
-from typing import Any
+from typing import Any, cast
 
 from hedron_core.builtins.content import Text
 from hedron_core.component import NodeLike
@@ -20,15 +20,18 @@ def render_host_figure(
 ) -> NodeLike:
     """Render a figure with a custom element carrying non-executable JSON payload."""
     acc = output.accessibility
-    payload: Mapping[str, Any] | str
+    payload: Mapping[str, Any]
     if isinstance(output.body, str):
         try:
             parsed = json.loads(output.body)
-            payload = parsed if isinstance(parsed, Mapping) else {"body": parsed}
+            payload = (
+                cast(Mapping[str, Any], parsed) if isinstance(parsed, Mapping) else {"body": parsed}
+            )
         except json.JSONDecodeError:
             payload = {"body": output.body}
     elif isinstance(output.body, Mapping):
-        payload = dict(output.body)
+        body_mapping = cast(Mapping[object, object], output.body)
+        payload = {str(key): value for key, value in body_mapping.items()}
     else:
         payload = {"body": str(output.body)}
     wrapped = {
@@ -59,12 +62,15 @@ def render_host_figure(
 
 
 def _tabular(rows: object) -> NodeLike:
-    from hedron_charts.adapters import _fallback_table
+    from hedron_charts.adapters import _fallback_table  # pyright: ignore[reportPrivateUsage]
 
     if not rows:
         return Text("")
     if isinstance(rows, Sequence) and not isinstance(rows, (str, bytes)):
-        cleaned = [dict(row) for row in rows if isinstance(row, Mapping)]
+        typed_rows = cast(Sequence[object], rows)
+        cleaned: list[Mapping[str, Any]] = [
+            cast(Mapping[str, Any], row) for row in typed_rows if isinstance(row, Mapping)
+        ]
         return _fallback_table(cleaned)
     return Text("")
 
@@ -87,16 +93,17 @@ def _coerce_zoom(raw: object, *, default: int = 2) -> int:
 def extract_folium_payload(value: object) -> dict[str, Any]:
     """Extract CSP-safe map center/zoom/markers from a Folium map or mapping."""
     if isinstance(value, Mapping):
-        if value.get("type") == "folium" or "center" in value or "location" in value:
-            center = value.get("center") or value.get("location") or [0.0, 0.0]
-            zoom_raw = value.get("zoom")
+        mapping = cast(Mapping[str, Any], value)
+        if mapping.get("type") == "folium" or "center" in mapping or "location" in mapping:
+            center = mapping.get("center") or mapping.get("location") or [0.0, 0.0]
+            zoom_raw = mapping.get("zoom")
             return {
                 "center": list(center) if not isinstance(center, list) else center,
                 "zoom": _coerce_zoom(zoom_raw),
-                "geojson": value.get("geojson"),
-                "markers": list(value.get("markers") or []),
-                "style": value.get("style") or "basic",
-                "coord_order": value.get("coord_order") or "latlng",
+                "geojson": mapping.get("geojson"),
+                "markers": list(mapping.get("markers") or []),
+                "style": mapping.get("style") or "basic",
+                "coord_order": mapping.get("coord_order") or "latlng",
             }
         raise TypeError("Folium mapping requires center/location or type=folium")
 
@@ -108,7 +115,8 @@ def extract_folium_payload(value: object) -> dict[str, Any]:
     geojson: object | None = None
     children = getattr(value, "_children", None)
     if isinstance(children, Mapping):
-        for child in children.values():
+        child_mapping = cast(Mapping[object, Any], children)
+        for child in child_mapping.values():
             mod = type(child).__module__
             name = type(child).__name__.lower()
             if "marker" in name:
@@ -150,9 +158,10 @@ def extract_pydeck_payload(value: Mapping[str, Any]) -> dict[str, Any]:
             "coord_order": value.get("coord_order") or "latlng",
         }
 
-    view = value.get("initial_view_state") or value.get("view_state") or {}
-    if not isinstance(view, Mapping):
+    view_value: object = value.get("initial_view_state") or value.get("view_state") or {}
+    if not isinstance(view_value, Mapping):
         raise TypeError("PyDeck payload requires initial_view_state mapping")
+    view = cast(Mapping[str, Any], view_value)
 
     lat = view.get("latitude")
     lng = view.get("longitude")
@@ -161,8 +170,21 @@ def extract_pydeck_payload(value: Mapping[str, Any]) -> dict[str, Any]:
     center = [float(lat), float(lng)]
     zoom = _coerce_zoom(view.get("zoom"))
 
-    layers = value.get("layers") or []
-    markers: list[dict[str, Any]] = list(value.get("markers") or [])
+    layers_value: object = value.get("layers")
+    if layers_value is None:
+        layers: Sequence[Any] = ()
+    elif isinstance(layers_value, Sequence) and not isinstance(
+        layers_value, (str, bytes, bytearray)
+    ):
+        layers = cast(Sequence[Any], layers_value)
+    else:
+        raise TypeError("PyDeck layers must be a sequence of layer mappings")
+    markers_value: object = value.get("markers") or []
+    markers: list[dict[str, Any]] = (
+        list(cast(Sequence[dict[str, Any]], markers_value))
+        if isinstance(markers_value, Sequence) and not isinstance(markers_value, (str, bytes))
+        else []
+    )
     geojson: object | None = value.get("geojson")
     if layers:
         converted = False
@@ -172,22 +194,24 @@ def extract_pydeck_payload(value: Mapping[str, Any]) -> dict[str, Any]:
                     "PyDeck layers cannot be rendered by the MapLibre host; "
                     "pass Folium-shaped center/zoom/markers/geojson instead."
                 )
-            data = layer.get("data")
+            layer_mapping = cast(Mapping[str, Any], layer)
+            data = layer_mapping.get("data")
             # Accept simple point lists as markers; anything else is unsupported.
-            if (
-                isinstance(data, list)
-                and data
-                and all(isinstance(pt, (list, tuple)) and len(pt) >= 2 for pt in data)
+            data_points = cast(list[Any], data) if isinstance(data, list) else []
+            if data_points and all(
+                isinstance(pt, (list, tuple)) and len(cast(Sequence[object], pt)) >= 2
+                for pt in data_points
             ):
-                for pt in data:
-                    markers.append({"location": [float(pt[1]), float(pt[0])]})  # lng,lat → latlng
+                for pt in data_points:
+                    point = cast(Sequence[Any], pt)
+                    markers.append({"location": [float(point[1]), float(point[0])]})
                 converted = True
-            elif isinstance(data, Mapping) and data.get("type") in {
+            elif isinstance(data, Mapping) and cast(Mapping[str, Any], data).get("type") in {
                 "FeatureCollection",
                 "Feature",
                 "GeometryCollection",
             }:
-                geojson = data
+                geojson = cast(object, data)
                 converted = True
             elif data in (None, [], {}):
                 converted = True
@@ -214,29 +238,40 @@ def downsample_plotly_body(body: Mapping[str, Any], *, max_points: int) -> dict[
 
     ``max_points`` must be a positive integer (#83); non-positive values fail closed.
     """
-    if not isinstance(max_points, int) or isinstance(max_points, bool) or max_points < 1:
+    if (
+        not isinstance(max_points, int)  # pyright: ignore[reportUnnecessaryIsInstance]
+        or isinstance(max_points, bool)
+        or max_points < 1
+    ):
         raise ValueError("max_points must be a positive integer")
     out = dict(body)
     data = out.get("data")
     if not isinstance(data, list):
         # Accept flat x/y arrays on the body itself.
         for key in ("x", "y"):
-            seq = out.get(key)
-            if isinstance(seq, list) and len(seq) > max_points:
+            seq_value = out.get(key)
+            if isinstance(seq_value, list):
+                seq = cast(list[Any], seq_value)
+                if len(seq) <= max_points:
+                    continue
                 step = max(1, len(seq) // max_points)
                 out[key] = seq[::step][:max_points]
         out["max_points"] = max_points
         out["resampled"] = True
         return out
-    new_data = []
-    for trace in data:
+    traces = cast(list[Any], data)
+    new_data: list[Any] = []
+    for trace in traces:
         if not isinstance(trace, Mapping):
             new_data.append(trace)
             continue
-        t = dict(trace)
+        t = dict(cast(Mapping[str, Any], trace))
         for key in ("x", "y", "z", "lat", "lon"):
-            seq = t.get(key)
-            if isinstance(seq, list) and len(seq) > max_points:
+            seq_value = t.get(key)
+            if isinstance(seq_value, list):
+                seq = cast(list[Any], seq_value)
+                if len(seq) <= max_points:
+                    continue
                 step = max(1, len(seq) // max_points)
                 t[key] = seq[::step][:max_points]
         new_data.append(t)

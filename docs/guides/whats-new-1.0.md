@@ -45,8 +45,9 @@ The [HTMX/Alpine boundary](../api/HTMX_ALPINE_BOUNDARY_1_0.md) is normative for 
 
 ## Package changes
 
-- Only `hedron-core` and `hedron` form the Stable `1.0.0` platform.
-- `edron`, adapters, data, explorer, Posit, Workbench, and other satellites remain Beta and
+- `hedron-core`, `hedron`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps` form the
+  Stable `1.0.0` platform.
+- Host adapters, explorer, Posit, Workbench, and other vendor/tooling satellites remain Beta and
   are versioned and supported independently of the stable platform boundary.
 - `hedron-workbench` and `hedron[workbench]` were removed. Use `hedron-posit` /
   `hedron[posit]`, or use `fastapi-workbench` for a plain ASGI application.

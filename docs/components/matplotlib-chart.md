@@ -23,7 +23,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 Install the optional provider before importing this component:
 
 ```bash
-pip install "hedron-charts[matplotlib]>=0.2.4,<0.3"
+pip install "hedron-charts[matplotlib]>=1.0.0,<2.0"
 ```
 
 ## Basic use

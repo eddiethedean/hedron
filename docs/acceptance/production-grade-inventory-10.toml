@@ -4,13 +4,14 @@
 baseline = "v0.67.0"
 state = "verified"
 hedron_cut = "v1.0.0"
-charts_cut = "0.2.3"
+charts_cut = "1.0.0"
 tracking = "phase-1.0"
 registry_status = "deferred"
 
 packages = [
   "hedron",
   "hedron-core",
+  "edron",
   "hedron-explorer",
   "hedron-data",
   "hedron-flask",
@@ -38,10 +39,12 @@ packages = [
 maturity = "stable"
 [hedron-core]
 maturity = "stable"
+[edron]
+maturity = "stable"
 [hedron-explorer]
 maturity = "beta"
 [hedron-data]
-maturity = "beta"
+maturity = "stable"
 [hedron-flask]
 maturity = "beta"
 [hedron-django]
@@ -53,9 +56,9 @@ maturity = "beta"
 [hedron-conformance]
 maturity = "beta"
 [hedron-charts]
-maturity = "beta"
+maturity = "stable"
 [hedron-maps]
-maturity = "beta"
+maturity = "stable"
 [hedron-native]
 maturity = "beta"
 [hedron-sample-kit]

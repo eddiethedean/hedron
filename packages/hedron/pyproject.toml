@@ -53,10 +53,10 @@ data = [
     "hedron-data>=1.0.0,<2.0",
 ]
 charts = [
-    "hedron-charts>=0.2.4,<0.3",
+    "hedron-charts>=1.0.0,<2.0",
 ]
 maps = [
-    "hedron-maps>=0.1.4,<0.2",
+    "hedron-maps>=1.0.0,<2.0",
 ]
 markdown = [
     "markdown>=3.4.1",
