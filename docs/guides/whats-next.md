@@ -3,9 +3,10 @@
 Hedron `v1.0.0` is implemented, Verified, tagged, and published. See
 [Current release and support](current-release.md) for the exact channel status.
 
-There is no committed 1.1 calendar or commercial SLA. Future work must preserve the 1.0 stable
-inventory and pass the same evidence-driven compatibility, security, accessibility, packaging,
-and migration review used for the 1.0 cut.
+There is no committed 1.1 calendar or commercial SLA. The maintainer roadmap contains a proposed
+1.X sequence, but these are planning candidates rather than release promises. Future work must
+preserve the 1.0 stable inventory and pass the same evidence-driven compatibility, security,
+accessibility, packaging, and migration review used for the 1.0 cut.
 
 ## Shipped in 1.0
 
@@ -19,19 +20,23 @@ and migration review used for the 1.0 cut.
 - Python 3.10–3.14, FastAPI, Flask, Django, HDJ, browser, security, and package evidence.
 - Polling as the Supported production fallback for asynchronous status.
 
-## Candidates after 1.0
+## Proposed 1.X sequence
 
-These are directions, not release promises:
+These are planning candidates, not release promises. The sequence is ordered from adoption
+confidence to higher-risk runtime and ecosystem expansion; each phase can end in promotion,
+continued experimentation, or non-admission:
 
-| Area | Current boundary | Evidence required before promotion |
+| Phase | Theme | Primary question |
 |---|---|---|
-| Live SSE/WebSocket/streaming | Experimental; use polling | Multi-worker, proxy, backpressure, reconnect, browser, and failure evidence |
-| Human assistive-technology sessions | Protocol engineering only | Compensated sessions and reviewed remediation; no automatic WCAG claim |
-| Plotly/Altair production promotion | Experimental adapters | Offline assets, security, accessibility, export, and browser matrices |
-| Morph-aware state retention | Deferred | One-writer ownership, stale-state, cleanup, focus, and fallback evidence |
-| MCP mutations | Experimental and opt-in | Principal/tenant authorization, audit, replay, and failure-isolation evidence |
-| Notebook multi-user hosting | Outside Supported scope | Explicit auth, isolation, resource, persistence, and operations design |
-| Wider Web Component ecosystem | Bounded first-party ABI | Lifecycle, SSR/HTMX fallback, accessibility, security, and versioning contract |
+| **1.1** | Adoption and compatibility hardening | Can a new team adopt and upgrade predictably? |
+| **1.2** | Production async and durable workflows | Is anything beyond polling ready for production? |
+| **1.3** | Inclusive and international UX | Can the stable surface work for more users and locales? |
+| **1.4** | Visualization and media graduation | Which optional adapters meet the first-party contract? |
+| **1.5** | Stateful browser composition | Can partial updates retain local state safely? |
+| **1.6** | Controlled ecosystem expansion | Which advanced integrations have a trustworthy operating model? |
+
+See the [full 1.X planning sequence](../ROADMAP.md#proposed-1x-sequence) for scope and shared
+entry/exit policy.
 
 ## Deliberately not planned as defaults
 

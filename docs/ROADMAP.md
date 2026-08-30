@@ -6943,3 +6943,141 @@ environments plus the fleet. W9 builds reproducible artifacts and authorizes the
 
 The packet checker is `python scripts/check_100.py --check-plan`; each executable slice is available
 through `python scripts/check_100.py --gate <GATE-ID> --verify`.
+
+## Proposed 1.X sequence
+
+**Planning status:** Proposed, unscheduled, and subject to the 1.0 stability policy. This is a
+candidate ordering for post-1.0 work, not a release or calendar commitment. The phase number is a
+planning bucket, not a promise that every item in the bucket ships together. Each phase can end in
+promotion, continued Beta/Experimental status, a narrower scope, or an explicit non-admission.
+
+| Phase | Theme | Primary question | Entry condition |
+|---|---|---|---|
+| **1.1** | Adoption and compatibility hardening | Can a new team adopt and upgrade Hedron predictably? | 1.0 support inventory is the baseline |
+| **1.2** | Production async and durable workflows | Is anything beyond polling ready for production? | 1.1 upgrade and fixture baseline |
+| **1.3** | Inclusive and international UX | Can the stable surface work for more users and locales? | 1.0 interaction corpus plus human-evaluation protocol |
+| **1.4** | Visualization and media graduation | Which optional adapters can meet the first-party contract? | 1.3 accessibility/fallback corpus |
+| **1.5** | Stateful browser composition | Can partial updates retain local state without a second app runtime? | 1.2 interaction ownership and 1.3 browser evidence |
+| **1.6** | Controlled ecosystem expansion | Which advanced integrations have a trustworthy operating model? | Core, browser, and security contracts are proven |
+
+### 1.1 — Adoption and compatibility hardening
+
+**Problem.** The 1.0 contract is stable, but stability alone does not guarantee that a team can
+discover the right API, diagnose a package mismatch, or upgrade an existing application.
+
+**Plan.** Treat this as an adoption packet, not a miscellaneous cleanup release. Inventory the
+highest-friction tasks from reference applications and support reports; improve starter templates,
+diagnostics, migration reports, package-matrix documentation, and deployment recipes; and add
+upgrade fixtures for the supported application shapes. Evaluate Beta-to-Stable promotions only when
+they solve a demonstrated adopter problem and have a bounded owner.
+
+**Exit evidence.** A fresh-user path and representative upgrades pass from clean environments;
+diagnostics identify actionable failures without importing or executing application code; package
+and Python/FastAPI compatibility claims are reproducible; and rollback guidance is tested. The
+result may be a maintenance-heavy 1.1 with no new Stable runtime authority.
+
+**Non-goals.** No broad API expansion, automatic stabilization of every importable symbol, or new
+client-side state model.
+
+### 1.2 — Production async and durable workflows
+
+**Problem.** Polling is the Supported production baseline, while live transports and some richer
+async behavior remain Experimental. Adopters need a disposition they can operate, not another
+transport API without deployment evidence.
+
+**Plan.** First freeze the status/job semantics: ownership, authorization, cancellation, retry,
+idempotency, retention, progress, terminal results, and failure states. Then test polling and any
+candidate SSE, streaming, or WebSocket observation as equivalent projections of that authority.
+Prove multi-worker behavior, proxy buffering, backpressure, reconnects, stale generations, rate
+budgets, and disconnect recovery before considering promotion.
+
+**Exit evidence.** The phase publishes one of three decisions: a transport is Supported for a
+bounded matrix; it remains Experimental with explicit limits; or polling is the production-only
+disposition. Ordinary HTTP and no-JavaScript behavior remain correct in all three cases.
+
+**Non-goals.** Hedron does not provide a queue, scheduler, worker fleet, durable store, or
+application authorization system.
+
+### 1.3 — Inclusive and international UX
+
+**Problem.** Automated accessibility and progressive-enhancement coverage is not the same as
+evidence from people using the product, and the 1.0 contract does not yet make international layout
+and formatting a first-class acceptance concern.
+
+**Plan.** Run the deferred human-evaluation protocol against critical reference-app flows, record
+reviewed remediation, and expand the browser corpus for keyboard, zoom, reduced motion,
+forced-colors, focus, and error states. Add RTL/writing-mode and locale-aware formatting contracts
+only where ownership is clear, including text expansion and direction-sensitive layout fixtures.
+
+**Exit evidence.** Human sessions, remediation decisions, automated browser results, and regression
+fixtures are redacted, reproducible, and linked to the supported surface. The phase explicitly
+records unsupported locales or interaction patterns rather than implying universal coverage.
+
+**Non-goals.** No automatic WCAG, legal-compliance, VPAT, ACR, or certification claim from a test
+suite or release label.
+
+### 1.4 — Visualization and media graduation
+
+**Problem.** Optional Plotly/Altair and related media paths are attractive, but promotion would be
+misleading unless they match the security, accessibility, fallback, and asset discipline of native
+charts and maps.
+
+**Plan.** Evaluate one adapter at a time against a certification packet: authorized data only,
+bounded payloads, offline/CSP-safe assets, accessible text/table/static alternatives, typed
+selection and filtering, safe export/download and media ranges, redaction, provenance, and browser
+and performance fixtures. Keep rendering and browser ownership in the native package; Hedron only
+provides the authoring projection.
+
+**Exit evidence.** Each adapter receives an independent disposition—Supported, Beta,
+Experimental, or not admitted—with a versioned support matrix and fallback examples. A failed
+adapter does not block unrelated first-party visualization work.
+
+**Non-goals.** No implicit callbacks, arbitrary JavaScript, unbounded client payloads, or promotion
+based only on visual parity.
+
+### 1.5 — Stateful browser composition
+
+**Problem.** Partial replacement is reliable when local state resets, but morph-aware retention is
+still deferred. Retaining state can easily create duplicate DOM writers, stale UI, or focus bugs.
+
+**Plan.** Specify a narrow retention model for focus, selection, disclosure, and other explicitly
+owned browser-local state. Test one morph path at a time across replacement, validation failure,
+stale response, cancellation, asset failure, and JavaScript-disabled fallback. Require lifecycle
+cleanup and observable ownership diagnostics for Alpine, HTMX, and Web Components.
+
+**Exit evidence.** The phase either admits one bounded morph/retention path with browser evidence or
+keeps ordinary replacement as the Supported behavior. Retained state has one writer, a defined
+reset rule, and no authority over server/domain state.
+
+**Non-goals.** No client-side application store, virtual DOM, general-purpose synchronization
+runtime, or peer browser framework choices for ordinary widgets.
+
+### 1.6 — Controlled ecosystem expansion
+
+**Problem.** MCP mutations, multi-user notebooks, additional adapters, and satellite graduation
+require materially different trust and operations guarantees. Combining them into one blanket
+“ecosystem” claim would hide those differences.
+
+**Plan.** Use this as a promotion lane with separate packets, not a monolithic feature bundle. Start
+with the smallest bounded integration or satellite that has a clear principal, tenant boundary,
+authorization check, audit record, replay behavior, resource/persistence owner, and failure-isolation
+story. Gate each integration independently and publish its maturity separately.
+
+**Exit evidence.** Every promoted integration has deny-by-default behavior, explicit installation
+and authority semantics, no-enumeration and redaction tests, operational runbooks, and a support
+matrix entry. Integrations that fail the packet remain opt-in, Beta, Experimental, or outside
+Supported scope.
+
+**Non-goals.** Hedron does not become an identity provider, ORM, authorization engine, hosted
+notebook service, queue, database, or ambient plugin runtime.
+
+### Shared 1.X entry and exit policy
+
+Every phase begins with four frozen artifacts: an adopter problem statement, the existing fallback,
+an ownership/maturity matrix, and a machine-readable acceptance packet. The packet must list what
+will be measured, what is explicitly excluded, and what result counts as non-admission.
+
+Every cut preserves the 1.0 stable inventory and supplies migration guidance for changed Beta or
+Experimental surfaces. Evidence is proportionate to the claim and covers compatibility, security,
+accessibility, browser behavior, performance, packaging, and rollback. The public roadmap,
+support matrix, and release notes change only after the phase decision is verified.
