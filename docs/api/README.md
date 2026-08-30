@@ -66,7 +66,7 @@ Public-index users should pin `hedron>=1.0.0,<1.1`.
 ### Edron facade
 
 - [Edron release roadmap](../EDRON_ROADMAP.md) — separately versioned Stable facade
-- [Edron public API](EDRON.md) — Edron `1.0.0`, implemented and verified in-tree
+- [Edron public API](EDRON.md) — Edron `1.0.0`, implemented, verified, and published
 - [Edron state and interaction](EDRON_STATE_INTERACTION.md)
 - [Edron packaging](EDRON_PACKAGING.md)
 - [Edron acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_001.md) — Draft and blocked

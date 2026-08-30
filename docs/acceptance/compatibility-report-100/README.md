@@ -1,19 +1,19 @@
 # Hedron 1.0 compatibility report
 
-**Status:** Verified candidate evidence; publication remains deferred until an authorized tag and registry upload
+**Status:** Verified retained evidence for the published `v1.0.0` release
 
 This directory records executable bridge evidence without pretending that a
 working-tree build is a published release. The canonical fixture suite is green
 against the immutable 0.67 snapshot and the current 1.0.0 checkout, and the
 workspace build produces all 22 declared distributions. The target-side rows are
 verified against reproducible candidate artifacts and a committed hash lock;
-temporary build output is not treated as a public release. Packaging
+temporary build output is not treated as the public release artifact. Packaging
 rehearsals fix `SOURCE_DATE_EPOCH=315619200` and disable maturin's non-deterministic
 generated Rust SBOM; all 44 workspace artifacts, including the native wheel,
 are byte-for-byte reproducible under that input. The retained
 [`local-build-evidence.json`](local-build-evidence.json) records SHA-256s for
 the 26 coordinated 1.0.0 artifacts; the corresponding files remain temporary
-and are deliberately not treated as published release artifacts. The independent Edron lane is
+and are deliberately not treated as the published registry artifacts. The independent Edron lane is
 bound separately by [`edron-build-evidence.json`](edron-build-evidence.json), covering the Edron
 and edron-sim wheels and source distributions published from `edron-v1.0.0`.
 

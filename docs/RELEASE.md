@@ -34,9 +34,10 @@ publication.
    fixes.
 7. Confirm the protected `release` GitHub environment requires maintainer approval. The main and
    native workflows use the environment-scoped PyPI token; Edron uses PyPI trusted publishing.
-8. Before publishing release notes, verify uploaded wheels, attestations, both Hedron and Edron
-   install/scaffold smoke tests, and then set `registry_status = "uploaded"` in
-   `docs/release.toml`. Until that point, the public fallback pins remain authoritative.
+8. For a future release, before publishing release notes, verify uploaded wheels, attestations,
+   both Hedron and Edron install/scaffold smoke tests, and then set
+   `registry_status = "uploaded"` in `docs/release.toml`. Until that point, the previous
+   public release pins remain authoritative.
 
 ## Build and validate artifacts
 

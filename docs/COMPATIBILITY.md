@@ -1,7 +1,6 @@
 # Compatibility policy
 
-**Status:** Accepted for the verified and published **1.0.x** release (`v1.0.0`); public
-publication is deferred.
+**Status:** Accepted for the verified and published **1.0.x** release (`v1.0.0`).
 **Reviewed:** 2026-08-28
 
 ## Current train (read this first)
@@ -23,8 +22,9 @@ until evidence is green. In the 1.0 boundary, `hedron-core`, `hedron`, `edron`, 
 platform packages. Host adapters, Explorer, elements, extras, Posit, conformance, Workbench,
 native, MCP, Gradio, notebook, sample-kit, and simulation packages are independent Beta
 satellites; experimental adapter surfaces remain outside the Stable API even when their owning
-package is Stable. The repository resolves the coordinated 1.0.0 workspace; the public index may
-continue to serve the documented 0.x fallback until publication.
+package is Stable. The repository resolves the coordinated 1.0.0 workspace, and the public index
+serves the coordinated 1.0.0 release. The 0.67.0 train remains the immutable migration baseline
+for compatibility evidence.
 
 ### Charts and sample-kit compatibility floor
 

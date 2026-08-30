@@ -155,8 +155,7 @@ uv sync
 ```
 
 This checkout is the **`1.0.0`** source tree. Use `uv sync` for repository development and
-the published bounded PyPI requirement `hedron>=1.0.0,<1.1` for application projects until
-the candidate is released.
+the published bounded PyPI requirement `hedron>=1.0.0,<1.1` for application projects.
 
 See [Contributing](../CONTRIBUTING.md).
 
