@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import inspect
+import math
 import time
 from collections.abc import Awaitable, Callable, Mapping, MutableMapping
 from contextvars import ContextVar, Token
@@ -40,6 +41,21 @@ class AsyncIoBudget:
 
     max_operations: int = 32
     deadline_seconds: float | None = 5.0
+
+    def __post_init__(self) -> None:
+        if (
+            isinstance(self.max_operations, bool)
+            or not isinstance(self.max_operations, int)
+            or self.max_operations < 1
+        ):
+            raise ValueError("max_operations must be a positive integer")
+        if self.deadline_seconds is not None and (
+            isinstance(self.deadline_seconds, bool)
+            or not isinstance(self.deadline_seconds, (int, float))
+            or not math.isfinite(float(self.deadline_seconds))
+            or self.deadline_seconds <= 0
+        ):
+            raise ValueError("deadline_seconds must be finite and positive or None")
 
 
 @dataclass(slots=True)

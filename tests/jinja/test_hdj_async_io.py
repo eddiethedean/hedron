@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import math
 
 import pytest
 
@@ -54,3 +55,9 @@ async def test_cancellation() -> None:
     with pytest.raises(HedronError) as exc:
         await run_declared_async_io(decl, cancel_event=cancel)
     assert exc.value.diagnostic.code == "HED-PREPARE-0001"
+
+
+@pytest.mark.parametrize("deadline", [math.nan, math.inf, 0.0, -1.0])
+def test_async_io_budget_rejects_invalid_deadlines(deadline: float) -> None:
+    with pytest.raises(ValueError, match="deadline_seconds"):
+        AsyncIoBudget(deadline_seconds=deadline)
