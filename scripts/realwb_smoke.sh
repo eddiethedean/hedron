@@ -46,7 +46,8 @@ APP_LOG="$SMOKE_DIR/app.log"
 redact_stream() {
   sed -E \
     -e 's/[A-Za-z0-9]{4}(-[A-Za-z0-9]{4}){5,}/***/g' \
-    -e 's#[a-fA-F0-9]{16,}#***#g'
+    -e 's#[a-fA-F0-9]{16,}#***#g' \
+    -e 's/(Authorization|Proxy-Authorization|Cookie|Set-Cookie|RStudio-Connect-Credentials|RStudio-Connect-User-Session)(:[[:space:]]*).*/\1\2***/Ig'
 }
 
 log() {
@@ -80,26 +81,41 @@ license_unavailable_in_logs() {
 
 deactivate_workbench_license() {
   local failed=0
-  if [[ "$WORKBENCH_STARTED" -ne 1 ]]; then
+  local manager_ok=0
+  local current_cid=""
+  current_cid="$("${COMPOSE[@]}" ps -aq workbench 2>/dev/null || true)"
+  if [[ -z "$current_cid" ]]; then
     "${COMPOSE[@]}" down --remove-orphans >/dev/null 2>&1 || true
+    WORKBENCH_STARTED=0
     return 0
   fi
-  local current_cid=""
-  current_cid="$("${COMPOSE[@]}" ps -q workbench 2>/dev/null || true)"
-  if [[ -n "$current_cid" ]] && \
-     [[ "$(docker inspect --format '{{.State.Running}}' "$current_cid" 2>/dev/null || true)" == "true" ]]; then
-    log "LICENSE_DEACTIVATE=begin timeout=${LICENSE_STOP_TIMEOUT}s"
-    if ! docker exec "$current_cid" rstudio-server license-manager deactivate >/dev/null 2>&1; then
-      log "LICENSE_DEACTIVATE=manager_exit_nonzero"
-      failed=1
+  if [[ "$(docker inspect --format '{{.State.Running}}' "$current_cid" 2>/dev/null || true)" != "true" ]]; then
+    log "LICENSE_DEACTIVATE=restarting_stopped_container"
+    if ! docker start "$current_cid" >/dev/null 2>&1; then
+      log "LICENSE_DEACTIVATE=restart_failed recovery_container=$current_cid"
+      WORKBENCH_STARTED=0
+      return 1
     fi
-    "${COMPOSE[@]}" stop -t "$LICENSE_STOP_TIMEOUT" workbench >/dev/null 2>&1 || \
-      log "LICENSE_DEACTIVATE=stop_exit_nonzero"
-      failed=1
-    log "LICENSE_DEACTIVATE=end"
-  else
-    log "LICENSE_DEACTIVATE=skipped container_not_running"
   fi
+  log "LICENSE_DEACTIVATE=begin timeout=${LICENSE_STOP_TIMEOUT}s"
+  for attempt in 1 2 3; do
+    if docker exec "$current_cid" rstudio-server license-manager deactivate >/dev/null 2>&1; then
+      manager_ok=1
+      break
+    fi
+    log "LICENSE_DEACTIVATE=manager_exit_nonzero attempt=$attempt"
+  done
+  if [[ "$manager_ok" -ne 1 ]]; then
+    log "LICENSE_DEACTIVATE=failed recovery_container=$current_cid"
+    "${COMPOSE[@]}" stop -t "$LICENSE_STOP_TIMEOUT" workbench >/dev/null 2>&1 || true
+    WORKBENCH_STARTED=0
+    return 1
+  fi
+  if ! "${COMPOSE[@]}" stop -t "$LICENSE_STOP_TIMEOUT" workbench >/dev/null 2>&1; then
+    log "LICENSE_DEACTIVATE=stop_exit_nonzero"
+    failed=1
+  fi
+  log "LICENSE_DEACTIVATE=end"
   "${COMPOSE[@]}" down --remove-orphans >/dev/null 2>&1 || true
   WORKBENCH_STARTED=0
   return "$failed"
@@ -124,9 +140,10 @@ kill_smoke_ports() {
 
 CLEANUP_DONE=0
 cleanup() {
-  local exit_status=$?
+  local exit_status="${1:-$?}"
   if [[ "$CLEANUP_DONE" -eq 1 ]]; then
-    return 0
+    trap - EXIT INT TERM
+    exit "$exit_status"
   fi
   CLEANUP_DONE=1
   if [[ -n "${APP_PID}" ]] && kill -0 "$APP_PID" >/dev/null 2>&1; then
@@ -149,7 +166,8 @@ cleanup() {
   if [[ -n "${RESULT_BACKUP:-}" && -f "$RESULT_BACKUP" ]]; then
     rm -f -- "$RESULT_BACKUP"
   fi
-  return "$exit_status"
+  trap - EXIT INT TERM
+  exit "$exit_status"
 }
 
 mkdir -p "$RESULT_DIR"
@@ -160,7 +178,9 @@ if [[ -f "$RESULT" ]]; then
 fi
 : > "$RESULT"
 exec > >(tee -a "$RESULT") 2>&1
-trap cleanup EXIT INT TERM
+trap 'cleanup $?' EXIT
+trap 'cleanup 130' INT
+trap 'cleanup 143' TERM
 
 log "$PROBE_ID start $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 log "image=$IMAGE"

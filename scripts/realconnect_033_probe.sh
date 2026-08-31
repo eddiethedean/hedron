@@ -50,7 +50,8 @@ redact_stream() {
   sed -E \
     -e 's/[A-Za-z0-9]{4}(-[A-Za-z0-9]{4}){5,}/***/g' \
     -e 's/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/***/g' \
-    -e 's/(api[_ -]?key|token|secret)([=:][[:space:]]*)[^[:space:],]+/\1\2***/Ig'
+    -e 's/(api[_ -]?key|token|secret)([=:][[:space:]]*)[^[:space:],]+/\1\2***/Ig' \
+    -e 's/(Authorization|Proxy-Authorization|Cookie|Set-Cookie|RStudio-Connect-Credentials|RStudio-Connect-User-Session)(:[[:space:]]*).*/\1\2***/Ig'
 }
 
 log() {
@@ -113,36 +114,56 @@ for raw in open(sys.argv[1], encoding="utf-8"):
 
 deactivate_connect_license() {
   local failed=0
-  if [[ "$CONTAINER_STARTED" -ne 1 ]]; then
+  local manager_ok=0
+  if ! docker inspect "$CONTAINER" >/dev/null 2>&1; then
+    CONTAINER_STARTED=0
     return 0
   fi
-  if [[ "$(docker inspect --format '{{.State.Running}}' "$CONTAINER" 2>/dev/null || true)" == "true" ]]; then
-    log "LICENSE_DEACTIVATE=begin timeout=${LICENSE_STOP_TIMEOUT}s"
-    if ! docker exec "$CONTAINER" "$CONNECT_LICENSE_MANAGER" deactivate >/dev/null 2>&1; then
-      log "LICENSE_DEACTIVATE=manager_exit_nonzero"
-      failed=1
+  if [[ "$(docker inspect --format '{{.State.Running}}' "$CONTAINER" 2>/dev/null || true)" != "true" ]]; then
+    log "LICENSE_DEACTIVATE=restarting_stopped_container"
+    if ! docker start "$CONTAINER" >/dev/null 2>&1; then
+      log "LICENSE_DEACTIVATE=restart_failed recovery_container=$CONTAINER"
+      CONTAINER_STARTED=0
+      return 1
     fi
-    log "LICENSE_DEACTIVATE=end"
-  else
-    log "LICENSE_DEACTIVATE=skipped container_not_running"
-    failed=1
+  fi
+  log "LICENSE_DEACTIVATE=begin timeout=${LICENSE_STOP_TIMEOUT}s"
+  for attempt in 1 2 3; do
+    if docker exec "$CONTAINER" "$CONNECT_LICENSE_MANAGER" deactivate >/dev/null 2>&1; then
+      manager_ok=1
+      break
+    fi
+    log "LICENSE_DEACTIVATE=manager_exit_nonzero attempt=$attempt"
+  done
+  if [[ "$manager_ok" -ne 1 ]]; then
+    log "LICENSE_DEACTIVATE=failed recovery_container=$CONTAINER"
+    docker stop --timeout "$LICENSE_STOP_TIMEOUT" "$CONTAINER" >/dev/null 2>&1 || true
+    CONTAINER_STARTED=0
+    return 1
   fi
   if ! docker stop --timeout "$LICENSE_STOP_TIMEOUT" "$CONTAINER" >/dev/null 2>&1; then
     log "LICENSE_DEACTIVATE=stop_exit_nonzero"
     failed=1
   fi
+  log "LICENSE_DEACTIVATE=end"
   docker rm "$CONTAINER" >/dev/null 2>&1 || true
   CONTAINER_STARTED=0
   return "$failed"
 }
 
+CLEANUP_DONE=0
 cleanup() {
-  local exit_status=$?
+  local exit_status="${1:-$?}"
+  if [[ "$CLEANUP_DONE" -eq 1 ]]; then
+    trap - EXIT INT TERM
+    exit "$exit_status"
+  fi
+  CLEANUP_DONE=1
   if [[ -n "$APP_PID" ]] && kill -0 "$APP_PID" >/dev/null 2>&1; then
     kill -- -"$APP_PID" >/dev/null 2>&1 || kill "$APP_PID" >/dev/null 2>&1 || true
     wait "$APP_PID" >/dev/null 2>&1 || true
   fi
-  if [[ "$CONTAINER_STARTED" -eq 1 ]]; then
+  if docker inspect "$CONTAINER" >/dev/null 2>&1; then
     if [[ "$exit_status" -ne 0 ]]; then
       log "failure_container_log_begin"
       docker logs --tail 200 "$CONTAINER" 2>&1 | redact_stream || true
@@ -161,7 +182,8 @@ cleanup() {
   if [[ -n "${RESULT_BACKUP:-}" && -f "$RESULT_BACKUP" ]]; then
     rm -f -- "$RESULT_BACKUP"
   fi
-  return "$exit_status"
+  trap - EXIT INT TERM
+  exit "$exit_status"
 }
 
 mkdir -p "$RESULT_DIR" "$FIXTURE_DIR"
@@ -171,7 +193,9 @@ if [[ -f "$RESULT" ]]; then
 fi
 : > "$RESULT"
 exec > >(tee -a "$RESULT") 2>&1
-trap cleanup EXIT INT TERM
+trap 'cleanup $?' EXIT
+trap 'cleanup 130' INT
+trap 'cleanup 143' TERM
 
 log "$PROBE_ID start $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 log "image=$IMAGE"
