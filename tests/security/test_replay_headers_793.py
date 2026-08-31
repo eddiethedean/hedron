@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from fastapi.testclient import TestClient
 from starlette.requests import Request
-from starlette.responses import RedirectResponse
+from starlette.responses import RedirectResponse, Response
 
 from hedron import Hedron, Text
 
@@ -55,6 +55,73 @@ def test_memory_replay_store_round_trips_duplicate_headers() -> None:
     replay = store.claim(key="k", fingerprint="fp", scope="s", retention_seconds=60)
     assert replay.state is ReplayState.REPLAYED
     assert replay.cached_headers == headers
+
+
+def test_replayed_action_does_not_restore_set_cookie() -> None:
+    app = Hedron(security="standard", explorer="off", session_secret="test-secret")
+
+    @app.page("/")
+    def home() -> Text:
+        return Text("home")
+
+    @app.action("/rotate", method="POST", idempotency="required")
+    def rotate() -> Response:
+        response = Response("rotated")
+        response.set_cookie("auth_token", "old-token", secure=True, httponly=True)
+        return response
+
+    client = TestClient(app)
+    csrf = client.get("/").cookies["hedron_csrf"]
+    headers = {"Idempotency-Key": "rotate-key", "X-CSRF-Token": csrf}
+    first = client.post("/rotate", headers=headers)
+    replay = client.post("/rotate", headers=headers)
+
+    assert "auth_token=old-token" in first.headers["set-cookie"]
+    assert "set-cookie" not in replay.headers
+    assert replay.headers["hedron-replay"] == "true"
+
+
+def test_memory_replay_store_rejects_entry_and_total_byte_limits() -> None:
+    from hedron.replay import MemoryReplayStore, ReplayState
+
+    store = MemoryReplayStore(max_keys=4, max_entry_bytes=20, max_total_bytes=39)
+    first = store.claim(key="one", fingerprint="one", scope="s", retention_seconds=60)
+    assert first.state is ReplayState.FIRST
+    assert not store.complete(key="one", scope="s", fingerprint="one", status=200, body=b"12345")
+    retry = store.claim(key="one", fingerprint="one", scope="s", retention_seconds=60)
+    assert retry.state is ReplayState.FIRST
+    assert store.complete(key="one", scope="s", fingerprint="one", status=200, body=b"1234")
+    second = store.claim(key="two", fingerprint="two", scope="s", retention_seconds=60)
+    assert second.state is ReplayState.FIRST
+    assert not store.complete(key="two", scope="s", fingerprint="two", status=200, body=b"1234")
+
+
+def test_memory_replay_store_charges_headers_and_key_material() -> None:
+    from hedron.replay import MemoryReplayStore, ReplayState
+
+    store = MemoryReplayStore(max_keys=4, max_entry_bytes=64, max_total_bytes=64)
+    first = store.claim(key="one", fingerprint="one", scope="s", retention_seconds=60)
+    assert first.state is ReplayState.FIRST
+    assert not store.complete(
+        key="one",
+        scope="s",
+        fingerprint="one",
+        status=200,
+        body=b"",
+        headers=(("X-Large", "x" * 64),),
+    )
+    assert not store._entries
+    assert store._total_bytes == 0
+
+    oversized_key = "k" * 65
+    outcome = store.claim(
+        key=oversized_key,
+        fingerprint="fingerprint",
+        scope="s",
+        retention_seconds=60,
+    )
+    assert outcome.state is ReplayState.FIRST
+    assert not store._entries
 
 
 def test_existing_custom_replay_store_signature_remains_compatible() -> None:

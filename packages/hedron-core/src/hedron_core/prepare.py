@@ -6,6 +6,7 @@ import asyncio
 import inspect
 import time
 from collections.abc import Awaitable, Callable, Sequence
+from contextlib import suppress
 from contextvars import ContextVar
 from dataclasses import dataclass, field
 from typing import TypeVar, cast
@@ -124,6 +125,11 @@ class PrepareContext:
             except BaseException as exc:
                 if not fut.done():
                     fut.set_exception(exc)
+                    # The owner raises directly. Mark the shared Future's
+                    # exception observed so owner-only failures do not emit
+                    # "Future exception was never retrieved" at GC time.
+                    with suppress(BaseException):
+                        fut.exception()
                 raise
             finally:
                 if self._inflight.get(key) is fut:
@@ -142,30 +148,41 @@ def collect_prepare_targets(
     """Depth-first collect components that define prepare()."""
     seen = _seen if _seen is not None else set[int]()
     targets: list[Component[Props]] = []
-    if isinstance(value, Component):
-        component = cast(Component[Props], value)
-        obj_id = id(component)
-        if obj_id in seen:
-            return targets
-        seen.add(obj_id)
-        if component.has_prepare_override():
-            targets.append(component)
-        for child in component.child_nodes:
-            targets.extend(collect_prepare_targets(child, _seen=seen))
-        for slot_value in component.slot_values.values():
-            if isinstance(slot_value, list):
-                for item in slot_value:
-                    targets.extend(collect_prepare_targets(item, _seen=seen))
-            else:
-                targets.extend(collect_prepare_targets(slot_value, _seen=seen))
-        return targets
-    if isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
-        for item in cast(Sequence[object], value):
-            targets.extend(collect_prepare_targets(item, _seen=seen))
-        return targets
-    if isinstance(value, NativeElement):
-        for child in value.children:
-            targets.extend(collect_prepare_targets(child, _seen=seen))
+    # Use an explicit stack: deeply nested trees must reach the renderer's
+    # bounded-depth diagnostic instead of exhausting Python's call stack here.
+    stack: list[object] = [value]
+    while stack:
+        current = stack.pop()
+        if isinstance(current, Component):
+            component = cast(Component[Props], current)
+            obj_id = id(component)
+            if obj_id in seen:
+                continue
+            seen.add(obj_id)
+            if component.has_prepare_override():
+                targets.append(component)
+            children: list[object] = list(component.child_nodes)
+            for slot_value in component.slot_values.values():
+                if isinstance(slot_value, list):
+                    children.extend(slot_value)
+                else:
+                    children.append(slot_value)
+            stack.extend(reversed(children))
+            continue
+        if isinstance(current, Sequence) and not isinstance(current, (str, bytes)):
+            sequence = cast(Sequence[object], current)
+            obj_id = id(sequence)
+            if obj_id in seen:
+                continue
+            seen.add(obj_id)
+            stack.extend(reversed(sequence))
+            continue
+        if isinstance(current, NativeElement):
+            obj_id = id(current)
+            if obj_id in seen:
+                continue
+            seen.add(obj_id)
+            stack.extend(reversed(current.children))
     return targets
 
 
@@ -267,7 +284,15 @@ async def prepare_tree(
                 raise hard_errors[0]
             return ctx
 
-        await asyncio.gather(*(_run_one(c) for c in targets))
+        tasks = [asyncio.create_task(_run_one(component)) for component in targets]
+        try:
+            await asyncio.gather(*tasks)
+        except BaseException:
+            for task in tasks:
+                if not task.done():
+                    task.cancel()
+            await asyncio.gather(*tasks, return_exceptions=True)
+            raise
         return ctx
     finally:
         _active_prepare.reset(token)

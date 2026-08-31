@@ -72,6 +72,22 @@ async def test_single_flight_async_still_shares_successful_load() -> None:
     assert loads == 1
 
 
+@pytest.mark.anyio
+async def test_single_flight_async_owner_failure_is_observed() -> None:
+    backend = InMemoryCacheBackend()
+    loop = asyncio.get_running_loop()
+    errors: list[str | None] = []
+    loop.set_exception_handler(lambda _loop, context: errors.append(context.get("message")))
+
+    async def loader() -> str:
+        raise RuntimeError("loader failed")
+
+    with pytest.raises(RuntimeError, match="loader failed"):
+        await backend.single_flight_async("failed", loader)
+    await asyncio.sleep(0)
+    assert "Future exception was never retrieved" not in errors
+
+
 def test_single_flight_async_safe_across_event_loops() -> None:
     """#99: waiters on a different loop must not await the owner's Future."""
     backend = InMemoryCacheBackend()

@@ -395,7 +395,9 @@ def _complete_replay(guard: _ReplayGuard | None, response: Response) -> None:
     headers = tuple(
         (name.decode("latin-1"), value.decode("latin-1"))
         for name, value in raw_headers
-        if isinstance(name, bytes) and isinstance(value, bytes)
+        if isinstance(name, bytes)
+        and isinstance(value, bytes)
+        and name.lower() not in {b"set-cookie", b"clear-site-data"}
     )
     status = int(getattr(response, "status_code", 200) or 200)
     if _replay_store_accepts_headers(guard.store):

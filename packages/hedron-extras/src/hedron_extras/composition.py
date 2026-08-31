@@ -47,6 +47,11 @@ class ChoiceCards(Component[ChoiceCardsProps]):
         required: bool = False,
         **kwargs: Any,
     ) -> None:
+        if multiple and required:
+            raise ValueError(
+                "ChoiceCards cannot enforce required multiple selections without JavaScript; "
+                "validate the collection in the form model instead"
+            )
         parsed = [
             opt if isinstance(opt, ChoiceOption) else ChoiceOption.model_validate(opt)
             for opt in options
@@ -94,8 +99,13 @@ class ChoiceCards(Component[ChoiceCardsProps]):
                 *cards,
                 class_=class_names("hedron-choice-cards", self.props.class_),
                 id=self.props.id,
-                data={**mark_data(self.props.mark), "hedron-choice": "cards"},
+                data={
+                    **mark_data(self.props.mark),
+                    "hedron-choice": "cards",
+                    "hedron-required": self.props.required or None,
+                },
                 role="group",
+                aria={"required": self.props.required or None},
             ),
             payload={"kind": "choice-cards"},
         )
@@ -121,6 +131,8 @@ class TreeView(Component[TreeViewProps]):
     props_type = TreeViewProps
     logical_name = "TreeView"
     distribution = "hedron-extras"
+    _MAX_NODES = 5_000
+    _MAX_DEPTH = 100
 
     def __init__(
         self,
@@ -136,16 +148,18 @@ class TreeView(Component[TreeViewProps]):
         parsed = [
             n if isinstance(n, TreeNodeProps) else TreeNodeProps.model_validate(n) for n in nodes
         ]
-        if len(parsed) > 5_000:
+        if len(parsed) > self._MAX_NODES:
             raise ValueError("TreeView nodes exceed budget")
         ids: list[str] = []
-
-        def walk(items: Sequence[TreeNodeProps]) -> None:
-            for item in items:
-                ids.append(item.id)
-                walk(item.children)
-
-        walk(parsed)
+        stack: list[tuple[TreeNodeProps, int]] = [(item, 1) for item in reversed(parsed)]
+        while stack:
+            item, depth = stack.pop()
+            if depth > self._MAX_DEPTH:
+                raise ValueError(f"TreeView depth exceeds budget of {self._MAX_DEPTH}")
+            ids.append(item.id)
+            if len(ids) > self._MAX_NODES:
+                raise ValueError("TreeView nodes exceed budget")
+            stack.extend((child, depth + 1) for child in reversed(item.children))
         if len(ids) != len(set(ids)):
             raise ValueError("TreeView node ids must be stable and unique")
         source = reject_client_fetch_url(source, label="TreeView source")
