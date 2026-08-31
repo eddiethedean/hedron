@@ -14,6 +14,10 @@
   --md-default-fg-color: #17212b;
 }
 
+html {
+  min-width: 0;
+}
+
 [data-md-color-scheme="slate"] {
   --hedron-ink: #f1f5f9;
   --hedron-muted: #aeb9c5;
@@ -40,6 +44,53 @@ body {
   max-width: 100%;
   overflow-x: hidden;
   overflow-x: clip;
+  padding: 0;
+  background: var(--md-default-bg-color);
+}
+
+/* The full Hedron application theme is loaded for the interactive examples.
+ * Keep its page-level defaults from restyling Material's documentation shell. */
+body > header,
+body > main,
+body > footer,
+body > section,
+body > article,
+body > div,
+body > form {
+  width: auto;
+  margin-inline: 0;
+}
+
+body > * + *:not(script) {
+  margin-top: 0;
+}
+
+.md-header {
+  gap: 0;
+}
+
+.md-search__form {
+  display: block;
+  gap: 0;
+}
+
+.md-search__input {
+  min-height: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  box-shadow: none;
+}
+
+button[class^="md-"],
+button[class*=" md-"] {
+  min-height: 0;
+}
+
+.md-footer {
+  padding-top: 0;
+  border-top: 0;
+  font-size: inherit;
 }
 
 .md-banner {
@@ -804,7 +855,7 @@ a.hedron-card:not(.edron-sim .hedron-card):hover {
 @media screen and (max-width: 30em) {
   .md-banner__inner {
     font-size: 0.64rem;
-    white-space: nowrap;
+    white-space: normal;
   }
 
   .hedron-actions,

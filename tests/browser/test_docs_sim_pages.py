@@ -213,6 +213,75 @@ def _page_case_id(case: tuple[str, str, str, str]) -> str:
     return f"{page_path}|{root_sel}|{click_bit}"
 
 
+def test_application_theme_does_not_leak_into_material_shell(docs_server: str) -> None:
+    """The demo theme must not resize or inset MkDocs Material's own chrome."""
+    with sync_playwright() as pw:
+        browser = _launch(pw)
+        page = browser.new_page(viewport={"width": 1280, "height": 720})
+        try:
+            page.goto(f"{docs_server}/", wait_until="networkidle", timeout=60000)
+            desktop = page.evaluate(
+                """() => {
+                  const root = document.documentElement;
+                  const banner = document.querySelector('.md-banner');
+                  const header = document.querySelector('.md-header');
+                  const form = document.querySelector('.md-search__form');
+                  const input = document.querySelector('.md-search__input');
+                  const shellButton = document.querySelector('button[class^="md-"]');
+                  const footer = document.querySelector('.md-footer');
+                  if (!banner || !header || !form || !input || !shellButton || !footer) return null;
+                  return {
+                    clientWidth: root.clientWidth,
+                    bodyPadding: getComputedStyle(document.body).padding,
+                    banner: banner.getBoundingClientRect().toJSON(),
+                    header: header.getBoundingClientRect().toJSON(),
+                    headerMarginTop: getComputedStyle(header).marginTop,
+                    searchFormHeight: form.getBoundingClientRect().height,
+                    searchInputHeight: input.getBoundingClientRect().height,
+                    shellButtonMinHeight: getComputedStyle(shellButton).minHeight,
+                    footerPaddingTop: getComputedStyle(footer).paddingTop,
+                  };
+                }"""
+            )
+            assert desktop is not None
+            assert desktop["bodyPadding"] == "0px"
+            assert desktop["banner"]["x"] == 0
+            assert desktop["banner"]["width"] == desktop["clientWidth"]
+            assert desktop["header"]["x"] == 0
+            assert desktop["header"]["width"] == desktop["clientWidth"]
+            assert desktop["headerMarginTop"] == "0px"
+            assert desktop["searchInputHeight"] <= desktop["searchFormHeight"]
+            assert desktop["shellButtonMinHeight"] == "0px"
+            assert desktop["footerPaddingTop"] == "0px"
+
+            page.set_viewport_size({"width": 320, "height": 800})
+            page.reload(wait_until="networkidle", timeout=60000)
+            mobile = page.evaluate(
+                """() => {
+                  const root = document.documentElement;
+                  const container = document.querySelector('.md-container');
+                  const content = document.querySelector('.md-content__inner');
+                  if (!container || !content) return null;
+                  const containerRect = container.getBoundingClientRect();
+                  const contentRect = content.getBoundingClientRect();
+                  return {
+                    clientWidth: root.clientWidth,
+                    rootMinWidth: getComputedStyle(root).minWidth,
+                    containerLeft: containerRect.left,
+                    containerWidth: containerRect.width,
+                    contentRight: contentRect.right,
+                  };
+                }"""
+            )
+            assert mobile is not None
+            assert mobile["rootMinWidth"] == "0px"
+            assert mobile["containerLeft"] == 0
+            assert mobile["containerWidth"] == mobile["clientWidth"]
+            assert mobile["contentRight"] <= mobile["clientWidth"]
+        finally:
+            browser.close()
+
+
 @pytest.mark.parametrize(
     ("page_path", "root_sel", "click_sel", "expect"),
     _PAGES,
