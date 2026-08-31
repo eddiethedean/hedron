@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import asyncio
+
 import pytest
 
 from hedron_core.builtins.content import Text
@@ -87,6 +89,49 @@ async def test_partial_failure_continue() -> None:
     await prepare_tree([ok, bad], context=ctx)
     assert ok.prepared == "ok"
     assert any(t.error for t in ctx.timings)
+
+
+@pytest.mark.anyio
+async def test_fail_fast_cancels_sibling_prepare_tasks() -> None:
+    started = asyncio.Event()
+    side_effects: list[str] = []
+
+    class Slow(Component[_FetchProps]):
+        props_type = _FetchProps
+
+        async def prepare(self, ctx: PrepareContext) -> None:
+            del ctx
+            started.set()
+            await asyncio.sleep(0.05)
+            side_effects.append("late")
+
+        def render(self) -> object:
+            return Text("slow")
+
+    class Fail(Component[_FetchProps]):
+        props_type = _FetchProps
+
+        async def prepare(self, ctx: PrepareContext) -> None:
+            del ctx
+            await started.wait()
+            raise RuntimeError("boom")
+
+        def render(self) -> object:
+            return Text("fail")
+
+    with pytest.raises(RuntimeError, match="boom"):
+        await prepare_tree([Slow(), Fail()])
+    await asyncio.sleep(0.1)
+    assert side_effects == []
+
+
+@pytest.mark.anyio
+async def test_collect_prepare_targets_handles_deep_trees_iteratively() -> None:
+    card = FetchCard(label="leaf")
+    node: object = card
+    for _ in range(1500):
+        node = Page(node)  # type: ignore[arg-type]
+    assert collect_prepare_targets(node) == [card]
 
 
 def test_collect_skips_default_prepare() -> None:

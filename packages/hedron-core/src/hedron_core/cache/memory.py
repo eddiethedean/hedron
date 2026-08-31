@@ -9,6 +9,7 @@ import json
 import threading
 import time
 from collections.abc import Callable
+from contextlib import suppress
 from dataclasses import dataclass, field
 from typing import Any, TypeVar, cast
 
@@ -96,6 +97,9 @@ class InMemoryCacheBackend:
             # Validate before mutating so a rejected replacement cannot evict a
             # previously valid value for the same key.
             raise ValueError("cache entry exceeds max_bytes")
+        # Copy before taking the lock or changing eviction state.  deepcopy is
+        # user-defined code and may fail; a rejected write must be atomic.
+        copied_value = copy.deepcopy(value)
         with self._lock:
             previous = self._store.pop(key, None)
             if previous is not None:
@@ -106,9 +110,7 @@ class InMemoryCacheBackend:
                 oldest_key = min(self._store, key=lambda item: self._store[item].stored_at)
                 oldest = self._store.pop(oldest_key)
                 self._total_size -= oldest.size
-            self._store[key] = _Entry(
-                value=copy.deepcopy(value), expires_at=expires, tags=tags, size=size
-            )
+            self._store[key] = _Entry(value=copied_value, expires_at=expires, tags=tags, size=size)
             self._total_size += size
 
     def invalidate(self, *, tags: tuple[str, ...] = (), keys: tuple[str, ...] = ()) -> int:
@@ -204,10 +206,17 @@ class InMemoryCacheBackend:
                         self._async_flights.pop(flight_key, None)
                 if not fut.done():
                     fut.set_exception(_AsyncSingleFlightRetry())
+                    # The owner does not await this retry sentinel. Mark the
+                    # exception retrieved so a waiter-less flight is silent.
+                    fut.exception()
                 raise
             except BaseException as exc:
                 if not fut.done():
                     fut.set_exception(exc)
+                    # Waiters can still await the Future after this; calling
+                    # exception() only marks it observed for asyncio logging.
+                    with suppress(BaseException):
+                        fut.exception()
                 raise
             finally:
                 with self._lock:
