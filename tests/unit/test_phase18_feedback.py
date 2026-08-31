@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
+
 import pytest
 
 from hedron_core import (
@@ -111,3 +113,59 @@ def test_feedback_shared_sink_is_tenant_scoped() -> None:
     assert [record.tenant_id for record in second.export(principal="bob")] == ["tenant-b"]
     assert first.delete(b.record_id, principal="alice") is False
     assert second.delete(b.record_id, principal="bob") is True
+
+
+def test_feedback_retention_and_capacity_are_tenant_scoped() -> None:
+    sink = InMemoryFeedbackSink()
+    expired = PredictionFeedback(
+        policy=FeedbackPolicy(
+            collection_notice="notice",
+            tenant_id="tenant-a",
+            allow_export=True,
+            retention_seconds=1,
+        ),
+        sink=sink,
+        max_records=1,
+    )
+    current = PredictionFeedback(
+        policy=FeedbackPolicy(
+            collection_notice="notice",
+            tenant_id="tenant-b",
+            allow_export=True,
+            retention_seconds=1000,
+        ),
+        sink=sink,
+        max_records=1,
+    )
+    expired.enable(consented=True)
+    current.enable(consented=True)
+    expired.submit(consented=True, principal="alice", now=1)
+    kept = current.submit(consented=True, principal="bob", now=100)
+    assert expired.export(principal="alice", now=100) == ()
+    assert current.export(principal="bob", now=100) == (kept,)
+    with pytest.raises(ModelDemoError, match="store full"):
+        current.submit(consented=True, principal="bob", now=101)
+
+
+def test_feedback_concurrent_shared_sink_ids_do_not_collide() -> None:
+    sink = InMemoryFeedbackSink()
+    collector = PredictionFeedback(
+        policy=FeedbackPolicy(
+            collection_notice="notice",
+            tenant_id="tenant-a",
+            allow_export=True,
+            abuse_controls=False,
+        ),
+        sink=sink,
+        max_records=200,
+    )
+    collector.enable(consented=True)
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        records = tuple(
+            pool.map(
+                lambda index: collector.submit(label=str(index), consented=True, principal="alice"),
+                range(100),
+            )
+        )
+    assert len({record.record_id for record in records}) == 100
+    assert len(collector.export(principal="alice")) == 100

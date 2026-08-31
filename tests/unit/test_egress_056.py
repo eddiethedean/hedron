@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from hedron_core.egress import bounded_response
+from hedron_core.egress import EgressDecision, bounded_response, fetch_with_policy
 from hedron_core.security_plane import (
     EgressError,
     EgressPolicy,
@@ -71,3 +71,48 @@ def test_egress_decision_carries_transport_budgets() -> None:
     assert bounded_response([b"ab", b"cd"], budget_bytes=4) == b"abcd"
     with pytest.raises(EgressError, match="budget"):
         bounded_response([b"abc", b"de"], budget_bytes=4)
+
+
+class _IgnoringTransport:
+    def __init__(self, response: bytes) -> None:
+        self.response = response
+        self.decision: EgressDecision | None = None
+
+    def fetch(self, _url: str, *, decision: EgressDecision) -> bytes:
+        self.decision = decision
+        return self.response
+
+
+def test_fetch_wrapper_enforces_policy_when_transport_ignores_budget() -> None:
+    policy = EgressPolicy(
+        allowed_hosts=frozenset({"api.example"}),
+        connect_deadline_seconds=2.5,
+        response_budget_bytes=4,
+    )
+    transport = _IgnoringTransport(b"abcde")
+    with pytest.raises(EgressError, match="budget"):
+        fetch_with_policy(
+            "https://api.example/v1",
+            policy=policy,
+            transport=transport,
+            resolver=_public_resolver,
+        )
+    assert transport.decision is not None
+    assert transport.decision.resolved_addresses == ("8.8.8.8",)
+
+
+def test_fetch_wrapper_rejects_transport_that_exceeds_deadline(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    ticks = iter((10.0, 16.0))
+    monkeypatch.setattr("hedron_core.egress.time.monotonic", lambda: next(ticks))
+    with pytest.raises(EgressError, match="deadline"):
+        fetch_with_policy(
+            "https://api.example/v1",
+            policy=EgressPolicy(
+                allowed_hosts=frozenset({"api.example"}),
+                connect_deadline_seconds=5.0,
+            ),
+            transport=_IgnoringTransport(b"ok"),
+            resolver=_public_resolver,
+        )

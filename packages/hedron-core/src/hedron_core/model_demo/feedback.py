@@ -6,6 +6,7 @@ import time
 import uuid
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
+from threading import RLock
 from typing import Protocol
 
 from hedron_core.codes import HED_FEEDBACK_0001
@@ -80,27 +81,66 @@ class FeedbackRecord:
 
 
 class FeedbackSink(Protocol):
-    def store(self, record: FeedbackRecord) -> None: ...
+    """Tenant-scoped storage contract for feedback records.
 
-    def delete(self, record_id: str) -> bool: ...
+    Implementations must enforce ``tenant_id`` atomically; filtering an unscoped
+    export in the collector is not an authorization boundary.
+    """
 
-    def export(self) -> Sequence[FeedbackRecord]: ...
+    def store(
+        self,
+        record: FeedbackRecord,
+        *,
+        tenant_id: str | None,
+        max_records: int,
+    ) -> None: ...
+
+    def delete(self, record_id: str, *, tenant_id: str | None) -> bool: ...
+
+    def export(self, *, tenant_id: str | None) -> Sequence[FeedbackRecord]: ...
+
+
+class _FeedbackCapacityError(RuntimeError):
+    pass
 
 
 @dataclass
 class InMemoryFeedbackSink:
-    """Default sink for tests; respects export policy at the PredictionFeedback layer."""
+    """Thread-safe tenant-scoped sink for tests and local demonstrations."""
 
-    _records: dict[str, FeedbackRecord] = field(default_factory=dict[str, FeedbackRecord])
+    _records: dict[tuple[str | None, str], FeedbackRecord] = field(
+        default_factory=dict[tuple[str | None, str], FeedbackRecord]
+    )
+    _lock: RLock = field(default_factory=RLock, init=False, repr=False, compare=False)
 
-    def store(self, record: FeedbackRecord) -> None:
-        self._records[record.record_id] = record
+    def store(
+        self,
+        record: FeedbackRecord,
+        *,
+        tenant_id: str | None,
+        max_records: int,
+    ) -> None:
+        if record.tenant_id != tenant_id:
+            raise ValueError("feedback record tenant does not match sink scope")
+        key = (tenant_id, record.record_id)
+        with self._lock:
+            if key not in self._records:
+                active = sum(1 for scope, _record_id in self._records if scope == tenant_id)
+                if active >= max_records:
+                    raise _FeedbackCapacityError
+            self._records[key] = record
 
-    def delete(self, record_id: str) -> bool:
-        return self._records.pop(record_id, None) is not None
+    def delete(self, record_id: str, *, tenant_id: str | None) -> bool:
+        with self._lock:
+            return self._records.pop((tenant_id, record_id), None) is not None
 
-    def export(self) -> Sequence[FeedbackRecord]:
-        return tuple(self._records.values())
+    def export(self, *, tenant_id: str | None) -> Sequence[FeedbackRecord]:
+        with self._lock:
+            return tuple(
+                record
+                for (scope, _record_id), record in self._records.items()
+                if scope == tenant_id
+            )
 
 
 @dataclass
@@ -112,7 +152,6 @@ class PredictionFeedback:
     enabled: bool = False
     max_text_chars: int = 2000
     max_records: int = 10_000
-    _seq: int = field(default=0, init=False)
     _submit_times: list[float] = field(default_factory=list[float], init=False)
 
     def __post_init__(self) -> None:
@@ -152,11 +191,10 @@ class PredictionFeedback:
             return
         for record in self._records_for_tenant():
             if clock - record.created_at > retention:
-                self.sink.delete(record.record_id)
+                self.sink.delete(record.record_id, tenant_id=self.policy.tenant_id)
 
     def _records_for_tenant(self) -> tuple[FeedbackRecord, ...]:
-        tenant_id = self.policy.tenant_id
-        return tuple(record for record in self.sink.export() if record.tenant_id == tenant_id)
+        return tuple(self.sink.export(tenant_id=self.policy.tenant_id))
 
     def _enforce_abuse(self, *, reason: str | None, correction: str | None) -> None:
         if not self.policy.abuse_controls:
@@ -173,12 +211,6 @@ class PredictionFeedback:
         if len(self._submit_times) >= 60:
             raise ModelDemoError(
                 "Feedback submit rate limit exceeded",
-                code=HED_FEEDBACK_0001,
-            )
-        active = len(self._records_for_tenant())
-        if active >= self.max_records:
-            raise ModelDemoError(
-                f"Feedback store full (max_records={self.max_records})",
                 code=HED_FEEDBACK_0001,
             )
 
@@ -215,7 +247,6 @@ class PredictionFeedback:
         self._require_principal(principal)
         self._purge_expired(now=now)
         self._enforce_abuse(reason=reason, correction=correction)
-        self._seq += 1
         redacted: dict[str, JsonValue] = {}
         for key, value in dict(payload or {}).items():
             if key in self.policy.redaction_fields:
@@ -235,16 +266,24 @@ class PredictionFeedback:
             created_at=time.time() if now is None else now,
             redacted=redacted,
         )
-        self.sink.store(record)
+        try:
+            self.sink.store(
+                record,
+                tenant_id=self.policy.tenant_id,
+                max_records=self.max_records,
+            )
+        except _FeedbackCapacityError as exc:
+            raise ModelDemoError(
+                f"Feedback store full (max_records={self.max_records})",
+                code=HED_FEEDBACK_0001,
+            ) from exc
         self._submit_times.append(time.time() if now is None else now)
         return record
 
     def delete(self, record_id: str, *, principal: str | None = None) -> bool:
         self._require_principal(principal)
         self._purge_expired()
-        if not any(record.record_id == record_id for record in self._records_for_tenant()):
-            return False
-        return self.sink.delete(record_id)
+        return self.sink.delete(record_id, tenant_id=self.policy.tenant_id)
 
     def export(
         self, *, principal: str | None = None, now: float | None = None

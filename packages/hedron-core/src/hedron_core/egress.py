@@ -5,9 +5,10 @@ from __future__ import annotations
 import ipaddress
 import math
 import socket
+import time
 from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass, field
-from typing import Protocol
+from typing import Any, Protocol, cast
 from urllib.parse import urlparse
 
 from hedron_core.compat import StrEnum
@@ -55,23 +56,26 @@ class EgressPolicy:
     deny_by_default: bool = True
 
     def __post_init__(self) -> None:
+        max_redirects = cast(Any, self.max_redirects)
         if (
-            isinstance(self.max_redirects, bool)
-            or not isinstance(self.max_redirects, int)
-            or self.max_redirects < 0
+            isinstance(max_redirects, bool)
+            or not isinstance(max_redirects, int)
+            or max_redirects < 0
         ):
             raise ValueError("max_redirects must be a non-negative integer")
+        connect_deadline = cast(Any, self.connect_deadline_seconds)
         if (
-            isinstance(self.connect_deadline_seconds, bool)
-            or not isinstance(self.connect_deadline_seconds, (int, float))
-            or not math.isfinite(float(self.connect_deadline_seconds))
-            or self.connect_deadline_seconds <= 0
+            isinstance(connect_deadline, bool)
+            or not isinstance(connect_deadline, (int, float))
+            or not math.isfinite(float(connect_deadline))
+            or connect_deadline <= 0
         ):
             raise ValueError("connect_deadline_seconds must be finite and > 0")
+        response_budget = cast(Any, self.response_budget_bytes)
         if (
-            isinstance(self.response_budget_bytes, bool)
-            or not isinstance(self.response_budget_bytes, int)
-            or self.response_budget_bytes < 1
+            isinstance(response_budget, bool)
+            or not isinstance(response_budget, int)
+            or response_budget < 1
         ):
             raise ValueError("response_budget_bytes must be a positive integer")
 
@@ -183,21 +187,62 @@ class EgressPolicy:
 
 
 class EgressTransport(Protocol):
-    def fetch(self, url: str, *, decision: EgressDecision) -> bytes: ...
+    """Injected transport that must connect to an address in ``decision``."""
+
+    def fetch(self, url: str, *, decision: EgressDecision) -> bytes | Iterable[bytes]: ...
 
 
 def bounded_response(chunks: Iterable[bytes], *, budget_bytes: int) -> bytes:
     """Collect response chunks under a hard byte budget for transport adapters."""
-    if isinstance(budget_bytes, bool) or not isinstance(budget_bytes, int) or budget_bytes < 1:
+    raw_budget = cast(Any, budget_bytes)
+    if isinstance(raw_budget, bool) or not isinstance(raw_budget, int) or raw_budget < 1:
         raise ValueError("budget_bytes must be a positive integer")
     collected = bytearray()
     for chunk in chunks:
-        if not isinstance(chunk, (bytes, bytearray, memoryview)):
+        raw_chunk = cast(Any, chunk)
+        if not isinstance(raw_chunk, (bytes, bytearray, memoryview)):
             raise EgressError("egress response contained a non-byte chunk")
-        collected.extend(chunk)
-        if len(collected) > budget_bytes:
+        checked_chunk = cast(bytes, raw_chunk)
+        if len(checked_chunk) > budget_bytes - len(collected):
             raise EgressError("egress response budget exceeded")
+        collected.extend(checked_chunk)
     return bytes(collected)
+
+
+def fetch_with_policy(
+    url: str,
+    *,
+    policy: EgressPolicy,
+    transport: EgressTransport,
+    hop: int = 0,
+    resolver: Callable[[str], tuple[str, ...]] | None = None,
+) -> bytes:
+    """Evaluate policy and enforce its deadline and byte budget around a transport.
+
+    This wrapper prevents an injected transport from bypassing the shared
+    response budget. The transport remains responsible for binding its network
+    connection to one of ``decision.resolved_addresses`` and applying the
+    decision's connect deadline while I/O is in progress.
+    """
+    decision = policy.require(url, hop=hop, resolver=resolver)
+    started = time.monotonic()
+    response = transport.fetch(url, decision=decision)
+    elapsed = time.monotonic() - started
+    if elapsed > decision.connect_deadline_seconds:
+        raise EgressError("egress transport deadline exceeded")
+    chunks: Iterable[bytes]
+    if isinstance(response, (bytes, bytearray, memoryview)):
+        chunks = (bytes(response),)
+    else:
+        chunks = response
+
+    def deadline_checked() -> Iterable[bytes]:
+        for chunk in chunks:
+            if time.monotonic() - started > decision.connect_deadline_seconds:
+                raise EgressError("egress transport deadline exceeded")
+            yield chunk
+
+    return bounded_response(deadline_checked(), budget_bytes=decision.response_budget_bytes)
 
 
 def default_resolve(host: str) -> tuple[str, ...]:
