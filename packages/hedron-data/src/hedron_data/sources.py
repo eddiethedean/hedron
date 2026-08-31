@@ -46,7 +46,11 @@ class DataQuery:
         capped = min(limit, max_page_size, HARD_MAX_PAGE_SIZE)
         if capped < 1:
             raise ValueError("DataQuery.limit must be >= 1 after capping")
-        if self.sort is None or isinstance(self.sort, (str, bytes, bytearray)):
+        if (
+            self.sort is None
+            or not isinstance(self.sort, Sequence)
+            or isinstance(self.sort, (str, bytes, bytearray))
+        ):
             raise ValueError("DataQuery.sort must be a sequence of (field, direction) pairs")
         sort_entries: list[tuple[str, str]] = []
         for entry in self.sort:
@@ -79,7 +83,10 @@ class DataQuery:
                     raise ValueError(f"Filter field {name!r} is not allowlisted")
         projection = self.projection
         if projection is not None:
-            if isinstance(projection, (str, bytes, bytearray)):
+            if (
+                not isinstance(projection, Sequence)
+                or isinstance(projection, (str, bytes, bytearray))
+            ):
                 raise ValueError("DataQuery.projection must be a sequence of field names")
             if any(not isinstance(name, str) or not name.strip() for name in projection):
                 raise ValueError("DataQuery projection fields must be non-empty strings")
