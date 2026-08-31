@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ipaddress
+import math
 import re
 import socket
 from dataclasses import dataclass, field
@@ -137,10 +138,30 @@ class GradioRemoteConfig:
     artifact_retention_seconds: float = 300.0
 
     def __post_init__(self) -> None:
-        if self.max_redirect_hops < 0:
+        if (
+            isinstance(self.max_redirect_hops, bool)
+            or not isinstance(self.max_redirect_hops, int)
+            or self.max_redirect_hops < 0
+        ):
             raise ValueError("max_redirect_hops must be >= 0")
-        if self.request_timeout_seconds <= 0:
+        if (
+            isinstance(self.request_timeout_seconds, bool)
+            or not isinstance(self.request_timeout_seconds, (int, float))
+            or not math.isfinite(float(self.request_timeout_seconds))
+            or self.request_timeout_seconds <= 0
+        ):
             raise ValueError("request_timeout_seconds must be > 0")
+        for name in ("max_upload_bytes", "max_download_bytes"):
+            value = getattr(self, name)
+            if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+                raise ValueError(f"{name} must be a positive integer")
+        if (
+            isinstance(self.artifact_retention_seconds, bool)
+            or not isinstance(self.artifact_retention_seconds, (int, float))
+            or not math.isfinite(float(self.artifact_retention_seconds))
+            or self.artifact_retention_seconds <= 0
+        ):
+            raise ValueError("artifact_retention_seconds must be > 0")
 
     @classmethod
     def from_base_url(
