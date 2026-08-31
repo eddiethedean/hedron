@@ -310,12 +310,25 @@ async def _begin_replay(
             remediation="Retry after the first request completes.",
         )
     if replay_claim.state == ReplayState.REPLAYED:
-        return StarletteResponse(
+        cached_headers = replay_claim.cached_headers
+        if cached_headers is None:
+            return StarletteResponse(
+                content=replay_claim.cached_body or b"",
+                status_code=int(replay_claim.cached_status or 200),
+                media_type=replay_claim.cached_media_type or "text/html",
+                headers={"Hedron-Replay": "true"},
+            )
+        response = StarletteResponse(
             content=replay_claim.cached_body or b"",
             status_code=int(replay_claim.cached_status or 200),
-            media_type=replay_claim.cached_media_type or "text/html",
-            headers={"Hedron-Replay": "true"},
         )
+        response.raw_headers = [
+            (name.encode("latin-1"), value.encode("latin-1"))
+            for name, value in cached_headers
+            if name.lower() != "hedron-replay"
+        ]
+        response.headers["Hedron-Replay"] = "true"
+        return response
     return _ReplayGuard(
         claim=replay_claim,
         store=replay_store,
@@ -332,6 +345,23 @@ def _abort_replay(guard: _ReplayGuard | None) -> None:
 
     if guard.claim.state == ReplayState.FIRST:
         guard.store.abort(key=guard.key, scope=guard.scope_key, fingerprint=guard.fingerprint)
+
+
+def _replay_store_accepts_headers(store: ReplayStore) -> bool:
+    """Return whether a replay store supports the optional response-header field.
+
+    ``ReplayStore`` is a public extension point. Stores written before response
+    headers were added have a narrower ``complete`` signature and must keep
+    working while applications migrate them.
+    """
+    try:
+        parameters = inspect.signature(store.complete).parameters.values()
+    except (TypeError, ValueError):
+        return False
+    return any(
+        parameter.name == "headers" or parameter.kind is inspect.Parameter.VAR_KEYWORD
+        for parameter in parameters
+    )
 
 
 def _complete_replay(guard: _ReplayGuard | None, response: Response) -> None:
@@ -361,14 +391,32 @@ def _complete_replay(guard: _ReplayGuard | None, response: Response) -> None:
     if isinstance(body, str):
         body = body.encode("utf-8")
     media_type = getattr(response, "media_type", None) or "text/html"
-    guard.store.complete(
-        key=guard.key,
-        scope=guard.scope_key,
-        fingerprint=guard.fingerprint,
-        status=int(getattr(response, "status_code", 200) or 200),
-        body=bytes(body),
-        media_type=str(media_type),
+    raw_headers = getattr(response, "raw_headers", ())
+    headers = tuple(
+        (name.decode("latin-1"), value.decode("latin-1"))
+        for name, value in raw_headers
+        if isinstance(name, bytes) and isinstance(value, bytes)
     )
+    status = int(getattr(response, "status_code", 200) or 200)
+    if _replay_store_accepts_headers(guard.store):
+        guard.store.complete(
+            key=guard.key,
+            scope=guard.scope_key,
+            fingerprint=guard.fingerprint,
+            status=status,
+            body=bytes(body),
+            media_type=str(media_type),
+            headers=headers,
+        )
+    else:
+        guard.store.complete(
+            key=guard.key,
+            scope=guard.scope_key,
+            fingerprint=guard.fingerprint,
+            status=status,
+            body=bytes(body),
+            media_type=str(media_type),
+        )
 
 
 def _apply_fastapi_signature(
