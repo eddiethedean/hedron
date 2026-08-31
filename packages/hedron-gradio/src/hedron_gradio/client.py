@@ -11,12 +11,13 @@ from typing import Any, cast
 from hedron_gradio.artifacts import ArtifactStore
 from hedron_gradio.errors import GradioRemoteError
 from hedron_gradio.jobs import GradioJobManager, job_scope_key
-from hedron_gradio.policy import GradioRemoteConfig, redact_sensitive_text, validate_remote_url
+from hedron_gradio.policy import GradioRemoteConfig, validate_remote_url
 
 _logger = logging.getLogger("hedron.gradio")
 _GRADIO_CLIENT_IMPORT_ERROR = (
-    "gradio_client is required for live Gradio discovery and predict calls. "
-    "Install with: pip install gradio-client"
+    "Automatic gradio_client networking is disabled because the library does not expose "
+    "a connection-bound Hedron egress transport. Inject an application-owned transport "
+    "that enforces hedron_core.fetch_with_policy."
 )
 
 _VERSION_RE = re.compile(r"^(\d+)\.(\d+)(?:\.(\d+))?")
@@ -272,33 +273,7 @@ class GradioClientAdapter:
         return [item for item in cast(list[Any], result) if isinstance(item, GradioEndpoint)]
 
     def _discover_via_gradio_client(self) -> list[GradioEndpoint]:
-        try:
-            import gradio_client  # type: ignore[import-not-found]
-            from gradio_client import Client  # type: ignore[import-not-found]
-        except ImportError as exc:
-            raise GradioRemoteError(_GRADIO_CLIENT_IMPORT_ERROR) from exc
-
-        version = getattr(gradio_client, "__version__", None)
-        if isinstance(version, str):
-            self.check_version_compat(version)
-            self.gradio_version = version
-
-        try:
-            client_kwargs: dict[str, Any] = {}
-            if self.auth_token:
-                client_kwargs["hf_token"] = self.auth_token
-            client = cast(Any, Client(self.base_url, **client_kwargs))
-        except Exception as exc:
-            message = redact_sensitive_text(str(exc))
-            raise GradioRemoteError(f"Failed to connect to Gradio app: {message}") from exc
-
-        endpoints = self._endpoints_from_client(client)
-        if not endpoints:
-            raise GradioRemoteError(
-                "Gradio client connected but no discoverable endpoints were found"
-            )
-        object.__setattr__(self, "endpoints", tuple(endpoints))
-        return endpoints
+        raise GradioRemoteError(_GRADIO_CLIENT_IMPORT_ERROR)
 
     def _endpoints_from_client(self, client: Any) -> list[GradioEndpoint]:
         """Best-effort endpoint discovery across gradio_client view_api shapes."""

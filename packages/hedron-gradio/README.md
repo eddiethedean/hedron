@@ -29,9 +29,11 @@ pip install "hedron[gradio]>=1.0.0,<1.1"
 
 Requires Python 3.10–3.14.
 
-For **live** Gradio endpoints, also install `gradio_client`. The package imports
-without `gradio` or `gradio_client` installed; with declared endpoints and no
-client library, helpers return stub-friendly status payloads.
+Hedron does not automatically construct `gradio_client.Client`: that library
+does not expose the connection-bound transport needed to prevent DNS rebinding.
+Use declared endpoints for offline/stub behavior, or provide an
+application-owned transport that routes its HTTP through
+`hedron_core.fetch_with_policy`.
 
 ## Quick start
 

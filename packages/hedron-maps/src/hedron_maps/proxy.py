@@ -1,75 +1,27 @@
-"""Optional same-origin map proxy with SSRF bounds. Not imported by compile_map."""
+"""Optional same-origin map proxy policy backed by shared Hedron egress."""
 
 from __future__ import annotations
 
 import ipaddress
-import socket
-from urllib.parse import urlparse
+from collections.abc import Callable
+from urllib.parse import urlsplit
 
 from hedron_core.codes import HED_MAP_POLICY_0001, HED_MAP_POLICY_0002
 from hedron_core.diagnostics import error
+from hedron_core.egress import EgressError, EgressPolicy, default_resolve
 from hedron_maps.limits import PROXY_MAX_REDIRECTS, PROXY_RESPONSE_BYTES, PROXY_TIMEOUT_MS
 from hedron_maps.spec import MapPolicy
 
 __all__ = ["PROXY_MAX_REDIRECTS", "PROXY_RESPONSE_BYTES", "PROXY_TIMEOUT_MS", "assert_ssrf_safe"]
 
 
-def _block_ip(ip: ipaddress.IPv4Address | ipaddress.IPv6Address) -> bool:
-    mapped = getattr(ip, "ipv4_mapped", None)
-    if mapped is not None:
-        return _block_ip(mapped)
-    if not ip.is_global:
-        return True
-    return bool(
-        ip.is_private
-        or ip.is_loopback
-        or ip.is_link_local
-        or ip.is_multicast
-        or ip.is_reserved
-        or ip.is_unspecified
-    )
-
-
 def assert_ssrf_safe(url: str, policy: MapPolicy, *, resolve_dns: bool = True) -> str:
-    """Validate a proxy candidate. Does not fetch."""
-    try:
-        parsed = urlparse(url)
-        _port = parsed.port  # Force deferred malformed-port validation.
-    except ValueError as exc:
-        raise error(
-            HED_MAP_POLICY_0002,
-            title="Malformed proxy URL",
-            explanation=f"Could not parse the proxy URL: {exc}",
-            remediation="Use a valid HTTPS URL with a port from 0 through 65535.",
-        ) from exc
-    if parsed.scheme != "https":
-        raise error(
-            HED_MAP_POLICY_0002,
-            title="Proxy URL must be HTTPS",
-            explanation=f"Refused {parsed.scheme!r}.",
-            remediation="Only https origins may be proxied.",
-        )
-    if parsed.username or parsed.password or parsed.path.startswith("//"):
-        raise error(
-            HED_MAP_POLICY_0002,
-            title="Proxy URL credentials rejected",
-            explanation="Userinfo and protocol-relative forms are invalid.",
-            remediation="Strip credentials; keep exact HTTPS origins.",
-        )
-    port = parsed.port
-    if port == 0:
-        raise error(
-            HED_MAP_POLICY_0002,
-            title="Proxy URL port rejected",
-            explanation="Port 0 is not a valid remote HTTPS destination.",
-            remediation="Use a concrete port from 1 through 65535.",
-        )
-    host = parsed.hostname or ""
-    host_for_origin = f"[{host}]" if ":" in host else host
-    origin = f"{parsed.scheme}://{host_for_origin}"
-    # HTTPS has one default port. Keeping :80 is essential to exact-origin policy.
-    if port is not None and port != 443:
-        origin = f"{origin}:{port}"
+    """Validate a proxy candidate through the shared egress authority.
+
+    This compatibility helper only validates. A proxy implementation that
+    performs the request must use ``fetch_with_policy`` so the connection is
+    bound to the validated address set.
+    """
     if not policy.remote_requests_permitted:
         raise error(
             HED_MAP_POLICY_0001,
@@ -79,50 +31,62 @@ def assert_ssrf_safe(url: str, policy: MapPolicy, *, resolve_dns: bool = True) -
             ),
             remediation="Set remote_requests_permitted=True or serve tiles same-origin.",
         )
-    if origin not in policy.allowed_origins:
-        raise error(
-            HED_MAP_POLICY_0001,
-            title="Proxy origin is not allowed",
-            explanation=f"{origin} is outside MapPolicy.allowed_origins.",
-            remediation="Declare the exact origin before enabling the proxy.",
-        )
-    host = parsed.hostname
-    if host is None:
-        raise error(
-            HED_MAP_POLICY_0002,
-            title="Proxy host missing",
-            explanation="HTTPS URL did not parse a host.",
-            remediation="Use an exact hostname origin.",
-        )
-    try:
-        literal = ipaddress.ip_address(host)
-    except ValueError:
-        literal = None
-    if literal is not None and _block_ip(literal):
-        raise error(
-            HED_MAP_POLICY_0002,
-            title="Proxy target is a blocked address",
-            explanation=f"{host} is not a public address.",
-            remediation="Do not proxy loopback, link-local, or private ranges.",
-        )
-    if resolve_dns and literal is None:
+
+    allowed_hosts: set[str] = set()
+    allowed_ports: set[int] = {443}
+    for origin in policy.allowed_origins:
         try:
-            infos = socket.getaddrinfo(host, port or 443, type=socket.SOCK_STREAM)
-        except OSError as exc:
+            parsed = urlsplit(origin)
+            port = parsed.port
+        except ValueError:
+            continue
+        if parsed.hostname:
+            allowed_hosts.add(parsed.hostname)
+        allowed_ports.add(port if port is not None else 443)
+
+    shared = EgressPolicy(
+        allowed_schemes=frozenset({"https"}),
+        allowed_hosts=frozenset(allowed_hosts),
+        allowed_origins=frozenset(policy.allowed_origins),
+        allowed_ports=frozenset(allowed_ports),
+        max_redirects=PROXY_MAX_REDIRECTS,
+        connect_deadline_seconds=PROXY_TIMEOUT_MS / 1000,
+        read_deadline_seconds=PROXY_TIMEOUT_MS / 1000,
+        total_deadline_seconds=PROXY_TIMEOUT_MS / 1000,
+        response_budget_bytes=PROXY_RESPONSE_BYTES,
+    )
+    resolver: Callable[[str], tuple[str, ...]] | None = None
+    if not resolve_dns:
+        resolver = _literal_or_preflight_address
+    try:
+        return shared.require(url, resolver=resolver).url
+    except EgressError as exc:
+        reason = str(exc).rsplit(": ", 1)[-1]
+        if reason in {"host_denied", "origin_denied"} or (
+            reason == "port_denied" and ":0" not in urlsplit(url).netloc
+        ):
             raise error(
-                HED_MAP_POLICY_0002,
-                title="Proxy DNS resolution failed",
-                explanation=str(exc),
-                remediation="Reject unresolved proxy hostnames.",
+                HED_MAP_POLICY_0001,
+                title="Proxy origin is not allowed",
+                explanation="The proxy URL is outside MapPolicy.allowed_origins.",
+                remediation="Declare the exact origin before enabling the proxy.",
             ) from exc
-        for info in infos:
-            packed = info[4][0]
-            ip = ipaddress.ip_address(packed)
-            if _block_ip(ip):
-                raise error(
-                    HED_MAP_POLICY_0002,
-                    title="Proxy DNS resolved to a blocked address",
-                    explanation=f"{host} resolved to {ip}.",
-                    remediation="Revalidate DNS at request time; deny private ranges.",
-                )
-    return url
+        if reason == "port_denied" and ":0" in urlsplit(url).netloc:
+            explanation = "Port 0 is not a valid remote HTTPS destination."
+        else:
+            explanation = f"Shared egress policy rejected the proxy URL ({reason})."
+        raise error(
+            HED_MAP_POLICY_0002,
+            title="Unsafe map proxy URL",
+            explanation=explanation,
+            remediation="Use an allowlisted public HTTPS origin and a valid port.",
+        ) from exc
+
+
+def _literal_or_preflight_address(host: str) -> tuple[str, ...]:
+    """Preserve the historical no-DNS test seam without weakening literals."""
+    try:
+        ipaddress.ip_address(host)
+    except ValueError:
+        return ("8.8.8.8",)
+    return default_resolve(host)

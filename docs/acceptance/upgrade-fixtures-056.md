@@ -15,6 +15,10 @@
   signed intents compose with them and do not replace CSRF or object-level authz.
 - Package-local egress validators (maps / Gradio / MCP) become adapters over core
   `EgressPolicy` with equivalent or intentionally stricter outcomes.
+- The beta `EgressTransport` contract is connection-bound: implementations expose
+  `request(decision=...) -> EgressResponse`, do not redirect or decompress, and
+  report the connected address. Legacy transports with an unrestricted
+  `fetch(url, ...)` method fail closed.
 
 ## Fixture themes
 
@@ -23,3 +27,8 @@
 3. CSRF + replay + intent ordering on high-risk mutations.
 4. Budget nesting: upload/workflow/stream charges charge a parent `RequestBudget`.
 5. Context serialization reject broadened / foreign / client-supplied authority.
+6. Egress rebinding, mixed DNS answers, redirect/retry accounting, proxy routing,
+   peer verification, content expectations, and decompression bombs.
+
+The reviewed first-party network surface and explicit non-fetch exemptions are
+recorded in [`egress-inventory-555.toml`](egress-inventory-555.toml).

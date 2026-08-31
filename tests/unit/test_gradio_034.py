@@ -104,7 +104,7 @@ def test_validate_remote_url_blocks_mixed_public_and_private_answers(
 
     monkeypatch.setattr(policy.socket, "getaddrinfo", _getaddrinfo)
     cfg = GradioRemoteConfig.from_base_url("https://mixed.example")
-    with pytest.raises(GradioRemoteError, match="resolved 127.0.0.1"):
+    with pytest.raises(GradioRemoteError, match="Private or loopback"):
         validate_remote_url("https://mixed.example/run", cfg)
 
 
