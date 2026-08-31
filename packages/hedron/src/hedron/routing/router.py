@@ -246,7 +246,7 @@ async def _begin_replay(
             title="Idempotency key in flight",
             explanation="A concurrent request already claimed this key.",
             remediation="Retry after the first request completes.",
-    )
+        )
     if replay_claim.state == ReplayState.REPLAYED:
         cached_headers = replay_claim.cached_headers
         if cached_headers is None:
