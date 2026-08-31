@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from collections.abc import Mapping, Sequence
 from typing import Any
+from urllib.parse import unquote, urlsplit
 
 from hedron_core.builtins.map_geo import DEFAULT_MAX_FEATURES, MarkerSpec, sanitize_geojson
 from hedron_core.component import Component, NodeLike
@@ -33,10 +34,35 @@ ELEMENT_ID = "hedron-map"
 _UNSET = object()
 
 
+def _tile_template_has_traversal(tiles: str) -> bool:
+    """Return whether a tile template contains browser-normalized path traversal."""
+    try:
+        parsed = urlsplit(tiles)
+        path = parsed.path or (tiles.split("?", 1)[0].split("#", 1)[0])
+    except ValueError:
+        path = tiles.split("?", 1)[0].split("#", 1)[0]
+    decoded = path
+    for _ in range(3):
+        next_decoded = unquote(decoded)
+        if next_decoded == decoded:
+            break
+        decoded = next_decoded
+    if "\\" in decoded:
+        return True
+    return any(segment.lower() in {".", ".."} for segment in decoded.split("/"))
+
+
 def _ensure_tile_allowed(tiles: str | None, allowlist: Sequence[str]) -> str | None:
     """Validate a construction-time tile template against explicit prefixes."""
     if tiles is None:
         return None
+    if _tile_template_has_traversal(tiles):
+        raise error(
+            "HED-MAP-0002",
+            title="Disallowed map tile source",
+            explanation="Tile templates must not contain dot-segment or backslash traversal.",
+            remediation="Use a normalized tile URL without '.', '..', or backslash path segments.",
+        )
     prefixes = [str(raw).strip() for raw in allowlist]
     if any(not prefix for prefix in prefixes) or not prefixes:
         raise error(
