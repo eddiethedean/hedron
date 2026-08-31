@@ -6,7 +6,7 @@ import zipfile
 from collections.abc import Iterator, Mapping, Sequence
 from io import BytesIO
 from pathlib import Path
-from typing import Literal
+from typing import Literal, cast
 
 from starlette.responses import FileResponse, Response, StreamingResponse
 
@@ -233,7 +233,8 @@ def download_all_zip(
         raise PermissionError("Download requires authorization")
     if max_total_bytes < 0:
         raise ValueError("max_total_bytes cannot be negative")
-    if isinstance(max_members, bool) or not isinstance(max_members, int) or max_members < 1:
+    member_limit = cast(object, max_members)
+    if isinstance(member_limit, bool) or not isinstance(member_limit, int) or member_limit < 1:
         raise ValueError("max_members must be a positive integer")
 
     files: list[Path] = []
