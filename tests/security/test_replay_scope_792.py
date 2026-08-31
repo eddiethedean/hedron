@@ -8,6 +8,7 @@ from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.requests import Request
 
 from hedron import Hedron, Text
+from hedron.security.policy import SecurityPolicy
 
 
 def _anonymous_app(calls: list[str]) -> Hedron:
@@ -38,6 +39,34 @@ def test_anonymous_replay_isolated_by_csrf_cookie() -> None:
     first = alice.post("/receipt", headers=headers)
     headers = {"Idempotency-Key": "shared-key", "X-CSRF-Token": bob_csrf, "X-Client": "bob"}
     second = bob.post("/receipt", headers=headers)
+
+    assert first.status_code == second.status_code == 200
+    assert first.text == "<p>private receipt for alice</p>"
+    assert second.text == "<p>private receipt for bob</p>"
+    assert "Hedron-Replay" not in second.headers
+    assert calls == ["alice", "bob"]
+
+
+def test_anonymous_replay_does_not_trust_csrf_header_when_disabled() -> None:
+    calls: list[str] = []
+    app = Hedron(
+        security=SecurityPolicy(csrf_enabled=False, security_headers=False),
+        explorer="off",
+        session_secret="test-secret",
+    )
+
+    @app.action("/receipt", method="POST", idempotency="required")
+    def receipt(request: Request) -> Text:
+        client = request.headers["x-client"]
+        calls.append(client)
+        return Text(f"private receipt for {client}")
+
+    alice = TestClient(app)
+    bob = TestClient(app)
+    shared = {"Idempotency-Key": "shared-key", "X-CSRF-Token": "caller-controlled"}
+
+    first = alice.post("/receipt", headers={**shared, "X-Client": "alice"})
+    second = bob.post("/receipt", headers={**shared, "X-Client": "bob"})
 
     assert first.status_code == second.status_code == 200
     assert first.text == "<p>private receipt for alice</p>"

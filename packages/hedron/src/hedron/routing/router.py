@@ -70,11 +70,11 @@ def _anonymous_replay_binding(request: Request[State]) -> str:
     """Return a stable per-client binding for anonymous replay scopes.
 
     Cookie-backed CSRF tokens are already unique to an anonymous browser and
-    are available on normal unsafe actions.  Session-token strategies can use
-    their request state/header token.  If no client material exists (for
-    example, CSRF is disabled), use a request-local nonce rather than the
-    process-wide ``anon:none`` sentinel, which would let unrelated callers
-    share cached responses.
+    are available on normal unsafe actions.  Non-cookie strategies can use the
+    submitted token only after the unsafe-action CSRF check has validated it.
+    If no authoritative client material exists (for example, CSRF is disabled),
+    use a request-local nonce rather than the process-wide ``anon:none``
+    sentinel, which would let unrelated callers share cached responses.
     """
     app = request.scope.get("app")
     app_state = getattr(app, "state", None) if app is not None else None
@@ -88,13 +88,15 @@ def _anonymous_replay_binding(request: Request[State]) -> str:
     binding = cookies.get(cookie_name) if isinstance(cookie_name, str) else None
     if isinstance(binding, str) and binding:
         return binding
-    state_binding = getattr(request.state, "hedron_csrf_token", None)
-    if isinstance(state_binding, str) and state_binding:
-        return state_binding
-    header_name = getattr(policy, "csrf_header_name", "X-CSRF-Token")
-    header_binding = request.headers.get(header_name) if isinstance(header_name, str) else None
-    if isinstance(header_binding, str) and header_binding:
-        return header_binding
+    if strategy is not None and request.method.upper() not in _SAFE_METHODS:
+        header_name = getattr(strategy, "header_name", "")
+        header_binding = request.headers.get(header_name) if isinstance(header_name, str) else None
+        form_binding = getattr(request.state, "hedron_csrf_form_token", None)
+        binding = form_binding or header_binding
+        if isinstance(binding, str) and binding:
+            # _wrap_endpoint runs CSRF validation before replay claiming, so this
+            # is authoritative for unsafe requests with an active strategy.
+            return binding
     state_nonce = getattr(request.state, "hedron_replay_anonymous_nonce", None)
     if not isinstance(state_nonce, str) or not state_nonce:
         state_nonce = secrets.token_urlsafe(32)
