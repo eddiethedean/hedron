@@ -55,3 +55,72 @@ def test_memory_replay_store_round_trips_duplicate_headers() -> None:
     replay = store.claim(key="k", fingerprint="fp", scope="s", retention_seconds=60)
     assert replay.state is ReplayState.REPLAYED
     assert replay.cached_headers == headers
+
+
+def test_existing_custom_replay_store_signature_remains_compatible() -> None:
+    from hedron.replay import MemoryReplayStore, ReplayOutcome
+
+    class ExistingCustomStore:
+        def __init__(self) -> None:
+            self.inner = MemoryReplayStore()
+
+        def claim(
+            self,
+            *,
+            key: str,
+            fingerprint: str,
+            scope: str,
+            retention_seconds: int,
+        ) -> ReplayOutcome:
+            return self.inner.claim(
+                key=key,
+                fingerprint=fingerprint,
+                scope=scope,
+                retention_seconds=retention_seconds,
+            )
+
+        def complete(
+            self,
+            *,
+            key: str,
+            scope: str,
+            fingerprint: str,
+            status: int,
+            body: bytes,
+            media_type: str | None = None,
+        ) -> bool:
+            return self.inner.complete(
+                key=key,
+                scope=scope,
+                fingerprint=fingerprint,
+                status=status,
+                body=body,
+                media_type=media_type,
+            )
+
+        def abort(self, *, key: str, scope: str, fingerprint: str) -> None:
+            self.inner.abort(key=key, scope=scope, fingerprint=fingerprint)
+
+    calls: list[str] = []
+    app = Hedron(security="standard", explorer="off", session_secret="test-secret")
+    app.state.hedron_replay_store = ExistingCustomStore()
+
+    @app.page("/")
+    def home() -> Text:
+        return Text("home")
+
+    @app.action("/charge", method="POST", idempotency="required")
+    def charge(_request: Request) -> Text:
+        calls.append("charged")
+        return Text("charged")
+
+    client = TestClient(app)
+    csrf = client.get("/").cookies["hedron_csrf"]
+    headers = {"Idempotency-Key": "same-key", "X-CSRF-Token": csrf}
+
+    first = client.post("/charge", headers=headers)
+    replay = client.post("/charge", headers=headers)
+
+    assert first.status_code == replay.status_code == 200
+    assert replay.headers["Hedron-Replay"] == "true"
+    assert calls == ["charged"]

@@ -285,6 +285,23 @@ def _abort_replay(guard: _ReplayGuard | None) -> None:
         guard.store.abort(key=guard.key, scope=guard.scope_key, fingerprint=guard.fingerprint)
 
 
+def _replay_store_accepts_headers(store: ReplayStore) -> bool:
+    """Return whether a replay store supports the optional response-header field.
+
+    ``ReplayStore`` is a public extension point. Stores written before response
+    headers were added have a narrower ``complete`` signature and must keep
+    working while applications migrate them.
+    """
+    try:
+        parameters = inspect.signature(store.complete).parameters.values()
+    except (TypeError, ValueError):
+        return False
+    return any(
+        parameter.name == "headers" or parameter.kind is inspect.Parameter.VAR_KEYWORD
+        for parameter in parameters
+    )
+
+
 def _complete_replay(guard: _ReplayGuard | None, response: Response) -> None:
     if guard is None:
         return
@@ -318,15 +335,26 @@ def _complete_replay(guard: _ReplayGuard | None, response: Response) -> None:
         for name, value in raw_headers
         if isinstance(name, bytes) and isinstance(value, bytes)
     )
-    guard.store.complete(
-        key=guard.key,
-        scope=guard.scope_key,
-        fingerprint=guard.fingerprint,
-        status=int(getattr(response, "status_code", 200) or 200),
-        body=bytes(body),
-        media_type=str(media_type),
-        headers=headers,
-    )
+    status = int(getattr(response, "status_code", 200) or 200)
+    if _replay_store_accepts_headers(guard.store):
+        guard.store.complete(
+            key=guard.key,
+            scope=guard.scope_key,
+            fingerprint=guard.fingerprint,
+            status=status,
+            body=bytes(body),
+            media_type=str(media_type),
+            headers=headers,
+        )
+    else:
+        guard.store.complete(
+            key=guard.key,
+            scope=guard.scope_key,
+            fingerprint=guard.fingerprint,
+            status=status,
+            body=bytes(body),
+            media_type=str(media_type),
+        )
 
 
 def _apply_fastapi_signature(
