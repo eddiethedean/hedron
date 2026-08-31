@@ -53,12 +53,8 @@ def test_packages_do_not_silently_construct_unrestricted_http_clients() -> None:
         if any(marker in source for marker in direct_http_markers)
     }
     assert hits == {
-        "packages/fastapi-workbench/src/fastapi_workbench/cli.py",
+        "packages/fastapi-workbench/src/fastapi_workbench/cli_support.py",
         "packages/hedron-core/src/hedron_core/egress_http.py",
-        "packages/hedron-posit/src/hedron_posit/cli.py",
     }
-    for path in (
-        "packages/fastapi-workbench/src/fastapi_workbench/cli.py",
-        "packages/hedron-posit/src/hedron_posit/cli.py",
-    ):
-        assert "transport=httpx.ASGITransport(app=app)" in python_sources[path]
+    support = "packages/fastapi-workbench/src/fastapi_workbench/cli_support.py"
+    assert "transport=httpx.ASGITransport(app=app)" in python_sources[support]

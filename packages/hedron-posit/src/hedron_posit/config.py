@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from collections.abc import Mapping
 from dataclasses import dataclass, field, replace
 
@@ -17,7 +18,9 @@ from fastapi_workbench.config import (
     WorkbenchTopology,
     WorkbenchTopologyName,
 )
+from hedron_core.diagnostics import DiagnosticSeverity, HedronError, make_diagnostic
 from hedron_posit.cookies import ConnectCookieMode, require_supported_cookie_mode
+from hedron_posit.detect import truthy
 from hedron_posit.products import EvidenceKind, PositProduct, resolve_product
 
 __all__ = [
@@ -37,6 +40,7 @@ __all__ = [
     "WorkbenchTopology",
     "WorkbenchTopologyName",
     "resolve_posit_deployment",
+    "resolve_posit_config",
 ]
 
 
@@ -45,7 +49,7 @@ class ConnectConfig:
     """Connect-specific operator configuration (never auto-detects trust)."""
 
     cookie_mode: ConnectCookieMode = ConnectCookieMode.NATIVE
-    trusted_peers: tuple[str, ...] = ("127.0.0.1", "::1")
+    trusted_peers: tuple[str, ...] = ()
     owned_cookie_names: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
@@ -55,7 +59,7 @@ class ConnectConfig:
             ConnectCookieMode.parse(self.cookie_mode),
         )
         peers = tuple(str(item).strip() for item in self.trusted_peers if str(item).strip())
-        object.__setattr__(self, "trusted_peers", peers or ("127.0.0.1", "::1"))
+        object.__setattr__(self, "trusted_peers", peers)
         names = tuple(
             sorted({str(item).strip() for item in self.owned_cookie_names if str(item).strip()})
         )
@@ -140,6 +144,44 @@ class PositStatus:
         }
 
 
+def resolve_posit_config(
+    config: PositConfig,
+    *,
+    environ: Mapping[str, str] | None = None,
+) -> PositConfig:
+    """Apply namespaced environment defaults before deployment resolution.
+
+    Explicit non-default object values retain precedence. The unsupported
+    bridge secret always fails closed instead of being silently ignored.
+    """
+    env = os.environ if environ is None else environ
+    connect = config.connect
+    raw_cookie_mode = str(env.get("HEDRON_POSIT_CONNECT_COOKIE_MODE") or "").strip()
+    if raw_cookie_mode and connect.cookie_mode is ConnectCookieMode.NATIVE:
+        try:
+            connect = replace(connect, cookie_mode=ConnectCookieMode.parse(raw_cookie_mode))
+        except ValueError as exc:
+            raise HedronError(
+                make_diagnostic(
+                    "HED-POSIT-0102",
+                    severity=DiagnosticSeverity.ERROR,
+                    title="Invalid namespaced Posit configuration",
+                    explanation=str(exc),
+                    remediation=(
+                        "Set HEDRON_POSIT_CONNECT_COOKIE_MODE to 'native'; the bridge "
+                        "extension point is not Supported."
+                    ),
+                )
+            ) from exc
+    if str(env.get("HEDRON_POSIT_BRIDGE_SECRET") or "").strip():
+        require_supported_cookie_mode(ConnectCookieMode.AUTHENTICATED_HEADER_V1)
+    return replace(
+        config,
+        connect=connect,
+        hands_off=config.hands_off or truthy(env.get("HEDRON_POSIT_HANDS_OFF")),
+    )
+
+
 def resolve_posit_deployment(
     config: PositConfig,
     *,
@@ -150,6 +192,7 @@ def resolve_posit_deployment(
     compatibility_facade: bool = False,
 ) -> ResolvedPositDeployment:
     """Resolve product + Workbench deployment; fail closed on bridge enum."""
+    config = resolve_posit_config(config, environ=environ)
     require_supported_cookie_mode(config.connect.cookie_mode)
     product, evidence = resolve_product(explicit=config.product, environ=environ)
 

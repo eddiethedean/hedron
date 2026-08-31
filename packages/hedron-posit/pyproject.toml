@@ -44,10 +44,6 @@ dependencies = [
     "fastapi-workbench>=1.0.2,<2.0",
     "starlette>=0.40.0",
     "uvicorn[standard]>=0.32",
-    # Connect 2025.06 imports pkg_resources before user code. Keep the
-    # compatibility provider in the environment instead of shipping a
-    # top-level package that shadows and can overwrite setuptools.
-    "setuptools<82",
 ]
 
 [project.scripts]

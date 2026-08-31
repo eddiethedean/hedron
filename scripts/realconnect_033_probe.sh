@@ -300,8 +300,6 @@ else
   rsync -a --exclude '__pycache__' \
     packages/hedron-posit/src/hedron_posit/ "$BUNDLE/hedron_posit/"
   rsync -a --exclude '__pycache__' \
-    packages/hedron-posit/src/pkg_resources/ "$BUNDLE/pkg_resources/"
-  rsync -a --exclude '__pycache__' \
     packages/fastapi-workbench/src/fastapi_workbench/ "$BUNDLE/fastapi_workbench/"
   log "bundle_mode=vendor"
 fi

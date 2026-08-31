@@ -11,6 +11,14 @@ from pathlib import Path
 from typing import Any, cast
 
 from fastapi_workbench import __version__
+from fastapi_workbench.cli_support import (
+    cookie_path_matches_mount,
+    deployment_payload,
+    deployment_text_lines,
+    probe_asgi_app,
+    report_checks_ok,
+    resolve_check,
+)
 from fastapi_workbench.config import WorkbenchConfig, WorkbenchMode, WorkbenchTopology
 from fastapi_workbench.detect import rs_server_url
 from fastapi_workbench.diagnostics import WorkbenchError
@@ -22,6 +30,8 @@ from fastapi_workbench.runner import (
     prepare_app,
     run_target,
 )
+
+_cookie_path_matches_mount = cookie_path_matches_mount
 
 
 def _config_from_args(args: argparse.Namespace) -> WorkbenchConfig:
@@ -46,43 +56,34 @@ def _config_from_args(args: argparse.Namespace) -> WorkbenchConfig:
 
 
 def _emit(resolved: Any, *, fmt: str) -> None:
-    payload = redact_record(resolved.as_dict())
+    payload = deployment_payload(resolved)
     if fmt == "json":
         print(json.dumps(payload, indent=2, sort_keys=True))
         return
-    print(f"mode: {payload['mode']}")
-    print(f"bind: {payload['bind']}")
-    print(f"external_origin: {payload['external_origin']}")
-    print(f"browser_mount: {payload['browser_mount']}")
-    print(f"cookie_mount: {payload['cookie_mount']}")
-    print(f"source: {payload['source']}")
-    print(f"discovered: {payload['discovered']}")
-    warning_values = payload.get("warnings")
-    if isinstance(warning_values, list):
-        for warning in cast(list[object], warning_values):
-            print(f"warning: {warning}")
+    print("\n".join(deployment_text_lines(payload)))
 
 
 def _cmd_check(args: argparse.Namespace) -> int:
     cfg = _config_from_args(args)
-    discovered: str | None = None
-    sock = None
     try:
-        bound_port: int | None = None
-        if getattr(args, "discover", False) and rs_server_url() and explicit_mount_hint(
-            cfg, os.environ, bound_port=cfg.port
-        ) is None:
-            sock = bind_loopback(cfg.host or "127.0.0.1", cfg.port or 0)
-            bound_port = int(sock.getsockname()[1])
-            discovered = discover_rserver_url(binary=cfg.rserver_url_bin, port=bound_port)
-        resolved = resolve_deployment(cfg, bound_port=bound_port, discovered_raw=discovered)
+        result = resolve_check(
+            host=cfg.host or "127.0.0.1",
+            port=cfg.port or 0,
+            discover=bool(getattr(args, "discover", False)),
+            discovery_available=bool(rs_server_url()),
+            explicit_mount=lambda _port: (
+                explicit_mount_hint(cfg, os.environ, bound_port=cfg.port) is not None
+            ),
+            bind=bind_loopback,
+            discover_url=lambda port: discover_rserver_url(binary=cfg.rserver_url_bin, port=port),
+            resolve=lambda bound_port, discovered: resolve_deployment(
+                cfg, bound_port=bound_port, discovered_raw=discovered
+            ),
+        )
     except WorkbenchError as exc:
         print(redact_text(str(exc)), file=sys.stderr)
         return 1
-    finally:
-        if sock is not None:
-            sock.close()
-    _emit(resolved, fmt=args.format)
+    _emit(result.value, fmt=args.format)
     return 0
 
 
@@ -96,71 +97,8 @@ def _cmd_run(args: argparse.Namespace) -> int:
     return 0
 
 
-def _normalize_cookie_path(path: str) -> str:
-    if not path or path == "/":
-        return "/"
-    return path.rstrip("/") or "/"
-
-
-def _parse_set_cookie_path(header: str) -> str | None:
-    """Return the RFC6265 Path attribute from a Set-Cookie header.
-
-    Missing Path attributes yield ``None`` (fail closed for mount checks).
-    Quoted values are unquoted; comparison callers normalize trailing slashes.
-    """
-    parts = header.split(";")
-    for part in parts[1:]:
-        name, sep, value = part.strip().partition("=")
-        if not sep or name.lower() != "path":
-            continue
-        path = value.strip()
-        if len(path) >= 2 and path[0] == path[-1] and path[0] in "\"'":
-            path = path[1:-1]
-        return path
-    return None
-
-
-def _cookie_path_matches_mount(header: str, mount: str) -> bool:
-    expected = _normalize_cookie_path(mount or "/")
-    path = _parse_set_cookie_path(header)
-    if path is None:
-        return False
-    return _normalize_cookie_path(path) == expected
-
-
 async def _probe_app(app: Any, mount: str) -> dict[str, object]:
-    import re
-
-    import httpx
-
-    target = f"{mount}/" if mount else "/"
-    async with httpx.AsyncClient(
-        transport=httpx.ASGITransport(app=app),
-        base_url="https://doctor.invalid",
-        follow_redirects=False,
-    ) as client:
-        response = await client.get(target)
-    html = response.text if "text/html" in response.headers.get("content-type", "") else ""
-    unmounted: list[str] = []
-    if mount and html:
-        pattern = re.compile(r'(?:href|src|action|hx-(?:get|post|put|patch|delete))="(/[^"]*)"')
-        for match in pattern.finditer(html):
-            value = match.group(1)
-            if value != mount and not value.startswith(mount + "/"):
-                unmounted.append(value)
-    cookie_headers = response.headers.get_list("set-cookie")
-    # Empty Set-Cookie is fine (many probes never touch the session). Fail only
-    # when a cookie is present with a Path that does not match the mount (#160
-    # still covers prefix-sibling Path matching via _cookie_path_matches_mount).
-    cookie_paths_ok = all(_cookie_path_matches_mount(header, mount) for header in cookie_headers)
-    return {
-        "target": target,
-        "status": response.status_code,
-        "reachable": response.status_code < 500,
-        "unmounted_generated_urls": sorted(set(unmounted)),
-        "generated_urls_mounted": not unmounted,
-        "cookie_paths_mounted": cookie_paths_ok,
-    }
+    return await probe_asgi_app(app, mount)
 
 
 def _cmd_doctor(args: argparse.Namespace) -> int:
@@ -222,20 +160,7 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
         print(json.dumps(report, indent=2, sort_keys=True))
     else:
         print(json.dumps(report, sort_keys=True))
-    if "error" in report:
-        return 1
-    checks = cast(dict[str, object], report["checks"])
-    for value in checks.values():
-        if value is False:
-            return 1
-        if isinstance(value, dict):
-            probe = cast(dict[str, object], value)
-            if any(
-                probe.get(name) is False
-                for name in ("reachable", "generated_urls_mounted", "cookie_paths_mounted")
-            ):
-                return 1
-    return 0
+    return 0 if report_checks_ok(report) else 1
 
 
 def main(argv: list[str] | None = None) -> int:

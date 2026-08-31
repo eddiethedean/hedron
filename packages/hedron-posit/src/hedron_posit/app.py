@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import ipaddress
-import os
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, replace
 from typing import Any
@@ -25,11 +24,11 @@ from hedron_posit.config import (
     WorkbenchConfig,
     WorkbenchMode,
     WorkbenchTopology,
+    resolve_posit_config,
     resolve_posit_deployment,
 )
 from hedron_posit.connect import native_connect_base_from_request
 from hedron_posit.cookies import ConnectCookieMode, CookieRegistry, CookieSpec
-from hedron_posit.detect import truthy
 from hedron_posit.middleware import WorkbenchPathMiddleware
 from hedron_posit.products import PositProduct
 from hedron_posit.redact import redact_record, redact_text
@@ -95,23 +94,13 @@ class HedronPosit(Hedron):
                 else workbench_config.topology
             ),
         )
-        connect_config = posit.connect if posit is not None else ConnectConfig()
-        if posit is None:
-            cookie_mode = os.environ.get("HEDRON_POSIT_CONNECT_COOKIE_MODE")
-            if cookie_mode:
-                connect_config = replace(
-                    connect_config,
-                    cookie_mode=ConnectCookieMode.parse(cookie_mode),
-                )
-        posit_config = PositConfig(
-            product=posit.product if posit is not None else PositProduct.AUTO,
-            workbench=workbench_config,
-            connect=connect_config,
-            hands_off=(
-                bool(posit.hands_off)
-                if posit is not None
-                else truthy(os.environ.get("HEDRON_POSIT_HANDS_OFF"))
-            ),
+        posit_config = resolve_posit_config(
+            PositConfig(
+                product=posit.product if posit is not None else PositProduct.AUTO,
+                workbench=workbench_config,
+                connect=posit.connect if posit is not None else ConnectConfig(),
+                hands_off=bool(posit.hands_off) if posit is not None else False,
+            )
         )
         self._posit_config = posit_config
         self._cookie_registry: CookieRegistry | None = None

@@ -7,6 +7,7 @@ from urllib.parse import quote
 
 import pytest
 
+from fastapi_workbench.redact import redact_record
 from hedron.mount import normalize_mount_path, prefix_local_path
 from hedron_core.diagnostics import HedronError
 from hedron_posit.config import WorkbenchConfig
@@ -77,13 +78,47 @@ def test_redaction_covers_license_and_query() -> None:
     assert "***" in str(redacted["query_string"])
 
 
-def _run_asgi(middleware: WorkbenchPathMiddleware, scope: dict[str, object]) -> list[dict]:
-    messages: list[dict] = []
+@pytest.mark.parametrize(
+    ("text", "secret"),
+    [
+        ("Authorization: Bearer secret-value", "secret-value"),
+        ("proxy-authorization : Basic short", "short"),
+        ("Cookie: hedron_csrf=csrf-value; session=s", "csrf-value"),
+        ("Set-Cookie: session=short; Path=/; HttpOnly", "short"),
+        ("RStudio-Connect-Credentials: connect-secret", "connect-secret"),
+        ("RStudio-Connect-User-Session: session-secret", "session-secret"),
+        ("X-CSRF-Token: csrf-header", "csrf-header"),
+        ("authorization = malformed-secret", "malformed-secret"),
+    ],
+)
+def test_redaction_covers_sensitive_http_header_syntax(text: str, secret: str) -> None:
+    output = redact_text(text)
+    assert secret not in output
+    assert "***" in output
 
-    async def receive() -> dict:
+
+def test_redaction_recurses_into_generic_string_fields() -> None:
+    record = redact_record(
+        {
+            "message": "Authorization: Bearer nested-secret",
+            "details": ["Cookie: session=x", {"reason": "token=hidden"}],
+        }
+    )
+    rendered = str(record)
+    assert "nested-secret" not in rendered
+    assert "session=x" not in rendered
+    assert "hidden" not in rendered
+
+
+def _run_asgi(
+    middleware: WorkbenchPathMiddleware, scope: dict[str, object]
+) -> list[dict[str, object]]:
+    messages: list[dict[str, object]] = []
+
+    async def receive() -> dict[str, object]:
         return {"type": "http.request", "body": b"", "more_body": False}
 
-    async def send(message: dict) -> None:
+    async def send(message: dict[str, object]) -> None:
         messages.append(message)
 
     asyncio.run(middleware(scope, receive, send))  # type: ignore[arg-type]

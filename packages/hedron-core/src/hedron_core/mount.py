@@ -55,6 +55,10 @@ def normalize_mount_path(value: str | None) -> str:
         return ""
     if not text.startswith("/"):
         text = "/" + text
+    # Response headers and cookie attributes are Latin-1/ASCII protocol fields.
+    # Match fastapi-workbench and reject raw Unicode rather than crashing later.
+    if any(ord(ch) > 127 for ch in text):
+        return ""
     normalized = text.rstrip("/") or ""
     if "//" in normalized:
         return ""

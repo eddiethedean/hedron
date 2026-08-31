@@ -49,7 +49,6 @@ class _RootPathInjector:
         if scope.get("type") in {"http", "websocket"}:
             scope = dict(scope)
             scope["root_path"] = self.mount
-            scope["client"] = ("127.0.0.1", 12345)
         await self.app(scope, receive, send)
 
 
@@ -572,8 +571,10 @@ def _connect_request(
     )
 
 
-def test_connect_external_base_requires_matching_loopback_proxy_evidence() -> None:
-    base = connect_external_base_from_request(_connect_request())
+def test_connect_external_base_requires_protected_runtime_evidence() -> None:
+    base = connect_external_base_from_request(
+        _connect_request(peer="203.0.113.8"), environ={"POSIT_PRODUCT": "CONNECT"}
+    )
     assert base is not None
     assert base.origin == "https://connect.example"
     assert base.mount == "/content/abc123"
@@ -583,7 +584,7 @@ def test_connect_external_base_requires_matching_loopback_proxy_evidence() -> No
 @pytest.mark.parametrize(
     ("candidate_request", "message"),
     [
-        (_connect_request(peer="10.0.0.8"), "trusted proxy peer"),
+        (_connect_request(peer="10.0.0.8"), "protected runtime evidence"),
         (_connect_request(root_path="/content/other"), "does not match"),
         (_connect_request(base="https://user:pass@connect.example/content/abc123"), "credentials"),
         (_connect_request(base="https://evil.example/content/%2e%2e/admin"), "unsafe mount"),
@@ -597,18 +598,22 @@ def test_connect_external_base_rejects_spoofed_or_unsafe_headers(
 ) -> None:
     monkeypatch.delenv("POSIT_PRODUCT", raising=False)
     with pytest.raises(ValueError, match=message):
-        connect_external_base_from_request(candidate_request)
+        connect_external_base_from_request(candidate_request, trusted_peers=("127.0.0.1",))
 
 
-def test_connect_runtime_marker_does_not_allow_untrusted_original_client(
+def test_connect_runtime_marker_accepts_forwarded_original_client(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setenv("POSIT_PRODUCT", "CONNECT")
-    with pytest.raises(ValueError, match="trusted proxy peer"):
-        connect_external_base_from_request(_connect_request(peer="203.0.113.8"))
+    base = connect_external_base_from_request(_connect_request(peer="203.0.113.8"))
+    assert base is not None
+    assert base.origin == "https://connect.example"
 
 
-def test_external_url_uses_connect_base_and_encodes_invite_token() -> None:
+def test_external_url_uses_connect_base_and_encodes_invite_token(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("POSIT_PRODUCT", "CONNECT")
     app = HedronPosit(
         title="connect-url",
         security="standard",
@@ -709,7 +714,9 @@ def test_explicit_activation_of_constructed_inactive_facade_fails_loudly() -> No
         workbenchify(app, mode="on")
 
 
-def test_external_url_fails_closed_without_trusted_deployment_base() -> None:
+def test_external_url_fails_closed_without_trusted_deployment_base(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     app = HedronPosit(
         title="no-public-base",
         security="standard",
@@ -718,6 +725,7 @@ def test_external_url_fails_closed_without_trusted_deployment_base() -> None:
     )
     with pytest.raises(ValueError, match="no trusted public base URL"):
         app.external_url("/invite")
+    monkeypatch.setenv("POSIT_PRODUCT", "CONNECT")
     with pytest.raises(ValueError, match="local absolute path"):
         app.external_url("https://evil.example", request=_connect_request())
     with pytest.raises(ValueError, match="query/fragment"):
