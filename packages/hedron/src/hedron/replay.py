@@ -80,16 +80,35 @@ class _Entry:
 class MemoryReplayStore:
     """Process-local replay store for tests and single-worker deployments."""
 
-    def __init__(self, *, max_keys: int = 10_000) -> None:
+    def __init__(
+        self,
+        *,
+        max_keys: int = 10_000,
+        max_entry_bytes: int = 4 * 1024 * 1024,
+        max_total_bytes: int = 64 * 1024 * 1024,
+    ) -> None:
+        if isinstance(max_keys, bool) or max_keys < 1:
+            raise ValueError("max_keys must be positive")
+        if isinstance(max_entry_bytes, bool) or max_entry_bytes < 1:
+            raise ValueError("max_entry_bytes must be positive")
+        if isinstance(max_total_bytes, bool) or max_total_bytes < 1:
+            raise ValueError("max_total_bytes must be positive")
+        if max_entry_bytes > max_total_bytes:
+            raise ValueError("max_entry_bytes must be <= max_total_bytes")
         self._lock = threading.Lock()
         self._entries: dict[tuple[str, str], _Entry] = {}
         self._max_keys = max_keys
+        self._max_entry_bytes = max_entry_bytes
+        self._max_total_bytes = max_total_bytes
+        self._total_body_bytes = 0
 
     def _purge(self, now: float) -> None:
         # Expire completed and abandoned in-flight claims past retention.
         expired = [k for k, v in self._entries.items() if v.expires_at <= now]
         for key in expired:
-            self._entries.pop(key, None)
+            entry = self._entries.pop(key, None)
+            if entry is not None and entry.body is not None:
+                self._total_body_bytes -= len(entry.body)
 
     def claim(
         self,
@@ -143,9 +162,18 @@ class MemoryReplayStore:
             entry = self._entries.get(slot)
             if entry is None or entry.fingerprint != fingerprint:
                 return False
+            if len(body) > self._max_entry_bytes or (
+                self._total_body_bytes + len(body) > self._max_total_bytes
+            ):
+                # Do not retain an in-flight claim that cannot be replayed;
+                # callers still receive their original response, while a
+                # retry can execute normally instead of seeing IN_FLIGHT.
+                self._entries.pop(slot, None)
+                return False
             entry.in_flight = False
             entry.status = status
             entry.body = body
+            self._total_body_bytes += len(body)
             entry.media_type = media_type or "text/html"
             entry.headers = headers
             return True
