@@ -7,6 +7,7 @@ import tempfile
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any, cast
 
 from hedron.builtins.files import validate_upload_filename, validate_upload_size
 
@@ -85,9 +86,19 @@ async def read_upload_capped(
     """
     import inspect
 
-    if isinstance(maximum_size, bool) or not isinstance(maximum_size, int) or maximum_size < 0:
+    raw_maximum_size = cast(Any, maximum_size)
+    if (
+        isinstance(raw_maximum_size, bool)
+        or not isinstance(raw_maximum_size, int)
+        or raw_maximum_size < 0
+    ):
         raise ValueError("Upload size budget must be non-negative")
-    if isinstance(chunk_size, bool) or not isinstance(chunk_size, int) or chunk_size <= 0:
+    raw_chunk_size = cast(Any, chunk_size)
+    if (
+        isinstance(raw_chunk_size, bool)
+        or not isinstance(raw_chunk_size, int)
+        or raw_chunk_size <= 0
+    ):
         raise ValueError("Upload chunk size must be a positive integer")
     read = getattr(file, "read", None)
     if not callable(read):

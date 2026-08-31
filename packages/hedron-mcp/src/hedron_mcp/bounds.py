@@ -67,9 +67,9 @@ class McpBounds:
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, int) or value < 0:
                 raise ValueError(f"{name} must be a non-negative integer")
-        if (
-            isinstance(self.max_rate_principals, bool)
-            or not isinstance(self.max_rate_principals, int)
+        raw_max_rate_principals = cast(Any, self.max_rate_principals)
+        if isinstance(raw_max_rate_principals, bool) or not isinstance(
+            raw_max_rate_principals, int
         ):
             raise ValueError("max_rate_principals must be a positive integer")
         if self.max_rate_principals < 1:

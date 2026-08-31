@@ -79,11 +79,17 @@ def test_media_session_rejects_duplicate_sequence_and_wrong_media_type() -> None
 
 
 def test_media_session_rejects_reversed_timestamp() -> None:
-    session = MediaSession(session_id="s6", kind="audio", origin="https://app.test")
+    session = MediaSession(
+        session_id="s6",
+        kind="audio",
+        origin="https://app.test",
+        budget=MediaSessionBudget(cadence_ms=0),
+    )
     session.grant()
     session.accept_chunk(MediaChunk(1, "audio/webm", b"a", timestamp_ms=100))
+    session.accept_chunk(MediaChunk(2, "audio/webm", b"b", timestamp_ms=200))
     with pytest.raises(ValueError, match="precedes"):
-        session.accept_chunk(MediaChunk(2, "audio/webm", b"b", timestamp_ms=99))
+        session.accept_chunk(MediaChunk(3, "audio/webm", b"c", timestamp_ms=150))
 
 
 @pytest.mark.parametrize(
