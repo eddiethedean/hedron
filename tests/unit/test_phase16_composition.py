@@ -32,10 +32,19 @@ def test_choice_cards_and_tree() -> None:
     )
     assert 'type="radio"' in html
     required = assert_renders(
-        ChoiceCards("required", [{"value": "a", "label": "A"}], multiple=True, required=True),
+        ChoiceCards("required", [{"value": "a", "label": "A"}], required=True),
         contains='data-hedron-required="true"',
     )
     assert 'aria-required="true"' in required
+    assert 'type="radio"' in required
+    assert 'required="true"' in required
+    with pytest.raises(ValueError, match="cannot enforce required multiple"):
+        ChoiceCards(
+            "required-many",
+            [{"value": "a", "label": "A"}],
+            multiple=True,
+            required=True,
+        )
     tree_html = assert_renders(
         TreeView(
             [

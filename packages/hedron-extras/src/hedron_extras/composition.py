@@ -47,6 +47,11 @@ class ChoiceCards(Component[ChoiceCardsProps]):
         required: bool = False,
         **kwargs: Any,
     ) -> None:
+        if multiple and required:
+            raise ValueError(
+                "ChoiceCards cannot enforce required multiple selections without JavaScript; "
+                "validate the collection in the form model instead"
+            )
         parsed = [
             opt if isinstance(opt, ChoiceOption) else ChoiceOption.model_validate(opt)
             for opt in options
