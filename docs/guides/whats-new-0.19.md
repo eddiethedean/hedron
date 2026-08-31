@@ -9,7 +9,7 @@
 
 **Published as `v0.19.0`** (2026-08-07). Current published train is **1.0.x** (`v1.0.0`).
 Historical installs for this phase used a 0.19 upper-bound pin; the current pin is
-`hedron>=1.0.0,<1.1`.
+`hedron>=1.0.1,<1.1`.
 
 Phase 0.19 delivers accessibility engineering and inclusive authoring without automatic
 WCAG / legal / VPAT claims (D-050).

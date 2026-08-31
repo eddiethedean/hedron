@@ -7,11 +7,11 @@ there is **no multi-year LTS**. Best-effort triage for the immediately
 previous minor (`0.67.x`) continues through approximately **2027-02-27** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
-The current published train is **`1.0.x`**, pinned as `>=1.0.0,<1.1`; PyPI publishes `v1.0.0`.
+The current published train is **`1.0.x`**, pinned as `>=1.0.1,<1.1`; PyPI publishes `v1.0.1`.
 
 | Version | Supported |
 |---|---|
-| `1.0.x` | Yes (current published train — pin `>=1.0.0,<1.1`; published `v1.0.0`) |
+| `1.0.x` | Yes (current published train — pin `>=1.0.1,<1.1`; published `v1.0.1`) |
 | `0.67.x` | Best-effort security triage through approximately 2027-02-27; upgrade to `1.0.x` |
 
 ## Reporting a vulnerability

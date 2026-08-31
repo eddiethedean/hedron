@@ -11,7 +11,7 @@ Hedron.
 Beginner `LineChart` / `BarChart` / `AreaChart` / `ScatterChart`, Matplotlib static
 SVG/PNG, Plotly interactive JSON, and Altair/Vega-Lite specifications.
 
-**Package maturity:** Stable · **Package version:** `1.0.0` · requires
+**Package maturity:** Stable · **Package version:** `1.0.1` · requires
 `hedron-core>=1.0.0,<2.0`
 
 Interactive Plotly/Vega **full browser runtimes** remain **experimental**: Hedron
@@ -36,7 +36,7 @@ and the
 
 ```bash
 # flagship extra:
-pip install "hedron[charts]>=1.0.0,<1.1"
+pip install "hedron[charts]>=1.0.1,<1.1"
 # independent satellite:
 pip install "hedron-charts>=1.0.0,<2.0"
 # Add a backend when needed:

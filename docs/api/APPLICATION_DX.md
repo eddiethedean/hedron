@@ -3,13 +3,13 @@
 **Phase 0.53 application DX contract:** D-091 / D-092 /
 [RFC-0080](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0080-APPLICATION-DX-CONTRACTS.md) /
 [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521).
-**Stage 1 Implemented** (verified in published `v1.0.0`). Stage 1
+**Stage 1 Implemented** (verified in published `v1.0.1`). Stage 1
 extends shipped 0.52 seams; it does **not** replace `inject_page_assets`,
 `AssetRef`, `Diagnostic`, `Suppression`, `RouteMeta`, `routes_json`,
 `JobBackend`, `JobState`, `InteractionCatalog`, `Theme`,
 `REQUIRED_A11Y_TOKENS`, or `hedron.__all__` without negotiation.
 
-Public Stage 1 surface (Verified gates; introduced in published `v0.53.0`; current train `v1.0.0`):
+Public Stage 1 surface (Verified gates; introduced in published `v0.53.0`; current train `v1.0.1`):
 
 | Symbol | Role | Gate |
 |---|---|---|

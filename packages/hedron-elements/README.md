@@ -9,7 +9,7 @@ Framework-neutral Web Component ABI and HTMX-safe bridge for Hedron. Includes th
 D-064 / D-065).
 
 ```bash
-pip install "hedron[elements]>=1.0.0,<1.1"
+pip install "hedron[elements]>=1.0.1,<1.1"
 # or
 pip install "hedron-elements>=1.0.0,<2.0"
 ```

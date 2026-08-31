@@ -20,7 +20,7 @@ pip install "hedron-jinja>=1.0.0,<2.0"
 # or
 uv add "hedron-jinja>=1.0.0,<2.0"
 # via flagship:
-pip install "hedron[jinja]>=1.0.0,<1.1"
+pip install "hedron[jinja]>=1.0.1,<1.1"
 ```
 
 Requires Python 3.10–3.14, `hedron-core`, and Jinja2.

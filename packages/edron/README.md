@@ -37,7 +37,7 @@ light/dark modes without requiring application CSS.
 
 <p align="center"><strong><a href="https://hedron.readthedocs.io/en/latest/examples/edron-showcase/">Explore the interactive showcase →</a> · <a href="https://github.com/eddiethedean/hedron/blob/v1.0/examples/edron-showcase/app.py">View the Edron-only source</a></strong></p>
 
-> **Package maturity:** Stable · **Version documented:** `1.0.0`
+> **Package maturity:** Stable · **Version documented:** `1.0.1`
 >
 > Every command and example below targets the Edron 1.0 API. Supported Python versions are
 > 3.10–3.14; applications should retain the `<1.1` upper bound shown below.
@@ -47,7 +47,7 @@ light/dark modes without requiring application CSS.
 Create a project with [`uv`](https://docs.astral.sh/uv/):
 
 ```bash
-uvx --from "edron>=1.0.0,<1.1" edron new my-app --template dashboard
+uvx --from "edron>=1.0.1,<1.1" edron new my-app --template dashboard
 cd my-app
 uv sync
 uv run edron run app:app --reload
@@ -59,8 +59,8 @@ responsive application shell, built-in theme, page routes, and production-orient
 Adding Edron to an existing project is just as direct:
 
 ```bash
-uv add "edron>=1.0.0,<1.1"
-# or: python -m pip install "edron>=1.0.0,<1.1"
+uv add "edron>=1.0.1,<1.1"
+# or: python -m pip install "edron>=1.0.1,<1.1"
 ```
 
 ## Your first page
@@ -188,7 +188,7 @@ Edron includes Hedron, data, chart, map, Markdown, sanitization, and Uvicorn fou
 extras install only the third-party libraries your application actually uses:
 
 ```bash
-uv add "edron[pandas,plotly,sqlalchemy]>=1.0.0,<1.1"
+uv add "edron[pandas,plotly,sqlalchemy]>=1.0.1,<1.1"
 ```
 
 Available extras are `pandas`, `polars`, `pyarrow`, `plotly`, `altair`, `matplotlib`, and

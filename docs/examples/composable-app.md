@@ -437,7 +437,7 @@ This alternate entry point reuses the same imported component modules:
     version = "0.1.0"
     requires-python = ">=3.10"
     dependencies = [
-      "hedron>=1.0.0,<1.1",
+      "hedron>=1.0.1,<1.1",
       "uvicorn[standard]>=0.32,<1.0",
     ]
 

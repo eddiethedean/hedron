@@ -37,7 +37,7 @@ rerun loop.
 
 <p align="center"><strong><a href="https://hedron.readthedocs.io/en/latest/examples/showcase/">Explore the complete showcase →</a> · <a href="https://github.com/eddiethedean/hedron/blob/v1.0/examples/showcase/app.py">View the reproducible source</a></strong></p>
 
-> **Package maturity:** Stable · **Version documented:** `1.0.0`
+> **Package maturity:** Stable · **Version documented:** `1.0.1`
 >
 > Every command and example below targets the Hedron 1.0 API. Supported Python versions are
 > 3.10–3.14; applications should retain the `<1.1` upper bound shown below.
@@ -47,7 +47,7 @@ rerun loop.
 The fastest path uses [`uv`](https://docs.astral.sh/uv/):
 
 ```bash
-uvx --from "hedron>=1.0.0,<1.1" hedron new my-hedron-app
+uvx --from "hedron>=1.0.1,<1.1" hedron new my-hedron-app
 cd my-hedron-app
 uv sync
 uv run hedron run app:app --reload
@@ -60,8 +60,8 @@ HTTP fallbacks.
 Adding Hedron to an existing project is just as direct:
 
 ```bash
-uv add "hedron>=1.0.0,<1.1" "uvicorn[standard]"
-# or: python -m pip install "hedron>=1.0.0,<1.1" "uvicorn[standard]"
+uv add "hedron>=1.0.1,<1.1" "uvicorn[standard]"
+# or: python -m pip install "hedron>=1.0.1,<1.1" "uvicorn[standard]"
 ```
 
 ## The core model
@@ -211,7 +211,7 @@ The stable 1.0 family is intentionally small:
 Install coordinated capabilities through extras:
 
 ```bash
-uv add "hedron[data,charts,maps]>=1.0.0,<1.1"
+uv add "hedron[data,charts,maps]>=1.0.1,<1.1"
 ```
 
 Other extras activate optional or Beta integrations such as `dev`, `jinja`, `markdown`, `auth`,

@@ -4,8 +4,8 @@ status: verified
 
 # Edron packaging contract
 
-**Status:** Published `1.0.0` Stable release<br>
-**Target:** Edron `1.0.x`; Hedron `>=1.0.0,<1.1`<br>
+**Status:** Published `1.0.1` Stable release<br>
+**Target:** Edron `1.0.x`; Hedron `>=1.0.1,<1.1`<br>
 **Historical 0.1 target metadata:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
 **Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **Public API:** [Edron 0.1 public API](EDRON.md)<br>
@@ -28,7 +28,7 @@ plugin, component, asset, and runtime authorities for their features.
 The published beginner path is one ordinary command:
 
 ```console
-pip install "edron>=1.0.0,<1.1"
+pip install "edron>=1.0.1,<1.1"
 ```
 
 That command must be sufficient to import Edron, run the development server, and use every
@@ -43,7 +43,7 @@ same Plotly adapter:
 
 ```console
 pip install "plotly>=5.18,<7"
-pip install "edron[plotly]>=1.0.0,<1.1"
+pip install "edron[plotly]>=1.0.1,<1.1"
 ```
 
 The second command is only an installation shortcut. Edron does not require, record, or inspect
@@ -329,9 +329,9 @@ EDR-CAP-0001: Plotly support is not installed
 Capability: chart.plotly
 Required: plotly>=5.18,<7
 Direct:   pip install "plotly>=5.18,<7"
-Shortcut: pip install "edron[plotly]>=1.0.0,<1.1"
+Shortcut: pip install "edron[plotly]>=1.0.1,<1.1"
 uv:       uv add "plotly>=5.18,<7"
-Shortcut: uv add "edron[plotly]>=1.0.0,<1.1"
+Shortcut: uv add "edron[plotly]>=1.0.1,<1.1"
 Restart the Edron process after changing the environment.
 ```
 

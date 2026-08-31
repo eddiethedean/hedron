@@ -4,7 +4,7 @@ Build reviewable model demos, schedule inference over durable jobs, collect gove
 feedback, and compose permissioned workflows (introduced in **0.18**; living train **1.0.x**).
 
 Capability readiness is **Supported** (fail-closed); API compatibility remains **`beta`**.
-Pin `hedron>=1.0.0,<1.1`.
+Pin `hedron>=1.0.1,<1.1`.
 
 API contract: [Inference](../api/INFERENCE.md)
 
@@ -117,7 +117,7 @@ assert result.status in {"completed", "partial", "failed", "cancelled"}
 ## Gradio (optional Beta client interop)
 
 ```bash
-pip install "hedron[gradio]>=1.0.0,<1.1"
+pip install "hedron[gradio]>=1.0.1,<1.1"
 ```
 
 Keep `GradioClientAdapter(enabled=False)` until you intentionally open discovery.

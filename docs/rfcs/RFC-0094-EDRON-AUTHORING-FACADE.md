@@ -83,7 +83,7 @@ Installing either the dependency directly or the matching Edron extra activates 
 
 ```bash
 pip install edron "plotly>=5.18,<7"
-pip install "edron[plotly]>=1.0.0,<1.1"
+pip install "edron[plotly]>=1.0.1,<1.1"
 ```
 
 The extra is only an installation shortcut. Optional methods remain importable and fail at the
@@ -510,7 +510,7 @@ If Plotly is absent, the call raises a structured `ed.MissingCapabilityError` co
 - capability and adapter name;
 - missing distribution and compatible version range;
 - `pip install "plotly>=5.18,<7"` as the direct command;
-- `pip install "edron[plotly]>=1.0.0,<1.1"` as the equivalent shortcut;
+- `pip install "edron[plotly]>=1.0.1,<1.1"` as the equivalent shortcut;
 - the Edron call site; and
 - an offline documentation reference.
 

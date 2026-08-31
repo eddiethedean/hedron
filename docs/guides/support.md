@@ -29,7 +29,7 @@ require `hedron-charts>=1.0.0,<2.0`. The sample kit requires
 `hedron-sample-kit>=0.2.3,<0.3` — see [Compatibility](../COMPATIBILITY.md).
 
 **Support window:** security fixes target the current published train (`1.0.x`). The current
-pin is `hedron>=1.0.0,<1.1`. Previous minors receive best-effort triage as documented in
+pin is `hedron>=1.0.1,<1.1`. Previous minors receive best-effort triage as documented in
 [SECURITY.md](../SECURITY.md) (no multi-year LTS). Version and pin SoT:
 [Current release and support](current-release.md). Public-index notes:
 [Installation](../getting-started/installation.md). Community GitHub support only;

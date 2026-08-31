@@ -170,14 +170,19 @@ def _toml(path: Path) -> dict[str, object]:
 
 
 def _published_version() -> str:
-    """Return the immutable published version represented by the 1.0 packet."""
+    """Return the immutable published version represented by the 1.0 packet.
+
+    The 1.0 acceptance packet is a retained historical record. It must continue
+    validating its original v1.0.0 artifacts after the repository advances to a
+    later maintenance release on the same 1.0 train.
+    """
     try:
-        release = _toml(ROOT / "docs" / "release.toml").get("release", {})
+        target = _toml(GATE_PATH).get("target", "v1.0.0")
     except (OSError, ValueError):
         return "1.0.0"
-    if not isinstance(release, dict):
+    if not isinstance(target, str):
         return "1.0.0"
-    return str(release.get("published_version", "1.0.0"))
+    return target.removeprefix("v")
 
 
 def _expected_coordinated_artifacts() -> set[str]:

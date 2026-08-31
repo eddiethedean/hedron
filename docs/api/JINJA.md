@@ -36,9 +36,9 @@ every Python component, or silently relax CSP/CSRF/authorization policy.
 ## Install
 
 ```bash
-pip install "hedron[jinja]>=1.0.0,<1.1"
+pip install "hedron[jinja]>=1.0.1,<1.1"
 # or
-pip install "hedron-jinja>=1.0.0,<1.1"
+pip install "hedron-jinja>=1.0.1,<1.1"
 ```
 
 Neither `hedron-core` nor a default `hedron` installation depends on Jinja.

@@ -82,7 +82,7 @@ The migrator writes a new output tree and leaves dynamic or ambiguous cases for 
 Install the published release from PyPI:
 
 ```bash
-python -m pip install "hedron>=1.0.0,<1.1" "uvicorn[standard]"
+python -m pip install "hedron>=1.0.1,<1.1" "uvicorn[standard]"
 ```
 
 Check [Current release and support](current-release.md) before changing an application pin.

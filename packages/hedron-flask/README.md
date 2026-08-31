@@ -30,7 +30,7 @@ Requires Python 3.10–3.14, `hedron-core`, and Flask 3.x.
 Scaffold a new Flask app:
 
 ```bash
-uvx --from "hedron>=1.0.0,<1.1" hedron new --flask my-flask-app
+uvx --from "hedron>=1.0.1,<1.1" hedron new --flask my-flask-app
 ```
 
 ## Quick start

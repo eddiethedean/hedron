@@ -31,7 +31,7 @@ python -m hedron check
 **Other fixes:**
 
 1. Re-open the terminal after install (PATH updates often need a new shell).
-2. Prefer `uv tool install "hedron>=1.0.0,<1.1"` (or `pipx install "hedron>=1.0.0,<1.1"`) so the
+2. Prefer `uv tool install "hedron>=1.0.1,<1.1"` (or `pipx install "hedron>=1.0.1,<1.1"`) so the
    tool is on PATH, then run `hedron new …`.
 3. Inside a scaffolded project, use the project environment: `uv run hedron check` (or
    activate `.venv` and run `hedron` / `python -m hedron`).
@@ -59,7 +59,7 @@ but are not CI-proven.
 
 **Fix:** Create a **clean virtual environment** for the Hedron app (do not reuse a shared
 env that already pins an older FastAPI). Install only Hedron + uvicorn first
-(`hedron>=1.0.0,<1.1`), then add other dependencies. For first apps, prefer staying
+(`hedron>=1.0.1,<1.1`), then add other dependencies. For first apps, prefer staying
 inside the Supported band. See [Compatibility](../COMPATIBILITY.md).
 
 ## Wrong interpreter or ModuleNotFoundError for hedron
@@ -95,8 +95,8 @@ that port in the browser.
 **Symptom:** Features in the docs are missing from your install, or verify text does not match.
 
 **Fix:** Check `python -c "import hedron; print(hedron.__version__)"`.
-Expect **`1.0.0`** in a PyPI-installed application and **`1.0.0`** from the repository checkout.
-Upgrade an application with `pip install -U "hedron>=1.0.0,<1.1"`; use `uv sync` only
+Expect **`1.0.1`** in a PyPI-installed application and **`1.0.1`** from the repository checkout.
+Upgrade an application with `pip install -U "hedron>=1.0.1,<1.1"`; use `uv sync` only
 inside the repository.
 See [What's ready](whats-ready.md). If docs describe a feature missing from your
 install, either upgrade toward the pin that matches this documentation or switch the
@@ -235,8 +235,8 @@ with auth in rare cases; keep production off.
 
 **Cause:** An old CLI wrote `hedron>=0.4.0` (or another pre-0.11 floor).
 
-**Fix:** Edit `pyproject.toml` to `hedron>=1.0.0,<1.1` and `uvicorn[standard]>=0.30`, then
-reinstall. Current `hedron new` scaffolds `hedron>=1.0.0,<1.1` automatically.
+**Fix:** Edit `pyproject.toml` to `hedron>=1.0.1,<1.1` and `uvicorn[standard]>=0.30`, then
+reinstall. Current `hedron new` scaffolds `hedron>=1.0.1,<1.1` automatically.
 
 ## SSE / WebSocket / preload not working
 
@@ -261,14 +261,14 @@ setting production mode.
 
 **Cause:** `Auto` is core (`from hedron import Auto`). `DataTable` / `DataEditor` need the
 data extra. First-party charts require `hedron[charts]` on the same pin as the rest of
-Hedron (`>=1.0.0,<1.1`).
+Hedron (`>=1.0.1,<1.1`).
 
 **Fix:**
 
 ```bash
 # Auto needs no extra
-pip install "hedron[data]>=1.0.0,<1.1"      # DataTable, DataEditor
-pip install "hedron[charts]>=1.0.0,<1.1"   # chart components
+pip install "hedron[data]>=1.0.1,<1.1"      # DataTable, DataEditor
+pip install "hedron[charts]>=1.0.1,<1.1"   # chart components
 ```
 
 The old `hedron-charts 0.1.x` line is incompatible with current Hedron. See

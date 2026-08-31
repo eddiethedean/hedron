@@ -2,7 +2,7 @@
 
 This guide starts with the current 1.0 migration boundary, then retains historical notes for
 older release trains. The immutable migration baseline is `v0.67.0`; the coordinated checkout
-is `1.0.0` on the `v1.0` branch. Read [Current release and support](current-release.md) for the
+is `1.0.1` on the `v1.0` branch. Read [Current release and support](current-release.md) for the
 published PyPI status before changing an application pin.
 
 ## 0.67 → 1.0
@@ -50,10 +50,10 @@ should use [Build your first app](../getting-started/quickstart.md).
 
 ## 0.58 → 0.62
 
-Checkout tip `v1.0.0` uses `uv sync`. See [What's new in 0.62](whats-new-0.62.md),
+Checkout tip `v1.0.1` uses `uv sync`. See [What's new in 0.62](whats-new-0.62.md),
 [Hedron API](../api/HEDRON.md), and [Presentation](../api/PRESENTATION.md).
 
-1. Upgrade the application pin to `hedron>=1.0.0,<1.1`.
+1. Upgrade the application pin to `hedron>=1.0.1,<1.1`.
 2. Keep existing viewport responsive maps unchanged; opt into component-width behavior with
    `Container(query="inline-size")` and add `name=` only for nested query targeting.
 3. Use `StyleScope(variant=...)` for explicit theme variants and retain the default theme marker
@@ -64,11 +64,11 @@ Checkout tip `v1.0.0` uses `uv sync`. See [What's new in 0.62](whats-new-0.62.md
 
 ## 0.57 → 0.58
 
-Checkout tip `v1.0.0` uses `uv sync`. From the public index, install
-`hedron>=1.0.0,<1.1`. See [What's new in 0.58](whats-new-0.58.md),
+Checkout tip `v1.0.1` uses `uv sync`. From the public index, install
+`hedron>=1.0.1,<1.1`. See [What's new in 0.58](whats-new-0.58.md),
 [Hedron API](../api/HEDRON.md), and [Presentation](../api/PRESENTATION.md).
 
-1. Upgrade the application pin to `hedron>=1.0.0,<1.1`.
+1. Upgrade the application pin to `hedron>=1.0.1,<1.1`.
 2. Prefer progressive facades for new golden paths: `@app.page`, `@app.view`, and `@app.action`,
    `DataWorkspace.with_screen`, `TaskFlow`, `DashboardWorkspace`, `SessionAuthFlow`,
    `UploadFlow`, plus `DesignSystem` / `StyleRecipe` / `StyleScope` where styling applies.
@@ -78,30 +78,30 @@ Checkout tip `v1.0.0` uses `uv sync`. From the public index, install
 
 ## 0.56 → 0.57
 
-Checkout tip `v1.0.0` uses `uv sync`. From PyPI, install
-`hedron>=1.0.0,<1.1`. See
+Checkout tip `v1.0.1` uses `uv sync`. From PyPI, install
+`hedron>=1.0.1,<1.1`. See
 [What's new in 0.57](whats-new-0.57.md) and
 [Presentation](../api/PRESENTATION.md).
 
-1. Upgrade the application pin to `hedron>=1.0.0,<1.1`.
+1. Upgrade the application pin to `hedron>=1.0.1,<1.1`.
 2. Prefer named gap tokens (`sm`/`md`/`lg`) over ambiguous CSS lengths.
 3. Adopt Surface / chrome / ResourceList presentation markers instead of application CSS.
 
 ## 0.55 → 0.56
 
-Checkout tip `v1.0.0` uses `uv sync`. From PyPI, install
-`hedron>=1.0.0,<1.1`. See
+Checkout tip `v1.0.1` uses `uv sync`. From PyPI, install
+`hedron>=1.0.1,<1.1`. See
 [What's new in 0.56](whats-new-0.56.md) and
 [Security control plane](../api/SECURITY_PLANE.md).
 
-1. Upgrade the application pin to `hedron>=1.0.0,<1.1`.
+1. Upgrade the application pin to `hedron>=1.0.1,<1.1`.
 2. Adopt `SecurityPolicy` presets and `hedron security-check` for posture baselines.
 3. Prefer shared egress / sensitivity / intent helpers over package-local copies.
 
 ## 0.52 → 0.53
 
 The published `v0.64.0` train supersedes the older 0.52/0.53 pins. Keep
-`hedron>=1.0.0,<1.1`. See
+`hedron>=1.0.1,<1.1`. See
 [What's new in 0.53](whats-new-0.53.md) and
 [Application DX API](../api/APPLICATION_DX.md).
 
@@ -117,14 +117,14 @@ The published `v0.64.0` train supersedes the older 0.52/0.53 pins. Keep
 
 ```bash
 # From the published PyPI train:
-python -m pip install -U "hedron>=1.0.0,<1.1"
+python -m pip install -U "hedron>=1.0.1,<1.1"
 # In-tree / source checkout tip:
-# python -m pip install -U "hedron>=1.0.0,<1.1"
+# python -m pip install -U "hedron>=1.0.1,<1.1"
 ```
 
 ## 0.51 → 0.52
 
-Pin `hedron>=1.0.0,<1.1` from PyPI (`v0.52.0` LANDED). See
+Pin `hedron>=1.0.1,<1.1` from PyPI (`v0.52.0` LANDED). See
 [What's new in 0.52](whats-new-0.52.md).
 
 1. **Conformance authority (RFC-0079 / D-089 / D-090).** `hedron-conformance` is the
@@ -137,12 +137,12 @@ Pin `hedron>=1.0.0,<1.1` from PyPI (`v0.52.0` LANDED). See
    Posit lifecycle helpers; add them when deploying under Workbench/Connect mounts.
 
 ```bash
-python -m pip install -U "hedron>=1.0.0,<1.1"
+python -m pip install -U "hedron>=1.0.1,<1.1"
 ```
 
 ## 0.50 → 0.51
 
-Pin `hedron>=1.0.0,<1.1` from PyPI (or the in-tree 0.53 tip when developing Hedron
+Pin `hedron>=1.0.1,<1.1` from PyPI (or the in-tree 0.53 tip when developing Hedron
 itself). See [What's new in 0.51](whats-new-0.51.md).
 
 1. **Curated extras depth (RFC-0078 / D-087 / D-088).** `ExtrasFeature` is the
@@ -157,18 +157,18 @@ itself). See [What's new in 0.51](whats-new-0.51.md).
    adopted `hedron[extras]`; add the extra when you want the new widgets.
 
 ```bash
-python -m pip install -U "hedron>=1.0.0,<1.1"
-python -m pip install -U "hedron[extras]>=1.0.0,<1.1"
+python -m pip install -U "hedron>=1.0.1,<1.1"
+python -m pip install -U "hedron[extras]>=1.0.1,<1.1"
 ```
 
 ## Summary
 
 Hedron **0.64.x** ships responsive navigation, bounded optimism, and localized failure isolation
-on top of the progressive feature and styling authoring train. Install `hedron>=1.0.0,<1.1`
+on top of the progressive feature and styling authoring train. Install `hedron>=1.0.1,<1.1`
 from PyPI.
 
 Hedron **0.60.x** shipped progressive feature and styling authoring on top of the 0.57
-presentation train. Install `hedron>=1.0.0,<1.1` from PyPI.
+presentation train. Install `hedron>=1.0.1,<1.1` from PyPI.
 
 - Screens, form commands, workspaces, TaskFlow, DashboardWorkspace, SessionAuthFlow,
   UploadFlow, DesignSystem / StyleRecipe / StyleScope, explain/style CLI
@@ -181,7 +181,7 @@ security control plane.
   ([Presentation](../api/PRESENTATION.md))
 
 Hedron 0.53.x tip ships Application DX Stage 1 contracts on top of the 0.52
-conformance/Posit train. From PyPI, keep using `hedron>=1.0.0,<1.1` until the
+conformance/Posit train. From PyPI, keep using `hedron>=1.0.1,<1.1` until the
 0.53 wheel lands.
 
 - Application assets, diagnostics, routes, workflows, testgen, theming, discovery,
@@ -245,7 +245,7 @@ preload remain experimental.
 ## Before upgrading
 
 1. Commit or back up your lockfile.
-2. Confirm you are on a recent pin (`hedron>=0.29.0,<0.30` through `>=1.0.0,<1.1`,
+2. Confirm you are on a recent pin (`hedron>=0.29.0,<0.30` through `>=1.0.1,<1.1`,
    or the tip pin already). Public-index notes: [Installation](../getting-started/installation.md).
 3. Existing 0.42–0.46 handlers and unused `include_feature` keep working.
 4. Adopt maps only via `hedron[maps]` / `from hedron_maps import …`.
@@ -256,12 +256,12 @@ preload remain experimental.
 ## Install
 
 ```bash
-python -m pip install -U "hedron>=1.0.0,<1.1"
-python -m pip install -U "hedron[data]>=1.0.0,<1.1"
-python -m pip install -U "hedron[charts]>=1.0.0,<1.1"
-python -m pip install -U "hedron[maps]>=1.0.0,<1.1"
+python -m pip install -U "hedron>=1.0.1,<1.1"
+python -m pip install -U "hedron[data]>=1.0.1,<1.1"
+python -m pip install -U "hedron[charts]>=1.0.1,<1.1"
+python -m pip install -U "hedron[maps]>=1.0.1,<1.1"
 # optional production-grade elements inventory:
-python -m pip install -U "hedron[elements]>=1.0.0,<1.1"
+python -m pip install -U "hedron[elements]>=1.0.1,<1.1"
 ```
 
 Public-index notes: [Installation](../getting-started/installation.md).
@@ -279,7 +279,7 @@ Public-index notes: [Installation](../getting-started/installation.md).
 6. **Generated list views page.** `DataWorkspace` list routes honor `offset` / `limit` /
    `sort` / `q` and allowlisted field filters.
 7. **MCP authorize isolation.** Pin `hedron-mcp>=0.2.4,<0.3` with coordinated 1.0
-   artifacts (or use the public `hedron[mcp]>=1.0.0,<1.1` pin) so a second
+   artifacts (or use the public `hedron[mcp]>=1.0.1,<1.1` pin) so a second
    `McpExposure.apply` cannot overwrite the first tool's authorize hook.
 
 ## Behavioral notes (0.45 → 0.46)

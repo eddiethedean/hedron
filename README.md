@@ -22,8 +22,8 @@ Hedron lets Python teams compose pages, components, forms, and partial-page inte
 maintaining a separate frontend application. It stays inside the FastAPI model: dependency
 injection, middleware, lifespan, async I/O, JSON routes, and OpenAPI remain available beside the UI.
 
-**Hedron 1.0.0 is published on PyPI.** The supported Python range is 3.10–3.14. Pin applications
-to `hedron>=1.0.0,<1.1` and review the [compatibility matrix](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/)
+**Hedron 1.0.1 is published on PyPI.** The supported Python range is 3.10–3.14. Pin applications
+to `hedron>=1.0.1,<1.1` and review the [compatibility matrix](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/)
 before combining independently versioned satellites.
 
 ```text
@@ -45,7 +45,7 @@ Application and domain state stay on the server.
 Create and run a project with [`uv`](https://docs.astral.sh/uv/):
 
 ```bash
-uvx --from "hedron>=1.0.0,<1.1" hedron new operations-app
+uvx --from "hedron>=1.0.1,<1.1" hedron new operations-app
 cd operations-app
 uv sync
 uv run hedron run app:app --reload
@@ -130,7 +130,7 @@ proxy buffering and backpressure before selecting SSE or WebSockets.
 The stable 1.0 boundary is defined in
 [`release/support-matrix.toml`](release/support-matrix.toml): `hedron-core`, `hedron`, `edron`,
 `hedron-data`, `hedron-charts`, and `hedron-maps` are Stable. Host adapters, native, notebook, MCP,
-Gradio, simulation, and other satellites remain opt-in Beta or tooling-grade surfaces. A `1.0.0`
+Gradio, simulation, and other satellites remain opt-in Beta or tooling-grade surfaces. A `1.0.1`
 version alone does not promote a package or symbol into the stable platform.
 
 Stable-package source trees are checked in Pyright strict mode. Type errors and warning regressions

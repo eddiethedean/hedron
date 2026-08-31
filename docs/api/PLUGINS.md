@@ -40,7 +40,7 @@ receives a `PluginContext`. Discovery and loading live in `hedron_core.plugin_lo
         name="sample_kit",
         version="0.1.0",
         distribution="hedron-sample-kit",
-        hedron_version=">=1.0.0,<1.1",
+        hedron_version=">=1.0.1,<1.1",
         capabilities=PluginCapabilities(python=True, styles=True, explorer_panels=True),
     )
 

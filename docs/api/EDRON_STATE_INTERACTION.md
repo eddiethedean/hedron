@@ -4,8 +4,8 @@ status: verified
 
 # Edron state and interaction contract
 
-**Status:** Published `1.0.0` Stable release<br>
-**Target:** Edron `1.0.x`; Hedron `>=1.0.0,<1.1`<br>
+**Status:** Published `1.0.1` Stable release<br>
+**Target:** Edron `1.0.x`; Hedron `>=1.0.1,<1.1`<br>
 **Historical 0.1 target metadata:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
 **Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **Public API:** [Edron 0.1 public API](EDRON.md)<br>
