@@ -246,14 +246,27 @@ async def _begin_replay(
             title="Idempotency key in flight",
             explanation="A concurrent request already claimed this key.",
             remediation="Retry after the first request completes.",
-        )
+    )
     if replay_claim.state == ReplayState.REPLAYED:
-        return StarletteResponse(
+        cached_headers = replay_claim.cached_headers
+        if cached_headers is None:
+            return StarletteResponse(
+                content=replay_claim.cached_body or b"",
+                status_code=int(replay_claim.cached_status or 200),
+                media_type=replay_claim.cached_media_type or "text/html",
+                headers={"Hedron-Replay": "true"},
+            )
+        response = StarletteResponse(
             content=replay_claim.cached_body or b"",
             status_code=int(replay_claim.cached_status or 200),
-            media_type=replay_claim.cached_media_type or "text/html",
-            headers={"Hedron-Replay": "true"},
         )
+        response.raw_headers = [
+            (name.encode("latin-1"), value.encode("latin-1"))
+            for name, value in cached_headers
+            if name.lower() != "hedron-replay"
+        ]
+        response.headers["Hedron-Replay"] = "true"
+        return response
     return _ReplayGuard(
         claim=replay_claim,
         store=replay_store,
@@ -299,6 +312,12 @@ def _complete_replay(guard: _ReplayGuard | None, response: Response) -> None:
     if isinstance(body, str):
         body = body.encode("utf-8")
     media_type = getattr(response, "media_type", None) or "text/html"
+    raw_headers = getattr(response, "raw_headers", ())
+    headers = tuple(
+        (name.decode("latin-1"), value.decode("latin-1"))
+        for name, value in raw_headers
+        if isinstance(name, bytes) and isinstance(value, bytes)
+    )
     guard.store.complete(
         key=guard.key,
         scope=guard.scope_key,
@@ -306,6 +325,7 @@ def _complete_replay(guard: _ReplayGuard | None, response: Response) -> None:
         status=int(getattr(response, "status_code", 200) or 200),
         body=bytes(body),
         media_type=str(media_type),
+        headers=headers,
     )
 
 
