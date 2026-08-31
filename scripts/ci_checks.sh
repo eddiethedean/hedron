@@ -789,13 +789,21 @@ cmd_evidence() {
 cmd_realconnect() {
   # Live Posit Connect Docker smoke (REALCONNECT-033). Requires Docker and CONNECT_LICENSE.
   # Skips successfully when CONNECT_LICENSE is unavailable (see check_realconnect_033.py).
-  run_py scripts/check_realconnect_033.py --live
+  if [[ "$RELEASE_GATE" -eq 1 ]]; then
+    HEDRON_REQUIRED_LIVE_GATES=1 run_py scripts/check_realconnect_033.py --live
+  else
+    run_py scripts/check_realconnect_033.py --live
+  fi
 }
 
 cmd_realwb() {
   # Live Posit Workbench Docker smoke (REALWB-030). Requires Docker and PWB_LICENSE.
   # Skips successfully when PWB_LICENSE is unavailable (see check_realwb_smoke.py).
-  run_py scripts/check_realwb_smoke.py --live
+  if [[ "$RELEASE_GATE" -eq 1 ]]; then
+    HEDRON_REQUIRED_LIVE_GATES=1 run_py scripts/check_realwb_smoke.py --live
+  else
+    run_py scripts/check_realwb_smoke.py --live
+  fi
 }
 
 cmd_packaging() {
@@ -841,10 +849,6 @@ cmd_all() {
 
   HEDRON_CI_ALL=1
   export HEDRON_CI_ALL
-  if [[ "$RELEASE_GATE" -eq 1 ]]; then
-    HEDRON_REQUIRED_LIVE_GATES=1
-    export HEDRON_REQUIRED_LIVE_GATES
-  fi
 
   if [[ "$ALL_PYTHONS" -eq 0 && "$PYTHON_EXPLICIT" -eq 0 ]]; then
     ALL_PYTHONS=1
