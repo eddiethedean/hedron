@@ -148,7 +148,7 @@ def test_phase_1_0_keeps_verified_067_as_immutable_predecessor() -> None:
     release = _toml("docs/release.toml")["release"]
     assert predecessor["status"] == "Verified"
     assert predecessor["target"] == "v0.67.0"
-    assert release["published_version"] == "1.0.0"
+    assert release["published_version"] == "1.0.1"
     assert workspace["project"]["version"] == release["development_version"]
 
 
