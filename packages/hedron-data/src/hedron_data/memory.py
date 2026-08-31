@@ -39,7 +39,10 @@ def _sort_key(value: JsonValue) -> tuple[int, str, float | str]:
     if isinstance(value, bool):
         return (1, "bool", "1" if value else "0")
     if isinstance(value, (int, float)) and not isinstance(value, bool):
-        return (2, "number", float(value))
+        try:
+            return (2, "number", float(value))
+        except OverflowError:
+            return (4, "number", str(value))
     if isinstance(value, str):
         return (3, "str", value)
     return (4, type(value).__name__, str(value))

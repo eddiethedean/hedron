@@ -232,7 +232,10 @@ def _as_number(value: Any) -> float | None:
     if isinstance(value, bool):
         return float(value)
     if isinstance(value, (int, float)):
-        number = float(value)
+        try:
+            number = float(value)
+        except OverflowError:
+            return None
         return number if math.isfinite(number) else None
     try:
         number = float(value)
@@ -248,7 +251,10 @@ def _sort_key(value: object) -> tuple[int, str, object]:
     if isinstance(value, bool):
         return (1, "bool", "1" if value else "0")
     if isinstance(value, (int, float)):
-        return (2, "number", float(value))
+        try:
+            return (2, "number", float(value))
+        except OverflowError:
+            return (2, "number-overflow", str(value))
     if isinstance(value, str):
         return (3, "str", value)
     return (4, type(value).__name__, json.dumps(value, sort_keys=True, default=str))
@@ -317,6 +323,13 @@ def _apply_filter(rows: list[dict[str, object]], tr: TransformDef) -> list[dict[
     if not field:
         return rows
     op = tr.params.get("compare", "is_not_null")
+    if op not in {"is_null", "is_not_null", "eq", "ne", "gt", "ge", "lt", "le", "in", "not_in"}:
+        raise _chart_error(
+            "HED-CHART-0033",
+            "Unknown filter comparison",
+            f"Comparison {op!r} is not supported.",
+            "Use one of is_null, is_not_null, eq, ne, gt, ge, lt, le, in, or not_in.",
+        )
     target = tr.params.get("value")
     out: list[dict[str, object]] = []
     for row in rows:
@@ -419,11 +432,11 @@ def _apply_aggregate(rows: list[dict[str, object]], tr: TransformDef) -> list[di
     metrics = _as_metric_dicts(tr.params.get("metrics"))
     buckets: dict[tuple[object, ...], list[dict[str, object]]] = {}
     for row in rows:
-        key = tuple(row.get(g) for g in group_by)
+        key = tuple(_distinct_key(row.get(g)) for g in group_by)
         buckets.setdefault(key, []).append(row)
     out: list[dict[str, object]] = []
-    for key, group in buckets.items():
-        item: dict[str, object] = {g: key[i] for i, g in enumerate(group_by)}
+    for _key, group in buckets.items():
+        item: dict[str, object] = {g: group[0].get(g) if group else None for g in group_by}
         for metric in metrics:
             mop = metric.get("op", "count")
             field = metric.get("field")
@@ -502,7 +515,7 @@ def _apply_stack(rows: list[dict[str, object]], tr: TransformDef) -> list[dict[s
     as_y1 = raw_y1 if isinstance(raw_y1, str) else f"{field}_y1"
     buckets: dict[tuple[object, ...], list[dict[str, object]]] = {}
     for row in rows:
-        key = tuple(row.get(g) for g in group)
+        key = tuple(_distinct_key(row.get(g)) for g in group)
         buckets.setdefault(key, []).append(row)
     out: list[dict[str, object]] = []
     for group_rows in buckets.values():

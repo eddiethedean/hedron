@@ -8,9 +8,11 @@ from typing import Any
 
 from hedron_core.builtins.map_geo import DEFAULT_MAX_FEATURES, MarkerSpec, sanitize_geojson
 from hedron_core.component import Component, NodeLike
+from hedron_core.csrf_strategy import DEFAULT_CSRF_COOKIE_NAME, DEFAULT_CSRF_HEADER_NAME
 from hedron_core.diagnostics import error
 from hedron_core.html import html
 from hedron_core.models import Props
+from hedron_core.rendering import active_render_context
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_maps.compile import compile_map
 from hedron_maps.spec import (
@@ -224,6 +226,9 @@ class Map(Component[MapProps]):
         plan = self.compile_plan()
         payload = plan_payload_json(plan)
         children = fallback_nodes(plan)
+        context = active_render_context()
+        csrf_cookie_name = getattr(context, "csrf_cookie_name", DEFAULT_CSRF_COOKIE_NAME)
+        csrf_header_name = getattr(context, "csrf_header_name", DEFAULT_CSRF_HEADER_NAME)
         attrs = {
             "data-hedron-abi": str(ABI_VERSION),
             "data-hedron-element": ELEMENT_ID,
@@ -232,6 +237,8 @@ class Map(Component[MapProps]):
             "role": "region",
             "aria-label": plan.accessibility.title,
             "class_": self.props.class_,
+            "data-hedron-csrf-cookie": csrf_cookie_name,
+            "data-hedron-csrf-header": csrf_header_name,
         }
         if self._interaction_commands:
             attrs["data-hedron-map-commands"] = json.dumps(

@@ -46,19 +46,56 @@ class DataQuery:
         capped = min(limit, max_page_size, HARD_MAX_PAGE_SIZE)
         if capped < 1:
             raise ValueError("DataQuery.limit must be >= 1 after capping")
-        sort = self.sort
-        for name, direction in sort:
+        raw_sort = cast(Any, self.sort)
+        if (
+            raw_sort is None
+            or not isinstance(raw_sort, Sequence)
+            or isinstance(raw_sort, (str, bytes, bytearray))
+        ):
+            raise ValueError("DataQuery.sort must be a sequence of (field, direction) pairs")
+        sort_entries: list[tuple[str, str]] = []
+        for entry in cast(Sequence[object], raw_sort):
+            if not isinstance(entry, Sequence) or isinstance(entry, (str, bytes, bytearray)):
+                raise ValueError(
+                    "DataQuery.sort entries must be (non-empty field, direction) pairs"
+                )
+            pair = cast(Sequence[object], entry)
+            if len(pair) != 2:
+                raise ValueError(
+                    "DataQuery.sort entries must be (non-empty field, direction) pairs"
+                )
+            name, direction = pair
+            if not isinstance(name, str) or not name.strip() or not isinstance(direction, str):
+                raise ValueError(
+                    "DataQuery.sort entries must be (non-empty field, direction) pairs"
+                )
             if direction not in ("asc", "desc"):
                 raise ValueError(f"Invalid sort direction {direction!r}")
             allow = self.allowlisted_sort_fields
             if allow is not None and name not in allow:
                 raise ValueError(f"Sort field {name!r} is not allowlisted")
-        filters = dict(self.filters)
+            sort_entries.append((name, direction))
+        raw_filters = cast(Any, self.filters)
+        if not isinstance(raw_filters, Mapping):
+            raise ValueError("DataQuery.filters must be a mapping")
+        untyped_filters = cast(Mapping[object, JsonValue], raw_filters)
+        if any(not isinstance(name, str) or not name.strip() for name in untyped_filters):
+            raise ValueError("DataQuery filter fields must be non-empty strings")
+        filters = {cast(str, name): value for name, value in untyped_filters.items()}
         if self.allowlisted_filter_fields is not None:
             for name in filters:
                 if name not in self.allowlisted_filter_fields:
                     raise ValueError(f"Filter field {name!r} is not allowlisted")
-        projection = self.projection
+        projection = cast(Any, self.projection)
+        if projection is not None:
+            if not isinstance(projection, Sequence) or isinstance(
+                projection, (str, bytes, bytearray)
+            ):
+                raise ValueError("DataQuery.projection must be a sequence of field names")
+            raw_projection = cast(Sequence[object], projection)
+            if any(not isinstance(name, str) or not name.strip() for name in raw_projection):
+                raise ValueError("DataQuery projection fields must be non-empty strings")
+            projection = tuple(cast(str, name) for name in raw_projection)
         if projection is not None and self.allowlisted_projection_fields is not None:
             for name in projection:
                 if name not in self.allowlisted_projection_fields:
@@ -67,7 +104,7 @@ class DataQuery:
             offset=self.offset,
             limit=capped,
             cursor=self.cursor,
-            sort=sort,
+            sort=tuple(sort_entries),
             filters=filters,
             projection=projection,
             search=self.search,
