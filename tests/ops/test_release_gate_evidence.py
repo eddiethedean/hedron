@@ -93,11 +93,19 @@ def test_built_quickstart_is_verified_before_pypi_upload() -> None:
     assert '"${{ steps.ref.outputs.version }}" --dist-dir dist --attempts 1' in workflow
 
 
-def test_edron_has_an_independent_release_path() -> None:
+def test_edron_is_published_by_main_and_retains_recovery_path() -> None:
     general = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
     edron = (ROOT / ".github" / "workflows" / "edron-release.yml").read_text(encoding="utf-8")
+    publish_order = tomllib.loads(
+        (ROOT / "release" / "publish-order.toml").read_text(encoding="utf-8")
+    )
 
-    assert general.count('echo "Skipping Edron; publish it only from edron-v* tags"') == 2
+    assert "Skipping Edron; publish it only from edron-v* tags" not in general
+    assert "Skipping edron-sim; publish it only from the Edron release workflow" not in general
+    assert "edron" in publish_order["order"]
+    assert "edron-sim" in publish_order["order"]
+    assert "edron" not in publish_order["excluded"]
+    assert "edron-sim" not in publish_order["excluded"]
     assert '"edron-v*.*.*"' in edron
     assert "workflow_dispatch:" in edron
     assert "RELEASE_REF:" in edron

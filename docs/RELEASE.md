@@ -66,14 +66,19 @@ registry and record the result before changing public documentation.
 Use this exact sequence; do not push both tags together:
 
 1. Fast-forward `main` to the green `v1.0` release commit and verify Read the Docs.
-2. Create and push `v1.0.0`. The coordinated workflow publishes every main-train distribution
-   except Edron, `edron-sim`, and the separately owned native artifacts.
+2. Create and push the coordinated Hedron tag (for example, `v1.0.1`). The coordinated workflow
+   publishes every workspace distribution, including Edron and `edron-sim`, except the separately
+   owned native artifacts.
 3. Wait for the coordinated workflow, native-wheel workflow, attestations, PyPI visibility, and
    the published Hedron quick-start verification to succeed.
-4. Create and push `edron-v1.0.0`. The Edron workflow must preflight the already-published Stable
-   dependencies, then publish Edron and the Beta `edron-sim` companion.
+4. The separate Edron workflow remains available for historical `edron-v*` tags and recovery, but
+   new coordinated releases publish Edron and the Beta `edron-sim` companion in step 2.
 5. Verify both published Edron artifacts and the generated application before changing public
    status facts.
+
+The completed 1.0.0 cut used the historical `v1.0.0` tag followed by `edron-v1.0.0`; those tags
+remain immutable. The coordinated workflow now includes Edron and `edron-sim`, so future cuts do
+not require a second publication tag.
 
 Every upload requires explicit maintainer authorization through the protected release workflow.
 After publication, update `docs/release.toml` first; rendered release callouts and validation
