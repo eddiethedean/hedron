@@ -170,11 +170,12 @@ def collect_prepare_targets(
             stack.extend(reversed(children))
             continue
         if isinstance(current, Sequence) and not isinstance(current, (str, bytes)):
-            obj_id = id(current)
+            sequence = cast(Sequence[object], current)
+            obj_id = id(sequence)
             if obj_id in seen:
                 continue
             seen.add(obj_id)
-            stack.extend(reversed(cast(Sequence[object], current)))
+            stack.extend(reversed(sequence))
             continue
         if isinstance(current, NativeElement):
             obj_id = id(current)

@@ -110,9 +110,7 @@ class InMemoryCacheBackend:
                 oldest_key = min(self._store, key=lambda item: self._store[item].stored_at)
                 oldest = self._store.pop(oldest_key)
                 self._total_size -= oldest.size
-            self._store[key] = _Entry(
-                value=copied_value, expires_at=expires, tags=tags, size=size
-            )
+            self._store[key] = _Entry(value=copied_value, expires_at=expires, tags=tags, size=size)
             self._total_size += size
 
     def invalidate(self, *, tags: tuple[str, ...] = (), keys: tuple[str, ...] = ()) -> int:
