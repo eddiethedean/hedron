@@ -77,6 +77,13 @@ class WorkbenchConfig:
     app_target: str | None = None
     topology: WorkbenchTopology = WorkbenchTopology.AUTO
 
+    def __post_init__(self) -> None:
+        # Configuration is a public runtime boundary: callers commonly pass
+        # values from TOML/CLI/env as strings. Normalize them once so every
+        # resolver can rely on enum identity rather than crashing on `.value`.
+        object.__setattr__(self, "mode", WorkbenchMode.parse(self.mode))
+        object.__setattr__(self, "topology", WorkbenchTopology.parse(self.topology))
+
 
 @dataclass(frozen=True, slots=True)
 class ResolvedDeployment:

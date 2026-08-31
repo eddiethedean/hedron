@@ -6,7 +6,11 @@ from starlette.types import ASGIApp
 
 from fastapi_workbench.config import WorkbenchConfig, WorkbenchMode
 from fastapi_workbench.middleware import WorkbenchPathMiddleware as _WorkbenchPathMiddleware
-from fastapi_workbench.middleware import apply_root_path, encode_raw_path
+from fastapi_workbench.middleware import (
+    apply_root_path,
+    encode_raw_path,
+    workbenchified_for_asgi_app,
+)
 from fastapi_workbench.middleware import is_workbenchified as _is_workbenchified
 
 __all__ = [
@@ -59,7 +63,7 @@ def workbenchify(
                 "hedron-posit run so cookie and asset paths are configured before import"
             )
         return app
-    if is_workbenchified(app):
+    if workbenchified_for_asgi_app(app):
         return app
     resolved_mode = mode
     resolved_debug = debug

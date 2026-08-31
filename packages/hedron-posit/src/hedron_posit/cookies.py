@@ -87,6 +87,7 @@ class CookieRegistry:
             raise ValueError("cookie name is invalid")
         if spec.name.lower() == "auto":
             raise ValueError("cookie name cannot be 'auto'")
+        self._validate_security_attributes(spec.name, spec.secure, spec.samesite)
         self._specs[spec.name] = spec
         refresh = getattr(self._app, "_refresh_owned_cookie_middleware", None)
         if callable(refresh):
@@ -130,6 +131,9 @@ class CookieRegistry:
         if value and any(ord(ch) < 32 for ch in value):
             raise ValueError("cookie value contains control characters")
         spec = self._specs[name]
+        effective_secure = spec.secure if secure is None else secure
+        effective_samesite = spec.samesite if samesite is None else samesite
+        self._validate_security_attributes(name, effective_secure, effective_samesite)
         if name.startswith("__Host-") and self._path() != "/":
             raise ValueError("__Host- cookies require Path=/")
         response.set_cookie(
@@ -138,9 +142,18 @@ class CookieRegistry:
             path=self._path(),
             max_age=spec.max_age if max_age is None else max_age,
             httponly=spec.httponly if httponly is None else httponly,
-            secure=spec.secure if secure is None else secure,
-            samesite=spec.samesite if samesite is None else samesite,
+            secure=effective_secure,
+            samesite=effective_samesite,
         )
+
+    @staticmethod
+    def _validate_security_attributes(name: str, secure: bool, samesite: str) -> None:
+        if name.startswith("__Secure-") and not secure:
+            raise ValueError("__Secure- cookies require Secure")
+        if name.startswith("__Host-") and not secure:
+            raise ValueError("__Host- cookies require Secure")
+        if str(samesite).lower() == "none" and not secure:
+            raise ValueError("SameSite=None cookies require Secure")
 
     def delete(self, response: Response, name: str) -> None:
         """Delete an owned cookie using the same Path used at creation."""

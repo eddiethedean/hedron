@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import ipaddress
-import os
 import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
@@ -160,10 +159,11 @@ def connect_external_base_from_request(
     if len(values) != 1:
         raise ValueError("multiple Posit Connect app base headers were rejected")
     peer = _scope_peer(request)
-    env = os.environ if environ is None else environ
-    connect_runtime = str(env.get("POSIT_PRODUCT") or "").strip().upper() == "CONNECT"
-    if not connect_runtime and not _trusted_peer(peer, trusted_peers):
-        raise ValueError("Posit Connect app base header lacked trusted runtime evidence")
+    # Runtime markers identify the product, not the network hop. Even inside a
+    # Connect process an untrusted client can forge this header, so require an
+    # explicitly allowlisted immediate peer for every request.
+    if not _trusted_peer(peer, trusted_peers):
+        raise ValueError("Posit Connect app base header lacked trusted proxy peer")
 
     base = _validated_external_base(values[0], source="header:rstudio-connect-app-base-url")
     scope_mount = normalize_mount_path(str(request.scope.get("root_path") or ""))
@@ -187,6 +187,10 @@ def compose_external_url(
     mounted = prefix_local_path(value, base.mount)
     result = f"{base.origin}{mounted}"
     if query:
+        items = list(query.items()) if isinstance(query, Mapping) else list(query)
+        for key, raw in items:
+            if raw is None:
+                raise ValueError(f"external URL query value for {key!r} must not be None")
         result += "?" + urlencode(query, doseq=True)
     if fragment is not None:
         if any(ord(char) < 32 for char in str(fragment)):

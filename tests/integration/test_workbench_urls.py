@@ -49,6 +49,7 @@ class _RootPathInjector:
         if scope.get("type") in {"http", "websocket"}:
             scope = dict(scope)
             scope["root_path"] = self.mount
+            scope["client"] = ("127.0.0.1", 12345)
         await self.app(scope, receive, send)
 
 
@@ -412,7 +413,7 @@ def test_workbench_public_base_emits_scheme_absolute_location() -> None:
 
     response = TestClient(app).get(f"{mount}/go", follow_redirects=False)
     assert response.status_code == 303
-    assert response.headers["location"] == f"http://127.0.0.1:8787{mount}/login"
+    assert response.headers["location"] == f"{mount}/login"
 
 
 def test_absolute_redirect_helper_uses_trusted_workbench_base() -> None:
@@ -461,7 +462,7 @@ def test_launcher_resolved_loopback_base_emits_absolute_location(
         return redirect_local("/login")
 
     response = TestClient(app).get(f"{mount}/go", follow_redirects=False)
-    assert response.headers["location"] == f"http://127.0.0.1:8787{mount}/login"
+    assert response.headers["location"] == f"{mount}/login"
 
 
 def test_prefix_assets_once() -> None:
@@ -582,7 +583,7 @@ def test_connect_external_base_requires_matching_loopback_proxy_evidence() -> No
 @pytest.mark.parametrize(
     ("candidate_request", "message"),
     [
-        (_connect_request(peer="10.0.0.8"), "trusted runtime evidence"),
+        (_connect_request(peer="10.0.0.8"), "trusted proxy peer"),
         (_connect_request(root_path="/content/other"), "does not match"),
         (_connect_request(base="https://user:pass@connect.example/content/abc123"), "credentials"),
         (_connect_request(base="https://evil.example/content/%2e%2e/admin"), "unsafe mount"),
@@ -599,13 +600,12 @@ def test_connect_external_base_rejects_spoofed_or_unsafe_headers(
         connect_external_base_from_request(candidate_request)
 
 
-def test_connect_runtime_marker_allows_forwarded_original_client(
+def test_connect_runtime_marker_does_not_allow_untrusted_original_client(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setenv("POSIT_PRODUCT", "CONNECT")
-    base = connect_external_base_from_request(_connect_request(peer="203.0.113.8"))
-    assert base is not None
-    assert base.url == "https://connect.example/content/abc123"
+    with pytest.raises(ValueError, match="trusted proxy peer"):
+        connect_external_base_from_request(_connect_request(peer="203.0.113.8"))
 
 
 def test_external_url_uses_connect_base_and_encodes_invite_token() -> None:

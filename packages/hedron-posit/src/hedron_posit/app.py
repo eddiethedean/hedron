@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ipaddress
+import os
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, replace
 from typing import Any
@@ -28,6 +29,7 @@ from hedron_posit.config import (
 )
 from hedron_posit.connect import native_connect_base_from_request
 from hedron_posit.cookies import ConnectCookieMode, CookieRegistry, CookieSpec
+from hedron_posit.detect import truthy
 from hedron_posit.middleware import WorkbenchPathMiddleware
 from hedron_posit.products import PositProduct
 from hedron_posit.redact import redact_record, redact_text
@@ -93,11 +95,23 @@ class HedronPosit(Hedron):
                 else workbench_config.topology
             ),
         )
+        connect_config = posit.connect if posit is not None else ConnectConfig()
+        if posit is None:
+            cookie_mode = os.environ.get("HEDRON_POSIT_CONNECT_COOKIE_MODE")
+            if cookie_mode:
+                connect_config = replace(
+                    connect_config,
+                    cookie_mode=ConnectCookieMode.parse(cookie_mode),
+                )
         posit_config = PositConfig(
             product=posit.product if posit is not None else PositProduct.AUTO,
             workbench=workbench_config,
-            connect=posit.connect if posit is not None else ConnectConfig(),
-            hands_off=bool(posit.hands_off) if posit is not None else False,
+            connect=connect_config,
+            hands_off=(
+                bool(posit.hands_off)
+                if posit is not None
+                else truthy(os.environ.get("HEDRON_POSIT_HANDS_OFF"))
+            ),
         )
         self._posit_config = posit_config
         self._cookie_registry: CookieRegistry | None = None
@@ -171,7 +185,7 @@ class HedronPosit(Hedron):
             active=self.hedron_workbench.active or bool(hands_off and expected_mount),
             debug=self.hedron_workbench.debug,
             expected_origins=(self.hedron_workbench.external_origin,),
-            runtime_mounts=True,
+            runtime_mounts=bool(self.hedron_workbench.active or (hands_off and expected_mount)),
             mounted_response_headers=True,
             absolute_redirects=absolute_origin is not None,
             absolute_origin=absolute_origin,
@@ -180,6 +194,15 @@ class HedronPosit(Hedron):
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         """Normalize Workbench scopes before FastAPI routes the request."""
+        if scope.get("type") == "http" and self.hedron_posit.product is PositProduct.CONNECT:
+            # Validate Connect's base/root contract at request ingress. Without
+            # this, a malformed base header can survive ordinary requests and
+            # fail only when an application later asks for a URL helper.
+            native_connect_base_from_request(
+                Request(scope),
+                product=self.hedron_posit.product,
+                trusted_peers=self._posit_config.connect.trusted_peers,
+            )
         await self._workbench_asgi(scope, receive, send)
 
     def workbench_status(self) -> dict[str, object]:
@@ -254,14 +277,17 @@ class HedronPosit(Hedron):
         """Return a trusted origin for Workbench-safe absolute redirects.
 
         Workbench discovery and explicit configuration are trusted deployment
-        inputs. A loopback origin is intentionally still rejected by ``browser_url``
-        for public-link generation, but it is valid here: the redirect is scoped to
-        the active Workbench deployment and must be absolute before the outer proxy
-        sees it.
+        inputs. A loopback origin is not safe for browser redirects because it
+        points users at the local listener rather than the public proxy.
         """
         if not self.hedron_workbench.active:
             return None
-        return self.hedron_workbench.external_origin
+        hostname = urlsplit(self.hedron_workbench.external_origin).hostname or ""
+        try:
+            loopback = ipaddress.ip_address(hostname).is_loopback
+        except ValueError:
+            loopback = hostname.lower() == "localhost"
+        return None if loopback else self.hedron_workbench.external_origin
 
     def _external_base(self, *, request: Request | None = None) -> ExternalBase:
         if self._hedron_external_base is not None:

@@ -46,6 +46,23 @@ DEFAULT_MATRIX: tuple[MatrixCase, ...] = (
 def evaluate_matrix_case(case: MatrixCase) -> dict[str, Any]:
     """Return redacted protocol expectations for one deployment mode."""
     mount = normalize_mount_path(case.mount)
+    if case.mount not in {"", "/"} and not mount:
+        return {
+            "id": case.id,
+            "label": case.label,
+            "product": case.product,
+            "topology": case.topology,
+            "notes": case.notes,
+            "mount": case.mount,
+            "cookie_path": "",
+            "href_sample": "",
+            "redirect_sample": "",
+            "path_auto_forbidden": False,
+            "cookie_path_matches_mount_helper": False,
+            "session_stickiness_required": case.topology == "reverse_proxy",
+            "ok": False,
+            "error": "unsafe mount path",
+        }
     cookie_path = resolve_cookie_path(mount)
     href = compose_local_url("/profile", mount=mount, query={"tab": "1"}, fragment="main")
     redirect = compose_local_url("/login", mount=mount, query={"next": "/profile"})

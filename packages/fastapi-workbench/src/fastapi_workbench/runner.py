@@ -255,7 +255,10 @@ def load_app(target: str, *, factory: bool = False) -> Any:
                 remediation="Fix the module:attr target and PYTHONPATH.",
             )
         ) from exc
-    if factory or (callable(obj) and not hasattr(obj, "routes")):
+    # A plain ASGI callable is itself a valid application. Calling every
+    # callable without a Starlette `routes` attribute incorrectly invokes such
+    # applications as zero-argument factories. Factories are explicit.
+    if factory:
         try:
             obj = obj()
         except Exception as exc:
@@ -291,7 +294,10 @@ def prepare_app(
         discovered_raw=discovered_raw,
     )
     if apply_environ:
-        export_workbench_state(resolved)
+        if environ is None:
+            export_workbench_state(resolved)
+        elif isinstance(environ, dict):
+            export_workbench_state(resolved, environ=environ)
     app = load_app(target, factory=cfg.factory)
     if wrap:
         app = workbenchify(

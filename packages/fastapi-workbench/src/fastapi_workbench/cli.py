@@ -66,21 +66,22 @@ def _emit(resolved: Any, *, fmt: str) -> None:
 def _cmd_check(args: argparse.Namespace) -> int:
     cfg = _config_from_args(args)
     discovered: str | None = None
-    if (
-        getattr(args, "discover", False)
-        and rs_server_url()
-        and explicit_mount_hint(cfg, os.environ, bound_port=cfg.port) is None
-    ):
-        try:
-            discovered = discover_rserver_url(binary=cfg.rserver_url_bin, port=cfg.port or 8000)
-        except WorkbenchError as exc:
-            print(redact_text(str(exc)), file=sys.stderr)
-            return 1
+    sock = None
     try:
-        resolved = resolve_deployment(cfg, discovered_raw=discovered)
+        bound_port: int | None = None
+        if getattr(args, "discover", False) and rs_server_url() and explicit_mount_hint(
+            cfg, os.environ, bound_port=cfg.port
+        ) is None:
+            sock = bind_loopback(cfg.host or "127.0.0.1", cfg.port or 0)
+            bound_port = int(sock.getsockname()[1])
+            discovered = discover_rserver_url(binary=cfg.rserver_url_bin, port=bound_port)
+        resolved = resolve_deployment(cfg, bound_port=bound_port, discovered_raw=discovered)
     except WorkbenchError as exc:
         print(redact_text(str(exc)), file=sys.stderr)
         return 1
+    finally:
+        if sock is not None:
+            sock.close()
     _emit(resolved, fmt=args.format)
     return 0
 
@@ -169,6 +170,10 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
     try:
         bound_port: int | None = None
         discovered: str | None = None
+        # Validate the requested host before opening a socket. This prevents
+        # `doctor --live` from briefly exposing an externally bound listener
+        # when allow_external_bind was not explicitly granted.
+        resolve_deployment(cfg)
         if args.live:
             sock = bind_loopback(cfg.host or "127.0.0.1", cfg.port or 0)
             bound_port = int(sock.getsockname()[1])

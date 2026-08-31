@@ -227,6 +227,8 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
     try:
         bound_port: int | None = None
         discovered: str | None = None
+        # Validate host policy before opening a live listener.
+        resolve_deployment(cfg)
         if args.live:
             sock = bind_loopback(cfg.host or "127.0.0.1", cfg.port or 0)
             bound_port = int(sock.getsockname()[1])
@@ -238,6 +240,20 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
             discovered_raw=discovered,
         )
         report["deployment"] = redact_record(resolved.as_dict())
+        from hedron_posit.config import PositConfig, resolve_posit_deployment
+
+        posit = resolve_posit_deployment(
+            PositConfig(workbench=cfg),
+            discovered_raw=discovered,
+            bound_port=bound_port,
+        )
+        report["posit_status"] = {
+            "product": posit.product.value,
+            "evidence": posit.evidence,
+            "cookie_strategy": posit.cookie_mode.value,
+            "bridge_enabled": posit.bridge_enabled,
+            "compatibility_facade": posit.compatibility_facade,
+        }
         checks = cast(dict[str, object], report["checks"])
         checks["listener_host_safe"] = (
             resolved.host in {"127.0.0.1", "::1", "localhost"}

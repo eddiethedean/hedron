@@ -97,6 +97,8 @@ def normalize_mount_path(value: str | None) -> str:
         return ""
     if not text.startswith("/"):
         text = "/" + text
+    if any(ord(ch) > 127 for ch in text):
+        return ""
     normalized = text.rstrip("/") or ""
     if "//" in normalized:
         return ""

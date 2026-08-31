@@ -55,15 +55,10 @@ def native_connect_base_from_request(
             ) from exc
 
     try:
-        runtime_environ = dict(environ or {})
-        if product is PositProduct.CONNECT:
-            # Explicit product configuration is itself the resolved trust
-            # decision; do not require the process environment to repeat it.
-            runtime_environ["POSIT_PRODUCT"] = "CONNECT"
         base = connect_external_base_from_request(
             request,
             trusted_peers=trusted_peers,
-            environ=runtime_environ or None,
+            environ=environ,
         )
     except ValueError as exc:
         message = str(exc)

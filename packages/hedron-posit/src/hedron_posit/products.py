@@ -44,7 +44,9 @@ def _env_map(environ: Mapping[str, str] | None) -> Mapping[str, str]:
 def connect_product_marker(environ: Mapping[str, str] | None = None) -> EvidenceKind | None:
     """Return Connect runtime evidence kind, preferring ``POSIT_PRODUCT``."""
     env = _env_map(environ)
-    posit = str(env.get("POSIT_PRODUCT") or "").strip().upper()
+    posit = str(
+        env.get("POSIT_PRODUCT") or env.get("HEDRON_POSIT_PRODUCT") or ""
+    ).strip().upper()
     if posit == "CONNECT":
         return "posit_product"
     if posit:
@@ -87,6 +89,13 @@ def resolve_product(
 ) -> tuple[PositProduct, EvidenceKind]:
     """Resolve the Posit product. Fail closed on conflicting evidence."""
     env = _env_map(environ)
+    if explicit is PositProduct.AUTO:
+        configured = str(env.get("HEDRON_POSIT_PRODUCT") or "").strip()
+        if configured:
+            try:
+                explicit = PositProduct.parse(configured)
+            except ValueError as exc:
+                raise _conflict("Invalid Posit product configuration", str(exc)) from exc
     connect_kind = connect_product_marker(env)
     # Workbench evidence ignores Connect-only hosts; RS_SERVER_URL alongside CONNECT is conflict.
     workbench_kind = workbench_product_evidence(env)

@@ -63,6 +63,18 @@ def scan_set_cookie_headers(headers: Sequence[str], *, mount: str) -> list[Posit
                     ),
                 )
             )
+        elif path_value is None:
+            found.append(
+                PositDiagnostic(
+                    code="HED-POSIT-0513",
+                    title="Cookie Path is missing",
+                    explanation=(
+                        "A cookie emitted without Path is scoped by the browser to the "
+                        "current directory rather than the deployment mount."
+                    ),
+                    remediation="Set an explicit Path through HedronPosit cookie APIs.",
+                )
+            )
     return found
 
 
@@ -73,7 +85,8 @@ def scan_location_header(location: str | None, *, mount: str) -> list[PositDiagn
     if (
         location.startswith("/")
         and not location.startswith("//")
-        and not location.startswith(mount)
+        and location != mount
+        and not location.startswith(mount + "/")
     ):
         return [
             PositDiagnostic(
