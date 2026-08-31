@@ -82,8 +82,9 @@ def auth_rate_limit_response(
 class AuthRateLimiter:
     """Sliding-window limiter: at most ``limit`` events per ``window_seconds`` per key.
 
-    ``max_keys`` bounds process-local state under high-cardinality client input;
-    the oldest-expiring bucket is evicted when the budget is full.
+    ``max_keys`` bounds process-local state under high-cardinality client input.
+    New keys fail closed while the budget is full so active clients cannot reset
+    their limits by churning attacker-controlled keys.
 
     Multi-worker note: each process keeps its own counters. Do not rely on this
     alone for horizontally scaled auth endpoints.
@@ -128,16 +129,11 @@ class AuthRateLimiter:
             else:
                 del self._events[key]
 
-    def _evict_for_capacity_unlocked(self) -> None:
-        """Evict the bucket with the oldest next expiry when at capacity."""
-        while self._expiry:
-            _expires_at, key = heappop(self._expiry)
-            if key in self._events:
-                del self._events[key]
-                return
-        # Defensive fallback if a caller mutates the private state.
-        if self._events:
-            self._events.pop(next(iter(self._events)))
+    def _capacity_retry_after_unlocked(self, now: float) -> int:
+        """Return when the earliest retained bucket can be reclaimed."""
+        if self._expiry:
+            return max(1, math.ceil(self._expiry[0][0] - now))
+        return max(1, math.ceil(self.window_seconds))
 
     def check(self, ip: str, route: str, *, now: float | None = None) -> tuple[bool, int]:
         """Return ``(allowed, retry_after_seconds)``. Consumes a slot when allowed."""
@@ -149,7 +145,7 @@ class AuthRateLimiter:
             bucket = self._events.get(key)
             if bucket is None:
                 if len(self._events) >= self.max_keys:
-                    self._evict_for_capacity_unlocked()
+                    return False, self._capacity_retry_after_unlocked(ts)
                 bucket = deque[float]()
                 self._events[key] = bucket
             if len(bucket) >= self.limit:
