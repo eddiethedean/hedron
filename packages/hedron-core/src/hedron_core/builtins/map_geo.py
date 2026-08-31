@@ -14,6 +14,7 @@ import json
 import math
 from collections.abc import Mapping, Sequence
 from typing import TypeGuard, cast
+from urllib.parse import unquote, urlsplit
 
 from pydantic import field_validator
 
@@ -337,9 +338,34 @@ def _tile_prefix_matches(tiles: str, prefix: str) -> bool:
     return rest == "" or rest[0] in "/?#"
 
 
+def _tile_template_has_traversal(tiles: str) -> bool:
+    """Return whether a tile template contains browser-normalized path traversal."""
+    try:
+        parsed = urlsplit(tiles)
+        path = parsed.path or (tiles.split("?", 1)[0].split("#", 1)[0])
+    except ValueError:
+        path = tiles.split("?", 1)[0].split("#", 1)[0]
+    decoded = path
+    for _ in range(3):
+        next_decoded = unquote(decoded)
+        if next_decoded == decoded:
+            break
+        decoded = next_decoded
+    if "\\" in decoded:
+        return True
+    return any(segment.lower() in {".", ".."} for segment in decoded.split("/"))
+
+
 def _ensure_tile_allowed(tiles: str | None, allowlist: Sequence[str]) -> str | None:
     if tiles is None:
         return None
+    if _tile_template_has_traversal(tiles):
+        raise error(
+            "HED-MAP-0002",
+            title="Disallowed map tile source",
+            explanation="Tile templates must not contain dot-segment or backslash traversal.",
+            remediation="Use a normalized tile URL without '.', '..', or backslash path segments.",
+        )
     prefixes: list[str] = []
     for raw in allowlist:
         prefix = str(raw).strip()
