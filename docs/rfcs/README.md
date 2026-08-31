@@ -114,3 +114,4 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0094](RFC-0094-EDRON-AUTHORING-FACADE.md) | Edron batteries-included Pythonic authoring facade | Accepted, implemented, and verified in-tree as an untagged Edron `1.0.0` candidate |
 | [0095](RFC-0095-ALPINE-BROWSER-ENHANCEMENT.md) | Alpine browser-local enhancement and unified interaction preview | Accepted and implemented as the verified `v0.67.0` migration baseline; D-113 / D-115 / D-116 |
 | [0096](RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md) | Hedron 1.0 interface and HTMX/Alpine/component-engine consolidation | Accepted, implemented, and verified as an untagged `v1.0.0` candidate; D-114–D-117 |
+| [0097](RFC-0097-FIRST-CLASS-UI-TESTING.md) | First-class UI testing and adoption confidence | Proposed; phase 1.1 Stage 0 refinement |

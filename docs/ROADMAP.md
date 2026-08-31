@@ -6953,31 +6953,57 @@ promotion, continued Beta/Experimental status, a narrower scope, or an explicit 
 
 | Phase | Theme | Primary question | Entry condition |
 |---|---|---|---|
-| **1.1** | Adoption and compatibility hardening | Can a new team adopt and upgrade Hedron predictably? | 1.0 support inventory is the baseline |
-| **1.2** | Production async and durable workflows | Is anything beyond polling ready for production? | 1.1 upgrade and fixture baseline |
+| **1.1** | First-class UI testing and adoption confidence | Can a team test real Hedron UI behavior and diagnose failures with ordinary pytest? | 1.0 testing/support inventory and interaction traces are the baseline |
+| **1.2** | Production async and durable workflows | Is anything beyond polling ready for production? | 1.1 browser, upgrade, and fixture baseline |
 | **1.3** | Inclusive and international UX | Can the stable surface work for more users and locales? | 1.0 interaction corpus plus human-evaluation protocol |
 | **1.4** | Visualization and media graduation | Which optional adapters can meet the first-party contract? | 1.3 accessibility/fallback corpus |
 | **1.5** | Stateful browser composition | Can partial updates retain local state without a second app runtime? | 1.2 interaction ownership and 1.3 browser evidence |
 | **1.6** | Controlled ecosystem expansion | Which advanced integrations have a trustworthy operating model? | Core, browser, and security contracts are proven |
 
-### 1.1 — Adoption and compatibility hardening
+### 1.1 — First-class UI testing and adoption confidence
 
-**Problem.** The 1.0 contract is stable, but stability alone does not guarantee that a team can
-discover the right API, diagnose a package mismatch, or upgrade an existing application.
+**Planning status:** Proposed and unscheduled; Stage 0 refinement only. See
+[RFC-0097](rfcs/RFC-0097-FIRST-CLASS-UI-TESTING.md), the
+[implementation plan](implementation/UI_TESTING_1_1.md), and the
+[acceptance packet](acceptance/RELEASE_1_1.md). Every row in the
+[machine release gate](acceptance/release-gate-1.1.toml) remains Planned; implementation is not
+authorized until `FREEZE-110` resolves the public API, schemas, matrices, and measured budgets.
 
-**Plan.** Treat this as an adoption packet, not a miscellaneous cleanup release. Inventory the
-highest-friction tasks from reference applications and support reports; improve starter templates,
-diagnostics, migration reports, package-matrix documentation, and deployment recipes; and add
-upgrade fixtures for the supported application shapes. Evaluate Beta-to-Stable promotions only when
-they solve a demonstrated adopter problem and have a bounded owner.
+**Problem.** Hedron 1.0 has deterministic render assertions, portable HTTP/HTMX fixtures,
+`AppScenario`, low-level Playwright/axe hooks, interaction traces, and test generation, but an
+application author still has to assemble a live server, browser lifecycle, framework waiting,
+failure correlation, artifacts, and cleanup. The result is too much plumbing for a small UI test
+and too little evidence when a browser test fails.
 
-**Exit evidence.** A fresh-user path and representative upgrades pass from clean environments;
-diagnostics identify actionable failures without importing or executing application code; package
-and Python/FastAPI compatibility claims are reproducible; and rollback guidance is tested. The
-result may be a maintenance-heavy 1.1 with no new Stable runtime authority.
+**Plan.** Preserve three explicit layers: render tests for deterministic output, `AppScenario` for
+request/fragment/security contracts, and a candidate `BrowserScenario` plus pytest fixture for real
+user-agent behavior. Playwright remains the browser, locator, actionability, assertion, and trace
+authority. Hedron contributes a managed loopback application host, semantic mark/region lookup,
+bounded Hedron-owned settle facts, correlated server/browser errors, leak-free teardown, and a
+versioned redacted failure bundle. Ordinary `pytest` remains the runner; the browser surface is an
+optional install and never enters core/base imports.
 
-**Non-goals.** No broad API expansion, automatic stabilization of every importable symbol, or new
-client-side state model.
+The phase begins with competing thin-wrapper prototypes and a documented fresh-user exercise.
+Stage 0 freezes the exact API and decides which managed hosts, schemas, artifacts, and generated
+tests have enough evidence for Stable, Beta, or Deferred status. Chromium is the ordinary/default
+candidate; the bounded release corpus covers Chromium, Firefox, and WebKit plus root-path,
+JavaScript-disabled, accessibility, security, performance, package, and parallel-cleanup paths.
+
+**Exit evidence.** A clean generated application can install one optional testing surface and run
+a semantic real-browser test without manually starting a server or sleeping. Deliberate server,
+page, console, network, locator, and settle failures produce actionable bounded evidence with
+redaction/provenance. Required browser/host/dependency rows pass rather than skip; repeated and
+parallel runs leak no port, process, thread, browser context, override, registry, or temporary
+artifact; and every stable 1.0 testing import and non-browser path remains compatible.
+
+**Non-goals.** No fake DOM/widget emulator, complete Playwright wrapper, second test runner,
+production browser instrumentation, ambient remote testing/capture, Stable pixel-golden framework,
+new client-side state/runtime authority, or automated accessibility-conformance claim.
+
+**Prior 1.1 proposal disposition.** The older unaccepted HTMX/Alpine implementation transition is
+unassigned design input, not part of this phase. Runtime lowering, compatibility shims,
+deprecations, asset-default changes, and possible 2.0 removals require a separate accepted phase
+decision and cannot enter 1.1 through the testing packet.
 
 ### 1.2 — Production async and durable workflows
 

@@ -91,15 +91,18 @@ These documents describe how accepted RFC behavior will be implemented. They def
   release sequence
 - [HTMX/Alpine component usage counts](HTMX_ALPINE_COMPONENT_COUNTS.md) — generated built-in
   component inventory across the 0.66.2, 0.67.0, and 1.0.0 release boundaries
-- [HTMX/Alpine implementation refinement](HTMX_ALPINE_REFINEMENT_1_1_2_0.md) — proposed 1.1
-  transition and 2.0 cleanup for explicit scopes, typed lowering, native-first controls,
-  lifecycle ownership, concurrency, and demand-driven assets
-- [HTMX/Alpine 1.1 migration](../guides/htmx-alpine-migration.md) — migration table, ownership rules,
-  compatibility shims, and complete release-gate command
+- [HTMX/Alpine implementation refinement](HTMX_ALPINE_REFINEMENT_1_1_2_0.md) — deferred,
+  release-unassigned design input for explicit scopes, typed lowering, native-first controls,
+  lifecycle ownership, concurrency, demand-driven assets, and possible 2.0 cleanup; not part of 1.1
+- [HTMX/Alpine future-transition proposal](../guides/htmx-alpine-migration.md) — unassigned migration
+  design input; not current 1.1 guidance
 - [Hedron 1.0 implementation and cut plan](HEDRON_1_0.md) — **Implemented and Verified** against
   the immutable `v0.67.0` baseline; inventory/warning reconciliation, canonical facade and
   per-slice removals, static migration, interaction/engine cutover, dual-version fleet evidence,
   and all 17 release gates are complete; `v1.0.0` is verified, tagged, and published
+- [Hedron 1.1 first-class UI testing](UI_TESTING_1_1.md) — **Proposed and unscheduled** Stage 0
+  refinement for a managed real-browser pytest experience, semantic lookup, bounded Hedron-owned
+  settle facts, correlated failures, redacted artifacts, cleanup, compatibility, and release gates
 - [Hedron-native documentation application](HEDRON_NATIVE_DOCUMENTATION.md) — draft unassigned
   workstreams for compiling the Markdown corpus into native Hedron component trees, building the
   docs shell/search/API/live-demo application, proving parity, and cutting over to FastAPI Cloud

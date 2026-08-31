@@ -28,7 +28,7 @@ continued experimentation, or non-admission:
 
 | Phase | Theme | Primary question |
 |---|---|---|
-| **1.1** | Adoption and compatibility hardening | Can a new team adopt and upgrade predictably? |
+| **1.1** | First-class UI testing and adoption confidence | Can a team test real UI behavior and diagnose failures with ordinary pytest? |
 | **1.2** | Production async and durable workflows | Is anything beyond polling ready for production? |
 | **1.3** | Inclusive and international UX | Can the stable surface work for more users and locales? |
 | **1.4** | Visualization and media graduation | Which optional adapters meet the first-party contract? |
@@ -37,6 +37,17 @@ continued experimentation, or non-admission:
 
 See the [full 1.X planning sequence](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#proposed-1x-sequence)
 for scope and shared entry/exit policy.
+
+### Proposed 1.1 focus
+
+The refined 1.1 candidate preserves fast render tests and `AppScenario`, then adds an optional
+real-browser layer that manages the local application host, composes with Playwright, understands
+Hedron interaction settling, correlates server/browser failures, and retains bounded redacted
+failure evidence. Pytest remains the runner, and no browser dependency enters ordinary Hedron
+applications. Exact APIs and maturity remain blocked on the Stage 0 freeze; see
+[RFC-0097](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0097-FIRST-CLASS-UI-TESTING.md)
+and the
+[acceptance plan](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_1_1.md).
 
 ## Deliberately not planned as defaults
 

@@ -142,6 +142,10 @@ status commentary, not a satisfied release gate.
   machine gate](release-gate-1.0.toml), and [upgrade fixtures](upgrade-fixtures-1.0.md) define a
   subtractive cut from immutable `v0.67.0`; all rows are Verified with retained compatibility,
   regression, reproducibility, support-window, and release evidence.
+- [`v1.1` first-class UI testing and adoption confidence](RELEASE_1_1.md) — **Proposed and
+  unscheduled** Stage 0 acceptance packet. All rows in the
+  [machine gate](release-gate-1.1.toml) remain Planned pending API/schema/matrix/budget freeze;
+  no implementation or release claim is made.
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
   sessions outstanding)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)

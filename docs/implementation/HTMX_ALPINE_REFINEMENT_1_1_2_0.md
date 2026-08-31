@@ -1,7 +1,7 @@
 # HTMX/Alpine implementation refinement
 
-**Status:** Proposed implementation plan  
-**Scope:** Hedron 1.1 transition and 2.0 cleanup  
+**Status:** Deferred design input; unassigned to a release
+**Scope:** Possible future minor transition and 2.0 cleanup
 **Depends on:** [Hedron 1.0 HTMX/Alpine boundary](../api/HTMX_ALPINE_BOUNDARY_1_0.md) and the
 [component usage inventory](HTMX_ALPINE_COMPONENT_COUNTS.md)
 
@@ -9,6 +9,12 @@ This plan turns the 1.0 HTMX/Alpine boundary into a smaller, more predictable im
 The boundary remains normative: Hedron owns the declaration and server truth, HTMX owns requests
 and server HTML replacement, Alpine owns disposable browser-local presentation, and Hedron owns
 only the lifecycle handoff between them.
+
+Phase 1.1 is now assigned to first-class UI testing by
+[RFC-0097](../rfcs/RFC-0097-FIRST-CLASS-UI-TESTING.md). Nothing in this document is authorized for
+1.1. Typed lowering, runtime consolidation, compatibility shims, deprecations, default changes, and
+2.0 removals require a separate accepted phase decision. Version references below describe the
+original proposal and are retained only as migration design input.
 
 The goal is not to add another client framework. It is to remove duplicate writers, make asset
 demand explicit, and ensure that code written with Hedron has a clear native fallback.
@@ -60,7 +66,7 @@ remove generated attributes or change the ownership of an existing component unl
 behavior is demonstrably unsafe. A standalone interaction-scope defect may be fixed in a patch if
 the fix makes the server output self-contained and preserves the public constructor.
 
-### 1.1 transition
+### Future minor transition (version unassigned)
 
 1. Introduce the typed lowering and generic HTMX builder behind the existing public facades.
 2. Add explicit scope ownership and native-first component options.
@@ -120,7 +126,8 @@ root, every direct request call, and every component with more than one writer.
 - For a standalone local interaction, require initial state when the expression reads local state.
   The compiler must synthesize a bounded `x-data` scope or fail with a diagnostic explaining how
   to provide one.
-- Keep `Interaction.to_attributes()` as a compatibility wrapper around the lowering during 1.1.
+- Keep `Interaction.to_attributes()` as a compatibility wrapper around the lowering during an
+  admitted transition.
 - Add `AlpineExpression.not_()` (or the equivalent unary-expression node) so expressions such as
   `open = !open` are represented by the expression model rather than hand-built strings.
 - Have the HTML normalizer merge typed lanes once and reject duplicate writers.
@@ -241,7 +248,7 @@ the bridge initializes and cleans up exactly once.
   - HTMX demand: HTMX plus the minimal lifecycle bridge;
   - Alpine demand: pinned official Alpine CSP assets and admitted plugins plus the Alpine bridge;
   - specialist element demand: only the selected element asset.
-- Preserve an explicit `include_ui_modules` compatibility override during 1.1.
+- Preserve an explicit `include_ui_modules` compatibility override during an admitted transition.
 - Fingerprint and package one canonical copy of each asset.
 - Add byte budgets and a manifest diff check so an unrelated component cannot silently pull in the
   entire browser runtime.
@@ -257,7 +264,7 @@ the bridge initializes and cleans up exactly once.
 **Implementation:**
 
 - Publish a migration table mapping legacy `Hx`, `Interaction.to_attributes()`, after-load hooks,
-  default Alpine bindings, and custom disclose usage to their 1.1 replacements.
+  default Alpine bindings, and custom disclose usage to their admitted replacements.
 - Add development diagnostics with stable codes for missing Alpine scope, duplicate writers,
   unsupported raw HTMX attributes, legacy after-load usage, and compatibility-runtime usage.
 - Add a support matrix for Python, FastAPI, Pydantic, HTMX, Alpine, browser engines, and optional
@@ -282,7 +289,7 @@ the bridge initializes and cleans up exactly once.
 | 5 | W5 lifecycle bridge and after-load migration | No direct Hedron request path or duplicate runtime owner remains |
 | 6 | W6 concurrency and W7 asset demand | Race corpus and feature-off asset budgets pass |
 | 7 | W8 release evidence | Support matrix, migration guide, and all required gates pass |
-| 8 | 2.0 cleanup | Only after the 1.1 compatibility period and migration audit |
+| 8 | 2.0 cleanup | Only after an admitted compatibility period and migration audit |
 
 Phases 1–3 should land before expanding component coverage. Otherwise new components would encode
 the old raw-attribute and implicit-scope patterns and increase the migration surface.
@@ -320,7 +327,7 @@ the old raw-attribute and implicit-scope patterns and increase the migration sur
 
 ## Release gates
 
-The 1.1 transition is ready only when all of the following are true:
+Any future minor transition is ready only when all of the following are true:
 
 1. `Interaction` lowering has explicit scope ownership and no duplicate writers.
 2. Generic `HtmxAttrs` validates every maintained HTMX declaration.
@@ -331,8 +338,7 @@ The 1.1 transition is ready only when all of the following are true:
 7. Feature-off pages load no optional browser assets.
 8. Required browser, adapter, optional-backend, dependency, security, and typing gates are
    explicit and green.
-9. The 1.1 migration guide and support matrix are published with the release.
+9. The versioned migration guide and support matrix are published with the release.
 
 The 2.0 cleanup is ready only when the compatibility diagnostics show no in-tree use of the paths
 being removed and the migration audit covers downstream-facing public APIs.
-

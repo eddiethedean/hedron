@@ -1,0 +1,112 @@
+schema_version = 1
+phase = "1.1"
+status = "Planned"
+planning_baseline = "v1.0.0"
+required_predecessor = "v1.0.0"
+predecessor_satisfied = true
+target = "v1.1.0"
+owning_rfc = "RFC-0097"
+implementation = "../implementation/UI_TESTING_1_1.md"
+stage_1_entry_satisfied = false
+release_cut_satisfied = false
+production_runtime_authority_change = false
+fake_browser_runtime_allowed = false
+remote_testing_default_allowed = false
+required_runner = "pytest"
+browser_authority = "Playwright"
+
+[[evidence]]
+id = "FREEZE-110"
+state = "Planned"
+owner = "architecture"
+ci_job = "evidence"
+
+[[evidence]]
+id = "CONTRACT-110"
+state = "Planned"
+owner = "testing"
+ci_job = "test"
+
+[[evidence]]
+id = "HOST-110"
+state = "Planned"
+owner = "testing"
+ci_job = "browser"
+
+[[evidence]]
+id = "LOCATOR-110"
+state = "Planned"
+owner = "testing"
+ci_job = "browser"
+
+[[evidence]]
+id = "SETTLE-110"
+state = "Planned"
+owner = "browser-platform"
+ci_job = "browser"
+
+[[evidence]]
+id = "ERROR-110"
+state = "Planned"
+owner = "testing"
+ci_job = "browser"
+
+[[evidence]]
+id = "ARTIFACT-110"
+state = "Planned"
+owner = "testing"
+ci_job = "browser"
+
+[[evidence]]
+id = "PYTEST-110"
+state = "Planned"
+owner = "tooling"
+ci_job = "test"
+
+[[evidence]]
+id = "BEHAVIOR-110"
+state = "Planned"
+owner = "reference-app"
+ci_job = "browser"
+
+[[evidence]]
+id = "A11Y-110"
+state = "Planned"
+owner = "accessibility"
+ci_job = "browser"
+
+[[evidence]]
+id = "SECURITY-110"
+state = "Planned"
+owner = "security"
+ci_job = "evidence"
+
+[[evidence]]
+id = "PERF-110"
+state = "Planned"
+owner = "performance"
+ci_job = "browser"
+
+[[evidence]]
+id = "COMPAT-110"
+state = "Planned"
+owner = "compatibility"
+ci_job = "test"
+
+[[evidence]]
+id = "DOCS-110"
+state = "Planned"
+owner = "docs"
+ci_job = "quality"
+
+[[evidence]]
+id = "PKG-110"
+state = "Planned"
+owner = "packaging"
+ci_job = "packaging"
+
+[[evidence]]
+id = "RELEASE-110"
+state = "Planned"
+owner = "release"
+ci_job = "release"
