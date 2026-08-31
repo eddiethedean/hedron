@@ -39,11 +39,12 @@ class TraceConfig:
     _force_sample: bool | None = field(default=None, repr=False)
 
     def __post_init__(self) -> None:
+        sample_rate = cast(object, self.sample_rate)
         if (
-            isinstance(self.sample_rate, bool)
-            or not isinstance(self.sample_rate, (int, float))
-            or not math.isfinite(float(self.sample_rate))
-            or not 0.0 <= self.sample_rate <= 1.0
+            isinstance(sample_rate, bool)
+            or not isinstance(sample_rate, (int, float))
+            or not math.isfinite(float(sample_rate))
+            or not 0.0 <= sample_rate <= 1.0
         ):
             raise ValueError("sample_rate must be finite and between 0.0 and 1.0")
 
