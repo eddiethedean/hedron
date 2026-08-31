@@ -1,4 +1,4 @@
-"""Packaging metadata checks for the coordinated 0.36 train."""
+"""Packaging metadata checks for the coordinated 1.0 train and satellites."""
 
 from __future__ import annotations
 
@@ -19,7 +19,6 @@ _TRAIN_ALIGNED_PACKAGES = {
     "hedron-explorer",
     "hedron-conformance",
     "hedron-extras",
-    "hedron-posit",
     "hedron-elements",
 }
 _INDEPENDENT_BETA = {
@@ -33,9 +32,6 @@ _INDEPENDENT_BETA_02 = {
     "hedron-sim",
     "hedron-notebook",
 }
-_INDEPENDENT_BETA_067 = {
-    "hedron-posit",
-}
 _INDEPENDENT_BETA_05 = {
     "edron",
 }
@@ -45,6 +41,7 @@ _STABLE_INDEPENDENT = {
 }
 _INDEPENDENT_MAJOR = {
     "fastapi-workbench",
+    "hedron-posit",
 }
 _TRAIN_ALIGNED_ALPHA: set[str] = set()
 _ALPHA_INDEPENDENT: set[str] = set()
@@ -61,8 +58,6 @@ def test_all_packages_declare_license_and_version() -> None:
             assert project["version"] == workspace_version, pyproject
         elif name in _INDEPENDENT_BETA_02:
             assert str(project["version"]).startswith("0.2."), pyproject
-        elif name in _INDEPENDENT_BETA_067:
-            assert str(project["version"]).startswith("0.67."), pyproject
         elif name in _STABLE_INDEPENDENT or name == "edron":
             assert project["version"] == workspace_version, pyproject
         elif name in _INDEPENDENT_BETA_05:
