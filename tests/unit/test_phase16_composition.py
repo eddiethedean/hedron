@@ -31,6 +31,11 @@ def test_choice_cards_and_tree() -> None:
         contains="hedron-choice-cards",
     )
     assert 'type="radio"' in html
+    required = assert_renders(
+        ChoiceCards("required", [{"value": "a", "label": "A"}], multiple=True, required=True),
+        contains='data-hedron-required="true"',
+    )
+    assert 'aria-required="true"' in required
     tree_html = assert_renders(
         TreeView(
             [

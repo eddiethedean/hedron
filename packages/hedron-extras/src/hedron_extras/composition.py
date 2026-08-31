@@ -94,8 +94,13 @@ class ChoiceCards(Component[ChoiceCardsProps]):
                 *cards,
                 class_=class_names("hedron-choice-cards", self.props.class_),
                 id=self.props.id,
-                data={**mark_data(self.props.mark), "hedron-choice": "cards"},
+                data={
+                    **mark_data(self.props.mark),
+                    "hedron-choice": "cards",
+                    "hedron-required": self.props.required or None,
+                },
                 role="group",
+                aria={"required": self.props.required or None},
             ),
             payload={"kind": "choice-cards"},
         )
