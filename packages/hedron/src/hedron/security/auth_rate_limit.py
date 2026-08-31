@@ -12,8 +12,9 @@ import math
 import os
 import threading
 import time
-from collections import defaultdict, deque
+from collections import deque
 from collections.abc import Callable, Collection
+from heapq import heappop, heappush
 from typing import Any, cast
 
 from fastapi import HTTPException, Request, status
@@ -81,35 +82,62 @@ def auth_rate_limit_response(
 class AuthRateLimiter:
     """Sliding-window limiter: at most ``limit`` events per ``window_seconds`` per key.
 
+    ``max_keys`` bounds process-local state under high-cardinality client input;
+    the oldest-expiring bucket is evicted when the budget is full.
+
     Multi-worker note: each process keeps its own counters. Do not rely on this
     alone for horizontally scaled auth endpoints.
     """
 
-    def __init__(self, *, limit: int = 10, window_seconds: float = 60.0) -> None:
+    def __init__(
+        self,
+        *,
+        limit: int = 10,
+        window_seconds: float = 60.0,
+        max_keys: int = 10_000,
+    ) -> None:
         if limit < 1:
             raise ValueError("limit must be >= 1")
         if isinstance(window_seconds, bool) or not math.isfinite(float(window_seconds)):
             raise ValueError("window_seconds must be finite")
         if window_seconds <= 0:
             raise ValueError("window_seconds must be > 0")
+        if isinstance(max_keys, bool) or max_keys < 1:
+            raise ValueError("max_keys must be >= 1")
         self.limit = int(limit)
         self.window_seconds = float(window_seconds)
-        self._events: dict[str, deque[float]] = defaultdict(deque)
+        self.max_keys = int(max_keys)
+        self._events: dict[str, deque[float]] = {}
+        self._expiry: list[tuple[float, str]] = []
         self._lock = threading.Lock()
 
     def _key(self, ip: str, route: str) -> str:
         return f"{ip}\0{route}"
 
     def _prune_expired_unlocked(self, cutoff: float) -> None:
-        """Drop expired timestamps and delete keys with empty windows (under lock)."""
-        empty: list[str] = []
-        for key, bucket in self._events.items():
+        """Drop expired buckets using the next-expiry heap (under lock)."""
+        while self._expiry and self._expiry[0][0] <= cutoff + self.window_seconds:
+            _expires_at, key = heappop(self._expiry)
+            bucket = self._events.get(key)
+            if bucket is None:
+                continue
             while bucket and bucket[0] <= cutoff:
                 bucket.popleft()
-            if not bucket:
-                empty.append(key)
-        for key in empty:
-            del self._events[key]
+            if bucket:
+                heappush(self._expiry, (bucket[0] + self.window_seconds, key))
+            else:
+                del self._events[key]
+
+    def _evict_for_capacity_unlocked(self) -> None:
+        """Evict the bucket with the oldest next expiry when at capacity."""
+        while self._expiry:
+            _expires_at, key = heappop(self._expiry)
+            if key in self._events:
+                del self._events[key]
+                return
+        # Defensive fallback if a caller mutates the private state.
+        if self._events:
+            self._events.pop(next(iter(self._events)))
 
     def check(self, ip: str, route: str, *, now: float | None = None) -> tuple[bool, int]:
         """Return ``(allowed, retry_after_seconds)``. Consumes a slot when allowed."""
@@ -118,12 +146,19 @@ class AuthRateLimiter:
         with self._lock:
             cutoff = ts - self.window_seconds
             self._prune_expired_unlocked(cutoff)
-            bucket = self._events[key]
+            bucket = self._events.get(key)
+            if bucket is None:
+                if len(self._events) >= self.max_keys:
+                    self._evict_for_capacity_unlocked()
+                bucket = deque[float]()
+                self._events[key] = bucket
             if len(bucket) >= self.limit:
                 oldest = bucket[0]
                 retry_after = max(1, int(self.window_seconds - (ts - oldest) + 0.999))
                 return False, retry_after
             bucket.append(ts)
+            if len(bucket) == 1:
+                heappush(self._expiry, (ts + self.window_seconds, key))
             return True, 0
 
     def check_request(
