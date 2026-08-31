@@ -229,9 +229,7 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
                         return renderer(data)
 
                     panel_view.__name__ = f"{workspace.name}_panel_{pname}"
-                    panel_view.__qualname__ = (
-                        f"DashboardWorkspace.{workspace.name}_panel_{pname}"
-                    )
+                    panel_view.__qualname__ = f"DashboardWorkspace.{workspace.name}_panel_{pname}"
                     panel_view.__annotations__ = {
                         "params": Annotated[
                             workspace.filters,
