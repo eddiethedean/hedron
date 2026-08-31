@@ -1,0 +1,92 @@
+schema_version = 1
+issue = 555
+reviewed = "2026-08-30"
+policy = "Every first-party server fetch uses hedron_core.fetch_with_policy; non-fetch network boundaries are explicitly classified."
+
+[[surface]]
+id = "core.shared_http"
+owner = "hedron-core"
+paths = ["packages/hedron-core/src/hedron_core/egress.py", "packages/hedron-core/src/hedron_core/egress_http.py"]
+classification = "server_fetch"
+disposition = "migrated"
+rationale = "The concrete transport pins TCP to an approved resolution and reports the observed peer; core owns redirects, retries, deadlines, content checks, decompression, and cumulative budgets."
+
+[[surface]]
+id = "maps.proxy_validator"
+owner = "hedron-maps"
+paths = ["packages/hedron-maps/src/hedron_maps/proxy.py"]
+classification = "validator_only"
+disposition = "migrated"
+rationale = "Map policy delegates to EgressPolicy. The package has no first-party fetch implementation; applications performing the fetch must use fetch_with_policy."
+
+[[surface]]
+id = "gradio.remote_adapter"
+owner = "hedron-gradio"
+paths = ["packages/hedron-gradio/src/hedron_gradio/client.py", "packages/hedron-gradio/src/hedron_gradio/policy.py"]
+classification = "application_injection_boundary"
+disposition = "migrated"
+rationale = "Configuration preflight delegates to EgressPolicy. Automatic gradio_client networking fails closed because its connection cannot be pinned; the private callback seam is application-owned and creates no client in Hedron."
+
+[[surface]]
+id = "workbench.in_process_probe"
+owner = "fastapi-workbench"
+paths = ["packages/fastapi-workbench/src/fastapi_workbench/cli.py"]
+classification = "in_process_asgi"
+disposition = "exempt"
+rationale = "httpx uses ASGITransport(app=app), so no DNS resolution or network socket exists."
+
+[[surface]]
+id = "posit.in_process_probe"
+owner = "hedron-posit"
+paths = ["packages/hedron-posit/src/hedron_posit/cli.py"]
+classification = "in_process_asgi"
+disposition = "exempt"
+rationale = "httpx uses ASGITransport(app=app), so no DNS resolution or network socket exists."
+
+[[surface]]
+id = "mcp.inbound_transport"
+owner = "hedron-mcp"
+paths = ["packages/hedron-mcp/src/hedron_mcp/transport.py"]
+classification = "inbound_server"
+disposition = "exempt"
+rationale = "This module validates inbound request origins and does not initiate outbound I/O."
+
+[[surface]]
+id = "sqlalchemy.application_dsn"
+owner = "hedron"
+paths = ["packages/hedron/src/hedron/connections/sqlalchemy.py"]
+classification = "application_data_connection"
+disposition = "exempt"
+rationale = "The factory receives an application-authored DSN or engine and is not a server-fetch API accepting request-derived destinations. Database drivers require protocol-specific policy outside the HTTP egress contract."
+
+[[surface]]
+id = "snowflake.application_config"
+owner = "hedron"
+paths = ["packages/hedron/src/hedron/connections/snowflake.py"]
+classification = "application_data_connection"
+disposition = "exempt"
+rationale = "The factory receives application-authored connector settings and is not a server-fetch API accepting request-derived destinations."
+
+[[surface]]
+id = "redis_and_job_backends"
+owner = "hedron-core"
+paths = ["packages/hedron-core/src/hedron_core/redis_cache.py", "packages/hedron-core/src/hedron_core/job_status_store.py", "packages/hedron-core/src/hedron_core/jobs_rq.py", "packages/hedron-core/src/hedron_core/jobs_celery.py"]
+classification = "injected_application_client"
+disposition = "exempt"
+rationale = "Every backend receives an already-created application client/app and creates no network client or request-derived destination."
+
+[[surface]]
+id = "loopback_listeners"
+owner = "fastapi-workbench/hedron-posit/hedron-notebook"
+paths = ["packages/fastapi-workbench/src/fastapi_workbench/runner.py", "packages/hedron-posit/src/hedron_posit/runner.py", "packages/hedron-notebook/src/hedron_notebook/preview.py"]
+classification = "listener_or_local_probe"
+disposition = "exempt"
+rationale = "These sockets bind listeners or probe loopback ports; they are not server-side remote-resource fetches."
+
+[[surface]]
+id = "recorder.generated_examples"
+owner = "hedron"
+paths = ["packages/hedron/src/hedron/recorder.py"]
+classification = "code_generation_only"
+disposition = "exempt"
+rationale = "The recorder renders example source text and performs no runtime HTTP request."

@@ -7,7 +7,9 @@ from hedron_core.egress import (
     EgressDecisionKind,
     EgressError,
     EgressPolicy,
+    EgressResponse,
     EgressTransport,
+    EgressTransportError,
     assert_ssrf_safe,
     bounded_response,
     decide_redirect_chain,
@@ -15,6 +17,7 @@ from hedron_core.egress import (
     policy_from_allowlist,
     policy_from_security_policy,
 )
+from hedron_core.egress_http import StdlibEgressTransport
 from hedron_core.intent import (
     IntentError,
     IntentState,
@@ -89,7 +92,9 @@ __all__ = [
     "EgressDecisionKind",
     "EgressError",
     "EgressPolicy",
+    "EgressResponse",
     "EgressTransport",
+    "EgressTransportError",
     "bounded_response",
     "IntentError",
     "IntentState",
@@ -110,6 +115,7 @@ __all__ = [
     "SensitiveSinkError",
     "SensitiveValue",
     "SignedIntent",
+    "StdlibEgressTransport",
     "TrustCompileError",
     "TrustPurpose",
     "assert_ssrf_safe",

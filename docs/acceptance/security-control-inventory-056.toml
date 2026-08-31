@@ -61,14 +61,21 @@ id = "egress.gradio_remote"
 owner = "hedron-gradio"
 kind = "outbound_fetch"
 disposition = "tightened"
-notes = "GradioRemoteConfig validates via core EgressPolicy"
+notes = "GradioRemoteConfig validates via core EgressPolicy; automatic opaque-client networking fails closed"
 
 [[control]]
-id = "egress.mcp_transport"
+id = "request.mcp_transport"
 owner = "hedron-mcp"
+kind = "inbound_origin_validation"
+disposition = "covered"
+notes = "MCP transport accepts inbound requests and does not initiate an outbound fetch"
+
+[[control]]
+id = "egress.shared_http"
+owner = "hedron-core"
 kind = "outbound_fetch"
-disposition = "tightened"
-notes = "MCP origin allowlist adapts core EgressPolicy"
+disposition = "covered"
+notes = "Connection-bound StdlibEgressTransport; redirect/retry/decompression authority remains in fetch_with_policy"
 
 [[control]]
 id = "budget.upload"

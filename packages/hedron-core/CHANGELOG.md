@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+### Security
+
+- Made outbound HTTP connection-bound through `fetch_with_policy` and
+  `StdlibEgressTransport`, including per-hop DNS and peer validation, bounded
+  redirects/retries/decompression, content checks, deadlines, proxy routing,
+  redacted deny codes, and request-local accounting.
+
 ## [1.0.0] — 2026-08-27
 
 - Canonical 1.0 route, interaction, and migration interfaces.

@@ -10,6 +10,7 @@ from dataclasses import dataclass, field
 from typing import Any, cast
 from urllib.parse import urlparse
 
+from hedron_core.egress import EgressError, EgressPolicy
 from hedron_gradio.errors import GradioRemoteError
 
 __all__ = [
@@ -64,7 +65,7 @@ def _addr_is_private(addr: ipaddress.IPv4Address | ipaddress.IPv6Address) -> boo
 
 
 def _host_is_private(host: str) -> bool:
-    """True for loopback/private *literals* (not DNS). See ``_first_private_resolved_address``."""
+    """Return whether a host literal denotes a private or special address."""
     host = normalize_host(host)
     if host in {"localhost", "localhost.localdomain"}:
         return True
@@ -84,43 +85,6 @@ def _host_is_private(host: str) -> bool:
         return True
     embedded = _embedded_ipv4(addr)
     return embedded is not None and _addr_is_private(embedded)
-
-
-def _ip_literal(host: str) -> bool:
-    try:
-        socket.inet_aton(host)
-        return True
-    except OSError:
-        pass
-    try:
-        ipaddress.ip_address(host)
-        return True
-    except ValueError:
-        return False
-
-
-def _first_private_resolved_address(host: str) -> str | None:
-    """Return the first A/AAAA that is private, or ``None`` if DNS fails or is public.
-
-    Resolution is sampled at validation time. DNS TTL rebinding between this
-    check and the HTTP connect remains a residual unless ``allow_private_hosts``.
-    """
-    host = normalize_host(host)
-    if not host or _ip_literal(host):
-        return None
-    try:
-        records = socket.getaddrinfo(host, None, type=socket.SOCK_STREAM)
-    except OSError:
-        return None
-    for _family, _type, _proto, _canon, sockaddr in records:
-        if not sockaddr:
-            continue
-        raw = str(sockaddr[0])
-        if "%" in raw:
-            raw = raw.split("%", 1)[0]
-        if _host_is_private(raw):
-            return raw
-    return None
 
 
 @dataclass(frozen=True)
@@ -208,27 +172,50 @@ def validate_remote_url(
     an allowlisted name cannot point at loopback/link-local/metadata (#268).
     """
     parsed = urlparse(url.strip())
-    scheme = (parsed.scheme or "").lower()
-    if scheme not in config.allowed_schemes:
-        raise GradioRemoteError(
-            f"Disallowed {label} scheme {scheme!r}; allowed: {sorted(config.allowed_schemes)}"
-        )
-    host = parsed.hostname
-    if not host:
-        raise GradioRemoteError(f"Missing host in {label} URL: {url!r}")
-    normalized = normalize_host(host)
-    if normalized not in config.allowed_hosts:
-        raise GradioRemoteError(f"Host {normalized!r} is not in the allowlist for {label}")
-    if config.allow_private_hosts:
-        return
-    if _host_is_private(normalized):
-        raise GradioRemoteError(f"Private or loopback host blocked for {label}: {normalized!r}")
-    resolved_private = _first_private_resolved_address(normalized)
-    if resolved_private is not None:
-        raise GradioRemoteError(
-            f"Private or loopback host blocked for {label}: {normalized!r} "
-            f"(resolved {resolved_private})"
-        )
+    ports = {80, 443}
+    try:
+        if parsed.port is not None:
+            ports.add(parsed.port)
+    except ValueError:
+        pass
+    shared = EgressPolicy(
+        allowed_schemes=config.allowed_schemes,
+        allowed_hosts=config.allowed_hosts,
+        allowed_ports=frozenset(ports),
+        allow_private_addresses=config.allow_private_hosts,
+        max_redirects=config.max_redirect_hops,
+        connect_deadline_seconds=config.request_timeout_seconds,
+        read_deadline_seconds=config.request_timeout_seconds,
+        total_deadline_seconds=config.request_timeout_seconds,
+        response_budget_bytes=config.max_download_bytes,
+        decompressed_budget_bytes=config.max_download_bytes,
+    )
+    try:
+        shared.require(url.strip(), resolver=_resolved_addresses_for_validation)
+    except EgressError as exc:
+        reason = str(exc).rsplit(": ", 1)[-1]
+        if reason == "scheme_denied" or (
+            reason == "invalid_url" and parsed.scheme.lower() not in config.allowed_schemes
+        ):
+            raise GradioRemoteError(
+                f"Disallowed {label} scheme; allowed: {sorted(config.allowed_schemes)}"
+            ) from exc
+        if reason == "host_denied":
+            raise GradioRemoteError(f"Host is not in the allowlist for {label}") from exc
+        if reason == "private_address_denied":
+            raise GradioRemoteError(f"Private or loopback host blocked for {label}") from exc
+        raise GradioRemoteError(f"Shared egress policy rejected {label}: {reason}") from exc
+
+
+def _resolved_addresses_for_validation(host: str) -> tuple[str, ...]:
+    """Resolve for preflight; actual I/O must re-resolve through fetch_with_policy."""
+    try:
+        records = socket.getaddrinfo(host, None, type=socket.SOCK_STREAM)
+    except OSError:
+        # Configuration preflight remains usable offline. This sentinel is not
+        # used for a network connection; the shared fetch path resolves again.
+        return ("8.8.8.8",)
+    return tuple(str(record[4][0]).split("%", 1)[0] for record in records if record[4])
 
 
 def redact_sensitive_text(text: str) -> str:
