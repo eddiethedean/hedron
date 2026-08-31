@@ -7,6 +7,7 @@ import math
 import re
 import socket
 from dataclasses import dataclass, field
+from typing import Any, cast
 from urllib.parse import urlparse
 
 from hedron_gradio.errors import GradioRemoteError
@@ -138,28 +139,31 @@ class GradioRemoteConfig:
     artifact_retention_seconds: float = 300.0
 
     def __post_init__(self) -> None:
+        raw_redirects = cast(Any, self.max_redirect_hops)
         if (
-            isinstance(self.max_redirect_hops, bool)
-            or not isinstance(self.max_redirect_hops, int)
-            or self.max_redirect_hops < 0
+            isinstance(raw_redirects, bool)
+            or not isinstance(raw_redirects, int)
+            or raw_redirects < 0
         ):
             raise ValueError("max_redirect_hops must be >= 0")
+        raw_timeout = cast(Any, self.request_timeout_seconds)
         if (
-            isinstance(self.request_timeout_seconds, bool)
-            or not isinstance(self.request_timeout_seconds, (int, float))
-            or not math.isfinite(float(self.request_timeout_seconds))
-            or self.request_timeout_seconds <= 0
+            isinstance(raw_timeout, bool)
+            or not isinstance(raw_timeout, (int, float))
+            or not math.isfinite(float(raw_timeout))
+            or raw_timeout <= 0
         ):
             raise ValueError("request_timeout_seconds must be > 0")
         for name in ("max_upload_bytes", "max_download_bytes"):
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
                 raise ValueError(f"{name} must be a positive integer")
+        raw_retention = cast(Any, self.artifact_retention_seconds)
         if (
-            isinstance(self.artifact_retention_seconds, bool)
-            or not isinstance(self.artifact_retention_seconds, (int, float))
-            or not math.isfinite(float(self.artifact_retention_seconds))
-            or self.artifact_retention_seconds <= 0
+            isinstance(raw_retention, bool)
+            or not isinstance(raw_retention, (int, float))
+            or not math.isfinite(float(raw_retention))
+            or raw_retention <= 0
         ):
             raise ValueError("artifact_retention_seconds must be > 0")
 

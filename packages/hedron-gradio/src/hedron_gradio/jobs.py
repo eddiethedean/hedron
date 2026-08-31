@@ -7,7 +7,7 @@ import time
 import uuid
 from collections.abc import Mapping
 from dataclasses import dataclass, field
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 from hedron_gradio.errors import GradioRemoteError
 
@@ -66,11 +66,12 @@ class GradioJobManager:
     """In-process job registry with scope isolation and deadlines."""
 
     def __init__(self, *, default_timeout_seconds: float = 30.0) -> None:
+        raw_timeout = cast(Any, default_timeout_seconds)
         if (
-            isinstance(default_timeout_seconds, bool)
-            or not isinstance(default_timeout_seconds, (int, float))
-            or not math.isfinite(float(default_timeout_seconds))
-            or default_timeout_seconds <= 0
+            isinstance(raw_timeout, bool)
+            or not isinstance(raw_timeout, (int, float))
+            or not math.isfinite(float(raw_timeout))
+            or raw_timeout <= 0
         ):
             raise ValueError("default_timeout_seconds must be > 0")
         self._default_timeout_seconds = default_timeout_seconds
@@ -86,11 +87,12 @@ class GradioJobManager:
     ) -> str:
         job_id = uuid.uuid4().hex
         timeout = timeout_seconds if timeout_seconds is not None else self._default_timeout_seconds
+        raw_timeout = cast(Any, timeout)
         if (
-            isinstance(timeout, bool)
-            or not isinstance(timeout, (int, float))
-            or not math.isfinite(float(timeout))
-            or timeout <= 0
+            isinstance(raw_timeout, bool)
+            or not isinstance(raw_timeout, (int, float))
+            or not math.isfinite(float(raw_timeout))
+            or raw_timeout <= 0
         ):
             raise ValueError("timeout_seconds must be finite and > 0")
         now = time.monotonic()
