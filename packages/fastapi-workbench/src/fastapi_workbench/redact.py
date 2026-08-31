@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from collections.abc import Mapping
 from typing import Any, cast
-from urllib.parse import urlsplit, urlunsplit
+from urllib.parse import unquote_plus, urlsplit, urlunsplit
 
 _SENSITIVE_QUERY_KEYS = frozenset(
     {
@@ -37,7 +37,11 @@ def _redact_nested(value: object) -> object:
         return tuple(_redact_nested(item) for item in cast(tuple[object, ...], value))
     if isinstance(value, dict):
         mapping = cast(dict[object, object], value)
-        return {key: _redact_nested(item) for key, item in mapping.items()}
+        redacted: dict[object, object] = {}
+        for key, item in mapping.items():
+            key_text = str(key).lower()
+            redacted[key] = _REDACTED if key_text in _SENSITIVE_QUERY_KEYS else _redact_nested(item)
+        return redacted
     return value
 
 
@@ -52,7 +56,7 @@ def redact_query(query: str) -> str:
     parts: list[str] = []
     for piece in query.split("&"):
         key, _, _value = piece.partition("=")
-        lowered = key.lower()
+        lowered = unquote_plus(key).lower()
         if lowered in _SENSITIVE_QUERY_KEYS or "token" in lowered or "license" in lowered:
             parts.append(f"{key}={_REDACTED}")
         else:
