@@ -27,4 +27,4 @@ See [RELEASE_0_58](https://github.com/eddiethedean/hedron/blob/main/docs/accepta
 and
 [PROGRESSIVE_AUTHORING_058](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/PROGRESSIVE_AUTHORING_058.md).
 
-Install from PyPI with `hedron>=0.58.0,<0.60`; the repository tip is `0.58.0`.
+Install current applications from PyPI with `hedron>=1.0.0`; the repository tip is the historical `0.58.0` tree.

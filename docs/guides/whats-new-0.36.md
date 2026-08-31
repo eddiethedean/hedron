@@ -7,7 +7,7 @@
     Keep the historical pins below only when maintaining that release line.
 
 **Published** as `v0.36.0`. Historical pin: `hedron>=0.36.0,<0.37`.
-For new apps, use `hedron>=0.58.0,<0.60`; see [What’s new in 0.51](whats-new-0.51.md).
+For new apps, use the current compatibility floor `hedron>=1.0.0`; see [Current release and support](current-release.md).
 
 Phase 0.36 establishes the Web Component ABI foundation (RFC-0060 / D-064): a versioned
 element registry, SSR/HTMX lifecycle rules, and `ElementStateOwnership`. This is **not**

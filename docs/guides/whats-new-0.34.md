@@ -7,7 +7,7 @@
     Keep the historical pins below only when maintaining that release line.
 
 **Published** as `v0.34.0`. Historical pin: `hedron>=0.34.0,<0.35`.
-For new apps, use `hedron>=0.58.0,<0.60`; see [What’s new in 0.51](whats-new-0.51.md).
+For new apps, use the current compatibility floor `hedron>=1.0.0`; see [Current release and support](current-release.md).
 
 Phase 0.34 graduates **`hedron-gradio` `0.2.0` Beta** for production-grade remote Gradio and
 bounded Hugging Face Space client interoperability. Default presentation refresh remains deferred

@@ -7,7 +7,7 @@
     Keep the historical pins below only when maintaining that release line.
 
 **Published** as `v0.33.0`. Historical coordinated pin: `hedron>=0.33.0,<0.34`.
-For new apps, use `hedron>=0.58.0,<0.60`; see [What’s new in 0.51](whats-new-0.51.md).
+For new apps, use the current compatibility floor `hedron>=1.0.0`; see [Current release and support](current-release.md).
 
 Phase **0.33** (D-061 / RFC-0066) ships **`hedron-posit`** as the unified Posit
 Workbench / Connect deployment adapter. Native Connect GUID on Connect

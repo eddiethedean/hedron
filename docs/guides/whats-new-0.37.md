@@ -7,7 +7,7 @@
     Keep the historical pins below only when maintaining that release line.
 
 **Published** as `v0.37.0`. Historical pin: `hedron>=0.37.0,<0.38`.
-For new apps, use `hedron>=0.58.0,<0.60`; see [What’s new in 0.51](whats-new-0.51.md).
+For new apps, use the current compatibility floor `hedron>=1.0.0`; see [Current release and support](current-release.md).
 
 Phase **0.37** ships Alpha **hedron-elements 0.37.0** with form-associated reference controls, an `InteractionState` bridge, semantic primitives, and high-severity remediations #230–#237 plus follow-on #244.
 

@@ -36,7 +36,7 @@ optimistic edits ([RFC-0060](https://github.com/eddiethedean/hedron/blob/main/do
 
 ## Pins
 
-Historical 0.39 pin below. For new apps, use `hedron>=0.58.0,<0.61`; see [What’s new in 0.51](whats-new-0.51.md).
+Historical 0.39 pin below. For new apps, use the current compatibility floor `hedron>=1.0.0`; see [Current release and support](current-release.md).
 
 ```bash
 pip install "hedron>=0.39.0,<0.40"

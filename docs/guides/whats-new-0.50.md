@@ -6,7 +6,7 @@
     support, and published 1.0 status, use [Current release and support](current-release.md).
     Keep the historical pins below only when maintaining that release line.
 
-For new apps, pin `hedron>=0.58.0,<0.60`. The 0.50 train last uploaded on PyPI as
+For new apps, use the current compatibility floor `hedron>=1.0.0`. The 0.50 train last uploaded on PyPI as
 **0.50.1**; in-tree 0.50 patches remained **0.50.3**.
 
 ## 0.50.3 patch

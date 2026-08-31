@@ -7,7 +7,7 @@
     Keep the historical pins below only when maintaining that release line.
 
 **Published** as `v0.38.0` on 2026-08-14. Historical pin: `hedron>=0.38.0,<0.39` and `hedron-charts>=0.2.3,<0.3`.
-For new apps, use `hedron>=0.58.0,<0.60`; see [What’s new in 0.51](whats-new-0.51.md).
+For new apps, use the current compatibility floor `hedron>=1.0.0`; see [Current release and support](current-release.md).
 
 Phase **0.38** ships Hedron's first-party high-fidelity chart system
 ([RFC-0069](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) / D-066).

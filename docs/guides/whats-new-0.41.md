@@ -7,7 +7,7 @@
     Keep the historical pins below only when maintaining that release line.
 
 **Published** as `v0.41.0` (historical). Historical pin: `hedron>=0.41.0,<0.42`.
-For new apps, use `hedron>=0.58.0,<0.60`; see [What’s new in 0.51](whats-new-0.51.md).
+For new apps, use the current compatibility floor `hedron>=1.0.0`; see [Current release and support](current-release.md).
 
 Phase **0.41** adds allowlisted browser composition, subject-bound draft transfer,
 progressive navigation/restoration, content-free traces, and element/region failure isolation

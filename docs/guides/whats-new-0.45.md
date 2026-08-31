@@ -9,7 +9,7 @@
 **Published `v0.45.0`**. Owning decisions: D-074 / D-077.
 Tracking: [#328](https://github.com/eddiethedean/hedron/issues/328).
 
-For new apps, pin `hedron>=0.58.0,<0.60`; see [What’s new in 0.51](whats-new-0.51.md).
+For new apps, use the current compatibility floor `hedron>=1.0.0`; see [Current release and support](current-release.md).
 
 ## Highlights
 
@@ -43,5 +43,5 @@ human AT claim.
 
 ## Compatibility
 
-Historical 0.45 pin was `hedron>=0.45.0,<0.46`. For new apps, pin `hedron>=0.58.0,<0.60`.
+Historical 0.45 pin was `hedron>=0.45.0,<0.46`. For new apps, use `hedron>=1.0.0`.
 Rollback of a 0.45-era app: pin `>=0.44.0,<0.45`. 0.42/0.43/0.44 apps that do not read the catalog stay request-path identical.

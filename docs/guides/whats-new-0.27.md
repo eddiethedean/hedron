@@ -7,7 +7,7 @@
     Keep the historical pins below only when maintaining that release line.
 
 **Published** as `v0.27.0`. Historical pin: `hedron>=0.27.0,<0.28`.
-For new apps, use `hedron>=0.58.0,<0.60`; see [What’s new in 0.51](whats-new-0.51.md).
+For new apps, use the current compatibility floor `hedron>=1.0.0`; see [Current release and support](current-release.md).
 
 Hedron 0.27 graduates `hedron-data`, `hedron-flask`, `hedron-django`, `hedron-jinja`,
 and `hedron-extras` to production-grade for their declared Supported inventories

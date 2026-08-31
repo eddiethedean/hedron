@@ -144,8 +144,9 @@ pwd
 python3.11 -c "import hedron, hedron_posit; print(hedron.__version__)"
 ```
 
-Expect the path to end in `my-workbench-app` and Hedron to report the **`1.0.x`** version
-required by `hedron-posit`.
+Expect the path to end in `my-workbench-app` and Hedron to report a **`1.0.x`** version
+required by `hedron-posit`. The `>=1.0.0` floor intentionally accepts compatible bug-fix releases,
+so this guide should not need a new pin for every patch release.
 
 The project contains:
 
