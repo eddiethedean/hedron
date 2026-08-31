@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 from hedron_core.egress import (
-    bounded_response,
     EgressDecision,
     EgressDecisionKind,
     EgressError,
     EgressPolicy,
     assert_ssrf_safe,
+    bounded_response,
     decide_redirect_chain,
     policy_from_allowlist,
     policy_from_security_policy,
