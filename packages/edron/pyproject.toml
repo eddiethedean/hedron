@@ -1,6 +1,6 @@
 [project]
 name = "edron"
-version = "1.0.2"
+version = "1.0.3"
 description = "Pythonic class-oriented authoring facade for Hedron"
 readme = "README.md"
 requires-python = ">=3.10,<3.15"

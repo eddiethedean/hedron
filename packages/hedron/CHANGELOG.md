@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.3] — 2026-08-31
+
+### Security
+
+- Bound replay payload storage, remove unsafe response headers from replayed results, validate CSP
+  and tracing sample rates, and enforce ZIP member and output budgets.
+
+### Fixed
+
+- Propagate dashboard filters and cache TTLs through refreshed handles.
+
 ## [1.0.2] — 2026-08-31
 
 ### Security

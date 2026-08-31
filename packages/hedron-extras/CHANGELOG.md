@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.3] — 2026-08-31
+
+### Security
+
+- Bound nested `TreeView` traversal and enforce required `ChoiceCards` selections.
+
 ## [1.0.2] — 2026-08-31
 
 - Maintenance release for the coordinated 1.0 train.

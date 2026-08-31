@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.0.3] — 2026-08-31
+
+### Security
+
+- Validate inference, feedback, and action-state policy bounds, and enforce configured action
+  timeouts through completion.
+
+### Fixed
+
+- Make in-memory cache writes atomic, consume owner-only single-flight failures, cancel sibling
+  preparation tasks after failure, and traverse deeply nested preparation trees iteratively.
+- Preserve dashboard filter query state and configured cache TTLs across host updates.
+
 ## [1.0.2] — 2026-08-31
 
 ### Security
