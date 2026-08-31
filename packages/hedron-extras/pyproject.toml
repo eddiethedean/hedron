@@ -1,6 +1,6 @@
 [project]
 name = "hedron-extras"
-version = "1.0.1"
+version = "1.0.2"
 description = "Curated optional extras and analysis workbenches for Hedron"
 readme = "README.md"
 requires-python = ">=3.10,<3.15"
