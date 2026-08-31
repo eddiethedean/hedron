@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.1] — 2026-08-30
+
+- Maintenance release for the coordinated 1.0 train.
+
 ## [1.0.0] — 2026-08-27
 
 - Canonical 1.0 route, interaction, and migration interfaces.
