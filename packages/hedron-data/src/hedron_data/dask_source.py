@@ -205,7 +205,12 @@ class DaskDataSource(Generic[T]):
                 head = head.compute()
             raw_records = head.iloc[q.offset : q.offset + q.limit].to_dict(orient="records")
             records = [
-                cast(dict[str, object], record) for record in cast(Sequence[object], raw_records)
+                {
+                    name: value
+                    for name, value in cast(dict[str, object], record).items()
+                    if name not in self._secret_fields
+                }
+                for record in cast(Sequence[object], raw_records)
             ]
         if len(records) > self._max_compute_rows:
             raise error(

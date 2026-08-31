@@ -232,7 +232,10 @@ def _as_number(value: Any) -> float | None:
     if isinstance(value, bool):
         return float(value)
     if isinstance(value, (int, float)):
-        number = float(value)
+        try:
+            number = float(value)
+        except OverflowError:
+            return None
         return number if math.isfinite(number) else None
     try:
         number = float(value)
@@ -248,7 +251,10 @@ def _sort_key(value: object) -> tuple[int, str, object]:
     if isinstance(value, bool):
         return (1, "bool", "1" if value else "0")
     if isinstance(value, (int, float)):
-        return (2, "number", float(value))
+        try:
+            return (2, "number", float(value))
+        except OverflowError:
+            return (2, "number-overflow", str(value))
     if isinstance(value, str):
         return (3, "str", value)
     return (4, type(value).__name__, json.dumps(value, sort_keys=True, default=str))
@@ -430,9 +436,7 @@ def _apply_aggregate(rows: list[dict[str, object]], tr: TransformDef) -> list[di
         buckets.setdefault(key, []).append(row)
     out: list[dict[str, object]] = []
     for _key, group in buckets.items():
-        item: dict[str, object] = {
-            g: group[0].get(g) if group else None for g in group_by
-        }
+        item: dict[str, object] = {g: group[0].get(g) if group else None for g in group_by}
         for metric in metrics:
             mop = metric.get("op", "count")
             field = metric.get("field")

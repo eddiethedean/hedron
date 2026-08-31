@@ -131,10 +131,36 @@ def test_missing_marker_coordinates_are_rejected() -> None:
 
 
 def test_map_exposes_configured_csrf_names() -> None:
-    from hedron_core import RenderMode, render
+    from starlette.applications import Starlette
+    from starlette.requests import Request
+
+    from hedron.context import render_context_from_request
+    from hedron_core import RenderMode, SecurityPolicy, render
+
+    app = Starlette()
+    app.state.hedron_security = SecurityPolicy(
+        csrf_cookie_name="my_csrf", csrf_header_name="X-My-CSRF"
+    )
+    request = Request(
+        {
+            "type": "http",
+            "app": app,
+            "headers": [],
+            "method": "GET",
+            "path": "/",
+            "raw_path": b"/",
+            "query_string": b"",
+            "root_path": "",
+            "scheme": "https",
+            "server": ("testserver", 443),
+            "client": ("127.0.0.1", 1234),
+        }
+    )
 
     out = render(
-        Map(csrf_cookie_name="my_csrf", csrf_header_name="X-My-CSRF"), mode=RenderMode.FRAGMENT
+        Map(),
+        context=render_context_from_request(request),
+        mode=RenderMode.FRAGMENT,
     ).html
     assert 'data-hedron-csrf-cookie="my_csrf"' in out
     assert 'data-hedron-csrf-header="X-My-CSRF"' in out

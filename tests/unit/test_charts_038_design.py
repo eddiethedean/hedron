@@ -75,3 +75,17 @@ def test_group_transforms_canonicalize_nested_keys() -> None:
         [TransformDef(op="stack", field="y", params={"groupby": ["g"]})],
     )
     assert [row["y_y1"] for row in stacked] == [2.0, 5.0]
+
+
+def test_transforms_handle_oversized_integers_without_overflow() -> None:
+    huge = 10**1000
+    filtered = apply_transforms(
+        [{"x": huge}],
+        [TransformDef(op="filter", field="x", params={"compare": "gt", "value": 0})],
+    )
+    assert filtered == []
+    sorted_rows = apply_transforms(
+        [{"x": huge}, {"x": 1}],
+        [TransformDef(op="sort", field="x")],
+    )
+    assert {row["x"] for row in sorted_rows} == {1, huge}

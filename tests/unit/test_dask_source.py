@@ -73,3 +73,4 @@ def test_dask_request_allowlist_narrows_source_and_hides_secret() -> None:
         )
     with pytest.raises(HedronError, match="Secret Dask fields"):
         src.fetch(DataQuery(projection=("secret",)))
+    assert src.fetch(DataQuery()).rows == [{"public": "ok"}]
