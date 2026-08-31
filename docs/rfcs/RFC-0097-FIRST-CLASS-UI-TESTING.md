@@ -58,6 +58,8 @@ the existing contract from a controlled test process.
 6. Turn a failure into an actionable, correlated, redacted, and size-bounded evidence bundle.
 7. Preserve direct Playwright access for behavior outside Hedron's owned semantics.
 8. Preserve every stable 1.0 testing API and the no-browser fast path.
+9. Give every coordinated and optional package an explicit testing-ownership disposition without
+   duplicating the central harness or creating ambient pytest plugins.
 
 ## Testing layers and authority
 
@@ -179,6 +181,43 @@ The ordinary command remains `pytest`. Hedron may extend `hedron testgen` to emi
 browser-scenario stubs and may add a read-only testing doctor, but it does not add a competing test
 runner.
 
+### Satellite testing ownership
+
+The central harness owns browser/session lifecycle, managed hosting, Playwright composition,
+generic semantic lookup, settle/error/artifact schemas, redaction, and pytest integration. A
+satellite owns only test behavior that requires its public domain types, component semantics,
+protocol, host lifecycle, or artifact knowledge.
+
+Stage 0 assigns every coordinated and optional package one explicit disposition:
+
+| Candidate disposition | Meaning | Candidate examples |
+|---|---|---|
+| Package testing module | Public synthetic fixtures, semantic helpers, event/assertion helpers, lifecycle facts, or artifact summarizers for a specialist UI package | `hedron_data.testing`, `hedron_charts.testing`, `hedron_maps.testing`, `hedron_elements.testing` |
+| Thin facade | Task-oriented re-export/adaptation over the central harness without a second engine | `edron.testing` |
+| Managed-host provider | Package-specific launcher/readiness/root-path facts consumed through the central host protocol | `hedron_flask.testing`, `hedron_django.testing`, and only if admitted `hedron_posit.testing` |
+| Protocol-fixture provider | Deterministic public stubs and assertions for an external protocol, without browser-runner ownership | Candidate `hedron_gradio.testing`, `hedron_mcp.testing`, `hedron_native.testing`, or `hedron_notebook.testing` |
+| Testing product; no nested module | The package already is a simulator, conformance kit, or authoring test kit | `hedron-conformance`, `hedron-sim`, `edron-sim`, `hedron-sample-kit` |
+| Private-only or non-fit | First-party tests consume the central harness; no downstream testing API is justified | Tooling/application packages without a public extension or fixture use case |
+
+These names are candidates, not preapproved modules. A package receives a public module only when
+downstream authors need reusable package-owned behavior. Package test suites remain private and do
+not justify a public API by themselves.
+
+Satellite modules may provide bounded constructors, synthetic fixtures, package-specific semantic
+lookup, readiness/settle contributions, event assertions, redactors, artifact summaries, and
+reusable conformance scenarios. They may not provide another `BrowserScenario`, server runner,
+Playwright wrapper, locator DSL, artifact root, global error policy, or pytest configuration layer.
+
+No satellite auto-registers a pytest plugin. Optional contributions are loaded through a frozen,
+explicit testing-contribution protocol or direct import, with package identity, maturity, version,
+capabilities, dependencies, and failure behavior. Installing an unrelated satellite must not alter
+pytest collection, browser behavior, network policy, artifact capture, or settle semantics.
+
+The current `hedron.testing` compatibility surface is inventoried before ownership moves. Helpers
+that construct optional-package types may gain an owning-package implementation while existing
+stable imports remain compatible re-exports. Repository-only fixture paths are not valid public
+package APIs; publish bounded fixture data inside the owning distribution or keep it private.
+
 ## Reference behavior corpus
 
 The release corpus includes at least:
@@ -292,6 +331,8 @@ packet.
 6. Which first-party events constitute the exact settle schema and version?
 7. What capture profile is safe and useful for local, CI, and explicitly authorized remote tests?
 8. Which budgets and supported OS/browser revisions are justified by the Stage 0 measurements?
+9. Which packages demonstrate a downstream need for a public testing module, and which contribution
+   capabilities can remain static registry facts rather than executable hooks?
 
 Implementation does not begin until these decisions, the evidence schema, and the reference corpus
 are frozen. Resolving an open question may narrow the phase; it may not silently broaden runtime or
@@ -318,4 +359,7 @@ remote-testing authority.
     browser, pytest, Node.js, or service dependency.
 11. Documentation teaches the testing layers, failure workflow, security limits, and lowest-cost
     appropriate test.
-12. Every Required row in `release-gate-1.1.toml` is Verified before any release claim.
+12. Every coordinated and optional package has a machine-readable testing disposition; admitted
+    contributions use the central protocol, preserve import isolation, and pass package-local plus
+    fleet conformance without ambient pytest registration.
+13. Every Required row in `release-gate-1.1.toml` is Verified before any release claim.

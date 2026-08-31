@@ -6981,7 +6981,11 @@ user-agent behavior. Playwright remains the browser, locator, actionability, ass
 authority. Hedron contributes a managed loopback application host, semantic mark/region lookup,
 bounded Hedron-owned settle facts, correlated server/browser errors, leak-free teardown, and a
 versioned redacted failure bundle. Ordinary `pytest` remains the runner; the browser surface is an
-optional install and never enters core/base imports.
+optional install and never enters core/base imports. Each coordinated and optional package receives
+an explicit testing disposition: package testing module, thin facade, managed-host provider,
+protocol-fixture provider, testing-product/no-nested-module, or private/non-fit. Satellites may
+contribute package-owned fixtures and semantics through the central protocol but may not duplicate
+the browser harness or auto-register pytest plugins.
 
 The phase begins with competing thin-wrapper prototypes and a documented fresh-user exercise.
 Stage 0 freezes the exact API and decides which managed hosts, schemas, artifacts, and generated
@@ -6994,7 +6998,8 @@ a semantic real-browser test without manually starting a server or sleeping. Del
 page, console, network, locator, and settle failures produce actionable bounded evidence with
 redaction/provenance. Required browser/host/dependency rows pass rather than skip; repeated and
 parallel runs leak no port, process, thread, browser context, override, registry, or temporary
-artifact; and every stable 1.0 testing import and non-browser path remains compatible.
+artifact; every satellite testing disposition and admitted contribution passes fleet conformance;
+and every stable 1.0 testing import and non-browser path remains compatible.
 
 **Non-goals.** No fake DOM/widget emulator, complete Playwright wrapper, second test runner,
 production browser instrumentation, ambient remote testing/capture, Stable pixel-golden framework,

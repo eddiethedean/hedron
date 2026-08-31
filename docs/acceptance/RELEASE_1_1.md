@@ -35,6 +35,7 @@ or supported application behavior.
 | `ERROR-110` | Correlated server exception, page error, console, request/response, asset, crash, expected-failure, and clean-state behavior; narrow scoped expectations restore deterministically |
 | `ARTIFACT-110` | Versioned failure bundle with allowed screenshot/DOM, Playwright trace, semantic/settle/server/browser/environment facts, deterministic layout, redaction, truncation/missing markers, path safety, retention and byte/count budgets, no upload |
 | `PYTEST-110` | Optional dependency/import isolation, fixture/options/markers/config precedence, pytest-playwright composition, missing-browser diagnostics, headed/debug/trace workflow, xdist safety, ordinary `pytest` runner |
+| `SATELLITE-110` | Every coordinated/optional package has a module/facade/host-provider/protocol-provider/testing-product/private/non-fit disposition; admitted contributions use one explicit versioned central protocol, preserve optional imports and stable compatibility re-exports, package public fixtures, reject conflicts, and never ambiently register pytest plugins or duplicate harness authority |
 | `BEHAVIOR-110` | Required PAGE/fragment/OOB/history, form/CSRF/auth, local/request/combined, specialist element, upload/download, action-state, no-JS/failure, root-path, and deliberate-failure corpus |
 | `A11Y-110` | Semantic lookup, keyboard/focus/announcement, reduced-motion, forced-colors, zoom/reflow and viewport fixtures; axe provenance/incomplete/error behavior; no automated accessibility-conformance claim |
 | `SECURITY-110` | Loopback and remote authorization, network policy, secrets/header/cookie/query/form/trace redaction, synthetic fixture guidance, path/archive safety, browser/context/process isolation, no authorization bypass |
@@ -61,7 +62,8 @@ The phase may promote only the surface supported by evidence. Candidate disposit
 - Stable: pytest entry point, managed flagship host, external URL, browser scenario lifecycle,
   semantic marks/regions, cleanup, and the supported failure workflow;
 - Beta: versioned settle/artifact schemas and generated browser stubs until downstream experience
-  proves compatibility; and
+  proves compatibility; package testing modules and the contribution protocol until package/fleet
+  evidence justifies narrower promotion; and
 - Deferred: visual golden comparison, record/replay, remote production testing, a fake widget/DOM
   emulator, and any unproven managed adapter launcher.
 
@@ -73,7 +75,7 @@ W0 may narrow these dispositions. It cannot promote a Deferred item merely by im
 |---|---|
 | `1.1a0` | `FREEZE-110`, prototypes, support/maturity decisions, schemas, corpus, and measured budgets |
 | `1.1a1` | Managed host, BrowserScenario vertical slice, semantic locators, settle, error, artifact, and cleanup proof in Chromium |
-| `1.1b1` | Pytest/package/scaffold integration plus full behavior, security, accessibility, and parallel-execution corpus |
+| `1.1b1` | Pytest/package/scaffold integration, `SATELLITE-110` dispositions/conformance, plus full behavior, security, accessibility, and parallel-execution corpus |
 | `1.1rc1` | Three-browser/host/dependency matrix, clean artifacts, compatibility, docs, rollback, and every non-release gate Verified |
 
 ## Stop conditions

@@ -28,6 +28,8 @@ Stage 1 is blocked until W0 produces and freezes:
 - default console, server, request, response, asset, and expected-failure policies;
 - the reference behavior and deliberate-failure corpus;
 - supported Python, host, browser, Playwright, pytest, OS, and parallel-execution matrices;
+- a complete coordinated/optional-package testing disposition and the versioned contribution
+  protocol, including import, registration, conflict, maturity, and missing-package behavior;
 - measured performance, resource, artifact, and release-CI budgets; and
 - additive packaging and compatibility decisions for `hedron[browser]` and a possible
   `hedron[testing]` extra.
@@ -49,6 +51,7 @@ the stable 1.0 testing inventory.
 | Pytest integration | new optional plugin module | Own fixture/options/markers/artifact lifecycle without base-import side effects |
 | Browser engine | Playwright | Own page, locator, actionability, web assertions, contexts, traces, screenshots |
 | Test generation | `hedron testgen` | Optionally emit reviewable browser stubs from declared interactions |
+| Satellite test semantics | owning optional package | Contribute only package-native fixtures, lifecycle facts, assertions, redactors, or summaries through the central protocol |
 | Documentation/scaffold | docs and `hedron new` | Teach the testing pyramid and include one bounded browser example |
 
 Candidate source placement is `hedron.testing.browser_scenario` plus
@@ -66,6 +69,7 @@ public. Core-only modules cannot import pytest, Playwright, Uvicorn, or host imp
 | mark/region locators | Stable candidate | Strict lookup by rendered `data-hedron-mark` or declared region identity |
 | settle record v1 | Beta candidate | Bounded owned-work facts; never a claim that arbitrary browser work is idle |
 | failure bundle v1 | Beta candidate | Redacted and bounded diagnostic artifact with provenance and missing-data markers |
+| testing contribution v1 | Beta candidate | Explicit versioned satellite contribution metadata; no ambient pytest registration or duplicate harness authority |
 | browser `testgen` profile | Beta candidate | Reviewable pytest stub generation; no execution or overwrite authority |
 | visual golden comparison | Deferred | Requires a separate baseline/review/platform-variance contract |
 
@@ -82,6 +86,8 @@ make an artifact Stable.
 - Run a documented fresh-user exercise against both prototypes and record ambiguity, setup time,
   failure comprehension, and escape-hatch needs.
 - Probe managed ASGI, Flask, Django, and external-URL lifecycle behavior without assuming parity.
+- Inventory package-owned fixtures/assertions and assign every coordinated and optional package a
+  proposed module/facade/host-provider/protocol-provider/testing-product/private/non-fit disposition.
 - Capture baseline startup, navigation, settle, cleanup, xdist, and artifact measurements.
 - Freeze public names, schemas, maturity, support matrix, budgets, and the Required corpus.
 
@@ -170,7 +176,44 @@ pass; every omission/truncation is visible rather than reported as complete evid
 **Exit:** a clean generated project installs one optional testing surface and runs render, HTTP,
 and browser examples with ordinary pytest; core/base installations remain unchanged.
 
-### W7 — Reference behavior and accessibility verticals
+### W7 — Satellite testing ownership and contribution protocol
+
+- Inventory helpers currently exposed from the flagship package that construct optional-package
+  types, and classify each as central, compatibility re-export, or owning-package behavior.
+- Freeze a minimal contribution record containing package/logical id, version, maturity,
+  capabilities, required dependencies, supported artifact/settle schema versions, and conflicts.
+- Keep discovery explicit: direct import, declared package registration, or another frozen
+  non-ambient mechanism. Installing a distribution may not silently register a pytest plugin.
+- Define bounded capabilities for synthetic fixture factories, semantic component helpers,
+  readiness/settle facts, event assertions, redactors, artifact summaries, host launchers, and
+  reusable conformance scenarios.
+- Reject duplicate browser/session/server/locator/artifact/error-policy ownership and conflicting
+  contributions with package/source diagnostics.
+- Add candidate package-native modules only where downstream authors need them; do not publish a
+  module merely to expose a package's private tests.
+- Preserve stable `hedron.testing` imports as compatibility re-exports when ownership moves, and
+  keep optional imports lazy and actionable when the owning package is absent.
+- Move any admitted public fixture data out of repository `tests/` paths and into bounded packaged
+  resources; otherwise keep the loader private.
+- Exercise each admitted contribution alone, missing, disabled, duplicated, incompatible,
+  out-of-order, and in the full installed fleet.
+
+Candidate Stage 0 dispositions include:
+
+| Package family | Candidate disposition |
+|---|---|
+| `hedron-data`, `hedron-charts`, `hedron-maps`, `hedron-elements`, qualifying curated extras | Owning-package testing module for specialist UI types and semantics |
+| `edron` | Thin facade over the central harness plus Edron-native app construction |
+| `hedron-flask`, `hedron-django`, optionally `hedron-posit` | Managed-host contribution only if lifecycle evidence passes; external URL remains the portable fallback |
+| `hedron-gradio`, `hedron-mcp`, `hedron-native`, `hedron-notebook` | Protocol-fixture provider only when a downstream public use case is proven |
+| `hedron-conformance`, `hedron-sim`, `edron-sim`, `hedron-sample-kit`, portable runtime evaluators | Testing product; no nested testing module |
+| Explorer, Jinja, deployment/tooling packages without downstream fixture demand | Private-only or explicit non-fit unless W0 evidence justifies a narrower provider |
+
+**Exit:** `SATELLITE-110` records every package disposition; all admitted contributions use one
+protocol, preserve optional dependency isolation, and pass conflict, absence, fleet, and package
+artifact tests without an ambient pytest plugin.
+
+### W8 — Reference behavior and accessibility verticals
 
 - Implement the ten RFC reference behavior families using synthetic data and stable semantics.
 - Cover PAGE/fragment/OOB/history, forms/security failures, local/request/combined interactions,
@@ -183,12 +226,13 @@ and browser examples with ordinary pytest; core/base installations remain unchan
 **Exit:** `BEHAVIOR-110`, `A11Y-110`, and the browser/host matrix pass with no blanket accessibility
 or managed-adapter parity claim.
 
-### W8 — Compatibility, fleet, and release closure
+### W9 — Compatibility, fleet, and release closure
 
 - Freeze and compare the stable 1.0 testing inventory, signatures, behavior, imports, and extras.
 - Run clean base, browser, and testing-extra wheel/sdist/offline-install fixtures.
 - Prove package import order and missing-extra messages without optional dependency leakage.
-- Adopt the harness in the reference app and a bounded first-party package sample before promotion.
+- Adopt the harness in the reference app and every package family admitted by `SATELLITE-110`
+  before promotion.
 - Verify documentation, scaffold, testgen, testing API, stability, support, and compatibility claims.
 - Run security, accessibility, performance, browser, adapter, package, and rollback evidence.
 
@@ -200,14 +244,15 @@ or managed-adapter parity claim.
 W0 freeze
   -> W1 managed host
   -> W2 browser session
-  -> W3 settle probe -----> W7 behavior/a11y corpus
+  -> W3 settle probe -----> W8 behavior/a11y corpus
   -> W4 error policy ----/          |
   -> W5 artifacts -------/          v
-  -> W6 pytest/package -----------> W8 release closure
+  -> W6 pytest/package -> W7 satellites -> W9 release closure
 ```
 
 W1 and the schema portions of W3–W5 may proceed in parallel after the freeze. W7 requires the
-vertical slice from W1–W6. No public promotion occurs before W8.
+central protocols from W2–W6, while W8 requires the vertical slice from W1–W7. No public promotion
+occurs before W9.
 
 ## Required vertical slice
 
@@ -222,14 +267,15 @@ The first end-to-end slice is a secured profile form in the reference applicatio
    correlation, redaction, and a useful timeout/error message; and
 7. success, failure, timeout, and interruption leave no host, port, context, override, or temp file.
 
-This slice passes Chromium before breadth work begins. Firefox/WebKit and adapter/external rows join
-in W7.
+This slice passes Chromium before breadth work begins. Satellite contributions join in W7;
+Firefox/WebKit and adapter/external rows join in W8.
 
 ## Diagnostics and budgets
 
 Candidate diagnostic families are `HED-TEST-HOST-*`, `HED-TEST-LOCATOR-*`,
 `HED-TEST-SETTLE-*`, `HED-TEST-ERROR-*`, `HED-TEST-ARTIFACT-*`, and
-`HED-TEST-CONFIG-*`. Stage 0 freezes code ownership, severity, remediation, structured fields, and
+`HED-TEST-CONFIG-*`, plus `HED-TEST-SATELLITE-*` for package contribution/disposition failures.
+Stage 0 freezes code ownership, severity, remediation, structured fields, and
 suppression/expectation behavior.
 
 Budgets cover startup/readiness, navigation and probe overhead, settle event count/bytes, server and
@@ -247,6 +293,9 @@ a budget.
 - The managed host binds loopback only and changes no production server defaults.
 - Versioned settle and artifact records accept compatible unknown fields and reject incompatible
   schema versions with an actionable diagnostic.
+- Satellite contributions are opt-in/explicit, independently versioned, and removable without
+  changing the central browser scenario; stable compatibility re-exports remain until a future
+  SemVer-authorized migration.
 - If browser lifecycle, redaction, or cleanup cannot meet the Required gates, the candidate remains
   Beta/internal or the phase ships only adoption/compatibility documentation; it is not promoted by
   schedule.
@@ -268,5 +317,6 @@ matrix cannot be reproduced from clean artifacts.
 The phase is done only when a clean generated application demonstrates the three testing layers;
 the managed browser test uses semantic locators and no manual server or sleeps; deliberate failures
 produce correlated bounded evidence; the Required browser/host/accessibility/security/performance
-matrix passes; optional imports and parallel cleanup are proven; stable 1.0 testing behavior is
+matrix passes; every package has a testing disposition and admitted satellite contributions pass
+fleet conformance; optional imports and parallel cleanup are proven; stable 1.0 testing behavior is
 unchanged; and every Required release-gate row is Verified.

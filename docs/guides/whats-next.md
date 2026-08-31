@@ -43,8 +43,10 @@ for scope and shared entry/exit policy.
 The refined 1.1 candidate preserves fast render tests and `AppScenario`, then adds an optional
 real-browser layer that manages the local application host, composes with Playwright, understands
 Hedron interaction settling, correlates server/browser failures, and retains bounded redacted
-failure evidence. Pytest remains the runner, and no browser dependency enters ordinary Hedron
-applications. Exact APIs and maturity remain blocked on the Stage 0 freeze; see
+failure evidence. Optional packages receive explicit testing-ownership dispositions and may add
+package-native fixtures or semantics without another runner, browser harness, or ambient pytest
+plugin. Pytest remains the runner, and no browser dependency enters ordinary Hedron applications.
+Exact APIs and maturity remain blocked on the Stage 0 freeze; see
 [RFC-0097](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0097-FIRST-CLASS-UI-TESTING.md)
 and the
 [acceptance plan](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_1_1.md).

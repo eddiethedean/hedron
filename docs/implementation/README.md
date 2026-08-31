@@ -102,7 +102,8 @@ These documents describe how accepted RFC behavior will be implemented. They def
   and all 17 release gates are complete; `v1.0.0` is verified, tagged, and published
 - [Hedron 1.1 first-class UI testing](UI_TESTING_1_1.md) — **Proposed and unscheduled** Stage 0
   refinement for a managed real-browser pytest experience, semantic lookup, bounded Hedron-owned
-  settle facts, correlated failures, redacted artifacts, cleanup, compatibility, and release gates
+  settle facts, correlated failures, redacted artifacts, satellite testing ownership/contributions,
+  cleanup, compatibility, and release gates
 - [Hedron-native documentation application](HEDRON_NATIVE_DOCUMENTATION.md) — draft unassigned
   workstreams for compiling the Markdown corpus into native Hedron component trees, building the
   docs shell/search/API/live-demo application, proving parity, and cutting over to FastAPI Cloud
