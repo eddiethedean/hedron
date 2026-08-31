@@ -39,3 +39,14 @@ def test_typeahead_page_abort_and_select_fallback() -> None:
         Typeahead("q", ["a"], page_size=0)
     with pytest.raises(ValueError, match="javascript"):
         TreeView([], source="javascript:alert(1)")
+
+
+def test_treeview_enforces_nested_node_and_depth_budgets() -> None:
+    node = {"id": "0", "label": "0"}
+    for index in range(1, 101):
+        node = {"id": str(index), "label": str(index), "children": [node]}
+    with pytest.raises(ValueError, match="depth"):
+        TreeView([node])
+
+    with pytest.raises(ValueError, match="nodes"):
+        TreeView([{"id": str(index), "label": str(index)} for index in range(5_001)])
