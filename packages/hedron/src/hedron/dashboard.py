@@ -65,6 +65,13 @@ class CachePolicy:
     hint: CacheHint | None = "no-store"
     ttl_seconds: int | None = None
 
+    def __post_init__(self) -> None:
+        ttl_seconds = cast(object, self.ttl_seconds)
+        if ttl_seconds is not None and (
+            isinstance(ttl_seconds, bool) or not isinstance(ttl_seconds, int) or ttl_seconds < 0
+        ):
+            raise ValueError("ttl_seconds must be a non-negative integer or None")
+
 
 _SENSITIVE_FILTER_MARKERS = frozenset(
     {
@@ -206,13 +213,8 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
 
                     defaults = workspace.filters()
 
-                    @app.view(
-                        ppath,
-                        name=f"{workspace.name}-panel-{pname}",
-                        cache=None if workspace.cache is None else workspace.cache.hint,
-                    )
                     async def panel_view(
-                        params: Annotated[workspace.filters, ViewParams(source="query")] = defaults,  # type: ignore[valid-type]
+                        params: BaseModel = defaults,
                     ) -> object:
                         try:
                             data = await workspace._load_data(params)  # type: ignore[arg-type]
@@ -225,9 +227,24 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
                             ) from exc
                         return renderer(data)
 
-                    return panel_view
+                    panel_view.__name__ = f"{workspace.name}_panel_{pname}"
+                    panel_view.__qualname__ = f"DashboardWorkspace.{workspace.name}_panel_{pname}"
+                    panel_view.__annotations__ = {
+                        "params": Annotated[
+                            workspace.filters,
+                            ViewParams(source="query"),
+                        ],
+                        "return": object,
+                    }
+                    return app.view(
+                        ppath,
+                        name=f"{workspace.name}-panel-{pname}",
+                        cache=None if workspace.cache is None else workspace.cache.hint,
+                    )(panel_view)
 
                 handle = _make_panel()
+                if workspace.cache is not None:
+                    handle.host.cache_ttl_seconds = workspace.cache.ttl_seconds
                 panel_handles[panel_name] = handle
                 workspace.panel_views[panel_name] = handle
 
@@ -253,15 +270,7 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
                         detail="External redirect rejected; use redirect_external explicitly",
                     )
                 raw = data.model_dump(mode="json", exclude_none=True)
-                flat: dict[str, str] = {}
-                for key, value in raw.items():
-                    if isinstance(value, (list, tuple)):
-                        flat[str(key)] = ",".join(
-                            str(item) for item in cast(Sequence[object], value)
-                        )
-                    else:
-                        flat[str(key)] = str(value)
-                qs = urlencode(flat)
+                qs = urlencode(raw, doseq=True)
                 target = workspace.path if not qs else f"{workspace.path}?{qs}"
                 response = RedirectResponse(url=target, status_code=303)
                 if workspace.history == "replace":
@@ -282,16 +291,22 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
 
             workspace.filter_form = filter_handle
 
-            @app.page(workspace.path, name=workspace.name)
-            def dashboard_screen() -> object:
+            from typing import Annotated
+
+            from fastapi import Query
+
+            def dashboard_screen(
+                params: BaseModel,
+            ) -> object:
                 nodes: list[NodeLike] = [
                     PageHeader(workspace.title),
-                    filter_handle.form(submit_label="Apply filters"),
+                    filter_handle.form(value=params, submit_label="Apply filters"),
                 ]
+                bound_values = params.model_dump(mode="json", exclude_none=True)
                 for pname, handle in panel_handles.items():
                     if callable(handle):
                         try:
-                            nodes.append(handle())  # type: ignore[arg-type]
+                            nodes.append(handle.bind(**bound_values)())
                         except Exception:  # noqa: BLE001
                             nodes.append(Text(pname))
                     else:
@@ -299,6 +314,12 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
                 from hedron import Page
 
                 return Page(Stack(*nodes), title=workspace.title)
+
+            dashboard_screen.__annotations__ = {
+                "params": Annotated[filters_model, Query()],
+                "return": object,
+            }
+            app.page(workspace.path, name=workspace.name)(dashboard_screen)
 
             workspace.screen = dashboard_screen
             return dashboard_screen
