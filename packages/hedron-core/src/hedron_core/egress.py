@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ipaddress
+import math
 import socket
 from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass, field
@@ -35,6 +36,8 @@ class EgressDecision:
     reason: str = ""
     resolved_addresses: tuple[str, ...] = ()
     hop: int = 0
+    connect_deadline_seconds: float = 0.0
+    response_budget_bytes: int = 0
 
 
 @dataclass(frozen=True, slots=True)
@@ -50,6 +53,27 @@ class EgressPolicy:
     connect_deadline_seconds: float = 5.0
     response_budget_bytes: int = 1_048_576
     deny_by_default: bool = True
+
+    def __post_init__(self) -> None:
+        if (
+            isinstance(self.max_redirects, bool)
+            or not isinstance(self.max_redirects, int)
+            or self.max_redirects < 0
+        ):
+            raise ValueError("max_redirects must be a non-negative integer")
+        if (
+            isinstance(self.connect_deadline_seconds, bool)
+            or not isinstance(self.connect_deadline_seconds, (int, float))
+            or not math.isfinite(float(self.connect_deadline_seconds))
+            or self.connect_deadline_seconds <= 0
+        ):
+            raise ValueError("connect_deadline_seconds must be finite and > 0")
+        if (
+            isinstance(self.response_budget_bytes, bool)
+            or not isinstance(self.response_budget_bytes, int)
+            or self.response_budget_bytes < 1
+        ):
+            raise ValueError("response_budget_bytes must be a positive integer")
 
     def decide(
         self,
@@ -133,6 +157,8 @@ class EgressPolicy:
             reason="allowed",
             resolved_addresses=addresses,
             hop=hop,
+            connect_deadline_seconds=self.connect_deadline_seconds,
+            response_budget_bytes=self.response_budget_bytes,
         )
 
     def require(
@@ -158,6 +184,20 @@ class EgressPolicy:
 
 class EgressTransport(Protocol):
     def fetch(self, url: str, *, decision: EgressDecision) -> bytes: ...
+
+
+def bounded_response(chunks: Iterable[bytes], *, budget_bytes: int) -> bytes:
+    """Collect response chunks under a hard byte budget for transport adapters."""
+    if isinstance(budget_bytes, bool) or not isinstance(budget_bytes, int) or budget_bytes < 1:
+        raise ValueError("budget_bytes must be a positive integer")
+    collected = bytearray()
+    for chunk in chunks:
+        if not isinstance(chunk, (bytes, bytearray, memoryview)):
+            raise EgressError("egress response contained a non-byte chunk")
+        collected.extend(chunk)
+        if len(collected) > budget_bytes:
+            raise EgressError("egress response budget exceeded")
+    return bytes(collected)
 
 
 def default_resolve(host: str) -> tuple[str, ...]:

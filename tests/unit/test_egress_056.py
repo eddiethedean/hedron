@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import pytest
 
+from hedron_core.egress import bounded_response
 from hedron_core.security_plane import (
     EgressError,
     EgressPolicy,
@@ -56,3 +57,17 @@ def test_egress_rejects_malformed_urls_and_allows_public_hostnames(
 
     with pytest.raises(EgressError):
         assert_ssrf_safe("https://api.example:abc/x", policy=policy)
+
+
+def test_egress_decision_carries_transport_budgets() -> None:
+    policy = EgressPolicy(
+        allowed_hosts=frozenset({"api.example"}),
+        connect_deadline_seconds=2.5,
+        response_budget_bytes=4,
+    )
+    decision = policy.require("https://api.example/v1", resolver=_public_resolver)
+    assert decision.connect_deadline_seconds == 2.5
+    assert decision.response_budget_bytes == 4
+    assert bounded_response([b"ab", b"cd"], budget_bytes=4) == b"abcd"
+    with pytest.raises(EgressError, match="budget"):
+        bounded_response([b"abc", b"de"], budget_bytes=4)

@@ -90,3 +90,24 @@ def test_feedback_retention_and_abuse_controls() -> None:
             consented=True,
             principal="alice",
         )
+
+
+def test_feedback_shared_sink_is_tenant_scoped() -> None:
+    sink = InMemoryFeedbackSink()
+    first = PredictionFeedback(
+        policy=FeedbackPolicy(collection_notice="notice", tenant_id="tenant-a", allow_export=True),
+        sink=sink,
+    )
+    second = PredictionFeedback(
+        policy=FeedbackPolicy(collection_notice="notice", tenant_id="tenant-b", allow_export=True),
+        sink=sink,
+    )
+    first.enable(consented=True)
+    second.enable(consented=True)
+    a = first.submit(rating=1, consented=True, principal="alice")
+    b = second.submit(rating=2, consented=True, principal="bob")
+    assert a.record_id != b.record_id
+    assert [record.tenant_id for record in first.export(principal="alice")] == ["tenant-a"]
+    assert [record.tenant_id for record in second.export(principal="bob")] == ["tenant-b"]
+    assert first.delete(b.record_id, principal="alice") is False
+    assert second.delete(b.record_id, principal="bob") is True

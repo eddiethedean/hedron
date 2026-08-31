@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import time
+import uuid
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Protocol
@@ -149,9 +150,13 @@ class PredictionFeedback:
         retention = self.policy.retention_seconds
         if retention < 0:
             return
-        for record in list(self.sink.export()):
+        for record in self._records_for_tenant():
             if clock - record.created_at > retention:
                 self.sink.delete(record.record_id)
+
+    def _records_for_tenant(self) -> tuple[FeedbackRecord, ...]:
+        tenant_id = self.policy.tenant_id
+        return tuple(record for record in self.sink.export() if record.tenant_id == tenant_id)
 
     def _enforce_abuse(self, *, reason: str | None, correction: str | None) -> None:
         if not self.policy.abuse_controls:
@@ -170,7 +175,7 @@ class PredictionFeedback:
                 "Feedback submit rate limit exceeded",
                 code=HED_FEEDBACK_0001,
             )
-        active = len(self.sink.export())
+        active = len(self._records_for_tenant())
         if active >= self.max_records:
             raise ModelDemoError(
                 f"Feedback store full (max_records={self.max_records})",
@@ -218,7 +223,7 @@ class PredictionFeedback:
             else:
                 redacted[key] = value
         record = FeedbackRecord(
-            record_id=f"fb-{self._seq}",
+            record_id=f"fb-{uuid.uuid4().hex}",
             rating=rating,
             label=label,
             reason=reason,
@@ -237,6 +242,8 @@ class PredictionFeedback:
     def delete(self, record_id: str, *, principal: str | None = None) -> bool:
         self._require_principal(principal)
         self._purge_expired()
+        if not any(record.record_id == record_id for record in self._records_for_tenant()):
+            return False
         return self.sink.delete(record_id)
 
     def export(
@@ -249,4 +256,4 @@ class PredictionFeedback:
             )
         self._require_principal(principal)
         self._purge_expired(now=now)
-        return self.sink.export()
+        return self._records_for_tenant()

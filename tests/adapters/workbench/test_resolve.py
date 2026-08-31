@@ -30,6 +30,14 @@ def test_default_local_resolution() -> None:
     assert resolved.active is False
 
 
+def test_redaction_covers_nested_and_encoded_sensitive_keys() -> None:
+    payload = redact_record({"Token": "secret", "nested": {"password": "pw", "safe": "ok"}})
+    assert payload == {"Token": "***", "nested": {"password": "***", "safe": "ok"}}
+    assert redact_url("https://example.test/path?%74oken=secret&access%5Ftoken=secret") == (
+        "https://example.test/path?%74oken=***&access%5Ftoken=***"
+    )
+
+
 def test_bound_ephemeral_port_replaces_requested_zero() -> None:
     resolved = resolve_deployment(
         WorkbenchConfig(mode=WorkbenchMode.ON, port=0, mount="/s/bound/p/1"),
