@@ -363,14 +363,6 @@ jobs:
           mkdir -p dist
           for pyproject in packages/*/pyproject.toml; do
             pkg="$(basename "$(dirname "$pyproject")")"
-            if [ "$pkg" = "edron" ]; then
-              echo "Skipping Edron; publish it only from edron-v* tags"
-              continue
-            fi
-            if [ "$pkg" = "edron-sim" ]; then
-              echo "Skipping edron-sim; publish it only from the Edron release workflow"
-              continue
-            fi
             if [ "$pkg" = "hedron-native" ]; then
               echo "Skipping hedron-native; publish it only from native-wheels.yml"
               continue
@@ -411,23 +403,15 @@ jobs:
             exit 1
           fi
 
-          # Skip each package's own version already on PyPI (Alpha packages do
-          # not share the train tag). Space NEW project creates; only wait after
-          # a successful create. Treat "File already exists" as idempotent OK.
+          # Skip each package's own version already on PyPI (workspace packages
+          # may have independent versions). Space NEW project creates; only wait
+          # after a successful create. Treat "File already exists" as idempotent OK.
           # Drop non-manylinux linux_* wheels (PyPI rejects linux_x86_64).
           existing_names=()
           new_names=()
           for pyproject in packages/*/pyproject.toml; do
             pkg_dir="$(dirname "$pyproject")"
             pkg="$(basename "$pkg_dir")"
-            if [ "$pkg" = "edron" ]; then
-              echo "Skipping Edron; publish it only from edron-v* tags"
-              continue
-            fi
-            if [ "$pkg" = "edron-sim" ]; then
-              echo "Skipping edron-sim; publish it only from the Edron release workflow"
-              continue
-            fi
             if [ "$pkg" = "hedron-native" ]; then
               echo "Skipping hedron-native; publish it only from native-wheels.yml"
               continue

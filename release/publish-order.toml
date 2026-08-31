@@ -1,5 +1,5 @@
 schema_version = 1
-description = "Publication order for the Hedron train. Foundational runtime packages publish before dependents; Edron has its own tag and workflow."
+description = "Publication order for the Hedron train. Foundational runtime packages publish before dependents; Edron follows the coordinated Hedron packages."
 
 order = [
   "hedron-core",
@@ -15,13 +15,15 @@ order = [
   "hedron-posit",
   "hedron-charts",
   "hedron-maps",
+  "edron",
   "hedron-native",
   "hedron-mcp",
   "hedron-gradio",
   "hedron-sample-kit",
   "hedron-notebook",
   "hedron-sim",
+  "edron-sim",
   "fastapi-workbench",
 ]
 
-excluded = ["edron", "edron-sim"]
+excluded = []
