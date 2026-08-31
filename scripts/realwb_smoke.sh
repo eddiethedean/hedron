@@ -79,6 +79,7 @@ license_unavailable_in_logs() {
 }
 
 deactivate_workbench_license() {
+  local failed=0
   if [[ "$WORKBENCH_STARTED" -ne 1 ]]; then
     "${COMPOSE[@]}" down --remove-orphans >/dev/null 2>&1 || true
     return 0
@@ -88,16 +89,20 @@ deactivate_workbench_license() {
   if [[ -n "$current_cid" ]] && \
      [[ "$(docker inspect --format '{{.State.Running}}' "$current_cid" 2>/dev/null || true)" == "true" ]]; then
     log "LICENSE_DEACTIVATE=begin timeout=${LICENSE_STOP_TIMEOUT}s"
-    docker exec "$current_cid" rstudio-server license-manager deactivate >/dev/null 2>&1 || \
+    if ! docker exec "$current_cid" rstudio-server license-manager deactivate >/dev/null 2>&1; then
       log "LICENSE_DEACTIVATE=manager_exit_nonzero"
+      failed=1
+    fi
     "${COMPOSE[@]}" stop -t "$LICENSE_STOP_TIMEOUT" workbench >/dev/null 2>&1 || \
       log "LICENSE_DEACTIVATE=stop_exit_nonzero"
+      failed=1
     log "LICENSE_DEACTIVATE=end"
   else
     log "LICENSE_DEACTIVATE=skipped container_not_running"
   fi
   "${COMPOSE[@]}" down --remove-orphans >/dev/null 2>&1 || true
   WORKBENCH_STARTED=0
+  return "$failed"
 }
 
 kill_listen() {
@@ -119,6 +124,7 @@ kill_smoke_ports() {
 
 CLEANUP_DONE=0
 cleanup() {
+  local exit_status=$?
   if [[ "$CLEANUP_DONE" -eq 1 ]]; then
     return 0
   fi
@@ -131,7 +137,10 @@ cleanup() {
   if [[ "$PROXY_STARTED" -eq 1 ]]; then
     docker rm -f "$PROXY_CONTAINER" >/dev/null 2>&1 || true
   fi
-  deactivate_workbench_license
+  if ! deactivate_workbench_license; then
+    log "LICENSE_DEACTIVATE=failed"
+    exit_status=1
+  fi
   if [[ -d "$SMOKE_DIR" && "$SMOKE_DIR" == /tmp/hedron-workbench-smoke.* ]]; then
     rm -r -- "$SMOKE_DIR"
   else
@@ -140,6 +149,7 @@ cleanup() {
   if [[ -n "${RESULT_BACKUP:-}" && -f "$RESULT_BACKUP" ]]; then
     rm -f -- "$RESULT_BACKUP"
   fi
+  return "$exit_status"
 }
 
 mkdir -p "$RESULT_DIR"
@@ -162,20 +172,24 @@ fi
 PY="$ROOT/.venv/bin/python"
 log "python=$("$PY" --version 2>&1 | tr -d '\n')"
 
-if [[ -z "${PWB_LICENSE:-}" && -f "$ROOT/.env" ]]; then
+if [[ -z "${PWB_LICENSE:-}" && -z "${PWB_LICENCE:-}" && -f "$ROOT/.env" ]]; then
   PWB_LICENSE="$("$PY" -c '
 import shlex, sys
 for raw in open(sys.argv[1], encoding="utf-8"):
     line = raw.strip()
     if line.startswith("export "):
         line = line[7:].lstrip()
-    if not line.startswith("PWB_LICENSE="):
-        continue
-    value = line.split("=", 1)[1].strip()
-    parsed = shlex.split(value, comments=True, posix=True)
-    print(parsed[0] if len(parsed) == 1 else "")
-    break
+    for key in ("PWB_LICENSE=", "PWB_LICENCE="):
+        if line.startswith(key):
+            value = line.split("=", 1)[1].strip()
+            parsed = shlex.split(value, comments=True, posix=True)
+            print(parsed[0] if len(parsed) == 1 else "")
+            raise SystemExit
 ' "$ROOT/.env")"
+fi
+
+if [[ -z "${PWB_LICENSE:-}" && -n "${PWB_LICENCE:-}" ]]; then
+  PWB_LICENSE="$PWB_LICENCE"
 fi
 
 if [[ -z "${PWB_LICENSE:-}" ]]; then
