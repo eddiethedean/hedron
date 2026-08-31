@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+import math
+
+import pytest
+
 from hedron.tracing import (
     _RecordingSpan,
     configure_tracing,
@@ -56,6 +60,12 @@ def test_sample_rate_zero_is_noop() -> None:
     with span("hedron.render", password="secret") as s:
         assert type(s).__name__ == "TracingDisabled"
         s.set_attribute("token", "x")
+
+
+@pytest.mark.parametrize("sample_rate", [math.nan, math.inf, -0.1, 1.1])
+def test_sample_rate_rejects_invalid_values(sample_rate: float) -> None:
+    with pytest.raises(ValueError, match="sample_rate"):
+        configure_tracing(sample_rate=sample_rate)
 
 
 def test_recording_span_redacts_secret_attributes() -> None:

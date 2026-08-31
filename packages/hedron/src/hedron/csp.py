@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 import random
 import secrets
 from dataclasses import dataclass, field
@@ -32,6 +33,16 @@ class CspReporting:
     report_to: str | None = None
     max_body_bytes: int = 8_192
     sample_rate: float = 1.0
+
+    def __post_init__(self) -> None:
+        sample_rate = cast(object, self.sample_rate)
+        if (
+            isinstance(sample_rate, bool)
+            or not isinstance(sample_rate, (int, float))
+            or not math.isfinite(float(sample_rate))
+            or not 0.0 <= sample_rate <= 1.0
+        ):
+            raise ValueError("sample_rate must be finite and between 0.0 and 1.0")
 
 
 @dataclass(slots=True)
