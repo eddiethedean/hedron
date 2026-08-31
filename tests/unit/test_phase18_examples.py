@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+import math
+
+import pytest
+
 from hedron_core import ExampleItem, ExampleSet
 
 
@@ -34,3 +38,9 @@ def test_example_set_cache_key_and_stale() -> None:
     assert key1 != key2
     assert s.invalidate() == 1
     assert s.get_cached("e1") is None
+
+
+def test_example_set_rejects_nonfinite_retention() -> None:
+    s = ExampleSet(set_id="samples", action_id="classify")
+    with pytest.raises(ValueError, match="finite"):
+        s.store_result("e1", {}, retention_seconds=math.nan)

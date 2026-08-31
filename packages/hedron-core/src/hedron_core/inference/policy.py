@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
+import math
 import secrets
 import threading
 import time
 from collections import OrderedDict, defaultdict, deque
 from collections.abc import Callable, Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, Protocol, runtime_checkable
+from typing import Any, Protocol, cast, runtime_checkable
 
 from hedron_core.codes import HED_INFER_0001, HED_INFER_0002, HED_INFER_0003
 from hedron_core.diagnostics import error
@@ -126,6 +127,34 @@ class InferencePolicy:
         default_factory=dict[str, tuple[str | None, str | None]], init=False
     )
     _fair_cursor: dict[str, int] = field(default_factory=lambda: defaultdict(int), init=False)
+
+    def __post_init__(self) -> None:
+        max_queue = cast(object, self.max_queue)
+        default_eta_per_item = cast(object, self.default_eta_per_item)
+        cancel_ttl_seconds = cast(object, self.cancel_ttl_seconds)
+        max_cancelled = cast(object, self.max_cancelled)
+        if isinstance(max_queue, bool) or not isinstance(max_queue, int) or max_queue < 0:
+            raise ValueError("max_queue must be a non-negative integer")
+        if (
+            isinstance(default_eta_per_item, bool)
+            or not isinstance(default_eta_per_item, (int, float))
+            or not math.isfinite(float(default_eta_per_item))
+            or default_eta_per_item < 0
+        ):
+            raise ValueError("default_eta_per_item must be finite and non-negative")
+        if (
+            isinstance(cancel_ttl_seconds, bool)
+            or not isinstance(cancel_ttl_seconds, (int, float))
+            or not math.isfinite(float(cancel_ttl_seconds))
+            or cancel_ttl_seconds <= 0
+        ):
+            raise ValueError("cancel_ttl_seconds must be finite and positive")
+        if (
+            isinstance(max_cancelled, bool)
+            or not isinstance(max_cancelled, int)
+            or max_cancelled < 1
+        ):
+            raise ValueError("max_cancelled must be a positive integer")
 
     def register_group(self, group: ConcurrencyGroup) -> None:
         if group.limit < 1:

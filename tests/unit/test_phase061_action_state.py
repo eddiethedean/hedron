@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import math
 import shutil
 import subprocess
+import time
 from pathlib import Path
 
 import pytest
@@ -105,6 +107,41 @@ def test_stale_operation_result_cannot_replace_current_presentation() -> None:
 def test_invalid_transition_is_rejected() -> None:
     with pytest.raises(ActionTransitionError):
         transition_action(ActionState(), ActionPhase.SUCCESS)
+
+
+def test_action_policy_timeout_is_enforced_and_validated() -> None:
+    operation = OperationIdentity("timed", target="#button")
+    policy = ActionPolicy(
+        timeout_seconds=0.001,
+        allow_retry=True,
+        max_attempts=2,
+        idempotent=True,
+    )
+    state, accepted = begin_operation(ActionState(), operation, policy=policy)
+    assert accepted
+    time.sleep(0.01)
+    # The policy supplied at begin time owns the lifecycle; callers do not
+    # need to repeat it at every completion boundary.
+    timed_out, completed = complete_operation(state, ActionPhase.SUCCESS, operation)
+    assert completed
+    assert timed_out.phase is ActionPhase.ERROR
+    assert timed_out.message == "Operation timed out"
+    assert timed_out.retryable
+    with pytest.raises(ValueError, match="finite"):
+        ActionPolicy(timeout_seconds=math.nan)
+
+
+def test_begin_policy_controls_cancellation_without_repeating_policy() -> None:
+    operation = OperationIdentity("protected", target="#button")
+    state, accepted = begin_operation(
+        ActionState(),
+        operation,
+        policy=ActionPolicy(allow_cancellation=False),
+    )
+    assert accepted
+    unchanged, completed = complete_operation(state, ActionPhase.CANCELLED, operation)
+    assert not completed
+    assert unchanged is state
 
 
 def test_trace_redacts_secret_like_facts_and_is_bounded() -> None:

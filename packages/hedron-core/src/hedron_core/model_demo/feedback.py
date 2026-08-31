@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
+import math
 import time
 import uuid
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from threading import RLock
-from typing import Protocol
+from typing import Protocol, cast
 
 from hedron_core.codes import HED_FEEDBACK_0001
 from hedron_core.diagnostics import error
@@ -30,6 +31,13 @@ class FeedbackPolicy:
     treat_as_ground_truth: bool = False
 
     def validate(self) -> None:
+        retention_seconds = cast(object, self.retention_seconds)
+        if (
+            isinstance(retention_seconds, bool)
+            or not isinstance(retention_seconds, (int, float))
+            or not math.isfinite(float(retention_seconds))
+        ):
+            raise ModelDemoError("retention_seconds must be finite")
         if self.treat_as_ground_truth:
             raise ModelDemoError(
                 "Feedback must not be treated as ground truth",

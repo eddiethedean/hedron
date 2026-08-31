@@ -7,10 +7,12 @@ durable browser store or a second mutation authority.
 
 from __future__ import annotations
 
+import math
+import time
 from collections.abc import Mapping
 from dataclasses import dataclass, field, replace
 from types import MappingProxyType
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 from hedron_core.compat import StrEnum
 from hedron_core.security.secrets import redact_secret_like
@@ -127,12 +129,18 @@ class ActionPolicy:
     idempotent: bool = False
 
     def __post_init__(self) -> None:
+        timeout_seconds = cast(object, self.timeout_seconds)
         if self.concurrency not in {"drop", "replace", "queue"}:
             raise ValueError("concurrency must be 'drop', 'replace', or 'queue'")
         if self.max_attempts < 1:
             raise ValueError("max_attempts must be at least 1")
-        if self.timeout_seconds is not None and self.timeout_seconds <= 0:
-            raise ValueError("timeout_seconds must be positive when provided")
+        if timeout_seconds is not None and (
+            isinstance(timeout_seconds, bool)
+            or not isinstance(timeout_seconds, (int, float))
+            or not math.isfinite(float(timeout_seconds))
+            or timeout_seconds <= 0
+        ):
+            raise ValueError("timeout_seconds must be finite and positive when provided")
         if self.allow_retry and self.max_attempts < 2:
             raise ValueError("allow_retry requires max_attempts >= 2")
         if self.allow_retry and not self.idempotent:
@@ -160,6 +168,8 @@ class ActionState:
     retryable: bool = False
     progress: int | None = None
     revision: str | int | None = None
+    _deadline_at: float | None = field(default=None, repr=False, compare=False)
+    _policy: ActionPolicy | None = field(default=None, repr=False, compare=False)
 
     def __post_init__(self) -> None:
         # Keep the runtime representation canonical even when a host or
@@ -181,6 +191,16 @@ class ActionState:
     @property
     def busy(self) -> bool:
         return self.phase is ActionPhase.PENDING
+
+    @property
+    def deadline_at(self) -> float | None:
+        """Return the internal monotonic deadline for lifecycle helpers."""
+        return self._deadline_at
+
+    @property
+    def policy(self) -> ActionPolicy | None:
+        """Return the policy retained for lifecycle completion."""
+        return self._policy
 
     def to_dict(self) -> dict[str, object]:
         """Return the bounded public lifecycle projection."""
@@ -268,6 +288,12 @@ def begin_operation(
             phase=ActionPhase.PENDING,
             operation=operation,
             revision=operation.revision,
+            _deadline_at=(
+                time.monotonic() + resolved_policy.timeout_seconds
+                if resolved_policy.timeout_seconds is not None
+                else None
+            ),
+            _policy=resolved_policy,
         ),
         True,
     )
@@ -300,8 +326,24 @@ def complete_operation(
         return state, False
     if operation.revision != state.operation.revision:
         return state, False
+    resolved_policy = policy or state.policy
+    if state.deadline_at is not None and time.monotonic() > state.deadline_at:
+        return (
+            replace(
+                state,
+                phase=ActionPhase.ERROR,
+                message="Operation timed out",
+                retryable=resolved_policy.allow_retry if resolved_policy is not None else False,
+                _deadline_at=None,
+            ),
+            True,
+        )
     next_phase = ActionPhase(phase)
-    if next_phase is ActionPhase.CANCELLED and policy is not None and not policy.allow_cancellation:
+    if (
+        next_phase is ActionPhase.CANCELLED
+        and resolved_policy is not None
+        and not resolved_policy.allow_cancellation
+    ):
         return state, False
     try:
         return (

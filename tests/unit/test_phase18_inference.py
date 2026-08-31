@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import math
+
 import pytest
 
 from hedron_core import (
@@ -141,6 +143,19 @@ def test_cancel_releases_inflight_and_backend() -> None:
         is True
     )
     assert policy._inflight["g"] == 0
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {"max_cancelled": 0},
+        {"max_cancelled": -1},
+        {"cancel_ttl_seconds": math.nan},
+    ],
+)
+def test_inference_policy_rejects_invalid_cancel_bounds(kwargs: dict[str, object]) -> None:
+    with pytest.raises(ValueError):
+        InferencePolicy(**kwargs)
 
 
 def test_cancel_requires_caller_identity_matching_owner() -> None:
