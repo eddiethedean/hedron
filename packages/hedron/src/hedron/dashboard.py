@@ -65,6 +65,14 @@ class CachePolicy:
     hint: CacheHint | None = "no-store"
     ttl_seconds: int | None = None
 
+    def __post_init__(self) -> None:
+        if self.ttl_seconds is not None and (
+            isinstance(self.ttl_seconds, bool)
+            or not isinstance(self.ttl_seconds, int)
+            or self.ttl_seconds < 0
+        ):
+            raise ValueError("ttl_seconds must be a non-negative integer or None")
+
 
 _SENSITIVE_FILTER_MARKERS = frozenset(
     {
@@ -228,6 +236,8 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
                     return panel_view
 
                 handle = _make_panel()
+                if workspace.cache is not None:
+                    handle.host.cache_ttl_seconds = workspace.cache.ttl_seconds
                 panel_handles[panel_name] = handle
                 workspace.panel_views[panel_name] = handle
 
@@ -282,16 +292,25 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
 
             workspace.filter_form = filter_handle
 
+            from typing import Annotated
+
+            from hedron import ViewParams
+
+            defaults = workspace.filters()
+
             @app.page(workspace.path, name=workspace.name)
-            def dashboard_screen() -> object:
+            def dashboard_screen(
+                params: Annotated[filters_model, ViewParams(source="query")] = defaults,  # type: ignore[valid-type]
+            ) -> object:
                 nodes: list[NodeLike] = [
                     PageHeader(workspace.title),
                     filter_handle.form(submit_label="Apply filters"),
                 ]
+                bound_values = params.model_dump(mode="json", exclude_none=True)
                 for pname, handle in panel_handles.items():
                     if callable(handle):
                         try:
-                            nodes.append(handle())  # type: ignore[arg-type]
+                            nodes.append(handle.bind(**bound_values)())
                         except Exception:  # noqa: BLE001
                             nodes.append(Text(pname))
                     else:

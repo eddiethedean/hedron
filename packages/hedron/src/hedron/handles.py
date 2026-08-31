@@ -1001,6 +1001,13 @@ def wrap_refreshable_result(handle: FragmentHandle[BindT, ContentT], result: obj
         fallback=handle.fallback,
     )
     cache = handle.host.cache
+    cache_ttl = handle.host.cache_ttl_seconds
+    if cache_ttl is not None:
+        return InteractionResult(
+            content=hosted,
+            cache=None,
+            headers={"Cache-Control": f"private, max-age={cache_ttl}"},
+        )
     if cache is not None:
         return InteractionResult(content=hosted, cache=cache)
     return hosted

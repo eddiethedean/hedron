@@ -121,6 +121,7 @@ class FragmentHost(Component[FragmentHostProps]):
         error: NodeLike | str | None = None,
         empty: NodeLike | None = None,
         cache: CacheHint | None = None,
+        cache_ttl_seconds: int | None = None,
         dom_id: str | None = None,
         get_url: str | None = None,
         event_name: str | None = None,
@@ -143,6 +144,7 @@ class FragmentHost(Component[FragmentHostProps]):
         self._error = error
         self._empty = empty
         self._cache: CacheHint | None = cache
+        self._cache_ttl_seconds = cache_ttl_seconds
         self._dom_id = dom_id
         self._get_url = get_url
         self._event_name = event_name
@@ -167,6 +169,14 @@ class FragmentHost(Component[FragmentHostProps]):
     @cache.setter
     def cache(self, value: CacheHint | None) -> None:
         self._cache = value
+
+    @property
+    def cache_ttl_seconds(self) -> int | None:
+        return self._cache_ttl_seconds
+
+    @cache_ttl_seconds.setter
+    def cache_ttl_seconds(self, value: int | None) -> None:
+        self._cache_ttl_seconds = value
 
     @property
     def error_content(self) -> NodeLike | str | None:
@@ -207,6 +217,7 @@ class FragmentHost(Component[FragmentHostProps]):
             error=self._error,
             empty=self._empty,
             cache=self._cache,
+            cache_ttl_seconds=self._cache_ttl_seconds,
             dom_id=dom_id,
             get_url=get_url,
             event_name=event_name,
