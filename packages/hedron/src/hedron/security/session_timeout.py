@@ -40,7 +40,10 @@ class SessionTimeoutError(Exception):
 def _finite_float(value: object, *, name: str) -> float:
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         raise ValueError(f"{name} must be a finite number, got {value!r}")
-    numeric = float(value)
+    try:
+        numeric = float(value)
+    except OverflowError as exc:
+        raise ValueError(f"{name} must be a finite number, got {value!r}") from exc
     if not math.isfinite(numeric):
         raise ValueError(f"{name} must be a finite number, got {value!r}")
     return numeric
@@ -54,12 +57,13 @@ def stamp_session_created(
 ) -> float:
     """Record absolute-session start time; does not overwrite an existing stamp."""
     existing = session.get(key)
-    if (
-        isinstance(existing, (int, float))
-        and not isinstance(existing, bool)
-        and math.isfinite(existing)
-    ):
-        return float(existing)
+    if isinstance(existing, (int, float)) and not isinstance(existing, bool):
+        try:
+            existing_float = float(existing)
+        except OverflowError:
+            existing_float = math.inf
+        if math.isfinite(existing_float):
+            return existing_float
     ts = _finite_float(time.time() if now is None else now, name="now")
     session[key] = ts
     return ts
@@ -129,7 +133,10 @@ def check_session_timeout(
             if raise_on_expired:
                 raise SessionTimeoutError("absolute", message="session missing created stamp")
             return False
-        created_ts = float(created)
+        try:
+            created_ts = float(created)
+        except OverflowError:
+            created_ts = math.inf
         if not math.isfinite(created_ts) or ts - created_ts > float(absolute_seconds):
             if raise_on_expired:
                 raise SessionTimeoutError("absolute")
@@ -140,7 +147,10 @@ def check_session_timeout(
             if raise_on_expired:
                 raise SessionTimeoutError("idle", message="session missing last_seen stamp")
             return False
-        last_seen_ts = float(last_seen)
+        try:
+            last_seen_ts = float(last_seen)
+        except OverflowError:
+            last_seen_ts = math.inf
         if not math.isfinite(last_seen_ts) or ts - last_seen_ts > float(idle_seconds):
             if raise_on_expired:
                 raise SessionTimeoutError("idle")

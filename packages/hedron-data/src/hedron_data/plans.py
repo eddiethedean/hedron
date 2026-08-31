@@ -28,7 +28,10 @@ def _sort_key(value: JsonValue) -> tuple[int, str, float | str]:
     if isinstance(value, bool):
         return (1, "bool", "1" if value else "0")
     if isinstance(value, (int, float)) and not isinstance(value, bool):
-        numeric = float(value)
+        try:
+            numeric = float(value)
+        except OverflowError:
+            return (4, "number", str(value))
         return (2, "number", numeric if math.isfinite(numeric) else 0.0)
     if isinstance(value, str):
         return (3, "str", value)

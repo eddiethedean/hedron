@@ -108,7 +108,15 @@ def evaluate_formula(
                 remediation="Use numeric cells, or omit non-numeric columns from the formula.",
             )
         if isinstance(raw, (int, float)):
-            numeric = float(raw)
+            try:
+                numeric = float(raw)
+            except OverflowError as exc:
+                raise error(
+                    "HED-DATA-0032",
+                    title="Formula cell is out of range",
+                    explanation=f"Column {name!r} is too large for numeric evaluation.",
+                    remediation="Use a finite number within the supported range.",
+                ) from exc
             if not math.isfinite(numeric):
                 raise error(
                     "HED-DATA-0032",
@@ -123,7 +131,7 @@ def evaluate_formula(
                 if not math.isfinite(numeric):
                     raise ValueError("non-finite number")
                 return numeric
-            except ValueError:
+            except (ValueError, OverflowError):
                 raise error(
                     "HED-DATA-0032",
                     title="Non-numeric formula cell",
@@ -161,7 +169,15 @@ def evaluate_formula(
             and isinstance(node.value, (int, float))
             and not isinstance(node.value, bool)
         ):
-            return float(node.value)
+            try:
+                return float(node.value)
+            except OverflowError as exc:
+                raise error(
+                    "HED-DATA-0032",
+                    title="Formula literal is out of range",
+                    explanation="Formula numeric literals must fit in a finite float.",
+                    remediation="Use a smaller finite numeric literal.",
+                ) from exc
         if isinstance(node, ast.Name):
             if node.id not in env:
                 raise error(

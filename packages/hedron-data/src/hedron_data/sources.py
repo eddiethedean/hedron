@@ -46,19 +46,44 @@ class DataQuery:
         capped = min(limit, max_page_size, HARD_MAX_PAGE_SIZE)
         if capped < 1:
             raise ValueError("DataQuery.limit must be >= 1 after capping")
-        sort = self.sort
-        for name, direction in sort:
+        if self.sort is None or isinstance(self.sort, (str, bytes, bytearray)):
+            raise ValueError("DataQuery.sort must be a sequence of (field, direction) pairs")
+        sort_entries: list[tuple[str, str]] = []
+        for entry in self.sort:
+            if (
+                not isinstance(entry, Sequence)
+                or isinstance(entry, (str, bytes, bytearray))
+                or len(entry) != 2
+                or not isinstance(entry[0], str)
+                or not entry[0].strip()
+                or not isinstance(entry[1], str)
+            ):
+                raise ValueError(
+                    "DataQuery.sort entries must be (non-empty field, direction) pairs"
+                )
+            name, direction = entry
             if direction not in ("asc", "desc"):
                 raise ValueError(f"Invalid sort direction {direction!r}")
             allow = self.allowlisted_sort_fields
             if allow is not None and name not in allow:
                 raise ValueError(f"Sort field {name!r} is not allowlisted")
+            sort_entries.append((name, direction))
+        if not isinstance(self.filters, Mapping):
+            raise ValueError("DataQuery.filters must be a mapping")
         filters = dict(self.filters)
+        if any(not isinstance(name, str) or not name.strip() for name in filters):
+            raise ValueError("DataQuery filter fields must be non-empty strings")
         if self.allowlisted_filter_fields is not None:
             for name in filters:
                 if name not in self.allowlisted_filter_fields:
                     raise ValueError(f"Filter field {name!r} is not allowlisted")
         projection = self.projection
+        if projection is not None:
+            if isinstance(projection, (str, bytes, bytearray)):
+                raise ValueError("DataQuery.projection must be a sequence of field names")
+            if any(not isinstance(name, str) or not name.strip() for name in projection):
+                raise ValueError("DataQuery projection fields must be non-empty strings")
+            projection = tuple(projection)
         if projection is not None and self.allowlisted_projection_fields is not None:
             for name in projection:
                 if name not in self.allowlisted_projection_fields:
@@ -67,7 +92,7 @@ class DataQuery:
             offset=self.offset,
             limit=capped,
             cursor=self.cursor,
-            sort=sort,
+            sort=tuple(sort_entries),
             filters=filters,
             projection=projection,
             search=self.search,

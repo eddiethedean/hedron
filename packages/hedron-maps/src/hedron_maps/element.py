@@ -8,6 +8,7 @@ from typing import Any
 
 from hedron_core.builtins.map_geo import DEFAULT_MAX_FEATURES, MarkerSpec, sanitize_geojson
 from hedron_core.component import Component, NodeLike
+from hedron_core.csrf_strategy import DEFAULT_CSRF_COOKIE_NAME, DEFAULT_CSRF_HEADER_NAME
 from hedron_core.diagnostics import error
 from hedron_core.html import html
 from hedron_core.models import Props
@@ -158,10 +159,14 @@ class Map(Component[MapProps]):
         geojson: Mapping[str, Any] | None = None,
         max_features: int = DEFAULT_MAX_FEATURES,
         class_: str | None = None,
+        csrf_cookie_name: str = DEFAULT_CSRF_COOKIE_NAME,
+        csrf_header_name: str = DEFAULT_CSRF_HEADER_NAME,
         **kwargs: object,
     ) -> None:
         super().__init__(MapProps(title=title, class_=class_, **kwargs))
         self._max_features = max_features
+        self._csrf_cookie_name = csrf_cookie_name
+        self._csrf_header_name = csrf_header_name
         self._interaction_commands: dict[str, str] = {}
         if spec is not None:
             self._spec = spec if isinstance(spec, MapSpec) else MapSpec.model_validate(dict(spec))
@@ -232,6 +237,8 @@ class Map(Component[MapProps]):
             "role": "region",
             "aria-label": plan.accessibility.title,
             "class_": self.props.class_,
+            "data-hedron-csrf-cookie": self._csrf_cookie_name,
+            "data-hedron-csrf-header": self._csrf_header_name,
         }
         if self._interaction_commands:
             attrs["data-hedron-map-commands"] = json.dumps(

@@ -120,6 +120,26 @@ def test_beginner_map_defaults_osm() -> None:
     assert "hedron-map-alternative" in out
 
 
+def test_missing_marker_coordinates_are_rejected() -> None:
+    with pytest.raises(ValueError):
+        compile_map(
+            MapSpec(
+                layers=(MarkerLayer(markers=({"id": "missing"},)),),
+                accessibility=AccessibilityDef(title="T", description="D"),
+            )
+        )
+
+
+def test_map_exposes_configured_csrf_names() -> None:
+    from hedron_core import RenderMode, render
+
+    out = render(
+        Map(csrf_cookie_name="my_csrf", csrf_header_name="X-My-CSRF"), mode=RenderMode.FRAGMENT
+    ).html
+    assert 'data-hedron-csrf-cookie="my_csrf"' in out
+    assert 'data-hedron-csrf-header="X-My-CSRF"' in out
+
+
 def test_portable_modules_forbid_runtime_imports() -> None:
     forbidden = {"fastapi", "maplibre", "sqlite3", "httpx", "requests", "urllib.request", "socket"}
     for path in PORTABLE:

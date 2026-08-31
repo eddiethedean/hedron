@@ -45,19 +45,21 @@ function commandMap(el) {
   }
 }
 
-function postCommand(url, detail) {
-  const token = cookieValue("hedron_csrf");
+function postCommand(el, url, detail) {
+  const cookieName = el.getAttribute("data-hedron-csrf-cookie") || "hedron_csrf";
+  const headerName = el.getAttribute("data-hedron-csrf-header") || "X-CSRF-Token";
+  const token = cookieValue(cookieName);
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json, text/html",
     "HX-Request": "true",
   };
-  if (token) headers["X-CSRF-Token"] = token;
+  if (token) headers[headerName] = token;
   const body = JSON.stringify(detail || {});
   if (window.htmx && typeof window.htmx.ajax === "function") {
     window.htmx.ajax("POST", url, {
       values: detail || {},
-      headers: token ? { "X-CSRF-Token": token } : {},
+      headers: token ? { [headerName]: token } : {},
       swap: "none",
     });
     return;
@@ -75,7 +77,7 @@ function emit(el, kind, detail) {
     })
   );
   const url = commandMap(el)[kind];
-  if (typeof url === "string" && url) postCommand(url, payload);
+  if (typeof url === "string" && url) postCommand(el, url, payload);
 }
 
 function runtimeUrls() {
