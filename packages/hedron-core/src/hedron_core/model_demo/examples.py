@@ -7,6 +7,7 @@ import math
 import time
 from collections.abc import Mapping
 from dataclasses import dataclass, field
+from typing import cast
 
 from hedron_core.typing_aliases import JsonValue
 
@@ -72,10 +73,11 @@ class ExampleSet:
         cost_units: float = 0.0,
         retention_seconds: float | None = 86400.0,
     ) -> CachedExampleResult:
-        if retention_seconds is not None and (
-            isinstance(retention_seconds, bool)
-            or not isinstance(retention_seconds, (int, float))
-            or not math.isfinite(float(retention_seconds))
+        retention = cast(object, retention_seconds)
+        if retention is not None and (
+            isinstance(retention, bool)
+            or not isinstance(retention, (int, float))
+            or not math.isfinite(float(retention))
         ):
             raise ValueError("retention_seconds must be finite or None")
         key = self.cache_key_for(example_id)

@@ -12,7 +12,7 @@ import time
 from collections.abc import Mapping
 from dataclasses import dataclass, field, replace
 from types import MappingProxyType
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 from hedron_core.compat import StrEnum
 from hedron_core.security.secrets import redact_secret_like
@@ -129,15 +129,16 @@ class ActionPolicy:
     idempotent: bool = False
 
     def __post_init__(self) -> None:
+        timeout_seconds = cast(object, self.timeout_seconds)
         if self.concurrency not in {"drop", "replace", "queue"}:
             raise ValueError("concurrency must be 'drop', 'replace', or 'queue'")
         if self.max_attempts < 1:
             raise ValueError("max_attempts must be at least 1")
-        if self.timeout_seconds is not None and (
-            isinstance(self.timeout_seconds, bool)
-            or not isinstance(self.timeout_seconds, (int, float))
-            or not math.isfinite(float(self.timeout_seconds))
-            or self.timeout_seconds <= 0
+        if timeout_seconds is not None and (
+            isinstance(timeout_seconds, bool)
+            or not isinstance(timeout_seconds, (int, float))
+            or not math.isfinite(float(timeout_seconds))
+            or timeout_seconds <= 0
         ):
             raise ValueError("timeout_seconds must be finite and positive when provided")
         if self.allow_retry and self.max_attempts < 2:
@@ -190,6 +191,16 @@ class ActionState:
     @property
     def busy(self) -> bool:
         return self.phase is ActionPhase.PENDING
+
+    @property
+    def deadline_at(self) -> float | None:
+        """Return the internal monotonic deadline for lifecycle helpers."""
+        return self._deadline_at
+
+    @property
+    def policy(self) -> ActionPolicy | None:
+        """Return the policy retained for lifecycle completion."""
+        return self._policy
 
     def to_dict(self) -> dict[str, object]:
         """Return the bounded public lifecycle projection."""
@@ -315,8 +326,8 @@ def complete_operation(
         return state, False
     if operation.revision != state.operation.revision:
         return state, False
-    resolved_policy = policy or state._policy
-    if state._deadline_at is not None and time.monotonic() > state._deadline_at:
+    resolved_policy = policy or state.policy
+    if state.deadline_at is not None and time.monotonic() > state.deadline_at:
         return (
             replace(
                 state,
