@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import functools
 import inspect
+import secrets
 from collections.abc import Awaitable, Callable, Sequence
 from contextlib import contextmanager
 from contextvars import ContextVar
@@ -42,6 +43,65 @@ __all__ = ["HedronRouter", "current_request"]
 current_request = cast(ContextVar[Request[State] | None], _portable_current_request)
 
 _SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS", "TRACE"})
+
+
+def _replay_user_identity(user: object | None) -> str:
+    """Read an authentication identity without invoking unsafe properties.
+
+    Starlette's ``SimpleUser`` exposes ``identity`` through ``BaseUser`` as a
+    property that raises ``NotImplementedError``.  Authentication middleware is
+    allowed to provide any ASGI user object, so identity extraction must be
+    best-effort and fall back to the other conventional fields.
+    """
+    if user is None:
+        return "anonymous"
+    for name in ("identity", "username", "user_id", "id", "display_name"):
+        try:
+            value = getattr(user, name, None)
+        except (AttributeError, NotImplementedError, TypeError, ValueError):
+            value = None
+        text = str(value).strip() if value is not None else ""
+        if text and text.lower() != "anonymous":
+            return text
+    return "anonymous"
+
+
+def _anonymous_replay_binding(request: Request[State]) -> str:
+    """Return a stable per-client binding for anonymous replay scopes.
+
+    Cookie-backed CSRF tokens are already unique to an anonymous browser and
+    are available on normal unsafe actions.  Non-cookie strategies can use the
+    submitted token only after the unsafe-action CSRF check has validated it.
+    If no authoritative client material exists (for example, CSRF is disabled),
+    use a request-local nonce rather than the process-wide ``anon:none``
+    sentinel, which would let unrelated callers share cached responses.
+    """
+    app = request.scope.get("app")
+    app_state = getattr(app, "state", None) if app is not None else None
+    policy = getattr(app_state, "hedron_security", None)
+    cookie_name = getattr(policy, "csrf_cookie_name", "hedron_csrf")
+    strategy = policy.resolve_csrf_strategy() if policy is not None else None
+    candidate = getattr(strategy, "cookie_name", None)
+    if isinstance(candidate, str) and candidate:
+        cookie_name = candidate
+    cookies = getattr(request, "cookies", {}) or {}
+    binding = cookies.get(cookie_name) if isinstance(cookie_name, str) else None
+    if isinstance(binding, str) and binding:
+        return binding
+    if strategy is not None and request.method.upper() not in _SAFE_METHODS:
+        header_name = getattr(strategy, "header_name", "")
+        header_binding = request.headers.get(header_name) if isinstance(header_name, str) else None
+        form_binding = getattr(request.state, "hedron_csrf_form_token", None)
+        binding = form_binding or header_binding
+        if isinstance(binding, str) and binding:
+            # _wrap_endpoint runs CSRF validation before replay claiming, so this
+            # is authoritative for unsafe requests with an active strategy.
+            return binding
+    state_nonce = getattr(request.state, "hedron_replay_anonymous_nonce", None)
+    if not isinstance(state_nonce, str) or not state_nonce:
+        state_nonce = secrets.token_urlsafe(32)
+        request.state.hedron_replay_anonymous_nonce = state_nonce
+    return state_nonce
 
 
 class _FragmentRegionMeta(TypedDict):
@@ -189,7 +249,7 @@ async def _begin_replay(
     # Prefer scope["user"] so idempotency works without AuthenticationMiddleware.
     # Accessing request.user asserts that middleware is installed.
     user = request.scope.get("user")
-    subject = str(getattr(user, "identity", "") or "anonymous") if user is not None else "anonymous"
+    subject = _replay_user_identity(user)
     tenant = str(getattr(request.state, "hedron_tenant", "") or "")
     session = str(
         getattr(request.state, "session_id", None)
@@ -197,6 +257,8 @@ async def _begin_replay(
         or request.cookies.get("hedron_session")
         or ""
     )
+    if subject == "anonymous" and not session:
+        session = _anonymous_replay_binding(request)
     body_digest = ""
     try:
         raw_body = await request.body()
@@ -248,12 +310,25 @@ async def _begin_replay(
             remediation="Retry after the first request completes.",
         )
     if replay_claim.state == ReplayState.REPLAYED:
-        return StarletteResponse(
+        cached_headers = replay_claim.cached_headers
+        if cached_headers is None:
+            return StarletteResponse(
+                content=replay_claim.cached_body or b"",
+                status_code=int(replay_claim.cached_status or 200),
+                media_type=replay_claim.cached_media_type or "text/html",
+                headers={"Hedron-Replay": "true"},
+            )
+        response = StarletteResponse(
             content=replay_claim.cached_body or b"",
             status_code=int(replay_claim.cached_status or 200),
-            media_type=replay_claim.cached_media_type or "text/html",
-            headers={"Hedron-Replay": "true"},
         )
+        response.raw_headers = [
+            (name.encode("latin-1"), value.encode("latin-1"))
+            for name, value in cached_headers
+            if name.lower() != "hedron-replay"
+        ]
+        response.headers["Hedron-Replay"] = "true"
+        return response
     return _ReplayGuard(
         claim=replay_claim,
         store=replay_store,
@@ -270,6 +345,23 @@ def _abort_replay(guard: _ReplayGuard | None) -> None:
 
     if guard.claim.state == ReplayState.FIRST:
         guard.store.abort(key=guard.key, scope=guard.scope_key, fingerprint=guard.fingerprint)
+
+
+def _replay_store_accepts_headers(store: ReplayStore) -> bool:
+    """Return whether a replay store supports the optional response-header field.
+
+    ``ReplayStore`` is a public extension point. Stores written before response
+    headers were added have a narrower ``complete`` signature and must keep
+    working while applications migrate them.
+    """
+    try:
+        parameters = inspect.signature(store.complete).parameters.values()
+    except (TypeError, ValueError):
+        return False
+    return any(
+        parameter.name == "headers" or parameter.kind is inspect.Parameter.VAR_KEYWORD
+        for parameter in parameters
+    )
 
 
 def _complete_replay(guard: _ReplayGuard | None, response: Response) -> None:
@@ -299,14 +391,32 @@ def _complete_replay(guard: _ReplayGuard | None, response: Response) -> None:
     if isinstance(body, str):
         body = body.encode("utf-8")
     media_type = getattr(response, "media_type", None) or "text/html"
-    guard.store.complete(
-        key=guard.key,
-        scope=guard.scope_key,
-        fingerprint=guard.fingerprint,
-        status=int(getattr(response, "status_code", 200) or 200),
-        body=bytes(body),
-        media_type=str(media_type),
+    raw_headers = getattr(response, "raw_headers", ())
+    headers = tuple(
+        (name.decode("latin-1"), value.decode("latin-1"))
+        for name, value in raw_headers
+        if isinstance(name, bytes) and isinstance(value, bytes)
     )
+    status = int(getattr(response, "status_code", 200) or 200)
+    if _replay_store_accepts_headers(guard.store):
+        guard.store.complete(
+            key=guard.key,
+            scope=guard.scope_key,
+            fingerprint=guard.fingerprint,
+            status=status,
+            body=bytes(body),
+            media_type=str(media_type),
+            headers=headers,
+        )
+    else:
+        guard.store.complete(
+            key=guard.key,
+            scope=guard.scope_key,
+            fingerprint=guard.fingerprint,
+            status=status,
+            body=bytes(body),
+            media_type=str(media_type),
+        )
 
 
 def _apply_fastapi_signature(
