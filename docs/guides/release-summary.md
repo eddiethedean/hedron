@@ -12,11 +12,11 @@ The exact maintainer commands and publication rules live in
 | Current stable release | **v1.0.1** (`hedron`, `hedron-core`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps`) |
 | Migration baseline | **v0.67.0** |
 | PyPI latest | **v1.0.1** |
-| Public-index pin | `hedron>=1.0.1,<1.1` |
+| Public-index requirement | `hedron>=1.0.0` |
 | Repository development | `uv sync` (editable 1.0.1 workspace) |
-| Charts package | `hedron-charts>=1.0.0,<2.0` |
-| Maps package | `hedron-maps>=1.0.0,<2.0` |
-| Generic Workbench adapter | `fastapi-workbench>=1.0.1,<2.0` |
+| Charts package | `hedron-charts>=1.0.0` |
+| Maps package | `hedron-maps>=1.0.0` |
+| Generic Workbench adapter | `fastapi-workbench>=1.0.0` |
 | Plan checker | `python scripts/check_100.py --check-plan` |
 | Entry gate | `python scripts/check_100.py --gate ENTRY-100 --verify` |
 

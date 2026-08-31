@@ -895,7 +895,7 @@ def check_optional_dependencies(texts: Mapping[Path, str], findings: list[str]) 
     for path in (RFC, PACKAGING, GOLDENS):
         for command in (
             'pip install "plotly>=5.18,<7"',
-            'pip install "edron[plotly]>=1.0.1,<1.1"',
+            'pip install "edron[plotly]>=1.0.0"',
         ):
             if command not in texts[path]:
                 findings.append(f"{display(path)}: missing exact remediation {command!r}")

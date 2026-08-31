@@ -7,7 +7,7 @@ status: published
 !!! tip "Verified on the 0.25 train"
 
     Canonical production archetype packet (`ARCHETYPE-025` … `PKG-025`) is **Verified**.
-    Pin the public release as `hedron>=1.0.1,<1.1`; use `uv sync` for repository development.
+    Require the stable floor `hedron>=1.0.0`; use `uv sync` for repository development.
 
     **Ship today:** [Ship a Hedron app](../guides/ship.md) ·
     [What’s ready](../guides/whats-ready.md) ·

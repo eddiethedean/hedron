@@ -2,7 +2,7 @@
 
 Unified Posit Workbench / Connect deployment adapter for Hedron.
 
-**Package maturity:** Beta · **Published version:** `v1.0.1`
+**Package maturity:** Beta · **Package line:** `1.0.x`
 
 Installing or importing the package does **not** wrap your application.
 `RS_SERVER_URL` is discovery-only and never grants trust. Connect credential

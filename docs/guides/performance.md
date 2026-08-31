@@ -40,7 +40,7 @@ cache keys — see [Threat model](threat-model.md).
 ## Data and charts
 
 - Install `hedron[data]` only when needed. Charts require
-  `hedron[charts]>=1.0.1,<1.1` ([Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor))
+  `hedron[charts]>=1.0.0` ([Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor))
 - Bound `Auto` inspection; do not feed unbounded lazy queries into inference
 - Paginate DataTable sources; avoid shipping entire datasets to the browser
 

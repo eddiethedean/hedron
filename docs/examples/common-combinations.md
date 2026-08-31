@@ -195,7 +195,7 @@ def home(username: Annotated[str, Depends(require_user)]) -> Page:
     )
 ```
 
-Run with `pip install "hedron>=1.0.1,<1.1" "uvicorn[standard]"`. Sign in with
+Run with `pip install "hedron>=1.0.0" "uvicorn[standard]"`. Sign in with
 `ada` / `correct-horse`. Replace the credential dictionary and process-local notes with an identity
 provider, password hashing/rate limiting where applicable, and transactional durable storage.
 
@@ -586,7 +586,7 @@ def status_response(job_id: str, request: Request):
     return job_status_response(current, **owner)
 ```
 
-Run with `pip install "hedron>=1.0.1,<1.1" "uvicorn[standard]" "python-multipart"`.
+Run with `pip install "hedron>=1.0.0" "uvicorn[standard]" "python-multipart"`.
 In production, submit only serializable metadata to a durable backend, put the upload in authorized
 object storage, have every worker use the same scope/keyspace, and configure cleanup/retention.
 

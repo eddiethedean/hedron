@@ -25,11 +25,11 @@ The Stable 1.0 package boundary is `hedron-core`, `hedron`, `edron`, `hedron-dat
 `hedron-charts`, and `hedron-maps`; every other satellite remains Beta or tooling-grade.
 API-level `beta` and `experimental` classifications still apply within the stable packages.
 Pin versions in production and read [upgrade](upgrade.md) notes before bumping trains. Charts
-require `hedron-charts>=1.0.0,<2.0`. The sample kit requires
+require `hedron-charts>=1.0.0`. The sample kit requires
 `hedron-sample-kit>=0.2.3,<0.3` — see [Compatibility](../COMPATIBILITY.md).
 
 **Support window:** security fixes target the current published train (`1.0.x`). The current
-pin is `hedron>=1.0.1,<1.1`. Previous minors receive best-effort triage as documented in
+requirement is `hedron>=1.0.0`. Previous minors receive best-effort triage as documented in
 [SECURITY.md](../SECURITY.md) (no multi-year LTS). Version and pin SoT:
 [Current release and support](current-release.md). Public-index notes:
 [Installation](../getting-started/installation.md). Community GitHub support only;

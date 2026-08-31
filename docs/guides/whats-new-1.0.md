@@ -53,7 +53,7 @@ The [HTMX/Alpine boundary](../api/HTMX_ALPINE_BOUNDARY_1_0.md) is normative for 
   `hedron[posit]`, or use `fastapi-workbench` for a plain ASGI application.
 - Charts, maps, native acceleration, MCP, Gradio, notebook, simulation, and sample-kit packages
   retain independent versions and their documented Beta/tooling boundaries.
-- Edron remains an independent authoring facade and requires Hedron `>=1.0.0,<2.0`.
+- Edron remains an independent authoring facade and requires Hedron `>=1.0.0`.
 
 ## Migration tooling
 
@@ -82,7 +82,7 @@ The migrator writes a new output tree and leaves dynamic or ambiguous cases for 
 Install the published release from PyPI:
 
 ```bash
-python -m pip install "hedron>=1.0.1,<1.1" "uvicorn[standard]"
+python -m pip install "hedron>=1.0.0" "uvicorn[standard]"
 ```
 
 Check [Current release and support](current-release.md) before changing an application pin.

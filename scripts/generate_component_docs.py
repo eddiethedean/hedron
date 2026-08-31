@@ -53,20 +53,11 @@ def _format_sim_live_demo(sim_name: str) -> str:
     )
 
 
-# Keep install snippets aligned with docs/release.toml / check_docs_train_ssot.py.
+# Keep install snippets aligned with the stable 1.0 compatibility floor and
+# check_docs_train_ssot.py. The latest patch remains a release fact, not an
+# adopter-facing dependency pin.
 _ALPHA_EXTRAS = frozenset({"notebook", "mcp", "gradio"})
-_RELEASE = tomllib.loads((ROOT / "docs" / "release.toml").read_text(encoding="utf-8"))["release"]
-_PIN_FLOOR = (
-    _RELEASE["pypi_pin_floor"]
-    if _RELEASE.get("registry_status") == "deferred"
-    else _RELEASE["pin_floor"]
-)
-_PIN_CEILING = (
-    _RELEASE["pypi_pin_ceiling"]
-    if _RELEASE.get("registry_status") == "deferred"
-    else _RELEASE["pin_ceiling"]
-)
-_TRAIN_PIN = f">={_PIN_FLOOR},<{_PIN_CEILING}"
+_TRAIN_PIN = ">=1.0.0"
 _ALPHA_PIN = ">=0.1.0,<0.2"
 _CHARTS_PIN = ">=1.0.0,<2.0"
 _CHARTS_FLAGSHIP_PIN = _TRAIN_PIN
@@ -74,7 +65,7 @@ _NATIVE_PIN = ">=0.1.3,<0.2"
 
 
 def _install_requirement(package: str) -> str:
-    """Return a pip requirement with the current train / Alpha upper bound."""
+    """Return a pip requirement with the stable floor or Alpha constraint."""
     match = re.fullmatch(r"hedron\[([^\]]+)\]", package)
     if match is not None:
         extra = match.group(1).split(",", 1)[0].strip()

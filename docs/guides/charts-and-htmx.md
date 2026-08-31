@@ -10,17 +10,17 @@ chart through an HTMX fragment without losing its accessible fallback.
 ## Install the current chart line
 
 ```bash
-pip install "hedron[charts]>=1.0.1,<1.1"
+pip install "hedron[charts]>=1.0.0"
 ```
 
-This resolves `hedron-charts>=1.0.0,<2.0`. The plugin entry point registers the first-party
+This resolves `hedron-charts>=1.0.0`. The plugin entry point registers the first-party
 `hedron-chart` module and stylesheet automatically; consuming applications do not need Node.js or
 a JavaScript build step.
 
 Use an independent install only when the application does not depend on the flagship package:
 
 ```bash
-pip install "hedron-charts>=1.0.0,<2.0"
+pip install "hedron-charts>=1.0.0"
 ```
 
 ## Pick an authoring level

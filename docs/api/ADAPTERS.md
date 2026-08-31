@@ -23,8 +23,8 @@ Autodoc signatures: [Autodoc — Framework adapters](AUTODOC.md#framework-adapte
 ## Install
 
 ```bash
-pip install "hedron-flask>=1.0.1,<1.1"
-pip install "hedron-django>=1.0.1,<1.1"   # Django >=5.2,<6
+pip install "hedron-flask>=1.0.0"
+pip install "hedron-django>=1.0.0"   # Django >=5.2,<6
 ```
 
 ## Portable baseline

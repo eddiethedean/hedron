@@ -372,7 +372,7 @@ composition. For ranged media/PDF players and download-all budgets, see
 
 ## Charts as fragments
 
-Install `hedron[charts]>=1.0.1,<1.1`, then use an ordinary view handle. The handle preserves the
+Install `hedron[charts]>=1.0.0`, then use an ordinary view handle. The handle preserves the
 authorized target and the chart lifecycle across replacement:
 
 ```python

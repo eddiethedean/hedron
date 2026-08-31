@@ -17,7 +17,7 @@ Every example on this page targets Edron 1.0 and uses the same native Hedron run
 ## Verify a scaffold
 
 ```bash
-uvx --from "edron>=1.0.1,<1.1" edron new inventory --template crud
+uvx --from "edron>=1.0.0" edron new inventory --template crud
 cd inventory
 uv sync
 uv run edron check app.py

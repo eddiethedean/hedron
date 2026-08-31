@@ -3,17 +3,18 @@
 ## Which version should I install?
 
 Install the latest public release from PyPI:
-`pip install "hedron>=1.0.1,<1.1"`. Contributors working from a git checkout use
+`pip install "hedron>=1.0.0"`. Contributors working from a git checkout use
 `uv sync` (workspace packages). The repository and PyPI both provide `v1.0.1`. See
 [Installation](../getting-started/installation.md).
 
 ```bash
-pip install "hedron>=1.0.1,<1.1"
+pip install "hedron>=1.0.0"
 # or
-uv add "hedron>=1.0.1,<1.1"
+uv add "hedron>=1.0.0"
 ```
 
-Always use an upper bound so a future minor train cannot install by accident.
+The `>=1.0.0` requirement accepts current and future compatible releases; review release notes and
+run your application's integration tests when upgrading.
 `hedron-core`, `hedron`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps` are **Stable**
 packages in 1.0; host adapters and vendor/tooling satellites remain Beta,
 and no package has a commercial SLA. Capability detail:
@@ -21,14 +22,14 @@ and no package has a commercial SLA. Capability detail:
 
 **How is this different from Streamlit or FastHTML?** See [Why Hedron](why-hedron.md).
 
-For DataTable/DataEditor, install `hedron[data]>=1.0.1,<1.1`. For charts, install
-`hedron[charts]>=1.0.1,<1.1`
+For DataTable/DataEditor, install `hedron[data]>=1.0.0`. For charts, install
+`hedron[charts]>=1.0.0`
 ([Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)).
 Flask/Django adapters:
 
 ```bash
-pip install "hedron-flask>=1.0.1,<1.1"
-pip install "hedron-django>=1.0.1,<1.1"   # requires Django >=5.2,<6
+pip install "hedron-flask>=1.0.0"
+pip install "hedron-django>=1.0.0"   # requires Django >=5.2,<6
 ```
 
 ## Do I need Node.js?
@@ -85,9 +86,9 @@ status — [Jobs](../api/JOBS.md) · [Celery / RQ](jobs-celery-rq.md).
 
 ## Is Hedron production-ready for internal admin?
 
-For pinned **Supported** CRUD/admin/forms on FastAPI (and Flask/Django adapters), yes
+For **Supported** CRUD/admin/forms on FastAPI (and Flask/Django adapters), yes
 with eyes open: `hedron-core` and `hedron` are Stable in the published 1.0 platform,
-PyPI installs pin `>=1.0.1,<1.1`, and polling remains the
+PyPI installs require `hedron>=1.0.0`, and polling remains the
 production fallback for live status. There is no vendor SLA. Use the
 [PoC checklist](evaluate.md#poc-checklist) on
 [Evaluate](evaluate.md).
@@ -109,8 +110,8 @@ install is what the scaffold’s `pyproject.toml` declares—do not skip it on p
 ## `uv add hedron` failed with “No pyproject.toml”
 
 Create a project first: `uv init my-app && cd my-app`, then
-`uv add "hedron>=1.0.1,<1.1"`. Or use
-`hedron new my-app` after `pip install "hedron>=1.0.1,<1.1"`.
+`uv add "hedron>=1.0.0"`. Or use
+`hedron new my-app` after `pip install "hedron>=1.0.0"`.
 
 ## Should I use `uv init` or `hedron new`?
 
@@ -120,9 +121,9 @@ the same directory by accident.
 
 ## What do Beta, Supported, and Deferred mean?
 
-Short version for builders: **pin from PyPI** (`hedron>=1.0.1,<1.1`).
+Short version for builders: **require from PyPI** (`hedron>=1.0.0`).
 Packages are Beta; that does not mean “do not use” — it means expect
-occasional `0.x` churn and pin upper bounds.
+occasional `0.x` churn and review upgrades deliberately.
 
 Evaluators (three axes — skip if you are just building):
 
@@ -139,32 +140,33 @@ Snapshot: [What’s ready today](whats-ready.md).
 A **train** is a minor release line (for example `0.60.x`). Patch releases inside the
 train are meant to be compatible; the next minor (`0.60`) may add breaking changes.
 
-Install with an upper bound — `hedron>=1.0.1,<1.1` — so you get patches automatically
-but do not jump to the next train by accident. That is ordinary Python packaging, not a
-second registry. Contributors working from a git checkout use `uv sync`; application
-installs use PyPI.
+Install with the lower-bound requirement `hedron>=1.0.0` so compatible releases can be
+selected automatically. Review release notes before adopting a new train. That is ordinary
+Python packaging, not a second registry. Contributors working from a git checkout use `uv sync`;
+application installs use PyPI.
 
 See [Current release](current-release.md) and [Compatibility](../COMPATIBILITY.md).
 
-## Why pin with an upper bound?
+## Why use a lower-bound requirement?
 
-A lower bound without an upper bound allows a future minor train to install
-automatically. Use `hedron>=1.0.1,<1.1` so compatible patches are accepted while the
-next minor train requires an intentional review. See [Compatibility](../COMPATIBILITY.md).
+`hedron>=1.0.0` keeps the documented 1.0 compatibility floor without forcing every application
+to repeat the currently published patch version. Review release notes and run integration tests
+before upgrading to a new train. See [Compatibility](../COMPATIBILITY.md).
 
 ## Are Auto, DataTable, and charts available?
 
 **Auto** (built-in — no extra) and **DataTable/DataEditor** (`hedron[data]`) are
-**Supported**. Those packages are **Beta** on PyPI — pin versions.
+**Supported**. Those packages are **Beta** on PyPI — use their documented lower-bound
+requirements.
 
-Charts install through `hedron[charts]>=1.0.1,<1.1`; the sample kit installs as
+Charts install through `hedron[charts]>=1.0.0`; the sample kit installs as
 `hedron-sample-kit>=0.2.3,<0.3`. Earlier satellite versions target older cores. See
 [What’s ready](whats-ready.md) and
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ```bash
-pip install "hedron[data]>=1.0.1,<1.1"     # DataTable, DataEditor (Auto is already in hedron)
-pip install "hedron[charts]>=1.0.1,<1.1"   # compatible chart satellite
+pip install "hedron[data]>=1.0.0"     # DataTable, DataEditor (Auto is already in hedron)
+pip install "hedron[charts]>=1.0.0"   # compatible chart satellite
 ```
 
 See [Auto](../api/AUTO.md), [Data](../api/DATA.md), and the
@@ -227,9 +229,9 @@ variables / your secret store. Constructor args override both when explicit.
 ## How do I install Jinja templates?
 
 ```bash
-pip install "hedron[jinja]>=1.0.1,<1.1"
+pip install "hedron[jinja]>=1.0.0"
 # or
-uv add "hedron[jinja]>=1.0.1,<1.1"
+uv add "hedron[jinja]>=1.0.0"
 ```
 
 See [HDJ authoring](hdj-authoring.md) and [Installation](../getting-started/installation.md).

@@ -7,7 +7,7 @@
     Keep the historical pins below only when maintaining that release line.
 
 **Published** as `v0.20.0`. Historical installs for this phase used a 0.20 upper-bound
-pin; prefer the current `hedron>=1.0.1,<1.1` (PyPI) or `>=1.0.1,<1.1` (tip) train for new apps.
+pin; prefer the current `hedron>=1.0.0` (PyPI or repository) train for new apps.
 
 Phase 0.20 (D-051) is the production security floor and adapter-parity packet.
 

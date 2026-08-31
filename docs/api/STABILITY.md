@@ -1,6 +1,6 @@
 # Public stability classifications
 
-**For adopters:** Hedron 1.0.1 is published on PyPI. Pin `hedron>=1.0.1,<1.1`. Treat the **stable**
+**For adopters:** Hedron 1.0.1 is published on PyPI. Require `hedron>=1.0.0`. Treat the **stable**
 tables below as the SemVer compatibility promise; everything
 else is `beta` / `experimental` and may change on the documented schedule. Capability readiness
 (Supported vs Experimental) lives on [What’s ready](../guides/whats-ready.md). Only
@@ -195,7 +195,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 - `LineChart` / `AreaChart` / `BarChart` / `ScatterChart`: **stable**.
 - Optional vendor adapters + offline runtime pins: **experimental**.
 
-Schema acceptance is broader than specialized host painting in `hedron-charts 1.0.1`; see the
+Schema acceptance is broader than specialized host painting in the `hedron-charts 1.0.x` line; see the
 [Chart API coverage matrix](CHART.md#compiler-contract-versus-current-host-coverage).
 
 ### `hedron-maps` (Stable package) — `stable` API
@@ -220,7 +220,7 @@ response-header adaptation, Hedron-owned request-time cookie repair,
 browser/durable URL separation, explicit-mount routing, topology diagnostics,
 and ordinary local Uvicorn/generic-root-path parity. Posit Connect trusted-header
 behavior remains Experimental. The generic implementation is provided by the
-independent `fastapi-workbench>=1.0.1,<2.0` package. The removed
+independent `fastapi-workbench>=1.0.0` package. The removed
 `hedron-workbench` distribution and `hedron[workbench]` extra are not supported.
 
 See [Posit Workbench](../guides/posit-workbench.md) and the

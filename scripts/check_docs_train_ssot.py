@@ -482,12 +482,18 @@ def _line_describes_pypi_latest(line: str) -> bool:
     )
 
 
+MINIMUM_COMPATIBILITY_PIN = ">=1.0.0"
+
+
 def _allowed_install_pins(facts: ReleaseFacts, path: Path | None = None) -> set[str]:
+    # Adopter guides may use the stable 1.0 compatibility floor without
+    # coupling installs to the currently published patch/minor ceiling.
+    minimum_1_0 = MINIMUM_COMPATIBILITY_PIN
     if path == Path("packages/hedron/README.md"):
-        return {facts.pin}
+        return {facts.pin, minimum_1_0}
     if path == Path("packages/edron/README.md"):
-        return {facts.pin, ">=1.0.0,<2.0"}
-    allowed = {facts.pin}
+        return {facts.pin, ">=1.0.0,<2.0", minimum_1_0}
+    allowed = {facts.pin, minimum_1_0}
     if path is not None and _is_inventory_page(path):
         # Distribution READMEs are embedded in immutable package artifacts.
         # Stable and Beta 1.0 distributions may document their bounded SemVer
@@ -501,7 +507,7 @@ def _allowed_install_pins(facts: ReleaseFacts, path: Path | None = None) -> set[
         Path("docs/guides/edron-user-guide.md"),
         Path("packages/edron/README.md"),
     }:
-        allowed.add(">=1.0.0,<2.0")
+        allowed.update({">=1.0.0,<2.0", minimum_1_0})
     if facts.registry_deferred and facts.pypi_pin != facts.pin:
         if path is not None and path in FIRST_RUN_INSTALL_PATHS:
             return {facts.pypi_pin}
@@ -628,8 +634,10 @@ def check_text(
             if not constraint and not is_requirement_position:
                 continue
             allowed_edron_pins = {facts.edron_pin}
+            allowed_edron_pins.add(MINIMUM_COMPATIBILITY_PIN)
             if facts.edron_registry_status == "deferred" and path not in CANDIDATE_INSTALL_PATHS:
                 allowed_edron_pins = {facts.edron_pypi_pin}
+                allowed_edron_pins.add(MINIMUM_COMPATIBILITY_PIN)
             if constraint not in allowed_edron_pins:
                 failures.append(
                     f"{path}:{index}: install for {match.group('name')} must use "
@@ -650,10 +658,14 @@ def check_text(
             )
             if not constraint and not is_requirement_position:
                 continue
-            if constraint != expected:
+            allowed_satellite_pins = {expected}
+            if name.startswith("hedron-charts"):
+                allowed_satellite_pins.add(MINIMUM_COMPATIBILITY_PIN)
+            if constraint not in allowed_satellite_pins:
                 failures.append(
                     f"{path}:{index}: install for {match.group('name')} must use "
-                    f"{expected}; found {constraint or 'no version constraint'}"
+                    f"{' or '.join(sorted(allowed_satellite_pins))}; found "
+                    f"{constraint or 'no version constraint'}"
                 )
     # Soft-wrap joins can duplicate the same claim; keep stable unique messages.
     return list(dict.fromkeys(failures))
@@ -895,8 +907,8 @@ def check_security_policy(
         required = (
             f"current published train** (`{facts.train_line}`)",
             f"immediately previous minor (`{facts.previous_train}.x`)",
-            f"| `{facts.train_line}` | Yes (current published train — pin "
-            f"`{facts.pin}`; published `v{facts.published_version}`) |",
+            f"| `{facts.train_line}` | Yes (published train — requirement "
+            f"`{MINIMUM_COMPATIBILITY_PIN}`; published `v{facts.published_version}`) |",
             f"| `{facts.previous_train}.x` | Best-effort security triage through "
             f"approximately {facts.previous_security_until}; upgrade to `{facts.train_line}` |",
         )

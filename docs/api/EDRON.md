@@ -5,7 +5,7 @@ status: verified
 # Edron 1.0 design and compatibility contract
 
 **Status:** Edron `1.0.1` Stable API verified and published<br>
-**Target:** Edron `1.0.x`; Hedron `1.0.x` (`>=1.0.1,<1.1`)<br>
+**Target:** Edron `1.0.x`; Hedron `1.0.x` (`>=1.0.0`)<br>
 **Historical 0.1 target metadata:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
 **Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **Authority:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>

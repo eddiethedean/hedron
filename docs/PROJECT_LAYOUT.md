@@ -94,8 +94,8 @@ hedron/
 | `hedron-sim` | `hedron_sim` | Offline HTMX docs/demo simulator (Beta tooling) | `v0.1.0` |
 | `hedron-native` | `hedron_native` | Optional PyO3 extension; pure-Python fallback | `0.1.x` (Beta; independent of train version) |
 | `hedron-elements` | `hedron_elements` | Beta Web Component ABI (Supported inventory only); also `hedron[elements]` | `v0.51.0` |
-| `hedron-posit` | `hedron_posit` | `hedron`, `fastapi-workbench`; unified Posit facade; also `hedron[posit]` | Beta `1.0.1` |
-| `fastapi-workbench` | `fastapi_workbench` | Starlette, Uvicorn; independent plain-FastAPI/ASGI Workbench adapter | `v1.0.1` |
+| `hedron-posit` | `hedron_posit` | `hedron`, `fastapi-workbench`; unified Posit facade; also `hedron[posit]` | Beta `1.0.x` |
+| `fastapi-workbench` | `fastapi_workbench` | Starlette, Uvicorn; independent plain-FastAPI/ASGI Workbench adapter | `v1.x` |
 
 `hedron` does not require Explorer or Jinja in production. `hedron[dev]` installs
 `hedron-explorer` for development diagnostics; `hedron[jinja]` installs the separate integration.

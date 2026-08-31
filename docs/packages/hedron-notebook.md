@@ -6,7 +6,7 @@ Server-side notebook preview helper for Hedron.
 `0.2.3` · pin `>=0.2.3,<0.3`
 **Flagship extra:** `hedron[notebook]` · **Import:** `hedron_notebook`
 The source tree requires Hedron and `hedron-core` `>=1.0.0,<2.0`; applications installed
-from PyPI should pin the flagship extra to `hedron[notebook]>=1.0.1,<1.1`.
+from PyPI should pin the flagship extra to `hedron[notebook]>=1.0.0`.
 **Not** a Supported production server. The
 Supported preview API is **localhost-only**.
 
@@ -16,7 +16,7 @@ Distinct from the browser-Python / JupyterLite sandbox in
 ## Install
 
 ```bash
-pip install "hedron[notebook]>=1.0.1,<1.1"
+pip install "hedron[notebook]>=1.0.0"
 # or
 pip install "hedron-notebook>=0.2.3,<0.3"
 ```

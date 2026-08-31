@@ -43,7 +43,7 @@ INSTALLED_APPS = [
 Scaffold a new Django project:
 
 ```bash
-uvx --from "hedron>=1.0.1,<1.1" hedron new --django my-django-app
+uvx --from "hedron>=1.0.0" hedron new --django my-django-app
 ```
 
 ## Quick start

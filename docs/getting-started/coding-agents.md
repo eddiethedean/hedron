@@ -19,7 +19,7 @@ Build and modify Hedron applications using the stable public 1.0 API. Preserve o
 semantics, FastAPI behavior, accessibility, security, and production constraints. Do not invent
 Hedron symbols or infer behavior from a similarly named React, template, or Python UI API.
 
-Target the published `hedron>=1.0.1,<1.1` train unless the project lockfile says otherwise.
+Target the published `hedron>=1.0.0` train unless the project lockfile says otherwise.
 Inspect the installed version before changing an existing application:
 
 ```bash
@@ -325,7 +325,7 @@ Expanded production reference: [Full code on GitHub](https://github.com/eddiethe
 Run and inspect it:
 
 ```bash
-python -m pip install "hedron>=1.0.1,<1.1" "uvicorn[standard]"
+python -m pip install "hedron>=1.0.0" "uvicorn[standard]"
 uvicorn app:app --reload
 python -m hedron --app app:app routes
 python -m hedron --app app:app check

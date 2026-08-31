@@ -33,13 +33,13 @@ or a second renderer, router, state store, job queue, or security authority.
 
 ## 1. Install and create an application
 
-Use a clean environment and pin the Edron minor train:
+Use a clean environment and require the stable Edron 1.0 baseline:
 
 ```console
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install "edron>=1.0.1,<1.1"
+python -m pip install "edron>=1.0.0"
 ```
 
 On Windows, activate `.venv\\Scripts\\activate` instead. Verify the interpreter that will run the

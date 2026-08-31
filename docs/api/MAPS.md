@@ -4,10 +4,10 @@ status: published
 
 # Maps
 
-First-class maps live in independent Stable **`hedron-maps` `1.0.1`** (introduced by
+First-class maps live in independent Stable **`hedron-maps` `1.0.x`** (introduced by
 D-078 / D-082). In the 1.0 workspace, install `hedron-maps>=1.0.0,<2.0` alongside
 the coordinated Hedron packages. Public PyPI applications should use the documented
-`hedron[maps]>=1.0.1,<1.1` pin. Core `hedron.Map`
+`hedron[maps]>=1.0.0` requirement. Core `hedron.Map`
 and `sanitize_geojson` remain compatible.
 
 `hedron.Map`, `sanitize_geojson`, `MarkerSpec`, and `MAP_VIEWPORT_TRIGGER` stay in

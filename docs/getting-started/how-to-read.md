@@ -42,7 +42,7 @@ The current published train is the **1.0.x** release (`v1.0.1`). PyPI serves Hed
 `1.0.1`. Install from PyPI:
 
 ```bash
-python -m pip install "hedron>=1.0.1,<1.1"
+python -m pip install "hedron>=1.0.0"
 ```
 
 Pins: [Installation](installation.md).

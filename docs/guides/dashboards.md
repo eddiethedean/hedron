@@ -5,7 +5,7 @@ render-only panels (phase **0.60**). Phase **0.17** `DashboardBinding` /
 `InteractionGraph` remain available as Advanced linked-interaction primitives.
 
 Capability readiness is **Supported** in the published **1.0.1** release; API compatibility
-remains **`beta`**. Pin `hedron>=1.0.1,<1.1`.
+remains **`beta`**. Require `hedron>=1.0.0`.
 
 ## Start here
 

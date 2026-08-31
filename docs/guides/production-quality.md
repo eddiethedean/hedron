@@ -4,7 +4,7 @@ How Hedron plans to raise **adopter trust** for the Supported surface — beyond
 checklist in [Ship a Hedron app](ship.md).
 
 **Current release:** `v1.0.1` is verified and published; public applications
-should pin `hedron>=1.0.1,<1.1`.
+should require `hedron>=1.0.0`.
 Capability maturity snapshot:
 [What’s ready today](whats-ready.md). Program decision: **D-053**; RFC:
 [RFC-0056](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md)

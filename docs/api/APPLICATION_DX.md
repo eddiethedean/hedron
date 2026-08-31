@@ -9,7 +9,7 @@ extends shipped 0.52 seams; it does **not** replace `inject_page_assets`,
 `JobBackend`, `JobState`, `InteractionCatalog`, `Theme`,
 `REQUIRED_A11Y_TOKENS`, or `hedron.__all__` without negotiation.
 
-Public Stage 1 surface (Verified gates; introduced in published `v0.53.0`; current train `v1.0.1`):
+Public Stage 1 surface (Verified gates; introduced in published `v0.53.0`; current train `1.0.x`):
 
 | Symbol | Role | Gate |
 |---|---|---|

@@ -80,8 +80,8 @@ and regenerate them; do not hand-edit output that the next generator run will ov
   and are explained on [Installation](../getting-started/installation.md).
   **First-run copy-paste must always be registry-resolvable.** While
   `registry_status` is `uploaded`, Home, README, Quickstart, FAQ, and Installation use
-  the same pin (`pin_floor` / `pin_ceiling`). While `registry_status` is `deferred`,
-  first-run commands use the public-index pin (`pypi_pin_floor` / `pypi_pin_ceiling`);
+  the stable compatibility floor (`>=1.0.0`). While `registry_status` is `deferred`,
+  first-run commands use the public-index requirement (`pypi_pin_floor` / `pypi_pin_ceiling`);
   Installation and the `hedron` / `hedron-core` READMEs must say the in-tree train is
   not on PyPI yet. Never place an unpublished in-tree pin in a `pip` / `uv` / `uvx`
   command a visitor can copy.

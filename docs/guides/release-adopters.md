@@ -3,7 +3,7 @@
 The canonical release history now lives on [Releases](release-notes.md).
 
 The verified **v1.0.1** release is tagged and published on PyPI. Use
-`hedron>=1.0.1,<1.1` for public-index installs. See
+`hedron>=1.0.0` for public-index installs. See
 [Installation](../getting-started/installation.md).
 
 Continue with:

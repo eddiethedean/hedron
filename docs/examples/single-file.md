@@ -67,7 +67,7 @@ explicit `Page` + `@app.page` when you need full `Page` constructor control — 
 [Hedron API](../api/HEDRON.md).
 
 ```bash
-pip install "hedron>=1.0.1,<1.1" "uvicorn[standard]"
+pip install "hedron>=1.0.0" "uvicorn[standard]"
 # paste the Code tab into app.py, then:
 uvicorn app:app --reload
 ```
@@ -77,7 +77,7 @@ uvicorn app:app --reload
 Minimal page with **no** HTMX Refresh — use only if you want the smallest possible file.
 
 ```bash
-pip install "hedron>=1.0.1,<1.1" "uvicorn[standard]"
+pip install "hedron>=1.0.0" "uvicorn[standard]"
 ```
 
 Save as `app.py`:

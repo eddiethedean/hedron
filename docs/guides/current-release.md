@@ -13,13 +13,13 @@ maintaining their own release story.
 
 ## At a glance
 
-| Package | Version | Maturity | Application pin | Role |
+| Package | Version | Maturity | Application requirement | Role |
 |---|---:|---|---|---|
-| `hedron` | `1.0.1` | Stable | `hedron>=1.0.1,<1.1` | FastAPI-native component and route authoring |
-| `hedron-data` | `1.0.1` | Stable | `hedron-data>=1.0.1,<1.1` | DataTable, DataEditor, and bounded data contracts |
-| `hedron-charts` | `1.0.1` | Stable | `hedron-charts>=1.0.0,<2.0` | First-party charts and static/Matplotlib output |
-| `hedron-maps` | `1.0.1` | Stable | `hedron-maps>=1.0.0,<2.0` | Bounded first-party maps and offline presentation |
-| `edron` | `1.0.1` | Stable | `edron>=1.0.1,<1.1` | Alternate class-oriented facade over Hedron |
+| `hedron` | `1.0.1` | Stable | `hedron>=1.0.0` | FastAPI-native component and route authoring |
+| `hedron-data` | `1.0.1` | Stable | `hedron-data>=1.0.0` | DataTable, DataEditor, and bounded data contracts |
+| `hedron-charts` | `1.0.1` | Stable | `hedron-charts>=1.0.0` | First-party charts and static/Matplotlib output |
+| `hedron-maps` | `1.0.1` | Stable | `hedron-maps>=1.0.0` | Bounded first-party maps and offline presentation |
+| `edron` | `1.0.1` | Stable | `edron>=1.0.0` | Alternate class-oriented facade over Hedron |
 
 The coordinated release supports CPython **3.10–3.14**. Package maturity, capability
 readiness, and individual API stability are separate: a stable package may contain a
@@ -38,8 +38,9 @@ host/tooling satellites are opt-in compatibility surfaces, not part of the stabl
 | Existing Flask or Django application | [Installation and host adapters](../getting-started/installation.md) |
 | Repository contribution | `uv sync`, then [Contributor day one](contributor-day-one.md) |
 
-When using the public registry or repository checkout, retain the upper bounds shown above. Upgrade
-deliberately after reading the release notes and running the application's own integration tests.
+When using the public registry or repository checkout, require the `>=1.0.0` baseline shown above.
+Upgrade deliberately after reading the release notes and running the application's own integration
+tests.
 
 ## Support lifecycle
 

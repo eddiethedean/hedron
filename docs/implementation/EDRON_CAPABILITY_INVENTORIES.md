@@ -5,7 +5,7 @@ status: verified
 # Edron 0.1 capability inventories
 
 **Status:** Historical 0.1 design inventory, verified against published Edron `1.0.1`<br>
-**Current release:** Edron `1.0.1`; Hedron `>=1.0.1,<1.1`; published on PyPI<br>
+**Current release:** Edron `1.0.1`; Hedron `>=1.0.0`; published on PyPI<br>
 **Historical 0.1 target metadata:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
 **Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **Public API:** [Edron 0.1 public API](../api/EDRON.md)<br>

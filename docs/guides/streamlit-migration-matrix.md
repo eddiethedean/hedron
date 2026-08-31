@@ -65,17 +65,17 @@ for community packages.
 | `st.dataframe` | `DataTable` from `hedron[data]`; `Table` for small static data | **Direct** | Declare a row `Model` when stable types matter. |
 | `st.data_editor` | `DataEditor` from `hedron[data]` | **Partial** | Wire persistence, authorization, validation, and concurrency explicitly. |
 | `st.column_config` | Hedron data field/column configuration | **Partial** | Verify each specialized column type; do not assume complete Streamlit parity. |
-| `st.line_chart`, `st.area_chart`, `st.bar_chart`, `st.scatter_chart` | Hedron chart components | **Partial** | Install `hedron[charts]>=1.0.1,<1.1`; provide accessible titles/descriptions/fallbacks. |
+| `st.line_chart`, `st.area_chart`, `st.bar_chart`, `st.scatter_chart` | Hedron chart components | **Partial** | Install `hedron[charts]>=1.0.0`; provide accessible titles/descriptions/fallbacks. |
 | `st.plotly_chart`, `st.altair_chart`, `st.pyplot` | `PlotlyChart`, `AltairChart`, `MatplotlibChart` | **Partial** | Matplotlib/static is the conservative default; Plotly/Altair remain experimental. |
 | `st.map`, `st.pydeck_chart` | `Map`, `GeoJSONLayer`, marker/layer specs | **Partial** | Supply a table/text alternative and bound payloads. |
 | `st.image`, `st.audio`, `st.video` | `Image`, `Gallery`, `Audio`, `Video` | **Direct** | Use safe sources, alt text, captions/transcripts, and media budgets. |
 | `st.download_button` | `DownloadButton` + download response helpers | **Equivalent** | Authorize the response; do not expose arbitrary filesystem paths. |
 | `st.graphviz_chart`, Mermaid | Optional chart/diagram adapters or pre-rendered safe media | **Partial** | Check package availability and CSP before migration. |
 
-!!! note "Hedron 0.27 chart floor"
+!!! note "Hedron chart requirement"
 
-    Use `hedron[charts]>=1.0.1,<1.1`, which enforces
-    `hedron-charts>=0.2.4,<0.3`. See
+    Use `hedron[charts]>=1.0.0`, which enforces
+    `hedron-charts>=1.0.0`. See
     [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ## Status, chat, and long-running work

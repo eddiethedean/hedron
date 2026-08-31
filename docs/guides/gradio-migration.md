@@ -9,7 +9,7 @@ This inventory maps Gradio outcomes to Hedron without claiming automatic convers
 optional package only when needed:
 
 ```bash
-pip install "hedron[gradio]>=1.0.1,<1.1"
+pip install "hedron[gradio]>=1.0.0"
 # or
 pip install "hedron-gradio>=0.2.3,<0.3"  # coordinated 1.0 artifact
 ```

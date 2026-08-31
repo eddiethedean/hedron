@@ -92,7 +92,7 @@ See [Installation](getting-started/installation.md) and
 | Pydantic | Supported `>=2.12.0,<2.14`; declared `>=2.12.0,<2.15` | Required by `hedron-core`; 2.12 is the first line with official Python 3.14 support. |
 | Starlette | `>=0.40.0` where directly declared | FastAPI 0.121 requires `>=0.40`; deployment adapters share that floor. |
 | HTMX | Bundled 2.0.10; compatible contract `>=2.0,<3.0` | Official assets pin an exact reviewed version per Hedron release; PAGE responses inject `/hedron-static/htmx.min.js`. |
-| Matplotlib | `>=3.8,<4` via `hedron-charts[matplotlib]` | Install with `hedron[charts]>=1.0.1,<1.1`; Matplotlib/static charts are the conservative default. |
+| Matplotlib | `>=3.8,<4` via `hedron-charts[matplotlib]` | Install with `hedron[charts]>=1.0.0`; Matplotlib/static charts are the conservative default. |
 | Plotly | `>=5.18,<7` via `hedron-charts[plotly]` | Experimental; local host asset, no CDN callbacks. |
 | Altair | `>=6.0,<7` via `hedron-charts[altair]` | Experimental; Python 3.14 requires Altair 6+ (TypedDict fix). |
 | nh3 | `>=0.2` via `hedron[sanitize]` / `[markdown]` | TrustedHtml.nh3 named constructor. |
