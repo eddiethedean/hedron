@@ -1,6 +1,6 @@
 # Release process summary
 
-Hedron’s coordinated `v1.0.1` package train is tagged, published, and Verified.
+Hedron’s coordinated `v1.0.2` package train is tagged, published, and Verified.
 
 The exact maintainer commands and publication rules live in
 [`docs/RELEASE.md`](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md).
@@ -9,9 +9,9 @@ The exact maintainer commands and publication rules live in
 
 | Item | Value |
 |---|---|
-| Current stable release | **v1.0.1** (`hedron`, `hedron-core`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps`) |
+| Current stable release | **v1.0.2** (`hedron`, `hedron-core`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps`) |
 | Migration baseline | **v0.67.0** |
-| PyPI latest | **v1.0.1** |
+| PyPI latest | **v1.0.2** |
 | Public-index requirement | `hedron>=1.0.0` |
 | Repository development | `uv sync` (editable 1.0.2 workspace) |
 | Charts package | `hedron-charts>=1.0.0` |

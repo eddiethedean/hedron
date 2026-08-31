@@ -3,6 +3,20 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 1.0.2 — 2026-08-31
+
+Coordinated maintenance release for the stable 1.0 train. The tagged release passed the full
+release CI matrix and published the coordinated Python packages, including Edron.
+
+### Fixed
+
+- Published a corrected `fastapi-workbench` wheel containing the complete
+  `WorkbenchPathMiddleware` constructor contract required by `hedron-posit`.
+- Raised the `hedron-posit` dependency floor to `fastapi-workbench>=1.0.2,<2.0` and ordered the
+  Workbench adapter before its dependents during publication.
+- Added pre-publication wheel API, dependency metadata, clean-install, and immutable PyPI artifact
+  parity checks so a mismatched published artifact cannot recur silently.
+
 ## 1.0.1 — 2026-08-30
 
 Coordinated maintenance release for the stable 1.0 train. The tagged release passed the full

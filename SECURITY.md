@@ -8,11 +8,11 @@ previous minor (`0.67.x`) continues through approximately **2027-02-27** — aft
 is required. There is **no contractual patch SLA**.
 
 The current published train is **`1.0.x`**. Applications require `>=1.0.0`; PyPI publishes
-`v1.0.1`.
+`v1.0.2`.
 
 | Version | Supported |
 |---|---|
-| `1.0.x` | Yes (published train — requirement `>=1.0.0`; published `v1.0.1`) |
+| `1.0.x` | Yes (published train — requirement `>=1.0.0`; published `v1.0.2`) |
 | `0.67.x` | Best-effort security triage through approximately 2027-02-27; upgrade to `1.0.x` |
 
 ## Reporting a vulnerability

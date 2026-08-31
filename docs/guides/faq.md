@@ -4,7 +4,7 @@
 
 Install the latest public release from PyPI:
 `pip install "hedron>=1.0.0"`. Contributors working from a git checkout use
-`uv sync` (workspace packages). The repository and PyPI both provide `v1.0.1`. See
+`uv sync` (workspace packages). The repository and PyPI both provide `v1.0.2`. See
 [Installation](../getting-started/installation.md).
 
 ```bash
