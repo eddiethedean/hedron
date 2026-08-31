@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.2] — 2026-08-31
+
+### Security
+
+- Reject dot-segment, encoded, and backslash traversal in path-scoped tile allowlists.
+
 ## [1.0.1] — 2026-08-30
 
 - Maintenance release for the coordinated 1.0 train.

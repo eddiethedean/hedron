@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [1.0.2] — 2026-08-31
 
 ### Security
 
@@ -8,6 +8,7 @@
   `StdlibEgressTransport`, including per-hop DNS and peer validation, bounded
   redirects/retries/decompression, content checks, deadlines, proxy routing,
   redacted deny codes, and request-local accounting.
+- Reject dot-segment, encoded, and backslash traversal in path-scoped map tile allowlists.
 
 ## [1.0.1] — 2026-08-30
 

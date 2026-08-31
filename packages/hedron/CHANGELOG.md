@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.2] — 2026-08-31
+
+### Security
+
+- Isolate anonymous idempotency replays from unrelated clients and preserve compatibility with
+  existing replay-store implementations.
+- Bound authentication rate-limit state without evicting active enforcement buckets.
+
 ## [1.0.1] — 2026-08-30
 
 - Maintenance release for the coordinated 1.0 train.
