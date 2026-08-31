@@ -406,7 +406,7 @@ def workbenchify(
     absolute_origin: str | None = None,
 ) -> ASGIApp:
     """Wrap ``app`` at most once. Cookie Path must still be set before construction."""
-    if is_workbenchified(app):
+    if workbenchified_for_asgi_app(app):
         requested = WorkbenchMode.parse(mode)
         deployment = getattr(app, "fastapi_workbench", None)
         if (

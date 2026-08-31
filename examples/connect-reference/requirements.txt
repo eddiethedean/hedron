@@ -8,4 +8,4 @@ uvicorn==0.52.1
 websockets==17.0.1
 # Connect 2025.06 FastAPI runtime imports pkg_resources at worker start.
 # setuptools 82+ removed that module; pin below 82 for the 2025.06 floor.
-setuptools>=69,<82
+setuptools>=78.1.1,<82

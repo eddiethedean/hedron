@@ -24,13 +24,23 @@ _TOKENISH_PATH = re.compile(r"(^|/)([a-f0-9]{16,}|[A-Za-z0-9_-]{20,})(/|$)", re.
 _LICENSE_SHAPE = re.compile(r"\b[A-Z0-9]{4}(?:-[A-Z0-9]{4}){5,}\b", re.IGNORECASE)
 _URL_CREDENTIALS = re.compile(r"(?i)(https?://)([^/\s@]+)@")
 _SENSITIVE_ASSIGNMENT = re.compile(
-    r"(?i)\b(token|code|session|password|secret|access_token|refresh_token|api_key|license)"
-    r"=([^&\s]+)"
+    r"(?i)\b(token|code|session|password|secret|access_token|refresh_token|api_key|license|authorization|credential|cookie)"
+    r"\s*=\s*([^&\s]+)"
+)
+_SENSITIVE_HEADER = re.compile(
+    r"(?im)(\b(?:authorization|proxy-authorization|cookie|set-cookie|"
+    r"rstudio-connect-credentials|rstudio-connect-user-session|"
+    r"x-(?:csrf|xsrf)-token)\s*:\s*)[^\r\n]*"
+)
+_SENSITIVE_KEY = re.compile(
+    r"(?i)(token|secret|password|passwd|credential|authorization|cookie(?![_-]?(mount|path|name))|license|api[_-]?key|private[_-]?key)"
 )
 _REDACTED = "***"
 
 
 def _redact_nested(value: object) -> object:
+    if isinstance(value, str):
+        return redact_text(value)
     if isinstance(value, list):
         return [_redact_nested(item) for item in cast(list[object], value)]
     if isinstance(value, tuple):
@@ -40,7 +50,11 @@ def _redact_nested(value: object) -> object:
         redacted: dict[object, object] = {}
         for key, item in mapping.items():
             key_text = str(key).lower()
-            redacted[key] = _REDACTED if key_text in _SENSITIVE_QUERY_KEYS else _redact_nested(item)
+            redacted[key] = (
+                _REDACTED
+                if (key_text in _SENSITIVE_QUERY_KEYS or _SENSITIVE_KEY.search(key_text))
+                else _redact_nested(item)
+            )
         return redacted
     return value
 
@@ -77,6 +91,7 @@ def redact_url(url: str) -> str:
 
 def redact_text(value: str) -> str:
     redacted = _URL_CREDENTIALS.sub(r"\1***@", value or "")
+    redacted = _SENSITIVE_HEADER.sub(r"\1***", redacted)
     redacted = _SENSITIVE_ASSIGNMENT.sub(r"\1=***", redacted)
     return _LICENSE_SHAPE.sub(_REDACTED, redact_path(redacted))
 

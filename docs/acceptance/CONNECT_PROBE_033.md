@@ -38,8 +38,9 @@ python scripts/verify_pkg_33.py --allow-planned
 
 Connect **2025.06.0** is amd64-only. On arm64 hosts the minimum-floor probe uses
 `HEDRON_CONNECT_DOCKER_PLATFORM=linux/amd64`. That image's FastAPI runtime imports
-`pkg_resources.parse_version`; `hedron-posit` must be installed as a package (wheel)
-so the shim is on `sys.path`.
+`pkg_resources.parse_version`; the Connect reference content therefore pins
+`setuptools>=78.1.1,<82` in its isolated requirements. `hedron-posit` does not force the
+removed, vulnerable compatibility provider into ordinary application environments.
 
 Prior Published evidence in `docs/acceptance/realconnect-029/RESULT.log` is complementary
 Workbench/Connect smoke history; Stage 0 for 0.33 must still produce `realconnect-033` artifacts.

@@ -12,6 +12,7 @@ from hedron_posit import (
     HedronPosit,
     PositConfig,
     PositProduct,
+    resolve_posit_config,
     resolve_posit_deployment,
     resolve_product,
 )
@@ -29,6 +30,12 @@ def test_resolve_connect_from_posit_product() -> None:
     product, evidence = resolve_product(environ={"POSIT_PRODUCT": "CONNECT"})
     assert product is PositProduct.CONNECT
     assert evidence == "posit_product"
+
+
+def test_resolve_connect_from_namespaced_product_config() -> None:
+    product, evidence = resolve_product(environ={"HEDRON_POSIT_PRODUCT": "connect"})
+    assert product is PositProduct.CONNECT
+    assert evidence == "hedron_posit_product"
 
 
 def test_resolve_connect_deprecated_marker() -> None:
@@ -70,6 +77,29 @@ def test_bridge_mode_fails_closed_at_resolve() -> None:
             )
         )
     assert "HED-POSIT-0401" in str(exc.value)
+
+
+def test_namespaced_cookie_mode_fails_closed_at_resolve() -> None:
+    with pytest.raises(HedronError, match="HED-POSIT-0401"):
+        resolve_posit_deployment(
+            PositConfig(),
+            environ={"HEDRON_POSIT_CONNECT_COOKIE_MODE": "authenticated_header_v1"},
+        )
+
+
+def test_invalid_namespaced_cookie_mode_has_stable_diagnostic() -> None:
+    with pytest.raises(HedronError, match="HED-POSIT-0102"):
+        resolve_posit_config(
+            PositConfig(), environ={"HEDRON_POSIT_CONNECT_COOKIE_MODE": "surprise"}
+        )
+
+
+def test_namespaced_bridge_secret_fails_without_echoing_secret() -> None:
+    secret = "short-sensitive-value"
+    with pytest.raises(HedronError) as exc:
+        resolve_posit_config(PositConfig(), environ={"HEDRON_POSIT_BRIDGE_SECRET": secret})
+    assert "HED-POSIT-0401" in str(exc.value)
+    assert secret not in str(exc.value)
 
 
 def test_bridge_mode_fails_closed_helper() -> None:
@@ -181,7 +211,7 @@ def test_native_connect_accepts_matching_base(monkeypatch: pytest.MonkeyPatch) -
     assert base.mount == mount
 
 
-def test_native_connect_uses_supplied_runtime_environment() -> None:
+def test_native_connect_accepts_runtime_request_from_forwarded_client() -> None:
     mount = "/content/00000000-0000-4000-8000-000000000001"
     req = _request(
         headers=[
@@ -196,8 +226,49 @@ def test_native_connect_uses_supplied_runtime_environment() -> None:
     base = native_connect_base_from_request(
         req,
         product=PositProduct.CONNECT,
-        trusted_peers=("127.0.0.1",),
         environ={"POSIT_PRODUCT": "CONNECT"},
     )
     assert base is not None
     assert base.mount == mount
+
+
+def test_explicit_connect_without_runtime_evidence_rejects_header() -> None:
+    mount = "/content/00000000-0000-4000-8000-000000000001"
+    req = _request(
+        headers=[
+            (
+                b"rstudio-connect-app-base-url",
+                f"https://attacker.example{mount}".encode(),
+            )
+        ],
+        root_path=mount,
+        client="203.0.113.8",
+    )
+    with pytest.raises(HedronError, match="protected runtime evidence"):
+        native_connect_base_from_request(req, product=PositProduct.CONNECT, environ={})
+
+
+def test_inactive_loopback_without_runtime_evidence_rejects_header() -> None:
+    mount = "/content/app"
+    req = _request(
+        headers=[(b"rstudio-connect-app-base-url", f"https://evil.example{mount}".encode())],
+        root_path=mount,
+    )
+    with pytest.raises(HedronError, match="protected runtime evidence"):
+        native_connect_base_from_request(req, product=PositProduct.INACTIVE, environ={})
+
+
+def test_peer_header_trust_requires_explicit_opt_in() -> None:
+    mount = "/content/app"
+    req = _request(
+        headers=[(b"rstudio-connect-app-base-url", f"https://proxy.example{mount}".encode())],
+        root_path=mount,
+    )
+    base = native_connect_base_from_request(
+        req,
+        product=PositProduct.INACTIVE,
+        trusted_peers=("127.0.0.1",),
+        environ={},
+    )
+    assert base is not None
+    assert base.origin == "https://proxy.example"

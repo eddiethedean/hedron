@@ -17,6 +17,7 @@ from hedron_posit.config import (
     WorkbenchConfig,
     WorkbenchMode,
     WorkbenchTopology,
+    resolve_posit_config,
     resolve_posit_deployment,
 )
 from hedron_posit.cookies import ConnectCookieMode, CookieRegistry, CookieSpec, resolve_cookie_path
@@ -45,7 +46,7 @@ from hedron_posit.urls import (
     validate_external_base_url,
 )
 
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 
 __all__ = [
     "ConnectConfig",
@@ -86,6 +87,7 @@ __all__ = [
     "resolve_cookie_path",
     "resolve_deployment",
     "resolve_posit_deployment",
+    "resolve_posit_config",
     "resolve_product",
     "run_deployment_matrix",
     "validate_deployed_interactions",

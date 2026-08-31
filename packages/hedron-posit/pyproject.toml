@@ -1,6 +1,6 @@
 [project]
 name = "hedron-posit"
-version = "1.0.2"
+version = "1.0.3"
 description = "Unified Posit Workbench / Connect deployment adapter for Hedron"
 readme = "README.md"
 requires-python = ">=3.10,<3.15"
@@ -41,7 +41,7 @@ classifiers = [
 ]
 dependencies = [
     "hedron>=1.0.0,<2.0",
-    "fastapi-workbench>=1.0.2,<2.0",
+    "fastapi-workbench>=1.0.3,<2.0",
     "starlette>=0.40.0",
     "uvicorn[standard]>=0.32",
 ]
@@ -63,13 +63,9 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/hedron_posit"]
 
-[tool.hatch.build.targets.wheel.force-include]
-"src/pkg_resources" = "pkg_resources"
-
 [tool.hatch.build.targets.sdist]
 only-include = [
     "src/hedron_posit",
-    "src/pkg_resources",
     "README.md",
     "CHANGELOG.md",
     "LICENSE",

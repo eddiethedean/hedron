@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from hedron.mount import normalize_mount_path
 from hedron_core.catalog import InteractionCatalog, InteractionManifest
 from hedron_core.typing_aliases import JsonObject
 
@@ -17,14 +18,17 @@ def validate_deployed_interactions(
     mount: str = "",
 ) -> JsonObject:
     """Validate a production interactions.json and report mount-aware URLs."""
+    normalized_mount = normalize_mount_path(mount)
+    if mount not in {"", "/"} and not normalized_mount:
+        raise ValueError("mount must be a safe absolute path")
     manifest = InteractionManifest.read_json(Path(build_dir) / "interactions.json")
     manifest.validate_against(catalog)
     return {
         "catalog_fingerprint": catalog.fingerprint,
         "manifest_fingerprint": manifest.fingerprint,
-        "mount": mount,
-        "interactions_url": f"{mount.rstrip('/')}/interactions.json"
-        if mount
+        "mount": normalized_mount,
+        "interactions_url": f"{normalized_mount}/interactions.json"
+        if normalized_mount
         else "interactions.json",
         "ok": True,
     }

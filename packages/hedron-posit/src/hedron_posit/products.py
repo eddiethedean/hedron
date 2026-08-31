@@ -13,6 +13,7 @@ from hedron_posit.detect import is_workbench_env, is_workbench_forced, rs_server
 PositProductName = Literal["auto", "inactive", "workbench", "connect"]
 EvidenceKind = Literal[
     "explicit",
+    "hedron_posit_product",
     "posit_product",
     "rstudio_product_compat",
     "workbench_env",
@@ -87,6 +88,15 @@ def resolve_product(
 ) -> tuple[PositProduct, EvidenceKind]:
     """Resolve the Posit product. Fail closed on conflicting evidence."""
     env = _env_map(environ)
+    configured_from_env = False
+    if explicit is PositProduct.AUTO:
+        configured = str(env.get("HEDRON_POSIT_PRODUCT") or "").strip()
+        if configured:
+            try:
+                explicit = PositProduct.parse(configured)
+                configured_from_env = True
+            except ValueError as exc:
+                raise _conflict("Invalid Posit product configuration", str(exc)) from exc
     connect_kind = connect_product_marker(env)
     # Workbench evidence ignores Connect-only hosts; RS_SERVER_URL alongside CONNECT is conflict.
     workbench_kind = workbench_product_evidence(env)
@@ -109,7 +119,7 @@ def resolve_product(
                 "Conflicting Posit product evidence",
                 "Explicit inactive conflicts with Connect or Workbench evidence",
             )
-        return explicit, "explicit"
+        return explicit, "hedron_posit_product" if configured_from_env else "explicit"
 
     if connect_kind is not None and workbench_kind is not None:
         raise _conflict(

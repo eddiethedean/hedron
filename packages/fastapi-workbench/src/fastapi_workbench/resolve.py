@@ -310,7 +310,9 @@ def _validate_forwarded_allow_ips(raw: str | None) -> str:
             )
         try:
             if "/" in entry:
-                ipaddress.ip_network(entry, strict=False)
+                network = ipaddress.ip_network(entry, strict=False)
+                if network.prefixlen == 0:
+                    raise ValueError("unbounded network")
             else:
                 ipaddress.ip_address(entry)
         except ValueError as exc:
@@ -387,7 +389,17 @@ def parse_rserver_url_output(raw: str, *, port: int) -> tuple[str, str, str]:
                 )
             )
         mount = _canonicalize_discovered_mount(parsed.path)
-        origin = normalize_http_origin(f"{parsed.scheme}://{parsed.netloc}")
+        try:
+            origin = normalize_http_origin(f"{parsed.scheme}://{parsed.netloc}")
+        except ValueError as exc:
+            raise WorkbenchError(
+                make_diagnostic(
+                    FWB_0002,
+                    title="Invalid rserver-url URL",
+                    explanation=str(exc),
+                    remediation="Reject discovery output and fail closed.",
+                )
+            ) from exc
         return mount, origin, "rserver-url:full-url"
     if "://" in text.split("/", 1)[0] or text.startswith("//"):
         raise WorkbenchError(
@@ -399,7 +411,7 @@ def parse_rserver_url_output(raw: str, *, port: int) -> tuple[str, str, str]:
             )
         )
     mount = _canonicalize_discovered_mount(text)
-    return mount, _local_origin(DEFAULT_HOST, port), "rserver-url:path"
+    return mount, _local_origin(DEFAULT_HOST, port or None), "rserver-url:path"
 
 
 def _canonicalize_discovered_mount(path: str) -> str:
@@ -576,7 +588,7 @@ def resolve_deployment(
         )
         active = True
         if public_explicit is not None:
-            if public_mount and browser_mount != public_mount and public_mount != browser_mount:
+            if public_mount not in {"", "/"} and browser_mount != public_mount:
                 raise _error(
                     title="Conflicting Workbench mount and origin",
                     explanation="Explicit mount and public base path disagree.",

@@ -18,7 +18,7 @@ from hedron.security.redirects import redirect_local
 from hedron_core.htmx_contract import is_local_path
 
 _CONNECT_BASE_HEADER = "rstudio-connect-app-base-url"
-_DEFAULT_CONNECT_PROXY_PEERS = ("127.0.0.1", "::1")
+_DEFAULT_CONNECT_PROXY_PEERS: tuple[str, ...] = ()
 _WORKBENCH_SESSION_MOUNT = re.compile(r"^/s/[^/]+/p/[^/]+(?:/|$)")
 
 
@@ -159,11 +159,15 @@ def connect_external_base_from_request(
         return None
     if len(values) != 1:
         raise ValueError("multiple Posit Connect app base headers were rejected")
-    peer = _scope_peer(request)
     env = os.environ if environ is None else environ
-    connect_runtime = str(env.get("POSIT_PRODUCT") or "").strip().upper() == "CONNECT"
-    if not connect_runtime and not _trusted_peer(peer, trusted_peers):
-        raise ValueError("Posit Connect app base header lacked trusted runtime evidence")
+    posit_product = str(env.get("POSIT_PRODUCT") or "").strip().upper()
+    rstudio_product = str(env.get("RSTUDIO_PRODUCT") or "").strip().upper()
+    protected_runtime = posit_product == "CONNECT" or (
+        not posit_product and rstudio_product == "CONNECT"
+    )
+    peer_opt_in = bool(trusted_peers) and _trusted_peer(_scope_peer(request), trusted_peers)
+    if not protected_runtime and not peer_opt_in:
+        raise ValueError("Posit Connect app base header lacked protected runtime evidence")
 
     base = _validated_external_base(values[0], source="header:rstudio-connect-app-base-url")
     scope_mount = normalize_mount_path(str(request.scope.get("root_path") or ""))
@@ -187,6 +191,10 @@ def compose_external_url(
     mounted = prefix_local_path(value, base.mount)
     result = f"{base.origin}{mounted}"
     if query:
+        items = list(query.items()) if isinstance(query, Mapping) else list(query)
+        for key, raw in items:
+            if raw is None:
+                raise ValueError(f"external URL query value for {key!r} must not be None")
         result += "?" + urlencode(query, doseq=True)
     if fragment is not None:
         if any(ord(char) < 32 for char in str(fragment)):

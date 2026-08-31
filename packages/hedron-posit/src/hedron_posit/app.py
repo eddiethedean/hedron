@@ -24,6 +24,7 @@ from hedron_posit.config import (
     WorkbenchConfig,
     WorkbenchMode,
     WorkbenchTopology,
+    resolve_posit_config,
     resolve_posit_deployment,
 )
 from hedron_posit.connect import native_connect_base_from_request
@@ -93,11 +94,13 @@ class HedronPosit(Hedron):
                 else workbench_config.topology
             ),
         )
-        posit_config = PositConfig(
-            product=posit.product if posit is not None else PositProduct.AUTO,
-            workbench=workbench_config,
-            connect=posit.connect if posit is not None else ConnectConfig(),
-            hands_off=bool(posit.hands_off) if posit is not None else False,
+        posit_config = resolve_posit_config(
+            PositConfig(
+                product=posit.product if posit is not None else PositProduct.AUTO,
+                workbench=workbench_config,
+                connect=posit.connect if posit is not None else ConnectConfig(),
+                hands_off=bool(posit.hands_off) if posit is not None else False,
+            )
         )
         self._posit_config = posit_config
         self._cookie_registry: CookieRegistry | None = None
@@ -171,7 +174,7 @@ class HedronPosit(Hedron):
             active=self.hedron_workbench.active or bool(hands_off and expected_mount),
             debug=self.hedron_workbench.debug,
             expected_origins=(self.hedron_workbench.external_origin,),
-            runtime_mounts=True,
+            runtime_mounts=bool(self.hedron_workbench.active or (hands_off and expected_mount)),
             mounted_response_headers=True,
             absolute_redirects=absolute_origin is not None,
             absolute_origin=absolute_origin,
@@ -180,6 +183,15 @@ class HedronPosit(Hedron):
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         """Normalize Workbench scopes before FastAPI routes the request."""
+        if scope.get("type") == "http" and self.hedron_posit.product is PositProduct.CONNECT:
+            # Validate Connect's base/root contract at request ingress. Without
+            # this, a malformed base header can survive ordinary requests and
+            # fail only when an application later asks for a URL helper.
+            native_connect_base_from_request(
+                Request(scope),
+                product=self.hedron_posit.product,
+                trusted_peers=self._posit_config.connect.trusted_peers,
+            )
         await self._workbench_asgi(scope, receive, send)
 
     def workbench_status(self) -> dict[str, object]:
@@ -254,14 +266,17 @@ class HedronPosit(Hedron):
         """Return a trusted origin for Workbench-safe absolute redirects.
 
         Workbench discovery and explicit configuration are trusted deployment
-        inputs. A loopback origin is intentionally still rejected by ``browser_url``
-        for public-link generation, but it is valid here: the redirect is scoped to
-        the active Workbench deployment and must be absolute before the outer proxy
-        sees it.
+        inputs. A loopback origin is not safe for browser redirects because it
+        points users at the local listener rather than the public proxy.
         """
         if not self.hedron_workbench.active:
             return None
-        return self.hedron_workbench.external_origin
+        hostname = urlsplit(self.hedron_workbench.external_origin).hostname or ""
+        try:
+            loopback = ipaddress.ip_address(hostname).is_loopback
+        except ValueError:
+            loopback = hostname.lower() == "localhost"
+        return None if loopback else self.hedron_workbench.external_origin
 
     def _external_base(self, *, request: Request | None = None) -> ExternalBase:
         if self._hedron_external_base is not None:

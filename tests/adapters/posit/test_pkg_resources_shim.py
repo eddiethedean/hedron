@@ -1,20 +1,19 @@
-"""Connect 2025.06 FastAPI runtime needs pkg_resources.parse_version."""
+"""Connect 2025.06 compatibility stays scoped to its content environment."""
 
 from __future__ import annotations
 
-import importlib.util
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-SHIM = ROOT / "packages" / "hedron-posit" / "src" / "pkg_resources" / "__init__.py"
+PYPROJECT = ROOT / "packages" / "hedron-posit" / "pyproject.toml"
+CONNECT_REQUIREMENTS = ROOT / "examples" / "connect-reference" / "requirements.txt"
 
 
-def test_pkg_resources_shim_parse_version() -> None:
-    spec = importlib.util.spec_from_file_location("hedron_posit_pkg_resources_shim", SHIM)
-    assert spec is not None and spec.loader is not None
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    parse_version = module.parse_version
-    assert parse_version("0.35.0") >= parse_version("0.35.0")
-    assert parse_version("1.2.0") > parse_version("1.1.0")
-    assert parse_version("0.109.0") >= parse_version("0.109.0")
+def test_pkg_resources_compatibility_does_not_pin_all_users_to_vulnerable_setuptools() -> None:
+    text = PYPROJECT.read_text(encoding="utf-8")
+    assert '"setuptools' not in text
+    assert "setuptools>=78.1.1,<82" in CONNECT_REQUIREMENTS.read_text(encoding="utf-8")
+    assert "force-include" not in text
+    assert not (
+        ROOT / "packages" / "hedron-posit" / "src" / "pkg_resources" / "__init__.py"
+    ).exists()

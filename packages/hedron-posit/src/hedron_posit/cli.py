@@ -10,6 +10,14 @@ import sys
 from pathlib import Path
 from typing import Any, cast
 
+from fastapi_workbench.cli_support import (
+    cookie_path_matches_mount,
+    deployment_payload,
+    deployment_text_lines,
+    probe_asgi_app,
+    report_checks_ok,
+    resolve_check,
+)
 from hedron_core.diagnostics import HedronError
 from hedron_posit import __version__
 from hedron_posit.config import WorkbenchConfig, WorkbenchMode, WorkbenchTopology
@@ -35,7 +43,7 @@ def _config_from_args(args: argparse.Namespace) -> WorkbenchConfig:
         rserver_url_bin=getattr(args, "rserver_url", None) or WorkbenchConfig().rserver_url_bin,
         open_browser=bool(getattr(args, "open_browser", False)),
         reload=bool(getattr(args, "reload", False)),
-        workers=int(getattr(args, "workers", 1)),
+        workers=getattr(args, "workers", None),
         forwarded_allow_ips=getattr(args, "forwarded_allow_ips", None),
         allow_external_bind=bool(getattr(args, "allow_external_bind", False)),
         debug=bool(getattr(args, "debug", False)),
@@ -46,28 +54,11 @@ def _config_from_args(args: argparse.Namespace) -> WorkbenchConfig:
 
 
 def _emit(resolved: Any, *, fmt: str, posit_status: dict[str, object] | None = None) -> None:
-    payload = redact_record(resolved.as_dict())
-    if posit_status is not None:
-        payload["posit_status"] = redact_record(posit_status)
+    payload = deployment_payload(resolved, status=posit_status)
     if fmt == "json":
         print(json.dumps(payload, indent=2, sort_keys=True))
         return
-    if posit_status is not None:
-        print(f"product: {posit_status.get('product')}")
-        print(f"evidence: {posit_status.get('evidence')}")
-        print(f"cookie_strategy: {posit_status.get('cookie_strategy')}")
-        print(f"bridge_enabled: {posit_status.get('bridge_enabled')}")
-    print(f"mode: {payload['mode']}")
-    print(f"bind: {payload['bind']}")
-    print(f"external_origin: {payload['external_origin']}")
-    print(f"browser_mount: {payload['browser_mount']}")
-    print(f"cookie_mount: {payload['cookie_mount']}")
-    print(f"source: {payload['source']}")
-    print(f"discovered: {payload['discovered']}")
-    warning_values = payload.get("warnings")
-    if isinstance(warning_values, list):
-        for warning in cast(list[object], warning_values):
-            print(f"warning: {warning}")
+    print("\n".join(deployment_text_lines(payload, status=posit_status)))
 
 
 def _cmd_check(args: argparse.Namespace) -> int:
@@ -91,34 +82,23 @@ def _cmd_check(args: argparse.Namespace) -> int:
         return 0 if report["ok"] else 1
 
     cfg = _config_from_args(args)
-    discovered: str | None = None
-    bound_port: int | None = None
-    sock = None
     try:
-        if (
-            getattr(args, "discover", False)
-            and rs_server_url()
-            and explicit_mount_hint(cfg, bound_port=cfg.port) is None
-        ):
-            # Match doctor --live: bind first, then pass the listening port to rserver-url.
-            # ``--port 0`` / unset means ephemeral (``or 0``), not a hard-coded 8000.
-            sock = bind_loopback(cfg.host or "127.0.0.1", cfg.port or 0)
-            bound_port = int(sock.getsockname()[1])
-            try:
-                discovered = discover_rserver_url(binary=cfg.rserver_url_bin, port=bound_port)
-            except HedronError as exc:
-                print(redact_text(str(exc)), file=sys.stderr)
-                return 1
-        try:
-            posit = resolve_posit_deployment(
+        result = resolve_check(
+            host=cfg.host or "127.0.0.1",
+            port=cfg.port or 0,
+            discover=bool(getattr(args, "discover", False)),
+            discovery_available=bool(rs_server_url()),
+            explicit_mount=lambda _port: explicit_mount_hint(cfg, bound_port=cfg.port) is not None,
+            bind=bind_loopback,
+            discover_url=lambda port: discover_rserver_url(binary=cfg.rserver_url_bin, port=port),
+            resolve=lambda bound_port, discovered: resolve_posit_deployment(
                 PositConfig(workbench=cfg),
                 discovered_raw=discovered,
                 bound_port=bound_port,
-            )
-            resolved = posit.workbench
-        except HedronError as exc:
-            print(redact_text(str(exc)), file=sys.stderr)
-            return 1
+            ),
+        )
+        posit = result.value
+        resolved = posit.workbench
         status: dict[str, object] = {
             "product": posit.product.value,
             "evidence": posit.evidence,
@@ -128,9 +108,9 @@ def _cmd_check(args: argparse.Namespace) -> int:
         }
         _emit(resolved, fmt=args.format, posit_status=status)
         return 0
-    finally:
-        if sock is not None:
-            sock.close()
+    except HedronError as exc:
+        print(redact_text(str(exc)), file=sys.stderr)
+        return 1
 
 
 def _cmd_run(args: argparse.Namespace) -> int:
@@ -143,81 +123,23 @@ def _cmd_run(args: argparse.Namespace) -> int:
     return 0
 
 
-def _normalize_cookie_path(path: str) -> str:
-    if not path or path == "/":
-        return "/"
-    return path.rstrip("/") or "/"
-
-
-def _parse_set_cookie_path(header: str) -> str | None:
-    """Return the RFC6265 Path attribute from a Set-Cookie header.
-
-    Missing Path attributes yield ``None`` (fail closed for mount checks).
-    Quoted values are unquoted; comparison callers normalize trailing slashes.
-    """
-    parts = header.split(";")
-    for part in parts[1:]:
-        name, sep, value = part.strip().partition("=")
-        if not sep or name.lower() != "path":
-            continue
-        path = value.strip()
-        if len(path) >= 2 and path[0] == path[-1] and path[0] in "\"'":
-            path = path[1:-1]
-        return path
-    return None
-
-
-def _cookie_path_matches_mount(header: str, mount: str) -> bool:
-    expected = _normalize_cookie_path(mount or "/")
-    path = _parse_set_cookie_path(header)
-    if path is None:
-        return False
-    return _normalize_cookie_path(path) == expected
+_cookie_path_matches_mount = cookie_path_matches_mount
 
 
 async def _probe_app(app: Any, mount: str) -> dict[str, object]:
-    import re
-
-    import httpx
-
     from hedron_posit.diagnostics import scan_location_header, scan_set_cookie_headers
 
-    target = f"{mount}/" if mount else "/"
-    async with httpx.AsyncClient(
-        transport=httpx.ASGITransport(app=app),
-        base_url="https://doctor.invalid",
-        follow_redirects=False,
-    ) as client:
-        response = await client.get(target)
-    html = response.text if "text/html" in response.headers.get("content-type", "") else ""
-    unmounted: list[str] = []
-    if mount and html:
-        pattern = re.compile(r'(?:href|src|action|hx-(?:get|post|put|patch|delete))="(/[^"]*)"')
-        for match in pattern.finditer(html):
-            value = match.group(1)
-            if value != mount and not value.startswith(mount + "/"):
-                unmounted.append(value)
-    cookie_headers = response.headers.get_list("set-cookie")
-    # Empty Set-Cookie is fine (many probes never touch the session). Fail only
-    # when a cookie is present with a Path that does not match the mount.
-    cookie_paths_ok = all(_cookie_path_matches_mount(header, mount) for header in cookie_headers)
-    diagnostics = [
-        item.as_dict()
-        for item in (
-            *scan_set_cookie_headers(cookie_headers, mount=mount or "/"),
-            *scan_location_header(response.headers.get("location"), mount=mount or "/"),
-        )
-    ]
-    return {
-        "target": target,
-        "status": response.status_code,
-        "reachable": response.status_code < 500,
-        "unmounted_generated_urls": sorted(set(unmounted)),
-        "generated_urls_mounted": not unmounted,
-        "cookie_paths_mounted": cookie_paths_ok,
-        "diagnostics": diagnostics,
-        "diagnostics_clean": not diagnostics,
-    }
+    def posit_checks(response: Any, cookie_headers: list[str]) -> dict[str, object]:
+        diagnostics = [
+            item.as_dict()
+            for item in (
+                *scan_set_cookie_headers(cookie_headers, mount=mount or "/"),
+                *scan_location_header(response.headers.get("location"), mount=mount or "/"),
+            )
+        ]
+        return {"diagnostics": diagnostics, "diagnostics_clean": not diagnostics}
+
+    return await probe_asgi_app(app, mount, extra_checks=posit_checks)
 
 
 def _cmd_doctor(args: argparse.Namespace) -> int:
@@ -227,6 +149,8 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
     try:
         bound_port: int | None = None
         discovered: str | None = None
+        # Validate host policy before opening a live listener.
+        resolve_deployment(cfg)
         if args.live:
             sock = bind_loopback(cfg.host or "127.0.0.1", cfg.port or 0)
             bound_port = int(sock.getsockname()[1])
@@ -238,6 +162,20 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
             discovered_raw=discovered,
         )
         report["deployment"] = redact_record(resolved.as_dict())
+        from hedron_posit.config import PositConfig, resolve_posit_deployment
+
+        posit = resolve_posit_deployment(
+            PositConfig(workbench=cfg),
+            discovered_raw=discovered,
+            bound_port=bound_port,
+        )
+        report["posit_status"] = {
+            "product": posit.product.value,
+            "evidence": posit.evidence,
+            "cookie_strategy": posit.cookie_mode.value,
+            "bridge_enabled": posit.bridge_enabled,
+            "compatibility_facade": posit.compatibility_facade,
+        }
         checks = cast(dict[str, object], report["checks"])
         checks["listener_host_safe"] = (
             resolved.host in {"127.0.0.1", "::1", "localhost"}
@@ -272,25 +210,7 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
         print(json.dumps(report, indent=2, sort_keys=True))
     else:
         print(json.dumps(report, sort_keys=True))
-    if "error" in report:
-        return 1
-    checks = cast(dict[str, object], report["checks"])
-    for value in checks.values():
-        if value is False:
-            return 1
-        if isinstance(value, dict):
-            probe = cast(dict[str, object], value)
-            if any(
-                probe.get(name) is False
-                for name in (
-                    "reachable",
-                    "generated_urls_mounted",
-                    "cookie_paths_mounted",
-                    "diagnostics_clean",
-                )
-            ):
-                return 1
-    return 0
+    return 0 if report_checks_ok(report) else 1
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -326,7 +246,7 @@ def main(argv: list[str] | None = None) -> int:
         p.add_argument(
             "--workers",
             type=int,
-            default=1,
+            default=None,
             help="Discover once, then exec this many Uvicorn workers",
         )
 

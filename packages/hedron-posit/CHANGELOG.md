@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.3] — 2026-08-31
+
+### Security
+- Require protected Connect runtime evidence before trusting native forwarded headers, and
+  expand secret redaction across structured and free-form diagnostics.
+
+### Changed
+- Share launcher and CLI resolution primitives with `fastapi-workbench>=1.0.3` and add
+  cross-package conformance coverage for mounts, origins, paths, and cookie scope.
+
 ## [1.0.2] — 2026-08-31
 
 ### Fixed
