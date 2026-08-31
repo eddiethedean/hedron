@@ -157,27 +157,37 @@ my-workbench-app/
 └── pyproject.toml
 ```
 
-Keep the dependency declarations in `pyproject.toml` under version control. Reinstall the project
-with `python3.11 -m pip install -e .` after dependency changes.
+Keep the dependency declarations in `pyproject.toml` under version control. The scaffold initially
+declares the exact version used to create it; replace that generated Hedron entry with
+`"hedron>=1.0.0",` so compatible bug-fix releases remain eligible. Add
+`"hedron-posit>=1.0.0",` alongside it. Reinstall the project with
+`python3.11 -m pip install -e .` after dependency changes.
 
-Add `"hedron-posit>=1.0.0",` to the `dependencies` list in `pyproject.toml` so a fresh
-environment can reproduce the adapter installation.
+The resulting dependency entries should include:
+
+```toml
+dependencies = [
+    "hedron>=1.0.0",
+    "hedron-posit>=1.0.0",
+    # keep the generated uvicorn entry
+]
+```
 
 ## 4. Make the app Workbench-aware
 
 Open `app.py`. Change the Hedron import and application constructor while leaving the generated
 page, status region, and fragment intact.
 
-Change:
+Change the generated import line (keep the other generated imports, which the forms below use):
 
 ```python
-from hedron import Hedron, Stack, Text, html
+from hedron import CsrfField, Hedron, SafeUrl, Stack, Text, UrlPurpose, html
 ```
 
 to:
 
 ```python
-from hedron import Stack, Text, html
+from hedron import CsrfField, SafeUrl, Stack, Text, UrlPurpose, html
 from hedron_posit import HedronPosit
 ```
 
