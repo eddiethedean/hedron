@@ -260,9 +260,7 @@ def download_all_zip(
                 )
     payload = buffer.getvalue()
     if len(payload) > max_total_bytes:
-        raise ValueError(
-            f"download-all archive exceeds max_total_bytes of {max_total_bytes} bytes"
-        )
+        raise ValueError(f"download-all archive exceeds max_total_bytes of {max_total_bytes} bytes")
 
     safe_name = validate_upload_filename(filename)
     return Response(
