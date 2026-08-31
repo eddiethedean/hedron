@@ -116,8 +116,7 @@ class MemoryReplayStore:
             size += cls._text_bytes(entry.media_type)
         if entry.headers is not None:
             size += sum(
-                cls._text_bytes(name) + cls._text_bytes(value)
-                for name, value in entry.headers
+                cls._text_bytes(name) + cls._text_bytes(value) for name, value in entry.headers
             )
         return size
 
