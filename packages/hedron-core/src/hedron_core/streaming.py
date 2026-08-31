@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import time
 from collections.abc import AsyncIterator, Callable, Iterator, Sequence
 from dataclasses import dataclass, field
@@ -25,6 +26,25 @@ class StreamBudget:
     max_chars: int = 2_000_000
     deadline_seconds: float | None = 60.0
     chunk_delay_seconds: float = 0.0
+
+    def __post_init__(self) -> None:
+        for name in ("max_chunks", "max_chars"):
+            value = getattr(self, name)
+            if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+                raise ValueError(f"StreamBudget.{name} must be a positive integer")
+        for name in ("deadline_seconds", "chunk_delay_seconds"):
+            value = getattr(self, name)
+            if value is None and name == "deadline_seconds":
+                continue
+            if (
+                isinstance(value, bool)
+                or not isinstance(value, (int, float))
+                or not math.isfinite(float(value))
+                or value < 0
+            ):
+                raise ValueError(f"StreamBudget.{name} must be finite and non-negative")
+        if self.deadline_seconds == 0:
+            raise ValueError("StreamBudget.deadline_seconds must be positive or None")
 
 
 @dataclass(slots=True)

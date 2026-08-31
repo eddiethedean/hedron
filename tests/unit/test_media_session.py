@@ -66,3 +66,35 @@ def test_media_session_enforces_bandwidth() -> None:
     session.accept_chunk(MediaChunk(2, "audio/webm", b"12345", timestamp_ms=1))
     with pytest.raises(RuntimeError, match="max_bandwidth"):
         session.accept_chunk(MediaChunk(3, "audio/webm", b"12345", timestamp_ms=2))
+
+
+def test_media_session_rejects_duplicate_sequence_and_wrong_media_type() -> None:
+    session = MediaSession(session_id="s5", kind="audio", origin="https://app.test")
+    session.grant()
+    session.accept_chunk(MediaChunk(1, "audio/webm", b"a", timestamp_ms=0))
+    with pytest.raises(ValueError, match="sequence"):
+        session.accept_chunk(MediaChunk(1, "audio/webm", b"b", timestamp_ms=1000))
+    with pytest.raises(ValueError, match="content_type"):
+        session.accept_chunk(MediaChunk(2, "video/webm", b"b", timestamp_ms=1000))
+
+
+def test_media_session_rejects_reversed_timestamp() -> None:
+    session = MediaSession(session_id="s6", kind="audio", origin="https://app.test")
+    session.grant()
+    session.accept_chunk(MediaChunk(1, "audio/webm", b"a", timestamp_ms=100))
+    with pytest.raises(ValueError, match="precedes"):
+        session.accept_chunk(MediaChunk(2, "audio/webm", b"b", timestamp_ms=99))
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {"max_duration_seconds": float("nan")},
+        {"max_duration_seconds": float("inf")},
+        {"cadence_ms": -1},
+        {"max_chunks": 0},
+    ],
+)
+def test_media_session_budget_rejects_invalid_values(kwargs: dict[str, object]) -> None:
+    with pytest.raises(ValueError):
+        MediaSessionBudget(**kwargs)  # type: ignore[arg-type]

@@ -85,8 +85,10 @@ async def read_upload_capped(
     """
     import inspect
 
-    if maximum_size < 0:
+    if isinstance(maximum_size, bool) or not isinstance(maximum_size, int) or maximum_size < 0:
         raise ValueError("Upload size budget must be non-negative")
+    if isinstance(chunk_size, bool) or not isinstance(chunk_size, int) or chunk_size <= 0:
+        raise ValueError("Upload chunk size must be a positive integer")
     read = getattr(file, "read", None)
     if not callable(read):
         raise ValueError("Upload stream does not support read()")

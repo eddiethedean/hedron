@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import time
 from dataclasses import dataclass, field
 from typing import Literal
@@ -32,6 +33,26 @@ class MediaSessionBudget:
     max_chunks: int = 2_400
     max_bandwidth_bytes_per_second: int = 1_000_000
 
+    def __post_init__(self) -> None:
+        if (
+            isinstance(self.max_duration_seconds, bool)
+            or not isinstance(self.max_duration_seconds, (int, float))
+            or not math.isfinite(float(self.max_duration_seconds))
+            or self.max_duration_seconds <= 0
+        ):
+            raise ValueError("max_duration_seconds must be finite and > 0")
+        for name in (
+            "cadence_ms",
+            "max_chunk_bytes",
+            "max_chunks",
+            "max_bandwidth_bytes_per_second",
+        ):
+            value = getattr(self, name)
+            minimum = 0 if name == "cadence_ms" else 1
+            if isinstance(value, bool) or not isinstance(value, int) or value < minimum:
+                qualifier = "non-negative" if minimum == 0 else "positive"
+                raise ValueError(f"{name} must be a {qualifier} integer")
+
 
 @dataclass(frozen=True, slots=True)
 class MediaChunk:
@@ -58,6 +79,7 @@ class MediaSession:
     _last_timestamp_ms: int | None = field(default=None, repr=False)
     _window_started_monotonic: float | None = field(default=None, repr=False)
     _window_bytes: int = field(default=0, repr=False)
+    _next_sequence: int | None = field(default=None, repr=False)
 
     def grant(self) -> None:
         if self.state is MediaSessionState.CLOSED:
@@ -66,6 +88,7 @@ class MediaSession:
         self.state = MediaSessionState.ACTIVE
         self._started_at_ms = None
         self._last_timestamp_ms = None
+        self._next_sequence = None
         self._window_started_monotonic = time.monotonic()
         self._window_bytes = 0
 
@@ -74,6 +97,25 @@ class MediaSession:
             raise PermissionError("media permission not granted")
         if self.state is not MediaSessionState.ACTIVE:
             raise RuntimeError(f"session not active: {self.state}")
+        if (
+            isinstance(chunk.sequence, bool)
+            or not isinstance(chunk.sequence, int)
+            or chunk.sequence < 0
+        ):
+            raise ValueError("chunk sequence must be a non-negative integer")
+        if isinstance(chunk.timestamp_ms, bool) or not isinstance(chunk.timestamp_ms, int):
+            raise ValueError("chunk timestamp_ms must be an integer")
+        if chunk.timestamp_ms < 0:
+            raise ValueError("chunk timestamp_ms must be non-negative")
+        if not isinstance(chunk.content_type, str) or not chunk.content_type.strip():
+            raise ValueError("chunk content_type is required")
+        media_kind = (
+            "image" if self.kind == "image" else "video" if "video" in self.kind else "audio"
+        )
+        if not chunk.content_type.lower().startswith(f"{media_kind}/"):
+            raise ValueError("chunk content_type does not match session kind")
+        if self._next_sequence is not None and chunk.sequence != self._next_sequence:
+            raise ValueError("chunk sequence is not the next expected value")
         if len(chunk.data) > self.budget.max_chunk_bytes:
             raise ValueError("chunk exceeds max_chunk_bytes")
         if self.chunks_received >= self.budget.max_chunks:
@@ -91,6 +133,8 @@ class MediaSession:
 
         if self._last_timestamp_ms is not None and self.budget.cadence_ms > 0:
             delta = chunk.timestamp_ms - self._last_timestamp_ms
+            if delta < 0:
+                raise ValueError("chunk timestamp precedes previous chunk")
             if delta < self.budget.cadence_ms:
                 raise ValueError("chunk cadence_ms violated")
 
@@ -107,6 +151,7 @@ class MediaSession:
 
         self._window_bytes += len(chunk.data)
         self._last_timestamp_ms = chunk.timestamp_ms
+        self._next_sequence = chunk.sequence + 1
         self.chunks_received += 1
         self.bytes_received += len(chunk.data)
 
