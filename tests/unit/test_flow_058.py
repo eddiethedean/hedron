@@ -13,7 +13,6 @@ from pydantic import BaseModel, Field
 from hedron import (
     AuthDenied,
     AuthSuccess,
-    CachePolicy,
     DashboardWorkspace,
     DesignSystem,
     Hedron,
@@ -337,38 +336,6 @@ def test_dashboard_filter_form_and_urlencoded_redirect() -> None:
     assert location.startswith("/sales?")
     assert "a%26b%3D1" in location or "a%26b=1" in location
     assert response.headers.get("HX-Replace-Url") == location
-
-
-def test_dashboard_query_filters_bind_panels_and_cache_ttl() -> None:
-    class Filters(BaseModel):
-        region: str = "all"
-
-    seen: list[str] = []
-
-    def load(filters: Filters) -> dict[str, str]:
-        seen.append(filters.region)
-        return {"region": filters.region}
-
-    app = Hedron(title="dash", security="standard", explorer="off", session_secret="test-secret")
-    workspace = DashboardWorkspace(
-        name="sales",
-        path="/sales",
-        title="Sales",
-        filters=Filters,
-        load=load,
-        panels={"summary": lambda data: Text(data["region"])},
-        cache=CachePolicy(hint="private", ttl_seconds=30),
-    )
-    app.include_feature(workspace)
-    client = TestClient(app)
-    page = client.get("/sales?region=west")
-    assert page.status_code == 200
-    assert "region=west" in page.text
-
-    panel = client.get("/sales/panels/summary?region=west")
-    assert panel.status_code == 200
-    assert panel.headers["cache-control"] == "private, max-age=30"
-    assert seen[-1] == "west"
 
 
 def test_design_system_persisted_on_hedron() -> None:

@@ -243,10 +243,12 @@ def _merge_interaction_policies(
     )
 
 
-def _path_with_query(path: str, query: Mapping[str, str]) -> str:
+def _path_with_query(
+    path: str, query: Mapping[str, str | tuple[str, ...]]
+) -> str:
     if not query:
         return path
-    return f"{path}?{urlencode(query)}"
+    return f"{path}?{urlencode(query, doseq=True)}"
 
 
 def _bound_url(values: BoundValues) -> str:

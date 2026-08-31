@@ -194,7 +194,7 @@ class BoundValues:
     parameters: Mapping[str, object]
     instance_token: str
     path: str
-    query: Mapping[str, str]
+    query: Mapping[str, str | tuple[str, ...]]
 
 
 @runtime_checkable
@@ -474,7 +474,7 @@ def structural_bind(plan: BindingPlan, values: Mapping[str, object], *, path: st
             explanation=f"Bind is missing required names {missing}.",
             remediation="Supply every required path/query parameter.",
         )
-    encoded: dict[str, str] = {}
+    encoded: dict[str, str | tuple[str, ...]] = {}
     path_values: dict[str, str] = {}
     for name, value in values.items():
         if is_secret(value) or isinstance(value, Secret):
@@ -484,15 +484,35 @@ def structural_bind(plan: BindingPlan, values: Mapping[str, object], *, path: st
                 explanation=f"Parameter {name!r} is a Secret and cannot appear in ids or URLs.",
                 remediation="Keep secrets on the GET route via dependencies, not bind().",
             )
-        text = str(value)
-        if any(ord(ch) < 32 for ch in text) or "\x00" in text:
-            raise error(
-                HED_VIEW_0004,
-                title="Unsafe bind value",
-                explanation=f"Parameter {name!r} contains unsafe control characters.",
-                remediation="Pass printable scalar values only.",
-            )
+        raw_values: tuple[object, ...]
+        if (
+            name in plan.query_params
+            and isinstance(value, Sequence)
+            and not isinstance(value, (str, bytes))
+        ):
+            raw_values = tuple(cast(Sequence[object], value))
+        else:
+            raw_values = (value,)
+        texts: list[str] = []
+        for raw_value in raw_values:
+            if is_secret(raw_value) or isinstance(raw_value, Secret):
+                raise error(
+                    HED_VIEW_0004,
+                    title="Secret cannot be bound into a URL or identity",
+                    explanation=f"Parameter {name!r} contains a Secret and cannot appear in URLs.",
+                    remediation="Keep secrets on the GET route via dependencies, not bind().",
+                )
+            text = str(raw_value)
+            if any(ord(ch) < 32 for ch in text) or "\x00" in text:
+                raise error(
+                    HED_VIEW_0004,
+                    title="Unsafe bind value",
+                    explanation=f"Parameter {name!r} contains unsafe control characters.",
+                    remediation="Pass printable scalar values only.",
+                )
+            texts.append(text)
         if name in plan.path_params:
+            text = texts[0]
             if not text or any(ch in text for ch in "/?#") or ".." in text:
                 raise error(
                     HED_VIEW_0004,
@@ -503,8 +523,10 @@ def structural_bind(plan: BindingPlan, values: Mapping[str, object], *, path: st
                     remediation="Pass a single path segment without reserved URL characters.",
                 )
             path_values[name] = quote(text, safe="")
+        elif len(texts) == 1:
+            encoded[name] = texts[0]
         else:
-            encoded[name] = text
+            encoded[name] = tuple(texts)
     rendered = path
     for name in plan.path_params:
         if name in path_values:

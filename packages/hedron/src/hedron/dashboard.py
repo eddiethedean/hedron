@@ -214,13 +214,8 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
 
                     defaults = workspace.filters()
 
-                    @app.view(
-                        ppath,
-                        name=f"{workspace.name}-panel-{pname}",
-                        cache=None if workspace.cache is None else workspace.cache.hint,
-                    )
                     async def panel_view(
-                        params: Annotated[workspace.filters, ViewParams(source="query")] = defaults,  # type: ignore[valid-type]
+                        params: BaseModel = defaults,
                     ) -> object:
                         try:
                             data = await workspace._load_data(params)  # type: ignore[arg-type]
@@ -233,7 +228,22 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
                             ) from exc
                         return renderer(data)
 
-                    return panel_view
+                    panel_view.__name__ = f"{workspace.name}_panel_{pname}"
+                    panel_view.__qualname__ = (
+                        f"DashboardWorkspace.{workspace.name}_panel_{pname}"
+                    )
+                    panel_view.__annotations__ = {
+                        "params": Annotated[
+                            workspace.filters,
+                            ViewParams(source="query"),
+                        ],
+                        "return": object,
+                    }
+                    return app.view(
+                        ppath,
+                        name=f"{workspace.name}-panel-{pname}",
+                        cache=None if workspace.cache is None else workspace.cache.hint,
+                    )(panel_view)
 
                 handle = _make_panel()
                 if workspace.cache is not None:
@@ -263,15 +273,7 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
                         detail="External redirect rejected; use redirect_external explicitly",
                     )
                 raw = data.model_dump(mode="json", exclude_none=True)
-                flat: dict[str, str] = {}
-                for key, value in raw.items():
-                    if isinstance(value, (list, tuple)):
-                        flat[str(key)] = ",".join(
-                            str(item) for item in cast(Sequence[object], value)
-                        )
-                    else:
-                        flat[str(key)] = str(value)
-                qs = urlencode(flat)
+                qs = urlencode(raw, doseq=True)
                 target = workspace.path if not qs else f"{workspace.path}?{qs}"
                 response = RedirectResponse(url=target, status_code=303)
                 if workspace.history == "replace":
@@ -294,17 +296,14 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
 
             from typing import Annotated
 
-            from hedron import ViewParams
+            from fastapi import Query
 
-            defaults = workspace.filters()
-
-            @app.page(workspace.path, name=workspace.name)
             def dashboard_screen(
-                params: Annotated[filters_model, ViewParams(source="query")] = defaults,  # type: ignore[valid-type]
+                params: BaseModel,
             ) -> object:
                 nodes: list[NodeLike] = [
                     PageHeader(workspace.title),
-                    filter_handle.form(submit_label="Apply filters"),
+                    filter_handle.form(value=params, submit_label="Apply filters"),
                 ]
                 bound_values = params.model_dump(mode="json", exclude_none=True)
                 for pname, handle in panel_handles.items():
@@ -318,6 +317,12 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
                 from hedron import Page
 
                 return Page(Stack(*nodes), title=workspace.title)
+
+            dashboard_screen.__annotations__ = {
+                "params": Annotated[filters_model, Query()],
+                "return": object,
+            }
+            app.page(workspace.path, name=workspace.name)(dashboard_screen)
 
             workspace.screen = dashboard_screen
             return dashboard_screen
