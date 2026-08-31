@@ -87,3 +87,21 @@ def test_rate_principal_capacity_must_be_positive() -> None:
         McpBounds(max_rate_principals=0)
     with pytest.raises(ValueError, match="max_rate_principals"):
         McpBounds(max_rate_principals=-1)
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {"max_request_bytes": 0},
+        {"max_concurrency": 0},
+        {"rate_limit_per_minute": 0},
+        {"max_sessions": -1},
+        {"max_cancelled": -1},
+        {"session_ttl_seconds": float("nan")},
+        {"cancel_ttl_seconds": float("inf")},
+        {"rate_window_seconds": 0},
+    ],
+)
+def test_bounds_reject_invalid_caps_and_ttls(kwargs: dict[str, object]) -> None:
+    with pytest.raises(ValueError):
+        McpBounds(**kwargs)  # type: ignore[arg-type]

@@ -217,6 +217,18 @@ async def test_read_upload_capped_rejects_before_full_buffer() -> None:
         await read_upload_capped(_Stream(), maximum_size=100)
 
 
+@pytest.mark.anyio
+@pytest.mark.parametrize("chunk_size", [0, -1, True, 1.5])
+async def test_read_upload_capped_rejects_invalid_chunk_size(chunk_size: object) -> None:
+    class _Stream:
+        async def read(self, size: int = -1) -> bytes:
+            del size
+            return b""
+
+    with pytest.raises(ValueError, match="chunk size"):
+        await read_upload_capped(_Stream(), maximum_size=100, chunk_size=chunk_size)  # type: ignore[arg-type]
+
+
 def test_session_auth_include_and_login_round_trip() -> None:
     class Creds(BaseModel):
         username: str = Field(min_length=1, max_length=80)

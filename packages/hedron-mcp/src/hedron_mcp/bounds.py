@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import threading
 import time
 import uuid
@@ -54,8 +55,39 @@ class McpBounds:
     )
 
     def __post_init__(self) -> None:
+        for name in (
+            "max_request_bytes",
+            "max_concurrency",
+            "rate_limit_per_minute",
+        ):
+            value = getattr(self, name)
+            if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+                raise ValueError(f"{name} must be a positive integer")
+        for name in ("max_cancelled", "max_sessions"):
+            value = getattr(self, name)
+            if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+                raise ValueError(f"{name} must be a non-negative integer")
+        raw_max_rate_principals = cast(Any, self.max_rate_principals)
+        if isinstance(raw_max_rate_principals, bool) or not isinstance(
+            raw_max_rate_principals, int
+        ):
+            raise ValueError("max_rate_principals must be a positive integer")
         if self.max_rate_principals < 1:
             raise ValueError("max_rate_principals must be >= 1")
+        for name in (
+            "default_deadline_seconds",
+            "cancel_ttl_seconds",
+            "session_ttl_seconds",
+            "rate_window_seconds",
+        ):
+            value = getattr(self, name)
+            if (
+                isinstance(value, bool)
+                or not isinstance(value, (int, float))
+                or not math.isfinite(float(value))
+                or value <= 0
+            ):
+                raise ValueError(f"{name} must be finite and > 0")
 
     def new_request_id(self) -> str:
         return f"{self.shared_prefix}:{uuid.uuid4().hex}"
