@@ -366,6 +366,7 @@ HED_WB_0009 = "HED-WB-0009"  # unsupported Workbench launch topology
 
 # Unified Posit adapter (0.33 RFC-0066)
 HED_POSIT_0101 = "HED-POSIT-0101"  # conflicting product evidence
+HED_POSIT_0102 = "HED-POSIT-0102"  # invalid explicit product or compatibility marker
 HED_POSIT_0301 = "HED-POSIT-0301"  # invalid Connect base header (spoof / peer)
 HED_POSIT_0302 = "HED-POSIT-0302"  # Connect base path validation failed
 HED_POSIT_0303 = "HED-POSIT-0303"  # duplicate Connect base headers

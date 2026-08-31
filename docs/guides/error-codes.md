@@ -639,6 +639,7 @@ Unified Posit Workbench / Connect adapter (RFC-0066 / 0.33).
 | Code | Catalog symbol |
 |---|---|
 | `HED-POSIT-0101` | `HED_POSIT_0101` |
+| `HED-POSIT-0102` | `HED_POSIT_0102` |
 | `HED-POSIT-0301` | `HED_POSIT_0301` |
 | `HED-POSIT-0302` | `HED_POSIT_0302` |
 | `HED-POSIT-0303` | `HED_POSIT_0303` |

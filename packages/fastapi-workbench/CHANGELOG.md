@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.3] — 2026-08-31
+
+### Security
+- Harden proxy trust, request-target validation, diagnostics redaction, and launcher state
+  handoff across Workbench deployments.
+
+### Fixed
+- Export resolved launcher state through every mutable process environment, including
+  `os.environ`, before importing and serving the FastAPI application.
+
 ## [1.0.2] — 2026-08-31
 
 ### Fixed

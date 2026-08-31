@@ -82,6 +82,12 @@ COORDINATED_PACKAGES = (
     "hedron-maps",
 )
 
+# The retained 1.0.0 packet includes hedron-posit in its coordinated artifacts,
+# but current hedron-posit patch releases version independently (D-058/RFC-0066).
+CURRENT_COORDINATED_PACKAGES = tuple(
+    distribution for distribution in COORDINATED_PACKAGES if distribution != "hedron-posit"
+)
+
 INDEPENDENT_SATELLITES = (
     "hedron-native",
     "hedron-mcp",
@@ -91,6 +97,7 @@ INDEPENDENT_SATELLITES = (
     "hedron-sim",
     "edron-sim",
     "fastapi-workbench",
+    "hedron-posit",
     "edron",
 )
 
@@ -371,13 +378,13 @@ def _check_package_metadata() -> list[str]:
         if isinstance(lock_packages, list)
         else {}
     )
-    for distribution in COORDINATED_PACKAGES:
+    for distribution in CURRENT_COORDINATED_PACKAGES:
         if lock_versions.get(distribution) != workspace_version:
             errors.append(
                 f"{distribution}: uv.lock must resolve the coordinated version {workspace_version}"
             )
 
-    for distribution in COORDINATED_PACKAGES:
+    for distribution in CURRENT_COORDINATED_PACKAGES:
         package_dir = ROOT / "packages" / distribution
         pyproject = package_dir / "pyproject.toml"
         if not pyproject.is_file():
@@ -426,6 +433,16 @@ def _check_package_metadata() -> list[str]:
             ):
                 if dependency not in joined:
                     errors.append(f"edron: Stable 1.0 facade must require {dependency}")
+        elif distribution == "hedron-posit":
+            if "hedron>=1.0.0,<2.0" not in joined:
+                errors.append(
+                    "hedron-posit: Hedron dependency must require the canonical 1.x train"
+                )
+            if "fastapi-workbench>=1.0.3,<2.0" not in joined:
+                errors.append(
+                    "hedron-posit: generic adapter dependency must select "
+                    "the corrected 1.0.3 artifact"
+                )
         elif distribution == "edron-sim":
             if "edron>=1.0.0,<2.0" not in joined:
                 errors.append("edron-sim: Edron dependency must require the canonical 1.x train")
@@ -964,8 +981,8 @@ def check_plan() -> list[str]:
     project = workspace.get("project")
     current_version = project.get("version") if isinstance(project, dict) else None
     try:
-        development_version = _toml(ROOT / "docs" / "release.toml").get("release", {}).get(
-            "development_version"
+        development_version = (
+            _toml(ROOT / "docs" / "release.toml").get("release", {}).get("development_version")
         )
     except (OSError, ValueError, AttributeError):
         development_version = current_version
