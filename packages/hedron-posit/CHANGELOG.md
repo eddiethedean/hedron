@@ -2,7 +2,11 @@
 
 ## [1.0.2] — 2026-08-31
 
-- Maintenance release for the coordinated 1.0 train.
+### Fixed
+- Require `fastapi-workbench>=1.0.2`, the first published artifact containing the
+  `absolute_redirects` middleware contract used by `HedronPosit`.
+- Add installed-wheel compatibility coverage for Workbench startup, full-URL mount resolution,
+  and middleware construction.
 
 ## [1.0.1] — 2026-08-30
 

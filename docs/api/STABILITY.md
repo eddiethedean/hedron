@@ -213,14 +213,14 @@ helpers, operational backends, and optional adapter-specific surfaces remain non
 
 ### `hedron-posit` (Beta satellite) — `beta` Posit adapter
 
-Install `hedron[posit]` / `hedron-posit>=1.0.0,<2.0`. Supported:
+Install `hedron[posit]` / `hedron-posit>=1.0.2,<2.0`. Supported:
 `HedronPosit`, pre-import Workbench launcher and resolved-state handoff,
 `HEDRON_ROOT_PATH` export, wrap-once `workbenchify`, automatic URL and safe
 response-header adaptation, Hedron-owned request-time cookie repair,
 browser/durable URL separation, explicit-mount routing, topology diagnostics,
 and ordinary local Uvicorn/generic-root-path parity. Posit Connect trusted-header
 behavior remains Experimental. The generic implementation is provided by the
-independent `fastapi-workbench>=1.0.0` package. The removed
+independent `fastapi-workbench>=1.0.2` package. The removed
 `hedron-workbench` distribution and `hedron[workbench]` extra are not supported.
 
 See [Posit Workbench](../guides/posit-workbench.md) and the

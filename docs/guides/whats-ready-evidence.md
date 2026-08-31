@@ -209,5 +209,5 @@ Extras: `"hedron[data]>=1.0.0"`, `"hedron[extras]>=1.0.0"`,
 `"hedron[mcp]>=1.0.0"` (Beta Supported inventory),
 `"hedron[gradio]>=1.0.0"` (Beta satellite; coordinated 1.0 artifact `hedron-gradio>=0.2.3,<0.3`),
 `"hedron[charts]>=1.0.0"`, `"hedron[maps]>=1.0.0"`,
-`"hedron[posit]>=1.0.0"`,
+`"hedron[posit]>=1.0.2"`,
 and `"hedron-sample-kit>=0.2.3,<0.3"`.

@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.2] — 2026-08-31
+
+### Fixed
+- Publish the complete Workbench middleware contract, including trusted absolute-redirect
+  handling required by `hedron-posit>=1.0.0`.
+- Verify immutable PyPI artifacts against locally built wheels before a release can reuse an
+  existing package version.
+
 ## [1.0.1] — 2026-08-24
 
 ### Fixed

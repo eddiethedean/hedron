@@ -163,7 +163,7 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
 - Package maturity is **Stable** for the coordinated 1.0 inventory; satellites retain their
   independent classifications.
 - Hedron `1.0` is implemented and Verified in-tree from the 0.67 baseline under D-114–D-117;
-  tag/PyPI publication is deferred. `fastapi-workbench` 1.0.1 remains an independently versioned package
+  tag/PyPI publication is deferred. `fastapi-workbench` 1.0.2 remains an independently versioned package
   release, not Hedron 1.0. A **minimal + expanded (0.23) `stable` API
   tier** is catalogued in [STABILITY.md](api/STABILITY.md); most other public APIs remain `beta` or
   `experimental`.

@@ -29,7 +29,7 @@ env:
   PYTHONDONTWRITEBYTECODE: "1"
   UV_VERSION: "0.12.1"
   # Shared check suites live in scripts/ci_checks.sh (also used by ci.yml).
-  HEDRON_GATE_VERSION: "1.0.0"
+  HEDRON_GATE_VERSION: "1.0.2"
 
 jobs:
   test:
@@ -371,6 +371,10 @@ jobs:
             uv build --package "$pkg"
           done
           ls -la dist
+      - name: Verify Workbench wheel contract and immutable artifact parity
+        run: >
+          uv run --python 3.12 python scripts/check_workbench_release_artifacts.py
+          --dist-dir dist
       - name: Verify built quick start before publication
         run: >
           uv run --python 3.12 python scripts/check_published_quickstart.py
@@ -559,7 +563,7 @@ jobs:
             if ! publish_one "$name" "existing"; then
               echo "WARN: publish failed for existing project ${name}" >&2
               failed_names+=("$name")
-              if [ "$name" = "hedron-core" ] || [ "$name" = "hedron" ]; then
+              if [ "$name" = "hedron-core" ] || [ "$name" = "hedron" ] || [ "$name" = "fastapi-workbench" ]; then
                 echo "Foundational package failed; refusing to publish dependents" >&2
                 break
               fi
@@ -589,7 +593,7 @@ jobs:
                 echo "WARN: aborting further NEW creates after early failure in publish_only" >&2
                 break
               fi
-              if [ "$name" = "hedron-core" ] || [ "$name" = "hedron" ]; then
+              if [ "$name" = "hedron-core" ] || [ "$name" = "hedron" ] || [ "$name" = "fastapi-workbench" ]; then
                 echo "Foundational package failed; refusing to create dependents" >&2
                 break
               fi

@@ -93,6 +93,25 @@ def test_built_quickstart_is_verified_before_pypi_upload() -> None:
     assert '"${{ steps.ref.outputs.version }}" --dist-dir dist --attempts 1' in workflow
 
 
+def test_workbench_artifacts_are_verified_before_pypi_upload() -> None:
+    """The release must exercise built wheels and reject stale immutable PyPI versions."""
+    workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
+    prepublish = workflow.index(
+        "      - name: Verify Workbench wheel contract and immutable artifact parity"
+    )
+    upload = workflow.index("      - name: Publish to PyPI", prepublish)
+    assert prepublish < upload
+    assert "scripts/check_workbench_release_artifacts.py" in workflow[prepublish:upload]
+    assert workflow.count('|| [ "$name" = "fastapi-workbench" ]') == 2
+
+
+def test_workbench_dependency_is_published_before_hedron_posit() -> None:
+    publish_order = tomllib.loads(
+        (ROOT / "release" / "publish-order.toml").read_text(encoding="utf-8")
+    )["order"]
+    assert publish_order.index("fastapi-workbench") < publish_order.index("hedron-posit")
+
+
 def test_edron_is_published_by_main_and_retains_recovery_path() -> None:
     general = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
     edron = (ROOT / ".github" / "workflows" / "edron-release.yml").read_text(encoding="utf-8")

@@ -19,8 +19,6 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-from hedron_core.compat import tomllib
-
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs" / "components"
 DEMOS = ROOT / "docs"

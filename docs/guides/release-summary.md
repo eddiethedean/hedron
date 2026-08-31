@@ -13,10 +13,10 @@ The exact maintainer commands and publication rules live in
 | Migration baseline | **v0.67.0** |
 | PyPI latest | **v1.0.1** |
 | Public-index requirement | `hedron>=1.0.0` |
-| Repository development | `uv sync` (editable 1.0.1 workspace) |
+| Repository development | `uv sync` (editable 1.0.2 workspace) |
 | Charts package | `hedron-charts>=1.0.0` |
 | Maps package | `hedron-maps>=1.0.0` |
-| Generic Workbench adapter | `fastapi-workbench>=1.0.0` |
+| Generic Workbench adapter | `fastapi-workbench>=1.0.2,<2.0` |
 | Plan checker | `python scripts/check_100.py --check-plan` |
 | Entry gate | `python scripts/check_100.py --gate ENTRY-100 --verify` |
 

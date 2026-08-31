@@ -3,6 +3,7 @@ description = "Publication order for the Hedron train. Foundational runtime pack
 
 order = [
   "hedron-core",
+  "fastapi-workbench",
   "hedron",
   "hedron-data",
   "hedron-explorer",
@@ -23,7 +24,6 @@ order = [
   "hedron-notebook",
   "hedron-sim",
   "edron-sim",
-  "fastapi-workbench",
 ]
 
 excluded = []

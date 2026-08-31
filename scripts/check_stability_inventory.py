@@ -94,7 +94,11 @@ def declares_name(path: Path, name: str) -> bool:
             isinstance(target, ast.Name) and target.id == name for target in node.targets
         ):
             return True
-        if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name) and node.target.id == name:
+        if (
+            isinstance(node, ast.AnnAssign)
+            and isinstance(node.target, ast.Name)
+            and node.target.id == name
+        ):
             return True
     return False
 

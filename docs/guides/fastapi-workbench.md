@@ -21,7 +21,7 @@ Workbench **2026.07.0**.
 python3.11 -m venv .venv
 source .venv/bin/activate
 python3.11 -m pip install --upgrade pip
-python3.11 -m pip install "fastapi-workbench>=1.0.0" "fastapi" "uvicorn[standard]"
+python3.11 -m pip install "fastapi-workbench>=1.0.2,<2.0" "fastapi" "uvicorn[standard]"
 ```
 
 ## Launch on Workbench

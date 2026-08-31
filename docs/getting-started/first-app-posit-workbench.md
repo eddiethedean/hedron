@@ -124,7 +124,7 @@ mkdir -p ~/projects/my-workbench-app
 cd ~/projects/my-workbench-app
 python3.11 -m venv .venv
 source .venv/bin/activate
-python3.11 -m pip install "hedron>=1.0.0" "hedron-posit>=1.0.0"
+python3.11 -m pip install "hedron>=1.0.0" "hedron-posit>=1.0.2"
 hedron new my-workbench-app --path . --force
 ```
 
@@ -160,7 +160,7 @@ my-workbench-app/
 Keep the dependency declarations in `pyproject.toml` under version control. The scaffold initially
 declares the exact version used to create it; replace that generated Hedron entry with
 `"hedron>=1.0.0",` so compatible bug-fix releases remain eligible. Add
-`"hedron-posit>=1.0.0",` alongside it. Reinstall the project with
+`"hedron-posit>=1.0.2",` alongside it. Reinstall the project with
 `python3.11 -m pip install -e .` after dependency changes.
 
 The resulting dependency entries should include:
@@ -168,7 +168,7 @@ The resulting dependency entries should include:
 ```toml
 dependencies = [
     "hedron>=1.0.0",
-    "hedron-posit>=1.0.0",
+    "hedron-posit>=1.0.2",
     # keep the generated uvicorn entry
 ]
 ```

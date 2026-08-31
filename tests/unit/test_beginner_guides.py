@@ -13,6 +13,9 @@ import check_docs_train_ssot as ssot  # noqa: E402
 FIRST_RUN_PIN = (
     ssot.FACTS.pypi_pin if ssot.FACTS.registry_deferred else ssot.MINIMUM_COMPATIBILITY_PIN
 )
+# 1.0.0/1.0.1 resolved an incomplete fastapi-workbench artifact. Keep the
+# Workbench walkthrough on the first corrected immutable package pair.
+POSIT_FIRST_RUN_PIN = ">=1.0.2"
 
 VSCODE_PATH = ROOT / "docs" / "getting-started" / "first-app-vscode.md"
 POSIT_PATH = ROOT / "docs" / "getting-started" / "first-app-posit-workbench.md"
@@ -53,7 +56,9 @@ def test_workbench_guide_uses_the_preferred_hedron_posit_surface() -> None:
     guide = POSIT_PATH.read_text(encoding="utf-8")
 
     assert "python3.11 -m venv .venv" in guide
-    install = f'python3.11 -m pip install "hedron{FIRST_RUN_PIN}" "hedron-posit{FIRST_RUN_PIN}"'
+    install = (
+        f'python3.11 -m pip install "hedron{FIRST_RUN_PIN}" "hedron-posit{POSIT_FIRST_RUN_PIN}"'
+    )
     assert install in guide
     assert "hedron new my-workbench-app --path . --force" in guide
     assert 'python3.11 -m pip install "hedron>=0.66.2,<0.67"' not in guide

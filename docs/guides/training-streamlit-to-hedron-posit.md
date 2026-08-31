@@ -208,10 +208,10 @@ hedron new hello-hedron
 cd hello-hedron
 python3.11 -m venv .venv
 source .venv/bin/activate
-python3.11 -m pip install -e . "hedron-posit>=1.0.0"
+python3.11 -m pip install -e . "hedron-posit>=1.0.2"
 ```
 
-Add `"hedron-posit>=1.0.0",` to the `dependencies` list in `pyproject.toml` so a fresh
+Add `"hedron-posit>=1.0.2",` to the `dependencies` list in `pyproject.toml` so a fresh
 environment can reproduce the adapter installation.
 
 Open `app.py`. Replace `Hedron` in the import and constructor with `HedronPosit`:
@@ -397,7 +397,7 @@ Use the [component matrix](streamlit-migration-matrix.md) for API lookup and
 
 ### 1. Use the unified Posit facade
 
-Stop the server. Add `"hedron-posit>=1.0.0",` to the `dependencies` list in
+Stop the server. Add `"hedron-posit>=1.0.2",` to the `dependencies` list in
 `pyproject.toml`, then install the updated project:
 
 ```bash
@@ -723,7 +723,7 @@ traffic.
 | Symptom | Likely cause | Action |
 |---|---|---|
 | `hedron` is not found | CLI is not installed on PATH | From the current project directory, activate `.venv`, then run `python3.11 -m pip install -e .` |
-| `ModuleNotFoundError: hedron_posit` | Posit adapter was not installed | Run `python3.11 -m pip install "hedron-posit>=1.0.0"` and add it to `pyproject.toml` |
+| `ModuleNotFoundError: hedron_posit` | Posit adapter was not installed | Run `python3.11 -m pip install "hedron-posit>=1.0.2"` and add it to `pyproject.toml` |
 | Workbench page loads without styles or links break | App was started without prefix discovery | Use `hedron-posit run`; do not hard-code the session URL |
 | `rserver-url` diagnostic fails | Workbench binary/path or session environment is unavailable | Confirm `RS_SERVER_URL`, the binary path, and platform configuration with the administrator |
 | Port 8000 is busy | A previous server is still running | Stop it or choose another port |

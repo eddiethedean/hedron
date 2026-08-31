@@ -440,6 +440,7 @@ quality_wheels_smoke() {
   rm -rf dist/*.whl dist/*.tar.gz
   mkdir -p dist
   run env UV_NO_SYNC=1 UV_PYTHON="$PYTHON" uv build --all-packages --wheel --out-dir dist
+  run_py scripts/check_workbench_release_artifacts.py --dist-dir dist
 
   rm -rf /tmp/hedron-smoke
   uv venv /tmp/hedron-smoke --python "$PYTHON"
@@ -495,6 +496,13 @@ assert hedron_flask.HedronFlask is not None
 assert hedron_django.HedronSecurityHeadersMiddleware is not None
 assert hedron_posit.workbenchify is not None
 assert issubclass(hedron_posit.HedronPosit, Hedron)
+posit_app = hedron_posit.HedronPosit(
+    title="wheel smoke",
+    security="standard",
+    explorer="off",
+    session_secret="wheel-smoke-secret",
+)
+assert posit_app.routes
 assert "Content-Security-Policy" in SecurityPolicy.from_name("standard").response_headers()
 print("ok: prospective Hedron workspace wheels install and import cleanly")
 PY

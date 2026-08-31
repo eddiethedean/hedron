@@ -12,7 +12,7 @@
 **Implementation:** Stable platform — `hedron`, `hedron-core`, `edron`, `hedron-data`,
 `hedron-charts`, and `hedron-maps` `1.0.1`. Beta satellites — `hedron-explorer`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
-`hedron-posit`, and `hedron-elements` `1.0.1`; `fastapi-workbench` `1.0.1`;
+`hedron-posit`, and `hedron-elements` `1.0.1`; `fastapi-workbench` `1.0.2`;
 `hedron-native` `0.1.3`; `hedron-sample-kit`, `hedron-notebook`, and `hedron-gradio` `0.2.3`;
 `hedron-sim` `0.2.2`; `hedron-mcp` `0.2.4`; and `edron-sim` `0.1.0` (MIT, D-033).
 **Package maturity:** Stable — `hedron`, `hedron-core`, `edron`, `hedron-data`,
