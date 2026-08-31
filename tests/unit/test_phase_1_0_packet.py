@@ -145,9 +145,11 @@ def test_phase_1_0_gate_is_subtractive() -> None:
 def test_phase_1_0_keeps_verified_067_as_immutable_predecessor() -> None:
     predecessor = _toml("docs/acceptance/release-gate-0.67.toml")
     workspace = _toml("pyproject.toml")
+    release = _toml("docs/release.toml")["release"]
     assert predecessor["status"] == "Verified"
     assert predecessor["target"] == "v0.67.0"
-    assert workspace["project"]["version"] == "1.0.0"
+    assert release["published_version"] == "1.0.0"
+    assert workspace["project"]["version"] == release["development_version"]
 
 
 def test_phase_1_0_publishes_one_exact_stable_package_boundary() -> None:

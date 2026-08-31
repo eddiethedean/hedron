@@ -169,14 +169,25 @@ def _toml(path: Path) -> dict[str, object]:
     return tomllib.loads(path.read_text(encoding="utf-8"))
 
 
+def _published_version() -> str:
+    """Return the immutable published version represented by the 1.0 packet."""
+    try:
+        release = _toml(ROOT / "docs" / "release.toml").get("release", {})
+    except (OSError, ValueError):
+        return "1.0.0"
+    if not isinstance(release, dict):
+        return "1.0.0"
+    return str(release.get("published_version", "1.0.0"))
+
+
 def _expected_coordinated_artifacts() -> set[str]:
-    """Return the exact wheel/sdist names for the coordinated 1.0 cut."""
+    """Return the exact retained wheel/sdist names for the published 1.0 cut."""
     expected: set[str] = set()
+    version = _published_version()
     for distribution in COORDINATED_PACKAGES:
         project_path = ROOT / "packages" / distribution / "pyproject.toml"
         project = tomllib.loads(project_path.read_text(encoding="utf-8"))["project"]
         name = str(project["name"]).replace("-", "_")
-        version = str(project["version"])
         expected.update(
             {
                 f"{name}-{version}-py3-none-any.whl",
@@ -318,21 +329,33 @@ def _check_fixture_corpus() -> list[str]:
 
 
 def _check_package_metadata() -> list[str]:
-    """Ensure the v1.0 coordinated train cannot drift from package metadata."""
+    """Ensure the active coordinated train cannot drift from package metadata."""
     errors: list[str] = []
     try:
         workspace = _toml(ROOT / "pyproject.toml").get("project", {})
     except (OSError, ValueError):
         return ["unable to read root package metadata"]
-    if not isinstance(workspace, dict) or workspace.get("version") != "1.0.0":
-        errors.append("root workspace metadata must declare version 1.0.0")
+    workspace_version = str(workspace.get("version")) if isinstance(workspace, dict) else ""
+    try:
+        release = _toml(ROOT / "docs" / "release.toml").get("release", {})
+    except (OSError, ValueError):
+        release = {}
+    development_version = (
+        str(release.get("development_version", workspace_version))
+        if isinstance(release, dict)
+        else workspace_version
+    )
+    if not workspace_version or workspace_version != development_version:
+        errors.append(
+            f"root workspace metadata must declare development version {development_version}"
+        )
 
     lock_path = ROOT / "uv.lock"
     try:
         lock = _toml(lock_path)
     except (OSError, ValueError):
         lock = {}
-        errors.append("uv.lock must be readable for the coordinated 1.0.0 cut")
+        errors.append("uv.lock must be readable for the coordinated release")
     lock_packages = lock.get("package", []) if isinstance(lock, dict) else []
     lock_versions = (
         {
@@ -344,8 +367,10 @@ def _check_package_metadata() -> list[str]:
         else {}
     )
     for distribution in COORDINATED_PACKAGES:
-        if lock_versions.get(distribution) != "1.0.0":
-            errors.append(f"{distribution}: uv.lock must resolve the coordinated version 1.0.0")
+        if lock_versions.get(distribution) != workspace_version:
+            errors.append(
+                f"{distribution}: uv.lock must resolve the coordinated version {workspace_version}"
+            )
 
     for distribution in COORDINATED_PACKAGES:
         package_dir = ROOT / "packages" / distribution
@@ -354,8 +379,10 @@ def _check_package_metadata() -> list[str]:
             errors.append(f"missing coordinated package metadata: {distribution}")
             continue
         project = _toml(pyproject).get("project", {})
-        if not isinstance(project, dict) or project.get("version") != "1.0.0":
-            errors.append(f"{distribution}: coordinated package must declare version 1.0.0")
+        if not isinstance(project, dict) or project.get("version") != workspace_version:
+            errors.append(
+                f"{distribution}: coordinated package must declare version {workspace_version}"
+            )
             continue
         module = distribution.replace("-", "_")
         init = package_dir / "src" / module / "__init__.py"
@@ -363,17 +390,18 @@ def _check_package_metadata() -> list[str]:
             errors.append(f"{distribution}: missing package __init__")
         else:
             init_source = init.read_text(encoding="utf-8")
-            literal_version = '__version__ = "1.0.0"' in init_source
+            literal_version = f'__version__ = "{workspace_version}"' in init_source
             delegated_version = False
             version_module = init.with_name("_version.py")
             if version_module.is_file():
                 version_source = version_module.read_text(encoding="utf-8")
                 delegated_version = any(
-                    f"__version__ = {name}" in init_source and f'{name} = "1.0.0"' in version_source
+                    f"__version__ = {name}" in init_source
+                    and f'{name} = "{workspace_version}"' in version_source
                     for name in ("VERSION", "DATA_VERSION", "PACKAGE_VERSION")
                 )
             if not (literal_version or delegated_version):
-                errors.append(f"{distribution}: __version__ is not 1.0.0")
+                errors.append(f"{distribution}: __version__ is not {workspace_version}")
 
     for distribution in INDEPENDENT_SATELLITES:
         pyproject = ROOT / "packages" / distribution / "pyproject.toml"
@@ -930,8 +958,17 @@ def check_plan() -> list[str]:
 
     project = workspace.get("project")
     current_version = project.get("version") if isinstance(project, dict) else None
-    if current_version != "1.0.0":
-        errors.append(f"v1.0 branch must set workspace version to 1.0.0, found {current_version!r}")
+    try:
+        development_version = _toml(ROOT / "docs" / "release.toml").get("release", {}).get(
+            "development_version"
+        )
+    except (OSError, ValueError, AttributeError):
+        development_version = current_version
+    if current_version != development_version:
+        errors.append(
+            f"v1.0 branch must set workspace version to development version {development_version}, "
+            f"found {current_version!r}"
+        )
 
     migration_source = (ROOT / "packages/hedron-core/src/hedron_core/migration.py").read_text(
         encoding="utf-8"

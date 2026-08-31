@@ -86,12 +86,12 @@ def test_version_is_synchronized() -> None:
     edron = tomllib.loads(
         (ROOT / "packages" / "edron" / "pyproject.toml").read_text(encoding="utf-8")
     )["project"]
-    assert edron["version"] == "1.0.0"
+    assert edron["version"] == __version__
     for stable_name in ("hedron-charts", "hedron-maps"):
         stable = tomllib.loads(
             (ROOT / "packages" / stable_name / "pyproject.toml").read_text(encoding="utf-8")
         )["project"]
-        assert stable["version"] == "1.0.0"
+        assert stable["version"] == __version__
         stable_status = [
             classifier
             for classifier in stable["classifiers"]

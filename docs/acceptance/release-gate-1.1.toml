@@ -12,6 +12,7 @@ release_cut_satisfied = false
 production_runtime_authority_change = false
 fake_browser_runtime_allowed = false
 remote_testing_default_allowed = false
+satellite_pytest_autoregistration_allowed = false
 required_runner = "pytest"
 browser_authority = "Playwright"
 
@@ -62,6 +63,12 @@ id = "PYTEST-110"
 state = "Planned"
 owner = "tooling"
 ci_job = "test"
+
+[[evidence]]
+id = "SATELLITE-110"
+state = "Planned"
+owner = "packages"
+ci_job = "packaging"
 
 [[evidence]]
 id = "BEHAVIOR-110"

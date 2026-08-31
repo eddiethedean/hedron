@@ -60,7 +60,7 @@ def test_edron_metadata_and_generated_projects_require_1_x() -> None:
     project = tomllib.loads((ROOT / "packages/edron/pyproject.toml").read_text(encoding="utf-8"))[
         "project"
     ]
-    assert project["version"] == "1.0.0"
+    assert str(project["version"]).startswith("1.")
     assert "hedron>=1.0.0,<2.0" in project["dependencies"]
     assert "hedron-data>=1.0.0,<2.0" in project["dependencies"]
 

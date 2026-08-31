@@ -64,7 +64,7 @@ def test_all_packages_declare_license_and_version() -> None:
         elif name in _INDEPENDENT_BETA_067:
             assert str(project["version"]).startswith("0.67."), pyproject
         elif name in _STABLE_INDEPENDENT or name == "edron":
-            assert project["version"] == "1.0.0", pyproject
+            assert project["version"] == workspace_version, pyproject
         elif name in _INDEPENDENT_BETA_05:
             assert str(project["version"]).startswith("0.5."), pyproject
         elif name in _INDEPENDENT_BETA or name in _ALPHA_INDEPENDENT:
@@ -147,7 +147,8 @@ def test_025_satellites_have_installable_patch_floors() -> None:
         (ROOT / "packages" / "hedron-sample-kit" / "pyproject.toml").read_text(encoding="utf-8")
     )["project"]
     # Tip may patch above the floor; the 1.0 plugin contract starts at these patches.
-    assert charts["version"] == "1.0.0"
+    workspace = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))["project"]
+    assert charts["version"] == workspace["version"]
     assert sample["version"] == "0.2.3"
 
 

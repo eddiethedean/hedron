@@ -74,7 +74,10 @@ export SOURCE_DATE_EPOCH
 export PYTHONDONTWRITEBYTECODE="${PYTHONDONTWRITEBYTECODE:-1}"
 
 PYTHON="${PYTHON:-3.12}"
-GATE_VERSION="${HEDRON_GATE_VERSION:-1.0.0}"
+GATE_VERSION="${HEDRON_GATE_VERSION:-}"
+if [[ -z "$GATE_VERSION" ]]; then
+  GATE_VERSION="$(awk -F'"' '/^version = "/ { print $2; exit }' pyproject.toml)"
+fi
 CI_PYTHONS=(3.10 3.11 3.12 3.13 3.14)
 PYTHON_EXPLICIT=0
 ALL_PYTHONS=0
@@ -510,12 +513,15 @@ PY
   uv pip install --python /tmp/hedron-smoke/bin/python "${edron_sim_wheel[0]}"
   /tmp/hedron-smoke/bin/python - <<'PY'
 import importlib.metadata as metadata
+import tomllib
+from pathlib import Path
 
-assert metadata.version("edron") == "1.0.0"
+workspace_version = tomllib.loads(Path("pyproject.toml").read_text())["project"]["version"]
+assert metadata.version("edron") == workspace_version
 assert metadata.version("edron-sim") == "0.1.0"
-assert metadata.version("hedron") == "1.0.0"
-assert metadata.version("hedron-data") == "1.0.0"
-print("ok: Edron 1.0 installs against the Hedron 1.0 train")
+assert metadata.version("hedron") == workspace_version
+assert metadata.version("hedron-data") == workspace_version
+print(f"ok: Edron {workspace_version} installs against the Hedron train")
 PY
 
   # Exercise the exact standalone-wheel scaffold contract on ordinary main/PR
@@ -728,7 +734,7 @@ evidence_gates() {
 }
 
 evidence_verify_pkgs() {
-  if [[ "$GATE_VERSION" == "1.0.0" ]]; then
+  if [[ "$GATE_VERSION" == 1.0.* ]]; then
     # 1.0 has a consolidated release packet; predecessor verifiers encode
     # their historical package versions and are covered by their own release
     # workflows rather than the current 1.0 evidence job.
@@ -794,7 +800,7 @@ cmd_realwb() {
 
 cmd_packaging() {
   # PKG packaging rehearsal (same verify helper as the evidence suite).
-  if [[ "$GATE_VERSION" == "1.0.0" ]]; then
+  if [[ "$GATE_VERSION" == 1.0.* ]]; then
     run_py scripts/check_100.py --gate PKG-100 --verify
     return 0
   fi
