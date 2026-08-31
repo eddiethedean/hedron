@@ -111,16 +111,37 @@ def test_invalid_transition_is_rejected() -> None:
 
 def test_action_policy_timeout_is_enforced_and_validated() -> None:
     operation = OperationIdentity("timed", target="#button")
-    policy = ActionPolicy(timeout_seconds=0.001)
+    policy = ActionPolicy(
+        timeout_seconds=0.001,
+        allow_retry=True,
+        max_attempts=2,
+        idempotent=True,
+    )
     state, accepted = begin_operation(ActionState(), operation, policy=policy)
     assert accepted
     time.sleep(0.01)
-    timed_out, completed = complete_operation(state, ActionPhase.SUCCESS, operation, policy=policy)
+    # The policy supplied at begin time owns the lifecycle; callers do not
+    # need to repeat it at every completion boundary.
+    timed_out, completed = complete_operation(state, ActionPhase.SUCCESS, operation)
     assert completed
     assert timed_out.phase is ActionPhase.ERROR
     assert timed_out.message == "Operation timed out"
+    assert timed_out.retryable
     with pytest.raises(ValueError, match="finite"):
         ActionPolicy(timeout_seconds=math.nan)
+
+
+def test_begin_policy_controls_cancellation_without_repeating_policy() -> None:
+    operation = OperationIdentity("protected", target="#button")
+    state, accepted = begin_operation(
+        ActionState(),
+        operation,
+        policy=ActionPolicy(allow_cancellation=False),
+    )
+    assert accepted
+    unchanged, completed = complete_operation(state, ActionPhase.CANCELLED, operation)
+    assert not completed
+    assert unchanged is state
 
 
 def test_trace_redacts_secret_like_facts_and_is_bounded() -> None:

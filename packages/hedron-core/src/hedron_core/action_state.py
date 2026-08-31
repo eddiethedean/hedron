@@ -167,7 +167,8 @@ class ActionState:
     retryable: bool = False
     progress: int | None = None
     revision: str | int | None = None
-    _started_at: float | None = field(default=None, repr=False, compare=False)
+    _deadline_at: float | None = field(default=None, repr=False, compare=False)
+    _policy: ActionPolicy | None = field(default=None, repr=False, compare=False)
 
     def __post_init__(self) -> None:
         # Keep the runtime representation canonical even when a host or
@@ -276,7 +277,12 @@ def begin_operation(
             phase=ActionPhase.PENDING,
             operation=operation,
             revision=operation.revision,
-            _started_at=time.monotonic() if resolved_policy.timeout_seconds is not None else None,
+            _deadline_at=(
+                time.monotonic() + resolved_policy.timeout_seconds
+                if resolved_policy.timeout_seconds is not None
+                else None
+            ),
+            _policy=resolved_policy,
         ),
         True,
     )
@@ -309,24 +315,24 @@ def complete_operation(
         return state, False
     if operation.revision != state.operation.revision:
         return state, False
-    if (
-        policy is not None
-        and policy.timeout_seconds is not None
-        and state._started_at is not None
-        and time.monotonic() - state._started_at > policy.timeout_seconds
-    ):
+    resolved_policy = policy or state._policy
+    if state._deadline_at is not None and time.monotonic() > state._deadline_at:
         return (
             replace(
                 state,
                 phase=ActionPhase.ERROR,
                 message="Operation timed out",
-                retryable=policy.allow_retry,
-                _started_at=None,
+                retryable=resolved_policy.allow_retry if resolved_policy is not None else False,
+                _deadline_at=None,
             ),
             True,
         )
     next_phase = ActionPhase(phase)
-    if next_phase is ActionPhase.CANCELLED and policy is not None and not policy.allow_cancellation:
+    if (
+        next_phase is ActionPhase.CANCELLED
+        and resolved_policy is not None
+        and not resolved_policy.allow_cancellation
+    ):
         return state, False
     try:
         return (
