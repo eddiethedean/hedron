@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from hedron_core.egress import (
+    bounded_response,
     EgressDecision,
     EgressDecisionKind,
     EgressError,
@@ -86,6 +87,7 @@ __all__ = [
     "EgressDecisionKind",
     "EgressError",
     "EgressPolicy",
+    "bounded_response",
     "IntentError",
     "IntentState",
     "KeyRecord",
