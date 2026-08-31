@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from concurrent.futures import ThreadPoolExecutor
 
 import pytest
@@ -91,6 +92,16 @@ def test_feedback_retention_and_abuse_controls() -> None:
             reason="this is way too long",
             consented=True,
             principal="alice",
+        )
+
+
+def test_feedback_rejects_nonfinite_retention() -> None:
+    with pytest.raises(ModelDemoError, match="retention_seconds"):
+        PredictionFeedback(
+            policy=FeedbackPolicy(
+                collection_notice="notice", tenant_id="tenant", retention_seconds=math.nan
+            ),
+            sink=InMemoryFeedbackSink(),
         )
 
 

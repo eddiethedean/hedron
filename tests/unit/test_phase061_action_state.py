@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import math
 import shutil
 import subprocess
+import time
 from pathlib import Path
 
 import pytest
@@ -105,6 +107,20 @@ def test_stale_operation_result_cannot_replace_current_presentation() -> None:
 def test_invalid_transition_is_rejected() -> None:
     with pytest.raises(ActionTransitionError):
         transition_action(ActionState(), ActionPhase.SUCCESS)
+
+
+def test_action_policy_timeout_is_enforced_and_validated() -> None:
+    operation = OperationIdentity("timed", target="#button")
+    policy = ActionPolicy(timeout_seconds=0.001)
+    state, accepted = begin_operation(ActionState(), operation, policy=policy)
+    assert accepted
+    time.sleep(0.01)
+    timed_out, completed = complete_operation(state, ActionPhase.SUCCESS, operation, policy=policy)
+    assert completed
+    assert timed_out.phase is ActionPhase.ERROR
+    assert timed_out.message == "Operation timed out"
+    with pytest.raises(ValueError, match="finite"):
+        ActionPolicy(timeout_seconds=math.nan)
 
 
 def test_trace_redacts_secret_like_facts_and_is_bounded() -> None:

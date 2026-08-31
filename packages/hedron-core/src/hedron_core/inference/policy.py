@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import secrets
 import threading
 import time
@@ -126,6 +127,34 @@ class InferencePolicy:
         default_factory=dict[str, tuple[str | None, str | None]], init=False
     )
     _fair_cursor: dict[str, int] = field(default_factory=lambda: defaultdict(int), init=False)
+
+    def __post_init__(self) -> None:
+        if (
+            isinstance(self.max_queue, bool)
+            or not isinstance(self.max_queue, int)
+            or self.max_queue < 0
+        ):
+            raise ValueError("max_queue must be a non-negative integer")
+        if (
+            isinstance(self.default_eta_per_item, bool)
+            or not isinstance(self.default_eta_per_item, (int, float))
+            or not math.isfinite(float(self.default_eta_per_item))
+            or self.default_eta_per_item < 0
+        ):
+            raise ValueError("default_eta_per_item must be finite and non-negative")
+        if (
+            isinstance(self.cancel_ttl_seconds, bool)
+            or not isinstance(self.cancel_ttl_seconds, (int, float))
+            or not math.isfinite(float(self.cancel_ttl_seconds))
+            or self.cancel_ttl_seconds <= 0
+        ):
+            raise ValueError("cancel_ttl_seconds must be finite and positive")
+        if (
+            isinstance(self.max_cancelled, bool)
+            or not isinstance(self.max_cancelled, int)
+            or self.max_cancelled < 1
+        ):
+            raise ValueError("max_cancelled must be a positive integer")
 
     def register_group(self, group: ConcurrencyGroup) -> None:
         if group.limit < 1:

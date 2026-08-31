@@ -7,6 +7,8 @@ durable browser store or a second mutation authority.
 
 from __future__ import annotations
 
+import math
+import time
 from collections.abc import Mapping
 from dataclasses import dataclass, field, replace
 from types import MappingProxyType
@@ -131,8 +133,13 @@ class ActionPolicy:
             raise ValueError("concurrency must be 'drop', 'replace', or 'queue'")
         if self.max_attempts < 1:
             raise ValueError("max_attempts must be at least 1")
-        if self.timeout_seconds is not None and self.timeout_seconds <= 0:
-            raise ValueError("timeout_seconds must be positive when provided")
+        if self.timeout_seconds is not None and (
+            isinstance(self.timeout_seconds, bool)
+            or not isinstance(self.timeout_seconds, (int, float))
+            or not math.isfinite(float(self.timeout_seconds))
+            or self.timeout_seconds <= 0
+        ):
+            raise ValueError("timeout_seconds must be finite and positive when provided")
         if self.allow_retry and self.max_attempts < 2:
             raise ValueError("allow_retry requires max_attempts >= 2")
         if self.allow_retry and not self.idempotent:
@@ -160,6 +167,7 @@ class ActionState:
     retryable: bool = False
     progress: int | None = None
     revision: str | int | None = None
+    _started_at: float | None = field(default=None, repr=False, compare=False)
 
     def __post_init__(self) -> None:
         # Keep the runtime representation canonical even when a host or
@@ -268,6 +276,7 @@ def begin_operation(
             phase=ActionPhase.PENDING,
             operation=operation,
             revision=operation.revision,
+            _started_at=time.monotonic() if resolved_policy.timeout_seconds is not None else None,
         ),
         True,
     )
@@ -300,6 +309,22 @@ def complete_operation(
         return state, False
     if operation.revision != state.operation.revision:
         return state, False
+    if (
+        policy is not None
+        and policy.timeout_seconds is not None
+        and state._started_at is not None
+        and time.monotonic() - state._started_at > policy.timeout_seconds
+    ):
+        return (
+            replace(
+                state,
+                phase=ActionPhase.ERROR,
+                message="Operation timed out",
+                retryable=policy.allow_retry,
+                _started_at=None,
+            ),
+            True,
+        )
     next_phase = ActionPhase(phase)
     if next_phase is ActionPhase.CANCELLED and policy is not None and not policy.allow_cancellation:
         return state, False

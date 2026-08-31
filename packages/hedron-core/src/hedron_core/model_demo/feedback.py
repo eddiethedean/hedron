@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import time
 import uuid
 from collections.abc import Mapping, Sequence
@@ -30,6 +31,12 @@ class FeedbackPolicy:
     treat_as_ground_truth: bool = False
 
     def validate(self) -> None:
+        if (
+            isinstance(self.retention_seconds, bool)
+            or not isinstance(self.retention_seconds, (int, float))
+            or not math.isfinite(float(self.retention_seconds))
+        ):
+            raise ModelDemoError("retention_seconds must be finite")
         if self.treat_as_ground_truth:
             raise ModelDemoError(
                 "Feedback must not be treated as ground truth",
