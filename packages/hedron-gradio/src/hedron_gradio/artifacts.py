@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import math
 import re
+import threading
 import time
 import uuid
 from dataclasses import dataclass, field
+from typing import Any, cast
 
 from hedron_gradio.errors import GradioRemoteError
 
@@ -33,9 +36,20 @@ class ArtifactStore:
         retention_seconds: float,
         allowed_extensions: frozenset[str] | None = None,
     ) -> None:
-        if max_bytes <= 0:
+        raw_max_bytes = cast(Any, max_bytes)
+        if (
+            isinstance(raw_max_bytes, bool)
+            or not isinstance(raw_max_bytes, int)
+            or raw_max_bytes <= 0
+        ):
             raise ValueError("max_bytes must be > 0")
-        if retention_seconds <= 0:
+        raw_retention = cast(Any, retention_seconds)
+        if (
+            isinstance(raw_retention, bool)
+            or not isinstance(raw_retention, (int, float))
+            or not math.isfinite(float(raw_retention))
+            or raw_retention <= 0
+        ):
             raise ValueError("retention_seconds must be > 0")
         self._max_bytes = max_bytes
         self._retention_seconds = retention_seconds
@@ -44,6 +58,7 @@ class ArtifactStore:
         )
         self._records: dict[str, ArtifactRecord] = {}
         self._total_bytes = 0
+        self._lock = threading.RLock()
 
     def _validate_name(self, name: str) -> None:
         if not name or _UNSAFE_NAME.search(name):
@@ -73,43 +88,50 @@ class ArtifactStore:
             raise GradioRemoteError("Artifact scope mismatch")
 
     def store(self, name: str, data: bytes, *, scope_key: str = "") -> str:
-        self._evict_expired()
         self._validate_name(name)
-        if len(data) > self._max_bytes:
-            raise GradioRemoteError(f"Artifact exceeds max size ({len(data)} > {self._max_bytes})")
-        artifact_id = f"{name}:{uuid.uuid4().hex}"
-        if not _ARTIFACT_ID.match(artifact_id):
-            raise GradioRemoteError("Generated artifact id failed validation")
-        projected = self._total_bytes + len(data)
-        if projected > self._max_bytes:
-            raise GradioRemoteError("Artifact store capacity exceeded")
-        self._records[artifact_id] = ArtifactRecord(name=name, data=data, scope_key=scope_key)
-        self._total_bytes = projected
-        return artifact_id
+        with self._lock:
+            self._evict_expired()
+            if len(data) > self._max_bytes:
+                raise GradioRemoteError(
+                    f"Artifact exceeds max size ({len(data)} > {self._max_bytes})"
+                )
+            artifact_id = f"{name}:{uuid.uuid4().hex}"
+            if not _ARTIFACT_ID.match(artifact_id):
+                raise GradioRemoteError("Generated artifact id failed validation")
+            projected = self._total_bytes + len(data)
+            if projected > self._max_bytes:
+                raise GradioRemoteError("Artifact store capacity exceeded")
+            self._records[artifact_id] = ArtifactRecord(name=name, data=data, scope_key=scope_key)
+            self._total_bytes = projected
+            return artifact_id
 
     def fetch(self, artifact_id: str, *, scope_key: str = "") -> bytes:
-        self._evict_expired()
-        if not _ARTIFACT_ID.match(artifact_id):
-            raise GradioRemoteError(f"Invalid artifact id: {artifact_id!r}")
-        record = self._records.get(artifact_id)
-        if record is None:
-            raise GradioRemoteError(f"Unknown artifact id: {artifact_id}")
-        self._require_scope(record, scope_key)
-        return record.data
+        with self._lock:
+            self._evict_expired()
+            if not _ARTIFACT_ID.match(artifact_id):
+                raise GradioRemoteError(f"Invalid artifact id: {artifact_id!r}")
+            record = self._records.get(artifact_id)
+            if record is None:
+                raise GradioRemoteError(f"Unknown artifact id: {artifact_id}")
+            self._require_scope(record, scope_key)
+            return record.data
 
     def delete(self, artifact_id: str, *, scope_key: str = "") -> bool:
-        record = self._records.get(artifact_id)
-        if record is None:
-            return False
-        self._require_scope(record, scope_key)
-        self._delete_unlocked(artifact_id)
-        return True
+        with self._lock:
+            record = self._records.get(artifact_id)
+            if record is None:
+                return False
+            self._require_scope(record, scope_key)
+            self._delete_unlocked(artifact_id)
+            return True
 
     def clear(self) -> None:
-        self._records.clear()
-        self._total_bytes = 0
+        with self._lock:
+            self._records.clear()
+            self._total_bytes = 0
 
     @property
     def total_bytes(self) -> int:
-        self._evict_expired()
-        return self._total_bytes
+        with self._lock:
+            self._evict_expired()
+            return self._total_bytes
