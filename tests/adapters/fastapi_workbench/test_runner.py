@@ -2,15 +2,61 @@
 
 from __future__ import annotations
 
+import os
+
 import pytest
 
 from fastapi_workbench.config import ResolvedDeployment, WorkbenchConfig, WorkbenchMode
 from fastapi_workbench.resolve import (
+    RESOLVED_MODE_ENV,
     RESOLVED_MOUNT_ENV,
+    RESOLVED_PUBLIC_BASE_ENV,
     explicit_mount_hint,
     resolve_deployment,
 )
 from fastapi_workbench.runner import run_target
+
+
+def test_run_target_exports_process_environ_before_import(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """REALWB-030: the default os._Environ receives resolved launcher state."""
+    for name in (RESOLVED_MODE_ENV, RESOLVED_MOUNT_ENV, RESOLVED_PUBLIC_BASE_ENV):
+        monkeypatch.delenv(name, raising=False)
+
+    class FakeSock:
+        def getsockname(self) -> tuple[str, int]:
+            return ("127.0.0.1", 18051)
+
+        def close(self) -> None:
+            return None
+
+    served: list[ResolvedDeployment] = []
+
+    def fake_bind(_host: str, _port: int) -> FakeSock:
+        return FakeSock()
+
+    def fake_serve(
+        _app: object, resolved: ResolvedDeployment, *, sock: object | None = None
+    ) -> None:
+        del sock
+        served.append(resolved)
+
+    monkeypatch.setattr("fastapi_workbench.runner.bind_loopback", fake_bind)
+    monkeypatch.setattr(
+        "fastapi_workbench.runner.serve",
+        fake_serve,
+    )
+
+    run_target(
+        "tests.integration._workbench_sample:app",
+        config=WorkbenchConfig(mode=WorkbenchMode.ON, mount="/s/cli/p/8051"),
+    )
+
+    assert os.environ[RESOLVED_MODE_ENV] == "on"
+    assert os.environ[RESOLVED_MOUNT_ENV] == "/s/cli/p/8051"
+    assert os.environ[RESOLVED_PUBLIC_BASE_ENV].endswith("/s/cli/p/8051")
+    assert len(served) == 1
 
 
 def test_explicit_mount_hint_includes_uvicorn_root_path_on_workbench() -> None:

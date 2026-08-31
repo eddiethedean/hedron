@@ -10,7 +10,7 @@ import subprocess
 import sys
 import threading
 import webbrowser
-from collections.abc import Mapping
+from collections.abc import Mapping, MutableMapping
 from typing import IO, Any
 
 from fastapi_workbench.codes import FWB_0002, FWB_0003, FWB_0004, FWB_0005, FWB_0009
@@ -206,7 +206,7 @@ def discover_rserver_url(*, binary: str, port: int) -> str:
 def export_workbench_state(
     resolved: ResolvedDeployment,
     *,
-    environ: dict[str, str] | None = None,
+    environ: MutableMapping[str, str] | None = None,
 ) -> None:
     env = os.environ if environ is None else environ
     for name in (
@@ -296,7 +296,7 @@ def prepare_app(
     if apply_environ:
         if environ is None:
             export_workbench_state(resolved)
-        elif isinstance(environ, dict):
+        elif isinstance(environ, MutableMapping):
             export_workbench_state(resolved, environ=environ)
     app = load_app(target, factory=cfg.factory)
     if wrap:
