@@ -38,6 +38,7 @@ class ReplayOutcome:
     cached_status: int | None = None
     cached_body: bytes | None = None
     cached_media_type: str | None = None
+    cached_headers: tuple[tuple[str, str], ...] | None = None
 
 
 class ReplayStore(Protocol):
@@ -59,6 +60,7 @@ class ReplayStore(Protocol):
         status: int,
         body: bytes,
         media_type: str | None = None,
+        headers: tuple[tuple[str, str], ...] | None = None,
     ) -> bool: ...
 
     def abort(self, *, key: str, scope: str, fingerprint: str) -> None: ...
@@ -70,6 +72,7 @@ class _Entry:
     status: int | None = None
     body: bytes | None = None
     media_type: str | None = None
+    headers: tuple[tuple[str, str], ...] | None = None
     expires_at: float = 0.0
     in_flight: bool = True
 
@@ -121,6 +124,7 @@ class MemoryReplayStore:
                 cached_status=existing.status,
                 cached_body=existing.body,
                 cached_media_type=existing.media_type,
+                cached_headers=existing.headers,
             )
 
     def complete(
@@ -132,6 +136,7 @@ class MemoryReplayStore:
         status: int,
         body: bytes,
         media_type: str | None = None,
+        headers: tuple[tuple[str, str], ...] | None = None,
     ) -> bool:
         with self._lock:
             slot = (scope, key)
@@ -142,6 +147,7 @@ class MemoryReplayStore:
             entry.status = status
             entry.body = body
             entry.media_type = media_type or "text/html"
+            entry.headers = headers
             return True
 
     def abort(self, *, key: str, scope: str, fingerprint: str) -> None:
