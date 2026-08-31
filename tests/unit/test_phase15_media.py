@@ -126,7 +126,7 @@ def test_download_all_budget_reject(tmp_path: Path) -> None:
     a.write_bytes(b"aaaa")
     b.write_bytes(b"bbbb")
 
-    ok = download_all_zip([a, b], root=root, authorized=True, max_total_bytes=100)
+    ok = download_all_zip([a, b], root=root, authorized=True, max_total_bytes=1000)
     assert ok.status_code == 200
     assert ok.media_type == "application/zip"
     assert ok.headers["cache-control"] == "private, no-store"
@@ -136,6 +136,19 @@ def test_download_all_budget_reject(tmp_path: Path) -> None:
 
     with pytest.raises(PermissionError):
         download_all_zip([a], root=root, authorized=False, max_total_bytes=100)
+
+
+def test_download_all_budget_includes_zip_overhead_and_members(tmp_path: Path) -> None:
+    root = tmp_path / "media"
+    root.mkdir()
+    empty = root / "empty.txt"
+    empty.touch()
+    with pytest.raises(ValueError, match="max_total_bytes"):
+        download_all_zip([empty], root=root, authorized=True, max_total_bytes=0)
+    with pytest.raises(ValueError, match="max_members"):
+        download_all_zip(
+            [empty, empty], root=root, authorized=True, max_total_bytes=1000, max_members=1
+        )
 
 
 def test_audio_video_pdf_gallery_render() -> None:
