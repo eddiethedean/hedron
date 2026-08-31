@@ -20,9 +20,11 @@ pip install "hedron[gradio]>=1.0.0,<1.1"
 pip install "hedron-gradio>=0.2.3,<0.3"
 ```
 
-For **live** Gradio endpoints, also install `gradio_client`. The package imports without
-`gradio` or `gradio_client`; with declared endpoints and no client library, helpers return
-stub-friendly status payloads.
+Automatic `gradio_client.Client` networking is disabled because its connection
+cannot be bound to Hedron's validated DNS result. Declared endpoints remain
+available for offline/stub behavior. A live integration must provide an
+application-owned transport that routes HTTP through
+`hedron_core.fetch_with_policy`.
 
 ## When to use
 
@@ -67,7 +69,7 @@ With `enabled=False` (the default), `discover()` returns empty.
 |---|---|
 | `enabled=False` | Empty discovery — no remote calls |
 | Undeclared / private host | `GradioRemoteError` (fail closed) |
-| Missing `gradio_client` for live calls | Stub / unavailable path |
+| No connection-bound live transport | Explicit fail-closed error |
 | Expecting Gradio UI embedding | Out of scope — client interop only |
 
 ## Related docs

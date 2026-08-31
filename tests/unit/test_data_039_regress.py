@@ -49,11 +49,32 @@ def test_039_inmemory_sorts_mixed_json_types() -> None:
     assert [r["id"] for r in page.rows] == ["3", "1", "2"]
 
 
+def test_oversized_formula_integer_fails_as_diagnostic() -> None:
+    with pytest.raises(HedronError, match="HED-DATA-0032"):
+        evaluate_formula("[huge]", {"huge": 10**1000})
+
+
 def test_039_dataquery_validates_direction_and_max_page_size() -> None:
     with pytest.raises(ValueError, match="sort direction"):
         DataQuery(sort=(("x", "sideways"),)).validated()
     with pytest.raises(ValueError, match="max_page_size"):
         DataQuery(limit=10).validated(max_page_size=0)
+
+
+@pytest.mark.parametrize(
+    "query",
+    [
+        DataQuery(sort=None),  # type: ignore[arg-type]
+        DataQuery(sort="name"),  # type: ignore[arg-type]
+        DataQuery(sort=((None, "asc"),)),  # type: ignore[arg-type]
+        DataQuery(filters=None),  # type: ignore[arg-type]
+        DataQuery(projection="name"),  # type: ignore[arg-type]
+        DataQuery(projection=(None,)),  # type: ignore[arg-type]
+    ],
+)
+def test_dataquery_rejects_malformed_collection_shapes(query: DataQuery) -> None:
+    with pytest.raises(ValueError):
+        query.validated()
 
 
 def test_039_inmemory_multi_field_batch_same_row_version() -> None:

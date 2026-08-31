@@ -89,6 +89,7 @@ class DaskDataSource(Generic[T]):
         require_dask()
         self._frame = cast(_DaskFrame, frame)
         self._schema = tuple(schema)
+        self._secret_fields = frozenset(column.name for column in self._schema if column.secret)
 
         def _default_row(row: Mapping[str, object]) -> T:
             # Default codec treats each record mapping as T (caller opts into typed rows).
@@ -116,6 +117,15 @@ class DaskDataSource(Generic[T]):
         return plan_from_query(query, max_rows=self._max_compute_rows)
 
     def fetch(self, query: DataQuery) -> DataPage[T]:
+        sort_allow = self._sort_allow
+        filter_allow = self._filter_allow
+        projection_allow = self._projection_allow
+        if query.allowlisted_sort_fields is not None:
+            sort_allow = sort_allow & frozenset(query.allowlisted_sort_fields)
+        if query.allowlisted_filter_fields is not None:
+            filter_allow = filter_allow & frozenset(query.allowlisted_filter_fields)
+        if query.allowlisted_projection_fields is not None:
+            projection_allow = projection_allow & frozenset(query.allowlisted_projection_fields)
         q = DataQuery(
             offset=query.offset,
             limit=query.limit,
@@ -125,10 +135,19 @@ class DaskDataSource(Generic[T]):
             projection=query.projection,
             search=query.search,
             locale=query.locale,
-            allowlisted_sort_fields=self._sort_allow,
-            allowlisted_filter_fields=self._filter_allow,
-            allowlisted_projection_fields=self._projection_allow,
+            allowlisted_sort_fields=sort_allow,
+            allowlisted_filter_fields=filter_allow,
+            allowlisted_projection_fields=projection_allow,
         ).validated(max_page_size=self._max_compute_rows)
+        if q.projection and self._secret_fields.intersection(q.projection):
+            raise error(
+                "HED-DATA-0052",
+                title="Secret Dask fields cannot be projected",
+                explanation="ColumnSchema.secret fields are not returned by normal queries.",
+                remediation=(
+                    "Remove secret fields from projection or use an explicit privileged path."
+                ),
+            )
         if q.limit > self._max_compute_rows:
             raise error(
                 "HED-DATA-0051",
@@ -186,7 +205,12 @@ class DaskDataSource(Generic[T]):
                 head = head.compute()
             raw_records = head.iloc[q.offset : q.offset + q.limit].to_dict(orient="records")
             records = [
-                cast(dict[str, object], record) for record in cast(Sequence[object], raw_records)
+                {
+                    name: value
+                    for name, value in cast(dict[str, object], record).items()
+                    if name not in self._secret_fields
+                }
+                for record in cast(Sequence[object], raw_records)
             ]
         if len(records) > self._max_compute_rows:
             raise error(

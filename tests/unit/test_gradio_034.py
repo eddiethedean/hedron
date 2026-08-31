@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import socket
+import threading
 from pathlib import Path
 from typing import Any
 
@@ -103,7 +104,7 @@ def test_validate_remote_url_blocks_mixed_public_and_private_answers(
 
     monkeypatch.setattr(policy.socket, "getaddrinfo", _getaddrinfo)
     cfg = GradioRemoteConfig.from_base_url("https://mixed.example")
-    with pytest.raises(GradioRemoteError, match="resolved 127.0.0.1"):
+    with pytest.raises(GradioRemoteError, match="Private or loopback"):
         validate_remote_url("https://mixed.example/run", cfg)
 
 
@@ -136,6 +137,66 @@ def test_artifact_store_enforces_max_bytes() -> None:
     store = ArtifactStore(max_bytes=8, retention_seconds=60.0)
     with pytest.raises(GradioRemoteError, match="exceeds max size"):
         store.store("sample.txt", b"0123456789")
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {"max_bytes": 0, "retention_seconds": 1.0},
+        {"max_bytes": 1, "retention_seconds": float("nan")},
+        {"max_bytes": 1, "retention_seconds": float("inf")},
+    ],
+)
+def test_artifact_store_rejects_invalid_bounds(kwargs: dict[str, object]) -> None:
+    with pytest.raises(ValueError):
+        ArtifactStore(**kwargs)  # type: ignore[arg-type]
+
+
+def test_artifact_store_capacity_is_atomic_across_threads() -> None:
+    store = ArtifactStore(max_bytes=8, retention_seconds=60.0)
+    results: list[object] = []
+
+    def upload(name: str) -> None:
+        try:
+            results.append(store.store(name, b"123456"))
+        except Exception as exc:  # noqa: BLE001 - assert one admission is rejected
+            results.append(exc)
+
+    threads = [threading.Thread(target=upload, args=(f"{index}.txt",)) for index in range(2)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+    assert sum(isinstance(result, str) for result in results) == 1
+    assert store.total_bytes == 6
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {"request_timeout_seconds": float("nan")},
+        {"request_timeout_seconds": float("inf")},
+        {"artifact_retention_seconds": float("nan")},
+        {"max_upload_bytes": True},
+        {"max_download_bytes": 0},
+    ],
+)
+def test_gradio_remote_config_rejects_invalid_bounds(kwargs: dict[str, object]) -> None:
+    with pytest.raises(ValueError):
+        GradioRemoteConfig(
+            base_url="https://demo.example.invalid",
+            allowed_hosts=frozenset({"demo.example.invalid"}),
+            **kwargs,  # type: ignore[arg-type]
+        )
+
+
+@pytest.mark.parametrize("timeout", [float("nan"), float("inf"), 0, -1])
+def test_job_manager_rejects_invalid_timeouts(timeout: float) -> None:
+    with pytest.raises(ValueError):
+        GradioJobManager(default_timeout_seconds=timeout)
+    manager = GradioJobManager()
+    with pytest.raises(ValueError):
+        manager.submit("predict", {}, scope_key="scope", timeout_seconds=timeout)
 
 
 def test_job_scope_isolation() -> None:

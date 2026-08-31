@@ -359,7 +359,10 @@ def _as_float(value: object) -> float | None:
     if value is None or isinstance(value, bool):
         return None
     if isinstance(value, (int, float)):
-        number = float(value)
+        try:
+            number = float(value)
+        except OverflowError:
+            return None
         return number if math.isfinite(number) else None
     if isinstance(value, str):
         try:
@@ -1080,8 +1083,8 @@ def compile_map(
                 marker_spec = MarkerSpec.model_validate(
                     {
                         "id": str(item_mapping.get("id") or "marker"),
-                        "lat": item_mapping.get("lat") or 0.0,
-                        "lon": item_mapping.get("lon") or 0.0,
+                        "lat": item_mapping.get("lat"),
+                        "lon": item_mapping.get("lon"),
                         "label": str(item_mapping.get("label") or ""),
                         "href": item_mapping.get("href"),
                         "action": item_mapping.get("action"),

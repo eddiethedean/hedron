@@ -38,7 +38,7 @@ def _coerce_float(value: object, *, default: float = 0.0) -> float:
         if isinstance(value, str):
             return float(value)
         return float(str(value))
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         return default
 
 
@@ -94,7 +94,10 @@ def _xy_fallback_figure(  # pyright: ignore[reportUnusedFunction]
         categorical = False
         for raw in xs_raw:
             try:
-                numeric_xs.append(float(raw))  # type: ignore[arg-type]
+                try:
+                    numeric_xs.append(float(raw))  # type: ignore[arg-type]
+                except OverflowError:
+                    numeric_xs.append(0.0)
             except (TypeError, ValueError):
                 categorical = True
                 break
@@ -130,7 +133,10 @@ def _xy_fallback_figure(  # pyright: ignore[reportUnusedFunction]
         categorical = False
         for raw in xs_raw:
             try:
-                numeric_xs.append(float(raw))  # type: ignore[arg-type]
+                try:
+                    numeric_xs.append(float(raw))  # type: ignore[arg-type]
+                except OverflowError:
+                    numeric_xs.append(0.0)
             except (TypeError, ValueError):
                 categorical = True
                 break

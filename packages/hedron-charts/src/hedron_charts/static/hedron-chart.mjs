@@ -53,11 +53,23 @@ function yValues(plan) {
   return out;
 }
 
+function yDomain(ys) {
+  if (!ys.length) return { min: 0, max: 1 };
+  let min = Math.min(0, ...ys);
+  let max = Math.max(0, ...ys);
+  if (min === max) {
+    min -= 1;
+    max += 1;
+  }
+  return { min, max };
+}
+
 function renderSvg(el, plan) {
   const box = layoutBox(plan);
   const marks = plan.marks || [];
   const ys = yValues(plan);
-  const yMax = Math.max(1, ...ys, 1);
+  const domain = yDomain(ys);
+  const range = domain.max - domain.min;
   const plotW = Math.max(1, box.width - 2 * box.margin);
   const plotH = Math.max(1, box.height - 2 * box.margin);
   const ns = "http://www.w3.org/2000/svg";
@@ -89,7 +101,7 @@ function renderSvg(el, plan) {
       marks.length > 1
         ? box.margin + (i / (marks.length - 1)) * plotW
         : box.margin + plotW / 2;
-    const py = box.margin + plotH - (y / yMax) * plotH;
+    const py = box.margin + plotH - ((y - domain.min) / range) * plotH;
     points.push([x, py, mark.identity || String(i), vals]);
   });
 
@@ -99,9 +111,10 @@ function renderSvg(el, plan) {
     points.forEach(([x, py, id, vals]) => {
       const rect = document.createElementNS(ns, "rect");
       rect.setAttribute("x", String(x - bw / 2));
-      rect.setAttribute("y", String(py));
+      const baseline = box.margin + plotH - ((0 - domain.min) / range) * plotH;
+      rect.setAttribute("y", String(Math.min(py, baseline)));
       rect.setAttribute("width", String(bw));
-      rect.setAttribute("height", String(box.margin + plotH - py));
+      rect.setAttribute("height", String(Math.abs(py - baseline)));
       rect.setAttribute("fill", "var(--hedron-chart-series-1, #2563eb)");
       rect.setAttribute("tabindex", "0");
       rect.setAttribute("data-hedron-mark", id);
@@ -129,7 +142,7 @@ function renderSvg(el, plan) {
   } else {
     if (type === "area" && points.length) {
       const area = document.createElementNS(ns, "polygon");
-      const baseY = box.margin + plotH;
+      const baseY = box.margin + plotH - ((0 - domain.min) / range) * plotH;
       const pts = points
         .map(([x, py]) => `${x},${py}`)
         .concat([`${points[points.length - 1][0]},${baseY}`, `${points[0][0]},${baseY}`])
@@ -175,7 +188,8 @@ function renderCanvas(el, plan) {
   const ctx = canvas.getContext("2d");
   if (!ctx) return canvas;
   const ys = yValues(plan);
-  const yMax = Math.max(1, ...ys, 1);
+  const domain = yDomain(ys);
+  const range = domain.max - domain.min;
   const marks = plan.marks || [];
   const plotW = Math.max(1, box.width - 2 * box.margin);
   const plotH = Math.max(1, box.height - 2 * box.margin);
@@ -189,7 +203,7 @@ function renderCanvas(el, plan) {
       marks.length > 1
         ? box.margin + (i / (marks.length - 1)) * plotW
         : box.margin + plotW / 2;
-    const py = box.margin + plotH - (y / yMax) * plotH;
+    const py = box.margin + plotH - ((y - domain.min) / range) * plotH;
     if (i === 0) ctx.moveTo(x, py);
     else ctx.lineTo(x, py);
   });

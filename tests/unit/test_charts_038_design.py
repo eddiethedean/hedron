@@ -5,7 +5,8 @@ from __future__ import annotations
 import pytest
 from tests.unit.charts_038_helpers import sample_plan, sample_rows, sample_spec
 
-from hedron_charts.compile import CANVAS_MARK_THRESHOLD, compile_chart
+from hedron_charts.compile import CANVAS_MARK_THRESHOLD, apply_transforms, compile_chart
+from hedron_charts.spec import TransformDef
 from hedron_core.diagnostics import HedronError
 
 
@@ -52,3 +53,39 @@ def test_guides_present() -> None:
     plan = sample_plan()
     assert plan.guides
     assert any(g.kind in {"axis", "title"} for g in plan.guides)
+
+
+def test_filter_rejects_unknown_comparison() -> None:
+    with pytest.raises(HedronError, match="HED-CHART-0033"):
+        apply_transforms(
+            [{"x": 1}],
+            [TransformDef(op="filter", field="x", params={"compare": "bogus"})],
+        )
+
+
+def test_group_transforms_canonicalize_nested_keys() -> None:
+    rows = [{"g": {"a": 1}, "y": 2}, {"g": {"a": 1}, "y": 3}]
+    aggregated = apply_transforms(
+        rows,
+        [TransformDef(op="aggregate", params={"groupby": ["g"], "metrics": [{"op": "count"}]})],
+    )
+    assert aggregated == [{"g": {"a": 1}, "count_all": 2}]
+    stacked = apply_transforms(
+        rows,
+        [TransformDef(op="stack", field="y", params={"groupby": ["g"]})],
+    )
+    assert [row["y_y1"] for row in stacked] == [2.0, 5.0]
+
+
+def test_transforms_handle_oversized_integers_without_overflow() -> None:
+    huge = 10**1000
+    filtered = apply_transforms(
+        [{"x": huge}],
+        [TransformDef(op="filter", field="x", params={"compare": "gt", "value": 0})],
+    )
+    assert filtered == []
+    sorted_rows = apply_transforms(
+        [{"x": huge}, {"x": 1}],
+        [TransformDef(op="sort", field="x")],
+    )
+    assert {row["x"] for row in sorted_rows} == {1, huge}

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import pytest
 from fastapi import FastAPI
 from starlette.testclient import TestClient
 
@@ -81,3 +82,17 @@ def test_chunk_delay_is_honored() -> None:
     started = time.monotonic()
     list(source.iter_chunks())
     assert time.monotonic() - started >= 0.04
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {"deadline_seconds": float("nan")},
+        {"deadline_seconds": float("inf")},
+        {"max_chunks": 0},
+        {"chunk_delay_seconds": float("nan")},
+    ],
+)
+def test_stream_budget_rejects_invalid_values(kwargs: dict[str, object]) -> None:
+    with pytest.raises(ValueError):
+        StreamBudget(**kwargs)  # type: ignore[arg-type]

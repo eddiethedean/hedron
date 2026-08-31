@@ -33,7 +33,11 @@ Security control plane and adversarial assurance (RFC-0083 / D-097 / D-098;
   audited declassification.
 - Purpose-specific `compile_trust` for URL, selector, markup, SVG, and browser
   payloads.
-- Shared deny-by-default `EgressPolicy` with redirect-hop revalidation.
+- Shared deny-by-default `EgressPolicy` and connection-bound
+  `StdlibEgressTransport` with exact scheme/origin/host/port allowlists,
+  all-address and connected-peer validation, redirect/retry revalidation,
+  deadlines, content expectations, optional proxy-only routing, and cumulative
+  encoded/decompressed response budgets.
 - Nested monotonic `RequestBudget` ledger and locked performance ceilings.
 - Short-lived `SignedIntent` + `SecurityKeyring` composed with CSRF and 0.55
   replay.

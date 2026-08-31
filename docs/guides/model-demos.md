@@ -118,10 +118,11 @@ assert result.status in {"completed", "partial", "failed", "cancelled"}
 
 ```bash
 pip install "hedron[gradio]>=1.0.0,<1.1"
-# For live remote calls also install gradio_client
 ```
 
 Keep `GradioClientAdapter(enabled=False)` until you intentionally open discovery.
+Automatic `gradio_client` networking is disabled; a live adapter must use an
+application-owned, connection-bound Hedron egress transport.
 See [Gradio migration](gradio-migration.md).
 
 ## Honesty

@@ -120,6 +120,52 @@ def test_beginner_map_defaults_osm() -> None:
     assert "hedron-map-alternative" in out
 
 
+def test_missing_marker_coordinates_are_rejected() -> None:
+    with pytest.raises(ValueError):
+        compile_map(
+            MapSpec(
+                layers=(MarkerLayer(markers=({"id": "missing"},)),),
+                accessibility=AccessibilityDef(title="T", description="D"),
+            )
+        )
+
+
+def test_map_exposes_configured_csrf_names() -> None:
+    from starlette.applications import Starlette
+    from starlette.requests import Request
+
+    from hedron.context import render_context_from_request
+    from hedron_core import RenderMode, SecurityPolicy, render
+
+    app = Starlette()
+    app.state.hedron_security = SecurityPolicy(
+        csrf_cookie_name="my_csrf", csrf_header_name="X-My-CSRF"
+    )
+    request = Request(
+        {
+            "type": "http",
+            "app": app,
+            "headers": [],
+            "method": "GET",
+            "path": "/",
+            "raw_path": b"/",
+            "query_string": b"",
+            "root_path": "",
+            "scheme": "https",
+            "server": ("testserver", 443),
+            "client": ("127.0.0.1", 1234),
+        }
+    )
+
+    out = render(
+        Map(),
+        context=render_context_from_request(request),
+        mode=RenderMode.FRAGMENT,
+    ).html
+    assert 'data-hedron-csrf-cookie="my_csrf"' in out
+    assert 'data-hedron-csrf-header="X-My-CSRF"' in out
+
+
 def test_portable_modules_forbid_runtime_imports() -> None:
     forbidden = {"fastapi", "maplibre", "sqlite3", "httpx", "requests", "urllib.request", "socket"}
     for path in PORTABLE:

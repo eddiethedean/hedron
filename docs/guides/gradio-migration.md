@@ -12,8 +12,6 @@ optional package only when needed:
 pip install "hedron[gradio]>=1.0.0,<1.1"
 # or
 pip install "hedron-gradio>=0.2.3,<0.3"  # coordinated 1.0 artifact
-# Live remote discovery/predict also needs:
-pip install gradio-client
 ```
 
 Absence of `hedron-gradio` adds no core dependency, route, asset, or startup cost.
@@ -70,8 +68,12 @@ job_id = adapter.submit_job("predict", {"text": "queued"})
 print(adapter.job_status(job_id))
 ```
 
-Live discovery (no preloaded endpoints) uses `gradio_client.Client` view/API metadata after a
-version check. Keep adapters **disabled by default** in production until intentionally opened.
+Automatic live discovery with `gradio_client.Client` fails closed because the
+upstream client cannot connect to a policy-approved DNS result. Keep adapters
+**disabled by default** in production. Live integrations must use an
+application-owned transport whose HTTP path is enforced by
+`hedron_core.fetch_with_policy`; declared endpoints remain suitable for offline
+and test use.
 
 HF vendor nodes emit InferenceWorkflow-compatible JSON (`node_id`, `label`, `ports`):
 

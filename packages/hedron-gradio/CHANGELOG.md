@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Security
+
+- Route remote-policy preflight through the shared Hedron egress policy and
+  fail closed instead of constructing an opaque `gradio_client.Client` whose
+  connection cannot be bound to a validated DNS result.
+
 ## [0.2.3] — 2026-08-28
 
 ### Changed
