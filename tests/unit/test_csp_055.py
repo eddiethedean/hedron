@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import json
+import math
+
+import pytest
 
 from hedron.csp import CspReporting, compose_csp, ingest_csp_report, new_nonce
 
@@ -51,3 +54,9 @@ def test_issue_545_sample_rate_can_drop() -> None:
         )
         is None
     )
+
+
+@pytest.mark.parametrize("sample_rate", [math.nan, math.inf, -0.1, 1.1])
+def test_csp_sample_rate_rejects_invalid_values(sample_rate: float) -> None:
+    with pytest.raises(ValueError, match="sample_rate"):
+        CspReporting(sample_rate=sample_rate)

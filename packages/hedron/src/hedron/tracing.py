@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import math
 from collections.abc import Generator, Mapping
 from contextlib import contextmanager
 from contextvars import ContextVar
@@ -36,6 +37,15 @@ class TraceConfig:
     sample_rate: float = 1.0
     service_name: str = "hedron"
     _force_sample: bool | None = field(default=None, repr=False)
+
+    def __post_init__(self) -> None:
+        if (
+            isinstance(self.sample_rate, bool)
+            or not isinstance(self.sample_rate, (int, float))
+            or not math.isfinite(float(self.sample_rate))
+            or not 0.0 <= self.sample_rate <= 1.0
+        ):
+            raise ValueError("sample_rate must be finite and between 0.0 and 1.0")
 
     @property
     def forced_sample(self) -> bool | None:
