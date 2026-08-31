@@ -66,10 +66,9 @@ class CachePolicy:
     ttl_seconds: int | None = None
 
     def __post_init__(self) -> None:
-        if self.ttl_seconds is not None and (
-            isinstance(self.ttl_seconds, bool)
-            or not isinstance(self.ttl_seconds, int)
-            or self.ttl_seconds < 0
+        ttl_seconds = cast(object, self.ttl_seconds)
+        if ttl_seconds is not None and (
+            isinstance(ttl_seconds, bool) or not isinstance(ttl_seconds, int) or ttl_seconds < 0
         ):
             raise ValueError("ttl_seconds must be a non-negative integer or None")
 
