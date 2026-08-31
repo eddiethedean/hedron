@@ -1,15 +1,17 @@
 from __future__ import annotations
 
-import tomllib
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-RELEASE = tomllib.loads((ROOT / "docs" / "release.toml").read_text(encoding="utf-8"))["release"]
-PIN = f">={RELEASE['pin_floor']},<{RELEASE['pin_ceiling']}"
+SCRIPTS = ROOT / "scripts"
+if str(SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS))
+
+import check_docs_train_ssot as ssot  # noqa: E402
+
 FIRST_RUN_PIN = (
-    f">={RELEASE['pypi_pin_floor']},<{RELEASE['pypi_pin_ceiling']}"
-    if RELEASE.get("registry_status") == "deferred"
-    else PIN
+    ssot.FACTS.pypi_pin if ssot.FACTS.registry_deferred else ssot.MINIMUM_COMPATIBILITY_PIN
 )
 
 VSCODE_PATH = ROOT / "docs" / "getting-started" / "first-app-vscode.md"
