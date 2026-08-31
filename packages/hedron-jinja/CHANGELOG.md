@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.3] — 2026-08-31
+
+### Fixed
+
+- Reject invalid asynchronous I/O budget deadlines before HDJ evaluation begins.
+
 ## [1.0.2] — 2026-08-31
 
 - Maintenance release for the coordinated 1.0 train.

@@ -150,3 +150,10 @@ def test_v1_branch_has_one_stable_required_ci_context() -> None:
     assert "branches: [main, v1.0]" in workflow
     assert "name: CI required" in workflow
     assert "needs:\n      [changes, test, dependency-bounds" in workflow
+
+
+def test_local_release_gate_accepts_both_license_spelling_aliases() -> None:
+    checks = (ROOT / "scripts" / "ci_checks.sh").read_text(encoding="utf-8")
+
+    assert "! secret_available PWB_LICENSE && ! secret_available PWB_LICENCE" in checks
+    assert "! secret_available CONNECT_LICENSE && ! secret_available CONNECT_LICENCE" in checks

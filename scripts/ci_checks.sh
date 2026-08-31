@@ -45,7 +45,8 @@
 #   HEDRON_BROWSER_REUSE — optional shared Playwright process for local runs
 #   HEDRON_GATE_VERSION — default for --gate-version
 #   HEDRON_CHECK_JOBS — default concurrency for --jobs
-#   PWB_LICENSE / CONNECT_LICENSE — optional; realwb/realconnect skip when unset
+#   PWB_LICENSE / PWB_LICENCE — optional Workbench license aliases
+#   CONNECT_LICENSE / CONNECT_LICENCE / CONNECT_API_KEY — optional Connect credentials
 #
 # Prerequisites for `all` (match workflow setup steps):
 #   uv sync --locked --all-groups --python 3.12
@@ -795,8 +796,8 @@ cmd_evidence() {
 }
 
 cmd_realconnect() {
-  # Live Posit Connect Docker smoke (REALCONNECT-033). Requires Docker and CONNECT_LICENSE.
-  # Skips successfully when CONNECT_LICENSE is unavailable (see check_realconnect_033.py).
+  # Live Posit Connect Docker smoke (REALCONNECT-033). Requires Docker and a Connect credential.
+  # Skips successfully when no credential is available (see check_realconnect_033.py).
   if [[ "$RELEASE_GATE" -eq 1 ]]; then
     HEDRON_REQUIRED_LIVE_GATES=1 run_py scripts/check_realconnect_033.py --live
   else
@@ -805,8 +806,8 @@ cmd_realconnect() {
 }
 
 cmd_realwb() {
-  # Live Posit Workbench Docker smoke (REALWB-030). Requires Docker and PWB_LICENSE.
-  # Skips successfully when PWB_LICENSE is unavailable (see check_realwb_smoke.py).
+  # Live Posit Workbench Docker smoke (REALWB-030). Accept both license spelling aliases.
+  # Skips successfully when no license is available (see check_realwb_smoke.py).
   if [[ "$RELEASE_GATE" -eq 1 ]]; then
     HEDRON_REQUIRED_LIVE_GATES=1 run_py scripts/check_realwb_smoke.py --live
   else
@@ -919,8 +920,8 @@ NOTE
 
   if [[ "$SKIP_REALWB" -eq 0 ]]; then
     section "realwb"
-    if ! secret_available PWB_LICENSE; then
-      record_unsupported "REALWB-030 live backend (PWB_LICENSE unavailable)"
+    if ! secret_available PWB_LICENSE && ! secret_available PWB_LICENCE; then
+      record_unsupported "REALWB-030 live backend (PWB_LICENSE/PWB_LICENCE unavailable)"
     fi
     cmd_realwb
   else
@@ -929,8 +930,10 @@ NOTE
 
   if [[ "$SKIP_REALCONNECT" -eq 0 ]]; then
     section "realconnect"
-    if ! secret_available CONNECT_LICENSE && ! secret_available CONNECT_API_KEY; then
-      record_unsupported "REALCONNECT-033 live backend (CONNECT_LICENSE unavailable)"
+    if ! secret_available CONNECT_LICENSE && ! secret_available CONNECT_LICENCE \
+      && ! secret_available CONNECT_API_KEY; then
+      record_unsupported \
+        "REALCONNECT-033 live backend (CONNECT_LICENSE/CONNECT_LICENCE unavailable)"
     fi
     cmd_realconnect
   else

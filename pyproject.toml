@@ -1,6 +1,6 @@
 [project]
 name = "hedron-workspace"
-version = "1.0.2"
+version = "1.0.3"
 description = "Hedron monorepo workspace"
 requires-python = ">=3.10,<3.15"
 readme = "README.md"
