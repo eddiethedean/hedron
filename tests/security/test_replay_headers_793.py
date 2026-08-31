@@ -84,7 +84,7 @@ def test_replayed_action_does_not_restore_set_cookie() -> None:
 def test_memory_replay_store_rejects_entry_and_total_byte_limits() -> None:
     from hedron.replay import MemoryReplayStore, ReplayState
 
-    store = MemoryReplayStore(max_keys=4, max_entry_bytes=4, max_total_bytes=6)
+    store = MemoryReplayStore(max_keys=4, max_entry_bytes=20, max_total_bytes=39)
     first = store.claim(key="one", fingerprint="one", scope="s", retention_seconds=60)
     assert first.state is ReplayState.FIRST
     assert not store.complete(key="one", scope="s", fingerprint="one", status=200, body=b"12345")
@@ -94,6 +94,34 @@ def test_memory_replay_store_rejects_entry_and_total_byte_limits() -> None:
     second = store.claim(key="two", fingerprint="two", scope="s", retention_seconds=60)
     assert second.state is ReplayState.FIRST
     assert not store.complete(key="two", scope="s", fingerprint="two", status=200, body=b"1234")
+
+
+def test_memory_replay_store_charges_headers_and_key_material() -> None:
+    from hedron.replay import MemoryReplayStore, ReplayState
+
+    store = MemoryReplayStore(max_keys=4, max_entry_bytes=64, max_total_bytes=64)
+    first = store.claim(key="one", fingerprint="one", scope="s", retention_seconds=60)
+    assert first.state is ReplayState.FIRST
+    assert not store.complete(
+        key="one",
+        scope="s",
+        fingerprint="one",
+        status=200,
+        body=b"",
+        headers=(("X-Large", "x" * 64),),
+    )
+    assert not store._entries
+    assert store._total_bytes == 0
+
+    oversized_key = "k" * 65
+    outcome = store.claim(
+        key=oversized_key,
+        fingerprint="fingerprint",
+        scope="s",
+        retention_seconds=60,
+    )
+    assert outcome.state is ReplayState.FIRST
+    assert not store._entries
 
 
 def test_existing_custom_replay_store_signature_remains_compatible() -> None:

@@ -100,15 +100,38 @@ class MemoryReplayStore:
         self._max_keys = max_keys
         self._max_entry_bytes = max_entry_bytes
         self._max_total_bytes = max_total_bytes
-        self._total_body_bytes = 0
+        self._total_bytes = 0
+
+    @staticmethod
+    def _text_bytes(value: str) -> int:
+        return len(value.encode("utf-8"))
+
+    @classmethod
+    def _entry_bytes(cls, slot: tuple[str, str], entry: _Entry) -> int:
+        scope, key = slot
+        size = cls._text_bytes(scope) + cls._text_bytes(key) + cls._text_bytes(entry.fingerprint)
+        if entry.body is not None:
+            size += len(entry.body)
+        if entry.media_type is not None:
+            size += cls._text_bytes(entry.media_type)
+        if entry.headers is not None:
+            size += sum(
+                cls._text_bytes(name) + cls._text_bytes(value)
+                for name, value in entry.headers
+            )
+        return size
+
+    def _remove(self, slot: tuple[str, str]) -> _Entry | None:
+        entry = self._entries.pop(slot, None)
+        if entry is not None:
+            self._total_bytes -= self._entry_bytes(slot, entry)
+        return entry
 
     def _purge(self, now: float) -> None:
         # Expire completed and abandoned in-flight claims past retention.
         expired = [k for k, v in self._entries.items() if v.expires_at <= now]
         for key in expired:
-            entry = self._entries.pop(key, None)
-            if entry is not None and entry.body is not None:
-                self._total_body_bytes -= len(entry.body)
+            self._remove(key)
 
     def claim(
         self,
@@ -126,11 +149,24 @@ class MemoryReplayStore:
             if existing is None:
                 if len(self._entries) >= self._max_keys:
                     raise RuntimeError("Replay store key budget exceeded")
-                self._entries[slot] = _Entry(
+                entry = _Entry(
                     fingerprint=fingerprint,
                     expires_at=now + retention_seconds,
                     in_flight=True,
                 )
+                entry_bytes = self._entry_bytes(slot, entry)
+                if (
+                    entry_bytes > self._max_entry_bytes
+                    or self._total_bytes + entry_bytes > self._max_total_bytes
+                ):
+                    # Execute the request without retaining an unbounded claim.
+                    return ReplayOutcome(
+                        state=ReplayState.FIRST,
+                        key=key,
+                        fingerprint=fingerprint,
+                    )
+                self._entries[slot] = entry
+                self._total_bytes += entry_bytes
                 return ReplayOutcome(state=ReplayState.FIRST, key=key, fingerprint=fingerprint)
             if existing.fingerprint != fingerprint:
                 return ReplayOutcome(state=ReplayState.CONFLICT, key=key, fingerprint=fingerprint)
@@ -162,20 +198,27 @@ class MemoryReplayStore:
             entry = self._entries.get(slot)
             if entry is None or entry.fingerprint != fingerprint:
                 return False
-            if len(body) > self._max_entry_bytes or (
-                self._total_body_bytes + len(body) > self._max_total_bytes
+            current_bytes = self._entry_bytes(slot, entry)
+            completed = _Entry(
+                fingerprint=entry.fingerprint,
+                status=status,
+                body=body,
+                media_type=media_type or "text/html",
+                headers=headers,
+                expires_at=entry.expires_at,
+                in_flight=False,
+            )
+            completed_bytes = self._entry_bytes(slot, completed)
+            if completed_bytes > self._max_entry_bytes or (
+                self._total_bytes - current_bytes + completed_bytes > self._max_total_bytes
             ):
                 # Do not retain an in-flight claim that cannot be replayed;
                 # callers still receive their original response, while a
                 # retry can execute normally instead of seeing IN_FLIGHT.
-                self._entries.pop(slot, None)
+                self._remove(slot)
                 return False
-            entry.in_flight = False
-            entry.status = status
-            entry.body = body
-            self._total_body_bytes += len(body)
-            entry.media_type = media_type or "text/html"
-            entry.headers = headers
+            self._entries[slot] = completed
+            self._total_bytes += completed_bytes - current_bytes
             return True
 
     def abort(self, *, key: str, scope: str, fingerprint: str) -> None:
@@ -185,7 +228,7 @@ class MemoryReplayStore:
             if entry is None or entry.fingerprint != fingerprint:
                 return
             if entry.in_flight and entry.status is None:
-                self._entries.pop(slot, None)
+                self._remove(slot)
 
 
 def fingerprint_request(
