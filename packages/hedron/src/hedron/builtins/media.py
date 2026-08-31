@@ -6,7 +6,7 @@ import zipfile
 from collections.abc import Iterator, Mapping, Sequence
 from io import BytesIO
 from pathlib import Path
-from typing import Literal
+from typing import Literal, cast
 
 from starlette.responses import FileResponse, Response, StreamingResponse
 
@@ -225,6 +225,7 @@ def download_all_zip(
     root: Path,
     authorized: bool = False,
     max_total_bytes: int,
+    max_members: int = 1_000,
     filename: str = "download.zip",
 ) -> Response:
     """Budgeted zip of authorized paths under ``root``; reject when oversize."""
@@ -232,6 +233,9 @@ def download_all_zip(
         raise PermissionError("Download requires authorization")
     if max_total_bytes < 0:
         raise ValueError("max_total_bytes cannot be negative")
+    member_limit = cast(object, max_members)
+    if isinstance(member_limit, bool) or not isinstance(member_limit, int) or member_limit < 1:
+        raise ValueError("max_members must be a positive integer")
 
     files: list[Path] = []
     total = 0
@@ -243,13 +247,21 @@ def download_all_zip(
                 f"download-all archive exceeds max_total_bytes of {max_total_bytes} bytes"
             )
         files.append(file_path)
+        if len(files) > max_members:
+            raise ValueError(f"download-all archive exceeds max_members of {max_members}")
 
     members = _unique_arcnames(files, root=Path(root))
     buffer = BytesIO()
     with zipfile.ZipFile(buffer, mode="w", compression=zipfile.ZIP_DEFLATED) as archive:
         for file_path, arcname in members:
             archive.write(file_path, arcname=arcname)
+            if buffer.tell() > max_total_bytes:
+                raise ValueError(
+                    f"download-all archive exceeds max_total_bytes of {max_total_bytes} bytes"
+                )
     payload = buffer.getvalue()
+    if len(payload) > max_total_bytes:
+        raise ValueError(f"download-all archive exceeds max_total_bytes of {max_total_bytes} bytes")
 
     safe_name = validate_upload_filename(filename)
     return Response(
