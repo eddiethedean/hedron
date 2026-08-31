@@ -24,11 +24,11 @@ Experimental and is **not** registered by default `hedron[extras]`; enable
 ## Install
 
 ```bash
-pip install "hedron[extras]>=1.0.0,<1.1"
+pip install "hedron[extras]>=1.0.1,<1.1"
 # or
 pip install "hedron-extras>=1.0.0,<2.0"
 # experimental UI (requires an explicit opt-in):
-pip install "hedron[experimental-ui]>=1.0.0,<1.1"
+pip install "hedron[experimental-ui]>=1.0.1,<1.1"
 ```
 
 Requires Python 3.10–3.14 and `hedron-core`.

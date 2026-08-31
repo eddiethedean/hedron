@@ -11,8 +11,8 @@ available until the application passes its own integration tests.
 ## 1. Update the bounded dependency
 
 ```bash
-uv add "edron>=1.0.0,<1.1"
-# or: python -m pip install -U "edron>=1.0.0,<1.1"
+uv add "edron>=1.0.1,<1.1"
+# or: python -m pip install -U "edron>=1.0.1,<1.1"
 
 # For repository development, use `uv sync` from the checkout.
 ```

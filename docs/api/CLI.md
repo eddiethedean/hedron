@@ -36,7 +36,7 @@ hedron new my-app --path ./apps/my-app --force
 mkdir my-app && cd my-app
 python3.10 -m venv .venv
 source .venv/bin/activate
-python3.10 -m pip install "hedron>=1.0.0,<1.1"
+python3.10 -m pip install "hedron>=1.0.1,<1.1"
 hedron new my-app --path . --force
 hedron new my-flask-app --flask
 hedron new my-django-app --django

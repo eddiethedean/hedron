@@ -36,14 +36,14 @@ inventory. The coordinated stable inventory is published on the 1.0 train.
 | [hedron-charts](hedron-charts.md) | `hedron[charts]` | First-party charts and visualization adapters; `>=1.0.0,<2.0` on the 1.0 train |
 | [hedron-native](hedron-native.md) | `hedron[native]` | Optional Rust HTML-escape acceleration |
 | [hedron-posit](hedron-posit.md) | `hedron[posit]` | Preferred Posit Workbench / Connect facade (`HedronPosit`) |
-| [hedron-maps](hedron-maps.md) | `hedron[maps]` | First-class custom-server, MapLibre, and offline maps (`hedron-maps` `1.0.0`) |
+| [hedron-maps](hedron-maps.md) | `hedron[maps]` | First-class custom-server, MapLibre, and offline maps (`hedron-maps` `1.0.1`) |
 | [hedron-elements](hedron-elements.md) | `hedron[elements]` | Beta Web Component ABI; production-grade for the locked Supported inventory only |
 
 ```bash
-pip install "hedron[data,dev,posit]>=1.0.0,<1.1"
+pip install "hedron[data,dev,posit]>=1.0.1,<1.1"
 ```
 
-The checkout and public PyPI contain the verified `v1.0.0` release.
+The checkout and public PyPI contain the verified `v1.0.1` release.
 
 ## Alternate facade
 
@@ -70,7 +70,7 @@ deny-by-default, and Gradio allows only declared remote destinations.
 | [hedron-runtime-java](hedron-runtime-java.md) | Maven | Portable Java conformance evaluator |
 
 ```bash
-pip install "hedron[charts]>=1.0.0,<1.1"
+pip install "hedron[charts]>=1.0.1,<1.1"
 ```
 
 Install the compatible tooling packages from PyPI:

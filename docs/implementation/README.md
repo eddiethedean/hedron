@@ -99,7 +99,7 @@ These documents describe how accepted RFC behavior will be implemented. They def
 - [Hedron 1.0 implementation and cut plan](HEDRON_1_0.md) — **Implemented and Verified** against
   the immutable `v0.67.0` baseline; inventory/warning reconciliation, canonical facade and
   per-slice removals, static migration, interaction/engine cutover, dual-version fleet evidence,
-  and all 17 release gates are complete; `v1.0.0` is verified, tagged, and published
+  and all 17 release gates are complete; `v1.0.1` is verified, tagged, and published
 - [Hedron 1.1 first-class UI testing](UI_TESTING_1_1.md) — **Proposed and unscheduled** Stage 0
   refinement for a managed real-browser pytest experience, semantic lookup, bounded Hedron-owned
   settle facts, correlated failures, redacted artifacts, satellite testing ownership/contributions,

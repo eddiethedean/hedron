@@ -16,7 +16,7 @@ public rendering semantics.
 ## Install
 
 ```bash
-pip install "hedron[native]>=1.0.0,<1.1"
+pip install "hedron[native]>=1.0.1,<1.1"
 # or
 pip install "hedron-native>=0.1.3,<0.2"
 ```

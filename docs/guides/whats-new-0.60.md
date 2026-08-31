@@ -13,7 +13,7 @@ search:
     Keep the historical pins below only when maintaining that release line.
 
 Hedron 0.60 is implemented, verified, tagged, and published on PyPI. Applications use
-`hedron>=1.0.0,<1.1`.
+`hedron>=1.0.1,<1.1`.
 
 ## Highlights
 

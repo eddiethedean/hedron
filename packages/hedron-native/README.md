@@ -23,7 +23,7 @@ pip install "hedron-native>=0.1.3,<0.2"
 # or
 uv add "hedron-native>=0.1.3,<0.2"
 # via flagship extra:
-pip install "hedron[native]>=1.0.0,<1.1"
+pip install "hedron[native]>=1.0.1,<1.1"
 ```
 
 Requires Python 3.10–3.14. Prebuilt wheels for the Supported matrix are built by `native-wheels.yml` (confirm Supported tags on PyPI);

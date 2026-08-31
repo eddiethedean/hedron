@@ -5,14 +5,14 @@ HTML `id` stays stable so HTMX can swap it.
 
 **Swap** — Replacing that region's HTML with a fragment the server returned.
 
-**Pin** — An install constraint with an upper bound, for example `hedron>=1.0.0,<1.1`.
+**Pin** — An install constraint with an upper bound, for example `hedron>=1.0.1,<1.1`.
 Use the pin the package index can resolve.
 
 **Train** — A minor version line (`1.0.x`). Compatible patches stay inside the pin;
 the next train is an intentional upgrade.
 
 **Published** — A cut available through the named distribution channel. Edron and Hedron
-`v1.0.0` are published on PyPI. `v0.67.0` is the immutable migration baseline. Pin the latest registry-resolvable upper-bounded
+`v1.0.1` are published on PyPI. `v0.67.0` is the immutable migration baseline. Pin the latest registry-resolvable upper-bounded
 constraint for reproducible installs.
 
 **Action** — A typed server operation with an HTTP method, input contract, dependencies, and response behavior.

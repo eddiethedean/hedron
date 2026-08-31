@@ -52,7 +52,7 @@ Composable interfaces. Typed routes. Ordinary HTTP. One Python application.
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/
-uvx --from "hedron>=1.0.0,<1.1" hedron new my-app
+uvx --from "hedron>=1.0.1,<1.1" hedron new my-app
 cd my-app && uv sync && uv run hedron run app:app --reload
 # Open http://127.0.0.1:8000
 ```
@@ -142,7 +142,7 @@ symbol, or browse the [runnable examples](examples/runnable.md).
 <details markdown>
 <summary>Release, typing, and maturity</summary>
 
-Hedron **1.0.0** is published on PyPI. Pin applications to `hedron>=1.0.0,<1.1` and
+Hedron **1.0.1** is published on PyPI. Pin applications to `hedron>=1.0.1,<1.1` and
 review capability-specific maturity before production adoption. The `hedron-core` renderer
 and `hedron` FastAPI runtime are Pyright-strict; type errors block release.
 

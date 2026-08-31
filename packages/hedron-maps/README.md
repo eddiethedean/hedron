@@ -2,7 +2,7 @@
 
 First-class maps, offline geospatial presentation, and `MapInteraction` for Hedron.
 
-**Package maturity:** Stable · **Package version:** `1.0.0` · requires
+**Package maturity:** Stable · **Package version:** `1.0.1` · requires
 `hedron-core>=1.0.0,<2.0`
 
 Install with the `1.0.x` flagship extra `hedron[maps]` or independently:

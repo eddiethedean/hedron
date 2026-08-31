@@ -1,6 +1,6 @@
 # Public stability classifications
 
-**For adopters:** Hedron 1.0.0 is published on PyPI. Pin `hedron>=1.0.0,<1.1`. Treat the **stable**
+**For adopters:** Hedron 1.0.1 is published on PyPI. Pin `hedron>=1.0.1,<1.1`. Treat the **stable**
 tables below as the SemVer compatibility promise; everything
 else is `beta` / `experimental` and may change on the documented schedule. Capability readiness
 (Supported vs Experimental) lives on [What’s ready](../guides/whats-ready.md). Only
@@ -10,7 +10,7 @@ independent Beta satellites.
 <details markdown>
 <summary>Maintainer catalog metadata</summary>
 
-**Status:** Verified and published **1.0.x** release (`v1.0.0`). `v0.67.0` remains the
+**Status:** Verified and published **1.0.x** release (`v1.0.1`). `v0.67.0` remains the
 immutable migration baseline.
 Prior: 0.50 Explorer architecture; 0.49 FastAPI/Pydantic; 0.48 HTMX; 0.25 archetype; 0.24
 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
@@ -195,7 +195,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 - `LineChart` / `AreaChart` / `BarChart` / `ScatterChart`: **stable**.
 - Optional vendor adapters + offline runtime pins: **experimental**.
 
-Schema acceptance is broader than specialized host painting in `hedron-charts 1.0.0`; see the
+Schema acceptance is broader than specialized host painting in `hedron-charts 1.0.1`; see the
 [Chart API coverage matrix](CHART.md#compiler-contract-versus-current-host-coverage).
 
 ### `hedron-maps` (Stable package) — `stable` API

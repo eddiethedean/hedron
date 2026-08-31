@@ -64,7 +64,7 @@ assets.
         name="my_plugin",
         version="0.1.0",  # keep aligned with your distribution version
         distribution="my-hedron-plugin",
-        hedron_version=">=1.0.0,<1.1",
+        hedron_version=">=1.0.1,<1.1",
         capabilities=PluginCapabilities(python=True, styles=True, assets=True),
     )
 

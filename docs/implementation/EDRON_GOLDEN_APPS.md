@@ -637,7 +637,7 @@ pip install edron "plotly>=5.18,<7"
 ```
 
 ```bash
-pip install "edron[plotly]>=1.0.0,<1.1"
+pip install "edron[plotly]>=1.0.1,<1.1"
 ```
 
 The equivalent `uv add` forms must also be documented by the runtime diagnostic.
@@ -656,7 +656,7 @@ Install the dependency directly:
     pip install "plotly>=5.18,<7"
 
 Or use the Edron installation shortcut:
-    pip install "edron[plotly]>=1.0.0,<1.1"
+    pip install "edron[plotly]>=1.0.1,<1.1"
 ```
 
 An incompatible installed version reports its discovered version and compatible range. An

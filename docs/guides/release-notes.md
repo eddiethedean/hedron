@@ -3,6 +3,18 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 1.0.1 — 2026-08-30
+
+Coordinated maintenance release for the stable 1.0 train. The tagged release passed the full
+release CI matrix and published the coordinated Python packages, including Edron.
+
+### Changed
+
+- Coordinated release publication now builds and publishes `edron` and `edron-sim` alongside the
+  rest of the workspace, while `hedron-native` remains owned by its native-wheel workflow.
+- Refreshed the coordinated package metadata, changelogs, release evidence, and reproducible
+  publication manifest for 1.0.1.
+
 ## 1.0.0 — 2026-08-27
 
 First SemVer-stable Hedron train, verified by all 17 release gates and published to PyPI.
@@ -35,7 +47,7 @@ unified local/request/combined interaction contracts, lifecycle handoff, explici
 behavior, and the verified 0.67 acceptance packet.
 
 Historical evaluation pin: `hedron>=0.67.0,<0.68`. New source should target the canonical 1.0
-roles and use `hedron>=1.0.0,<1.1`.
+roles and use `hedron>=1.0.1,<1.1`.
 
 ## 0.64.0 — 2026-08-24 (in-tree)
 
@@ -122,7 +134,7 @@ and the package packet check is `python scripts/verify_pkg_60.py`.
 ## 0.60.0 — 2026-08-22
 
 Verified and published release for the 0.60 train. The latest public install is
-`hedron>=1.0.0,<1.1`.
+`hedron>=1.0.1,<1.1`.
 
 ### Custom theme platform
 
@@ -145,7 +157,7 @@ Verified and published release for the 0.60 train. The latest public install is
 Published cut for progressive feature and styling authoring (RFC-0085 /
 D-101 / D-102 / D-105). The 0.58 train is available on PyPI; reproduce this
 historical train with `hedron>=0.58.0,<0.60`. For current applications, use
-`hedron>=1.0.0,<1.1`. [What’s new in 0.58](whats-new-0.58.md).
+`hedron>=1.0.1,<1.1`. [What’s new in 0.58](whats-new-0.58.md).
 [Installation](../getting-started/installation.md).
 
 ### Added
@@ -160,7 +172,7 @@ historical train with `hedron>=0.58.0,<0.60`. For current applications, use
 In-tree Published cut for unified presentation / zero-application-CSS (RFC-0084 /
 D-099 / D-100). The 0.57 PyPI upload remained **deferred**; the subsequent 0.58
 train carried the public release. For current applications, use
-`hedron>=1.0.0,<1.1`. [What’s new in 0.57](whats-new-0.57.md).
+`hedron>=1.0.1,<1.1`. [What’s new in 0.57](whats-new-0.57.md).
 [Installation](../getting-started/installation.md).
 
 ### Added
@@ -185,7 +197,7 @@ train carried the public release. For current applications, use
 ## 0.56.1 — 2026-08-21
 
 Historical in-tree quality patch on the prior tip. Install from PyPI with
-`hedron>=1.0.0,<1.1`. [What’s new in 0.56](whats-new-0.56.md).
+`hedron>=1.0.1,<1.1`. [What’s new in 0.56](whats-new-0.56.md).
 [Installation](../getting-started/installation.md).
 
 - Workspace Python quality upgrade: typing debt burn-down, safer best-effort exception
@@ -196,13 +208,13 @@ Historical in-tree quality patch on the prior tip. Install from PyPI with
 ## 0.56.0 — 2026-08-20
 
 Security control plane tip (RFC-0083 / D-097 / D-098). **On PyPI** as `0.56.0`. Pin
-`hedron>=1.0.0,<1.1`.
+`hedron>=1.0.1,<1.1`.
 [What’s new in 0.56](whats-new-0.56.md).
 
 ## 0.55.0 — 2026-08-20
 
 In-tree Published cut for secure upgradeable application workflows
-(RFC-0082 / D-095 / D-096). Pin `hedron>=1.0.0,<1.1` from PyPI until the 0.55
+(RFC-0082 / D-095 / D-096). Pin `hedron>=1.0.1,<1.1` from PyPI until the 0.55
 wheel lands. [What’s new in 0.55](whats-new-0.55.md).
 [Installation](../getting-started/installation.md).
 
@@ -212,7 +224,7 @@ wheel lands. [What’s new in 0.55](whats-new-0.55.md).
 ## 0.53.0 — 2026-08-20
 
 In-tree Published cut for application DX contracts
-(RFC-0080 / D-091 / D-092). Pin `hedron>=1.0.0,<1.1` from PyPI until the 0.53
+(RFC-0080 / D-091 / D-092). Pin `hedron>=1.0.1,<1.1` from PyPI until the 0.53
 wheel lands. [What’s new in 0.53](whats-new-0.53.md).
 [Installation](../getting-started/installation.md).
 
@@ -224,7 +236,7 @@ wheel lands. [What’s new in 0.53](whats-new-0.53.md).
 
 Published cut for conformance authority and Posit lifecycle
 (RFC-0079 / D-089 / D-090). **Git tag / PyPI LANDED** — `v0.52.0` is on PyPI.
-Pin `hedron>=1.0.0,<1.1` from the public index (0.53 remains deferred).
+Pin `hedron>=1.0.1,<1.1` from the public index (0.53 remains deferred).
 [What’s new in 0.52](whats-new-0.52.md).
 [Installation](../getting-started/installation.md).
 
@@ -238,7 +250,7 @@ Pin `hedron>=1.0.0,<1.1` from the public index (0.53 remains deferred).
 
 ## 0.51.2 — 2026-08-20
 
-Quality and typing patch on the 0.51 train. Pin `hedron>=1.0.0,<1.1` from PyPI until the
+Quality and typing patch on the 0.51 train. Pin `hedron>=1.0.1,<1.1` from PyPI until the
 0.51.2 wheel lands. [What’s new in 0.51](whats-new-0.51.md).
 [Installation](../getting-started/installation.md).
 
@@ -250,7 +262,7 @@ Quality and typing patch on the 0.51 train. Pin `hedron>=1.0.0,<1.1` from PyPI u
 
 ## 0.51.1 — 2026-08-20
 
-Bugfix patch on the 0.51 train. Pin `hedron>=1.0.0,<1.1` from PyPI until a later
+Bugfix patch on the 0.51 train. Pin `hedron>=1.0.1,<1.1` from PyPI until a later
 0.51.x wheel lands. [Installation](../getting-started/installation.md).
 
 - Adaptive concurrency cancels in-flight siblings when any task returns `HED-CONC-0001` (#103).
@@ -268,7 +280,7 @@ Bugfix patch on the 0.51 train. Pin `hedron>=1.0.0,<1.1` from PyPI until a later
 
 ## 0.51.0 — 2026-08-19
 
-Published curated extras cut. Install from PyPI with `hedron>=1.0.0,<1.1`.
+Published curated extras cut. Install from PyPI with `hedron>=1.0.1,<1.1`.
 [What’s new in 0.51](whats-new-0.51.md). [Installation](../getting-started/installation.md).
 
 - `ExtrasFeature`, shared extras HTMX lifecycle, workbench/image/input depth.
@@ -340,7 +352,7 @@ Pin this docs tree with `hedron>=0.50.0,<0.51`. Charts remain on
 ## 0.49.1 — 2026-08-18
 
 High-severity correctness and security patch for the 0.49 train. Prefer the 0.50.x pin
-from PyPI `hedron>=1.0.0,<1.1` — [Installation](../getting-started/installation.md).
+from PyPI `hedron>=1.0.1,<1.1` — [Installation](../getting-started/installation.md).
 
 - Django `@hedron_view` validates CSRF before the handler (#392).
 - Directory-upload paths reject raw CR/LF/TAB (#393).
@@ -357,13 +369,13 @@ Historical 0.49.1 in-tree pin was `hedron>=0.49.1,<0.50` (superseded; see 0.50.2
 Charts remain on `hedron-charts>=0.2.3,<0.3`.
 
 ```bash
-python -m pip install -U "hedron>=1.0.0,<1.1"
+python -m pip install -U "hedron>=1.0.1,<1.1"
 ```
 
 ## 0.49.0 — 2026-08-17
 
 In-tree FastAPI/Pydantic binding work. Prefer the 0.50.x pin
-from PyPI `hedron>=1.0.0,<1.1` — [Installation](../getting-started/installation.md).
+from PyPI `hedron>=1.0.1,<1.1` — [Installation](../getting-started/installation.md).
 
 - FastAPI `Depends` compiles from Hedron `DependsOn` for handler and response scopes.
 - Query, header, cookie, and non-file form models can bind as native Pydantic parameter models.
@@ -386,10 +398,10 @@ maturity is unchanged (`polling_only`). `MORPH-048` stays Deferred. FailFast / P
 </details>
 
 ```bash
-python -m pip install -U "hedron>=1.0.0,<1.1"
-python -m pip install "hedron[maps]>=1.0.0,<1.1"
-python -m pip install "hedron[data]>=1.0.0,<1.1"
-python -m pip install "hedron[charts]>=1.0.0,<1.1"
+python -m pip install -U "hedron>=1.0.1,<1.1"
+python -m pip install "hedron[maps]>=1.0.1,<1.1"
+python -m pip install "hedron[data]>=1.0.1,<1.1"
+python -m pip install "hedron[charts]>=1.0.1,<1.1"
 ```
 
 ## 0.48.0 — 2026-08-17
@@ -419,10 +431,10 @@ Coordinated Beta cut for first-class maps (D-078 / D-082 / RFC-0074).
 - High-severity map origin, DataWorkspace paging/authz, MCP authorize, and MapInteraction POST fixes land in this 0.47 registry cut (#351–#357). `hedron-mcp` publishes **0.2.1** because **0.2.0** is already on PyPI.
 
 ```bash
-python -m pip install -U "hedron>=1.0.0,<1.1"
-python -m pip install "hedron[maps]>=1.0.0,<1.1"
-python -m pip install "hedron[data]>=1.0.0,<1.1"
-python -m pip install "hedron[charts]>=1.0.0,<1.1"
+python -m pip install -U "hedron>=1.0.1,<1.1"
+python -m pip install "hedron[maps]>=1.0.1,<1.1"
+python -m pip install "hedron[data]>=1.0.1,<1.1"
+python -m pip install "hedron[charts]>=1.0.1,<1.1"
 ```
 
 ## 0.46.0 — 2026-08-16
@@ -440,10 +452,10 @@ Coordinated Beta train cut for package-native workflows (D-075 / D-079 / RFC-007
   Charts remain on `hedron-charts>=0.2.3,<0.3`.
 
 ```bash
-python -m pip install -U "hedron>=1.0.0,<1.1"
-python -m pip install "hedron[data]>=1.0.0,<1.1"
-python -m pip install "hedron[charts]>=1.0.0,<1.1"
-python -m pip install "hedron[elements]>=1.0.0,<1.1"
+python -m pip install -U "hedron>=1.0.1,<1.1"
+python -m pip install "hedron[data]>=1.0.1,<1.1"
+python -m pip install "hedron[charts]>=1.0.1,<1.1"
+python -m pip install "hedron[elements]>=1.0.1,<1.1"
 ```
 
 ## 0.45.0 — 2026-08-16
@@ -461,10 +473,10 @@ Coordinated Beta train cut for the interaction ecosystem (D-074 / D-077 / RFC-00
 - In-tree cut only; Git tag / GitHub Release / PyPI remain deferred ([#328](https://github.com/eddiethedean/hedron/issues/328)).
 
 ```bash
-python -m pip install -U "hedron>=1.0.0,<1.1"
-python -m pip install "hedron[data]>=1.0.0,<1.1"
-python -m pip install "hedron[charts]>=1.0.0,<1.1"
-python -m pip install "hedron[elements]>=1.0.0,<1.1"
+python -m pip install -U "hedron>=1.0.1,<1.1"
+python -m pip install "hedron[data]>=1.0.1,<1.1"
+python -m pip install "hedron[charts]>=1.0.1,<1.1"
+python -m pip install "hedron[elements]>=1.0.1,<1.1"
 ```
 
 ## 0.44.0 — 2026-08-16
@@ -483,10 +495,10 @@ effects, explicit outcomes, and optional class handlers (D-072 / D-076 / RFC-007
   rejection land in this cut (#319, #320, #321).
 
 ```bash
-python -m pip install -U "hedron>=1.0.0,<1.1"
-python -m pip install "hedron[data]>=1.0.0,<1.1"
-python -m pip install "hedron[charts]>=1.0.0,<1.1"
-python -m pip install "hedron[elements]>=1.0.0,<1.1"
+python -m pip install -U "hedron>=1.0.1,<1.1"
+python -m pip install "hedron[data]>=1.0.1,<1.1"
+python -m pip install "hedron[charts]>=1.0.1,<1.1"
+python -m pip install "hedron[elements]>=1.0.1,<1.1"
 ```
 
 ## 0.43.0 — 2026-08-16
@@ -497,13 +509,13 @@ Coordinated Beta train cut for refreshable views, command handles, and updates
 - `@app.view` / `@app.action` return handles that own routes, hosts, and controls.
 - `refresh()` and `Patch` / `PatchSet` compile into the existing `InteractionResult` / OOB stack.
 - Low-level `region` / `swap` APIs remain supported. New symbols begin Beta.
-- Pin `hedron>=1.0.0,<1.1`. Charts remain on `hedron-charts>=0.2.3,<0.3`.
+- Pin `hedron>=1.0.1,<1.1`. Charts remain on `hedron-charts>=0.2.3,<0.3`.
 
 ```bash
-python -m pip install -U "hedron>=1.0.0,<1.1"
-python -m pip install "hedron[data]>=1.0.0,<1.1"
-python -m pip install "hedron[charts]>=1.0.0,<1.1"
-python -m pip install "hedron[elements]>=1.0.0,<1.1"
+python -m pip install -U "hedron>=1.0.1,<1.1"
+python -m pip install "hedron[data]>=1.0.1,<1.1"
+python -m pip install "hedron[charts]>=1.0.1,<1.1"
+python -m pip install "hedron[elements]>=1.0.1,<1.1"
 ```
 
 ## 0.42.0 — 2026-08-14
@@ -519,10 +531,10 @@ Coordinated Beta train cut for browser composition, state, and navigation
   Charts remain on `hedron-charts>=0.2.3,<0.3`.
 
 ```bash
-python -m pip install -U "hedron>=1.0.0,<1.1"
-python -m pip install "hedron[data]>=1.0.0,<1.1"
-python -m pip install "hedron[charts]>=1.0.0,<1.1"
-python -m pip install "hedron[elements]>=1.0.0,<1.1"
+python -m pip install -U "hedron>=1.0.1,<1.1"
+python -m pip install "hedron[data]>=1.0.1,<1.1"
+python -m pip install "hedron[charts]>=1.0.1,<1.1"
+python -m pip install "hedron[elements]>=1.0.1,<1.1"
 ```
 
 ## 0.40.0 — 2026-08-14
@@ -539,10 +551,10 @@ Coordinated Beta train cut for Web Component authoring and interoperability
   **0.50.0** above. Charts remain on `hedron-charts>=0.2.3,<0.3`.
 
 ```bash
-python -m pip install -U "hedron>=1.0.0,<1.1"
-python -m pip install "hedron[data]>=1.0.0,<1.1"
-python -m pip install "hedron[charts]>=1.0.0,<1.1"
-python -m pip install "hedron[elements]>=1.0.0,<1.1"
+python -m pip install -U "hedron>=1.0.1,<1.1"
+python -m pip install "hedron[data]>=1.0.1,<1.1"
+python -m pip install "hedron[charts]>=1.0.1,<1.1"
+python -m pip install "hedron[elements]>=1.0.1,<1.1"
 ```
 
 ## 0.39.0 — 2026-08-14
@@ -562,9 +574,9 @@ Coordinated Beta train cut for rich data surfaces and OptimisticMutation
   **0.50.0** above. Charts remain on `hedron-charts>=0.2.3,<0.3`.
 
 ```bash
-python -m pip install -U "hedron>=1.0.0,<1.1"
-python -m pip install "hedron[data]>=1.0.0,<1.1"
-python -m pip install "hedron[charts]>=1.0.0,<1.1"
+python -m pip install -U "hedron>=1.0.1,<1.1"
+python -m pip install "hedron[data]>=1.0.1,<1.1"
+python -m pip install "hedron[charts]>=1.0.1,<1.1"
 ```
 
 ## 0.38.0 — 2026-08-14
@@ -581,8 +593,8 @@ Coordinated Beta train cut for first-party high-fidelity charts
   **0.50.0** above.
 
 ```bash
-python -m pip install -U "hedron>=1.0.0,<1.1"
-python -m pip install "hedron[charts]>=1.0.0,<1.1"
+python -m pip install -U "hedron>=1.0.1,<1.1"
+python -m pip install "hedron[charts]>=1.0.1,<1.1"
 ```
 
 ## 0.37.0 — 2026-08-14
@@ -600,8 +612,8 @@ Coordinated Beta train cut for form-associated elements and interactive primitiv
   **0.50.0** above.
 
 ```bash
-python -m pip install -U "hedron>=1.0.0,<1.1"
-python -m pip install "hedron[elements]>=1.0.0,<1.1"
+python -m pip install -U "hedron>=1.0.1,<1.1"
+python -m pip install "hedron[elements]>=1.0.1,<1.1"
 ```
 
 ## 0.36.0 — 2026-08-13
@@ -618,8 +630,8 @@ Coordinated Beta train cut for Web Component ABI / lifecycle foundation
   **0.50.0** above.
 
 ```bash
-python -m pip install -U "hedron>=1.0.0,<1.1"
-python -m pip install "hedron[elements]>=1.0.0,<1.1"
+python -m pip install -U "hedron>=1.0.1,<1.1"
+python -m pip install "hedron[elements]>=1.0.1,<1.1"
 ```
 
 ## 0.35.0 — 2026-08-13
@@ -685,7 +697,7 @@ Streamlit AST migrator (D-059 / RFC-0064 / RFC-0061).
   **0.50.0** above.
 
 ```bash
-python -m pip install -U "hedron>=1.0.0,<1.1"
+python -m pip install -U "hedron>=1.0.1,<1.1"
 hedron migrate streamlit streamlit_app.py --analyze-only --format text
 ```
 

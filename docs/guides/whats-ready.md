@@ -7,7 +7,7 @@ screen-reader claims. `hedron-core`, `hedron`, `edron`, `hedron-data`, `hedron-c
 `hedron-maps` are **Stable** packages in the 1.0 inventory; host, tooling, and vendor-adapter
 satellites remain Beta. There is no SLA.
 
-This page is the **adopter** maturity summary for the published **1.0.0** release
+This page is the **adopter** maturity summary for the published **1.0.1** release
 ([Current release and support](current-release.md)). Full capability matrices and
 maintainer gate notes:
 [What’s ready — evidence](whats-ready-evidence.md).
@@ -28,7 +28,7 @@ maintainer gate notes:
 | **Experimental** | Public; may change; prefer documented fallbacks (usually polling) |
 | **Deferred** | Documented, not ready — do not treat as Supported |
 
-Hedron, Edron, data, charts, and maps **1.0.0** are the coordinated Stable train. Older 0.x
+Hedron, Edron, data, charts, and maps **1.0.1** are the coordinated Stable train. Older 0.x
 packages remain migration fallbacks only.
 Package maturity, capability
 readiness, and API compatibility are separate axes —
@@ -80,7 +80,7 @@ Use [What’s ready — evidence](whats-ready-evidence.md).
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=1.0.0,<1.1" hedron new my-app
+    uvx --from "hedron>=1.0.1,<1.1" hedron new my-app
     cd my-app && uv sync
     uv run uvicorn app:app --reload
     ```
@@ -88,13 +88,13 @@ Use [What’s ready — evidence](whats-ready-evidence.md).
 === "pip"
 
     ```bash
-    pip install "hedron>=1.0.0,<1.1" "uvicorn[standard]"
+    pip install "hedron>=1.0.1,<1.1" "uvicorn[standard]"
     python -m hedron new my-app
     cd my-app && pip install -e .
     uvicorn app:app --reload
     ```
 
-Pin the current stable train: `hedron>=1.0.0,<1.1`. Extras and compatibility notes:
+Pin the current stable train: `hedron>=1.0.1,<1.1`. Extras and compatibility notes:
 [Installation](../getting-started/installation.md). Sample kit:
 `hedron-sample-kit>=0.2.3,<0.3`.
 
