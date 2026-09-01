@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import http.client
+import ssl
 from typing import ClassVar
 
 import pytest
@@ -327,6 +328,9 @@ def test_pinned_https_connection_uses_validated_address_and_sni(
     sock = _Socket()
 
     class Context:
+        verify_mode = ssl.CERT_REQUIRED
+        check_hostname = True
+
         def wrap_socket(self, raw: object, *, server_hostname: str) -> object:
             wrapped.append((raw, server_hostname))
             return raw

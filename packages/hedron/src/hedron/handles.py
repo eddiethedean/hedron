@@ -96,8 +96,14 @@ def _is_injected(parameter: inspect.Parameter) -> bool:
     annotation: object = parameter.annotation
     if annotation is Request:
         return True
-    if isinstance(annotation, type) and issubclass(cast(type[object], annotation), Request):
-        return True
+    if isinstance(annotation, type):
+        try:
+            if issubclass(cast(type[object], annotation), Request):
+                return True
+        except TypeError:
+            # Parameterized aliases (for example ``list[UploadFile]``) report
+            # as types on Python 3.10 but cannot participate in issubclass.
+            pass
     default = parameter.default
     if isinstance(default, DependsParam):
         return True

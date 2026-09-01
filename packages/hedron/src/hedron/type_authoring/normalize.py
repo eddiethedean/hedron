@@ -508,8 +508,23 @@ def _split_annotated(annotation: object) -> tuple[object, tuple[object, ...]]:
     return annotation, ()
 
 
+def _safe_issubclass(annotation: object, parent: type[Any]) -> bool:
+    """Check subclass relationships without crashing on generic aliases.
+
+    Python 3.10 reports parameterized aliases such as ``list[UploadFile]`` as
+    classes, but ``issubclass`` still rejects them. Handler annotations can
+    legitimately contain those aliases, so treat them as non-subclasses.
+    """
+    if not isinstance(annotation, type):
+        return False
+    try:
+        return issubclass(annotation, parent)
+    except TypeError:
+        return False
+
+
 def _is_model(annotation: object) -> TypeGuard[type[BaseModel]]:
-    return isinstance(annotation, type) and issubclass(annotation, BaseModel)
+    return _safe_issubclass(annotation, BaseModel)
 
 
 def _injected_names(signature: inspect.Signature, hints: Mapping[str, object]) -> frozenset[str]:
@@ -522,9 +537,7 @@ def _injected_names(signature: inspect.Signature, hints: Mapping[str, object]) -
             names.add(name)
             continue
         annotation = hints.get(name, parameter.annotation)
-        if annotation is Request or (
-            isinstance(annotation, type) and issubclass(annotation, Request)
-        ):
+        if annotation is Request or _safe_issubclass(annotation, Request):
             names.add(name)
             continue
         if isinstance(parameter.default, DependsParam):
