@@ -16,7 +16,7 @@ handle whose controls keep the request URL, target, and CSRF wiring synchronized
 ## Canonical: view and action
 
 ```python
-from hedron import Hedron, Stack, Text, html
+from hedron import Hedron, Stack, Text, ToastHost, html
 
 app = Hedron(title="Demo", security="standard", session_secret="dev", explorer="off")
 
@@ -39,6 +39,7 @@ def home():
         status(),
         status.refresh_button("Refresh"),
         ping.button("Ping"),
+        ToastHost(),
     )
 ```
 

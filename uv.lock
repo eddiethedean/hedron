@@ -1065,7 +1065,7 @@ wheels = [
 
 [[package]]
 name = "fastapi-workbench"
-version = "1.0.4"
+version = "1.0.5"
 source = { editable = "packages/fastapi-workbench" }
 dependencies = [
     { name = "starlette" },

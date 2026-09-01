@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from fastapi import Request, WebSocket
 from starlette.responses import JSONResponse
 
-from hedron import Page, Stack, Text, html, redirect_local, refresh
+from hedron import Page, Stack, Text, ToastHost, html, redirect_local, refresh
 from hedron_posit import HedronPosit
 
 app = HedronPosit(
@@ -44,6 +44,7 @@ def home(request: Request) -> Page:
             status(),
             status.refresh_button("Refresh status"),
             ping.button("Ping"),
+            ToastHost(),
         ),
         title="Home",
     )

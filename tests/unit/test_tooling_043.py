@@ -95,6 +95,7 @@ def old():
     source = (dest / "app.py").read_text(encoding="utf-8")
     assert '@app.view("/status")' in source
     assert "refresh_button" in source
+    assert "ToastHost" in source
     assert "swap(" not in source
     assert "app.region" not in source
     assert "@app.fragment" not in source

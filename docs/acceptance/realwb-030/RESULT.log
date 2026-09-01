@@ -1,17 +1,17 @@
-REALWB-030 start 2026-09-01T01:55:37Z
+REALWB-030 start 2026-09-01T15:18:31Z
 image=posit/workbench@sha256:***
 docker_platform=linux/amd64
-compose_project=hedron-realwb-40976
+compose_project=hedron-realwb-37111
 python=Python 3.12.13
 image_digest=sha256:***
 host_arch=arm64
 compose=up workbench pull=never
- Network hedron-realwb-40976_default Creating
- Network hedron-realwb-40976_default Created
- Container hedron-realwb-40976-workbench-1 Creating
- Container hedron-realwb-40976-workbench-1 Created
- Container hedron-realwb-40976-workbench-1 Starting
- Container hedron-realwb-40976-workbench-1 Started
+ Network hedron-realwb-37111_default Creating
+ Network hedron-realwb-37111_default Created
+ Container hedron-realwb-37111-workbench-1 Creating
+ Container hedron-realwb-37111-workbench-1 Created
+ Container hedron-realwb-37111-workbench-1 Starting
+ Container hedron-realwb-37111-workbench-1 Started
 auth-sign-in=ok health=healthy
 rserver-url=/usr/lib/rstudio-server/bin/rserver-url
 rstudio-server=2026.07.0+139.pro9 Workbench (Pacific Dogwood) for Ubuntu Jammy
@@ -53,6 +53,6 @@ FASTAPI_WEBSOCKET=ok
 FASTAPI_OUTSIDE_WORKBENCH=ok active=false workbenchified=false generic_aliases_ignored=ok
 FASTAPI_PACKAGE=pass
 RESULT=pass
-REALWB-030 end 2026-09-01T01:55:56Z
+REALWB-030 end 2026-09-01T15:18:56Z
 LICENSE_DEACTIVATE=begin timeout=120s
 LICENSE_DEACTIVATE=end

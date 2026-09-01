@@ -20,6 +20,7 @@ from hedron import (
     Stack,
     SubmitButton,
     Text,
+    ToastHost,
     html,
     redirect_local,
     refresh,
@@ -247,6 +248,7 @@ def test_workbench_handle_controls_refresh_and_post_without_full_page_navigation
                 guide_status(),
                 guide_status.refresh_button("Refresh status"),
                 guide_ping.button("Ping"),
+                ToastHost(),
             ),
             title="Guide",
         )
@@ -259,6 +261,7 @@ def test_workbench_handle_controls_refresh_and_post_without_full_page_navigation
     assert f'hx-get="{mount}/status"' in page.text
     assert f'hx-post="{mount}/ping"' in page.text
     assert "hx-headers" in page.text
+    assert 'id="hedron-toast"' in page.text
 
     fragment = client.get(
         f"{mount}/status",
@@ -273,6 +276,9 @@ def test_workbench_handle_controls_refresh_and_post_without_full_page_navigation
     )
     assert action.status_code == 200
     assert "HX-Trigger" in action.headers
+    assert action.headers.get("HX-Reswap") == "none"
+    assert "hedron-toast" in action.text
+    assert "pong" in action.text
 
     fallback = client.post(f"{mount}/ping", data={"csrf_token": token})
     assert fallback.status_code == 303

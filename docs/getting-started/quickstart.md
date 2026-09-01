@@ -84,7 +84,7 @@ The generated `app.py` looks like this (you can paste it if scaffold is unavaila
 import os
 from datetime import datetime, timezone
 
-from hedron import Hedron, Stack, Text, html
+from hedron import Hedron, Stack, Text, ToastHost, html
 
 app = Hedron(
     title="Hedron App",
@@ -118,6 +118,7 @@ def home():
         status(),
         status.refresh_button("Refresh status"),
         ping.button("Ping"),
+        ToastHost(),
     )
 ```
 

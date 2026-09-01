@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 from datetime import datetime, timezone
 
-from hedron import Hedron, Page, Stack, Text, html, refresh
+from hedron import Hedron, Page, Stack, Text, ToastHost, html, refresh
 
 app = Hedron(
     title="Workbench reference",
@@ -38,6 +38,7 @@ def home() -> Page:
             status(),
             status.refresh_button("Refresh status"),
             ping.button("Ping"),
+            ToastHost(),
         ),
         title="Home",
     )

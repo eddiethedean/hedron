@@ -762,6 +762,7 @@ def _compile_refresh(intent: RefreshIntent, expected_app_id: str | None) -> Inte
     return InteractionResult(
         content=None,
         status_code=200,
+        swap="none",
         trigger=trigger,
         oob=_toast_oob(intent.toast_content),
         policy=InteractionPolicy(

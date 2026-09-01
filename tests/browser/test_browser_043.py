@@ -31,7 +31,7 @@ def _free_port() -> int:
 @pytest.fixture(scope="module")
 def browser_app_url() -> Iterator[str]:
     uvicorn = pytest.importorskip("uvicorn")
-    from hedron import Hedron, Page, Text, html, refresh
+    from hedron import Hedron, Page, Text, ToastHost, html, refresh
 
     reset_browser_plugin_state()
     app = Hedron(
@@ -55,6 +55,7 @@ def browser_app_url() -> Iterator[str]:
             status(),
             status.refresh_button("Refresh"),
             ping.button("Ping"),
+            ToastHost(),
             title="Handles",
         )
 
@@ -84,6 +85,8 @@ def _run_engine(browser_type: str, url: str) -> None:
         page.get_by_role("button", name="Ping").click()
         page.wait_for_timeout(300)
         assert page.locator("#h-view-status").count() == 1
+        assert page.get_by_role("button", name="Ping").count() == 1
+        assert page.locator("#hedron-toast").get_by_text("pong").count() == 1
         browser.close()
 
 

@@ -181,13 +181,13 @@ page, status region, and fragment intact.
 Change the generated import line:
 
 ```python
-from hedron import Hedron, Stack, Text, html
+from hedron import Hedron, Stack, Text, ToastHost, html
 ```
 
 to:
 
 ```python
-from hedron import Stack, Text, html
+from hedron import Stack, Text, ToastHost, html
 from hedron_posit import HedronPosit
 ```
 

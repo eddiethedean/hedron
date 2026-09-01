@@ -226,6 +226,25 @@ def test_load_app_object() -> None:
     assert app is _workbench_sample.app
 
 
+def test_load_app_resolves_module_from_current_working_directory(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module_name = "_local_workbench_app"
+    (tmp_path / f"{module_name}.py").write_text("app = 'local-app'\n", encoding="utf-8")
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(
+        sys,
+        "path",
+        [entry for entry in sys.path if entry not in {"", str(tmp_path)}],
+    )
+    sys.modules.pop(module_name, None)
+    try:
+        assert load_app(f"{module_name}:app") == "local-app"
+    finally:
+        sys.modules.pop(module_name, None)
+
+
 def test_missing_module() -> None:
     with pytest.raises(HedronError) as exc:
         load_app("no.such.module:app")

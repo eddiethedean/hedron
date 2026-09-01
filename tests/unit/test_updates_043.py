@@ -70,6 +70,7 @@ def test_refresh_intent_coalesces_and_compiles_trigger() -> None:
     result = compile_to_interaction(intent, expected_app_id="app-a")
     assert isinstance(result, InteractionResult)
     assert result.refresh is False
+    assert result.swap == "none"
     event = refresh_event_name(target.dom_id)
     assert isinstance(result.trigger, dict)
     assert event in result.trigger

@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.5] — 2026-09-01
+
+### Fixed
+- Resolve `module:attribute` application targets from the current project directory when
+  launched through the console script, matching Uvicorn's documented import behavior.
+
 ## [1.0.4] — 2026-08-31
 
 ### Security

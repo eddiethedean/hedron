@@ -11,6 +11,7 @@ import sys
 import threading
 import webbrowser
 from collections.abc import Mapping, MutableMapping
+from pathlib import Path
 from typing import IO, Any
 
 from fastapi_workbench.codes import FWB_0002, FWB_0003, FWB_0004, FWB_0005, FWB_0009
@@ -241,6 +242,14 @@ def load_app(target: str, *, factory: bool = False) -> Any:
             )
         )
     module_name, attr = target.split(":", 1)
+    cwd = str(Path.cwd())
+    added_cwd = "" not in sys.path and cwd not in sys.path
+    if added_cwd:
+        # Console-script entry points put their ``bin`` directory at sys.path[0]
+        # instead of the project directory. Match Uvicorn's documented
+        # ``module:attribute`` behavior while keeping the path change scoped to
+        # application import.
+        sys.path.insert(0, cwd)
     try:
         module = importlib.import_module(module_name)
         obj: Any = module
@@ -255,6 +264,10 @@ def load_app(target: str, *, factory: bool = False) -> Any:
                 remediation="Fix the module:attr target and PYTHONPATH.",
             )
         ) from exc
+    finally:
+        if added_cwd:
+            with contextlib.suppress(ValueError):
+                sys.path.remove(cwd)
     # A plain ASGI callable is itself a valid application. Calling every
     # callable without a Starlette `routes` attribute incorrectly invokes such
     # applications as zero-argument factories. Factories are explicit.

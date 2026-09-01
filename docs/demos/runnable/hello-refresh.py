@@ -1,7 +1,7 @@
 import os
 from datetime import datetime, timezone
 
-from hedron import Hedron, Page, Stack, Text, html
+from hedron import Hedron, Page, Stack, Text, ToastHost, html
 
 app = Hedron(
     title="Hedron App",
@@ -36,6 +36,7 @@ def home() -> Page:
             status(),
             status.refresh_button("Refresh status"),
             ping.button("Ping"),
+            ToastHost(),
         ),
         title="Home",
     )
