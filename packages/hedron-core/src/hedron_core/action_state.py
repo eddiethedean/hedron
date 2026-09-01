@@ -76,6 +76,19 @@ _TRANSITIONS: dict[ActionPhase, frozenset[ActionPhase]] = {
 }
 
 
+def _require_int(name: str, value: object, *, minimum: int, maximum: int | None = None) -> int:
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise ValueError(f"{name} must be an integer")
+    if value < minimum or (maximum is not None and value > maximum):
+        bound = (
+            f" between {minimum} and {maximum}"
+            if maximum is not None
+            else f" at least {minimum}"
+        )
+        raise ValueError(f"{name} must be{bound}")
+    return value
+
+
 @dataclass(frozen=True, slots=True)
 class OperationIdentity:
     """Stable identity for one server-authorized operation attempt."""
@@ -90,8 +103,8 @@ class OperationIdentity:
     def __post_init__(self) -> None:
         if not self.operation_id or len(self.operation_id) > 128:
             raise ValueError("operation_id must be non-empty and at most 128 characters")
-        if self.generation < 0 or self.attempt < 0:
-            raise ValueError("generation and attempt must be non-negative")
+        _require_int("generation", self.generation, minimum=0)
+        _require_int("attempt", self.attempt, minimum=0)
         for name in ("target", "correlation_id"):
             value = getattr(self, name)
             if value is not None and (not value or len(value) > 512):
@@ -132,8 +145,7 @@ class ActionPolicy:
         timeout_seconds = cast(object, self.timeout_seconds)
         if self.concurrency not in {"drop", "replace", "queue"}:
             raise ValueError("concurrency must be 'drop', 'replace', or 'queue'")
-        if self.max_attempts < 1:
-            raise ValueError("max_attempts must be at least 1")
+        _require_int("max_attempts", self.max_attempts, minimum=1)
         if timeout_seconds is not None and (
             isinstance(timeout_seconds, bool)
             or not isinstance(timeout_seconds, (int, float))
@@ -383,10 +395,8 @@ class ActionTrace:
     max_fact_chars: int = 512
 
     def __post_init__(self) -> None:
-        if self.max_events < 1 or self.max_events > 10_000:
-            raise ValueError("max_events must be between 1 and 10000")
-        if self.max_fact_chars < 32:
-            raise ValueError("max_fact_chars must be at least 32")
+        _require_int("max_events", self.max_events, minimum=1, maximum=10_000)
+        _require_int("max_fact_chars", self.max_fact_chars, minimum=32)
         if len(self.events) > self.max_events:
             raise ValueError("trace exceeds max_events")
 

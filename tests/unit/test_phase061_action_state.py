@@ -131,6 +131,20 @@ def test_action_policy_timeout_is_enforced_and_validated() -> None:
         ActionPolicy(timeout_seconds=math.nan)
 
 
+@pytest.mark.parametrize("value", [True, 1.5, math.nan, math.inf, "2"])
+def test_action_numeric_bounds_reject_non_integer_values(value: object) -> None:
+    with pytest.raises(ValueError):
+        OperationIdentity("op", generation=value)  # type: ignore[arg-type]
+    with pytest.raises(ValueError):
+        OperationIdentity("op", attempt=value)  # type: ignore[arg-type]
+    with pytest.raises(ValueError):
+        ActionPolicy(max_attempts=value)  # type: ignore[arg-type]
+    with pytest.raises(ValueError):
+        ActionTrace(max_events=value)  # type: ignore[arg-type]
+    with pytest.raises(ValueError):
+        ActionTrace(max_fact_chars=value)  # type: ignore[arg-type]
+
+
 def test_begin_policy_controls_cancellation_without_repeating_policy() -> None:
     operation = OperationIdentity("protected", target="#button")
     state, accepted = begin_operation(
