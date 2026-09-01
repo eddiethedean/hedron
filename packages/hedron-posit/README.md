@@ -8,6 +8,10 @@ Unified Posit Workbench / Connect deployment facade for Hedron.
 
 **Package maturity:** Beta · **Package line:** `1.0.x` · pin `>=1.0.2,<2.0`
 
+`0.67.0`, `1.0.0`, and `1.0.1` are yanked on PyPI. The documented `>=1.0.2`
+floor excludes the incompatible releases; existing exact pins and lockfiles should be
+updated before deployment.
+
 ```python
 from hedron_posit import HedronPosit
 

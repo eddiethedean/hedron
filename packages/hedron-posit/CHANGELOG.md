@@ -22,10 +22,20 @@
 
 - Maintenance release for the coordinated 1.0 train.
 
+### Yanked
+- Yanked from PyPI on 2026-09-01 because its declared
+  `fastapi-workbench>=1.0.1,<2.0` range permits 1.0.1, which does not provide the
+  `absolute_redirects` middleware contract required by `HedronPosit`.
+
 ## [1.0.0] — 2026-08-27
 
 - Align Posit package metadata with the Hedron 1.0 coordinated train.
 - Broaden direct Starlette compatibility to `>=0.40.0`.
+
+### Yanked
+- Yanked from PyPI on 2026-09-01 because its declared
+  `fastapi-workbench>=1.0.1,<2.0` range permits 1.0.1, which does not provide the
+  `absolute_redirects` middleware contract required by `HedronPosit`.
 
 ## [0.67.1] — 2026-08-28
 
@@ -42,6 +52,11 @@
 
 ### Changed
 - Aligned the Posit facade and coordinated package metadata with the Phase 0.67 release train.
+
+### Yanked
+- Yanked from PyPI on 2026-09-01 because full-URL `UVICORN_ROOT_PATH` values lost the
+  external Workbench origin and leaked into reload/worker Uvicorn supervision. Use 0.67.1
+  or a supported 1.0.x release.
 
 ## [0.66.2] — 2026-08-26
 
