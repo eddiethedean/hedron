@@ -18,6 +18,7 @@ from hedron_data.sources import (
     DataQuery,
     DataSaveResult,
     FieldError,
+    reject_unsupported_cursor,
 )
 
 T = TypeVar("T")
@@ -139,6 +140,7 @@ class DaskDataSource(Generic[T]):
             allowlisted_filter_fields=filter_allow,
             allowlisted_projection_fields=projection_allow,
         ).validated(max_page_size=self._max_compute_rows)
+        reject_unsupported_cursor(q, source="DaskDataSource")
         if q.projection and self._secret_fields.intersection(q.projection):
             raise error(
                 "HED-DATA-0052",

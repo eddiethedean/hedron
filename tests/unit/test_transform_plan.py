@@ -71,6 +71,30 @@ def test_plan_multi_sort_matches_query_order_and_rejects_bool_paging() -> None:
         TransformPlan(steps=(TransformStep(op="sample", value=True),)).validated()
 
 
+@pytest.mark.parametrize(
+    "step",
+    [
+        TransformStep(op="filter", field=1),  # type: ignore[arg-type]
+        TransformStep(op="sort", field=" "),
+        TransformStep(op="project", field=None),
+        TransformStep(op="search", value=1),  # type: ignore[arg-type]
+        TransformStep(op="aggregate", field="value", agg="median"),
+        TransformStep(op=[], field="value"),  # type: ignore[arg-type]
+    ],
+)
+def test_transform_step_rejects_malformed_operation_fields(step: TransformStep) -> None:
+    with pytest.raises(ValueError):
+        step.validated()
+
+
+@pytest.mark.parametrize("field", [float("nan"), float("inf"), True, 1.5, "10"])
+def test_transform_plan_rejects_non_integer_budgets(field: object) -> None:
+    with pytest.raises(ValueError, match="max_"):
+        TransformPlan(max_rows=field).validated()  # type: ignore[arg-type]
+    with pytest.raises(ValueError, match="max_"):
+        TransformPlan(max_bytes=field).validated()  # type: ignore[arg-type]
+
+
 def test_plan_aggregate_skips_bool_cells() -> None:
     rows = apply_plan_in_memory(
         [{"value": True}, {"value": False}, {"value": 10}],

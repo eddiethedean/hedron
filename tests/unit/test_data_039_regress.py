@@ -61,6 +61,29 @@ def test_039_dataquery_validates_direction_and_max_page_size() -> None:
         DataQuery(limit=10).validated(max_page_size=0)
 
 
+@pytest.mark.parametrize("value", [1, True, b"needle", ["needle"]])
+def test_dataquery_rejects_non_string_search(value: object) -> None:
+    with pytest.raises(ValueError, match="search"):
+        DataQuery(search=value).validated()  # type: ignore[arg-type]
+
+
+def test_offset_only_memory_source_rejects_cursor() -> None:
+    with pytest.raises(ValueError, match="cursor pagination"):
+        InMemoryDataSource([{"id": "1"}]).fetch(DataQuery(cursor="opaque"))
+
+
+@pytest.mark.parametrize("value", [0, -1, True, 1.5, float("nan"), float("inf"), "10"])
+def test_normalize_rows_rejects_invalid_row_budget(value: object) -> None:
+    with pytest.raises(ValueError, match="max_rows"):
+        normalize_rows([], max_rows=value)  # type: ignore[arg-type]
+
+
+@pytest.mark.parametrize("value", [0, -1, True, 1.5, float("nan"), float("inf"), "10"])
+def test_memory_source_rejects_invalid_row_budget(value: object) -> None:
+    with pytest.raises(ValueError, match="max_rows"):
+        InMemoryDataSource([], max_rows=value)  # type: ignore[arg-type]
+
+
 @pytest.mark.parametrize(
     "query",
     [

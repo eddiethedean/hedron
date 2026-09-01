@@ -14,6 +14,7 @@ from hedron_data.sources import (
     DataQuery,
     DataSaveResult,
     FieldError,
+    reject_unsupported_cursor,
 )
 
 __all__ = ["DjangoQuerySetDataSource", "QueryBudgetExceeded", "QueryDiagnostics"]
@@ -177,6 +178,7 @@ class DjangoQuerySetDataSource:
                 query.allowlisted_projection_fields, self._projection_allow
             ),
         ).validated(max_page_size=self._max_page_size)
+        reject_unsupported_cursor(q, source="DjangoQuerySetDataSource")
 
         diag = QueryDiagnostics(budget=self._query_budget)
         self.last_diagnostics = diag
