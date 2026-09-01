@@ -9,7 +9,7 @@ upload, smoke-test, and documentation sequence without moving an existing tag.
 Hedron is a Python monorepo with independently publishable distributions. The Stable 1.0 package
 boundary is `hedron-core`, `hedron`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps`.
 Every other distribution is a Beta satellite even when it shares the `1.0.0` version number;
-`fastapi-workbench` is currently `1.0.3`. The removed `hedron-workbench` package is not part of
+`fastapi-workbench` is currently `1.0.4`. The removed `hedron-workbench` package is not part of
 the release inventory.
 
 A Git tag includes the `v` prefix; Python metadata does not. Never move or replace a
@@ -55,7 +55,7 @@ Build wheels and test them in a clean environment before tagging:
 
 ```bash
 uv build --all-packages
-uv run python scripts/check_published_quickstart.py 1.0.3 --dist-dir dist --attempts 1
+uv run python scripts/check_published_quickstart.py 1.0.4 --dist-dir dist --attempts 1
 uv run python scripts/check_workbench_release_artifacts.py --dist-dir dist
 ```
 
@@ -67,7 +67,7 @@ registry and record the result before changing public documentation.
 Use this exact sequence; do not push both tags together:
 
 1. Fast-forward `main` to the green `v1.0` release commit and verify Read the Docs.
-2. Create and push the coordinated Hedron tag (for example, `v1.0.3`). The coordinated workflow
+2. Create and push the coordinated Hedron tag (for example, `v1.0.4`). The coordinated workflow
    publishes every workspace distribution, including Edron and `edron-sim`, except the separately
    owned native artifacts.
 3. Wait for the coordinated workflow, native-wheel workflow, attestations, PyPI visibility, and

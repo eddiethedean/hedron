@@ -142,7 +142,7 @@ symbol, or browse the [runnable examples](examples/runnable.md).
 <details markdown>
 <summary>Release, typing, and maturity</summary>
 
-Hedron **1.0.3** is published on PyPI. Require applications to use `hedron>=1.0.0` and
+Hedron **1.0.4** is published on PyPI. Require applications to use `hedron>=1.0.0` and
 review capability-specific maturity before production adoption. The `hedron-core` renderer
 and `hedron` FastAPI runtime are Pyright-strict; type errors block release.
 

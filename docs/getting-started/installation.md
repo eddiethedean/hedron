@@ -20,7 +20,7 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 
 <!-- hedron-install-matrix -->
 
-Hedron **1.0.3** is published on PyPI. Use the stable `>=1.0.0` compatibility floor and review
+Hedron **1.0.4** is published on PyPI. Use the stable `>=1.0.0` compatibility floor and review
 release notes before adopting a new train. `hedron-core`, `hedron`,
 `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps` are **Stable** packages; host/tooling
 satellites retain their documented Beta or tooling-grade maturity. Capability detail:

@@ -1,33 +1,33 @@
 [release]
 # Public release facts. Adopter-facing "current", "living", and install-pin claims
 # must agree with this file.
-# Stable release channel. The 1.0.3 cut is tagged and published.
+# Stable release channel. The 1.0.4 cut is tagged and published.
 train = "1.0"
-published_version = "1.0.3"
-stable_version = "1.0.3"
+published_version = "1.0.4"
+stable_version = "1.0.4"
 # Beta preview channel; intentionally separate from the stable package metadata.
 beta_version = "0.67.0"
 development_version = "1.0.4"
 published_date = "2026-08-31"
-pin_floor = "1.0.3"
+pin_floor = "1.0.4"
 pin_ceiling = "1.1"
 previous_train = "0.67"
 previous_version = "0.67.0"
 previous_security_until = "2027-02-27"
 # Latest version actually on PyPI. Keep in sync with pypi.org (not workspace version).
-pypi_version = "1.0.3"
-pypi_pin_floor = "1.0.3"
+pypi_version = "1.0.4"
+pypi_pin_floor = "1.0.4"
 pypi_pin_ceiling = "1.1"
 registry_status = "uploaded"
 
 [edron]
 # Edron is released in lockstep with the Hedron 1.0 documentation contract.
-published_version = "1.0.3"
+published_version = "1.0.4"
 development_version = "1.0.4"
-pin_floor = "1.0.3"
+pin_floor = "1.0.4"
 pin_ceiling = "1.1"
-pypi_version = "1.0.3"
-pypi_pin_floor = "1.0.3"
+pypi_version = "1.0.4"
+pypi_pin_floor = "1.0.4"
 pypi_pin_ceiling = "1.1"
 registry_status = "uploaded"
 

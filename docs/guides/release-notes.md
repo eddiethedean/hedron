@@ -3,6 +3,25 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 1.0.4 — 2026-08-31
+
+Coordinated security and correctness release for the stable 1.0 train. The tagged release passed
+the full release CI matrix, published the coordinated Python packages and native artifacts, and
+verified the installed quick start from the public index.
+
+### Security
+
+- Rejected malformed Workbench URL authorities and redacted encoded sensitive query keys from
+  malformed request-target diagnostics.
+- Rejected non-finite and overflowing JSON numbers before MCP JSON-RPC dispatch; the Hedron MCP
+  extra now requires the corrected `hedron-mcp>=0.2.5` release.
+
+### Fixed
+
+- Normalized malformed and truncated theme archives to the documented validation error instead
+  of leaking `zipfile.BadZipFile`.
+- Refined the documentation heading accent so its third dash stays aligned with the title.
+
 ## 1.0.3 — 2026-08-31
 
 Coordinated security and hardening release for the stable 1.0 train. The tagged release passed
