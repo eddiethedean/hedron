@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import pytest
 from fastapi import Depends
 from pydantic import BaseModel, Field
 
 from hedron import JobScope, TaskFlow, Text
+from hedron.jobs.flow import PollPolicy
 from hedron_core.bundles import FeatureBundle
+from hedron_core.diagnostics import HedronError
 
 
 def test_task_flow_and_job_scope() -> None:
@@ -34,3 +37,14 @@ def test_task_flow_and_job_scope() -> None:
     bundle = flow.to_bundle()
     assert isinstance(bundle, FeatureBundle)
     assert "report" in bundle.logical_id or bundle.logical_id
+
+
+@pytest.mark.parametrize("interval", [True, 999, 60_001, 1.5, float("nan"), float("inf"), "2000"])
+def test_poll_policy_rejects_malformed_or_out_of_range_intervals(interval: object) -> None:
+    with pytest.raises(HedronError):
+        PollPolicy(interval_ms=interval)  # type: ignore[arg-type]
+
+
+def test_poll_policy_accepts_progressive_budget_boundaries() -> None:
+    assert PollPolicy(interval_ms=1000).interval_ms == 1000
+    assert PollPolicy(interval_ms=60_000).interval_ms == 60_000
