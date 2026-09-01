@@ -81,9 +81,7 @@ def _require_int(name: str, value: object, *, minimum: int, maximum: int | None 
         raise ValueError(f"{name} must be an integer")
     if value < minimum or (maximum is not None and value > maximum):
         bound = (
-            f" between {minimum} and {maximum}"
-            if maximum is not None
-            else f" at least {minimum}"
+            f" between {minimum} and {maximum}" if maximum is not None else f" at least {minimum}"
         )
         raise ValueError(f"{name} must be{bound}")
     return value
