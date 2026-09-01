@@ -164,6 +164,7 @@ def test_malformed_bracketed_public_urls_are_diagnostics() -> None:
 
 def test_malformed_bracketed_urls_are_safe_to_redact() -> None:
     assert redact_url("https://[") == "https://["
+    assert redact_url("https://[?%74oken=secret") == "https://[?%74oken=***"
 
 
 def test_conflicting_mount_and_public_base() -> None:
