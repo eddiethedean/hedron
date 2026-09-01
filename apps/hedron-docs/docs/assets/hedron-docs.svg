@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 48" role="img" aria-labelledby="title">
+  <title id="title">Hedron Docs</title>
+  <rect width="160" height="48" rx="8" fill="#171923"/>
+  <path d="M18 12h6v9h10v-9h6v24h-6v-9H24v9h-6z" fill="#7dd3fc"/>
+  <text x="50" y="30" fill="#f8fafc" font-family="system-ui, sans-serif" font-size="16">Docs</text>
+</svg>

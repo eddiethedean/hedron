@@ -38,7 +38,7 @@ def render_node(node: DocNode) -> NodeLike:
         )
     if kind == "paragraph":
         return html.p(
-            *(_render_inline(child) for child in node.children),
+            *(render_node(child) for child in node.children),
             node.text if not node.children else None,
         )
     if kind == "code":
@@ -48,10 +48,7 @@ def render_node(node: DocNode) -> NodeLike:
             *(render_node(child) for child in node.children), ordered=node.attr("ordered") == "true"
         )
     if kind == "list-item":
-        return html.span(
-            *(_render_inline(child) for child in node.children),
-            node.text if not node.children else None,
-        )
+        return [render_node(child) for child in node.children] if node.children else node.text
     if kind == "quote":
         return html.blockquote(*(render_node(child) for child in node.children))
     if kind == "divider":
@@ -61,7 +58,9 @@ def render_node(node: DocNode) -> NodeLike:
         external = bool(urlsplit(href).scheme or urlsplit(href).netloc)
         return Link(node.text or href, href, external=external)
     if kind == "image":
-        return Image(node.attr("src") or "/", alt=node.attr("alt", ""))
+        src = node.attr("src") or "/"
+        external = bool(urlsplit(src).scheme or urlsplit(src).netloc)
+        return Image(src, alt=node.attr("alt", ""), allow_external=external)
     if kind == "alert":
         tone = cast(Literal["info", "success", "warning", "danger"], node.attr("tone", "info"))
         return Alert(node.text, tone=tone, title=node.attr("title") or None)
@@ -69,7 +68,7 @@ def render_node(node: DocNode) -> NodeLike:
         return Tabs(*[(panel.text, render_document(panel.children)) for panel in node.children])
     if kind == "table":
         return _render_table(node)
-    if kind in {"strong", "emphasis", "inline-code", "span", "break"}:
+    if kind in {"text", "strong", "emphasis", "inline-code", "span", "break"}:
         return _render_inline(node)
     return html.div(
         *(render_node(child) for child in node.children), node.text if not node.children else None
@@ -77,20 +76,30 @@ def render_node(node: DocNode) -> NodeLike:
 
 
 def _render_inline(node: DocNode) -> NodeLike:
+    if node.kind == "text":
+        return node.text
     if node.kind == "link":
         href = _link_href(node.attr("href") or "/")
         return Link(
             node.text or href, href, external=bool(urlsplit(href).scheme or urlsplit(href).netloc)
         )
     if node.kind == "strong":
-        return html.strong(node.text or render_document(node.children))
+        return html.strong(
+            *(render_node(child) for child in node.children),
+            node.text if not node.children else None,
+        )
     if node.kind == "emphasis":
-        return html.em(node.text or render_document(node.children))
+        return html.em(
+            *(render_node(child) for child in node.children),
+            node.text if not node.children else None,
+        )
     if node.kind == "inline-code":
         return html.code(node.text)
     if node.kind == "break":
         return html.br()
-    return node.text or render_document(node.children)
+    if node.kind == "image":
+        return render_node(node)
+    return [render_node(child) for child in node.children] if node.children else node.text
 
 
 def _render_table(node: DocNode) -> NodeLike:

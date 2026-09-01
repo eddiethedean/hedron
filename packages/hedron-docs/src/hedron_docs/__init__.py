@@ -1,10 +1,12 @@
 """Experimental Markdown compiler and Hedron docs application toolkit."""
 
+__version__ = "0.1.0"
+
 from .app import create_docs_app
 from .ast import DocNode
 from .config import DocsBuildConfig, import_mkdocs, load_config
 from .errors import Diagnostic, DocsError
-from .manifest import PageRecord, SiteManifest, compile_site, load_manifest
+from .manifest import AssetRecord, PageRecord, SiteManifest, compile_site, load_manifest
 from .markdown import parse_markdown, slugify
 from .search import SearchResult, search
 
@@ -13,6 +15,7 @@ __all__ = [
     "DocNode",
     "DocsBuildConfig",
     "DocsError",
+    "AssetRecord",
     "PageRecord",
     "SearchResult",
     "SiteManifest",
@@ -24,4 +27,5 @@ __all__ = [
     "parse_markdown",
     "search",
     "slugify",
+    "__version__",
 ]

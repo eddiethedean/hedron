@@ -21,6 +21,10 @@ from .errors import source_error
 _RAW_HTML = re.compile(r"<\s*/?\s*[A-Za-z][^>]*>")
 _TAB_START = re.compile(r'^===\s+["\'](.+?)["\']\s*$')
 _PLACEHOLDER = re.compile(r"^HEDRON_DOCS_TAB_[0-9A-F]{16}$")
+_VOID_TAGS = frozenset({"br", "hr", "img"})
+_STRUCTURAL_TAGS = frozenset(
+    {"blockquote", "div", "li", "ol", "table", "tbody", "thead", "tr", "ul"}
+)
 
 
 def slugify(text: str) -> str:
@@ -51,8 +55,9 @@ def parse_markdown(
     parser = _TreeParser(source, source_path, tabs)
     parser.feed(rendered)
     parser.close()
-    nodes = tuple(parser.nodes)
-    if parser.node_count > max_nodes:
+    nodes = _deduplicate_heading_ids(tuple(parser.nodes))
+    node_count = _count_nodes(nodes)
+    if node_count > max_nodes:
         raise source_error(
             "HED-DOCS-0101", f"document exceeds node limit ({max_nodes})", source_path
         )
@@ -104,7 +109,7 @@ def _extract_tabs(
             line=panels[0][1].line if panels else 1,
         )
         output.append(key)
-    return "\n\n".join(output)
+    return "\n".join(output)
 
 
 class _TreeParser(HTMLParser):
@@ -115,21 +120,21 @@ class _TreeParser(HTMLParser):
         self.tabs = tabs
         self._stack: list[dict[str, Any]] = []
         self.nodes: list[DocNode] = []
-        self.node_count = 0
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        normalized_tag = tag.lower()
         self._stack.append(
             {
-                "tag": tag.lower(),
+                "tag": normalized_tag,
                 "attrs": {key: value or "" for key, value in attrs},
                 "children": [],
-                "text": "",
             }
         )
+        if normalized_tag in _VOID_TAGS:
+            self.handle_endtag(normalized_tag)
 
     def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         self.handle_starttag(tag, attrs)
-        self.handle_endtag(tag)
 
     def handle_endtag(self, tag: str) -> None:
         if not self._stack:
@@ -144,16 +149,17 @@ class _TreeParser(HTMLParser):
 
     def handle_data(self, data: str) -> None:
         if self._stack:
-            self._stack[-1]["text"] += data
+            if data.isspace() and self._stack[-1]["tag"] in _STRUCTURAL_TAGS:
+                return
+            self._stack[-1]["children"].append(DocNode("text", text=data, line=self._line(data)))
         elif data.strip():
             self.nodes.append(DocNode("paragraph", text=data.strip(), line=self._line(data)))
 
     def _node(self, item: dict[str, Any]) -> DocNode:
-        self.node_count += 1
         tag = item["tag"]
         attrs = tuple(sorted((str(key), str(value)) for key, value in item["attrs"].items()))
         children = tuple(item["children"])
-        text = "".join(_node_text(child) for child in children) or item["text"].strip()
+        text = "".join(_node_text(child) for child in children)
         line = self._line(text)
         if _PLACEHOLDER.fullmatch(text):
             return self.tabs[text]
@@ -242,3 +248,33 @@ class _TreeParser(HTMLParser):
 
 def _node_text(node: DocNode) -> str:
     return node.text or "".join(_node_text(child) for child in node.children)
+
+
+def _count_nodes(nodes: tuple[DocNode, ...]) -> int:
+    count = 0
+    pending = list(nodes)
+    while pending:
+        node = pending.pop()
+        count += 1
+        pending.extend(node.children)
+    return count
+
+
+def _deduplicate_heading_ids(nodes: tuple[DocNode, ...]) -> tuple[DocNode, ...]:
+    counts: dict[str, int] = {}
+
+    def normalize(node: DocNode) -> DocNode:
+        attrs = dict(node.attrs)
+        if node.kind == "heading":
+            base = attrs.get("id") or slugify(node.text)
+            counts[base] = counts.get(base, 0) + 1
+            attrs["id"] = base if counts[base] == 1 else f"{base}-{counts[base]}"
+        return DocNode(
+            kind=node.kind,
+            text=node.text,
+            attrs=tuple(sorted(attrs.items())),
+            children=tuple(normalize(child) for child in node.children),
+            line=node.line,
+        )
+
+    return tuple(normalize(node) for node in nodes)

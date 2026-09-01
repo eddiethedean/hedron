@@ -232,6 +232,7 @@ ALLOWED_ATTRS = (
             "tabindex",
             "charset",
             "content",
+            "property",
             "http-equiv",
             "lang",
             "dir",

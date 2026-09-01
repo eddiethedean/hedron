@@ -2,14 +2,19 @@
 
 from __future__ import annotations
 
+import base64
 import fnmatch
 import hashlib
 import json
+import mimetypes
 import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
-from urllib.parse import urlsplit, urlunsplit
+from urllib.parse import quote, unquote, urlsplit, urlunsplit
+
+from hedron_core.diagnostics import HedronError
+from hedron_core.security import SafeUrl, UrlPurpose
 
 from .ast import DocNode
 from .config import DocsBuildConfig
@@ -17,6 +22,55 @@ from .errors import source_error
 from .markdown import parse_markdown
 
 SCHEMA_VERSION = "hedron-docs-manifest-1"
+
+
+@dataclass(frozen=True, slots=True)
+class AssetRecord:
+    source: str
+    path: str
+    media_type: str
+    content_base64: str
+    source_hash: str
+    size: int
+
+    def decoded(self) -> bytes:
+        try:
+            content = base64.b64decode(self.content_base64, validate=True)
+        except ValueError as exc:
+            raise ValueError(f"invalid base64 content for asset {self.path}") from exc
+        if len(content) != self.size:
+            raise ValueError(f"asset size does not match manifest for {self.path}")
+        if hashlib.sha256(content).hexdigest() != self.source_hash:
+            raise ValueError(f"asset hash does not match manifest for {self.path}")
+        return content
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "source": self.source,
+            "path": self.path,
+            "media_type": self.media_type,
+            "content_base64": self.content_base64,
+            "source_hash": self.source_hash,
+            "size": self.size,
+        }
+
+    @classmethod
+    def from_dict(cls, value: object) -> AssetRecord:
+        if not isinstance(value, dict):
+            raise ValueError("manifest asset must be an object")
+        data = cast(dict[str, object], value)
+        asset = cls(
+            source=str(data["source"]),
+            path=str(data["path"]),
+            media_type=str(data["media_type"]),
+            content_base64=str(data["content_base64"]),
+            source_hash=str(data["source_hash"]),
+            size=int(str(data["size"])),
+        )
+        if not asset.path.startswith("/_hedron-docs/assets/"):
+            raise ValueError(f"invalid asset route: {asset.path}")
+        asset.decoded()
+        return asset
 
 
 @dataclass(frozen=True, slots=True)
@@ -81,6 +135,7 @@ class SiteManifest:
     description: str
     base_url: str
     pages: tuple[PageRecord, ...]
+    assets: tuple[AssetRecord, ...] = ()
     max_query_length: int = 200
     compiler_version: str = "0.1.0"
     schema_version: str = SCHEMA_VERSION
@@ -102,6 +157,7 @@ class SiteManifest:
                 "max_query_length": self.max_query_length,
             },
             "pages": [page.to_dict() for page in self.pages],
+            "assets": [asset.to_dict() for asset in self.assets],
         }
 
     def dumps(self) -> str:
@@ -122,15 +178,22 @@ class SiteManifest:
             raise ValueError(f"unsupported or missing manifest schema (expected {SCHEMA_VERSION})")
         site = data.get("site", {})
         pages = data.get("pages", [])
-        if not isinstance(site, dict) or not isinstance(pages, list):
-            raise ValueError("manifest site/pages have invalid shape")
+        assets = data.get("assets", [])
+        if (
+            not isinstance(site, dict)
+            or not isinstance(pages, list)
+            or not isinstance(assets, list)
+        ):
+            raise ValueError("manifest site/pages/assets have invalid shape")
         site_data = cast(dict[str, object], site)
         page_values = cast(list[object], pages)
+        asset_values = cast(list[object], assets)
         return cls(
             title=str(site_data.get("title", "Documentation")),
             description=str(site_data.get("description", "")),
             base_url=str(site_data.get("base_url", "")),
             pages=tuple(PageRecord.from_dict(item) for item in page_values),
+            assets=tuple(AssetRecord.from_dict(item) for item in asset_values),
             max_query_length=int(str(site_data.get("max_query_length", 200))),
             compiler_version=str(data.get("compiler_version", "unknown")),
         )
@@ -152,13 +215,21 @@ def compile_site(config: DocsBuildConfig) -> SiteManifest:
     if not cfg.docs_dir.is_dir():
         raise source_error("HED-DOCS-0201", f"documentation directory not found: {cfg.docs_dir}")
     pages: list[PageRecord] = []
+    assets: dict[str, AssetRecord] = {}
     seen_paths: dict[str, Path] = {}
-    reserved = {"/search", "/robots.txt", "/sitemap.xml"}
+    docs_root = cfg.docs_dir.resolve()
+    reserved = {"/search", "/robots.txt", "/sitemap.xml", "/healthz", "/readyz"}
     for source_path in sorted(cfg.docs_dir.rglob("*.md")):
         if not source_path.is_file() or _excluded(
             source_path.relative_to(cfg.docs_dir), cfg.exclude
         ):
             continue
+        try:
+            source_path.resolve(strict=True).relative_to(docs_root)
+        except (OSError, ValueError) as exc:
+            raise source_error(
+                "HED-DOCS-0206", "document source escapes the documentation root", source_path
+            ) from exc
         source = source_path.read_text(encoding="utf-8")
         if len(source.encode("utf-8")) > cfg.max_source_bytes:
             raise source_error(
@@ -173,17 +244,21 @@ def compile_site(config: DocsBuildConfig) -> SiteManifest:
             cfg.docs_dir / rel.parent,
             cfg.docs_dir,
             allow_external_links=cfg.allow_external_links,
+            assets=assets,
+            max_asset_bytes=cfg.max_asset_bytes,
         )
         path = _public_path(rel)
-        if path in reserved:
+        route_key = path.rstrip("/") or "/"
+        if route_key in reserved or route_key.startswith("/_hedron-docs"):
             raise source_error(
                 "HED-DOCS-0205", f"route is reserved by the docs application: {path}", source_path
             )
-        if path in seen_paths:
+        collision_key = route_key.casefold()
+        if collision_key in seen_paths:
             raise source_error(
-                "HED-DOCS-0203", f"route collision with {seen_paths[path]}", source_path
+                "HED-DOCS-0203", f"route collision with {seen_paths[collision_key]}", source_path
             )
-        seen_paths[path] = source_path
+        seen_paths[collision_key] = source_path
         headings = tuple(
             (node.attr("id"), node.text, int(node.attr("level", "2")))
             for node in _walk(nodes)
@@ -211,6 +286,7 @@ def compile_site(config: DocsBuildConfig) -> SiteManifest:
         description=cfg.site_description,
         base_url=cfg.base_url,
         pages=tuple(pages),
+        assets=tuple(sorted(assets.values(), key=lambda asset: asset.path)),
         max_query_length=cfg.max_query_length,
     )
 
@@ -259,6 +335,8 @@ def _normalize_nodes(
     docs_dir: Path,
     *,
     allow_external_links: bool,
+    assets: dict[str, AssetRecord],
+    max_asset_bytes: int,
 ) -> tuple[DocNode, ...]:
     normalized: list[DocNode] = []
     for node in nodes:
@@ -270,6 +348,8 @@ def _normalize_nodes(
                 docs_dir,
                 document=True,
                 allow_external_links=allow_external_links,
+                assets=assets,
+                max_asset_bytes=max_asset_bytes,
             )
         elif node.kind == "image" and attrs.get("src"):
             attrs["src"] = _normalize_url(
@@ -278,6 +358,8 @@ def _normalize_nodes(
                 docs_dir,
                 document=False,
                 allow_external_links=allow_external_links,
+                assets=assets,
+                max_asset_bytes=max_asset_bytes,
             )
         normalized.append(
             DocNode(
@@ -289,6 +371,8 @@ def _normalize_nodes(
                     source_parent,
                     docs_dir,
                     allow_external_links=allow_external_links,
+                    assets=assets,
+                    max_asset_bytes=max_asset_bytes,
                 ),
                 line=node.line,
             )
@@ -303,15 +387,28 @@ def _normalize_url(
     *,
     document: bool,
     allow_external_links: bool,
+    assets: dict[str, AssetRecord],
+    max_asset_bytes: int,
 ) -> str:
     parts = urlsplit(value)
     if parts.scheme or parts.netloc:
         if not allow_external_links:
             raise ValueError(f"external documentation URL is disabled: {value!r}")
+        purpose = UrlPurpose.NAVIGATION if document else UrlPurpose.ASSET
+        try:
+            SafeUrl.parse(value, purpose=purpose, allow_external=True)
+        except HedronError as exc:
+            raise ValueError(f"unsafe or invalid documentation URL: {value!r}") from exc
         return value
     if value.startswith("#"):
+        try:
+            SafeUrl.parse(value, purpose=UrlPurpose.NAVIGATION)
+        except HedronError as exc:
+            raise ValueError(f"unsafe or invalid documentation URL: {value!r}") from exc
         return value
-    raw_path = Path(parts.path)
+    if document and parts.path == "/":
+        return urlunsplit(("", "", "/", parts.query, parts.fragment))
+    raw_path = Path(unquote(parts.path))
     if raw_path.is_absolute():
         candidate = (docs_dir / raw_path.relative_to(raw_path.anchor)).resolve()
     else:
@@ -320,8 +417,56 @@ def _normalize_url(
         relative = candidate.relative_to(docs_dir.resolve())
     except ValueError as exc:
         raise ValueError(f"documentation URL escapes docs root: {value!r}") from exc
-    if document and relative.suffix.lower() == ".md":
+    if not document:
+        route = _compile_asset(candidate, relative, assets, max_asset_bytes=max_asset_bytes).path
+    elif relative.suffix.lower() == ".md":
+        if not candidate.is_file():
+            raise ValueError(f"linked documentation page does not exist: {value!r}")
         route = _public_path(relative.with_suffix(""))
+    elif candidate.is_file():
+        route = _compile_asset(candidate, relative, assets, max_asset_bytes=max_asset_bytes).path
     else:
         route = "/" + relative.as_posix()
-    return urlunsplit(("", "", route, parts.query, parts.fragment))
+    normalized = urlunsplit(("", "", route, parts.query, parts.fragment))
+    if document:
+        runtime_url = normalized
+        if "#" in runtime_url:
+            path, fragment = runtime_url.split("#", 1)
+            runtime_url = (path.rstrip("/") or "/") + "#" + fragment
+        else:
+            runtime_url = runtime_url.rstrip("/") or "/"
+        try:
+            SafeUrl.parse(runtime_url, purpose=UrlPurpose.NAVIGATION)
+        except HedronError as exc:
+            raise ValueError(f"unsafe or invalid documentation URL: {value!r}") from exc
+    return normalized
+
+
+def _compile_asset(
+    candidate: Path,
+    relative: Path,
+    assets: dict[str, AssetRecord],
+    *,
+    max_asset_bytes: int,
+) -> AssetRecord:
+    if not candidate.is_file():
+        raise ValueError(f"documentation asset does not exist: {relative.as_posix()!r}")
+    content = candidate.read_bytes()
+    if len(content) > max_asset_bytes:
+        raise ValueError(
+            f"documentation asset exceeds limit ({max_asset_bytes} bytes): {relative.as_posix()!r}"
+        )
+    source_hash = hashlib.sha256(content).hexdigest()
+    encoded_source = quote(relative.as_posix(), safe="/-._~")
+    path = f"/_hedron-docs/assets/{source_hash[:16]}/{encoded_source}"
+    media_type = mimetypes.guess_type(relative.name)[0] or "application/octet-stream"
+    asset = AssetRecord(
+        source=relative.as_posix(),
+        path=path,
+        media_type=media_type,
+        content_base64=base64.b64encode(content).decode("ascii"),
+        source_hash=source_hash,
+        size=len(content),
+    )
+    assets[path] = asset
+    return asset

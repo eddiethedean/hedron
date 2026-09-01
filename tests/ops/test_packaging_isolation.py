@@ -22,6 +22,7 @@ _TRAIN_ALIGNED_PACKAGES = {
     "hedron-elements",
 }
 _INDEPENDENT_BETA = {
+    "hedron-docs",
     "hedron-native",
     "edron-sim",
 }

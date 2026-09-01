@@ -1,0 +1,12 @@
+[site]
+title = "Hedron Docs"
+description = "Deployable hedron-docs 0.1 proving application"
+docs_dir = "docs"
+allow_external_links = true
+
+[build]
+output = "build/site.json"
+max_source_bytes = 2000000
+max_asset_bytes = 10000000
+max_nodes = 10000
+max_query_length = 200

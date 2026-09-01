@@ -447,6 +447,11 @@ def _check_package_metadata() -> list[str]:
         elif distribution == "edron-sim":
             if "edron>=1.0.0,<2.0" not in joined:
                 errors.append("edron-sim: Edron dependency must require the canonical 1.x train")
+        elif distribution == "hedron-docs":
+            if "hedron>=1.0.5,<2.0" not in joined:
+                errors.append(
+                    "hedron-docs: compiler/runtime dependency must require corrected Hedron 1.0.5+"
+                )
         elif distribution in PLUGIN_DEFINITION_SATELLITES:
             if "hedron-core>=1.0.0,<2.0" not in joined:
                 errors.append(f"{distribution}: composable plugins require hedron-core>=1.0.0,<2.0")

@@ -17,6 +17,9 @@ pip install "hedron-docs>=0.1.0,<0.2"
 through native Hedron components. It provides `check`, `build`, `serve`, and `import-mkdocs`
 commands plus the `compile_site` and `create_docs_app` Python entry points.
 
+Referenced local assets are jailed to the documentation root, size-bounded, fingerprinted, and
+embedded in the immutable manifest. A deployable proving app lives at `apps/hedron-docs/app.py`.
+
 The package is not a drop-in MkDocs plugin. MkDocs configuration is supported only as a bounded
 migration input for site metadata and exclusions; arbitrary plugins, hooks, theme code, and
 request-time source parsing are not supported.

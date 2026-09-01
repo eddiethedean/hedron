@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, cast
+from urllib.parse import urlsplit
 
 from hedron_core.compat import tomllib
 
@@ -21,6 +22,7 @@ class DocsBuildConfig:
     exclude: tuple[str, ...] = ()
     allow_external_links: bool = True
     max_source_bytes: int = 2_000_000
+    max_asset_bytes: int = 10_000_000
     max_nodes: int = 10_000
     max_query_length: int = 200
     config_path: Path | None = field(default=None, compare=False)
@@ -28,10 +30,22 @@ class DocsBuildConfig:
     def __post_init__(self) -> None:
         if not self.site_title.strip():
             raise ValueError("site_title must not be empty")
-        if self.max_source_bytes < 1 or self.max_nodes < 1 or self.max_query_length < 1:
+        if (
+            self.max_source_bytes < 1
+            or self.max_asset_bytes < 1
+            or self.max_nodes < 1
+            or self.max_query_length < 1
+        ):
             raise ValueError("compiler limits must be positive")
-        if self.base_url and not self.base_url.startswith(("http://", "https://")):
-            raise ValueError("base_url must be an http(s) URL")
+        if self.base_url:
+            parts = urlsplit(self.base_url)
+            if (
+                parts.scheme not in {"http", "https"}
+                or not parts.netloc
+                or parts.query
+                or parts.fragment
+            ):
+                raise ValueError("base_url must be an absolute http(s) URL without query/fragment")
 
     def resolved(self, *, root: Path | None = None) -> DocsBuildConfig:
         base = (root or Path.cwd()).resolve()
@@ -46,6 +60,7 @@ class DocsBuildConfig:
             exclude=self.exclude,
             allow_external_links=self.allow_external_links,
             max_source_bytes=self.max_source_bytes,
+            max_asset_bytes=self.max_asset_bytes,
             max_nodes=self.max_nodes,
             max_query_length=self.max_query_length,
             config_path=self.config_path,
@@ -79,7 +94,13 @@ def load_config(path: str | Path = "hedron-docs.toml") -> DocsBuildConfig:
         "exclude",
         "allow_external_links",
     }
-    allowed_build = {"output", "max_source_bytes", "max_nodes", "max_query_length"}
+    allowed_build = {
+        "output",
+        "max_source_bytes",
+        "max_asset_bytes",
+        "max_nodes",
+        "max_query_length",
+    }
     unknown_site = set(site) - allowed_site
     unknown_build = set(build) - allowed_build
     if unknown_site or unknown_build:
@@ -104,6 +125,7 @@ def load_config(path: str | Path = "hedron-docs.toml") -> DocsBuildConfig:
         exclude=tuple(exclude_strings),
         allow_external_links=_as_bool(site.get("allow_external_links", True)),
         max_source_bytes=_as_int(build.get("max_source_bytes", 2_000_000)),
+        max_asset_bytes=_as_int(build.get("max_asset_bytes", 10_000_000)),
         max_nodes=_as_int(build.get("max_nodes", 10_000)),
         max_query_length=_as_int(build.get("max_query_length", 200)),
         config_path=config_path,

@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import argparse
+import os
 import sys
+from contextlib import suppress
 from pathlib import Path
 
 from .app import create_docs_app
@@ -59,12 +61,19 @@ def _write_native_config(config: object, path: Path) -> None:
 
     if not isinstance(config, DocsBuildConfig):
         raise TypeError("expected DocsBuildConfig")
-    path.parent.mkdir(parents=True, exist_ok=True)
+    target = path.resolve()
+    target.parent.mkdir(parents=True, exist_ok=True)
+    docs_dir = config.docs_dir
+    if not docs_dir.is_absolute() and config.config_path is not None:
+        docs_dir = (config.config_path.parent / docs_dir).resolve()
+    if docs_dir.is_absolute():
+        with suppress(ValueError):
+            docs_dir = Path(os.path.relpath(docs_dir, target.parent))
     lines = [
         "[site]",
         f"title = {_toml_string(config.site_title)}",
         f"description = {_toml_string(config.site_description)}",
-        f"docs_dir = {_toml_string(str(config.docs_dir))}",
+        f"docs_dir = {_toml_string(str(docs_dir))}",
         f"base_url = {_toml_string(config.base_url)}",
         "exclude = [" + ", ".join(_toml_string(item) for item in config.exclude) + "]",
         f"allow_external_links = {str(config.allow_external_links).lower()}",
@@ -72,11 +81,12 @@ def _write_native_config(config: object, path: Path) -> None:
         "[build]",
         f"output = {_toml_string(str(config.output))}",
         f"max_source_bytes = {config.max_source_bytes}",
+        f"max_asset_bytes = {config.max_asset_bytes}",
         f"max_nodes = {config.max_nodes}",
         f"max_query_length = {config.max_query_length}",
         "",
     ]
-    path.write_text("\n".join(lines), encoding="utf-8")
+    target.write_text("\n".join(lines), encoding="utf-8")
 
 
 def _toml_string(value: str) -> str:
