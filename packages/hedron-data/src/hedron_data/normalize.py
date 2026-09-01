@@ -92,6 +92,9 @@ def _from_narwhals(obj: object, *, max_rows: int) -> list[dict[str, JsonValue]]:
 
 def normalize_rows(data: object, *, max_rows: int = _MAX_INLINE_ROWS) -> list[dict[str, JsonValue]]:
     """Normalize supported tabular inputs into list[dict[str, JsonValue]]."""
+    raw_max_rows = cast(object, max_rows)
+    if isinstance(raw_max_rows, bool) or not isinstance(raw_max_rows, int) or max_rows < 1:
+        raise ValueError("max_rows must be an integer >= 1")
     if data is None:
         return []
     _refuse_lazy(data)

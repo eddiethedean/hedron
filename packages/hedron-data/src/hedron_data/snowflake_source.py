@@ -16,6 +16,7 @@ from hedron_data.sources import (
     DataQuery,
     DataSaveResult,
     FieldError,
+    reject_unsupported_cursor,
 )
 
 T = TypeVar("T")
@@ -288,6 +289,7 @@ class SnowflakeDataSource(Generic[T]):
 
     def fetch(self, query: DataQuery) -> DataPage[T]:
         q = query.validated(max_page_size=self._max_page_size)
+        reject_unsupported_cursor(q, source="SnowflakeDataSource")
         if q.sort or q.filters or q.search or q.projection:
             raise error(
                 "HED-DATA-0061",

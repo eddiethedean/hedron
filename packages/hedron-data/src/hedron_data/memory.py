@@ -6,6 +6,7 @@ import copy
 import threading
 from collections import defaultdict
 from collections.abc import Callable, Mapping, Sequence
+from typing import cast
 
 from hedron_core.diagnostics import error
 from hedron_core.typing_aliases import JsonValue
@@ -18,6 +19,7 @@ from hedron_data.sources import (
     DataQuery,
     DataSaveResult,
     FieldError,
+    reject_unsupported_cursor,
 )
 
 
@@ -71,8 +73,9 @@ class InMemoryDataSource:
         audit_hook: Callable[[DataChanges[dict[str, JsonValue]]], None] | None = None,
         max_rows: int = 100_000,
     ) -> None:
-        if max_rows < 1:
-            raise ValueError("max_rows must be positive")
+        raw_max_rows = cast(object, max_rows)
+        if isinstance(raw_max_rows, bool) or not isinstance(raw_max_rows, int) or max_rows < 1:
+            raise ValueError("max_rows must be an integer >= 1")
         if len(rows) > max_rows:
             raise ValueError("rows exceeds max_rows; use a query-backed data source")
         self.max_rows = max_rows
@@ -198,6 +201,7 @@ class InMemoryDataSource:
             ),
             allowlisted_projection_fields=projection_allow,
         ).validated()
+        reject_unsupported_cursor(q, source="InMemoryDataSource")
         items = list(self._rows.values())
         for field_name, expected in q.filters.items():
             items = [r for r in items if r.get(field_name) == expected]

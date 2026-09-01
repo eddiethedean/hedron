@@ -14,6 +14,14 @@ DEFAULT_MAX_PAGE_SIZE = 100
 HARD_MAX_PAGE_SIZE = 500
 
 
+def reject_unsupported_cursor(query: DataQuery, *, source: str) -> None:
+    """Fail closed for bundled sources that only implement offset pagination."""
+    if query.cursor is not None:
+        raise ValueError(
+            f"{source} does not support cursor pagination; use offset or a cursor-capable source"
+        )
+
+
 @dataclass(frozen=True, slots=True)
 class DataQuery:
     """Bounded page/cursor query with allowlisted sort and filter expressions."""
@@ -43,6 +51,10 @@ class DataQuery:
         limit = self.limit
         if not isinstance(cast(Any, limit), int) or isinstance(limit, bool) or limit < 1:
             raise ValueError("DataQuery.limit must be an integer >= 1")
+        raw_cursor = cast(object, self.cursor)
+        if raw_cursor is not None and not isinstance(raw_cursor, str):
+            raise ValueError("DataQuery.cursor must be a string or None")
+        cursor = raw_cursor
         capped = min(limit, max_page_size, HARD_MAX_PAGE_SIZE)
         if capped < 1:
             raise ValueError("DataQuery.limit must be >= 1 after capping")
@@ -100,14 +112,18 @@ class DataQuery:
             for name in projection:
                 if name not in self.allowlisted_projection_fields:
                     raise ValueError(f"Projection field {name!r} is not allowlisted")
+        raw_search = cast(object, self.search)
+        if raw_search is not None and not isinstance(raw_search, str):
+            raise ValueError("DataQuery.search must be a string or None")
+        search = raw_search
         return DataQuery(
             offset=self.offset,
             limit=capped,
-            cursor=self.cursor,
+            cursor=cursor,
             sort=tuple(sort_entries),
             filters=filters,
             projection=projection,
-            search=self.search,
+            search=search,
             locale=self.locale,
             allowlisted_sort_fields=self.allowlisted_sort_fields,
             allowlisted_filter_fields=self.allowlisted_filter_fields,

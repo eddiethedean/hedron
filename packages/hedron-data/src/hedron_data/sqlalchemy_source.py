@@ -14,6 +14,7 @@ from hedron_data.sources import (
     DataQuery,
     DataSaveResult,
     FieldError,
+    reject_unsupported_cursor,
 )
 
 T = TypeVar("T")
@@ -279,6 +280,7 @@ class SQLAlchemyDataSource(Generic[T]):
         from sqlalchemy import func, select
 
         q = query.validated()
+        reject_unsupported_cursor(q, source="SQLAlchemyDataSource")
         session = self._session_factory()
         try:
             shaped = self._apply_query(self._statement, q)

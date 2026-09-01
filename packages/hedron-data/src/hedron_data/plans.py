@@ -6,7 +6,7 @@ import json
 import math
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, cast
 
 from hedron_core.diagnostics import error
 from hedron_core.typing_aliases import JsonValue
@@ -83,16 +83,26 @@ class TransformStep:
     agg: str | None = None
 
     def validated(self) -> TransformStep:
-        if self.op not in _ALLOWED_OPS:
+        raw_op = cast(object, self.op)
+        if not isinstance(raw_op, str) or raw_op not in _ALLOWED_OPS:
             raise ValueError(f"Unknown transform op {self.op!r}")
-        if self.op == "sort" and self.direction not in (None, "asc", "desc"):
+        op = raw_op
+        raw_field = cast(object, self.field)
+        raw_value = cast(object, self.value)
+        if op == "sort" and self.direction not in (None, "asc", "desc"):
             raise ValueError(f"Invalid sort direction {self.direction!r}")
-        if self.op in {"filter", "sort", "project", "aggregate"} and not self.field:
-            raise ValueError(f"Transform op {self.op!r} requires field")
-        if self.op in {"offset", "sample"} and (
-            isinstance(self.value, bool) or not isinstance(self.value, int) or self.value < 0
+        if op in {"filter", "sort", "project", "aggregate"} and (
+            not isinstance(raw_field, str) or not raw_field.strip()
         ):
-            raise ValueError(f"Transform op {self.op!r} requires a non-negative integer")
+            raise ValueError(f"Transform op {op!r} requires a non-empty string field")
+        if op == "search" and not isinstance(raw_value, str):
+            raise ValueError("Transform op 'search' requires a string value")
+        if op == "aggregate" and self.agg not in (None, "sum", "count", "avg"):
+            raise ValueError(f"Unsupported aggregate {self.agg!r}")
+        if op in {"offset", "sample"} and (
+            isinstance(raw_value, bool) or not isinstance(raw_value, int) or raw_value < 0
+        ):
+            raise ValueError(f"Transform op {op!r} requires a non-negative integer")
         return self
 
 
@@ -108,10 +118,16 @@ class TransformPlan:
     auth_context: Mapping[str, JsonValue] = field(default_factory=lambda: dict[str, JsonValue]())
 
     def validated(self) -> TransformPlan:
-        if self.max_rows < 1:
-            raise ValueError("TransformPlan.max_rows must be >= 1")
-        if self.max_bytes < 1:
-            raise ValueError("TransformPlan.max_bytes must be >= 1")
+        raw_max_rows = cast(object, self.max_rows)
+        if isinstance(raw_max_rows, bool) or not isinstance(raw_max_rows, int) or raw_max_rows < 1:
+            raise ValueError("TransformPlan.max_rows must be an integer >= 1")
+        raw_max_bytes = cast(object, self.max_bytes)
+        if (
+            isinstance(raw_max_bytes, bool)
+            or not isinstance(raw_max_bytes, int)
+            or raw_max_bytes < 1
+        ):
+            raise ValueError("TransformPlan.max_bytes must be an integer >= 1")
         steps = tuple(step.validated() for step in self.steps)
         return TransformPlan(
             steps=steps,
