@@ -3,6 +3,24 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 1.0.3 — 2026-08-31
+
+Coordinated security and hardening release for the stable 1.0 train. The tagged release passed
+the full release CI matrix and published the coordinated Python packages, including Edron.
+
+### Security
+
+- Hardened Workbench and Posit Connect proxy trust, request-target validation, diagnostics
+  redaction, and launcher-state handoff, with live licensed-environment coverage.
+- Bounded replay payload storage and ZIP processing, removed unsafe headers from replayed
+  responses, and validated CSP and tracing sample-rate configuration.
+
+### Fixed
+
+- Propagated dashboard filters and cache TTLs through refreshed handles.
+- Shared Workbench launcher and CLI resolution primitives across `fastapi-workbench` and
+  `hedron-posit`, backed by cross-package conformance coverage.
+
 ## 1.0.2 — 2026-08-31
 
 Coordinated maintenance release for the stable 1.0 train. The tagged release passed the full

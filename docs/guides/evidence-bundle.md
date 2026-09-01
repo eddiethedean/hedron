@@ -11,9 +11,9 @@ responsibilities remain with the adopting organization.
 
 | Evidence | Source |
 |---|---|
-| Hedron package and files | Published `1.0.2` |
-| Edron package and files | Published `1.0.2` |
-| Source tag, wheels, checksums, and attached evidence | Published from immutable `v1.0.2` tag |
+| Hedron package and files | Published `1.0.3` |
+| Edron package and files | Published `1.0.3` |
+| Source tag, wheels, checksums, and attached evidence | Published from immutable `v1.0.3` tag |
 | Current install and support facts | [Current release](current-release.md) |
 
 The GitHub release attaches `release-manifest.json`, built distributions, generated evidence,
