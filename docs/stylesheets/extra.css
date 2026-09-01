@@ -290,8 +290,7 @@ button[class*=" md-"] {
 
 .md-typeset h2::after {
   background:
-    linear-gradient(90deg, var(--md-accent-fg-color) 0 34%, transparent 34% 41%, var(--md-accent-fg-color) 41% 67%, transparent 67% 74%, var(--md-accent-fg-color) 74%);
-  clip-path: polygon(0 35%, 34% 35%, 38% 0, 42% 65%, 67% 65%, 71% 30%, 75% 100%, 100% 100%, 100% 70%, 76% 70%, 72% 0, 66% 35%, 42% 35%, 38% 100%, 33% 65%, 0 65%);
+    linear-gradient(90deg, var(--md-accent-fg-color) 0 26%, transparent 26% 37%, var(--md-accent-fg-color) 37% 63%, transparent 63% 74%, var(--md-accent-fg-color) 74% 100%);
   content: "";
   display: block;
   height: 0.28rem;

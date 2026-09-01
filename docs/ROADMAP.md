@@ -6959,6 +6959,7 @@ promotion, continued Beta/Experimental status, a narrower scope, or an explicit 
 | **1.4** | Visualization and media graduation | Which optional adapters can meet the first-party contract? | 1.3 accessibility/fallback corpus |
 | **1.5** | Stateful browser composition | Can partial updates retain local state without a second app runtime? | 1.2 interaction ownership and 1.3 browser evidence |
 | **1.6** | Controlled ecosystem expansion | Which advanced integrations have a trustworthy operating model? | Core, browser, and security contracts are proven |
+| **1.7** | Evidence-gated large-application build scalability | Are current rebuild times acceptable at the largest application size Hedron promises to support? | A supported size ceiling and repeatable cold/no-op/one-change benchmark corpus |
 
 ### 1.1 — First-class UI testing and adoption confidence
 
@@ -7101,6 +7102,57 @@ Supported scope.
 
 **Non-goals.** Hedron does not become an identity provider, ORM, authorization engine, hosted
 notebook service, queue, database, or ambient plugin runtime.
+
+### 1.7 — Evidence-gated large-application build scalability
+
+**Planning status:** Proposed and unscheduled. This phase is a conditional performance lane, not
+authorization for a general build-system rewrite. Stage 0 first freezes the largest application
+shape Hedron promises to support and makes the benchmark below reproducible in CI. If that corpus
+meets its budgets, the phase closes with an explicit no-change decision.
+
+**Problem.** Production cold builds are already fast enough for synthetic applications much larger
+than ordinary Hedron projects, but development rebuilds currently repeat almost the entire build.
+The project needs evidence for its supported ceiling rather than speculative caching,
+parallelization, or daemon work.
+
+**Exploratory baseline (2026-08-31).** Timed work excluded isolated-environment installation and
+ran on arm64 macOS with Python 3.12 and a temporary local filesystem. The synthetic applications
+used Python component modules, scoped CSS, browser modules, and local media.
+
+| Workload | Cold build | No-op rebuild | One-file rebuild | Peak RSS |
+|---|---:|---:|---:|---:|
+| 100 components / 2,000 CSS rules / 10 modules / 2.5 MB media | 0.33 s | 0.20 s | 0.20 s | Not recorded |
+| 1,000 components / 21,000 CSS rules / 100 modules / 25 MB media | 2.19 s | 1.53 s | 1.30 s | ~119 MB |
+| 5,000 components / 55,000 CSS rules / 250 modules / 25 MB media | 9.57 s | 9.92 s | 9.97 s | ~236 MB |
+
+The same exploration measured a 100 MB packaged-asset build at 0.73 s cold and 0.28 s repeated,
+a scan of 10,302 watched files at 0.10 s median, and relinking chains of 1,000 and 5,000 browser
+modules at 1.09 s and 2.76 s. These results do not justify broad cold-build, asset, watcher, or
+memory optimization. They do show that no-op and one-file rebuilds cease to provide short feedback
+at extreme component counts.
+
+**Candidate budgets.** At 1,000 components: cold build at most 5 s, no-op rebuild at most 0.5 s,
+one-file rebuild at most 1 s, and peak RSS at most 1 GiB. At 5,000 components: cold build at most
+30 s and no-op/one-file rebuild at most 3 s. Stage 0 must rerun multiple samples on the supported
+developer and CI platform matrix before these become release gates.
+
+**Plan.** First add a deterministic benchmark generator and machine-readable cold, no-op, and
+one-change measurements. Record phase timing and invalidation reasons so a missed budget identifies
+the repeated work. If—and only if—the supported-size corpus misses a budget, admit the smallest
+correct intervention, beginning with a no-op fast path and per-component CSS/asset invalidation.
+Consider event-driven watching, persistent daemons, parallel compilation, graph-based module
+relinking, or remote caches only when a measured residual bottleneck independently justifies them.
+
+**Exit evidence.** The roadmap records the supported application-size ceiling and one of two
+outcomes: all required platforms meet the frozen budgets and no implementation ships, or the
+smallest admitted optimization restores the budgets without changing deterministic manifests,
+atomic promotion, production startup, plugin ownership, or the previous-valid-build fallback.
+Performance results include repeated samples, machine/filesystem context, peak memory, artifact
+sizes, and cache/invalidation explanations.
+
+**Non-goals.** No Node.js requirement, bundler replacement, distributed build service, ambient
+remote cache, unbounded watch daemon, performance claim from a microbenchmark alone, or optimization
+whose only justification is an application size outside Hedron's documented support ceiling.
 
 ### Shared 1.X entry and exit policy
 
