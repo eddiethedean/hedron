@@ -139,12 +139,32 @@ def test_parse_rserver_rejects_malformed() -> None:
         parse_rserver_url_output("https://wb.example/s/x?ignored=true", port=1)
     with pytest.raises(HedronError):
         parse_rserver_url_output("https://wb.example:99999/s/x", port=1)
+    with pytest.raises(HedronError):
+        parse_rserver_url_output("https://[", port=1)
 
 
 def test_parse_rserver_canonicalizes_ipv6_origin() -> None:
     mount, origin, _ = parse_rserver_url_output("https://[2001:db8::1]:8443/s/x/p/1", port=1)
     assert mount == "/s/x/p/1"
     assert origin == "https://[2001:db8::1]:8443"
+
+
+def test_malformed_bracketed_public_urls_are_diagnostics() -> None:
+    with pytest.raises(HedronError):
+        resolve_deployment(WorkbenchConfig(public_base_url="https://["), environ={})
+    with pytest.raises(HedronError):
+        resolve_deployment(
+            WorkbenchConfig(),
+            environ={
+                "RS_SERVER_URL": "https://wb.example/",
+                "UVICORN_ROOT_PATH": "https://[",
+            },
+        )
+
+
+def test_malformed_bracketed_urls_are_safe_to_redact() -> None:
+    assert redact_url("https://[") == "https://["
+    assert redact_url("https://[?%74oken=secret") == "https://[?%74oken=***"
 
 
 def test_conflicting_mount_and_public_base() -> None:

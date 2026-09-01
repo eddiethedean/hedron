@@ -82,7 +82,16 @@ def redact_url(url: str) -> str:
     raw = (url or "").strip()
     if not raw:
         return raw
-    parts = urlsplit(raw)
+    try:
+        parts = urlsplit(raw)
+    except ValueError:
+        # Keep malformed values safe for diagnostics without leaking credentials.
+        without_fragment = raw.partition("#")[0]
+        head, separator, query = without_fragment.partition("?")
+        redacted = redact_text(head)
+        if separator:
+            redacted = f"{redacted}?{redact_query(query)}"
+        return redacted
     netloc = parts.netloc.rsplit("@", 1)[-1] if "@" in parts.netloc else parts.netloc
     return urlunsplit(
         (parts.scheme, netloc, redact_path(parts.path), redact_query(parts.query), "")

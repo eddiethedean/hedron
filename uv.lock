@@ -962,7 +962,7 @@ wheels = [
 
 [[package]]
 name = "fastapi-workbench"
-version = "1.0.3"
+version = "1.0.4"
 source = { editable = "packages/fastapi-workbench" }
 dependencies = [
     { name = "starlette" },

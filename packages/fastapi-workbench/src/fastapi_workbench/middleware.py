@@ -152,7 +152,12 @@ class WorkbenchPathMiddleware:
             return scope
         candidate = raw_path.lstrip("/")
         decoded = unquote(candidate)
-        parsed = urlsplit(decoded)
+        try:
+            parsed = urlsplit(decoded)
+        except ValueError as exc:
+            raise _RejectedRequestTarget(
+                400, "malformed absolute Workbench request target"
+            ) from exc
         if parsed.scheme.lower() not in {"http", "https"} or not parsed.netloc:
             raise _RejectedRequestTarget(400, "malformed absolute Workbench request target")
         try:

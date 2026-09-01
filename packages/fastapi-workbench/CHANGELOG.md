@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.4] — 2026-08-31
+
+### Security
+- Reject malformed bracketed request targets and redact encoded sensitive query keys from
+  malformed URLs before including them in diagnostics.
+
 ## [1.0.3] — 2026-08-31
 
 ### Security

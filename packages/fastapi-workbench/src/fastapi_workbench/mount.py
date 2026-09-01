@@ -54,7 +54,10 @@ def is_local_path(url: str) -> bool:
             return False
         if decoded.startswith("//") or "://" in decoded:
             return False
-    parsed = urlparse(url)
+    try:
+        parsed = urlparse(url)
+    except ValueError:
+        return False
     if parsed.scheme or parsed.netloc:
         return False
     if not url.startswith("/") or url.startswith("//"):
@@ -62,7 +65,10 @@ def is_local_path(url: str) -> bool:
     if decoded.startswith("//"):
         return False
     path = parsed.path or "/"
-    decoded_path = urlparse(decoded).path or "/"
+    try:
+        decoded_path = urlparse(decoded).path or "/"
+    except ValueError:
+        return False
     for candidate in (path, decoded_path, url, decoded):
         if _path_has_traversal(candidate):
             return False
