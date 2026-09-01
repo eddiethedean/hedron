@@ -170,6 +170,9 @@ You should see **Hello from hedron new** and a **Refresh status** button.
 Click **Refresh status**. The timestamp changes without the whole page reloading. The browser asked
 for a small page fragment, and Hedron replaced only the declared status region.
 
+Click **Ping**. A toast appears and the browser remains on the home page. The generated action
+button carries the HTMX and CSRF wiring derived from the `ping` handle.
+
 `127.0.0.1` means your own computer. Other people cannot use this development URL, and starting a
 development server is not the same as publishing an application.
 

@@ -17,9 +17,12 @@ from hedron import (
     Hedron,
     Page,
     RefreshButton,
+    Stack,
     SubmitButton,
     Text,
+    html,
     redirect_local,
+    refresh,
     resolve_mount_path_from_environ,
     swap,
 )
@@ -217,6 +220,63 @@ def test_rendered_component_urls_are_automatically_mounted_once() -> None:
     assert response.text.count(f"{mount}{mount}") == 0
     assert f'name="hedron-mount-path" content="{mount}"' in response.text
     assert f'src="{mount}/hedron-static/hedron-mount.mjs"' in response.text
+
+
+def test_workbench_handle_controls_refresh_and_post_without_full_page_navigation() -> None:
+    mount = "/s/guide/p/8000"
+    app = HedronPosit(
+        title="guide",
+        security="standard",
+        explorer="off",
+        session_secret="test-secret-ok",
+        workbench_mount=mount,
+    )
+
+    @app.view("/status")
+    def guide_status():
+        return html.div(Text("All systems operational"), role="status")
+
+    @app.action("/ping", fallback="/")
+    def guide_ping():
+        return refresh(guide_status).toast("pong")
+
+    @app.page("/")
+    def guide_home() -> Page:
+        return Page(
+            Stack(
+                guide_status(),
+                guide_status.refresh_button("Refresh status"),
+                guide_ping.button("Ping"),
+            ),
+            title="Guide",
+        )
+
+    client = TestClient(app, follow_redirects=False)
+    page = client.get(f"{mount}/")
+    token = page.cookies.get("hedron_csrf")
+    assert page.status_code == 200
+    assert token
+    assert f'hx-get="{mount}/status"' in page.text
+    assert f'hx-post="{mount}/ping"' in page.text
+    assert "hx-headers" in page.text
+
+    fragment = client.get(
+        f"{mount}/status",
+        headers={"HX-Request": "true", "HX-Target": guide_status.dom_id},
+    )
+    assert fragment.status_code == 200
+    assert "All systems operational" in fragment.text
+
+    action = client.post(
+        f"{mount}/ping",
+        headers={"HX-Request": "true", "X-CSRF-Token": token},
+    )
+    assert action.status_code == 200
+    assert "HX-Trigger" in action.headers
+
+    fallback = client.post(f"{mount}/ping", data={"csrf_token": token})
+    assert fallback.status_code == 303
+    assert fallback.headers["location"] == f"{mount}/"
 
 
 def test_request_time_root_path_adapts_urls_redirects_and_owned_cookies() -> None:

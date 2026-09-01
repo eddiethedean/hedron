@@ -35,7 +35,7 @@ def _app_minimal() -> str:
     return """import os
 from datetime import datetime, timezone
 
-from hedron import CsrfField, Hedron, SafeUrl, Stack, Text, UrlPurpose, html
+from hedron import Hedron, Stack, Text, html
 
 app = Hedron(
     title="Hedron App",
@@ -59,7 +59,7 @@ def status():
     )
 
 
-@app.action("/ping")
+@app.action("/ping", fallback="/")
 def ping():
     from hedron import refresh
 
@@ -71,17 +71,8 @@ def home():
     return Stack(
         Text("Hello from hedron new"),
         status(),
-        html.form(
-            html.button("Refresh status", type="submit"),
-            method="get",
-            action=SafeUrl.parse(status.path, purpose=UrlPurpose.FORM_ACTION),
-        ),
-        html.form(
-            CsrfField(),
-            html.button("Ping", type="submit"),
-            method="post",
-            action=SafeUrl.parse("/ping", purpose=UrlPurpose.FORM_ACTION),
-        ),
+        status.refresh_button("Refresh status"),
+        ping.button("Ping"),
     )
 """
 

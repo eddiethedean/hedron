@@ -113,7 +113,7 @@ def status():
     return html.div(Text("ok"), role="status")
 
 
-@app.action("/notes")
+@app.action("/notes", fallback="/")
 def save():
     return refresh(status)
 
@@ -122,8 +122,8 @@ def save():
 def home():
     return Stack(
         status(),
-        html.button("Refresh", hx_get=status.path),
-        html.button("Save", hx_post="/notes"),
+        status.refresh_button("Refresh"),
+        save.button("Save"),
     )
 ```
 

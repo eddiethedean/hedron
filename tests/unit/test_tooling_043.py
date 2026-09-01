@@ -93,7 +93,7 @@ def old():
     dest.mkdir()
     assert _scaffold_fastapi(ns, dest) == 0
     source = (dest / "app.py").read_text(encoding="utf-8")
-    assert "@app.refreshable" in source
+    assert '@app.view("/status")' in source
     assert "refresh_button" in source
     assert "swap(" not in source
     assert "app.region" not in source

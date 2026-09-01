@@ -104,7 +104,7 @@ def status():
     )
 
 
-@app.action("/ping")
+@app.action("/ping", fallback="/")
 def ping():
     from hedron import refresh
 
@@ -116,8 +116,8 @@ def home():
     return Stack(
         Text("Hello from hedron new"),
         status(),
-        html.button("Refresh status", hx_get=status.path),
-        html.button("Ping", hx_post="/ping"),
+        status.refresh_button("Refresh status"),
+        ping.button("Ping"),
     )
 ```
 

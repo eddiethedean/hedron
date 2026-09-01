@@ -178,16 +178,16 @@ dependencies = [
 Open `app.py`. Change the Hedron import and application constructor while leaving the generated
 page, status region, and fragment intact.
 
-Change the generated import line (keep the other generated imports, which the forms below use):
+Change the generated import line:
 
 ```python
-from hedron import CsrfField, Hedron, SafeUrl, Stack, Text, UrlPurpose, html
+from hedron import Hedron, Stack, Text, html
 ```
 
 to:
 
 ```python
-from hedron import CsrfField, SafeUrl, Stack, Text, UrlPurpose, html
+from hedron import Stack, Text, html
 from hedron_posit import HedronPosit
 ```
 
@@ -244,7 +244,8 @@ To open the app from a Workbench VS Code session:
 4. Allow VS Code to open the link if it asks about an external website.
 
 You should see **Hello from hedron new**. Select **Refresh status** and confirm the timestamp
-changes without a full-page reload.
+changes without a full-page reload. Select **Ping** and confirm the toast appears while the page
+stays at the application root.
 
 The browser URL may contain a path like `/s/.../p/...`. It is temporary and specific to the
 Workbench session. Copying it into `app.py`, email, tests, or configuration will break when the
@@ -369,6 +370,7 @@ or continue with [Continue from here](#continue-from-here).
 | Proxied Servers is empty | Server did not start, stopped on import, or extension is unavailable | Read the terminal; confirm a listening process; ask whether the Workbench extension is installed |
 | `HED-WB-0003` | `rserver-url` is missing or unusable | Ask the administrator to repair Workbench discovery; do not guess the mount |
 | Page is unstyled or links lose `/s/.../p/...` | App started without the Workbench-aware path handoff | Stop it and use `hedron-posit run app:app --port 8000 --reload` |
+| Refresh opens a page containing only the timestamp, or Ping shows `HED-CMD-0002` | The app contains an older broken scaffold that used plain forms for fragment actions | Replace those forms with `status.refresh_button("Refresh status")` and `ping.button("Ping")`; declare `fallback="/"` on the Ping action |
 | URL contains the mount twice | Application code manually prepended the Workbench path | Return ordinary local paths and let `hedron-posit` prefix them once |
 | Another user cannot open your copied URL | Workbench development URLs are session-scoped and authenticated | Publish through an approved deployment target such as Posit Connect |
 | Session ended and work vanished | Files were written to temporary storage or were not saved | Use the approved durable project directory; never keep source under `/tmp` |

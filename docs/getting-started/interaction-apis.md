@@ -10,8 +10,8 @@ HTTP boundary.
 | `@app.view` + `@app.action` | Canonical function roles. Views own replaceable handles; actions own unsafe requests and outcomes. |
 | `HedronRouter.view` / `HedronRouter.action` | Advanced route integration when a lower-level HTTP/target contract is required. |
 
-Both compile to the same fail-closed fragment/OOB stack. The 0.67 helper spellings remain only as
-warning-backed migration paths.
+Both compile to the same fail-closed fragment/OOB stack. A view or action decorator returns a
+handle whose controls keep the request URL, target, and CSRF wiring synchronized.
 
 ## Canonical: view and action
 
@@ -26,7 +26,7 @@ def status():
     return html.div(Text("ok"), role="status")
 
 
-@app.action("/ping")
+@app.action("/ping", fallback="/")
 def ping():
     from hedron import refresh
 
@@ -37,8 +37,8 @@ def ping():
 def home():
     return Stack(
         status(),
-        html.button("Refresh", hx_get=status.path),
-        html.button("Ping", hx_post="/ping"),
+        status.refresh_button("Refresh"),
+        ping.button("Ping"),
     )
 ```
 

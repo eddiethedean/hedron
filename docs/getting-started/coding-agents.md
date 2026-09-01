@@ -382,7 +382,7 @@ advanced `FragmentRegion` API and preserve the same region through route, contro
 from hedron import refresh
 
 
-@app.action("/queue/retry", method="POST")
+@app.action("/queue/retry", method="POST", fallback="/")
 def retry_failed_jobs():
     retry_jobs_in_service_layer()
     return refresh(queue_size).toast("Retry requested")

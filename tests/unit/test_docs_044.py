@@ -21,7 +21,7 @@ def test_docs_044_layers_and_whats_new() -> None:
     archive = (ROOT / "docs" / "guides" / "whats-new-archive.md").read_text(encoding="utf-8")
     mkdocs = (ROOT / "mkdocs.yml").read_text(encoding="utf-8")
     header = contract.split("---", 2)[1] if contract.startswith("---") else contract[:200]
-    assert "status: current" in header or "status: current" in contract
+    assert "status: historical" in header
     assert "ViewParams" in whats
     assert "FormBody" in whats
     assert "SR-021" not in whats
@@ -33,5 +33,5 @@ def test_docs_044_layers_and_whats_new() -> None:
     scaffold = (
         ROOT / "packages" / "hedron" / "src" / "hedron" / "cli" / "scaffold" / "fastapi.py"
     ).read_text(encoding="utf-8")
-    assert '@app.refreshable("/status")' in scaffold
+    assert '@app.view("/status")' in scaffold
     assert "RefreshableView" not in scaffold
