@@ -63,7 +63,13 @@ class PollPolicy:
     stop_on_terminal: bool = True
 
     def __post_init__(self) -> None:
-        if self.interval_ms < 1000 or self.interval_ms > 60_000:
+        raw_interval = cast(object, self.interval_ms)
+        if (
+            isinstance(raw_interval, bool)
+            or not isinstance(raw_interval, int)
+            or self.interval_ms < 1000
+            or self.interval_ms > 60_000
+        ):
             raise error(
                 HED_TASKFLOW_0003,
                 title="Invalid poll interval",

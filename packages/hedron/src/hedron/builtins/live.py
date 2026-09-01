@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar
+from typing import ClassVar, cast
 
 from hedron.builtins.hx import safe_target
 from hedron.routing.reverse import ComponentRef
@@ -126,6 +126,9 @@ class Poll(Component[Props]):
     ) -> None:
         super().__init__(Props())
         self.ref = ref
+        raw_interval = cast(object, interval_ms)
+        if isinstance(raw_interval, bool) or not isinstance(raw_interval, int):
+            raise ValueError("interval_ms must be an integer")
         self.interval_ms = max(250, interval_ms)
         self.target_id = target_id
         self.content = content
