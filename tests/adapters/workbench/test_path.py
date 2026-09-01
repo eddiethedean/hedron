@@ -8,6 +8,7 @@ import pytest
 from starlette._utils import get_route_path
 from starlette.types import Scope
 
+from fastapi_workbench.mount import is_local_path
 from hedron_posit.config import WorkbenchMode
 from hedron_posit.middleware import WorkbenchPathMiddleware, workbenchify
 
@@ -90,6 +91,18 @@ def test_encoded_absolute_target() -> None:
     out = mw.normalize_scope(_scope(path=encoded, root_path=""))
     assert out["path"] == "/s/abc/p/1/login"
     assert out["query_string"] == b""
+
+
+def test_malformed_bracketed_targets_fail_closed() -> None:
+    assert is_local_path("//]YJnx") is False
+    mw = WorkbenchPathMiddleware(
+        _NullApp(),
+        mode=WorkbenchMode.ON,
+        expected_origins=("https://wb.example",),
+    )
+    with pytest.raises(Exception) as exc:
+        mw.normalize_scope(_scope(path="/http%3a%2f%2f%5d", root_path=""))
+    assert getattr(exc.value, "status_code", None) == 400
 
 
 def test_expected_mount_supplies_missing_root_path() -> None:

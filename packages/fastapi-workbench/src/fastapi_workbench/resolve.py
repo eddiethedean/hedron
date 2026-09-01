@@ -194,7 +194,14 @@ def _validated_mount(raw: str, *, source: str) -> str:
 
 def _validated_public_base(raw: str) -> tuple[str | None, str, SplitResult | None]:
     text = str(raw).strip()
-    parsed = urlsplit(text)
+    try:
+        parsed = urlsplit(text)
+    except ValueError as exc:
+        raise _error(
+            title="Invalid Workbench public base URL",
+            explanation="Public base URL contained an invalid host or port.",
+            remediation="Set a valid http(s) URL or a local absolute mount path.",
+        ) from exc
     looks_like_url = bool(parsed.scheme or parsed.netloc or text.startswith("//") or "://" in text)
     if not looks_like_url:
         return None, _validated_mount(text, source="public base path"), None
@@ -239,7 +246,14 @@ def _uvicorn_root_path_mount(raw: str) -> str:
     the resolver's path and URL safety checks.
     """
     text = str(raw).strip()
-    parsed = urlsplit(text)
+    try:
+        parsed = urlsplit(text)
+    except ValueError as exc:
+        raise _error(
+            title="Invalid Workbench root path",
+            explanation="UVICORN_ROOT_PATH contained an invalid host or port.",
+            remediation="Set a local mount path or a valid http(s) URL.",
+        ) from exc
     looks_like_url = bool(parsed.scheme or parsed.netloc or text.startswith("//") or "://" in text)
     if not looks_like_url:
         return text
@@ -250,7 +264,14 @@ def _uvicorn_root_path_mount(raw: str) -> str:
 def _uvicorn_root_path_public_base(raw: str) -> str | None:
     """Return a validated full Workbench URL while preserving its origin."""
     text = str(raw).strip()
-    parsed = urlsplit(text)
+    try:
+        parsed = urlsplit(text)
+    except ValueError as exc:
+        raise _error(
+            title="Invalid Workbench root path",
+            explanation="UVICORN_ROOT_PATH contained an invalid host or port.",
+            remediation="Set a local mount path or a valid http(s) URL.",
+        ) from exc
     if parsed.scheme not in {"http", "https"} or not parsed.netloc:
         return None
     origin, mount, _ = _validated_public_base(text)
@@ -358,7 +379,17 @@ def parse_rserver_url_output(raw: str, *, port: int) -> tuple[str, str, str]:
             )
         )
     if text.startswith(("http://", "https://")):
-        parsed = urlsplit(text)
+        try:
+            parsed = urlsplit(text)
+        except ValueError as exc:
+            raise WorkbenchError(
+                make_diagnostic(
+                    FWB_0002,
+                    title="Invalid rserver-url URL",
+                    explanation="Full-URL discovery contained an invalid host or port.",
+                    remediation="Reject the output and fail closed.",
+                )
+            ) from exc
         if parsed.scheme not in {"http", "https"} or not parsed.netloc:
             raise WorkbenchError(
                 make_diagnostic(
