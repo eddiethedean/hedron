@@ -1,4 +1,4 @@
-# Hedron-native documentation acceptance and cutover plan
+# `hedron-docs` and Hedron-native documentation acceptance and cutover plan
 
 **Status:** Draft / no production change authorized
 
@@ -10,10 +10,11 @@
 
 ## Purpose
 
-Define the evidence required to replace the Read the Docs/MkDocs Material public site with the
-Hedron-native FastAPI Cloud application. This document is both an acceptance specification and the
-outline of the production runbook. It does not authorize a deployment, custom-domain attachment,
-DNS edit, redirect, or retirement of the existing site.
+Define the evidence required to validate the experimental `hedron-docs` package and replace the
+Read the Docs/MkDocs Material public site with the Hedron-native FastAPI Cloud application. This
+document is both an acceptance specification and the outline of the production runbook. It does not
+authorize a package publication, deployment, custom-domain attachment, DNS edit, redirect, or
+retirement of the existing site.
 
 Every gate begins **Planned**. A gate becomes **Verified** only when its evidence is attached or
 linked from a future tracking ledger. **Deferred** is not sufficient for production cutover unless
@@ -21,12 +22,13 @@ this plan explicitly marks the capability optional and records an accepted fallb
 
 ## Release decision model
 
-There are four independent decisions:
+There are five independent decisions:
 
-1. **Prototype:** may a non-canonical preview be deployed?
-2. **Migration:** may the full public corpus be migrated and kept in parity?
-3. **Cutover:** may the canonical domain move to the Hedron application?
-4. **Retirement:** may the Read the Docs fallback or historical content be removed?
+1. **Package prototype:** may the experimental package boundary be implemented and tested in-tree?
+2. **Application prototype:** may a non-canonical preview be deployed?
+3. **Migration:** may the full public corpus be migrated and kept in parity?
+4. **Cutover:** may the canonical domain move to the Hedron application?
+5. **Retirement:** may the Read the Docs fallback or historical content be removed?
 
 Passing an earlier decision never implies a later one. Retirement occurs only after the observation
 and rollback windows and a separate retention decision.
@@ -36,7 +38,8 @@ and rollback windows and a separate retention decision.
 | Gate | Requirement | Evidence | Cutover blocker |
 |---|---|---|---|
 | `BASELINE-DOCS` | Current public routes, anchors, nav, syntax, assets, generated pages, search fixtures, and custom behavior captured | machine-readable inventories + baseline report | Yes |
-| `APP-DOCS` | Locked workspace install, explicit entrypoint, production Hedron skeleton, health/readiness, no database | clean install/start/smoke logs | Yes |
+| `PACKAGE-DOCS` | Experimental package metadata, native config, bounded MkDocs adapter, CLI/API seams, typing, wheel, and clean-install behavior are explicit | wheel/import/CLI/config tests + API inventory | Yes |
+| `APP-DOCS` | Locked workspace install of the package and app, explicit entrypoint, production Hedron skeleton, health/readiness, no database | clean install/start/smoke logs | Yes |
 | `COMPILER-DOCS` | Source-located typed AST, native lowering, deterministic manifest, strict diagnostics | compiler tests + repeat-build hash | Yes |
 | `SYNTAX-DOCS` | Every public Markdown construct has Required, compatibility, migrated, or accepted Deferred disposition | syntax inventory with zero unknown rows | Yes |
 | `ROUTES-DOCS` | Public route, slash, anchor, redirect, canonical, edit/source, and status behavior preserved | old/new route and anchor diff | Yes |
@@ -74,6 +77,24 @@ Before implementation claims parity, capture:
 
 Inventories must distinguish the public site from the maintainer corpus. File count alone is not a
 parity metric.
+
+## Package acceptance boundary
+
+Before `PACKAGE-DOCS` becomes Verified:
+
+- the distribution/import/command names are `hedron-docs`, `hedron_docs`, and `hedron-docs`;
+- `hedron-docs.toml` has a versioned schema and rejects unknown or unsafe configuration explicitly;
+- the MkDocs adapter imports only declared metadata, navigation, and exclusions and never executes
+  arbitrary plugins, hooks, theme code, or configuration constructors;
+- `check`, `build`, and `serve` have documented exit behavior and source-located diagnostics;
+- two clean `build` runs produce byte-identical manifests and asset inventories;
+- a built wheel installs without the monorepo and serves the vertical-slice fixture using public
+  imports only;
+- the manifest schema rejects unsupported versions and malformed or oversized content; and
+- package metadata calls the surface experimental and makes no Stable support-matrix claim.
+
+Package publication is a separate decision from public-site cutover. A later promotion beyond an
+experimental `0.x` line requires its own compatibility proposal and adopter evidence.
 
 ## Acceptance matrices
 

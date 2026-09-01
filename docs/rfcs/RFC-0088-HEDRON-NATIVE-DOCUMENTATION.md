@@ -1,8 +1,8 @@
-# RFC-0088: Hedron-native documentation application
+# RFC-0088: `hedron-docs` compiler and Hedron-native documentation application
 
 **Status:** Draft
 **Phase:** Unassigned; roadmap ownership requires a later decision
-**Planning baseline:** Published `v0.59.0`
+**Planning baseline:** Published `v1.0.5`
 **Target:** Preview and production cutover are evidence-gated, not version-gated in this draft
 
 **Implementation plan:**
@@ -13,17 +13,21 @@
 
 ## Summary
 
-Replace Hedron's MkDocs Material public site with a first-party Hedron application deployed on
-FastAPI Cloud. The application will use Hedron for page rendering, application chrome, navigation,
-search, responsive behavior, typed interactions, live component examples, themes, and error pages.
-The documentation corpus remains Markdown so maintainers keep a reviewable, diff-friendly authoring
-format, but a documentation compiler lowers that Markdown into native Hedron component trees rather
-than returning one opaque HTML document.
+Introduce an experimental `hedron-docs` package that compiles a bounded Markdown documentation
+corpus into an immutable site manifest consumed by a Hedron application. Its first proving consumer
+is Hedron's own public documentation application, deployed on FastAPI Cloud. The application uses
+Hedron for page rendering, application chrome, navigation, search, responsive behavior, typed
+interactions, live component examples, themes, and error pages. The documentation corpus remains
+Markdown so maintainers keep a reviewable, diff-friendly authoring format, but the compiler lowers
+supported constructs into native Hedron component plans rather than returning one opaque HTML
+document.
 
-The site is a flagship production consumer. It must demonstrate the same public APIs and deployment
-story that Hedron recommends to adopters. Missing generic capability discovered by the site should
-be fixed in Hedron and evidenced independently; documentation-only policy and presentation remain
-inside the documentation application.
+The package begins as an explicitly experimental tooling surface, not a stable extension of the
+Hedron 1.0 contract. The site is its flagship proving consumer and must demonstrate the same public
+Hedron APIs and deployment story that Hedron recommends to adopters. Generic compilation and
+runtime behavior belongs in `hedron-docs`; Hedron-site information architecture, branding, ranking
+fixtures, release banners, and demo selection remain in the application. Missing generic Hedron
+capability discovered by the site should be fixed in Hedron and evidenced independently.
 
 The migration is not a hosting wrapper around the current MkDocs output. MkDocs remains the
 production fallback and parity oracle during migration, then leaves the published runtime after the
@@ -72,12 +76,16 @@ runnable under ordinary ASGI hosting and testable without a FastAPI Cloud accoun
 5. Make live examples safe, bounded, representative, and usable without arbitrary code execution.
 6. Keep production rendering stateless and compatible with multiple instances and scale-to-zero.
 7. Establish repeatable parity, preview, cutover, observation, and rollback evidence.
-8. Separate reusable Hedron capability gaps from documentation-application policy.
+8. Establish a narrow reusable package boundary without promising stable APIs before the corpus
+   and first-party application validate it.
+9. Separate reusable Hedron capability gaps from documentation-application policy.
 
 ## Non-goals
 
 - Reproduce MkDocs Material's DOM or visual design pixel for pixel.
 - Turn all Markdown or static-site behavior into public `hedron` APIs.
+- Provide a drop-in MkDocs plugin, theme, or complete compatibility implementation.
+- Declare `hedron-docs` Stable before a separately accepted compatibility review.
 - Require Python source files for ordinary prose authoring.
 - Execute arbitrary Python, shell, browser, or network code supplied by a documentation page.
 - Make the public documentation application a general multi-tenant content-management system.
@@ -96,6 +104,8 @@ runnable under ordinary ASGI hosting and testable without a FastAPI Cloud accoun
   raw HTML.
 - **Documentation compiler:** the build/startup pipeline that validates source documents and lowers
   supported AST nodes into an immutable document manifest.
+- **Compiler package:** the experimental `hedron-docs` distribution containing configuration,
+  parsing, diagnostics, lowering, manifest, search, runtime, and CLI boundaries.
 - **Document manifest:** the route, navigation, metadata, heading, search, asset, API-reference, and
   demo facts consumed by the runtime.
 - **Docs shell:** the Hedron application chrome around document content.
@@ -103,20 +113,50 @@ runnable under ordinary ASGI hosting and testable without a FastAPI Cloud accoun
 - **Parity oracle:** the current strict MkDocs build and its route/content inventory during
   migration. It is not the target runtime.
 
-The documentation application owns source conventions, navigation policy, ranking, site branding,
-release banners, canonical URL policy, and demo selection. Hedron owns reusable components,
-rendering, interactions, security boundaries, styling, and diagnostics promoted through their own
-contracts and tests.
+The `hedron-docs` package owns generic source configuration, parsing, diagnostics, lowering,
+manifest schemas, bounded search mechanics, and application construction. The documentation
+application owns Hedron-specific navigation policy, ranking fixtures, site branding, release
+banners, canonical URL policy, and demo selection. Hedron owns reusable components, rendering,
+interactions, security boundaries, styling, and diagnostics promoted through their own contracts
+and tests.
 
 ## Proposed design
 
+### Package boundary
+
+Add an experimental workspace package named `hedron-docs`, imported as `hedron_docs`. It is a
+tooling package outside the stable Hedron 1.0 package set. Its initial supported workflow is:
+
+```text
+Markdown + hedron-docs.toml + optional normalized mkdocs.yml import
+                              │
+                  hedron-docs check/build
+                              │
+               immutable versioned site manifest
+                              │
+             create_docs_app(manifest_path)
+                              │
+                    ordinary ASGI application
+```
+
+The provisional command surface is `hedron-docs check`, `hedron-docs build`, and `hedron-docs
+serve`. The provisional Python surface is deliberately small: a build configuration model, a
+`compile_site(...)` entry point, a versioned manifest loader, and
+`create_docs_app(manifest_path, ...)`. Development serving may compile before startup; production
+request handling may not.
+
+`hedron-docs.toml` is the native configuration authority for new adopters. A bounded
+`import-mkdocs` adapter translates the current `mkdocs.yml` site metadata, navigation, and exclusion
+policy during migration. The adapter does not promise arbitrary MkDocs plugin execution or Material
+theme compatibility. Compiler internals, document nodes, and lowerers remain private or explicitly
+experimental until the first-party migration demonstrates a reusable contract.
+
 ### Application boundary
 
-Add a workspace application, provisionally `apps/hedron-docs`, with its own `pyproject.toml` and a
-configured FastAPI entrypoint. It depends on the in-workspace Hedron packages so the deployed
-preview exercises the repository revision being documented. FastAPI Cloud uses the application
-directory for that workspace member; local development uses the same entrypoint through
-`fastapi dev` or an equivalent uv command.
+Add a workspace application at `apps/hedron-docs`, with its own `pyproject.toml`, site configuration,
+and configured FastAPI entrypoint. It depends on the in-workspace `hedron-docs` and Hedron packages
+so the deployed preview exercises the repository revision being documented. FastAPI Cloud uses the
+application directory for that workspace member; local development uses the same entrypoint.
 
 The runtime is a `Hedron` application with:
 
@@ -312,11 +352,19 @@ This maximizes component use but makes prose editing, GitHub reading, external c
 large-scale maintenance substantially worse. Rejected. Python remains appropriate for live demos
 and generated component definitions, not ordinary prose.
 
-### Build a generic `hedron-docs` package before the site
+### Publish a stable generic documentation framework before the site
 
-The reusable boundary is not yet evidenced. Starting with a public package risks encoding Hedron's
-site policy as framework API. Rejected for the first cut. Generic capabilities can be extracted
-after the flagship application proves them.
+The reusable boundary is not yet evidenced. Promising a stable, broadly compatible framework would
+risk encoding Hedron's site policy as permanent API. Rejected. The selected approach uses an
+experimental `hedron-docs` package with one first-party proving consumer; stability and broader
+compatibility require later evidence and a separate decision.
+
+### Name the package `hedron-mkdocs`
+
+That name conventionally implies an MkDocs plugin, theme, or runtime integration. The selected
+architecture replaces MkDocs at runtime and uses it only through a bounded migration adapter and
+parity oracle. Rejected for the compiler package. The name remains available for a future dedicated
+MkDocs integration if one is independently justified.
 
 ### Keep Read the Docs permanently
 
@@ -396,6 +444,8 @@ headers. HTML remains complete enough for direct navigation and no-script use.
 ### Compiler and manifest
 
 - Golden AST and Hedron-render tests for every admitted Markdown construct.
+- Clean wheel installation and public-import smoke tests for the experimental `hedron-docs`
+  package.
 - Source-location diagnostics for malformed and unsupported syntax.
 - Determinism checks across two clean compilations.
 - Route, anchor, navigation, asset, API-symbol, and demo-reference collision checks.
@@ -430,34 +480,35 @@ headers. HTML remains complete enough for direct navigation and no-script use.
 
 The Markdown corpus and documentation ownership config remain canonical during migration. The
 compiler initially consumes a normalized import of the current navigation and exclusion policy so
-that a renderer rewrite does not also become an information-architecture rewrite. A later dedicated
-navigation manifest may replace `mkdocs.yml` only with a reviewed migration and parity check.
+that a renderer rewrite does not also become an information-architecture rewrite. The checked-in
+native authority becomes `hedron-docs.toml`; `mkdocs.yml` remains the parity oracle and fallback
+input until cutover. Replacing it requires a reviewed migration and parity check.
 
 Existing public routes, anchors, package metadata links, README links, badges, edit links, and
 external references are inventoried before cutover. The provider-neutral canonical domain is added
 before broad link replacement. Read the Docs remains available for historical versions and
 rollback until the retention decision is accepted and verified.
 
-Public Hedron APIs are not created merely because the docs app has a helper. A helper becomes a
-framework candidate only after it is generic, independently tested, documented, and assigned to an
-accepted compatibility/stability contract.
+Public Hedron APIs are not created merely because the package or docs app has a helper. Likewise,
+an experimental `hedron-docs` helper becomes a supported package API only after it is generic,
+independently tested, documented, and assigned to an accepted compatibility/stability contract.
 
 ## Open questions
 
 1. Which release phase, if any, owns the initiative and any generic Hedron changes?
-2. What is the final workspace application path and package name?
-3. Is `docs.hedron.dev` available and should it be the canonical domain?
-4. Which Markdown parser provides source-located AST coverage while preserving the pure-Python
+2. Is `docs.hedron.dev` available and should it be the canonical domain?
+3. Which Markdown parser provides source-located AST coverage while preserving the pure-Python
    Supported installation?
-5. Which current MkDocs extensions are Required for first cutover, and which can receive an
+4. Which current MkDocs extensions are Required for first cutover, and which can receive an
    explicit compatibility-node or Deferred disposition?
-6. Does the first production release serve only current stable docs, or must it also serve an
+5. Does the first production release serve only current stable docs, or must it also serve an
    immutable development channel?
-7. How long must Read the Docs remain active, and can its project serve redirects or a migration
+6. How long must Read the Docs remain active, and can its project serve redirects or a migration
    banner for provider-owned historical URLs?
-8. Which live demos are safe enough for the first public deployment?
-9. Should the public deployment expose any authenticated Explorer surface, or should Explorer
+7. Which live demos are safe enough for the first public deployment?
+8. Should the public deployment expose any authenticated Explorer surface, or should Explorer
    evidence remain CI/local only?
+9. What evidence is required before `hedron-docs` can publish beyond an experimental `0.x` line?
 10. Should native GitHub deployment or a deploy-token workflow own production promotion and branch
     previews?
 11. Which measured cold-start, warm-latency, and asset budgets become release blockers after the
@@ -468,6 +519,8 @@ accepted compatibility/stability contract.
 This RFC may move from Draft to Accepted only when:
 
 - roadmap ownership or an explicitly cross-cutting disposition is recorded;
+- the experimental `hedron-docs` distribution/import/command names, native configuration schema,
+  bounded MkDocs adapter, candidate public API, and maturity claim are frozen;
 - the source syntax inventory has a Required/compatibility/Deferred disposition for every current
   public construct;
 - the parser, manifest schema, native lowering boundary, route policy, and canonical domain policy

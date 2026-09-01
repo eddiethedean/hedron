@@ -1,4 +1,4 @@
-# Hedron-native documentation implementation plan
+# `hedron-docs` and Hedron-native documentation implementation plan
 
 **Status:** Draft / unassigned
 
@@ -10,11 +10,11 @@
 
 ## Outcome
 
-Build Hedron's public documentation as a production Hedron application and deploy it to FastAPI
-Cloud behind a provider-neutral domain. Maintainers continue to author Markdown, but the published
-site compiles supported Markdown constructs into native Hedron component trees. Search, navigation,
-responsive chrome, themes, API reference, live examples, error pages, and deployment behavior all
-exercise Hedron's supported public paths.
+Build an experimental `hedron-docs` compiler/runtime package and prove it through Hedron's public
+documentation application, deployed to FastAPI Cloud behind a provider-neutral domain. Maintainers
+continue to author Markdown, but the published site compiles supported Markdown constructs into
+native Hedron component plans. Search, navigation, responsive chrome, themes, API reference, live
+examples, error pages, and deployment behavior all exercise Hedron's supported public paths.
 
 This plan intentionally does not assign a release number. Stage 0 ends with an accepted RFC,
 measured prototype, frozen inventories, and tracked implementation work. Production cutover is a
@@ -35,43 +35,46 @@ separate evidence-backed decision.
    use cases and compatibility requirements are clear.
 7. **Every milestone is reversible.** MkDocs remains buildable and deployable until production
    observation and rollback gates close.
+8. **Experimental package, narrow surface.** `hedron-docs` begins outside the stable train; only the
+   CLI, configuration, compiler entry point, manifest loader, and app factory are candidate public
+   surfaces before the first-party migration closes.
 
 ## Proposed repository shape
 
-Names are provisional until RFC acceptance.
+The package and application names are selected; detailed module placement remains provisional until
+RFC acceptance and the vertical-slice prototype.
 
 ```text
-apps/hedron-docs/
+packages/hedron-docs/
 ├── pyproject.toml
+├── README.md
+├── CHANGELOG.md
 ├── src/hedron_docs/
 │   ├── __init__.py
-│   ├── main.py                 # Hedron app and explicit entrypoint
-│   ├── settings.py             # roots, domain, environment, budgets
-│   ├── compiler/
-│   │   ├── ast.py              # typed, source-located document nodes
-│   │   ├── markdown.py         # parser adapter
-│   │   ├── lower.py            # AST -> Hedron document components
-│   │   ├── directives.py       # API/demo allowlists
-│   │   ├── manifest.py         # immutable schema and serialization
-│   │   └── diagnostics.py
-│   ├── content/
-│   │   ├── catalog.py          # routes, nav, metadata, ownership
-│   │   └── search.py           # deterministic bounded index
+│   ├── config.py               # native config + bounded MkDocs import
+│   ├── ast.py                  # typed, source-located document nodes
+│   ├── markdown.py             # parser adapter
+│   ├── lower.py                # AST -> Hedron document plan
+│   ├── manifest.py             # immutable schema and serialization
+│   ├── diagnostics.py
+│   ├── navigation.py
+│   ├── search.py               # deterministic bounded index
+│   ├── app.py                  # manifest -> Hedron/ASGI app
+│   ├── cli.py
+│   └── components/
+└── tests/
+apps/hedron-docs/
+├── pyproject.toml
+├── hedron-docs.toml            # site policy and MkDocs migration input
+├── src/hedron_docs_app/
+│   ├── __init__.py
+│   ├── main.py                 # app factory call and explicit entrypoint
+│   ├── settings.py             # domain, environment, app budgets
 │   ├── components/
-│   │   ├── shell.py
-│   │   ├── prose.py
-│   │   ├── code.py
-│   │   ├── api_reference.py
-│   │   └── search.py
-│   ├── demos/
-│   │   ├── registry.py
-│   │   └── ...                 # explicit bounded examples
-│   └── routes/
-│       ├── documents.py
-│       ├── search.py
-│       ├── demos.py
-│       ├── health.py
-│       └── errors.py
+│   │   └── shell.py
+│   └── demos/
+│       ├── registry.py
+│       └── ...                 # explicit bounded examples
 ├── tests/
 └── README.md
 docs/
@@ -80,10 +83,10 @@ docs/
 build/hedron-docs/               # ignored local compiler output
 ```
 
-The application is a uv workspace member and depends on in-tree `hedron` packages. The deployed
-application directory is `apps/hedron-docs`; FastAPI Cloud resolves its dependencies through the
-root workspace lock. Packaging must include or generate the public content manifest without relying
-on files outside the uploaded repository.
+The package and application are uv workspace members. The application depends on the in-tree
+`hedron-docs` and `hedron` packages. The deployed application directory is `apps/hedron-docs`;
+FastAPI Cloud resolves its dependencies through the root workspace lock. Packaging must include or
+generate the public content manifest without relying on files outside the uploaded repository.
 
 ## Architectural flow
 
@@ -107,12 +110,34 @@ Markdown + generated pages + release facts + current navigation
           Hedron pages + fragments + explicit live demos
                               │
                               ▼
-                local ASGI / CI / FastAPI Cloud
+                  local ASGI / CI / FastAPI Cloud
 ```
 
 The manifest is the boundary between untrusted/complex compilation and bounded request handling.
 Production requests resolve known identifiers and render known Hedron components; they do not parse
 Markdown or import arbitrary Python targets.
+
+## Provisional package surface
+
+The initial plan reserves this small user-facing surface while leaving AST and lowering details
+experimental:
+
+```bash
+hedron-docs check [CONFIG]
+hedron-docs build [CONFIG]
+hedron-docs serve [CONFIG]
+hedron-docs import-mkdocs MKDOCS_CONFIG
+```
+
+```python
+from hedron_docs import DocsBuildConfig, compile_site, create_docs_app, load_manifest
+```
+
+`check` validates without publishing output. `build` writes the deterministic manifest and
+fingerprinted asset set. `serve` is a development convenience that builds before starting the same
+app factory used in production. `import-mkdocs` translates only declared site metadata,
+navigation, and exclusion policy; it does not execute arbitrary MkDocs plugins or reproduce a
+theme. Exact names remain provisional until the parser/manifest prototype proves them.
 
 ## Workstreams
 
@@ -135,30 +160,36 @@ Deliverables:
 
 Exit: no public syntax or route class is absent from an inventory disposition.
 
-### W1 — Workspace application and production skeleton
+### W1 — Experimental package, workspace application, and production skeleton
 
 **Purpose:** prove the repository and cloud deployment shape before building content features.
 
 Deliverables:
 
-- create the workspace member, explicit FastAPI entrypoint, supported Python pin, and locked
-  dependencies;
+- create `packages/hedron-docs` and `apps/hedron-docs` workspace members, supported Python pins,
+  locked dependencies, and an explicit FastAPI entrypoint;
+- establish experimental maturity metadata, a `py.typed` marker, clean wheel installation, and
+  public-import smoke tests without adding the package to the stable support matrix;
+- add the minimal CLI/config/compiler/manifest/app-factory seams with unsupported placeholders
+  failing explicitly;
 - construct `Hedron` with production-safe sessions, Explorer, security, CSP, and asset settings;
 - add health/readiness, structured errors, a Hedron 404, and an immutable build identifier;
 - run locally through the same entrypoint FastAPI Cloud will use;
 - deploy a non-canonical preview with no DNS changes; and
 - document ignore rules, environment variables, deploy configuration, and log access.
 
-Exit: a minimal Hedron page deploys from the workspace, becomes healthy, and passes production-mode
-smoke tests without secrets or a database.
+Exit: a clean-installed experimental package builds a minimal deterministic manifest, and its
+first-party Hedron app deploys from the workspace, becomes healthy, and passes production-mode smoke
+tests without secrets or a database.
 
-### W2 — Typed document AST and diagnostics
+### W2 — Package-owned typed document AST and diagnostics
 
 **Purpose:** select and contain the Markdown parsing boundary.
 
 Deliverables:
 
 - parser spike against representative and adversarial pages;
+- native `hedron-docs.toml` configuration and a bounded current-`mkdocs.yml` importer;
 - typed block/inline nodes with source file, line, column, and source-span identity;
 - explicit nodes for extensions rather than post-render HTML rewriting;
 - depth, node, source-byte, table, code-block, and directive budgets;
@@ -281,14 +312,15 @@ Deliverables:
 
 - preserve component-doc and simulation generators or migrate their output contract explicitly;
 - compiler watch/preview command with source-located diagnostics;
+- documented `hedron-docs check`, `build`, `serve`, and migration-import behavior;
 - fast narrow check for one edited page and strict full-corpus check for CI;
 - documentation ownership, release-train SSOT, package inventory, API coverage, recipe sync, and link
   checks operating on the new public manifest;
 - contributor guidance for syntax, live demos, assets, search metadata, and failure behavior; and
 - migration lints that prevent new unsupported MkDocs-only constructs after the syntax freeze.
 
-Exit: a normal prose edit has a documented local loop and docs-only CI does not require the full
-package/browser matrix unless the change touches compiled behavior or demos.
+Exit: a normal prose edit has a documented package-backed local loop and docs-only CI does not
+require the full package/browser matrix unless the change touches compiled behavior or demos.
 
 ### W10 — Compatibility and parity migration
 
@@ -430,6 +462,9 @@ Pause expansion and return to design review when any of these occurs:
 - [ ] Roadmap/cross-cutting owner and tracking issue recorded.
 - [ ] W0 syntax, route, anchor, asset, and behavior inventories frozen.
 - [ ] Parser and manifest schema selected with prototype evidence.
+- [ ] `hedron-docs` experimental package boundary, CLI, native config, and MkDocs adapter disposition
+      reviewed.
+- [ ] Clean wheel install builds and serves the vertical-slice manifest using public imports only.
 - [ ] Vertical-slice app runs locally and on a non-canonical FastAPI Cloud preview.
 - [ ] Initial threat, accessibility, and performance baselines reviewed.
 - [ ] Canonical-domain, version-retention, deployment, and rollback decisions closed.

@@ -104,9 +104,9 @@ These documents describe how accepted RFC behavior will be implemented. They def
   refinement for a managed real-browser pytest experience, semantic lookup, bounded Hedron-owned
   settle facts, correlated failures, redacted artifacts, satellite testing ownership/contributions,
   cleanup, compatibility, and release gates
-- [Hedron-native documentation application](HEDRON_NATIVE_DOCUMENTATION.md) — draft unassigned
-  workstreams for compiling the Markdown corpus into native Hedron component trees, building the
-  docs shell/search/API/live-demo application, proving parity, and cutting over to FastAPI Cloud
+- [`hedron-docs` and Hedron-native documentation application](HEDRON_NATIVE_DOCUMENTATION.md) —
+  draft unassigned workstreams for an experimental Markdown compiler/runtime package, the proving
+  docs shell/search/API/live-demo application, parity, and FastAPI Cloud cutover
 - [Plugin loader](PLUGIN_LOADER.md)
 - [Async runtime integration](ASYNC_RUNTIME.md)
 - [Cache layer](CACHE_LAYER.md)
