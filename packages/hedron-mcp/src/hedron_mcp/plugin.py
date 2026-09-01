@@ -11,7 +11,7 @@ from hedron_core.plugins import (
 
 PLUGIN_META = PluginMeta(
     name="hedron_mcp",
-    version="0.2.4",
+    version="0.2.5",
     distribution="hedron-mcp",
     hedron_version=">=1.0,<2.0",
     capabilities=PluginCapabilities(

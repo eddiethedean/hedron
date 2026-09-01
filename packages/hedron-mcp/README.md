@@ -21,9 +21,9 @@ Mutating tools remain Experimental (`allow_mutations=True`).
 ## Install
 
 ```bash
-pip install "hedron-mcp>=0.2.4,<0.3"
+pip install "hedron-mcp>=0.2.5,<0.3"
 # or
-uv add "hedron-mcp>=0.2.0,<0.3"
+uv add "hedron-mcp>=0.2.5,<0.3"
 # via flagship extra:
 pip install "hedron[mcp]>=1.0.0"
 ```

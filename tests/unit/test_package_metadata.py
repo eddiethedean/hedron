@@ -203,6 +203,9 @@ def test_audited_dependency_floors_are_declared() -> None:
     assert "starlette>=0.40.0,<2" in project("hedron-mcp")["dependencies"]
     assert "markupsafe>=2.1.1,<4" in project("hedron-jinja")["dependencies"]
 
+    hedron_extras = project("hedron")["optional-dependencies"]
+    assert hedron_extras["mcp"] == ["hedron-mcp>=0.2.5,<0.3"]
+
     data_extras = project("hedron-data")["optional-dependencies"]
     assert "narwhals>=1.1" in data_extras["dataframes"]
     assert data_extras["dask"] == ["dask[dataframe]>=2024.5"]

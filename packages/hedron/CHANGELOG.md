@@ -2,7 +2,10 @@
 
 ## [1.0.4] — 2026-08-31
 
-- Maintenance release for the coordinated 1.0 train.
+### Security
+
+- Require `hedron-mcp>=0.2.5` for the MCP extra so strict finite-number JSON parsing ships with
+  the coordinated release.
 
 ## [1.0.3] — 2026-08-31
 

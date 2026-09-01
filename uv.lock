@@ -1707,7 +1707,7 @@ requires-dist = [{ name = "hedron-core", editable = "packages/hedron-core" }]
 
 [[package]]
 name = "hedron-mcp"
-version = "0.2.4"
+version = "0.2.5"
 source = { editable = "packages/hedron-mcp" }
 dependencies = [
     { name = "hedron-core" },

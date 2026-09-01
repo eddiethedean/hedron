@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.5] — 2026-08-31
+
+### Security
+
+- Reject non-finite JSON constants and overflowing numeric literals before JSON-RPC dispatch.
+
 ## [0.2.4] — 2026-08-28
 
 ### Changed

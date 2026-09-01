@@ -102,7 +102,7 @@ notebook = [
     "hedron-notebook>=0.2.3,<0.3",
 ]
 mcp = [
-    "hedron-mcp>=0.2.4,<0.3",
+    "hedron-mcp>=0.2.5,<0.3",
 ]
 elements = ["hedron-elements>=1.0.0,<2.0"]
 gradio = [
