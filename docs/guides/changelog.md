@@ -27,6 +27,7 @@ below record package-specific implementation changes.
 | `fastapi-workbench` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/fastapi-workbench/CHANGELOG.md) |
 | `edron` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/edron/CHANGELOG.md) |
 | `edron-sim` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/edron-sim/CHANGELOG.md) |
+| `hedron-docs` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-docs/CHANGELOG.md) |
 | `hedron-runtime-node` | [README](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-runtime-node/README.md) |
 | `hedron-runtime-java` | [README](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-runtime-java/README.md) |
 

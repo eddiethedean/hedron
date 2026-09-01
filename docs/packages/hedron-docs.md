@@ -26,5 +26,5 @@ request-time source parsing are not supported.
 
 ## Related docs
 
-- [Native documentation implementation plan](../implementation/HEDRON_NATIVE_DOCUMENTATION.md)
-- [RFC-0088](../rfcs/RFC-0088-HEDRON-NATIVE-DOCUMENTATION.md)
+- [Native documentation implementation plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HEDRON_NATIVE_DOCUMENTATION.md)
+- [RFC-0088](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0088-HEDRON-NATIVE-DOCUMENTATION.md)

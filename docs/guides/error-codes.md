@@ -125,6 +125,32 @@ Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index bel
 | `HED-BUILD-0003` | `HED_BUILD_MISSING_MANIFEST` |
 | `HED-BUILD-0004` | `HED_BUILD_RUNTIME_COMPILE` |
 
+## HED-DOCS (hedron-docs 0.1)
+
+Markdown-to-Hedron compiler and manifest diagnostics.
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-DOCS-0001` | `HED_DOCS_0001` |
+| `HED-DOCS-0002` | `HED_DOCS_0002` |
+| `HED-DOCS-0003` | `HED_DOCS_0003` |
+| `HED-DOCS-0004` | `HED_DOCS_0004` |
+| `HED-DOCS-0005` | `HED_DOCS_0005` |
+| `HED-DOCS-0006` | `HED_DOCS_0006` |
+| `HED-DOCS-0007` | `HED_DOCS_0007` |
+| `HED-DOCS-0010` | `HED_DOCS_0010` |
+| `HED-DOCS-0011` | `HED_DOCS_0011` |
+| `HED-DOCS-0012` | `HED_DOCS_0012` |
+| `HED-DOCS-0100` | `HED_DOCS_0100` |
+| `HED-DOCS-0101` | `HED_DOCS_0101` |
+| `HED-DOCS-0200` | `HED_DOCS_0200` |
+| `HED-DOCS-0201` | `HED_DOCS_0201` |
+| `HED-DOCS-0202` | `HED_DOCS_0202` |
+| `HED-DOCS-0203` | `HED_DOCS_0203` |
+| `HED-DOCS-0204` | `HED_DOCS_0204` |
+| `HED-DOCS-0205` | `HED_DOCS_0205` |
+| `HED-DOCS-0206` | `HED_DOCS_0206` |
+
 ## HED-CHART
 
 | Code | Catalog symbol |

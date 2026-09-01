@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.4] — 2026-09-01
+
+### Fixed
+- Republish the hardened 1.0.3 runtime under a new immutable version because the
+  previously published 1.0.3 wheel has stale dependency metadata.
+
 ## [1.0.3] — 2026-08-31
 
 ### Security
