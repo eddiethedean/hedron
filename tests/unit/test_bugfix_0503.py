@@ -148,6 +148,11 @@ def test_redact_secret_like_tokenizes_keys() -> None:
     assert cleaned["passwd"] == "[redacted]"
 
 
+def test_redact_secret_like_recurses_through_tuple_nested_mappings() -> None:
+    cleaned = redact_secret_like({"payload": ({"token": "secret"},)})
+    assert cleaned == {"payload": ({"token": "[redacted]"},)}
+
+
 def test_inmemory_secret_column_is_not_writable() -> None:
     src = InMemoryDataSource(
         [{"id": "1", "secret": "x"}],

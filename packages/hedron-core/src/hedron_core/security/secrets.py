@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import re
-from collections.abc import Iterable, Mapping
+from collections.abc import Mapping
 from typing import Any, Generic, TypeVar, cast, get_args, get_origin, overload
 
 from pydantic import GetCoreSchemaHandler, TypeAdapter, ValidationError
@@ -163,6 +163,8 @@ def redact_secret_like(value: object, *, keys: frozenset[str] | None = None) -> 
             "session",
         }
     )
+    if isinstance(value, Secret):
+        return "[redacted]"
     if isinstance(value, Mapping):
         mapping = cast(Mapping[object, object], value)
         out: dict[str, object] = {}
@@ -173,7 +175,15 @@ def redact_secret_like(value: object, *, keys: frozenset[str] | None = None) -> 
                 out[str(key)] = redact_secret_like(item, keys=secret_keys)
         return out
     if isinstance(value, list):
-        return [
-            redact_secret_like(item, keys=secret_keys) for item in cast(Iterable[object], value)
-        ]
+        items = cast(list[object], value)
+        return [redact_secret_like(item, keys=secret_keys) for item in items]
+    if isinstance(value, tuple):
+        items = cast(tuple[object, ...], value)
+        return tuple(redact_secret_like(item, keys=secret_keys) for item in items)
+    if isinstance(value, set):
+        items = cast(set[object], value)
+        return {redact_secret_like(item, keys=secret_keys) for item in items}
+    if isinstance(value, frozenset):
+        items = cast(frozenset[object], value)
+        return frozenset(redact_secret_like(item, keys=secret_keys) for item in items)
     return value
