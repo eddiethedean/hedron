@@ -119,11 +119,7 @@ class TransformPlan:
 
     def validated(self) -> TransformPlan:
         raw_max_rows = cast(object, self.max_rows)
-        if (
-            isinstance(raw_max_rows, bool)
-            or not isinstance(raw_max_rows, int)
-            or raw_max_rows < 1
-        ):
+        if isinstance(raw_max_rows, bool) or not isinstance(raw_max_rows, int) or raw_max_rows < 1:
             raise ValueError("TransformPlan.max_rows must be an integer >= 1")
         raw_max_bytes = cast(object, self.max_bytes)
         if (
