@@ -15,7 +15,10 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 COMPOSE_DIR="$ROOT/examples/workbench-reference"
-COMPOSE=(docker compose -f "$COMPOSE_DIR/docker-compose.yml" --project-directory "$COMPOSE_DIR")
+# A unique project prevents cleanup from touching a developer's manually started
+# workbench-reference stack. Fixed host ports are still preflighted below.
+COMPOSE_PROJECT="hedron-realwb-$$"
+COMPOSE=(docker compose --project-name "$COMPOSE_PROJECT" -f "$COMPOSE_DIR/docker-compose.yml" --project-directory "$COMPOSE_DIR")
 PROBE_ID="${HEDRON_REALWB_PROBE_ID:-REALWB-030}"
 RESULT_DIR="${HEDRON_REALWB_RESULT_DIR:-$ROOT/docs/acceptance/realwb-030}"
 RESULT="$RESULT_DIR/RESULT.log"
@@ -34,7 +37,7 @@ POSIT_PORT=8055
 POSIT_LOCAL_PORT=8061
 FWB_DIR="$ROOT/examples/fastapi-workbench-reference"
 PROXY_PORT=8053
-SMOKE_PORTS=("$APP_PORT" "$LOCAL_PORT" "$FWB_PORT" "$FWB_LOCAL_PORT" "$POSIT_PORT" "$POSIT_LOCAL_PORT" "$PROXY_PORT")
+SMOKE_PORTS=(8787 "$APP_PORT" "$LOCAL_PORT" "$FWB_PORT" "$FWB_LOCAL_PORT" "$POSIT_PORT" "$POSIT_LOCAL_PORT" "$PROXY_PORT")
 APP_PID=""
 PROXY_CONTAINER="hedron-workbench-proxy-smoke-$$"
 PROXY_STARTED=0
@@ -42,6 +45,7 @@ WORKBENCH_STARTED=0
 LICENSE_STOP_TIMEOUT="${HEDRON_WORKBENCH_LICENSE_STOP_TIMEOUT:-120}"
 SMOKE_DIR="$(mktemp -d /tmp/hedron-workbench-smoke.XXXXXX)"
 APP_LOG="$SMOKE_DIR/app.log"
+FAILURE_DIAGNOSTICS_EMITTED=0
 
 redact_stream() {
   sed -E \
@@ -57,9 +61,35 @@ log() {
 fail() {
   local code="$1"
   shift
+  failure_diagnostics
   log "$PROBE_ID $code $*"
   log "RESULT=fail"
   exit 1
+}
+
+failure_diagnostics() {
+  if [[ "$FAILURE_DIAGNOSTICS_EMITTED" -eq 1 ]]; then
+    return 0
+  fi
+  FAILURE_DIAGNOSTICS_EMITTED=1
+  log "failure_diagnostics=begin"
+  if [[ -f "$APP_LOG" ]]; then
+    log "failure_app_log_begin"
+    tail -n 120 "$APP_LOG" 2>&1 | redact_stream || true
+    log "failure_app_log_end"
+  fi
+  if [[ "$WORKBENCH_STARTED" -eq 1 ]]; then
+    log "failure_workbench_state=$(docker inspect --format '{{.State.Status}} health={{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' "$(${COMPOSE[@]} ps -q workbench 2>/dev/null || true)" 2>/dev/null || true)"
+    log "failure_workbench_log_begin"
+    "${COMPOSE[@]}" logs --no-color --tail 120 workbench 2>&1 | redact_stream || true
+    log "failure_workbench_log_end"
+  fi
+  if [[ "$PROXY_STARTED" -eq 1 ]]; then
+    log "failure_proxy_log_begin"
+    docker logs --tail 120 "$PROXY_CONTAINER" 2>&1 | redact_stream || true
+    log "failure_proxy_log_end"
+  fi
+  log "failure_diagnostics=end"
 }
 
 skip_license_unavailable() {
@@ -121,20 +151,14 @@ deactivate_workbench_license() {
   return "$failed"
 }
 
-kill_listen() {
-  local port="$1"
-  local pids=""
-  pids="$(lsof -tiTCP:"$port" -sTCP:LISTEN 2>/dev/null || true)"
-  if [[ -n "$pids" ]]; then
-    # shellcheck disable=SC2086
-    kill $pids >/dev/null 2>&1 || true
-  fi
-}
-
-kill_smoke_ports() {
+assert_smoke_ports_available() {
   local port
   for port in "${SMOKE_PORTS[@]}"; do
-    kill_listen "$port"
+    if lsof -nP -iTCP:"$port" -sTCP:LISTEN >/dev/null 2>&1; then
+      log "occupied_port=$port"
+      lsof -nP -iTCP:"$port" -sTCP:LISTEN 2>&1 | redact_stream || true
+      fail "HED-WB-0007" "required smoke port :$port is already in use; stop the owning process and retry"
+    fi
   done
 }
 
@@ -147,10 +171,9 @@ cleanup() {
   fi
   CLEANUP_DONE=1
   if [[ -n "${APP_PID}" ]] && kill -0 "$APP_PID" >/dev/null 2>&1; then
-    kill "$APP_PID" >/dev/null 2>&1 || true
+    kill -- -"$APP_PID" >/dev/null 2>&1 || kill "$APP_PID" >/dev/null 2>&1 || true
     wait "$APP_PID" >/dev/null 2>&1 || true
   fi
-  kill_smoke_ports
   if [[ "$PROXY_STARTED" -eq 1 ]]; then
     docker rm -f "$PROXY_CONTAINER" >/dev/null 2>&1 || true
   fi
@@ -185,6 +208,7 @@ trap 'cleanup 143' TERM
 log "$PROBE_ID start $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 log "image=$IMAGE"
 log "docker_platform=$DOCKER_PLATFORM"
+log "compose_project=$COMPOSE_PROJECT"
 
 if [[ ! -f "$ROOT/.venv/bin/python" ]]; then
   fail "HED-WB-0007" "workspace venv missing — run: uv sync --frozen --all-extras --python 3.12"
@@ -225,7 +249,7 @@ fi
 if ! docker info >/dev/null 2>&1; then
   fail "HED-WB-0007" "docker daemon is not reachable"
 fi
-for command in curl jq; do
+for command in curl jq lsof; do
   command -v "$command" >/dev/null 2>&1 || \
     fail "HED-WB-0007" "$command is required for $PROBE_ID"
 done
@@ -238,7 +262,7 @@ if [[ "$IMAGE" == *"@sha256:"* && "$resolved_digests" != *"$IMAGE_DIGEST"* ]]; t
   fail "HED-WB-0007" "cached Workbench image did not match the pinned digest"
 fi
 log "image_digest=$IMAGE_DIGEST"
-kill_smoke_ports
+assert_smoke_ports_available
 
 HOST_ARCH="$(uname -m)"
 log "host_arch=$HOST_ARCH"
@@ -271,10 +295,14 @@ if [[ ! "$READY_ATTEMPTS" =~ ^[0-9]+$ ]] || (( READY_ATTEMPTS < 1 || READY_ATTEM
   fail "HED-WB-0007" "HEDRON_WORKBENCH_READY_ATTEMPTS must be an integer from 1 to 120"
 fi
 ok=0
+workbench_health="unknown"
 for _ in $(seq 1 "$READY_ATTEMPTS"); do
   if curl -fsS -o /dev/null --max-time 5 "http://127.0.0.1:8787/auth-sign-in" >/dev/null 2>&1; then
-    ok=1
-    break
+    workbench_health="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' "$cid" 2>/dev/null || true)"
+    if [[ "$workbench_health" == "healthy" ]]; then
+      ok=1
+      break
+    fi
   fi
   if [[ "$(docker inspect --format '{{.State.Running}}' "$cid" 2>/dev/null || true)" != "true" ]]; then
     break
@@ -292,9 +320,9 @@ if [[ "$ok" -ne 1 ]]; then
   if printf '%s' "$logs" | grep -qiE 'license.*(invalid|denied)'; then
     fail "HED-WB-0001" "Workbench license was rejected (redacted)"
   fi
-  fail "HED-WB-0007" "Workbench did not become ready on :8787/auth-sign-in"
+  fail "HED-WB-0007" "Workbench did not become healthy and ready on :8787/auth-sign-in (health=${workbench_health:-unknown})"
 fi
-log "auth-sign-in=ok"
+log "auth-sign-in=ok health=healthy"
 
 if ! docker exec "$cid" test -x "$RSERVER_URL_BIN"; then
   fail "HED-WB-0003" "real rserver-url missing at $RSERVER_URL_BIN"

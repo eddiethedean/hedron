@@ -28,10 +28,12 @@ WORKBENCH_GUIDE = ROOT / "docs" / "guides" / "posit-workbench.md"
 SHARED_MARKERS = (
     "REALWB-030",
     "image=",
+    "auth-sign-in=ok health=healthy",
     "rserver-url=",
     "RSERVER_URL=",
     "PROXY_E2E=",
     "RESULT=pass",
+    "LICENSE_DEACTIVATE=end",
 )
 HEDRON_MARKERS = (
     "LAUNCHER_PATH=",
@@ -116,6 +118,22 @@ def _validate_log(text: str) -> list[str]:
     for marker in REQUIRED_MARKERS:
         if marker not in text:
             errors.append(f"RESULT.log missing {marker!r}")
+    if "RESULT=fail" in text:
+        errors.append("RESULT.log records a failed smoke run")
+    pass_position = text.rfind("RESULT=pass")
+    end_position = text.rfind("REALWB-030 end ")
+    if pass_position >= 0 and (end_position < 0 or end_position < pass_position):
+        errors.append("RESULT.log does not record a completed pass after RESULT=pass")
+    match = re.search(r"REALWB-030 start (\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)", text)
+    if not match:
+        errors.append("RESULT.log missing start timestamp")
+    else:
+        started = datetime.strptime(match.group(1), "%Y-%m-%dT%H:%M:%SZ").replace(
+            tzinfo=timezone.utc
+        )
+        age = datetime.now(timezone.utc) - started
+        if age > MAX_AGE:
+            errors.append(f"RESULT.log is stale ({age.days} days); refresh live smoke")
     errors.extend(_secret_errors(text, "RESULT.log"))
     return errors
 

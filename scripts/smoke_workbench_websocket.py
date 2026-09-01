@@ -10,7 +10,7 @@ from pathlib import Path
 from websockets.asyncio.client import connect
 
 
-async def _probe(url: str, expected: str, authorization_key_file: str | None) -> None:
+async def _probe_once(url: str, expected: str, authorization_key_file: str | None) -> None:
     headers = None
     if authorization_key_file:
         key = (
@@ -33,13 +33,33 @@ async def _probe(url: str, expected: str, authorization_key_file: str | None) ->
         raise RuntimeError(f"unexpected WebSocket message: {message!r}")
 
 
+async def _probe(
+    url: str, expected: str, authorization_key_file: str | None, attempts: int
+) -> None:
+    """Retry a newly-started ASGI listener without hiding a persistent failure."""
+    failure: Exception | None = None
+    for attempt in range(attempts):
+        try:
+            await _probe_once(url, expected, authorization_key_file)
+            return
+        except Exception as exc:  # Connection setup can race the readiness HTTP probe.
+            failure = exc
+            if attempt + 1 < attempts:
+                await asyncio.sleep(0.5)
+    assert failure is not None
+    raise RuntimeError(f"WebSocket probe failed after {attempts} attempts: {failure}") from failure
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("url")
     parser.add_argument("--expected", default="native-ws")
     parser.add_argument("--authorization-key-file")
+    parser.add_argument("--attempts", type=int, default=3)
     args = parser.parse_args()
-    asyncio.run(_probe(args.url, args.expected, args.authorization_key_file))
+    if args.attempts < 1 or args.attempts > 10:
+        parser.error("--attempts must be between 1 and 10")
+    asyncio.run(_probe(args.url, args.expected, args.authorization_key_file, args.attempts))
     return 0
 
 
