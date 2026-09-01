@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import importlib
 import re
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from typing import Any, Generic, TypeVar, cast
 
 from hedron_core.diagnostics import error
@@ -280,6 +280,9 @@ class SnowflakeDataSource(Generic[T]):
         self._connection_factory = connection_factory
         self._schema = tuple(schema)
         self._to_row: Callable[[dict[str, Any]], T] = to_row or (lambda r: cast(T, r))
+        self._secret_fields = frozenset(
+            column.name.casefold() for column in self._schema if column.secret
+        )
         self._max_page_size = max_page_size
         self._params = tuple(params or ())
 
@@ -309,10 +312,26 @@ class SnowflakeDataSource(Generic[T]):
                 descriptions = cast(Sequence[Sequence[Any]], cur.description or ())
                 colnames: list[str] = [str(col[0]) for col in descriptions]
                 raw_rows = cast(Sequence[Sequence[Any]], cur.fetchmany(q.limit))
-                rows: list[T] = [
-                    self._to_row({colnames[i]: value for i, value in enumerate(row)})
-                    for row in raw_rows
-                ]
+                rows: list[T] = []
+                for row in raw_rows:
+                    raw = {
+                        colnames[i]: value
+                        for i, value in enumerate(row)
+                        if colnames[i].casefold() not in self._secret_fields
+                    }
+                    converted = self._to_row(raw)
+                    if isinstance(converted, Mapping):
+                        mapping = cast(Mapping[object, object], converted)
+                        cleaned: dict[str, Any] = {
+                            str(key): value
+                            for key, value in mapping.items()
+                            if str(key).casefold() not in self._secret_fields
+                        }
+                        converted = cast(
+                            T,
+                            cleaned,
+                        )
+                    rows.append(converted)
                 count_sql = f"SELECT COUNT(*) FROM ({self._statement}) AS hedron_src"
                 cur.execute(count_sql, self._params)
                 count_row = cast(Sequence[Any], cur.fetchone() or (0,))

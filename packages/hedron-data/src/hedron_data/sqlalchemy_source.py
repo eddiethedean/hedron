@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable, Sequence
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from typing import Any, Generic, Protocol, TypeVar, cast, runtime_checkable
 
 from hedron_core.diagnostics import error
@@ -201,7 +201,13 @@ class SQLAlchemyDataSource(Generic[T]):
     def plan_for(self, query: DataQuery) -> TransformPlan:
         return plan_from_query(query)
 
-    def _apply_query(self, statement: object, query: DataQuery) -> _SelectableStatement:
+    def _apply_query(
+        self,
+        statement: object,
+        query: DataQuery,
+        *,
+        include_projection: bool = True,
+    ) -> _SelectableStatement:
         from sqlalchemy import asc, desc, or_
 
         q = query.validated()
@@ -271,9 +277,38 @@ class SQLAlchemyDataSource(Generic[T]):
             if clauses:
                 stmt = stmt.where(or_(*clauses))
         if q.projection:
+            secret_fields = {column.name for column in self._schema if column.secret}
+            if secret_fields.intersection(q.projection):
+                raise error(
+                    "HED-DATA-0052",
+                    title="Secret SQLAlchemy fields cannot be projected",
+                    explanation="ColumnSchema.secret fields are never exposed by projections.",
+                    remediation="Remove secret fields from projection or use an app-owned bridge.",
+                )
+        if q.projection and include_projection:
             cols: list[Any] = [_column_from_selectable(stmt, name) for name in q.projection]
             stmt = stmt.with_only_columns(*cols)
         return stmt
+
+    def _sanitize_row(self, row: object) -> object:
+        secret_fields = {column.name for column in self._schema if column.secret}
+        if not secret_fields:
+            return row
+        if isinstance(row, Mapping):
+            mapping = cast(Mapping[object, object], row)
+            return {
+                str(key): value for key, value in mapping.items() if str(key) not in secret_fields
+            }
+        # An opaque object may still carry a secret attribute; require a mapping codec so
+        # the adapter can prove secret fields were removed before returning the page.
+        raise error(
+            "HED-DATA-0052",
+            title="SQLAlchemy row codec must return a mapping",
+            explanation=(
+                "A secret-bearing SQLAlchemy source cannot verify redaction for an opaque row."
+            ),
+            remediation="Configure to_row to return a mapping with public fields only.",
+        )
 
     def fetch(self, query: DataQuery) -> DataPage[T]:
         from sqlalchemy import func, select
@@ -281,13 +316,37 @@ class SQLAlchemyDataSource(Generic[T]):
         q = query.validated()
         session = self._session_factory()
         try:
-            shaped = self._apply_query(self._statement, q)
+            # Keep the result shape stable for ORM row converters. A projection is applied
+            # after conversion instead of turning a one-column ORM result into a scalar.
+            shaped = self._apply_query(self._statement, q, include_projection=False)
             paged = shaped.offset(q.offset).limit(q.limit)
             result = session.execute(paged)
             rows = _fetch_rows(result)
-            mapped = [self._to_row(row) for row in rows]
+            mapped: list[T] = [cast(T, self._sanitize_row(self._to_row(row))) for row in rows]
+            if q.projection:
+                if any(not isinstance(row, Mapping) for row in mapped):
+                    raise error(
+                        "HED-DATA-0014",
+                        title="Projected SQLAlchemy rows must be mappings",
+                        explanation="Projection is applied after to_row and requires named fields.",
+                        remediation="Configure to_row to return a mapping for projected queries.",
+                    )
+                mapped = cast(
+                    list[T],
+                    [
+                        {
+                            name: cast(Mapping[object, object], row).get(name)
+                            for name in q.projection
+                        }
+                        for row in mapped
+                    ],
+                )
             # subquery() is a FromClause at runtime; accept via Any for select_from stubs.
-            count_from: Any = self._apply_query(self._statement, q).order_by(None).subquery()
+            count_from: Any = (
+                self._apply_query(self._statement, q, include_projection=False)
+                .order_by(None)
+                .subquery()
+            )
             count_stmt = select(func.count()).select_from(count_from)
             count_result = session.execute(count_stmt)
             if isinstance(count_result, _HasScalarOne):
