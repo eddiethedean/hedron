@@ -41,7 +41,7 @@ from hedron_maps.spec import (
     ViewState,
 )
 
-__version__ = "1.0.3"
+__version__ = "1.0.4"
 
 __all__ = [
     "MAPLIBRE_VERSION",

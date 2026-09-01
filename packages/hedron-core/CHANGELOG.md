@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4] — 2026-08-31
+
+### Fixed
+
+- Normalize malformed and truncated theme archives to the documented validation error instead of
+  leaking `zipfile.BadZipFile`.
+
 ## [1.0.3] — 2026-08-31
 
 ### Security
