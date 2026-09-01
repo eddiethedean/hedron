@@ -394,16 +394,18 @@ cmd_test() {
 }
 
 cmd_coverage() {
-  # One branch-aware report gates the supported flagship package while the
-  # remaining Python versions continue to exercise compatibility normally.
+  # One branch-aware run covers both public Python packages. The post-check
+  # enforces independent floors so aggregate coverage cannot hide regressions.
   (
     export HEDRON_ENFORCE_RETIRED_INVENTORY=1
     run_uv pytest -q -n 0 --strict-config --strict-markers \
-      --cov=hedron --cov-branch \
+      --cov=hedron --cov=hedron_core --cov-branch \
       --cov-report=term-missing:skip-covered \
       --cov-report=xml:coverage.xml \
       --cov-report=json:coverage.json \
-      --cov-fail-under=73
+      --cov-fail-under=0
+    run_py scripts/check_coverage_thresholds.py coverage.json \
+      --hedron 73 --hedron-core 83
   )
 }
 

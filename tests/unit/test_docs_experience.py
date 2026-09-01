@@ -104,9 +104,7 @@ def test_workbench_guide_imports_match_minimal_scaffold() -> None:
     workbench_import = "from hedron import " + ", ".join(
         name for name in imported_names if name != "Hedron"
     )
-    guide = (DOCS / "getting-started" / "first-app-posit-workbench.md").read_text(
-        encoding="utf-8"
-    )
+    guide = (DOCS / "getting-started" / "first-app-posit-workbench.md").read_text(encoding="utf-8")
 
     assert generated_import in guide
     assert workbench_import in guide

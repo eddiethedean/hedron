@@ -132,7 +132,7 @@ def inspect_data(value: object) -> DataIntelligenceReport:
         values: list[object] = [row.get(col) for row in rows]
         cardinality[col] = len({repr(v) for v in values})
         name = col.lower()
-        if "date" in name or "time" in name:
+        if "date" in name or "time" in name or name.endswith("_at"):
             datetime_cols.append(col)
         if name in {"lat", "lon", "lng", "latitude", "longitude", "geo"}:
             geo_cols.append(col)

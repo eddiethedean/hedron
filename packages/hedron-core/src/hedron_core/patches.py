@@ -357,9 +357,9 @@ def _op_merge(
             remediation="Pass a dict-like value for merge.",
         )
     target = _get_at(parent, key) if key is not None else parent
+    created = target is None
     if target is None:
         target = _empty_patch_mapping()
-        _set_at(parent, key, target)
     if not _is_mutable_string_mapping(target):
         raise _patch_error(
             HED_PATCH_0001,
@@ -369,6 +369,8 @@ def _op_merge(
         )
     for mk, mv in value.items():
         target[str(mk)] = copy.deepcopy(mv)
+    if created:
+        _set_at(parent, key, target)
 
 
 def _op_append(
@@ -583,16 +585,18 @@ def _op_clamp(
             title="Invalid clamp bounds",
             remediation="Pass min/max bounds as a mapping.",
         )
-    lo = value.get("min", current)
-    hi = value.get("max", current)
-    if not _is_number(lo) or not _is_number(hi):
+    lo = value.get("min")
+    hi = value.get("max")
+    if (lo is not None and not _is_number(lo)) or (hi is not None and not _is_number(hi)):
         raise _patch_error(
             HED_PATCH_0001,
             "clamp min/max must be numeric.",
             title="Invalid clamp bounds",
             remediation="Pass numeric min and max.",
         )
-    _set_at(parent, key, min(max(current, lo), hi))
+    clamped = max(current, lo) if _is_number(lo) else current
+    clamped = min(clamped, hi) if _is_number(hi) else clamped
+    _set_at(parent, key, clamped)
 
 
 def _resolve_parent(

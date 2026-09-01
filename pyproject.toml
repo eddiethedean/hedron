@@ -140,7 +140,7 @@ markers = [
 
 [tool.coverage.run]
 branch = true
-source = ["hedron"]
+source = ["hedron", "hedron_core"]
 
 [tool.coverage.report]
 fail_under = 73
