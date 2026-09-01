@@ -97,6 +97,7 @@ INDEPENDENT_SATELLITES = (
     "hedron-sim",
     "edron-sim",
     "fastapi-workbench",
+    "hedron-docs",
     "hedron-posit",
     "edron",
 )

@@ -5,6 +5,7 @@ order = [
   "hedron-core",
   "fastapi-workbench",
   "hedron",
+  "hedron-docs",
   "hedron-data",
   "hedron-explorer",
   "hedron-flask",

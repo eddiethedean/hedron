@@ -29,6 +29,7 @@ members = [
     "packages/hedron-sim",
     "packages/hedron-posit",
     "packages/hedron-elements",
+    "packages/hedron-docs",
     "packages/edron",
     "packages/edron-sim",
     "packages/fastapi-workbench",
@@ -55,6 +56,7 @@ dev = [
     "hedron-sim",
     "hedron-posit",
     "hedron-elements",
+    "hedron-docs",
     "edron",
     "edron-sim",
     "fastapi-workbench",
@@ -121,6 +123,7 @@ hedron-gradio = { workspace = true }
 hedron-sim = { workspace = true }
 hedron-posit = { workspace = true }
 hedron-elements = { workspace = true }
+hedron-docs = { workspace = true }
 edron = { workspace = true }
 edron-sim = { workspace = true }
 fastapi-workbench = { workspace = true }
@@ -154,7 +157,7 @@ output = "coverage.xml"
 [tool.ruff]
 target-version = "py310"
 line-length = 100
-src = ["packages/hedron-core/src", "packages/hedron/src", "packages/hedron-explorer/src", "packages/hedron-sample-kit/src", "packages/hedron-data/src", "packages/hedron-charts/src", "packages/hedron-maps/src", "packages/hedron-flask/src", "packages/hedron-django/src", "packages/hedron-jinja/src", "packages/hedron-conformance/src", "packages/hedron-native/src", "packages/hedron-extras/src", "packages/hedron-notebook/src", "packages/hedron-mcp/src", "packages/hedron-gradio/src", "packages/hedron-sim/src", "packages/hedron-posit/src", "packages/hedron-elements/src", "packages/edron/src", "packages/edron-sim/src", "packages/fastapi-workbench/src", "tests", "examples"]
+src = ["packages/hedron-core/src", "packages/hedron/src", "packages/hedron-explorer/src", "packages/hedron-sample-kit/src", "packages/hedron-data/src", "packages/hedron-charts/src", "packages/hedron-maps/src", "packages/hedron-flask/src", "packages/hedron-django/src", "packages/hedron-jinja/src", "packages/hedron-conformance/src", "packages/hedron-native/src", "packages/hedron-extras/src", "packages/hedron-notebook/src", "packages/hedron-mcp/src", "packages/hedron-gradio/src", "packages/hedron-sim/src", "packages/hedron-posit/src", "packages/hedron-elements/src", "packages/hedron-docs/src", "packages/edron/src", "packages/edron-sim/src", "packages/fastapi-workbench/src", "tests", "examples"]
 extend-exclude = ["docs", "archive", "dist", ".venv", ".bug_hunt_repros"]
 
 [tool.ruff.lint]
@@ -194,6 +197,7 @@ include = [
     "packages/hedron-sim/src",
     "packages/hedron-posit/src",
     "packages/hedron-elements/src",
+    "packages/hedron-docs/src",
     "packages/edron/src",
     "packages/edron-sim/src",
     "packages/fastapi-workbench/src",
@@ -221,6 +225,7 @@ extraPaths = [
     "packages/hedron-sim/src",
     "packages/hedron-posit/src",
     "packages/hedron-elements/src",
+    "packages/hedron-docs/src",
     "packages/edron/src",
     "packages/edron-sim/src",
     "packages/fastapi-workbench/src",

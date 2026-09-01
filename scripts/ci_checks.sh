@@ -451,6 +451,7 @@ quality_strict_package_types() {
     packages/hedron-sim/src/hedron_sim \
     packages/hedron-posit/src/hedron_posit \
     packages/hedron-elements/src/hedron_elements \
+    packages/hedron-docs/src/hedron_docs \
     packages/edron-sim/src/edron_sim \
     packages/fastapi-workbench/src/fastapi_workbench
 }

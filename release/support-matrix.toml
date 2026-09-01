@@ -98,3 +98,7 @@ api = "beta"
 [packages.fastapi-workbench]
 maturity = "beta"
 api = "beta"
+
+[packages.hedron-docs]
+maturity = "beta"
+api = "beta"

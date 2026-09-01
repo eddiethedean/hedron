@@ -33,6 +33,7 @@ packages = [
   "fastapi-workbench",
   "hedron-runtime-node",
   "hedron-runtime-java",
+  "hedron-docs",
 ]
 
 [hedron]
@@ -82,4 +83,6 @@ maturity = "beta"
 [hedron-runtime-node]
 maturity = "beta"
 [hedron-runtime-java]
+maturity = "beta"
+[hedron-docs]
 maturity = "beta"

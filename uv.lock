@@ -21,6 +21,7 @@ members = [
     "hedron-core",
     "hedron-data",
     "hedron-django",
+    "hedron-docs",
     "hedron-elements",
     "hedron-explorer",
     "hedron-extras",
@@ -1688,6 +1689,27 @@ requires-dist = [
 ]
 
 [[package]]
+name = "hedron-docs"
+version = "0.1.0"
+source = { editable = "packages/hedron-docs" }
+dependencies = [
+    { name = "hedron" },
+    { name = "markdown" },
+    { name = "pyyaml" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
+    { name = "uvicorn" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "hedron", editable = "packages/hedron" },
+    { name = "markdown", specifier = ">=3.4.1,<4" },
+    { name = "pyyaml", specifier = ">=6.0,<7" },
+    { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=2.0.1" },
+    { name = "uvicorn", specifier = ">=0.32,<1.0" },
+]
+
+[[package]]
 name = "hedron-elements"
 version = "1.0.5"
 source = { editable = "packages/hedron-elements" }
@@ -1931,6 +1953,7 @@ dev = [
     { name = "hedron-core" },
     { name = "hedron-data" },
     { name = "hedron-django" },
+    { name = "hedron-docs" },
     { name = "hedron-elements" },
     { name = "hedron-explorer" },
     { name = "hedron-extras" },
@@ -1998,6 +2021,7 @@ dev = [
     { name = "hedron-core", editable = "packages/hedron-core" },
     { name = "hedron-data", editable = "packages/hedron-data" },
     { name = "hedron-django", editable = "packages/hedron-django" },
+    { name = "hedron-docs", editable = "packages/hedron-docs" },
     { name = "hedron-elements", editable = "packages/hedron-elements" },
     { name = "hedron-explorer", editable = "packages/hedron-explorer" },
     { name = "hedron-extras", editable = "packages/hedron-extras" },

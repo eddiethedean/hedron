@@ -38,6 +38,7 @@ inventory. The coordinated stable inventory is published on the 1.0 train.
 | [hedron-posit](hedron-posit.md) | `hedron[posit]` | Preferred Posit Workbench / Connect facade (`HedronPosit`) |
 | [hedron-maps](hedron-maps.md) | `hedron[maps]` | First-class custom-server, MapLibre, and offline maps (`hedron-maps` `1.0.x`) |
 | [hedron-elements](hedron-elements.md) | `hedron[elements]` | Beta Web Component ABI; production-grade for the locked Supported inventory only |
+| [hedron-docs](hedron-docs.md) | — | Experimental Markdown compiler and Hedron documentation application toolkit |
 
 ```bash
 pip install "hedron[data,dev,posit]>=1.0.0"
