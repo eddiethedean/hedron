@@ -53,7 +53,7 @@ def test_node_java_remain_explicit_out() -> None:
     assert node.is_dir()
     assert java.is_dir()
     node_src = "\n".join(path.read_text(encoding="utf-8") for path in node.rglob("*.md"))
-    assert "FeatureBundle" not in node_src or "explicit-out" in node_src.lower() or True
+    assert "FeatureBundle" not in node_src or "explicit-out" in node_src.lower()
 
 
 class Row(BaseModel):

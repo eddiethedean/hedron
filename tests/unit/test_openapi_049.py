@@ -19,11 +19,11 @@ def test_operation_ids_stay_stable() -> None:
 def test_html_routes_keep_text_html_and_scopes_do_not_grant() -> None:
     app = make_app()
 
-    @app.refreshable("/page", include_in_schema=True)
+    @app.view("/page", include_in_schema=True)
     def page():
         return Text("hello")
 
-    @app.command(
+    @app.action(
         "/export",
         fallback="/",
         include_in_schema=True,
@@ -68,7 +68,7 @@ def test_modeled_command_emits_type_schema_and_security_scheme() -> None:
     class Payload(BaseModel):
         name: str
 
-    @app.command(
+    @app.action(
         "/save",
         fallback="/",
         include_in_schema=True,

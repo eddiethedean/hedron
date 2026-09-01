@@ -21,7 +21,7 @@ def setup_function() -> None:
 def test_explorer_catalog_panel() -> None:
     app = make_app(explorer="development")
 
-    @app.refreshable
+    @app.view("/status", include_in_schema=True)
     def status():
         return Text("ok")
 
@@ -42,7 +42,7 @@ def test_explorer_catalog_panel() -> None:
 def test_openapi_fingerprint_extensions() -> None:
     app = make_app()
 
-    @app.refreshable
+    @app.view("/status", include_in_schema=True)
     def status():
         return Text("ok")
 
@@ -57,8 +57,7 @@ def test_openapi_fingerprint_extensions() -> None:
         for operation in path_item.values():
             if isinstance(operation, dict) and operation.get("x-hedron-descriptor-fingerprint"):
                 fingerprints.append(operation["x-hedron-descriptor-fingerprint"])
-    assert expected in fingerprints or True  # noqa: SIM222  # include_in_schema may omit refreshables
-    del fingerprints
+    assert expected in fingerprints
 
 
 def test_static_cli_does_not_import_target(tmp_path: Path) -> None:
@@ -66,7 +65,7 @@ def test_static_cli_does_not_import_target(tmp_path: Path) -> None:
     source.write_text(
         "from hedron import Hedron, Text\n"
         "app = Hedron(title='x')\n"
-        "@app.refreshable\n"
+        "@app.view\n"
         "def card():\n"
         "    return Text('card')\n",
         encoding="utf-8",
@@ -81,7 +80,7 @@ def test_static_cli_does_not_import_target(tmp_path: Path) -> None:
 def test_json_inspect_interactions() -> None:
     app = make_app()
 
-    @app.refreshable
+    @app.view
     def status():
         return Text("ok")
 
@@ -99,7 +98,7 @@ def test_json_inspect_interactions() -> None:
 def test_app_scenario_catalog_lookup() -> None:
     app = make_app()
 
-    @app.refreshable
+    @app.view
     def status():
         return Text("ok")
 

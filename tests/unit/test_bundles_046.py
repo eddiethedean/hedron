@@ -12,7 +12,6 @@ from hedron_core.bundles import (
     FeatureConflictError,
     FeatureProvider,
     FeatureRequirement,
-    eject_bundle,
     eject_source,
     include_bundle,
     included_bundles,
@@ -51,51 +50,46 @@ def _bundle(
 def test_include_feature_registers_views_before_seal() -> None:
     app = make_app()
 
-    @app.refreshable
+    @app.view
     def status():
         return Text("ok")
 
-    live = app.include_feature(_bundle("tests:status", views=(status,)))
+    live = app.include(_bundle("tests:status", views=(status,)))
     assert live.logical_id == "tests:status"
     catalog = app.interactions
     assert catalog.require(status.logical_id).kind == "view"
-    assert included_bundles(app_id=app.hedron_app_id)[0].logical_id == "tests:status"
+    assert app.state.hedron_bundles["tests:status"].logical_id == "tests:status"
 
 
 def test_duplicate_bundle_id_fails_closed() -> None:
     app = make_app()
 
-    @app.refreshable
+    @app.view
     def status():
         return Text("ok")
 
-    app.include_feature(_bundle("tests:dup", views=(status,)))
+    app.include(_bundle("tests:dup", views=(status,)))
     with pytest.raises(FeatureConflictError) as raised:
-        app.include_feature(
+        app.include(
             _bundle("tests:dup", views=(status,), provider_version="9.9.9"),
         )
     assert raised.value.diagnostic.code == HED_BUNDLE_0002
-    assert len(included_bundles(app_id=app.hedron_app_id)) == 1
+    assert set(app.state.hedron_bundles) == {"tests:dup"}
 
 
 def test_second_bundle_cannot_claim_existing_handle() -> None:
     app = make_app()
 
-    @app.refreshable
+    @app.view
     def status():
         return Text("ok")
 
-    app.include_feature(_bundle("tests:first", views=(status,)))
+    app.include(_bundle("tests:first", views=(status,)))
     with pytest.raises(FeatureConflictError) as raised:
-        app.include_feature(_bundle("tests:reuse-status", views=(status,)))
+        app.include(_bundle("tests:reuse-status", views=(status,)))
     assert raised.value.diagnostic.code == HED_BUNDLE_0008
-    ids = [item.logical_id for item in included_bundles(app_id=app.hedron_app_id)]
-    assert ids == ["tests:first"]
-    from hedron_core.updates import list_handle_descriptors
-
-    assert [d.logical_id for d in list_handle_descriptors(app_id=app.hedron_app_id)] == [
-        status.logical_id
-    ]
+    assert set(app.state.hedron_bundles) == {"tests:first"}
+    assert set(app.interactions.entries) == {status.logical_id}
 
 
 def test_identical_reinclude_is_idempotent() -> None:
@@ -136,19 +130,20 @@ def test_required_capability_missing() -> None:
 
 
 def test_eject_restores_explicit_source() -> None:
+    from hedron.features import eject_feature
+
     app = make_app()
 
-    @app.refreshable
+    @app.view
     def status():
         return Text("ok")
 
-    app.include_feature(_bundle("tests:eject", views=(status,)))
-    source = eject_source(included_bundles(app_id=app.hedron_app_id)[0])
+    app.include(_bundle("tests:eject", views=(status,)))
+    source = eject_source(app.state.hedron_bundles["tests:eject"])
     assert "Ejected FeatureBundle" in source
     assert "tests:eject" in source
-    ejected = eject_bundle("tests:eject", app_id=app.hedron_app_id)
-    assert ejected.logical_id == "tests:eject"
-    assert included_bundles(app_id=app.hedron_app_id) == ()
+    assert eject_feature(app, "tests:eject") == source
+    assert app.state.hedron_bundles == {}
 
 
 def test_eject_feature_removes_materialized_routes() -> None:
@@ -156,7 +151,6 @@ def test_eject_feature_removes_materialized_routes() -> None:
     from pydantic import BaseModel
 
     from hedron.features import eject_feature
-    from hedron_core.updates import list_handle_descriptors
     from hedron_data import DataWorkspace, DataWorkspacePolicy, InMemoryDataSource
 
     class Row(BaseModel):
@@ -170,31 +164,30 @@ def test_eject_feature_removes_materialized_routes() -> None:
         source=InMemoryDataSource([{"id": "1", "title": "hello"}], key_field="id"),
         policy=DataWorkspacePolicy(can_read=lambda: True),
     )
-    app.include_feature(workspace)
+    app.include(workspace)
     path = workspace.list_view.path  # type: ignore[union-attr]
     client = TestClient(app)
     assert client.get(path).status_code == 200
     eject_feature(app, "hedron-data:notes")
-    assert list_handle_descriptors(app_id=app.hedron_app_id) == ()
+    assert app.interactions.entries == {}
     assert client.get(path).status_code == 404
 
 
 def test_failed_include_leaves_no_partial_artifacts() -> None:
     app = make_app()
 
-    @app.refreshable
+    @app.view
     def status():
         return Text("ok")
 
-    app.include_feature(_bundle("tests:keep", views=(status,)))
+    app.include(_bundle("tests:keep", views=(status,)))
 
     def boom(_app: object) -> object:
         raise RuntimeError("factory exploded")
 
     with pytest.raises(FeatureConflictError):
-        app.include_feature(_bundle("tests:boom", views=(boom,)))
-    ids = {item.logical_id for item in included_bundles(app_id=app.hedron_app_id)}
-    assert ids == {"tests:keep"}
+        app.include(_bundle("tests:boom", views=(boom,)))
+    assert set(app.state.hedron_bundles) == {"tests:keep"}
 
 
 def test_feature_provider_protocol_not_on_hedron_facade() -> None:

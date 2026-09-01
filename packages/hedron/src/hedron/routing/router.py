@@ -122,6 +122,9 @@ class _ReplayGuard:
 
 
 def _logical_id(fn: Callable[..., object], distribution: str = "hedron") -> str:
+    explicit = getattr(fn, "_hedron_logical_id", None)
+    if isinstance(explicit, str) and explicit:
+        return explicit
     module = getattr(fn, "__module__", None) or "hedron"
     name = getattr(fn, "__name__", None) or "endpoint"
     return component_type_id(distribution, module, name)

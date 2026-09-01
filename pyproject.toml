@@ -60,6 +60,7 @@ dev = [
     "fastapi-workbench",
     "pytest>=8.3",
     "pytest-xdist>=3.6",
+    "pytest-cov>=7.0",
     # Pyright analyzes the declared Python 3.10 floor even when CI runs on a
     # newer interpreter, so its environment must resolve the 3.10 TOML branch.
     "tomli>=2.0.1",
@@ -134,7 +135,21 @@ markers = [
     "performance: non-blocking benchmark foundations",
     "browser: optional Playwright Chromium evidence (HEDRON_BROWSER=1)",
     "redis: opt-in tests against a real Redis server (HEDRON_REDIS_URL)",
+    "historical_0x: reviewed pre-1.0 API fixture retained for retirement tracking",
 ]
+
+[tool.coverage.run]
+branch = true
+source = ["hedron"]
+
+[tool.coverage.report]
+fail_under = 73
+precision = 2
+show_missing = true
+skip_covered = true
+
+[tool.coverage.xml]
+output = "coverage.xml"
 
 [tool.ruff]
 target-version = "py310"

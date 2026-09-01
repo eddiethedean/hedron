@@ -121,6 +121,9 @@ def compile_view_class(
             return empty
         result = render(instance, data)
         if inspect.isawaitable(result):
+            close = getattr(result, "close", None)
+            if callable(close):
+                close()
             raise error(
                 HED_TYPE_0008,
                 title="render must be deterministic",

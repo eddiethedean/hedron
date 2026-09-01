@@ -82,7 +82,7 @@ def test_upload_flow_custom_field_name_http_round_trip() -> None:
         store=lambda handle: "stored-id",
         result=lambda stored: Text(str(stored)),
     )
-    app.include_feature(flow)
+    app.include(flow)
     client = TestClient(app)
     page = client.get("/docs/upload")
     assert page.status_code == 200
@@ -112,7 +112,7 @@ def test_upload_flow_result_is_request_injected_and_authorized() -> None:
     app = Hedron(
         title="upload-result", security="development", explorer="off", session_secret="r" * 32
     )
-    app.include_feature(
+    app.include(
         UploadFlow(
             name="result-check",
             field=UploadField(),
@@ -149,7 +149,7 @@ def test_upload_flow_supports_multiple_instances_and_preserves_all_stores() -> N
         title="upload-multi", security="development", explorer="off", session_secret="m" * 32
     )
     for name in ("avatars", "documents"):
-        app.include_feature(
+        app.include(
             UploadFlow(
                 name=name,
                 field=UploadField(),
@@ -163,7 +163,7 @@ def test_upload_flow_supports_multiple_instances_and_preserves_all_stores() -> N
     batch_app = Hedron(
         title="upload-batch", security="development", explorer="off", session_secret="b" * 32
     )
-    batch_app.include_feature(
+    batch_app.include(
         UploadFlow(
             name="batch",
             field=UploadField(budget=UploadBudget(maximum_size=10_000, maximum_count=3)),
@@ -236,7 +236,7 @@ def test_session_auth_include_and_login_round_trip() -> None:
 
     app = Hedron(title="auth", security="standard", explorer="off", session_secret="test-secret")
 
-    @app.screen("/", title="Home")
+    @app.page("/")
     def home() -> object:
         return Text("home")
 
@@ -253,7 +253,7 @@ def test_session_auth_include_and_login_round_trip() -> None:
         rate_limit=RateLimitPolicy(limit=20, window_seconds=60.0),
         rotation="on_login",
     )
-    app.include_feature(flow)
+    app.include(flow)
     assert flow.login_form is not None
     assert callable(flow.current_principal())
 
@@ -316,7 +316,7 @@ def test_dashboard_filter_form_and_urlencoded_redirect() -> None:
         panels={"summary": lambda data: Text(data["region"])},
         history="replace",
     )
-    app.include_feature(workspace)
+    app.include(workspace)
     client = TestClient(app)
     page = client.get("/sales")
     assert page.status_code == 200

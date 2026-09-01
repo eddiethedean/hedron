@@ -939,7 +939,8 @@ _scoped_providers: ContextVar[dict[str, ProjectionProvider] | None] = ContextVar
 
 
 def _active_providers() -> dict[str, ProjectionProvider]:
-    return _scoped_providers.get() or _PROVIDERS
+    scoped = _scoped_providers.get()
+    return _PROVIDERS if scoped is None else scoped
 
 
 def new_projection_registry() -> dict[str, ProjectionProvider]:

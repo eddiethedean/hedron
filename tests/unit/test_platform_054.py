@@ -26,7 +26,7 @@ def test_loopback_and_sim_manifest_available_on_this_os() -> None:
     require_loopback_host("127.0.0.1")
     manifest = subset_manifest()
     assert "methods" in manifest or "schema_version" in manifest or isinstance(manifest, dict)
-    assert platform.system() in {"Darwin", "Linux", "Windows"} or True
+    assert platform.system() in {"Darwin", "Linux", "Windows"}
 
 
 def test_notebook_and_sim_packages_importable() -> None:

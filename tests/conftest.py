@@ -138,6 +138,17 @@ def _is_pre_one_api_item(item: pytest.Item) -> bool:
     return any(start <= line <= end for start, end in _legacy_api_ranges(str(path)))
 
 
+@lru_cache(maxsize=1)
+def _reviewed_retired_nodeids() -> frozenset[str]:
+    """Load the exact reviewed 0.x retirement set for the 1.x suite."""
+    inventory = Path(__file__).with_name("legacy_0x_inventory.txt")
+    return frozenset(
+        line.strip()
+        for line in inventory.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    )
+
+
 @pytest.fixture(scope="session", autouse=True)
 def _configure_django_once() -> None:
     """Establish one complete Django configuration before any test module runs.
@@ -299,17 +310,34 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     tests continue to execute.  On 1.0 they are explicit skips rather than
     failures, while canonical phase-1.0 fixtures remain fully active.
     """
-    del config
     try:
         from hedron import __version__
     except ImportError:
         return
     if not str(__version__).startswith("1."):
         return
+    retired = {item.nodeid: item for item in items if _is_pre_one_api_item(item)}
+    reviewed = _reviewed_retired_nodeids()
+    unreviewed = sorted(set(retired) - reviewed)
+    if unreviewed:
+        rendered = "\n".join(f"- {nodeid}" for nodeid in unreviewed)
+        raise pytest.UsageError(
+            "Historical 0.x tests were selected by the retirement heuristic without "
+            f"reviewed inventory entries:\n{rendered}"
+        )
+    full_collection = set(config.args) == {"tests", "examples"}
+    if os.environ.get("HEDRON_ENFORCE_RETIRED_INVENTORY") == "1" and full_collection:
+        stale = sorted(reviewed - set(retired))
+        if stale:
+            rendered = "\n".join(f"- {nodeid}" for nodeid in stale)
+            raise pytest.UsageError(
+                "The reviewed historical 0.x inventory is stale; remove or update these entries:\n"
+                f"{rendered}"
+            )
     reason = "historical 0.x API fixture retired on the Hedron 1.0 canonical surface"
-    for item in items:
-        if _is_pre_one_api_item(item):
-            item.add_marker(pytest.mark.skip(reason=reason))
+    for item in retired.values():
+        item.add_marker(pytest.mark.historical_0x)
+        item.add_marker(pytest.mark.skip(reason=reason))
 
 
 def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:

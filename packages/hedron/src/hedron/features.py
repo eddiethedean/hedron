@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Callable, Mapping, Sequence
+from contextlib import AbstractContextManager, nullcontext
 from pathlib import Path
 from typing import cast
 
@@ -38,6 +39,14 @@ __all__ = [
 
 def _is_handle(item: object) -> bool:
     return hasattr(item, "logical_id") and hasattr(item, "descriptor")
+
+
+def _runtime_scope(app: object) -> AbstractContextManager[object]:
+    runtime = getattr(app, "_hedron_runtime", None)
+    activate = getattr(runtime, "activate", None)
+    if callable(activate):
+        return cast(AbstractContextManager[object], activate())
+    return nullcontext()
 
 
 def _materialize_item(item: object, app: object) -> object:
@@ -178,7 +187,7 @@ def _undo_included_bundle(app: object, logical_id: str, *, app_id: str) -> None:
         cast(dict[str, object], exposures).pop(logical_id, None)
 
 
-def include_feature(
+def _include_feature(
     app: object,
     feature: FeatureBundle | FeatureProvider,
     *,
@@ -284,7 +293,18 @@ def include_feature(
         ) from exc
 
 
-def explain_feature(app: object, logical_id: str) -> dict[str, object]:
+def include_feature(
+    app: object,
+    feature: FeatureBundle | FeatureProvider,
+    *,
+    capabilities: Mapping[str, bool] | None = None,
+) -> FeatureBundle:
+    """Include a feature while binding the owning application's runtime state."""
+    with _runtime_scope(app):
+        return _include_feature(app, feature, capabilities=capabilities)
+
+
+def _explain_feature(app: object, logical_id: str) -> dict[str, object]:
     """Return a redacted ``hedron.feature-explanation/1`` mapping for an included feature."""
     app_id = str(getattr(app, "hedron_app_id", "") or "")
     matches = [item for item in included_bundles(app_id=app_id) if item.logical_id == logical_id]
@@ -309,7 +329,13 @@ def explain_feature(app: object, logical_id: str) -> dict[str, object]:
     return dict(mapping)
 
 
-def eject_feature(
+def explain_feature(app: object, logical_id: str) -> dict[str, object]:
+    """Explain a feature from the owning application's isolated registry."""
+    with _runtime_scope(app):
+        return _explain_feature(app, logical_id)
+
+
+def _eject_feature(
     app: object,
     logical_id: str,
     *,
@@ -428,3 +454,24 @@ def eject_feature(
     if out is not None:
         out(source)
     return source
+
+
+def eject_feature(
+    app: object,
+    logical_id: str,
+    *,
+    out: Callable[[str], None] | None = None,
+    surface: str | None = None,
+    output: str | Path | None = None,
+    overwrite: bool = False,
+) -> str:
+    """Eject a feature from the owning application's isolated registry."""
+    with _runtime_scope(app):
+        return _eject_feature(
+            app,
+            logical_id,
+            out=out,
+            surface=surface,
+            output=output,
+            overwrite=overwrite,
+        )

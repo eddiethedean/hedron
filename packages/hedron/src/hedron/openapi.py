@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from contextlib import AbstractContextManager
 from typing import cast
 
 from fastapi import FastAPI
@@ -22,7 +23,7 @@ def operation_id_for(kind: str, name: str, path: str, method: str) -> str:
 
 
 def install_openapi(app: FastAPI) -> None:
-    def custom_openapi() -> JsonObject:
+    def build_openapi() -> JsonObject:
         cached = cached_openapi(app)
         if cached is not None:
             return cast(JsonObject, cached)
@@ -159,5 +160,13 @@ def install_openapi(app: FastAPI) -> None:
                     )
         set_cached_openapi(app, schema)
         return schema
+
+    def custom_openapi() -> JsonObject:
+        runtime = getattr(app, "_hedron_runtime", None)
+        activate = getattr(runtime, "activate", None)
+        if callable(activate):
+            with cast(AbstractContextManager[object], activate()):
+                return build_openapi()
+        return build_openapi()
 
     app.openapi = custom_openapi  # type: ignore[method-assign]

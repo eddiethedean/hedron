@@ -35,7 +35,7 @@ class Ping(CommandHandler[None, object]):
 
 def test_class_view_registers_handle() -> None:
     app = make_app()
-    handle = app.refreshable(ItemView)
+    handle = app.view(ItemView)
 
     @app.page("/")
     def home():
@@ -53,7 +53,7 @@ def test_class_view_registers_handle() -> None:
 
 def test_class_command_registers_handle() -> None:
     app = make_app()
-    cmd = app.command(Ping)
+    cmd = app.action(Ping)
     assert cmd.fallback == "/"
     assert cmd.path.startswith("/_hedron/commands/")
 
@@ -61,10 +61,10 @@ def test_class_command_registers_handle() -> None:
 def test_function_class_schema_equivalence() -> None:
     app = make_app()
 
-    @app.refreshable
+    @app.view
     def item_fn(params: Annotated[ItemParams, ViewParams()]):
         return Text(params.item_id)
 
-    class_handle = app.refreshable(ItemView)
+    class_handle = app.view(ItemView)
     assert item_fn.schema is not None and class_handle.schema is not None
     assert item_fn.schema.boundary_sources == class_handle.schema.boundary_sources

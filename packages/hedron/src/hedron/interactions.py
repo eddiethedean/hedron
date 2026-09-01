@@ -4,12 +4,14 @@ from __future__ import annotations
 
 import ast
 from collections.abc import Iterable
+from contextlib import AbstractContextManager, nullcontext
 from pathlib import Path
 from typing import cast
 
 from hedron_core.catalog import (
     InteractionCatalog,
     InteractionManifest,
+    RedactionProfile,
     compile_interaction_catalog,
     get_sealed_catalog,
     seal_interaction_catalog,
@@ -26,22 +28,40 @@ __all__ = [
 ]
 
 
+def _runtime_scope(app: object) -> AbstractContextManager[object]:
+    runtime = getattr(app, "_hedron_runtime", None)
+    activate = getattr(runtime, "activate", None)
+    if callable(activate):
+        return cast(AbstractContextManager[object], activate())
+    return nullcontext()
+
+
 def app_interactions(app: object, *, sealed: bool = False) -> InteractionCatalog:
     cached = getattr(getattr(app, "state", None), "hedron_interactions", None)
     if isinstance(cached, InteractionCatalog):
         return cached
-    live = get_sealed_catalog()
     app_id = str(getattr(app, "hedron_app_id", "") or "")
-    if live is not None and (not app_id or not live.app_id or live.app_id == app_id):
-        return live
-    if sealed:
-        return seal_interaction_catalog(app_id=app_id or None)
-    return compile_interaction_catalog(app_id=app_id or None)
+    with _runtime_scope(app):
+        live = get_sealed_catalog()
+        if live is not None and (not app_id or not live.app_id or live.app_id == app_id):
+            return live
+        if sealed:
+            return seal_interaction_catalog(app_id=app_id or None)
+        return compile_interaction_catalog(app_id=app_id or None)
 
 
-def seal_app_catalog(app: object, *, profile: str = "production") -> InteractionCatalog:
+def seal_app_catalog(
+    app: object, *, profile: RedactionProfile = "production"
+) -> InteractionCatalog:
     app_id = str(getattr(app, "hedron_app_id", "") or "")
-    catalog = seal_interaction_catalog(app_id=app_id or None, profile=profile)  # type: ignore[arg-type]
+    with _runtime_scope(app):
+        catalog = seal_interaction_catalog(  # type: ignore[arg-type]
+            app_id=app_id or None,
+            profile=profile,
+        )
+    runtime = getattr(app, "_hedron_runtime", None)
+    if runtime is not None:
+        runtime.catalog = catalog
     state = getattr(app, "state", None)
     if state is not None:
         state.hedron_interactions = catalog
@@ -51,10 +71,19 @@ def seal_app_catalog(app: object, *, profile: str = "production") -> Interaction
 def emit_interactions_manifest(
     directory: Path,
     *,
+    app: object | None = None,
     app_id: str | None = None,
-    profile: str = "production",
+    profile: RedactionProfile = "production",
 ) -> Path:
-    catalog = compile_interaction_catalog(app_id=app_id, profile=profile)  # type: ignore[arg-type]
+    resolved_app_id = app_id
+    if app is not None and resolved_app_id is None:
+        resolved_app_id = str(getattr(app, "hedron_app_id", "") or "") or None
+    scope = _runtime_scope(app) if app is not None else nullcontext()
+    with scope:
+        catalog = compile_interaction_catalog(  # type: ignore[arg-type]
+            app_id=resolved_app_id,
+            profile=profile,
+        )
     path = Path(directory) / "interactions.json"
     catalog.to_manifest(profile=profile).write_json(path)  # type: ignore[arg-type]
     return path
@@ -99,10 +128,15 @@ def inspect_interactions_static(
         }
         return payload
     entries: list[JsonObject] = []
-    for path in sorted(Path(root).rglob("*.py")):
+    source_root = Path(root)
+    for path in sorted(source_root.rglob("*.py")):
+        try:
+            relative_parts = path.relative_to(source_root).parts
+        except ValueError:
+            relative_parts = path.parts
         if any(
             part.startswith(".") or part in {"__pycache__", ".venv", "node_modules"}
-            for part in path.parts
+            for part in relative_parts
         ):
             continue
         try:
@@ -147,11 +181,13 @@ def inspect_interactions_static(
 
 def _is_handle_decorator(node: ast.AST) -> bool:
     names = _decorator_names(node)
-    return any(token in {"refreshable", "command"} for token in names)
+    return any(token in {"view", "action", "refreshable", "command"} for token in names)
 
 
 def _is_command(decorators: Iterable[ast.AST]) -> bool:
-    return any("command" in _decorator_names(item) for item in decorators)
+    return any(
+        token in {"action", "command"} for item in decorators for token in _decorator_names(item)
+    )
 
 
 def _decorator_names(node: ast.AST) -> tuple[str, ...]:

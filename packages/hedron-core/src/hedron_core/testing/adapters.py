@@ -196,6 +196,14 @@ class _ClientFixture:
     name: str
     _get: Callable[..., AdapterResponse]
     _post: Callable[..., AdapterResponse]
+    _catalog: Callable[[str | None], object] | None = None
+
+    def catalog(self, *, app_id: str | None = None) -> object:
+        if self._catalog is not None:
+            return self._catalog(app_id)
+        from hedron_core.catalog import compile_interaction_catalog
+
+        return compile_interaction_catalog(app_id=app_id)
 
     def get(
         self,
@@ -247,7 +255,15 @@ def fastapi_fixture(app: Any) -> AdapterAppFixture:
         jar.update(_cookies_from_set_cookie(response.headers))
         return AdapterResponse(response.status_code, response.text, dict(response.headers), jar)
 
-    return _ClientFixture("fastapi", get, post)
+    def catalog(app_id: str | None) -> object:
+        actual_app_id = str(getattr(app, "hedron_app_id", "") or "")
+        if app_id and actual_app_id and app_id != actual_app_id:
+            from hedron_core.catalog import compile_interaction_catalog
+
+            return compile_interaction_catalog(app_id=app_id)
+        return app.interactions
+
+    return _ClientFixture("fastapi", get, post, catalog)
 
 
 def flask_fixture(app: Any) -> AdapterAppFixture:

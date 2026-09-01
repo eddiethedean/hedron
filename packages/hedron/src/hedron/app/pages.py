@@ -223,6 +223,18 @@ class HedronPagesMixin:
         """
         return FragmentRegion(id=id, selector=selector or f"#{id}", description=description)
 
+    @overload
+    def action(
+        self,
+        path: Callable[..., Any] | type[CommandHandler[Any, Any]],
+        *,
+        method: str = "POST",
+        fallback: str | None = None,
+        include_in_schema: bool = True,
+        **kwargs: Any,
+    ) -> ActionHandle[Any, Any]: ...
+
+    @overload
     def action(
         self,
         path: str,
@@ -231,7 +243,17 @@ class HedronPagesMixin:
         fallback: str | None = None,
         include_in_schema: bool = True,
         **kwargs: Any,
-    ) -> Callable[[Callable[P, object]], ActionHandle[Any, Any]]:
+    ) -> Callable[[Callable[P, object]], ActionHandle[Any, Any]]: ...
+
+    def action(
+        self,
+        path: str | Callable[..., Any] | type[CommandHandler[Any, Any]],
+        *,
+        method: str = "POST",
+        fallback: str | None = None,
+        include_in_schema: bool = True,
+        **kwargs: Any,
+    ) -> ActionHandle[Any, Any] | Callable[[Callable[P, object]], ActionHandle[Any, Any]]:
         """Register the canonical typed mutation and return an ``ActionHandle``.
 
         Args:
@@ -262,6 +284,15 @@ class HedronPagesMixin:
                 f"Hedron.action does not accept simulator-only options ({names}); "
                 "use hedron_sim.SimApp.action for offline demo routes."
             )
+        if callable(path):
+            with self._runtime_scope():
+                return self._action(
+                    path,
+                    method=method,
+                    fallback=fallback,
+                    include_in_schema=include_in_schema,
+                    **kwargs,
+                )
         decorator = self._action(
             path,
             method=method,
@@ -457,6 +488,7 @@ class HedronPagesMixin:
                 mount_path=mount,
             )
             endpoint = wrap_endpoint_result(handle)
+            _stamp(endpoint, _hedron_logical_id=handle.logical_id)
             extra_regions = kwargs.pop("fragment_regions", None)
             from hedron.routing.router import normalize_fragment_regions
 
@@ -649,6 +681,7 @@ class HedronPagesMixin:
 
             if authorization is not None:
                 _stamp(endpoint, _hedron_requires_scopes=authorization)
+            _stamp(endpoint, _hedron_logical_id=handle.logical_id)
             meta = handle.type_meta
             if meta is not None:
                 media = formbody_media_types(meta)

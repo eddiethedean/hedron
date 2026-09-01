@@ -6,6 +6,7 @@
 #
 # Usage:
 #   scripts/ci_checks.sh test [--python 3.12]
+#   scripts/ci_checks.sh coverage [--python 3.12]
 #   scripts/ci_checks.sh workbench [--python 3.12]
 #   scripts/ci_checks.sh docs [--python 3.12]
 #   scripts/ci_checks.sh typing [--python 3.12]
@@ -386,7 +387,24 @@ wait_jobs() {
 cmd_test() {
   # Treat unknown markers and invalid pytest configuration as CI failures.
   # Parallel workers come from pyproject addopts (`-n auto --dist=loadfile`).
-  run_uv pytest -q --strict-config --strict-markers
+  (
+    export HEDRON_ENFORCE_RETIRED_INVENTORY=1
+    run_uv pytest -q --strict-config --strict-markers
+  )
+}
+
+cmd_coverage() {
+  # One branch-aware report gates the supported flagship package while the
+  # remaining Python versions continue to exercise compatibility normally.
+  (
+    export HEDRON_ENFORCE_RETIRED_INVENTORY=1
+    run_uv pytest -q -n 0 --strict-config --strict-markers \
+      --cov=hedron --cov-branch \
+      --cov-report=term-missing:skip-covered \
+      --cov-report=xml:coverage.xml \
+      --cov-report=json:coverage.json \
+      --cov-fail-under=73
+  )
 }
 
 quality_ruff() {
@@ -974,6 +992,7 @@ trap job_pool_cleanup EXIT
 
 case "$SUITE" in
   test) cmd_test ;;
+  coverage) cmd_coverage ;;
   workbench) cmd_workbench ;;
   docs) cmd_docs ;;
   typing) cmd_typing ;;

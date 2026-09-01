@@ -934,12 +934,15 @@ def _cmd_style_init(args: argparse.Namespace) -> int:
         name=args.name,
         tokens={
             "color.bg": "#ffffff",
+            "color.surface": "#f8fafc",
             "color.fg": "#111827",
+            "color.accent": "#1d4ed8",
             "color.muted": "#4b5563",
             "color.focus": "#1d4ed8",
             "font.family": "system-ui",
             "font.size": "1rem",
             "space.unit": "0.25rem",
+            "motion.duration": "150ms",
         },
         metadata={"starter": True},
     )

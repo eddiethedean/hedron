@@ -165,12 +165,20 @@ class AppScenario:
 
     _get: GetFn
     _post: PostFn
+    _catalog: Callable[[str | None], object] | None = None
     cookies: dict[str, str] = field(default_factory=dict[str, str])
     last_response: AdapterResponse | None = None
 
     @classmethod
     def from_fixture(cls, fixture: AdapterAppFixture) -> AppScenario:
-        return cls(_get=fixture.get, _post=fixture.post)
+        catalog_method = getattr(fixture, "catalog", None)
+        return cls(
+            _get=fixture.get,
+            _post=fixture.post,
+            _catalog=(
+                (lambda app_id: catalog_method(app_id=app_id)) if callable(catalog_method) else None
+            ),
+        )
 
     @classmethod
     def from_callables(cls, get: GetFn, post: PostFn) -> AppScenario:
@@ -184,6 +192,7 @@ class AppScenario:
         cookies: Mapping[str, str] | None = None,
         _get: GetFn | None = None,
         _post: PostFn | None = None,
+        _catalog: Callable[[str | None], object] | None = None,
     ) -> None:
         if _get is not None and _post is not None:
             resolved_get, resolved_post = _get, _post
@@ -196,6 +205,10 @@ class AppScenario:
             raise TypeError("AppScenario requires an AdapterAppFixture or get/post callables")
         self._get = resolved_get
         self._post = resolved_post
+        self._catalog = _catalog
+        catalog_method = getattr(fixture, "catalog", None)
+        if self._catalog is None and callable(catalog_method):
+            self._catalog = lambda app_id: catalog_method(app_id=app_id)
         self.cookies = dict(cookies or {})
         self.last_response = None
 
@@ -295,6 +308,8 @@ class AppScenario:
 
     def catalog(self, *, app_id: str | None = None) -> InteractionCatalog:
         """Compile the current interaction catalog for test assertions."""
+        if self._catalog is not None:
+            return cast("InteractionCatalog", self._catalog(app_id))
         from hedron_core.catalog import compile_interaction_catalog
 
         return compile_interaction_catalog(app_id=app_id)

@@ -102,8 +102,21 @@ jobs:
           toolchain: stable
       - name: Install dependencies
         run: uv sync --locked --python ${{ matrix.python-version }}
+      - name: Run test suite with branch coverage
+        if: matrix.python-version == '3.12'
+        run: bash scripts/ci_checks.sh coverage --python ${{ matrix.python-version }}
       - name: Run test suite
+        if: matrix.python-version != '3.12'
         run: bash scripts/ci_checks.sh test --python ${{ matrix.python-version }}
+      - name: Upload Hedron coverage
+        if: always() && matrix.python-version == '3.12'
+        uses: actions/upload-artifact@043fb49892014c6ac208e8d09a5e3f37fb8babe3 # v7.0.1
+        with:
+          name: hedron-coverage-python-3.12
+          path: |
+            coverage.xml
+            coverage.json
+          if-no-files-found: error
 
   dependency-bounds:
     name: Stable dependency bounds (${{ matrix.bounds }})
