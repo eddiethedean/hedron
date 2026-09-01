@@ -110,7 +110,7 @@ jobs:
         run: bash scripts/ci_checks.sh test --python ${{ matrix.python-version }}
       - name: Upload Python package coverage
         if: always() && matrix.python-version == '3.12'
-        uses: actions/upload-artifact@043fb49892014c6ac208e8d09a5e3f37fb8babe3 # v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: python-package-coverage-3.12
           path: |
