@@ -144,8 +144,8 @@ def test_origin_allowlist_blocks_exfiltration_origin() -> None:
     assert blocked.status_code == 403
 
 
-@pytest.mark.parametrize("constant", ["NaN", "Infinity", "-Infinity"])
-def test_nonfinite_jsonrpc_ids_are_rejected(constant: str) -> None:
+@pytest.mark.parametrize("literal", ["NaN", "Infinity", "-Infinity", "1e999", "-1e999"])
+def test_nonfinite_jsonrpc_ids_are_rejected(literal: str) -> None:
     app = Starlette()
     projection = McpProjection(
         enabled=True,
@@ -155,7 +155,7 @@ def test_nonfinite_jsonrpc_ids_are_rejected(constant: str) -> None:
     client = TestClient(app, raise_server_exceptions=False)
     response = client.post(
         "/mcp",
-        content=f'{{"jsonrpc":"2.0","id":{constant},"method":"nope"}}'.encode(),
+        content=f'{{"jsonrpc":"2.0","id":{literal},"method":"nope"}}'.encode(),
         headers={"content-type": "application/json"},
     )
     assert response.status_code == 400

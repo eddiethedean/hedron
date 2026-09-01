@@ -63,6 +63,13 @@ def _reject_nonstandard_json_constant(value: str) -> NoReturn:
     raise ValueError(f"non-standard JSON constant {value!r}")
 
 
+def _parse_finite_json_float(value: str) -> float:
+    parsed = float(value)
+    if not math.isfinite(parsed):
+        raise ValueError(f"non-finite JSON number {value!r}")
+    return parsed
+
+
 def _as_json_object(value: object) -> JsonObject:
     if isinstance(value, dict) and all(
         isinstance(key, str) and _is_json_value(item)
@@ -243,6 +250,7 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
         body = json.loads(
             raw.decode("utf-8") or "{}",
             parse_constant=_reject_nonstandard_json_constant,
+            parse_float=_parse_finite_json_float,
         )
     except (UnicodeDecodeError, json.JSONDecodeError, ValueError):
         return _json_response(_error(None, -32700, "parse error"), status_code=400)
