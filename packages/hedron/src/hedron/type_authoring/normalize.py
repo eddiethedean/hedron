@@ -548,7 +548,7 @@ def _injected_names(signature: inspect.Signature, hints: Mapping[str, object]) -
         if isinstance(parameter.default, DependsOn):
             names.add(name)
             continue
-        _, metadata = _split_annotated(cast(object, annotation))
+        _, metadata = _split_annotated(annotation)
         if any(isinstance(item, DependsParam) for item in metadata):
             names.add(name)
             continue
