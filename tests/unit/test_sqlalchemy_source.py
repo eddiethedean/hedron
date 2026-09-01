@@ -100,6 +100,20 @@ def test_orm_converter_keeps_model_shape_for_projection(session_factory, project
     assert set(page.rows[0]) == set(projection)
 
 
+def test_default_converter_preserves_scalar_projection(session_factory) -> None:
+    src = SQLAlchemyDataSource(
+        session_factory=session_factory,
+        statement=select(Item),
+    )
+    page = src.fetch(
+        DataQuery(
+            projection=("name",),
+            allowlisted_projection_fields=frozenset({"name"}),
+        )
+    )
+    assert page.rows[0] == "n1"
+
+
 def test_secret_projection_is_rejected_even_when_allowlisted(session_factory) -> None:
     src = SQLAlchemyDataSource(
         session_factory=session_factory,
@@ -116,11 +130,33 @@ def test_secret_projection_is_rejected_even_when_allowlisted(session_factory) ->
         )
 
 
-def test_secret_schema_requires_mapping_codec(session_factory) -> None:
+def test_secret_columns_are_removed_before_and_after_codec(session_factory) -> None:
     src = SQLAlchemyDataSource(
         session_factory=session_factory,
         statement=select(Item),
         schema=(ColumnSchema("name", "Name", secret=True),),
+        to_row=lambda row: {"id": row.id, "renamed": row.get("name"), "NAME": "blocked"},
+    )
+    page = src.fetch(DataQuery(limit=1))
+    assert page.rows == [{"id": 1, "renamed": None}]
+
+
+def test_secret_schema_default_converter_returns_public_mapping(session_factory) -> None:
+    src = SQLAlchemyDataSource(
+        session_factory=session_factory,
+        statement=select(Item),
+        schema=(ColumnSchema("name", "Name", secret=True),),
+    )
+    page = src.fetch(DataQuery(limit=1))
+    assert page.rows == [{"id": 1}]
+
+
+def test_secret_schema_rejects_opaque_codec_output(session_factory) -> None:
+    src = SQLAlchemyDataSource(
+        session_factory=session_factory,
+        statement=select(Item),
+        schema=(ColumnSchema("name", "Name", secret=True),),
+        to_row=lambda row: row.id,
     )
     with pytest.raises(HedronError, match="must return a mapping"):
         src.fetch(DataQuery(limit=1))

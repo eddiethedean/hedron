@@ -80,6 +80,16 @@ class _ColumnElement(Protocol):
     def ilike(self, other: object, escape: str | None = None) -> object: ...
 
 
+class _PublicRow(dict[str, object]):
+    """Mapping/attribute view containing only columns safe for a row codec."""
+
+    def __getattr__(self, name: str) -> object:
+        try:
+            return self[name]
+        except KeyError as exc:
+            raise AttributeError(name) from exc
+
+
 def require_sqlalchemy() -> _SQLAlchemyModule:
     try:
         import sqlalchemy
@@ -194,8 +204,11 @@ class SQLAlchemyDataSource(Generic[T]):
             return cast(T, row)
 
         self._to_row = to_row or _identity
+        self._has_custom_to_row = to_row is not None
         self._apply_changes = apply_changes
         self._schema = tuple(schema)
+        self._secret_fields = frozenset(column.name for column in self._schema if column.secret)
+        self._secret_fields_folded = frozenset(name.casefold() for name in self._secret_fields)
         self._search_fields = tuple(search_fields)
 
     def plan_for(self, query: DataQuery) -> TransformPlan:
@@ -276,28 +289,67 @@ class SQLAlchemyDataSource(Generic[T]):
                 clauses.append(col.ilike(pattern, escape="\\"))
             if clauses:
                 stmt = stmt.where(or_(*clauses))
-        if q.projection:
-            secret_fields = {column.name for column in self._schema if column.secret}
-            if secret_fields.intersection(q.projection):
-                raise error(
-                    "HED-DATA-0052",
-                    title="Secret SQLAlchemy fields cannot be projected",
-                    explanation="ColumnSchema.secret fields are never exposed by projections.",
-                    remediation="Remove secret fields from projection or use an app-owned bridge.",
-                )
+        projection_folded = {name.casefold() for name in q.projection or ()}
+        if projection_folded.intersection(self._secret_fields_folded):
+            raise error(
+                "HED-DATA-0052",
+                title="Secret SQLAlchemy fields cannot be projected",
+                explanation="ColumnSchema.secret fields are never exposed by projections.",
+                remediation="Remove secret fields from projection or use an app-owned bridge.",
+            )
         if q.projection and include_projection:
             cols: list[Any] = [_column_from_selectable(stmt, name) for name in q.projection]
             stmt = stmt.with_only_columns(*cols)
         return stmt
 
+    def _without_secret_columns(self, statement: _SelectableStatement) -> _SelectableStatement:
+        columns = getattr(statement, "selected_columns", None)
+        public: list[object] = []
+        if columns is not None:
+            for column in columns:
+                raw_name = getattr(column, "key", None) or getattr(column, "name", None)
+                if (
+                    raw_name is not None
+                    and str(raw_name).casefold() not in self._secret_fields_folded
+                ):
+                    public.append(column)
+        if not public:
+            raise error(
+                "HED-DATA-0052",
+                title="SQLAlchemy source has no public selectable columns",
+                explanation="All selectable columns are secret or cannot be safely identified.",
+                remediation="Select at least one named public column for ordinary fetches.",
+            )
+        return statement.with_only_columns(*public)
+
+    def _public_codec_rows(self, result: object) -> list[object]:
+        if not isinstance(result, _HasMappings):
+            raise error(
+                "HED-DATA-0052",
+                title="SQLAlchemy secret redaction requires named rows",
+                explanation="The SQLAlchemy result cannot expose a named public-column mapping.",
+                remediation="Use a Select with named public columns and a mapping row codec.",
+            )
+        return [
+            _PublicRow(
+                {
+                    str(key): value
+                    for key, value in cast(Mapping[object, object], row).items()
+                    if str(key).casefold() not in self._secret_fields_folded
+                }
+            )
+            for row in result.mappings().all()
+        ]
+
     def _sanitize_row(self, row: object) -> object:
-        secret_fields = {column.name for column in self._schema if column.secret}
-        if not secret_fields:
+        if not self._secret_fields:
             return row
         if isinstance(row, Mapping):
             mapping = cast(Mapping[object, object], row)
             return {
-                str(key): value for key, value in mapping.items() if str(key) not in secret_fields
+                str(key): value
+                for key, value in mapping.items()
+                if str(key).casefold() not in self._secret_fields_folded
             }
         # An opaque object may still carry a secret attribute; require a mapping codec so
         # the adapter can prove secret fields were removed before returning the page.
@@ -316,17 +368,24 @@ class SQLAlchemyDataSource(Generic[T]):
         q = query.validated()
         session = self._session_factory()
         try:
-            # Keep the result shape stable for ORM row converters. A projection is applied
-            # after conversion instead of turning a one-column ORM result into a scalar.
-            shaped = self._apply_query(self._statement, q, include_projection=False)
+            # A custom codec receives the same unprojected shape for every projection.
+            # Secret-bearing sources are narrowed in SQL before any codec can observe them.
+            project_after_codec = self._has_custom_to_row or bool(self._secret_fields)
+            shaped = self._apply_query(
+                self._statement,
+                q,
+                include_projection=not project_after_codec,
+            )
+            if self._secret_fields:
+                shaped = self._without_secret_columns(shaped)
             paged = shaped.offset(q.offset).limit(q.limit)
             result = session.execute(paged)
-            rows = _fetch_rows(result)
+            rows = self._public_codec_rows(result) if self._secret_fields else _fetch_rows(result)
             mapped: list[T] = [cast(T, self._sanitize_row(self._to_row(row))) for row in rows]
-            if q.projection:
+            if q.projection and project_after_codec:
                 if any(not isinstance(row, Mapping) for row in mapped):
                     raise error(
-                        "HED-DATA-0014",
+                        "HED-DATA-0052",
                         title="Projected SQLAlchemy rows must be mappings",
                         explanation="Projection is applied after to_row and requires named fields.",
                         remediation="Configure to_row to return a mapping for projected queries.",
