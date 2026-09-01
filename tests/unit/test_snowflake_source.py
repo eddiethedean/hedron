@@ -1,7 +1,7 @@
 import pytest
 
 from hedron_core.diagnostics import HedronError
-from hedron_data.snowflake_source import SnowflakeDataSource, assert_select_only
+from hedron_data.snowflake_source import ColumnSchema, SnowflakeDataSource, assert_select_only
 
 
 class _Cur:
@@ -36,6 +36,27 @@ def test_snowflake_bounded_fetch() -> None:
     page = src.fetch(__import__("hedron_data.sources", fromlist=["DataQuery"]).DataQuery(limit=10))
     assert page.total == 1
     assert page.rows
+
+
+def test_snowflake_secret_columns_are_removed_before_and_after_codec() -> None:
+    class SecretCur(_Cur):
+        description = (("ID",), ("TOKEN",), ("NAME",))
+
+        def fetchmany(self, n):
+            return [(1, "classified", "a")][:n]
+
+    class SecretConn(_Conn):
+        def cursor(self):
+            return SecretCur()
+
+    src = SnowflakeDataSource(
+        connection_factory=SecretConn,
+        statement="SELECT id, token, name FROM t",
+        schema=(ColumnSchema("token", "Token", secret=True),),
+        to_row=lambda row: {**row, "token_copy": row.get("TOKEN")},
+    )
+    page = src.fetch(__import__("hedron_data.sources", fromlist=["DataQuery"]).DataQuery())
+    assert page.rows == [{"ID": 1, "NAME": "a", "token_copy": None}]
 
 
 @pytest.mark.parametrize(

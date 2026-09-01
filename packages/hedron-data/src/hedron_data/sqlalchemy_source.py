@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable, Sequence
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from typing import Any, Generic, Protocol, TypeVar, cast, runtime_checkable
 
 from hedron_core.diagnostics import error
@@ -79,6 +79,16 @@ class _HasScalarOne(Protocol):
 @runtime_checkable
 class _ColumnElement(Protocol):
     def ilike(self, other: object, escape: str | None = None) -> object: ...
+
+
+class _PublicRow(dict[str, object]):
+    """Mapping/attribute view containing only columns safe for a row codec."""
+
+    def __getattr__(self, name: str) -> object:
+        try:
+            return self[name]
+        except KeyError as exc:
+            raise AttributeError(name) from exc
 
 
 def require_sqlalchemy() -> _SQLAlchemyModule:
@@ -195,14 +205,23 @@ class SQLAlchemyDataSource(Generic[T]):
             return cast(T, row)
 
         self._to_row = to_row or _identity
+        self._has_custom_to_row = to_row is not None
         self._apply_changes = apply_changes
         self._schema = tuple(schema)
+        self._secret_fields = frozenset(column.name for column in self._schema if column.secret)
+        self._secret_fields_folded = frozenset(name.casefold() for name in self._secret_fields)
         self._search_fields = tuple(search_fields)
 
     def plan_for(self, query: DataQuery) -> TransformPlan:
         return plan_from_query(query)
 
-    def _apply_query(self, statement: object, query: DataQuery) -> _SelectableStatement:
+    def _apply_query(
+        self,
+        statement: object,
+        query: DataQuery,
+        *,
+        include_projection: bool = True,
+    ) -> _SelectableStatement:
         from sqlalchemy import asc, desc, or_
 
         q = query.validated()
@@ -271,10 +290,78 @@ class SQLAlchemyDataSource(Generic[T]):
                 clauses.append(col.ilike(pattern, escape="\\"))
             if clauses:
                 stmt = stmt.where(or_(*clauses))
-        if q.projection:
+        projection_folded = {name.casefold() for name in q.projection or ()}
+        if projection_folded.intersection(self._secret_fields_folded):
+            raise error(
+                "HED-DATA-0052",
+                title="Secret SQLAlchemy fields cannot be projected",
+                explanation="ColumnSchema.secret fields are never exposed by projections.",
+                remediation="Remove secret fields from projection or use an app-owned bridge.",
+            )
+        if q.projection and include_projection:
             cols: list[Any] = [_column_from_selectable(stmt, name) for name in q.projection]
             stmt = stmt.with_only_columns(*cols)
         return stmt
+
+    def _without_secret_columns(self, statement: _SelectableStatement) -> _SelectableStatement:
+        columns = getattr(statement, "selected_columns", None)
+        public: list[object] = []
+        if columns is not None:
+            for column in columns:
+                raw_name = getattr(column, "key", None) or getattr(column, "name", None)
+                if (
+                    raw_name is not None
+                    and str(raw_name).casefold() not in self._secret_fields_folded
+                ):
+                    public.append(column)
+        if not public:
+            raise error(
+                "HED-DATA-0052",
+                title="SQLAlchemy source has no public selectable columns",
+                explanation="All selectable columns are secret or cannot be safely identified.",
+                remediation="Select at least one named public column for ordinary fetches.",
+            )
+        return statement.with_only_columns(*public)
+
+    def _public_codec_rows(self, result: object) -> list[object]:
+        if not isinstance(result, _HasMappings):
+            raise error(
+                "HED-DATA-0052",
+                title="SQLAlchemy secret redaction requires named rows",
+                explanation="The SQLAlchemy result cannot expose a named public-column mapping.",
+                remediation="Use a Select with named public columns and a mapping row codec.",
+            )
+        return [
+            _PublicRow(
+                {
+                    str(key): value
+                    for key, value in cast(Mapping[object, object], row).items()
+                    if str(key).casefold() not in self._secret_fields_folded
+                }
+            )
+            for row in result.mappings().all()
+        ]
+
+    def _sanitize_row(self, row: object) -> object:
+        if not self._secret_fields:
+            return row
+        if isinstance(row, Mapping):
+            mapping = cast(Mapping[object, object], row)
+            return {
+                str(key): value
+                for key, value in mapping.items()
+                if str(key).casefold() not in self._secret_fields_folded
+            }
+        # An opaque object may still carry a secret attribute; require a mapping codec so
+        # the adapter can prove secret fields were removed before returning the page.
+        raise error(
+            "HED-DATA-0052",
+            title="SQLAlchemy row codec must return a mapping",
+            explanation=(
+                "A secret-bearing SQLAlchemy source cannot verify redaction for an opaque row."
+            ),
+            remediation="Configure to_row to return a mapping with public fields only.",
+        )
 
     def fetch(self, query: DataQuery) -> DataPage[T]:
         from sqlalchemy import func, select
@@ -283,13 +370,44 @@ class SQLAlchemyDataSource(Generic[T]):
         reject_unsupported_cursor(q, source="SQLAlchemyDataSource")
         session = self._session_factory()
         try:
-            shaped = self._apply_query(self._statement, q)
+            # A custom codec receives the same unprojected shape for every projection.
+            # Secret-bearing sources are narrowed in SQL before any codec can observe them.
+            project_after_codec = self._has_custom_to_row or bool(self._secret_fields)
+            shaped = self._apply_query(
+                self._statement,
+                q,
+                include_projection=not project_after_codec,
+            )
+            if self._secret_fields:
+                shaped = self._without_secret_columns(shaped)
             paged = shaped.offset(q.offset).limit(q.limit)
             result = session.execute(paged)
-            rows = _fetch_rows(result)
-            mapped = [self._to_row(row) for row in rows]
+            rows = self._public_codec_rows(result) if self._secret_fields else _fetch_rows(result)
+            mapped: list[T] = [cast(T, self._sanitize_row(self._to_row(row))) for row in rows]
+            if q.projection and project_after_codec:
+                if any(not isinstance(row, Mapping) for row in mapped):
+                    raise error(
+                        "HED-DATA-0052",
+                        title="Projected SQLAlchemy rows must be mappings",
+                        explanation="Projection is applied after to_row and requires named fields.",
+                        remediation="Configure to_row to return a mapping for projected queries.",
+                    )
+                mapped = cast(
+                    list[T],
+                    [
+                        {
+                            name: cast(Mapping[object, object], row).get(name)
+                            for name in q.projection
+                        }
+                        for row in mapped
+                    ],
+                )
             # subquery() is a FromClause at runtime; accept via Any for select_from stubs.
-            count_from: Any = self._apply_query(self._statement, q).order_by(None).subquery()
+            count_from: Any = (
+                self._apply_query(self._statement, q, include_projection=False)
+                .order_by(None)
+                .subquery()
+            )
             count_stmt = select(func.count()).select_from(count_from)
             count_result = session.execute(count_stmt)
             if isinstance(count_result, _HasScalarOne):
