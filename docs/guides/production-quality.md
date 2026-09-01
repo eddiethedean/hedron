@@ -3,7 +3,7 @@
 How Hedron plans to raise **adopter trust** for the Supported surface — beyond the ops
 checklist in [Ship a Hedron app](ship.md).
 
-**Current release:** `v1.0.2` is verified and published; public applications
+**Current release:** `v1.0.3` is verified and published; public applications
 should require `hedron>=1.0.0`.
 Capability maturity snapshot:
 [What’s ready today](whats-ready.md). Program decision: **D-053**; RFC:

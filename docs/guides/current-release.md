@@ -15,11 +15,11 @@ maintaining their own release story.
 
 | Package | Version | Maturity | Application requirement | Role |
 |---|---:|---|---|---|
-| `hedron` | `1.0.2` | Stable | `hedron>=1.0.0` | FastAPI-native component and route authoring |
-| `hedron-data` | `1.0.2` | Stable | `hedron-data>=1.0.0` | DataTable, DataEditor, and bounded data contracts |
-| `hedron-charts` | `1.0.2` | Stable | `hedron-charts>=1.0.0` | First-party charts and static/Matplotlib output |
-| `hedron-maps` | `1.0.2` | Stable | `hedron-maps>=1.0.0` | Bounded first-party maps and offline presentation |
-| `edron` | `1.0.2` | Stable | `edron>=1.0.0` | Alternate class-oriented facade over Hedron |
+| `hedron` | `1.0.3` | Stable | `hedron>=1.0.0` | FastAPI-native component and route authoring |
+| `hedron-data` | `1.0.3` | Stable | `hedron-data>=1.0.0` | DataTable, DataEditor, and bounded data contracts |
+| `hedron-charts` | `1.0.3` | Stable | `hedron-charts>=1.0.0` | First-party charts and static/Matplotlib output |
+| `hedron-maps` | `1.0.3` | Stable | `hedron-maps>=1.0.0` | Bounded first-party maps and offline presentation |
+| `edron` | `1.0.3` | Stable | `edron>=1.0.0` | Alternate class-oriented facade over Hedron |
 
 The coordinated release supports CPython **3.10–3.14**. Package maturity, capability
 readiness, and individual API stability are separate: a stable package may contain a

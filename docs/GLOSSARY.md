@@ -12,7 +12,7 @@ HTML `id` stays stable so HTMX can swap it.
 the next train is an intentional upgrade.
 
 **Published** — A cut available through the named distribution channel. Edron and Hedron
-`v1.0.2` are published on PyPI. `v0.67.0` is the immutable migration baseline. Require the stable
+`v1.0.3` are published on PyPI. `v0.67.0` is the immutable migration baseline. Require the stable
 `1.0.x` compatibility floor and review the latest registry-resolvable release.
 
 **Action** — A typed server operation with an HTTP method, input contract, dependencies, and response behavior.

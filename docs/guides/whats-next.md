@@ -1,6 +1,6 @@
 # What’s next
 
-Hedron `v1.0.2` is implemented, Verified, tagged, and published. See
+Hedron `v1.0.3` is implemented, Verified, tagged, and published. See
 [Current release and support](current-release.md) for the exact channel status.
 
 There is no committed 1.1 calendar or commercial SLA. The maintainer roadmap contains a proposed
