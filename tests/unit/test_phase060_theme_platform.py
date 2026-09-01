@@ -77,6 +77,12 @@ def test_absolute_modern_colors_have_deterministic_srgb_fallbacks() -> None:
     assert Color.oklab(0.65, 0.1, -0.1).to_hex().startswith("#")
 
 
+@pytest.mark.parametrize("payload", [b"not a zip", b"PK\x03\x04"])
+def test_theme_package_normalizes_malformed_zip(payload: bytes) -> None:
+    with pytest.raises(ValueError, match="invalid theme package archive"):
+        load_theme_package(payload)
+
+
 def test_brand_accepts_absolute_color_and_records_provenance() -> None:
     design = DesignSystem.brand("modern", accent=Color.parse("oklch(55% 0.12 260)"))
 

@@ -1500,7 +1500,7 @@ def load_theme_package(archive: bytes | ThemePackage) -> ThemeSpec:
             payload = read_bounded(bundle, "theme.json")
             if len(payload) + len(json.dumps(manifest_data).encode()) > MAX_THEME_TOTAL_BYTES:
                 raise ValueError("theme package exceeds the total decompressed-size limit")
-    except (OSError, KeyError, ValueError, json.JSONDecodeError) as exc:
+    except (OSError, KeyError, ValueError, zipfile.BadZipFile, json.JSONDecodeError) as exc:
         raise ValueError("invalid theme package archive") from exc
     if not is_string_mapping(manifest_data):
         raise ValueError("theme package manifest must contain an object")
