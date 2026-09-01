@@ -1,6 +1,6 @@
 # Public stability classifications
 
-**For adopters:** Hedron 1.0.4 is published on PyPI. Require `hedron>=1.0.0`. Treat the **stable**
+**For adopters:** Hedron 1.0.5 is published on PyPI. Require `hedron>=1.0.0`. Treat the **stable**
 tables below as the SemVer compatibility promise; everything
 else is `beta` / `experimental` and may change on the documented schedule. Capability readiness
 (Supported vs Experimental) lives on [What’s ready](../guides/whats-ready.md). Only
@@ -10,7 +10,7 @@ independent Beta satellites.
 <details markdown>
 <summary>Maintainer catalog metadata</summary>
 
-**Status:** Verified and published **1.0.x** release (`v1.0.4`). `v0.67.0` remains the
+**Status:** Verified and published **1.0.x** release (`v1.0.5`). `v0.67.0` remains the
 immutable migration baseline.
 Prior: 0.50 Explorer architecture; 0.49 FastAPI/Pydantic; 0.48 HTMX; 0.25 archetype; 0.24
 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.

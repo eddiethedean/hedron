@@ -7,7 +7,7 @@
     [What’s next](guides/whats-next.md). Capability maturity:
     [What’s ready today](guides/whats-ready.md).
 
-This is the **single** Hedron roadmap ledger. Stable production version: `v1.0.4`.
+This is the **single** Hedron roadmap ledger. Stable production version: `v1.0.5`.
 Migration baseline: `v0.67.0`. Pin `hedron` for production; see
 [What's ready today](guides/whats-ready.md) for capability maturity.
 
@@ -75,7 +75,7 @@ Migration baseline: `v0.67.0`. Pin `hedron` for production; see
 | **0.67** | Alpine browser-local features, bidirectional Alpine/Web-Component engine dispositions, and an opt-in preview of one unified Alpine/HTMX/Hedron interaction and lifecycle model | **Beta `v0.67.0`; implemented and verified in-tree** ([RFC-0095](rfcs/RFC-0095-ALPINE-BROWSER-ENHANCEMENT.md); D-113 / D-115 / D-116; [implementation](implementation/ALPINE_INTEGRATION_067.md); [engine dispositions](implementation/COMPONENT_ENGINE_DISPOSITIONS_067_1_0.md); [acceptance](acceptance/RELEASE_0_67.md)) |
 | **1.0** | Canonical developer-interface, HTMX/Alpine interaction, and component-engine consolidation; removal of fully warned 0.67 compatibility paths | **Published** (`v1.0.0`; [RFC-0096](rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md); D-114–D-117; [implementation](implementation/HEDRON_1_0.md); [acceptance](acceptance/RELEASE_1_0.md)); every 1.0 application runs unchanged on 0.67 |
 
-Edron is independently versioned. Edron `1.0.4` directly requires Hedron
+Edron is independently versioned. Edron `1.0.5` directly requires Hedron
 `>=1.0.0,<2.0`; see the [Edron release roadmap](EDRON_ROADMAP.md).
 
 ### Phase 0.64 enhancement inventory
@@ -163,7 +163,7 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
 - Package maturity is **Stable** for the coordinated 1.0 inventory; satellites retain their
   independent classifications.
 - Hedron `1.0` is implemented and Verified in-tree from the 0.67 baseline under D-114–D-117;
-  tag/PyPI publication is deferred. `fastapi-workbench` 1.0.4 remains an independently versioned package
+  tag/PyPI publication is deferred. `fastapi-workbench` 1.0.5 remains an independently versioned package
   release, not Hedron 1.0. A **minimal + expanded (0.23) `stable` API
   tier** is catalogued in [STABILITY.md](api/STABILITY.md); most other public APIs remain `beta` or
   `experimental`.

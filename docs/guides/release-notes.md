@@ -3,6 +3,19 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 1.0.5 — 2026-09-01
+
+Coordinated maintenance release for the stable 1.0 train. The tagged release passed the full
+release CI matrix, published the coordinated Python packages and native artifacts, and verified
+the installed quick start from the public index.
+
+### Fixed
+
+- Fixed `fastapi-workbench` console-script imports for `module:attribute` targets in the current
+  project directory.
+- Preserved action controls during refresh-only HTMX swaps and added toast feedback to the Posit
+  Workbench starter examples and scaffold.
+
 ## 1.0.4 — 2026-08-31
 
 Coordinated security and correctness release for the stable 1.0 train. The tagged release passed
