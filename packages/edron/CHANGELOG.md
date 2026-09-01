@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.5] — 2026-09-01
+
+- Maintenance release for the coordinated 1.0 train.
+
 ## [1.0.4] — 2026-08-31
 
 - Maintenance release aligned with the Hedron 1.0 train.

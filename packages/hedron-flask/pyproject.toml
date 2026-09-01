@@ -1,6 +1,6 @@
 [project]
 name = "hedron-flask"
-version = "1.0.4"
+version = "1.0.5"
 description = "Flask adapter for Hedron component rendering and HTMX interactions"
 readme = "README.md"
 requires-python = ">=3.10,<3.15"
