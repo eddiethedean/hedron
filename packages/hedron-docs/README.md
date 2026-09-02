@@ -3,9 +3,10 @@
 Experimental Markdown compiler and Hedron application toolkit.
 
 `hedron-docs` turns a bounded Markdown corpus into a deterministic JSON manifest and renders that
-manifest through native Hedron components. The 0.1 surface is intentionally small and may change:
+manifest through native Hedron components. The 0.2 surface is intentionally experimental and may
+change:
 
-**Package maturity:** Beta tooling-grade · **Repository package version:** `0.1.0` · **Import:** `hedron_docs`
+**Package maturity:** Beta tooling-grade · **Repository package version:** `0.2.0` · **Import:** `hedron_docs`
 
 ```python
 from hedron_docs import compile_site, create_docs_app, load_config
@@ -19,6 +20,8 @@ Local images and linked files are validated, fingerprinted, and embedded in the 
 the app serves them from `/_hedron-docs/assets/...` with content hashes and bounded sizes.
 
 ```toml
+schema_version = 2
+
 [site]
 title = "Project docs"
 docs_dir = "docs"
@@ -29,11 +32,21 @@ output = "build/hedron-docs/site.json"
 max_source_bytes = 2000000
 max_asset_bytes = 10000000
 max_nodes = 10000
+max_depth = 64
+max_table_cells = 10000
+max_code_blocks = 200
+max_code_block_bytes = 256000
+max_directives = 100
 max_query_length = 200
 ```
 
-The package is not a drop-in MkDocs plugin. `import-mkdocs` reads site metadata and exclusions as
-a migration aid; it never executes arbitrary MkDocs plugins or theme code.
+The 0.2 compiler lowers CommonMark, tables, definition lists, footnotes, admonitions, details,
+content tabs, API directives, and allowlisted demo references directly from parser tokens into a
+closed typed AST. Every parsed node carries a stable source span. Raw HTML and unknown extension
+syntax fail with a diagnostic containing a code, title, location, explanation, and remediation.
+
+The package is not a drop-in MkDocs plugin. `import-mkdocs` reads site metadata, navigation, and
+exclusions as a migration aid; it never executes arbitrary MkDocs plugins or theme code.
 
 ```bash
 hedron-docs check hedron-docs.toml

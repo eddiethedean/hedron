@@ -22,11 +22,11 @@ _TRAIN_ALIGNED_PACKAGES = {
     "hedron-elements",
 }
 _INDEPENDENT_BETA = {
-    "hedron-docs",
     "hedron-native",
     "edron-sim",
 }
 _INDEPENDENT_BETA_02 = {
+    "hedron-docs",
     "hedron-mcp",
     "hedron-gradio",
     "hedron-sample-kit",

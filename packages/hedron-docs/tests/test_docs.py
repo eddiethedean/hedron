@@ -47,7 +47,7 @@ def test_compile_is_deterministic_and_round_trips(tmp_path: Path) -> None:
     assert manifest.pages[1].path == "/guide/"
     links = [node for node in manifest.pages[1].nodes if node.kind == "paragraph"][0].children
     assert [node.attr("href") for node in links if node.kind == "link"] == ["/", "/"]
-    assert json.loads(manifest.dumps())["schema_version"] == "hedron-docs-manifest-1"
+    assert json.loads(manifest.dumps())["schema_version"] == "hedron-docs-manifest-2"
 
 
 def test_native_constructs_and_security_boundary(tmp_path: Path) -> None:
@@ -246,7 +246,18 @@ def test_manifest_rejects_unsafe_render_nodes() -> None:
     from hedron_docs import DocNode, PageRecord, SiteManifest
 
     unsafe = DocNode(
-        "paragraph", children=(DocNode("link", text="x", attrs=(("href", "javascript:alert(1)"),)),)
+        "paragraph",
+        children=(
+            DocNode(
+                "link",
+                text="x",
+                attrs=(("href", "javascript:alert(1)"),),
+                source="index.md",
+                end_column=2,
+            ),
+        ),
+        source="index.md",
+        end_column=2,
     )
     page = PageRecord("index.md", "/", "Home", "", (), (unsafe,), "x", "hash")
     with pytest.raises(ValueError, match="unsafe"):
@@ -254,11 +265,12 @@ def test_manifest_rejects_unsafe_render_nodes() -> None:
 
 
 def test_manifest_node_depth_is_bounded() -> None:
-    from hedron_docs import DocNode
+    from hedron_docs import DocNode, SourceSpan
 
-    value: dict[str, object] = {"kind": "text"}
+    span = SourceSpan("index.md", 1, 1, 1, 2).to_dict()
+    value: dict[str, object] = {"kind": "text", "span": span}
     for _ in range(257):
-        value = {"kind": "span", "children": [value]}
+        value = {"kind": "span", "children": [value], "span": span}
     with pytest.raises(ValueError, match="nesting"):
         DocNode.from_dict(value)
 

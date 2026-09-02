@@ -13,7 +13,7 @@ HED_BUILD_FAILED = "HED-BUILD-0002"
 HED_BUILD_MISSING_MANIFEST = "HED-BUILD-0003"
 HED_BUILD_RUNTIME_COMPILE = "HED-BUILD-0004"
 
-# Markdown documentation compiler (hedron-docs 0.1)
+# Markdown documentation compiler (hedron-docs 0.2)
 HED_DOCS_0001 = "HED-DOCS-0001"  # generic documentation compiler failure
 HED_DOCS_0002 = "HED-DOCS-0002"  # configuration file missing
 HED_DOCS_0003 = "HED-DOCS-0003"  # invalid configuration
@@ -26,6 +26,13 @@ HED_DOCS_0011 = "HED-DOCS-0011"  # invalid MkDocs configuration
 HED_DOCS_0012 = "HED-DOCS-0012"  # MkDocs configuration has invalid shape
 HED_DOCS_0100 = "HED-DOCS-0100"  # Markdown parse/lowering failure
 HED_DOCS_0101 = "HED-DOCS-0101"  # Markdown node limit exceeded
+HED_DOCS_0102 = "HED-DOCS-0102"  # Markdown source-byte limit exceeded
+HED_DOCS_0103 = "HED-DOCS-0103"  # Markdown nesting limit exceeded
+HED_DOCS_0104 = "HED-DOCS-0104"  # Markdown table-cell limit exceeded
+HED_DOCS_0105 = "HED-DOCS-0105"  # Markdown code-block limit exceeded
+HED_DOCS_0106 = "HED-DOCS-0106"  # Markdown directive limit exceeded
+HED_DOCS_0107 = "HED-DOCS-0107"  # unsupported Markdown syntax
+HED_DOCS_0108 = "HED-DOCS-0108"  # malformed Markdown extension
 HED_DOCS_0200 = "HED-DOCS-0200"  # invalid manifest
 HED_DOCS_0201 = "HED-DOCS-0201"  # documentation directory missing
 HED_DOCS_0202 = "HED-DOCS-0202"  # source file missing or invalid
@@ -33,6 +40,7 @@ HED_DOCS_0203 = "HED-DOCS-0203"  # route collision
 HED_DOCS_0204 = "HED-DOCS-0204"  # no Markdown documents found
 HED_DOCS_0205 = "HED-DOCS-0205"  # reserved route
 HED_DOCS_0206 = "HED-DOCS-0206"  # source escapes documentation root
+HED_DOCS_0207 = "HED-DOCS-0207"  # unsafe manifest URL
 
 # Assets
 HED_ASSET_UNSUPPORTED_VERSION = "HED-ASSET-0001"

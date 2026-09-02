@@ -184,6 +184,10 @@ tests without secrets or a database.
 
 ### W2 — Package-owned typed document AST and diagnostics
 
+**Implementation status:** Complete in the experimental `hedron-docs` 0.2 line. This records the
+compiler milestone only; it does not imply RFC acceptance, public-site cutover, or completion of
+W3–W12.
+
 **Purpose:** select and contain the Markdown parsing boundary.
 
 Deliverables:
@@ -199,6 +203,12 @@ Deliverables:
 
 Exit: representative source parses deterministically without raw HTML rendering or silent syntax
 loss.
+
+The 0.2 implementation uses direct Markdown token lowering rather than an HTML round-trip. It
+ships a closed node vocabulary with stable source spans; explicit admonition, details, tabs,
+footnote, definition-list, API-directive, and demo-directive nodes; schema-2 native configuration
+with normalized navigation import; and source-byte, node, depth, table-cell, code-block, and
+directive budgets. The package golden/adversarial tests are the executable W2 evidence.
 
 ### W3 — Native Hedron content lowering
 

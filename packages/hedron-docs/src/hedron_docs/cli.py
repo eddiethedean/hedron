@@ -9,7 +9,7 @@ from contextlib import suppress
 from pathlib import Path
 
 from .app import create_docs_app
-from .config import import_mkdocs, load_config
+from .config import CONFIG_SCHEMA_VERSION, NavigationItem, import_mkdocs, load_config
 from .errors import DocsError
 from .manifest import compile_site
 
@@ -70,6 +70,8 @@ def _write_native_config(config: object, path: Path) -> None:
         with suppress(ValueError):
             docs_dir = Path(os.path.relpath(docs_dir, target.parent))
     lines = [
+        f"schema_version = {CONFIG_SCHEMA_VERSION}",
+        "",
         "[site]",
         f"title = {_toml_string(config.site_title)}",
         f"description = {_toml_string(config.site_description)}",
@@ -77,12 +79,18 @@ def _write_native_config(config: object, path: Path) -> None:
         f"base_url = {_toml_string(config.base_url)}",
         "exclude = [" + ", ".join(_toml_string(item) for item in config.exclude) + "]",
         f"allow_external_links = {str(config.allow_external_links).lower()}",
+        "navigation = " + _toml_navigation(config.navigation),
         "",
         "[build]",
         f"output = {_toml_string(str(config.output))}",
         f"max_source_bytes = {config.max_source_bytes}",
         f"max_asset_bytes = {config.max_asset_bytes}",
         f"max_nodes = {config.max_nodes}",
+        f"max_depth = {config.max_depth}",
+        f"max_table_cells = {config.max_table_cells}",
+        f"max_code_blocks = {config.max_code_blocks}",
+        f"max_code_block_bytes = {config.max_code_block_bytes}",
+        f"max_directives = {config.max_directives}",
         f"max_query_length = {config.max_query_length}",
         "",
     ]
@@ -91,6 +99,18 @@ def _write_native_config(config: object, path: Path) -> None:
 
 def _toml_string(value: str) -> str:
     return '"' + value.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n") + '"'
+
+
+def _toml_navigation(items: tuple[NavigationItem, ...]) -> str:
+    def item_text(item: NavigationItem) -> str:
+        fields = [f"title = {_toml_string(item.title)}"]
+        if item.path:
+            fields.append(f"path = {_toml_string(item.path)}")
+        else:
+            fields.append(f"children = {_toml_navigation(item.children)}")
+        return "{ " + ", ".join(fields) + " }"
+
+    return "[" + ", ".join(item_text(item) for item in items) + "]"
 
 
 if __name__ == "__main__":

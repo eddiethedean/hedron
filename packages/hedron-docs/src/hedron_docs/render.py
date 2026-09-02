@@ -64,10 +64,62 @@ def render_node(node: DocNode) -> NodeLike:
     if kind == "alert":
         tone = cast(Literal["info", "success", "warning", "danger"], node.attr("tone", "info"))
         return Alert(node.text, tone=tone, title=node.attr("title") or None)
+    if kind == "details":
+        return html.details(
+            html.summary(node.attr("title") or "Details"),
+            *(render_node(child) for child in node.children),
+            open=node.attr("open") == "true" or None,
+        )
     if kind == "tabs":
         return Tabs(*[(panel.text, render_document(panel.children)) for panel in node.children])
     if kind == "table":
         return _render_table(node)
+    if kind == "definition-list":
+        return html.dl(*(render_node(child) for child in node.children))
+    if kind == "dt":
+        return html.dt(*(render_node(child) for child in node.children))
+    if kind == "dd":
+        return html.dd(*(render_node(child) for child in node.children))
+    if kind == "footnotes":
+        return html.section(
+            html.h2("Footnotes", class_="sr-only"),
+            html.ol(*(render_node(child) for child in node.children)),
+            aria={"label": "Footnotes"},
+        )
+    if kind == "footnote":
+        label = node.attr("label")
+        return html.li(
+            *(render_node(child) for child in node.children),
+            id=f"fn-{label}",
+        )
+    if kind == "footnote-ref":
+        label = node.attr("label")
+        return html.sup(
+            html.a(
+                label,
+                id=f"fnref-{label}",
+                href=SafeUrl.parse(f"#fn-{label}", purpose=UrlPurpose.NAVIGATION),
+                aria={"label": f"Footnote {label}"},
+            )
+        )
+    if kind == "footnote-backref":
+        label = node.attr("label")
+        return html.a(
+            "Back to reference",
+            href=SafeUrl.parse(f"#fnref-{label}", purpose=UrlPurpose.NAVIGATION),
+        )
+    if kind == "api-directive":
+        return html.div(
+            html.strong("API reference"),
+            html.code(node.attr("target")),
+            class_="hedron-docs-api-directive",
+        )
+    if kind == "demo-directive":
+        return html.div(
+            html.strong("Interactive demo"),
+            html.code(node.attr("id")),
+            class_="hedron-docs-demo-directive",
+        )
     if kind in {"text", "strong", "emphasis", "inline-code", "span", "break"}:
         return _render_inline(node)
     return html.div(

@@ -1,4 +1,4 @@
-"""Deployable proving application for hedron-docs 0.1."""
+"""Deployable proving application for hedron-docs 0.2."""
 
 from pathlib import Path
 

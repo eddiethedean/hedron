@@ -1690,11 +1690,12 @@ requires-dist = [
 
 [[package]]
 name = "hedron-docs"
-version = "0.1.0"
+version = "0.2.0"
 source = { editable = "packages/hedron-docs" }
 dependencies = [
     { name = "hedron" },
-    { name = "markdown" },
+    { name = "markdown-it-py" },
+    { name = "mdit-py-plugins" },
     { name = "pyyaml" },
     { name = "tomli", marker = "python_full_version < '3.11'" },
     { name = "uvicorn" },
@@ -1703,7 +1704,8 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "hedron", editable = "packages/hedron" },
-    { name = "markdown", specifier = ">=3.4.1,<4" },
+    { name = "markdown-it-py", specifier = ">=3,<5" },
+    { name = "mdit-py-plugins", specifier = ">=0.4,<1" },
     { name = "pyyaml", specifier = ">=6.0,<7" },
     { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=2.0.1" },
     { name = "uvicorn", specifier = ">=0.32,<1.0" },

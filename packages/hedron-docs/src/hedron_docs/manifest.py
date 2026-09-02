@@ -21,9 +21,25 @@ from .config import DocsBuildConfig
 from .errors import source_error
 from .markdown import parse_markdown
 
-SCHEMA_VERSION = "hedron-docs-manifest-1"
+SCHEMA_VERSION = "hedron-docs-manifest-2"
 _MAX_MANIFEST_BYTES = 64 * 1024 * 1024
 _RESERVED_ROUTES = frozenset({"/search", "/robots.txt", "/sitemap.xml", "/healthz", "/readyz"})
+_API_TARGET = re.compile(r"^[A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*$", re.UNICODE)
+_DEMO_TARGET = re.compile(r"^[a-z][a-z0-9]*(?:[-_.][a-z0-9]+)*$")
+_NODE_ATTRS: dict[str, frozenset[str]] = {
+    "alert": frozenset({"tone", "title", "type"}),
+    "api-directive": frozenset({"target", "options"}),
+    "code": frozenset({"language"}),
+    "demo-directive": frozenset({"id"}),
+    "details": frozenset({"open", "title", "tone", "type"}),
+    "footnote": frozenset({"label"}),
+    "footnote-backref": frozenset({"label"}),
+    "footnote-ref": frozenset({"label"}),
+    "heading": frozenset({"id", "level"}),
+    "image": frozenset({"alt", "src", "title"}),
+    "link": frozenset({"href", "title"}),
+    "list": frozenset({"ordered", "start"}),
+}
 
 
 @dataclass(frozen=True, slots=True)
@@ -169,7 +185,7 @@ class SiteManifest:
     pages: tuple[PageRecord, ...]
     assets: tuple[AssetRecord, ...] = ()
     max_query_length: int = 200
-    compiler_version: str = "0.1.0"
+    compiler_version: str = "0.2.0"
     schema_version: str = SCHEMA_VERSION
 
     def __post_init__(self) -> None:
@@ -185,7 +201,7 @@ class SiteManifest:
         page_keys: set[str] = set()
         for page in self.pages:
             _validate_page_path(page.path)
-            _validate_nodes(page.nodes)
+            _validate_nodes(page.nodes, expected_source=page.source)
             key = page.path.rstrip("/") or "/"
             if key in _RESERVED_ROUTES or key.startswith("/_hedron-docs"):
                 raise ValueError(f"manifest page route is reserved: {page.path}")
@@ -343,10 +359,24 @@ def _validate_asset_path(value: str) -> None:
     _validate_page_path(value, require_trailing=False)
 
 
-def _validate_nodes(nodes: tuple[DocNode, ...]) -> None:
+def _validate_nodes(nodes: tuple[DocNode, ...], *, expected_source: str) -> None:
     """Validate URL-bearing AST nodes before an untrusted manifest reaches the renderer."""
 
-    for node in nodes:
+    heading_ids: set[str] = set()
+    pending = list(reversed(nodes))
+    while pending:
+        node = pending.pop()
+        if node.span is None:
+            raise ValueError("manifest 2 document nodes require a source span")
+        _validate_relative_source(node.source)
+        if node.source != expected_source:
+            raise ValueError("manifest node source does not match its page source")
+        allowed_attrs = _NODE_ATTRS.get(node.kind, frozenset())
+        unknown_attrs = set(dict(node.attrs)) - allowed_attrs
+        if unknown_attrs:
+            raise ValueError(
+                f"manifest {node.kind} node has unknown attrs: {sorted(unknown_attrs)}"
+            )
         try:
             if node.kind == "link":
                 href = node.attr("href")
@@ -382,6 +412,10 @@ def _validate_nodes(nodes: tuple[DocNode, ...]) -> None:
                 if not heading_id:
                     raise ValueError("manifest heading is missing id")
                 SafeUrl.parse(f"#{heading_id}", purpose=UrlPurpose.NAVIGATION)
+                folded = heading_id.casefold()
+                if folded in heading_ids:
+                    raise ValueError(f"manifest contains duplicate heading id: {heading_id}")
+                heading_ids.add(folded)
             elif node.kind == "alert" and node.attr("tone", "info") not in {
                 "info",
                 "success",
@@ -389,9 +423,22 @@ def _validate_nodes(nodes: tuple[DocNode, ...]) -> None:
                 "danger",
             }:
                 raise ValueError("manifest alert has an invalid tone")
+            elif node.kind == "details":
+                if node.attr("tone", "info") not in {"info", "success", "warning", "danger"}:
+                    raise ValueError("manifest details node has an invalid tone")
+                if node.attr("open", "false") not in {"true", "false"}:
+                    raise ValueError("manifest details node has an invalid open state")
+            elif node.kind == "api-directive":
+                target = node.attr("target")
+                if not _API_TARGET.fullmatch(target) or any(
+                    part.startswith("_") for part in target.split(".")
+                ):
+                    raise ValueError("manifest API directive has an invalid target")
+            elif node.kind == "demo-directive" and not _DEMO_TARGET.fullmatch(node.attr("id")):
+                raise ValueError("manifest demo directive has an invalid identifier")
         except HedronError as exc:
             raise ValueError(f"manifest contains an unsafe {node.kind} URL") from exc
-        _validate_nodes(node.children)
+        pending.extend(reversed(node.children))
 
 
 def load_manifest(value: SiteManifest | str | Path) -> SiteManifest:
@@ -451,8 +498,20 @@ def compile_site(config: DocsBuildConfig) -> SiteManifest:
                 f"document exceeds source limit ({cfg.max_source_bytes} bytes)",
                 source_path,
             )
-        nodes = parse_markdown(source, source_path=source_path, max_nodes=cfg.max_nodes)
         rel = source_path.relative_to(cfg.docs_dir).with_suffix("")
+        source_name = source_path.relative_to(cfg.docs_dir).as_posix()
+        nodes = parse_markdown(
+            source,
+            source_path=source_path,
+            source_name=source_name,
+            max_source_bytes=cfg.max_source_bytes,
+            max_nodes=cfg.max_nodes,
+            max_depth=cfg.max_depth,
+            max_table_cells=cfg.max_table_cells,
+            max_code_blocks=cfg.max_code_blocks,
+            max_code_block_bytes=cfg.max_code_block_bytes,
+            max_directives=cfg.max_directives,
+        )
         nodes = _normalize_nodes(
             nodes,
             cfg.docs_dir / rel.parent,
@@ -557,26 +616,40 @@ def _normalize_nodes(
     normalized: list[DocNode] = []
     for node in nodes:
         attrs = dict(node.attrs)
-        if node.kind == "link" and attrs.get("href"):
-            attrs["href"] = _normalize_url(
-                attrs["href"],
-                source_parent,
-                docs_dir,
-                document=True,
-                allow_external_links=allow_external_links,
-                assets=assets,
-                max_asset_bytes=max_asset_bytes,
-            )
-        elif node.kind == "image" and attrs.get("src"):
-            attrs["src"] = _normalize_url(
-                attrs["src"],
-                source_parent,
-                docs_dir,
-                document=False,
-                allow_external_links=allow_external_links,
-                assets=assets,
-                max_asset_bytes=max_asset_bytes,
-            )
+        try:
+            if node.kind == "link" and attrs.get("href"):
+                attrs["href"] = _normalize_url(
+                    attrs["href"],
+                    source_parent,
+                    docs_dir,
+                    document=True,
+                    allow_external_links=allow_external_links,
+                    assets=assets,
+                    max_asset_bytes=max_asset_bytes,
+                )
+            elif node.kind == "image" and attrs.get("src"):
+                attrs["src"] = _normalize_url(
+                    attrs["src"],
+                    source_parent,
+                    docs_dir,
+                    document=False,
+                    allow_external_links=allow_external_links,
+                    assets=assets,
+                    max_asset_bytes=max_asset_bytes,
+                )
+        except ValueError as exc:
+            raise source_error(
+                "HED-DOCS-0207",
+                str(exc),
+                docs_dir / node.source,
+                line=node.line,
+                column=node.column,
+                title="Invalid documentation URL",
+                explanation="Links and assets are normalized and validated during compilation.",
+                remediation=(
+                    "Use a safe declared URL or a jailed path beneath the documentation root."
+                ),
+            ) from exc
         normalized.append(
             DocNode(
                 kind=node.kind,
@@ -590,7 +663,12 @@ def _normalize_nodes(
                     assets=assets,
                     max_asset_bytes=max_asset_bytes,
                 ),
+                source=node.source,
                 line=node.line,
+                column=node.column,
+                end_line=node.end_line,
+                end_column=node.end_column,
+                span_id=node.span_id,
             )
         )
     return tuple(normalized)
