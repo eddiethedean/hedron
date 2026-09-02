@@ -7,12 +7,12 @@ checkout use `uv sync`; that checkout can be ahead of PyPI. See
 [Installation](../getting-started/installation.md).
 
 ```bash
-pip install "hedron>=1.0.6,<1.1"
+pip install "hedron>=1.0.7,<1.1"
 # or
-uv add "hedron>=1.0.6,<1.1"
+uv add "hedron>=1.0.7,<1.1"
 ```
 
-`>=1.0.0` is the compatibility floor for reusable libraries. Use `==1.0.6` when an
+`>=1.0.0` is the compatibility floor for reusable libraries. Use `==1.0.7` when an
 evaluation or production environment must reproduce the exact published release. In every
 case, commit a lockfile and review release notes before upgrading.
 `hedron-core`, `hedron`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps` are **Stable**
@@ -142,7 +142,7 @@ A **train** is a coordinated release line, currently `1.0.x`, across the Stable 
 set. Stable APIs follow the 1.x compatibility policy; Beta or Experimental surfaces retain
 their narrower change rules.
 
-New applications should use the current bounded range `hedron>=1.0.6,<1.1` and commit a
+New applications should use the current bounded range `hedron>=1.0.7,<1.1` and commit a
 lockfile. `hedron>=1.0.0` remains the broad compatibility floor. Review release notes before
 adopting a new release. That is ordinary Python packaging, not a second registry.
 
@@ -151,8 +151,8 @@ See [Current release](current-release.md) and [Compatibility](../COMPATIBILITY.m
 ## Why use a lower-bound requirement?
 
 `hedron>=1.0.0` expresses the documented 1.0 compatibility floor for reusable libraries.
-Applications should normally bound the current minor (`hedron>=1.0.6,<1.1`) and commit the
-resolved lockfile. Exact evidence uses `hedron==1.0.6`. See
+Applications should normally bound the current minor (`hedron>=1.0.7,<1.1`) and commit the
+resolved lockfile. Exact evidence uses `hedron==1.0.7`. See
 [Compatibility](../COMPATIBILITY.md).
 
 ## Are Auto, DataTable, and charts available?

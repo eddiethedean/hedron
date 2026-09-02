@@ -1,6 +1,6 @@
 [project]
 name = "hedron-jinja"
-version = "1.0.7"
+version = "1.0.8"
 description = "Explicit standards-first .hdj templates over Jinja, HTML, and HTMX for Hedron"
 readme = "README.md"
 requires-python = ">=3.10,<3.15"

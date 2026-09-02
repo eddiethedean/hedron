@@ -1,6 +1,6 @@
 [project]
 name = "hedron-maps"
-version = "1.0.7"
+version = "1.0.8"
 description = "First-class maps, offline geospatial presentation, and map interactions for Hedron"
 readme = "README.md"
 requires-python = ">=3.10,<3.15"

@@ -15,7 +15,7 @@ use [Your first application with VS Code](first-app-vscode.md). In Posit Workben
 [`hedron-posit` beginner walkthrough](first-app-posit-workbench.md).
 
 Install from PyPI: `hedron>=1.0.0` is the compatibility floor. For a new application,
-prefer the current bounded range `hedron>=1.0.6,<1.1`; use `hedron==1.0.6` when you
+prefer the current bounded range `hedron>=1.0.7,<1.1`; use `hedron==1.0.7` when you
 need an exact reproducible environment. For a higher-level application API, start with
 [Edron](edron-quickstart.md). Other pins and extras: [Installation](installation.md).
 

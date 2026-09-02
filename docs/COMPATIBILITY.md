@@ -1,6 +1,6 @@
 # Compatibility policy
 
-**Status:** Accepted for the verified and published **1.0.x** release (`v1.0.6`).
+**Status:** Accepted for the verified and published **1.0.x** release (`v1.0.7`).
 **Reviewed:** 2026-08-28
 
 ## Current train (read this first)

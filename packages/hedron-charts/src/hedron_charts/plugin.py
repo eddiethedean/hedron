@@ -51,7 +51,7 @@ _OPTIONAL_RUNTIMES = (
 
 PLUGIN_META = PluginMeta(
     name="hedron_charts",
-    version="1.0.7",
+    version="1.0.8",
     distribution="hedron-charts",
     hedron_version=">=1.0,<2.0",
     capabilities=PluginCapabilities(

@@ -11,8 +11,8 @@ Short diligence sheet for security, procurement, and architecture reviewers.
 | Item | Value |
 |---|---|
 | License | MIT |
-| Current version | Published **v1.0.6**; recommended application range `hedron>=1.0.6,<1.1` |
-| Publication / commercial SLA | Hedron `1.0.6` and Edron `1.0.6` are on PyPI; **no commercial SLA** |
+| Current version | Published **v1.0.7**; recommended application range `hedron>=1.0.7,<1.1` |
+| Publication / commercial SLA | Hedron `1.0.7` and Edron `1.0.7` are on PyPI; **no commercial SLA** |
 | Support | Community GitHub Issues only — [Support](support.md) |
 | Governance / maintainers | Maintainer-led public governance; current authority is the PyPI maintainer and GitHub administrator roster — [Governance](governance.md) |
 | Security disclosure | GitHub [security advisories](https://github.com/eddiethedean/hedron/security/advisories/new) (preferred); alternate email in [SECURITY.md](../SECURITY.md) |
@@ -42,8 +42,8 @@ Short diligence sheet for security, procurement, and architecture reviewers.
 
 ## Dependency and pin policy
 
-- Coordinate on published trains. Use `hedron>=1.0.6,<1.1` for the current application
-  range, then commit a lockfile; use `==1.0.6` for exact evidence reproduction.
+- Coordinate on published trains. Use `hedron>=1.0.7,<1.1` for the current application
+  range, then commit a lockfile; use `==1.0.7` for exact evidence reproduction.
 - Runtime ranges and conflict guidance: [COMPATIBILITY.md](../COMPATIBILITY.md)
   (FastAPI/Pydantic pins are intentionally tight).
 - **Patch expectation:** community best-effort; critical security fixes are prioritized on
@@ -87,8 +87,8 @@ authoritative for package versions.
 Verify the package independently in a clean directory:
 
 ```bash
-python -m pip download --only-binary=:all: "hedron==1.0.6"
-python -m pip hash hedron-1.0.6-*.whl
+python -m pip download --only-binary=:all: "hedron==1.0.7"
+python -m pip hash hedron-1.0.7-*.whl
 ```
 
 Compare the recorded digest with your artifact store or an attached release checksum when

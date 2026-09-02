@@ -3,6 +3,15 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 1.0.7 — 2026-09-02
+
+Coordinated maintenance release for the Stable 1.0 package train. The release is tagged on
+GitHub and published on PyPI for the coordinated packages and Edron.
+
+No new public capability claim accompanies this patch. Applications should update their
+lockfiles deliberately and run their integration tests; see the package changelogs for
+package-level maintenance entries.
+
 ## 1.0.6 — 2026-09-01
 
 Coordinated maintenance release for the Stable 1.0 package train. The release is tagged on

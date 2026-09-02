@@ -15,7 +15,7 @@ status: implemented
 **Supported** for Blueprint/`init_app`, AppConfig, forms bridge, and bounded QuerySet
 DataSource. The adapter capabilities are **Supported**, but their packages remain Beta and are
 outside the stable 1.0 platform boundary; API-level classifications still apply symbol by symbol.
-Portable contracts live in `hedron-core`. The verified **1.0.x** train is published as `v1.0.6`.
+Portable contracts live in `hedron-core`. The verified **1.0.x** train is published as `v1.0.7`.
 
 Autodoc signatures: [Autodoc — Framework adapters](AUTODOC.md#framework-adapters). Quickstarts:
 [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md).
