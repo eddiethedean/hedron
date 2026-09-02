@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.8] — 2026-09-02
+
+### Fixed
+- Keep path-only redirects to same-directory and ancestor canonical routes slash-free,
+  avoiding a second mount-unsafe Starlette redirect (#883).
+
 ## [1.0.7] — 2026-09-02
 
 ### Added

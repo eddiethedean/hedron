@@ -257,6 +257,21 @@ def test_relative_location_spells_out_non_slash_canonical_targets(
     )
 
 
+def test_relative_location_preserves_terminal_dot_directory_target() -> None:
+    mount = "/s/session-token/p/proxy-token"
+    mw = WorkbenchPathMiddleware(_NullApp(), mode=WorkbenchMode.ON, relative_redirects=True)
+
+    relative = mw._relative_local_redirect(
+        f"{mount}/pipeline/.?notice=saved",
+        mount,
+        f"{mount}/pipeline/save",
+    )
+
+    assert relative == "./?notice=saved"
+    resolved = urljoin(f"https://wb.example{mount}/pipeline/save", relative)
+    assert resolved == f"https://wb.example{mount}/pipeline/?notice=saved"
+
+
 def test_path_corpus_remains_idempotent() -> None:
     mw = WorkbenchPathMiddleware(_NullApp(), mode=WorkbenchMode.AUTO, expected_mount="/s/fuzz/p/8")
     for suffix in ("", "/", "/login", "/api/items", "/hedron-static/app.css"):
