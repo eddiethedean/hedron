@@ -178,6 +178,7 @@ class HedronPosit(Hedron):
             mounted_response_headers=True,
             absolute_redirects=absolute_origin is not None,
             absolute_origin=absolute_origin,
+            relative_redirects=self.hedron_workbench.source == "rserver-url:path",
             owned_cookie_names=self._owned_cookie_names(),
         )
 

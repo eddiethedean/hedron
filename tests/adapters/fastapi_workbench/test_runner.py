@@ -7,6 +7,7 @@ import os
 import pytest
 
 from fastapi_workbench.config import ResolvedDeployment, WorkbenchConfig, WorkbenchMode
+from fastapi_workbench.middleware import WorkbenchPathMiddleware, workbenchify
 from fastapi_workbench.resolve import (
     RESOLVED_MODE_ENV,
     RESOLVED_MOUNT_ENV,
@@ -14,7 +15,33 @@ from fastapi_workbench.resolve import (
     explicit_mount_hint,
     resolve_deployment,
 )
-from fastapi_workbench.runner import run_target
+from fastapi_workbench.runner import prepare_app, run_target
+
+
+class _NullApp:
+    async def __call__(self, scope: object, receive: object, send: object) -> None:
+        return None
+
+
+def test_prepare_app_updates_existing_wrapper_for_path_only_discovery(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    wrapped = workbenchify(_NullApp(), mode=WorkbenchMode.ON)
+    assert isinstance(wrapped, WorkbenchPathMiddleware)
+    monkeypatch.setattr("fastapi_workbench.runner.load_app", lambda *_args, **_kwargs: wrapped)
+
+    prepared, resolved = prepare_app(
+        target="sample:app",
+        config=WorkbenchConfig(mode=WorkbenchMode.ON),
+        environ={},
+        bound_port=8000,
+        discovered_raw="/s/session/p/proxy-token",
+        apply_environ=False,
+    )
+
+    assert prepared is wrapped
+    assert resolved.source == "rserver-url:path"
+    assert wrapped.relative_redirects is True
 
 
 def test_run_target_exports_process_environ_before_import(

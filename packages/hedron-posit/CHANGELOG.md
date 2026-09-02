@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.5] — 2026-09-02
+
+### Fixed
+- Preserve relative browser redirects for path-only Workbench discovery, allowing
+  both session-path and legacy `/proxy/<port>/` entry points to resolve correctly.
+- Require `fastapi-workbench>=1.0.6`, which provides the relative-redirect
+  middleware contract used by this release.
+
 ## [1.0.4] — 2026-09-01
 
 ### Fixed

@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import json
 import logging
+import posixpath
 import re
 from collections.abc import Mapping
 from typing import cast
-from urllib.parse import quote, unquote, urlsplit
+from urllib.parse import quote, unquote, urlsplit, urlunsplit
 
 from starlette.responses import PlainTextResponse
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
@@ -23,6 +24,7 @@ from fastapi_workbench.mount import (
     _path_has_traversal,  # pyright: ignore[reportPrivateUsage]  # shared security primitive
     is_local_path,
     normalize_mount_path,
+    path_has_mount_prefix,
     prefix_local_path,
 )
 from fastapi_workbench.redact import redact_scope_for_log
@@ -101,6 +103,7 @@ class WorkbenchPathMiddleware:
         mounted_response_headers: bool = True,
         absolute_redirects: bool = False,
         absolute_origin: str | None = None,
+        relative_redirects: bool = False,
         owned_cookie_names: tuple[str, ...] = (),
     ) -> None:
         self.app = app
@@ -125,6 +128,7 @@ class WorkbenchPathMiddleware:
         self.absolute_origin = (
             normalize_http_origin(absolute_origin) if absolute_origin is not None else None
         )
+        self.relative_redirects = bool(relative_redirects)
         self.owned_cookie_names = frozenset(owned_cookie_names)
 
     def _should_normalize(self, scope: Scope) -> bool:
@@ -275,6 +279,10 @@ class WorkbenchPathMiddleware:
         """Refresh the owned-cookie set after late registration (HedronPosit)."""
         self.owned_cookie_names = frozenset(names)
 
+    def set_relative_redirects(self, enabled: bool) -> None:
+        """Apply launcher-resolved redirect behavior to an existing wrapper."""
+        self.relative_redirects = bool(enabled)
+
     def _prepare_connect_cookie(self, value: bytes, mount: str) -> bytes:
         """Undo app-side scoping that Connect will apply at its outer proxy."""
         if not self.owned_cookie_names:
@@ -290,8 +298,41 @@ class WorkbenchPathMiddleware:
             return value
         return value[: match.start(2)] + b"/" + value[match.end(2) :]
 
+    @staticmethod
+    def _relative_local_redirect(value: str, mount: str, request_path: str) -> str:
+        """Make a local redirect safe for both Workbench entry points.
+
+        A path-absolute ``Location`` is rewritten by Workbench's legacy
+        ``/proxy/<port>/`` entry point. Relative locations are left alone, so
+        the browser keeps whichever Workbench entry point it is already using.
+        When the request path includes the resolved session mount, calculate
+        the relative path from the mounted target; otherwise calculate it from
+        the app-local target for the legacy proxy entry point.
+        """
+        parsed = urlsplit(value)
+        target_path = parsed.path or "/"
+        current_path = request_path or "/"
+        if mount and path_has_mount_prefix(current_path, mount):
+            target_path = prefix_local_path(target_path, mount)
+        elif mount and path_has_mount_prefix(target_path, mount):
+            target_path = target_path[len(mount) :] or "/"
+        current_dir = (
+            current_path if current_path.endswith("/") else current_path.rsplit("/", 1)[0] + "/"
+        )
+        relative = posixpath.relpath(target_path, start=current_dir)
+        if relative == ".":
+            relative = "./"
+        elif target_path.endswith("/") and not relative.endswith("/"):
+            relative += "/"
+        return urlunsplit(("", "", relative, parsed.query, parsed.fragment))
+
     def _rewrite_response_start(
-        self, message: Message, mount: str, *, connect_proxy: bool = False
+        self,
+        message: Message,
+        mount: str,
+        *,
+        request_path: str = "/",
+        connect_proxy: bool = False,
     ) -> Message:
         if message.get("type") != "http.response.start" or (
             not mount and not self.absolute_redirects
@@ -313,6 +354,10 @@ class WorkbenchPathMiddleware:
                         and lower in _ABSOLUTE_REDIRECT_HEADERS
                     ):
                         new_value = f"{self.absolute_origin}{mounted}".encode("latin-1")
+                    elif self.relative_redirects and lower in _ABSOLUTE_REDIRECT_HEADERS:
+                        new_value = self._relative_local_redirect(
+                            mounted, mount, request_path
+                        ).encode("latin-1")
                     else:
                         new_value = mounted.encode("latin-1")
             elif lower == b"hx-location":
@@ -371,7 +416,14 @@ class WorkbenchPathMiddleware:
         connect_proxy = not self.active and is_posit_connect_scope(normalized)
 
         async def mounted_send(message: Message) -> None:
-            await send(self._rewrite_response_start(message, mount, connect_proxy=connect_proxy))
+            await send(
+                self._rewrite_response_start(
+                    message,
+                    mount,
+                    request_path=str(normalized.get("path") or "/"),
+                    connect_proxy=connect_proxy,
+                )
+            )
 
         await self.app(normalized, receive, mounted_send)
 
@@ -395,6 +447,18 @@ def workbenchified_for_asgi_app(app: object) -> bool:
     return False
 
 
+def _workbench_middleware_for_asgi_app(app: object) -> WorkbenchPathMiddleware | None:
+    """Return the concrete Workbench wrapper nested around an ASGI app, if any."""
+    seen: set[int] = set()
+    current: object | None = app
+    while current is not None and id(current) not in seen:
+        if isinstance(current, WorkbenchPathMiddleware):
+            return current
+        seen.add(id(current))
+        current = getattr(current, "app", None)
+    return None
+
+
 def workbenchify(
     app: ASGIApp,
     *,
@@ -409,9 +473,11 @@ def workbenchify(
     expected_origins: tuple[str, ...] | None = None,
     absolute_redirects: bool = False,
     absolute_origin: str | None = None,
+    relative_redirects: bool | None = None,
 ) -> ASGIApp:
     """Wrap ``app`` at most once. Cookie Path must still be set before construction."""
     if workbenchified_for_asgi_app(app):
+        existing = _workbench_middleware_for_asgi_app(app)
         requested = WorkbenchMode.parse(mode)
         deployment = getattr(app, "fastapi_workbench", None)
         if (
@@ -424,11 +490,14 @@ def workbenchify(
                 "construct it with workbench_mode='on'/workbench_mount=..., or use "
                 "fastapi-workbench run so cookie and asset paths are configured before import"
             )
+        if existing is not None and relative_redirects is not None:
+            existing.set_relative_redirects(relative_redirects)
         return app
     resolved_mode = mode
     resolved_debug = debug
     resolved_mount = expected_mount
     resolved_absolute_origin = absolute_origin
+    resolved_relative_redirects = relative_redirects
     origins: tuple[str, ...] = expected_origins if expected_origins is not None else ()
     if config is not None:
         from fastapi_workbench.resolve import resolve_deployment
@@ -441,6 +510,8 @@ def workbenchify(
             origins = (resolved.external_origin,)
         if absolute_redirects and resolved_absolute_origin is None:
             resolved_absolute_origin = resolved.external_origin
+        if resolved_relative_redirects is None:
+            resolved_relative_redirects = resolved.source == "rserver-url:path"
     return WorkbenchPathMiddleware(
         app,
         mode=resolved_mode or WorkbenchMode.AUTO,
@@ -454,6 +525,7 @@ def workbenchify(
         mounted_response_headers=True,
         absolute_redirects=absolute_redirects,
         absolute_origin=resolved_absolute_origin,
+        relative_redirects=bool(resolved_relative_redirects),
         owned_cookie_names=owned_cookie_names,
     )
 

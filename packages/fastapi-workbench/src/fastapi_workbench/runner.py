@@ -322,6 +322,7 @@ def prepare_app(
             owned_cookie_names=owned_cookie_names,
             environ=environ,
             expected_origins=(resolved.external_origin,),
+            relative_redirects=resolved.source == "rserver-url:path",
         )
     return app, resolved
 
@@ -393,6 +394,7 @@ def app_from_environ() -> Any:
         mode=resolved.mode,
         expected_mount=resolved.browser_mount,
         debug=resolved.debug,
+        relative_redirects=resolved.source == "rserver-url:path",
     )
 
 

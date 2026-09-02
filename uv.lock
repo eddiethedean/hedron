@@ -1066,7 +1066,7 @@ wheels = [
 
 [[package]]
 name = "fastapi-workbench"
-version = "1.0.5"
+version = "1.0.6"
 source = { editable = "packages/fastapi-workbench" }
 dependencies = [
     { name = "starlette" },
@@ -1878,7 +1878,7 @@ provides-extras = ["server"]
 
 [[package]]
 name = "hedron-posit"
-version = "1.0.4"
+version = "1.0.5"
 source = { editable = "packages/hedron-posit" }
 dependencies = [
     { name = "fastapi-workbench" },

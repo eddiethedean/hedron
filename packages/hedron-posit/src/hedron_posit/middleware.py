@@ -12,6 +12,7 @@ from fastapi_workbench.middleware import (
     workbenchified_for_asgi_app,
 )
 from fastapi_workbench.middleware import is_workbenchified as _is_workbenchified
+from fastapi_workbench.middleware import workbenchify as _generic_workbenchify
 
 __all__ = [
     "WorkbenchPathMiddleware",
@@ -47,9 +48,11 @@ def workbenchify(
     debug: bool = False,
     absolute_redirects: bool = False,
     absolute_origin: str | None = None,
+    relative_redirects: bool | None = None,
 ) -> ASGIApp:
     """Wrap ``app`` at most once with Hedron-owned cookie repair."""
     if getattr(app, "__hedron_posit__", False) or getattr(app, "__hedron_workbench__", False):
+        existing = getattr(app, "_workbench_asgi", None)
         requested = WorkbenchMode.parse(mode) if mode is not None else WorkbenchMode.AUTO
         deployment = getattr(app, "hedron_workbench", None)
         if (
@@ -62,13 +65,20 @@ def workbenchify(
                 "construct it with workbench_mode='on'/workbench_mount=..., or use "
                 "hedron-posit run so cookie and asset paths are configured before import"
             )
+        if isinstance(existing, _WorkbenchPathMiddleware) and relative_redirects is not None:
+            existing.set_relative_redirects(relative_redirects)
         return app
     if workbenchified_for_asgi_app(app):
-        return app
+        return _generic_workbenchify(
+            app,
+            mode=mode,
+            relative_redirects=relative_redirects,
+        )
     resolved_mode = mode
     resolved_debug = debug
     resolved_mount = expected_mount
     resolved_absolute_origin = absolute_origin
+    resolved_relative_redirects = relative_redirects
     expected_origins: tuple[str, ...] = ()
     if config is not None:
         from hedron_posit.resolve import resolve_deployment
@@ -80,6 +90,8 @@ def workbenchify(
         expected_origins = (resolved.external_origin,)
         if absolute_redirects and resolved_absolute_origin is None:
             resolved_absolute_origin = resolved.external_origin
+        if resolved_relative_redirects is None:
+            resolved_relative_redirects = resolved.source == "rserver-url:path"
     state = getattr(app, "state", None)
     owned = {"session", "hedron_color_mode"}
     policy = getattr(state, "hedron_security", None)
@@ -99,5 +111,6 @@ def workbenchify(
         mounted_response_headers=True,
         absolute_redirects=absolute_redirects,
         absolute_origin=resolved_absolute_origin,
+        relative_redirects=bool(resolved_relative_redirects),
         owned_cookie_names=tuple(sorted(owned)),
     )

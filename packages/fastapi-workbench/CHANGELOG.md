@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.6] — 2026-09-02
+
+### Fixed
+- Emit relative browser `Location` redirects when Workbench mount discovery returns
+  only a path, so the legacy `/proxy/<port>/` entry point does not double-prefix them.
+
 ## [1.0.5] — 2026-09-01
 
 ### Fixed

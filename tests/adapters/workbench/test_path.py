@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from urllib.parse import quote
+from urllib.parse import quote, urljoin
 
 import pytest
 from starlette._utils import get_route_path
@@ -185,6 +185,53 @@ def test_absolute_redirect_rewrite_requires_trusted_origin() -> None:
             mode=WorkbenchMode.ON,
             absolute_redirects=True,
         )
+
+
+def test_path_only_discovery_uses_relative_location_for_both_entry_points() -> None:
+    mount = "/s/session-token/p/proxy-token"
+    mw = WorkbenchPathMiddleware(
+        _NullApp(),
+        mode=WorkbenchMode.ON,
+        relative_redirects=True,
+    )
+    message = {
+        "type": "http.response.start",
+        "status": 303,
+        "headers": [(b"location", b"/login")],
+    }
+
+    mounted = mw._rewrite_response_start(
+        message,
+        mount,
+        request_path=f"{mount}/go",
+    )
+    legacy = mw._rewrite_response_start(
+        message,
+        mount,
+        request_path="/go",
+    )
+
+    assert dict(mounted["headers"])[b"location"] == b"login"
+    assert dict(legacy["headers"])[b"location"] == b"login"
+    assert urljoin(f"https://wb.example{mount}/go", "login") == (f"https://wb.example{mount}/login")
+    assert urljoin("https://wb.example/proxy/8000/go", "login") == (
+        "https://wb.example/proxy/8000/login"
+    )
+
+
+def test_relative_location_preserves_query_and_fragment() -> None:
+    mw = WorkbenchPathMiddleware(_NullApp(), mode=WorkbenchMode.ON, relative_redirects=True)
+    message = {
+        "type": "http.response.start",
+        "status": 303,
+        "headers": [(b"location", b"/login?next=%2Fhome#done")],
+    }
+    rewritten = mw._rewrite_response_start(
+        message,
+        "/s/session/p/1",
+        request_path="/s/session/p/1/account/go",
+    )
+    assert dict(rewritten["headers"])[b"location"] == b"../login?next=%2Fhome#done"
 
 
 def test_path_corpus_remains_idempotent() -> None:

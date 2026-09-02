@@ -7,7 +7,11 @@ from urllib.parse import quote
 import pytest
 
 from fastapi_workbench.config import WorkbenchMode
-from fastapi_workbench.middleware import WorkbenchPathMiddleware, _unsafe_decoded_path
+from fastapi_workbench.middleware import (
+    WorkbenchPathMiddleware,
+    _unsafe_decoded_path,
+    workbenchify,
+)
 from fastapi_workbench.mount import is_local_path
 
 
@@ -82,3 +86,18 @@ def test_absolute_url_safe_path_still_decodes() -> None:
         }
     )
     assert out["path"] == "/s/session/p/1/login"
+
+
+def test_launcher_handoff_updates_an_existing_workbench_wrapper() -> None:
+    wrapped = workbenchify(_NullApp(), mode=WorkbenchMode.ON)
+    assert isinstance(wrapped, WorkbenchPathMiddleware)
+    assert wrapped.relative_redirects is False
+
+    handed_off = workbenchify(
+        wrapped,
+        mode=WorkbenchMode.ON,
+        relative_redirects=True,
+    )
+
+    assert handed_off is wrapped
+    assert wrapped.relative_redirects is True
