@@ -13,7 +13,16 @@ from hedron_core import (
     html,
     render,
 )
-from hedron_core.builtins import Checkbox, Expander, Select, Tabs, TextArea, TextInput, ToggleSwitch
+from hedron_core.builtins import (
+    Checkbox,
+    ClipboardCopy,
+    Expander,
+    Select,
+    Tabs,
+    TextArea,
+    TextInput,
+    ToggleSwitch,
+)
 from hedron_core.page_assets import inject_page_assets
 from hedron_core.rendering import RenderMode
 
@@ -136,6 +145,19 @@ def test_demand_driven_page_assets_leave_native_pages_without_optional_runtime()
         demand_driven=True,
     )
     assert "htmx.min.js" in request_page
+
+
+def test_demand_driven_page_assets_load_clipboard_runtime() -> None:
+    request = render(ClipboardCopy("copy me"), mode=RenderMode.PAGE)
+    page = inject_page_assets(
+        request.html,
+        request.mode,
+        browser_plan=request.browser_plan,
+        demand_driven=True,
+    )
+
+    assert 'data-hedron-clipboard-copy="true"' in page
+    assert "hedron-ui.mjs" in page
 
 
 @pytest.mark.parametrize(

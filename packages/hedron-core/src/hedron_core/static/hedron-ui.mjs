@@ -84,6 +84,24 @@ function dialogFromTrigger(trigger) {
 
 document.addEventListener("click", (event) => {
   if (!(event.target instanceof Element)) return;
+
+  const copy = event.target.closest("[data-hedron-clipboard-copy='true']");
+  if (copy instanceof HTMLButtonElement) {
+    const text = copy.getAttribute("data-copy-text") || "";
+    if (!navigator.clipboard?.writeText) return;
+    event.preventDefault();
+    const originalLabel = copy.textContent || "Copy";
+    void navigator.clipboard.writeText(text).then(() => {
+      copy.textContent = "Copied";
+      copy.setAttribute("data-hedron-copy-state", "copied");
+      window.setTimeout(() => {
+        copy.textContent = originalLabel;
+        copy.removeAttribute("data-hedron-copy-state");
+      }, 1500);
+    }).catch(() => {});
+    return;
+  }
+
   const tab = event.target.closest("[role='tab']");
   if (tab instanceof HTMLElement && tab.closest(".hedron-tabs")) {
     activateTab(tab);

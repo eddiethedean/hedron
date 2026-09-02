@@ -17,6 +17,7 @@ from .ast import DocNode
 
 _ANCHOR_ID = re.compile(r"^[A-Za-z][\w:.-]*$", re.UNICODE)
 _MAX_COPY_CHARS = 100_000
+_TRUNCATION_SUFFIX = "\n… [truncated]"
 
 # No raw/trusted HTML is admitted by the W3 renderer.  Keeping the registry explicit makes that
 # boundary auditable if a future docs-local compatibility node is ever approved.
@@ -182,9 +183,7 @@ def _render_content_element(tag: str, node: DocNode) -> NodeLike:
 def _render_code(node: DocNode) -> NodeLike:
     language = node.attr("language")
     label = language or "text"
-    displayed = node.text
-    if len(displayed) > _MAX_COPY_CHARS:
-        displayed = displayed[:_MAX_COPY_CHARS] + "\n… [truncated]"
+    displayed = _clip_code(node.text)
     toolbar = html.div(
         html.span(label, class_="hedron-doc-code-language", data={"language": label}),
         ClipboardCopy(displayed, label="Copy code"),
@@ -193,10 +192,17 @@ def _render_code(node: DocNode) -> NodeLike:
     return html.figure(
         html.figcaption(f"{label} code example", class_="sr-only"),
         toolbar,
-        CodeViewer(node.text, language=language or None),
+        CodeViewer(displayed, language=language or None),
         class_="hedron-doc-code",
         data={"hedron-code-block": "true", "language": label},
     )
+
+
+def _clip_code(text: str) -> str:
+    if len(text) <= _MAX_COPY_CHARS:
+        return text
+    prefix_length = max(0, _MAX_COPY_CHARS - len(_TRUNCATION_SUFFIX))
+    return text[:prefix_length] + _TRUNCATION_SUFFIX
 
 
 def _render_list(node: DocNode) -> NodeLike:
@@ -262,11 +268,7 @@ def _render_table(node: DocNode) -> NodeLike:
                 headers = [_cell_content(cell) for cell in cells]
             elif cells:
                 rows.append([_cell_content(cell) for cell in cells])
-    return Table(
-        headers=cast(Sequence[str], headers),
-        rows=rows,
-        responsive="scroll",
-    )
+    return Table(headers=headers, rows=rows, responsive="scroll")
 
 
 def _cell_content(node: DocNode) -> NodeLike:

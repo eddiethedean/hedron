@@ -460,6 +460,7 @@ def inject_page_assets(
             "data-hedron-reveal",
             "data-hedron-nav-toggle",
             "data-hedron-after-load",
+            "data-hedron-clipboard-copy",
         )
     )
     disclose_demand = "<hedron-" in html_text

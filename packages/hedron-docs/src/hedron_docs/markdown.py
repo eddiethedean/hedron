@@ -473,7 +473,16 @@ class _Parser:
                         line,
                         column_offset + 1,
                     )
-                language = token.info.strip().split(maxsplit=1)[0] if token.info.strip() else ""
+                info_parts = token.info.strip().split()
+                if len(info_parts) > 1:
+                    line = base_line + (token.map[0] if token.map else 0)
+                    raise self._error(
+                        "HED-DOCS-0107",
+                        "code fence options are not supported; use a plain language label",
+                        line,
+                        column_offset + 1,
+                    )
+                language = info_parts[0] if info_parts else ""
                 if language and not _CODE_LANGUAGE.fullmatch(language):
                     line = base_line + (token.map[0] if token.map else 0)
                     raise self._error(
@@ -909,7 +918,10 @@ def slugify(text: str) -> str:
 
     normalized = unicodedata.normalize("NFKC", text).casefold()
     value = re.sub(r"[^\w\s-]", "", normalized, flags=re.UNICODE).strip()
-    return re.sub(r"[-\s]+", "-", value).strip("-") or "section"
+    value = re.sub(r"[-\s]+", "-", value).strip("-") or "section"
+    if value[0].isdigit():
+        value = f"section-{value}"
+    return value
 
 
 def parse_markdown(

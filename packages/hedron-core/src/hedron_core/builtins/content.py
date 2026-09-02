@@ -515,7 +515,7 @@ class Table(Component[TableProps]):
 
     def __init__(
         self,
-        headers: Sequence[str] | None = None,
+        headers: Sequence[NodeLike] | None = None,
         rows: Sequence[Sequence[NodeLike]] = (),
         *,
         caption: str | None = None,

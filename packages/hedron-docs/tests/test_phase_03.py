@@ -109,9 +109,10 @@ def test_w3_css_is_immutable_and_no_inline_script_dependency(tmp_path: Path) -> 
 
     page = client.get("/")
     assert page.status_code == 200
-    assert 'href="/_hedron-docs/docs.css"' in page.text
+    css_match = re.search(r'href="(/_hedron-docs/docs-[0-9a-f]{16}\.css)"', page.text)
+    assert css_match is not None
     assert not re.search(r"<script(?![^>]+\bsrc=)", page.text)
-    css = client.get("/_hedron-docs/docs.css")
+    css = client.get(css_match.group(1))
     assert css.status_code == 200
     assert css.headers["cache-control"] == "public, max-age=31536000, immutable"
     assert css.headers["x-content-type-options"] == "nosniff"
@@ -142,3 +143,38 @@ def test_w3_heading_aliases_are_unique_and_safe(tmp_path: Path) -> None:
     assert nodes[0].attr("id") == "canonical"
     assert nodes[0].attr("aliases") == "legacy"
     assert nodes[1].attr("id") == "second"
+
+
+def test_w3_numeric_heading_slug_is_manifest_safe(tmp_path: Path) -> None:
+    nodes = parse_markdown("# 2026 roadmap\n", source_path=tmp_path / "index.md")
+    assert nodes[0].attr("id") == "section-2026-roadmap"
+    docs = tmp_path / "docs"
+    docs.mkdir()
+    (docs / "index.md").write_text("# 2026 roadmap\n", encoding="utf-8")
+    manifest = compile_site(DocsBuildConfig(docs_dir=docs, output=tmp_path / "site.json"))
+    assert manifest.pages[0].nodes[0].attr("id") == "section-2026-roadmap"
+
+
+def test_w3_rejects_unrepresented_code_fence_options(tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="options are not supported"):
+        parse_markdown(
+            '```python linenums="1"\nprint("x")\n```\n',
+            source_path=tmp_path / "options.md",
+        )
+
+
+def test_w3_long_code_is_clipped_within_clipboard_budget(tmp_path: Path) -> None:
+    source = "```text\n" + ("x" * 100_001) + "\n```\n"
+    nodes = parse_markdown(source, source_path=tmp_path / "long.md")
+    output = render(render_document(nodes), mode=RenderMode.FRAGMENT).html
+    assert output.count("… [truncated]") == 2  # copy control and visible code viewer
+
+
+def test_w3_table_headers_preserve_native_inline_content(tmp_path: Path) -> None:
+    nodes = parse_markdown(
+        "| **Name** | Value |\n| --- | --- |\n| alpha | one |\n",
+        source_path=tmp_path / "table.md",
+    )
+    output = render(render_document(nodes), mode=RenderMode.FRAGMENT).html
+    assert "<th" in output
+    assert "<strong" in output

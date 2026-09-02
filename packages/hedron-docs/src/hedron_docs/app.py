@@ -23,6 +23,10 @@ from .manifest import AssetRecord, PageRecord, SiteManifest, load_manifest
 from .render import render_document
 from .search import search
 
+_DOCS_CSS = resources.files("hedron_docs").joinpath("static").joinpath("docs.css").read_bytes()
+_DOCS_CSS_DIGEST = hashlib.sha256(_DOCS_CSS).hexdigest()[:16]
+_DOCS_CSS_PATH = f"/_hedron-docs/docs-{_DOCS_CSS_DIGEST}.css"
+
 
 def create_docs_app(
     manifest: SiteManifest | str | Path,
@@ -41,16 +45,15 @@ def create_docs_app(
         explorer="off",
         default_styles=True,
     )
-    docs_css = resources.files("hedron_docs").joinpath("static").joinpath("docs.css").read_bytes()
 
-    @app.get("/_hedron-docs/docs.css", include_in_schema=False)
+    @app.get(_DOCS_CSS_PATH, include_in_schema=False)
     def docs_stylesheet() -> Response:  # pyright: ignore[reportUnusedFunction]
         return Response(
-            docs_css,
+            _DOCS_CSS,
             media_type="text/css",
             headers={
                 "Cache-Control": "public, max-age=31536000, immutable",
-                "ETag": f'"{hashlib.sha256(docs_css).hexdigest()}"',
+                "ETag": f'"{hashlib.sha256(_DOCS_CSS).hexdigest()}"',
                 "X-Content-Type-Options": "nosniff",
             },
         )
@@ -224,7 +227,7 @@ def _shell(site: SiteManifest, page: PageRecord | None, *content: Any, request: 
     head = Head(
         html.link(
             rel="stylesheet",
-            href=SafeUrl.parse("/_hedron-docs/docs.css", purpose=UrlPurpose.NAVIGATION),
+            href=SafeUrl.parse(_DOCS_CSS_PATH, purpose=UrlPurpose.NAVIGATION),
         ),
         html.meta(name="description", content=description),
         html.link(rel="canonical", href=canonical),

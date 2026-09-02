@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from hedron.testing import assert_renders
@@ -30,3 +32,13 @@ def test_javascript_url_and_clipboard_size() -> None:
         Typeahead("q", ["a"], source="data:text/plain,hi")
     with pytest.raises(ValueError, match="budget"):
         ClipboardCopy("x" * 100_001)
+
+
+def test_clipboard_copy_runtime_is_bundled_and_delegated() -> None:
+    for path in (
+        Path("packages/hedron-core/src/hedron_core/static/hedron-ui.mjs"),
+        Path("packages/hedron/src/hedron/static/hedron-ui.mjs"),
+    ):
+        runtime = path.read_text(encoding="utf-8")
+        assert "data-hedron-clipboard-copy='true'" in runtime
+        assert "navigator.clipboard?.writeText" in runtime
