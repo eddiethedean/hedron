@@ -457,6 +457,7 @@ def run_target(
     *,
     config: WorkbenchConfig | None = None,
     environ: Mapping[str, str] | None = None,
+    discover: bool = False,
 ) -> None:
     cfg = config or WorkbenchConfig(app_target=target)
     env = os.environ if environ is None else environ
@@ -466,7 +467,7 @@ def run_target(
         bound_port = int(sock.getsockname()[1])
         discovered: str | None = None
         if (
-            rs_server_url(env)
+            (discover or rs_server_url(env))
             and not is_workbench_job(env)
             and explicit_mount_hint(cfg, env, bound_port=bound_port) is None
         ):

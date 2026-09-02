@@ -70,7 +70,7 @@ def _cmd_check(args: argparse.Namespace) -> int:
             host=cfg.host or "127.0.0.1",
             port=cfg.port or 0,
             discover=bool(getattr(args, "discover", False)),
-            discovery_available=bool(rs_server_url()),
+            discovery_available=bool(rs_server_url()) or bool(getattr(args, "discover", False)),
             explicit_mount=lambda _port: (
                 explicit_mount_hint(cfg, os.environ, bound_port=cfg.port) is not None
             ),
@@ -90,7 +90,10 @@ def _cmd_check(args: argparse.Namespace) -> int:
 def _cmd_run(args: argparse.Namespace) -> int:
     cfg = _config_from_args(args)
     try:
-        run_target(args.app, config=cfg)
+        if getattr(args, "discover", False):
+            run_target(args.app, config=cfg, discover=True)
+        else:
+            run_target(args.app, config=cfg)
     except WorkbenchError as exc:
         print(redact_text(str(exc)), file=sys.stderr)
         return 1
@@ -115,10 +118,9 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
         if args.live:
             sock = bind_loopback(cfg.host or "127.0.0.1", cfg.port or 0)
             bound_port = int(sock.getsockname()[1])
-            if (
-                rs_server_url()
-                and explicit_mount_hint(cfg, os.environ, bound_port=bound_port) is None
-            ):
+            if (getattr(args, "discover", False) or rs_server_url()) and explicit_mount_hint(
+                cfg, os.environ, bound_port=bound_port
+            ) is None:
                 discovered = discover_rserver_url(binary=cfg.rserver_url_bin, port=bound_port)
         resolved = resolve_deployment(
             cfg,
@@ -136,7 +138,8 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
                 WorkbenchTopology.LAUNCHER_SLURM,
             }
         )
-        checks["rserver_url_binary"] = not rs_server_url() or (
+        discovery_requested = bool(getattr(args, "discover", False) or rs_server_url())
+        checks["rserver_url_binary"] = not discovery_requested or (
             Path(resolved.rserver_url_bin).is_absolute()
             and os.access(resolved.rserver_url_bin, os.X_OK)
         )
@@ -206,7 +209,7 @@ def main(argv: list[str] | None = None) -> int:
     check_p.add_argument(
         "--discover",
         action="store_true",
-        help="Call rserver-url when RS_SERVER_URL is set (still no app import)",
+        help="Always call rserver-url after binding (still no app import)",
     )
     check_p.add_argument("app", nargs="?", help="Ignored; check does not import the app")
 
@@ -215,6 +218,11 @@ def main(argv: list[str] | None = None) -> int:
     run_p.add_argument("app", help="module:attr or module:factory")
     run_p.add_argument("--factory", action="store_true")
     run_p.add_argument("--open-browser", action="store_true")
+    run_p.add_argument(
+        "--discover",
+        action="store_true",
+        help="Always call rserver-url after binding, even without RS_SERVER_URL",
+    )
 
     dry = sub.add_parser("dry-run", help="Same as check")
     add_shared(dry)
@@ -228,6 +236,11 @@ def main(argv: list[str] | None = None) -> int:
         "--live",
         action="store_true",
         help="bind, discover, import, and ASGI-probe",
+    )
+    doctor.add_argument(
+        "--discover",
+        action="store_true",
+        help="Always call rserver-url during --live, even without RS_SERVER_URL",
     )
 
     args = parser.parse_args(argv)

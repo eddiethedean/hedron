@@ -29,11 +29,14 @@ python3.11 -m pip install "fastapi-workbench>=1.0.2,<2.0" "fastapi" "uvicorn[sta
 ```bash
 fastapi-workbench run myapp:app
 fastapi-workbench run myapp:create_app --factory
+fastapi-workbench run myapp:app --discover  # when RS_SERVER_URL is omitted
 fastapi-workbench check --format json
 ```
 
 Discovery exports `FASTAPI_WORKBENCH_ROOT_PATH` before import so cookie paths and
-OpenAPI URLs are mount-correct at construction time.
+OpenAPI URLs are mount-correct at construction time. Use `--discover` when the
+Workbench runtime does not export `RS_SERVER_URL`; it binds the selected port first
+and validates the resulting session URL before importing the application.
 
 ## Explicit wrapper
 

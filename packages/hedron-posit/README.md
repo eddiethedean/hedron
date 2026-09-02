@@ -31,4 +31,9 @@ Posit Workbench **2025.05.1** through **2026.07.0** is Supported.
 Install this package into the content environment (do not vendor only source trees
 on Connect 2025.06).
 
+When a Workbench session omits `RS_SERVER_URL`, run `hedron-posit run` with
+`--discover`; the launcher binds the selected port first, then validates the
+`rserver-url` result before importing the application.
+The flagship `hedron run app:app --discover` command provides the same handoff.
+
 Docs: [Posit deployments](https://hedron.readthedocs.io/en/latest/guides/posit/).

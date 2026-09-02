@@ -226,3 +226,52 @@ def test_run_target_skips_discovery_when_resolved_mount_env_set(
     run_target("tests.integration._workbench_sample:app", environ=env)
 
     assert discover_calls == []
+
+
+def test_run_target_explicitly_discovers_without_rs_server_url(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    discovery_calls: list[int] = []
+
+    def discover(**kwargs: object) -> str:
+        discovery_calls.append(int(kwargs["port"]))
+        return "https://wb.example/s/session/p/8765/"
+
+    class FakeSock:
+        def getsockname(self) -> tuple[str, int]:
+            return ("127.0.0.1", 8765)
+
+        def close(self) -> None:
+            return None
+
+    monkeypatch.setattr("fastapi_workbench.runner.discover_rserver_url", discover)
+    monkeypatch.setattr("fastapi_workbench.runner.bind_loopback", lambda _h, _p: FakeSock())
+    monkeypatch.setattr(
+        "fastapi_workbench.runner.prepare_app",
+        lambda **kwargs: (
+            object(),
+            resolve_deployment(
+                kwargs["config"],  # type: ignore[arg-type]
+                environ=kwargs["environ"],  # type: ignore[arg-type]
+                bound_port=kwargs["bound_port"],  # type: ignore[arg-type]
+                discovered_raw=kwargs["discovered_raw"],  # type: ignore[arg-type]
+            ),
+        ),
+    )
+    served: list[ResolvedDeployment] = []
+    monkeypatch.setattr(
+        "fastapi_workbench.runner.serve",
+        lambda _app, resolved, sock=None: served.append(resolved),
+    )
+
+    run_target(
+        "tests.integration._workbench_sample:app",
+        config=WorkbenchConfig(),
+        environ={},
+        discover=True,
+    )
+
+    assert discovery_calls == [8765]
+    assert len(served) == 1
+    assert served[0].browser_mount == "/s/session/p/8765"
+    assert served[0].discovered is True

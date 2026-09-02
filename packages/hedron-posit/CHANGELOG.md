@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.6] — 2026-09-02
+
+### Added
+- Add an explicit `run --discover` launcher option for Workbench sessions that
+  omit `RS_SERVER_URL`.
+
+### Fixed
+- Honor explicit discovery in `hedron run`, `hedron-posit check`, and
+  `hedron-posit doctor --live` without requiring `RS_SERVER_URL`.
+- Preserve validated launcher evidence while constructing `HedronPosit`, so the
+  discovered mount activates Workbench behavior and scopes owned cookies.
+
 ## [1.0.5] — 2026-09-02
 
 ### Fixed

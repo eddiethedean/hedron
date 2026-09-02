@@ -18,6 +18,7 @@ from hedron_posit import (
 )
 from hedron_posit.connect import native_connect_base_from_request
 from hedron_posit.cookies import require_supported_cookie_mode
+from hedron_posit.detect import RESOLVED_ACTIVE_ENV
 
 
 def test_resolve_inactive_by_default() -> None:
@@ -48,6 +49,12 @@ def test_resolve_workbench_from_rs_server_url() -> None:
     product, evidence = resolve_product(environ={"RS_SERVER_URL": "https://wb.example/s/x/"})
     assert product is PositProduct.WORKBENCH
     assert evidence == "workbench_env"
+
+
+def test_resolve_workbench_from_validated_launcher_handoff() -> None:
+    product, evidence = resolve_product(environ={RESOLVED_ACTIVE_ENV: "1"})
+    assert product is PositProduct.WORKBENCH
+    assert evidence == "workbench_handoff"
 
 
 def test_conflict_connect_and_workbench() -> None:
