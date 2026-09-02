@@ -12,6 +12,7 @@ from fastapi_workbench.middleware import (
     workbenchified_for_asgi_app,
 )
 from fastapi_workbench.middleware import is_workbenchified as _is_workbenchified
+from fastapi_workbench.middleware import workbenchify as _generic_workbenchify
 
 __all__ = [
     "WorkbenchPathMiddleware",
@@ -51,6 +52,7 @@ def workbenchify(
 ) -> ASGIApp:
     """Wrap ``app`` at most once with Hedron-owned cookie repair."""
     if getattr(app, "__hedron_posit__", False) or getattr(app, "__hedron_workbench__", False):
+        existing = getattr(app, "_workbench_asgi", None)
         requested = WorkbenchMode.parse(mode) if mode is not None else WorkbenchMode.AUTO
         deployment = getattr(app, "hedron_workbench", None)
         if (
@@ -63,9 +65,15 @@ def workbenchify(
                 "construct it with workbench_mode='on'/workbench_mount=..., or use "
                 "hedron-posit run so cookie and asset paths are configured before import"
             )
+        if isinstance(existing, _WorkbenchPathMiddleware) and relative_redirects is not None:
+            existing.set_relative_redirects(relative_redirects)
         return app
     if workbenchified_for_asgi_app(app):
-        return app
+        return _generic_workbenchify(
+            app,
+            mode=mode,
+            relative_redirects=relative_redirects,
+        )
     resolved_mode = mode
     resolved_debug = debug
     resolved_mount = expected_mount

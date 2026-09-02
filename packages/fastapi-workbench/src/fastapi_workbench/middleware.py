@@ -279,6 +279,10 @@ class WorkbenchPathMiddleware:
         """Refresh the owned-cookie set after late registration (HedronPosit)."""
         self.owned_cookie_names = frozenset(names)
 
+    def set_relative_redirects(self, enabled: bool) -> None:
+        """Apply launcher-resolved redirect behavior to an existing wrapper."""
+        self.relative_redirects = bool(enabled)
+
     def _prepare_connect_cookie(self, value: bytes, mount: str) -> bytes:
         """Undo app-side scoping that Connect will apply at its outer proxy."""
         if not self.owned_cookie_names:
@@ -443,6 +447,18 @@ def workbenchified_for_asgi_app(app: object) -> bool:
     return False
 
 
+def _workbench_middleware_for_asgi_app(app: object) -> WorkbenchPathMiddleware | None:
+    """Return the concrete Workbench wrapper nested around an ASGI app, if any."""
+    seen: set[int] = set()
+    current: object | None = app
+    while current is not None and id(current) not in seen:
+        if isinstance(current, WorkbenchPathMiddleware):
+            return current
+        seen.add(id(current))
+        current = getattr(current, "app", None)
+    return None
+
+
 def workbenchify(
     app: ASGIApp,
     *,
@@ -461,6 +477,7 @@ def workbenchify(
 ) -> ASGIApp:
     """Wrap ``app`` at most once. Cookie Path must still be set before construction."""
     if workbenchified_for_asgi_app(app):
+        existing = _workbench_middleware_for_asgi_app(app)
         requested = WorkbenchMode.parse(mode)
         deployment = getattr(app, "fastapi_workbench", None)
         if (
@@ -473,6 +490,8 @@ def workbenchify(
                 "construct it with workbench_mode='on'/workbench_mount=..., or use "
                 "fastapi-workbench run so cookie and asset paths are configured before import"
             )
+        if existing is not None and relative_redirects is not None:
+            existing.set_relative_redirects(relative_redirects)
         return app
     resolved_mode = mode
     resolved_debug = debug
