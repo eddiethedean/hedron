@@ -26,7 +26,7 @@ def test_workbench_dependency_floors_select_corrected_artifacts() -> None:
         (ROOT / "packages" / "hedron-posit" / "pyproject.toml").read_text(encoding="utf-8")
     )["project"]
     assert hedron["optional-dependencies"]["posit"] == ["hedron-posit>=1.0.2,<2.0"]
-    assert "fastapi-workbench>=1.0.8,<2.0" in posit["dependencies"]
+    assert "fastapi-workbench>=1.0.9,<2.0" in posit["dependencies"]
 
 
 def wheel_bytes(entries: dict[str, bytes]) -> bytes:

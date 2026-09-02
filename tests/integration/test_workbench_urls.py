@@ -98,6 +98,81 @@ def test_constructor_root_path_scopes_csrf_cookie() -> None:
     assert "Path=/s/demo/p/9" in set_cookie or "path=/s/demo/p/9" in set_cookie.lower()
 
 
+@pytest.mark.parametrize(
+    "scope_root_path",
+    [
+        "/s/ingress/p/9",
+        "/s/ingress/p/9/",
+        "/proxy/8000/s/ingress/p/9",
+    ],
+)
+def test_workbench_ingress_root_path_variants_route_and_redirect_once(
+    scope_root_path: str,
+) -> None:
+    mount = "/s/ingress/p/9"
+    app = HedronPosit(
+        title="ingress",
+        security="standard",
+        explorer="off",
+        session_secret="test-secret-ok",
+        workbench_mount=mount,
+    )
+
+    @app.page("/")
+    def home_page() -> Page:
+        return Page(Text("home"), title="Home")
+
+    @app.page("/login")
+    def login() -> Page:
+        return Page(Text("login"), title="Login")
+
+    @app.page("/go")
+    def go():
+        return redirect_local("/login")
+
+    client = TestClient(_RootPathInjector(app, scope_root_path))
+
+    home_response = client.get(f"{mount}/")
+    assert home_response.status_code == 200
+    assert "home" in home_response.text
+    assert "Path=/s/ingress/p/9" in home_response.headers.get("set-cookie", "")
+
+    redirect = client.get(f"{mount}/go", follow_redirects=False)
+    assert redirect.status_code == 303
+    assert redirect.headers["location"] == f"{mount}/login"
+
+
+def test_path_only_uvicorn_root_uses_relative_redirect_for_legacy_proxy(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    mount = "/s/uvicorn-path/p/8000"
+    monkeypatch.setenv("RS_SERVER_URL", "http://127.0.0.1:8787/")
+    monkeypatch.setenv("UVICORN_ROOT_PATH", f"/proxy/8000{mount}/")
+    app = HedronPosit(
+        title="path-only-uvicorn-root",
+        security="standard",
+        explorer="off",
+        session_secret="test-secret-ok",
+    )
+
+    @app.page("/login")
+    def login() -> Page:
+        return Page(Text("login"), title="Login")
+
+    @app.page("/go")
+    def go():
+        return redirect_local("/login")
+
+    assert app.hedron_workbench.browser_mount == mount
+    assert app.hedron_workbench.source == "rserver-url:path"
+    response = TestClient(_RootPathInjector(app, "/proxy/8000")).get("/go", follow_redirects=False)
+    assert response.status_code == 303
+    assert response.headers["location"] == "login"
+    assert urljoin("https://wb.example/proxy/8000/go", "login") == (
+        "https://wb.example/proxy/8000/login"
+    )
+
+
 def test_env_export_before_construction(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("HEDRON_ROOT_PATH", "/s/env/p/1")
     assert resolve_mount_path_from_environ() is not None

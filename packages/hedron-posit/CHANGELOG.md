@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.8] — 2026-09-02
+
+### Fixed
+- Require `fastapi-workbench>=1.0.9` for strict Workbench root-path normalization,
+  `/proxy/<port>` canonicalization, and mount-safe path-only redirects.
+- Add end-to-end coverage for canonical, trailing-slash, proxy-prefixed, and legacy proxy
+  Workbench ingress paths.
+
 ## [1.0.7] — 2026-09-02
 
 ### Fixed

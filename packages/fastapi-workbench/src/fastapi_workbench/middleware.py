@@ -205,19 +205,29 @@ class WorkbenchPathMiddleware:
     def _canonicalize_proxy_root(self, scope: Scope) -> Scope:
         if not self.strip_root_path_from_path:
             return scope
-        root_path = str(scope.get("root_path") or "").rstrip("/")
+        raw_root_path = str(scope.get("root_path") or "")
+        trailing_slash_root = raw_root_path.rstrip("/")
+        base_scope = scope
+        if (
+            trailing_slash_root
+            and trailing_slash_root != raw_root_path
+            and normalize_mount_path(trailing_slash_root) == trailing_slash_root
+        ):
+            base_scope = _copy_scope(scope)
+            base_scope["root_path"] = trailing_slash_root
+        root_path = str(base_scope.get("root_path") or "").rstrip("/")
         if not root_path:
-            return scope
-        path = str(scope.get("path") or "")
+            return base_scope
+        path = str(base_scope.get("path") or "")
         if path == root_path or path.startswith(root_path + "/"):
-            return scope
+            return base_scope
         match = _PROXY_PREFIX.match(root_path)
         if not match:
-            return scope
+            return base_scope
         rest = (match.group("rest") or "").rstrip("/")
         if not rest or not (path == rest or path.startswith(rest + "/")):
-            return scope
-        new_scope = _copy_scope(scope)
+            return base_scope
+        new_scope = _copy_scope(base_scope)
         new_scope["root_path"] = rest
         return new_scope
 

@@ -26,6 +26,40 @@ def test_full_uvicorn_root_path_preserves_workbench_origin() -> None:
     assert resolved.external_origin == "https://workbench.example"
 
 
+@pytest.mark.parametrize(
+    ("root_path", "expected_origin", "expected_source"),
+    [
+        (
+            "https://workbench.example/proxy/8000/s/session/p/8000/",
+            "https://workbench.example",
+            "rserver-url:full-url",
+        ),
+        (
+            "/proxy/8000/s/session/p/8000/",
+            "http://127.0.0.1:8000",
+            "rserver-url:path",
+        ),
+    ],
+)
+def test_uvicorn_root_path_canonicalizes_proxy_prefix_and_trailing_slash(
+    root_path: str, expected_origin: str, expected_source: str
+) -> None:
+    resolved = resolve_deployment(
+        WorkbenchConfig(),
+        environ={
+            "RS_SERVER_URL": "http://127.0.0.1:8787/",
+            "UVICORN_ROOT_PATH": root_path,
+        },
+        bound_port=8000,
+    )
+
+    assert resolved.active is True
+    assert resolved.browser_mount == "/s/session/p/8000"
+    assert resolved.cookie_mount == "/s/session/p/8000"
+    assert resolved.external_origin == expected_origin
+    assert resolved.source == expected_source
+
+
 def test_supervised_handoff_removes_uvicorn_root_path(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

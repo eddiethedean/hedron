@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.9] — 2026-09-02
+
+### Fixed
+- Canonicalize valid trailing-slash ASGI root paths without promoting malformed roots into
+  trusted mounts.
+- Canonicalize internal `/proxy/<port>` prefixes in path and full-URL `UVICORN_ROOT_PATH`
+  values.
+- Preserve path-only `UVICORN_ROOT_PATH` discovery semantics so legacy proxy redirects remain
+  relative and mount-safe.
+
 ## [1.0.8] — 2026-09-02
 
 ### Fixed

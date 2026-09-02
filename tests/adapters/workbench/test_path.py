@@ -75,6 +75,22 @@ def test_proxy_port_rest_stripped() -> None:
     assert get_route_path(out) == "/home"
 
 
+def test_trailing_root_path_is_canonicalized_before_route_matching() -> None:
+    mw = WorkbenchPathMiddleware(_NullApp(), mode=WorkbenchMode.ON)
+    out = mw.normalize_scope(_scope(path="/s/abc/p/1/home", root_path="/s/abc/p/1/"))
+    assert out["root_path"] == "/s/abc/p/1"
+    assert out["path"] == "/s/abc/p/1/home"
+    assert get_route_path(out) == "/home"
+
+
+@pytest.mark.parametrize("root_path", ["s/abc/p/1/", " /s/abc/p/1/"])
+def test_malformed_trailing_root_path_is_not_promoted_to_valid_mount(root_path: str) -> None:
+    mw = WorkbenchPathMiddleware(_NullApp(), mode=WorkbenchMode.ON)
+    out = mw.normalize_scope(_scope(path="/s/abc/p/1/admin", root_path=root_path))
+    assert out["root_path"] == root_path
+    assert get_route_path(out) != "/admin"
+
+
 def test_unrelated_proxy_path_untouched() -> None:
     mw = WorkbenchPathMiddleware(_NullApp(), mode=WorkbenchMode.ON)
     out = mw.normalize_scope(_scope(path="/proxy/docs", root_path=""))

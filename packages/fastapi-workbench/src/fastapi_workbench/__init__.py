@@ -32,7 +32,7 @@ from fastapi_workbench.resolve import (
 from fastapi_workbench.runner import export_workbench_state, prepare_app
 from fastapi_workbench.urls import is_ephemeral_workbench_mount, normalize_http_origin
 
-__version__ = "1.0.8"
+__version__ = "1.0.9"
 
 __all__ = [
     "ROOT_PATH_ENV",

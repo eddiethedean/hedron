@@ -256,9 +256,9 @@ def _uvicorn_root_path_mount(raw: str) -> str:
         ) from exc
     looks_like_url = bool(parsed.scheme or parsed.netloc or text.startswith("//") or "://" in text)
     if not looks_like_url:
-        return text
+        return _canonicalize_runtime_mount(_validated_mount(text, source="UVICORN_ROOT_PATH"))
     _, mount, _ = _validated_public_base(text)
-    return mount or "/"
+    return _canonicalize_runtime_mount(mount) or "/"
 
 
 def _uvicorn_root_path_public_base(raw: str) -> str | None:
@@ -275,6 +275,7 @@ def _uvicorn_root_path_public_base(raw: str) -> str | None:
     if parsed.scheme not in {"http", "https"} or not parsed.netloc:
         return None
     origin, mount, _ = _validated_public_base(text)
+    mount = _canonicalize_runtime_mount(mount)
     return f"{origin}{mount}" if mount and mount != "/" else origin
 
 
@@ -446,10 +447,7 @@ def parse_rserver_url_output(raw: str, *, port: int) -> tuple[str, str, str]:
 
 
 def _canonicalize_discovered_mount(path: str) -> str:
-    mount = normalize_mount_path(path)
-    match = _PROXY_ROOT.match(mount)
-    if match:
-        mount = normalize_mount_path((match.group("rest") or "").rstrip("/"))
+    mount = _canonicalize_runtime_mount(path)
     if not mount:
         raise WorkbenchError(
             make_diagnostic(
@@ -459,6 +457,15 @@ def _canonicalize_discovered_mount(path: str) -> str:
                 remediation="Do not concatenate untrusted prefixes; fail closed.",
             )
         )
+    return mount
+
+
+def _canonicalize_runtime_mount(path: str) -> str:
+    """Normalize a Workbench mount and remove an internal proxy-port prefix."""
+    mount = normalize_mount_path(path)
+    match = _PROXY_ROOT.match(mount)
+    if match:
+        mount = normalize_mount_path((match.group("rest") or "").rstrip("/"))
     return mount
 
 
@@ -542,6 +549,23 @@ def resolve_deployment(
         warnings=warnings,
         bound_port=bound_port,
     )
+    prior_mount_values = (
+        cfg.mount,
+        env.get(_ENV_MOUNT),
+        env.get(ROOT_PATH_ENV),
+        env.get("HEDRON_ROOT_PATH"),
+        env.get(RESOLVED_MOUNT_ENV),
+        env.get("BASE_PATH") if compatibility_aliases else None,
+    )
+    uvicorn_root = env.get(_UVICORN_ROOT_PATH)
+    uvicorn_root_used = bool(
+        mount_explicit is not None
+        and uvicorn_root is not None
+        and str(uvicorn_root).strip()
+        and rs_server_url(env)
+        and not job_context
+        and not any(value is not None and str(value).strip() for value in prior_mount_values)
+    )
     public_explicit = _first_str(
         explicit=cfg.public_base_url,
         namespaced=env.get(_ENV_PUBLIC),
@@ -555,10 +579,9 @@ def resolve_deployment(
         and mount_explicit is not None
         and rs_server_url(env)
         and not job_context
+        and uvicorn_root
     ):
-        uvicorn_root = env.get(_UVICORN_ROOT_PATH)
-        if uvicorn_root:
-            public_explicit = _uvicorn_root_path_public_base(uvicorn_root)
+        public_explicit = _uvicorn_root_path_public_base(uvicorn_root)
 
     legacy_debug = truthy(env.get("WORKBENCH_DEBUG")) if compatibility_aliases else False
     debug = cfg.debug or truthy(env.get(_ENV_DEBUG)) or legacy_debug
@@ -612,11 +635,18 @@ def resolve_deployment(
 
     if mount_explicit is not None:
         browser_mount = _validated_mount(mount_explicit, source="explicit Workbench mount")
-        source = (
-            str(env.get(RESOLVED_SOURCE_ENV) or "launcher:resolved")
-            if env.get(RESOLVED_MOUNT_ENV) and cfg.mount is None and not env.get(_ENV_MOUNT)
-            else "explicit:mount"
-        )
+        if uvicorn_root_used:
+            source = (
+                "rserver-url:full-url"
+                if _uvicorn_root_path_public_base(str(uvicorn_root)) is not None
+                else "rserver-url:path"
+            )
+        else:
+            source = (
+                str(env.get(RESOLVED_SOURCE_ENV) or "launcher:resolved")
+                if env.get(RESOLVED_MOUNT_ENV) and cfg.mount is None and not env.get(_ENV_MOUNT)
+                else "explicit:mount"
+            )
         active = True
         if public_explicit is not None:
             if public_mount not in {"", "/"} and browser_mount != public_mount:
