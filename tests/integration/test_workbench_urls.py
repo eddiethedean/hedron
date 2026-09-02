@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Awaitable, Callable
-from urllib.parse import parse_qs, urlsplit
+from urllib.parse import parse_qs, urljoin, urlsplit
 
 import pytest
 from fastapi import WebSocket
@@ -554,6 +554,40 @@ def test_path_only_discovery_emits_relative_location_for_legacy_proxy(
 
     response = TestClient(app).get(f"{mount}/go", follow_redirects=False)
     assert response.headers["location"] == "login"
+
+
+def test_path_only_discovery_follows_same_directory_redirect_without_slash_hop(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    mount = "/s/session-token/p/proxy-token"
+    monkeypatch.setenv("HEDRON_WORKBENCH_RESOLVED_MOUNT", mount)
+    monkeypatch.setenv("HEDRON_WORKBENCH_RESOLVED_MODE", "on")
+    monkeypatch.setenv("HEDRON_WORKBENCH_RESOLVED_SOURCE", "rserver-url:path")
+    app = HedronPosit(
+        title="path-only-canonical-redirect",
+        security="standard",
+        explorer="off",
+        session_secret="test-secret-ok",
+    )
+
+    @app.page("/pipeline")
+    def pipeline() -> Page:
+        return Page(Text("pipeline"), title="Pipeline")
+
+    @app.page("/pipeline/save")
+    def save():
+        return redirect_local("/pipeline?notice=saved")
+
+    client = TestClient(app, follow_redirects=False)
+    first = client.get(f"{mount}/pipeline/save", follow_redirects=False)
+    assert first.status_code == 303
+    location = first.headers["location"]
+    assert location == "../pipeline?notice=saved"
+
+    resolved = urlsplit(urljoin(f"http://testserver{mount}/pipeline/save", location))
+    second = client.get(resolved.path, params=parse_qs(resolved.query), follow_redirects=False)
+    assert second.status_code == 200
+    assert "pipeline" in second.text
 
 
 def test_prefix_assets_once() -> None:

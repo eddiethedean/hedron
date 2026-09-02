@@ -320,8 +320,16 @@ class WorkbenchPathMiddleware:
             current_path if current_path.endswith("/") else current_path.rsplit("/", 1)[0] + "/"
         )
         relative = posixpath.relpath(target_path, start=current_dir)
-        if relative == ".":
-            relative = "./"
+        if (
+            target_path != "/"
+            and not target_path.endswith("/")
+            and all(part in {".", ".."} for part in relative.split("/"))
+        ):
+            # A bare directory reference resolves with a trailing slash in a
+            # browser. Spell out the target route so canonical routes do not
+            # incur a second slash-normalization redirect.
+            basename = posixpath.basename(target_path)
+            relative = f"../{basename}" if relative == "." else f"{relative}/../{basename}"
         elif target_path.endswith("/") and not relative.endswith("/"):
             relative += "/"
         return urlunsplit(("", "", relative, parsed.query, parsed.fragment))

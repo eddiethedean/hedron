@@ -234,6 +234,29 @@ def test_relative_location_preserves_query_and_fragment() -> None:
     assert dict(rewritten["headers"])[b"location"] == b"../login?next=%2Fhome#done"
 
 
+@pytest.mark.parametrize(
+    ("target", "request_path", "expected"),
+    (
+        ("/pipeline", "/pipeline/save", "../pipeline?notice=saved"),
+        ("/security", "/security/secrets/mss", "../../security?notice=secret-saved"),
+    ),
+)
+def test_relative_location_spells_out_non_slash_canonical_targets(
+    target: str, request_path: str, expected: str
+) -> None:
+    mount = "/s/session-token/p/proxy-token"
+    mw = WorkbenchPathMiddleware(_NullApp(), mode=WorkbenchMode.ON, relative_redirects=True)
+    value = f"{mount}{target}?notice={'saved' if target == '/pipeline' else 'secret-saved'}"
+
+    relative = mw._relative_local_redirect(value, mount, f"{mount}{request_path}")
+
+    assert relative == expected
+    resolved = urljoin(f"https://wb.example{mount}{request_path}", relative)
+    assert resolved.removeprefix("https://wb.example") == (
+        f"{mount}{target}?notice={'saved' if target == '/pipeline' else 'secret-saved'}"
+    )
+
+
 def test_path_corpus_remains_idempotent() -> None:
     mw = WorkbenchPathMiddleware(_NullApp(), mode=WorkbenchMode.AUTO, expected_mount="/s/fuzz/p/8")
     for suffix in ("", "/", "/login", "/api/items", "/hedron-static/app.css"):
