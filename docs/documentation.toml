@@ -9,23 +9,22 @@ review = "each-release"
 
 [[group]]
 name = "user-guides"
-patterns = ["guides/**"]
+patterns = ["guides/**", "operate/**"]
 owner = "maintainers"
 review = "each-release"
 
 [[group]]
 name = "api-and-components"
-patterns = ["api/**", "components/**", "packages/**", "conformance/**"]
+patterns = ["api/**", "components/**", "packages/**", "conformance/**", "reference/**"]
 owner = "api-maintainers"
 review = "each-release"
 
 [[group]]
 name = "project-policies"
-patterns = ["*.md", "foundations/**"]
+patterns = ["*.md", "foundations/**", "about/**"]
 owner = "maintainers"
 review = "quarterly"
 
 [[generated]]
 patterns = ["components/**"]
 command = "python scripts/generate_component_docs.py"
-

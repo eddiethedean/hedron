@@ -302,8 +302,12 @@ def check_section_landing(
     target = SECTION_LANDINGS.get(path)
     if target is None:
         return []
-    required = (facts.train, target)
-    missing = [marker for marker in required if marker not in text]
+    target_variants = (target, f"{target[:-3]}/") if target.endswith(".md") else (target,)
+    missing = []
+    if facts.train not in text:
+        missing.append(facts.train)
+    if not any(marker in text for marker in target_variants):
+        missing.append(target)
     if not missing:
         return []
     return [f"{path}: section landing is missing {', '.join(missing)}"]

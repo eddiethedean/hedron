@@ -243,6 +243,10 @@ def test_section_landings_require_release_context_and_status_link() -> None:
         path,
         "# Guides\n\nTargets 1.0. See [status](current-release.md).\n",
     )
+    assert not ssot.check_section_landing(
+        path,
+        '# Guides\n\nTargets 1.0. <a href="current-release/">Status</a>.\n',
+    )
 
 
 def test_satellite_floors_come_from_release_metadata() -> None:
