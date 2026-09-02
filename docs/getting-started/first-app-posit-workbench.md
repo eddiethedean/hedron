@@ -234,7 +234,9 @@ hedron-posit run app:app --port 8000 --reload
 
 Leave the terminal running. The launcher binds a loopback port, asks Workbench for this session's
 temporary browser mount, exports that mount before importing `app.py`, and serves the application.
-This is why plain `uvicorn app:app --reload` is not the preferred Workbench command.
+If your Workbench session does not export `RS_SERVER_URL`, add `--discover` to the command; this
+explicitly enables the same bind-then-discover handoff. This is why plain `uvicorn app:app
+--reload` is not the preferred Workbench command.
 
 To open the app from a Workbench VS Code session:
 

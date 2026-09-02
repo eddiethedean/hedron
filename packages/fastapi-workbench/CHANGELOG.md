@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.7] — 2026-09-02
+
+### Added
+- Add an explicit `run --discover` launcher option for bind-then-`rserver-url`
+  discovery when Workbench omits `RS_SERVER_URL`.
+
 ## [1.0.6] — 2026-09-02
 
 ### Fixed

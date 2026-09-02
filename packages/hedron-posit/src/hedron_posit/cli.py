@@ -116,7 +116,10 @@ def _cmd_check(args: argparse.Namespace) -> int:
 def _cmd_run(args: argparse.Namespace) -> int:
     cfg = _config_from_args(args)
     try:
-        run_target(args.app, config=cfg)
+        if getattr(args, "discover", False):
+            run_target(args.app, config=cfg, discover=True)
+        else:
+            run_target(args.app, config=cfg)
     except HedronError as exc:
         print(redact_text(str(exc)), file=sys.stderr)
         return 1
@@ -270,6 +273,11 @@ def main(argv: list[str] | None = None) -> int:
     run_p.add_argument("app", help="module:attr or module:factory")
     run_p.add_argument("--factory", action="store_true")
     run_p.add_argument("--open-browser", action="store_true")
+    run_p.add_argument(
+        "--discover",
+        action="store_true",
+        help="Always call rserver-url after binding, even without RS_SERVER_URL",
+    )
 
     dry = sub.add_parser("dry-run", help="Same as check")
     add_shared(dry)

@@ -439,10 +439,10 @@ def _check_package_metadata() -> list[str]:
                 errors.append(
                     "hedron-posit: Hedron dependency must require the canonical 1.x train"
                 )
-            if "fastapi-workbench>=1.0.6,<2.0" not in joined:
+            if "fastapi-workbench>=1.0.7,<2.0" not in joined:
                 errors.append(
                     "hedron-posit: generic adapter dependency must select "
-                    "the corrected 1.0.6 artifact"
+                    "the corrected 1.0.7 artifact"
                 )
         elif distribution == "edron-sim":
             if "edron>=1.0.0,<2.0" not in joined:

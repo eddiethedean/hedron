@@ -25,6 +25,7 @@ python3.11 -m pip install "fastapi-workbench>=1.0.2,<2.0"
 
 ```bash
 fastapi-workbench run myapp.main:app
+fastapi-workbench run myapp.main:app --discover  # when RS_SERVER_URL is omitted
 fastapi-workbench check myapp.main:app --discover
 fastapi-workbench doctor myapp.main:app --live
 ```
