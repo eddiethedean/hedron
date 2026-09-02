@@ -19,10 +19,11 @@ scripts here when you add them.
 | `sync_demo_code_tabs.py` | Refresh guide Demo/Code tabs from `docs/demos/runnable/` (also run via `generate_sim_demos.py`) |
 | `sync_status_roadmap.py` | After editing `docs/STATUS.md` (updates root `STATUS.md`; forbids duplicate Hedron roadmap mirrors). CI: `--check` |
 | `check_docs_train_ssot.py` | Fail on stale tip claims vs `docs/release.toml`, contradictory 1.0 candidate/PyPI status, missing historical-release banners, unsafe pins, or charts/sample-kit installs missing the compatibility floors. CI: `docs` / `quality` |
+| `check_docs_adoption_contract.py` | Keep the quickstart and Docker examples synchronized with the generated scaffold; enforce safe proxy guidance, release-pin terminology, maturity claims, and primary adoption navigation. CI: docs / quality job |
 | `check_package_docs_inventory.py` | Keep the package catalog, README maturity labels, PyPI classifiers, and package pages aligned with the living fleet inventory. CI: quality job |
 | `check_package_typing_inventory.py` | Require every uv workspace package to appear in the explicit strict Pyright path list. CI: strict package typing job |
 | `check_documentation_ownership.py` | Require an owner and review cadence for every published Markdown page. CI: quality job |
-| `check_api_docs_coverage.py` | Require every `hedron.__all__` and `hedron_charts.__all__` export in public API reference. CI: quality job |
+| `check_api_docs_coverage.py` | Require every `hedron.__all__` export in the coverage table's export column, every `hedron_charts.__all__` export in reference, and parameters/returns/errors on flagship contract pages. CI: quality job |
 | `generate_edron_api_index.py` | Generate the complete Edron public-export inventory from `edron.__all__`; commit the result. |
 | `generate_example_catalog.py` | Generate the public current/historical example catalog from `examples/catalog.toml`. |
 | `check_edron_docs.py` | Keep the Edron RFC, contracts, examples, inventories, roadmap, gates, upstream lock, seven machine-readable acceptance drafts, dependency ranges, and native authorities aligned. CI: docs / quality job |

@@ -22,6 +22,16 @@ EDRON_CONTRACTS = (
     ROOT / "docs/api/EDRON_REFERENCE.md",
     ROOT / "docs/api/EDRON_STATE_INTERACTION.md",
 )
+FLAGSHIP_CONTRACTS = (
+    ROOT / "docs/api/HEDRON.md",
+    ROOT / "docs/api/ROUTER.md",
+    ROOT / "docs/api/ACTION.md",
+    ROOT / "docs/api/INTERACTION.md",
+    ROOT / "docs/api/PAGE.md",
+    ROOT / "docs/api/CSRF_COMPOSITION.md",
+    ROOT / "docs/api/JOBS.md",
+    ROOT / "docs/api/FIELD.md",
+)
 
 
 def public_exports(source: str) -> set[str]:
@@ -48,6 +58,34 @@ def documented_symbols(markdown: str) -> set[str]:
             if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", token):
                 symbols.add(token)
     return symbols
+
+
+def coverage_table_symbols(markdown: str) -> set[str]:
+    """Read exports only from the first column of coverage-map table rows."""
+    first_cells: list[str] = []
+    for line in markdown.splitlines():
+        if not line.startswith("|"):
+            continue
+        cells = line.split("|")
+        if len(cells) >= 3 and "`" in cells[1]:
+            first_cells.append(cells[1])
+    return documented_symbols("\n".join(first_cells))
+
+
+def require_contract_sections(path: Path) -> None:
+    """Keep flagship hand-written references useful beyond symbol discovery."""
+    headings = re.findall(r"^##\s+(.+)$", path.read_text(encoding="utf-8"), re.MULTILINE)
+    normalized = [heading.casefold() for heading in headings]
+    missing = [
+        label
+        for label in ("parameters", "returns", "errors")
+        if not any(heading.startswith(label) for heading in normalized)
+    ]
+    if missing:
+        raise SystemExit(
+            f"{path.relative_to(ROOT)} is missing flagship contract sections: "
+            + ", ".join(missing)
+        )
 
 
 def cli_commands(source: str) -> set[str]:
@@ -82,7 +120,7 @@ def documented_cli_commands(markdown: str) -> set[str]:
 
 def main() -> int:
     exports = public_exports(INIT.read_text(encoding="utf-8"))
-    documented = documented_symbols(COVERAGE.read_text(encoding="utf-8"))
+    documented = coverage_table_symbols(COVERAGE.read_text(encoding="utf-8"))
     missing = sorted(exports - documented)
     if missing:
         raise SystemExit(
@@ -118,11 +156,13 @@ def main() -> int:
                 f"{contract.relative_to(ROOT)} documents invalid app.native(...); "
                 "use app.native_surface(...)"
             )
+    for contract in FLAGSHIP_CONTRACTS:
+        require_contract_sections(contract)
     print(
         f"ok: all {len(exports)} hedron.__all__ exports and "
         f"{len(edron_exports)} edron.__all__ exports and "
         f"{len(charts_exports)} hedron_charts exports and {len(commands)} CLI commands "
-        "appear in API docs"
+        "appear in API docs; flagship contract sections are present"
     )
     return 0
 

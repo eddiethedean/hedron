@@ -11,11 +11,11 @@ status: shipped
 
 **Status:** Shipped (fragment regions + `InteractionResult`; living train **1.0.x**)
 
-!!! note "Phase 0.61 in-tree preview"
+!!! note "Lifecycle API maturity"
 
-    The unified lifecycle contracts below are implemented in-tree but are not part of the
-    published 0.60.x Supported surface. Their release status is tracked in
-    [RELEASE_0_61](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_61.md).
+    The unified lifecycle contracts described below ship in 1.0. Their individual API
+    tiers remain authoritative in [STABILITY.md](STABILITY.md); a shipped symbol is not
+    automatically part of the minimal Stable facade.
 
 Day-to-day apps should start with [`@app.view` / `@app.action`](../getting-started/interaction-apis.md).
 This page documents the explicit region / `InteractionResult` contracts those handles compile to.

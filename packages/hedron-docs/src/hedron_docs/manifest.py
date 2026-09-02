@@ -21,11 +21,13 @@ from .config import DocsBuildConfig
 from .errors import source_error
 from .markdown import parse_markdown
 
-SCHEMA_VERSION = "hedron-docs-manifest-2"
+SCHEMA_VERSION = "hedron-docs-manifest-3"
 _MAX_MANIFEST_BYTES = 64 * 1024 * 1024
 _RESERVED_ROUTES = frozenset({"/search", "/robots.txt", "/sitemap.xml", "/healthz", "/readyz"})
 _API_TARGET = re.compile(r"^[A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*$", re.UNICODE)
 _DEMO_TARGET = re.compile(r"^[a-z][a-z0-9]*(?:[-_.][a-z0-9]+)*$")
+_CODE_LANGUAGE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_+#./-]{0,31}$")
+_ANCHOR_ID = re.compile(r"^[A-Za-z][\w:.-]*$", re.UNICODE)
 _NODE_ATTRS: dict[str, frozenset[str]] = {
     "alert": frozenset({"tone", "title", "type"}),
     "api-directive": frozenset({"target", "options"}),
@@ -35,7 +37,7 @@ _NODE_ATTRS: dict[str, frozenset[str]] = {
     "footnote": frozenset({"label"}),
     "footnote-backref": frozenset({"label"}),
     "footnote-ref": frozenset({"label"}),
-    "heading": frozenset({"id", "level"}),
+    "heading": frozenset({"aliases", "id", "level"}),
     "image": frozenset({"alt", "src", "title"}),
     "link": frozenset({"href", "title"}),
     "list": frozenset({"ordered", "start"}),
@@ -185,7 +187,7 @@ class SiteManifest:
     pages: tuple[PageRecord, ...]
     assets: tuple[AssetRecord, ...] = ()
     max_query_length: int = 200
-    compiler_version: str = "0.2.0"
+    compiler_version: str = "0.3.0"
     schema_version: str = SCHEMA_VERSION
 
     def __post_init__(self) -> None:
@@ -367,7 +369,7 @@ def _validate_nodes(nodes: tuple[DocNode, ...], *, expected_source: str) -> None
     while pending:
         node = pending.pop()
         if node.span is None:
-            raise ValueError("manifest 2 document nodes require a source span")
+            raise ValueError("manifest 3 document nodes require a source span")
         _validate_relative_source(node.source)
         if node.source != expected_source:
             raise ValueError("manifest node source does not match its page source")
@@ -411,11 +413,21 @@ def _validate_nodes(nodes: tuple[DocNode, ...], *, expected_source: str) -> None
                 heading_id = node.attr("id")
                 if not heading_id:
                     raise ValueError("manifest heading is missing id")
-                SafeUrl.parse(f"#{heading_id}", purpose=UrlPurpose.NAVIGATION)
-                folded = heading_id.casefold()
-                if folded in heading_ids:
-                    raise ValueError(f"manifest contains duplicate heading id: {heading_id}")
-                heading_ids.add(folded)
+                aliases = _split_aliases(node.attr("aliases"))
+                for anchor_id in (heading_id, *aliases):
+                    if not _ANCHOR_ID.fullmatch(anchor_id):
+                        raise ValueError(
+                            f"manifest heading has an invalid anchor id: {anchor_id!r}"
+                        )
+                    SafeUrl.parse(f"#{anchor_id}", purpose=UrlPurpose.NAVIGATION)
+                    folded = anchor_id.casefold()
+                    if folded in heading_ids:
+                        raise ValueError(f"manifest contains duplicate heading id: {anchor_id}")
+                    heading_ids.add(folded)
+            elif node.kind == "code":
+                language = node.attr("language")
+                if language and not _CODE_LANGUAGE.fullmatch(language):
+                    raise ValueError("manifest code node has an invalid language label")
             elif node.kind == "alert" and node.attr("tone", "info") not in {
                 "info",
                 "success",
@@ -439,6 +451,17 @@ def _validate_nodes(nodes: tuple[DocNode, ...], *, expected_source: str) -> None
         except HedronError as exc:
             raise ValueError(f"manifest contains an unsafe {node.kind} URL") from exc
         pending.extend(reversed(node.children))
+
+
+def _split_aliases(value: str) -> tuple[str, ...]:
+    if not value:
+        return ()
+    aliases = tuple(item.strip() for item in value.split(","))
+    if any(not item for item in aliases) or len({item.casefold() for item in aliases}) != len(
+        aliases
+    ):
+        raise ValueError("manifest heading aliases must be a unique comma-separated list")
+    return aliases
 
 
 def load_manifest(value: SiteManifest | str | Path) -> SiteManifest:

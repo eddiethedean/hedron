@@ -3,6 +3,16 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 1.0.6 — 2026-09-01
+
+Coordinated maintenance release for the Stable 1.0 package train. The release is tagged on
+GitHub and published on PyPI for `hedron`, `hedron-core`, `edron`, `hedron-data`,
+`hedron-charts`, and `hedron-maps`.
+
+No new public capability claim accompanies this patch. Applications should update their
+lockfiles deliberately and run their integration tests; see the package changelogs for
+package-level maintenance entries.
+
 ## 1.0.5 — 2026-09-01
 
 Coordinated maintenance release for the stable 1.0 train. The tagged release passed the full

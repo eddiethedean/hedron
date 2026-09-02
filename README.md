@@ -22,8 +22,10 @@ Hedron lets Python teams compose pages, components, forms, and partial-page inte
 maintaining a separate frontend application. It stays inside the FastAPI model: dependency
 injection, middleware, lifespan, async I/O, JSON routes, and OpenAPI remain available beside the UI.
 
-**Hedron 1.0.5 is published on PyPI.** The supported Python range is 3.10–3.14. Require
-`hedron>=1.0.0` and review the [compatibility matrix](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/)
+**Hedron 1.0.6 is published on PyPI.** The supported Python range is 3.10–3.14.
+`hedron>=1.0.0` is the compatibility floor; new applications should prefer
+`hedron>=1.0.6,<1.1` and commit a lockfile (or use `hedron==1.0.6` for an exact
+reproduction). Review the [compatibility matrix](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/)
 before combining independently versioned satellites.
 
 ```text

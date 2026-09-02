@@ -19,13 +19,13 @@ manual.
 
 **Status:** Accepted · current verified and published train **1.0.x**
 
-!!! note "Phase 0.61 in-tree preview"
+!!! note "Lifecycle component maturity"
 
     `ActionState`, `ActionPhase`, `ActionPolicy`, `OperationIdentity`, `ActionTrace`, and
     `AsyncRegion`, together with the additive surface updates for `Tabs`, `Container`,
-    `NavGroup`, `AmbientBackdrop`, and `Identity`, are implemented in-tree for Phase 0.61.
-    They remain beta and are not part of the published 0.60.x Supported surface until
-    [RELEASE_0_61](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_61.md) is signed off.
+    `NavGroup`, `AmbientBackdrop`, and `Identity`, ship in 1.0. Check each symbol in
+    [STABILITY.md](STABILITY.md); shipped Beta APIs are not automatically in the minimal
+    Stable facade.
 
 ## How to use this index
 

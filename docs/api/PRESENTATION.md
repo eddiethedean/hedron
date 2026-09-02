@@ -10,7 +10,7 @@ and closes remaining application-CSS gaps for a Data Mover-class workspace. Phas
 and
 [PROGRESSIVE_AUTHORING_058](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/PROGRESSIVE_AUTHORING_058.md).
 For the complete 0.60 capability tiers and fallback contract, see
-[Modern CSS in 0.60](../guides/modern-css-0.60.md) and
+[Modern CSS in 1.0](../guides/modern-css.md) and
 [RFC-0087](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0087-MODERN-CSS-PLATFORM.md).
 
 Shared authority: `hedron_core.builtins.appearance`. Values emit stable

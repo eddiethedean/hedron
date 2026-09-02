@@ -125,7 +125,7 @@ Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index bel
 | `HED-BUILD-0003` | `HED_BUILD_MISSING_MANIFEST` |
 | `HED-BUILD-0004` | `HED_BUILD_RUNTIME_COMPILE` |
 
-## HED-DOCS (hedron-docs 0.2)
+## HED-DOCS (hedron-docs 0.3)
 
 Markdown-to-Hedron compiler and manifest diagnostics.
 

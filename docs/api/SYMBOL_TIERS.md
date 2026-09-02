@@ -1,9 +1,8 @@
 # Symbol tiers (1.0 API honesty foundation)
 
 **Status:** Living machine-checked inventory for the flagship root facade on the
-**0.60.x** train. This is a foundation for an honest 1.0 freeze — it does **not**
-schedule `1.0`
-([D-038](https://github.com/eddiethedean/hedron/blob/main/docs/DECISIONS.md)).
+published **1.0.x** train. It records API stability independently from package maturity
+and capability readiness.
 
 ## Why
 
@@ -25,8 +24,9 @@ carry an explicit tier so adopters and CI agree.
 Machine-checked file: [`export_tiers.toml`](export_tiers.toml)
 
 - `[hedron]` — every name in `packages/hedron/src/hedron/__init__.py` `__all__`
-- `[hedron.experimental_shims]` — root `__getattr__` compat aliases that re-export
-  `hedron.experimental` (emit `DeprecationWarning`). **Remove before 1.0 freeze.**
+- `[hedron.experimental_shims]` — root `__getattr__` compatibility aliases that re-export
+  `hedron.experimental` and emit `DeprecationWarning`; use the experimental namespace in
+  new code and follow the [upgrade guide](../guides/upgrade.md).
 
 Checker: `python scripts/check_symbol_tiers.py` (wired into `scripts/ci_checks.sh`
 quality / core-neutral).

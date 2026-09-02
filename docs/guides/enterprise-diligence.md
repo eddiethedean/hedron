@@ -11,10 +11,10 @@ Short diligence sheet for security, procurement, and architecture reviewers.
 | Item | Value |
 |---|---|
 | License | MIT |
-| Current version | Published **v1.0.5**; application requirement `hedron>=1.0.0` |
-| Publication / commercial SLA | Hedron `1.0.5` and Edron `1.0.5` are on PyPI; **no commercial SLA** |
+| Current version | Published **v1.0.6**; recommended application range `hedron>=1.0.6,<1.1` |
+| Publication / commercial SLA | Hedron `1.0.6` and Edron `1.0.6` are on PyPI; **no commercial SLA** |
 | Support | Community GitHub Issues only — [Support](support.md) |
-| Primary maintainer contact | Package author metadata / GitHub org owner (bus factor: small OSS project — pin versions and follow [Support](support.md)) |
+| Governance / maintainers | Maintainer-led public governance; current authority is the PyPI maintainer and GitHub administrator roster — [Governance](governance.md) |
 | Security disclosure | GitHub [security advisories](https://github.com/eddiethedean/hedron/security/advisories/new) (preferred); alternate email in [SECURITY.md](../SECURITY.md) |
 | Conduct reports | **Not** security advisories — see [Code of Conduct](../CODE_OF_CONDUCT.md) |
 
@@ -42,7 +42,8 @@ Short diligence sheet for security, procurement, and architecture reviewers.
 
 ## Dependency and pin policy
 
-- Coordinate on published trains; declare `hedron>=1.0.0` and extras in your lockfile.
+- Coordinate on published trains. Use `hedron>=1.0.6,<1.1` for the current application
+  range, then commit a lockfile; use `==1.0.6` for exact evidence reproduction.
 - Runtime ranges and conflict guidance: [COMPATIBILITY.md](../COMPATIBILITY.md)
   (FastAPI/Pydantic pins are intentionally tight).
 - **Patch expectation:** community best-effort; critical security fixes are prioritized on
@@ -77,11 +78,22 @@ third-party open-source software with pinned versions and your own threat model 
 
 ## Supply-chain evidence
 
-Prefer GitHub Release assets for the selected published version (SBOM / license /
-evidence-bundle); do not treat an unreleased repository checkout as a published artifact.
-when they are attached. If assets are missing, regenerate from that tagged checkout.
-PyPI remains authoritative for package versions.
-Maintainers should attach evidence bundles on release day when publishing a train tag.
+Prefer GitHub Release assets for the selected published version (SBOM, license, and
+evidence bundle) when they are attached. Do not treat an unreleased repository checkout as
+a published artifact. If an evidence asset is missing, regenerate it from the immutable tag
+and record that it is locally generated rather than maintainer-published. PyPI remains
+authoritative for package versions.
+
+Verify the package independently in a clean directory:
+
+```bash
+python -m pip download --only-binary=:all: "hedron==1.0.6"
+python -m pip hash hedron-1.0.6-*.whl
+```
+
+Compare the recorded digest with your artifact store or an attached release checksum when
+one exists. Maintainers should attach evidence bundles on release day when publishing a train
+tag; absence of such an attachment is a diligence caveat, not proof that one was published.
 
 ## Evidence honesty
 
@@ -97,5 +109,5 @@ application — you own audits and remediation.
 
 ## Bus factor
 
-Expect a small maintainer set. Diligence should assume community-paced response times and
-pin versions accordingly.
+Expect a small maintainer set. Diligence should assume community-paced response times, pin
+versions accordingly, and review the [succession process](governance.md#maintainer-changes-and-succession).

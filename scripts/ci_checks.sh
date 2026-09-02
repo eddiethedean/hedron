@@ -615,6 +615,7 @@ quality_docs() {
   run_py scripts/generate_edron_api_index.py --check
   run_py scripts/generate_example_catalog.py --check
   run_py scripts/check_docs_train_ssot.py
+  run_py scripts/check_docs_adoption_contract.py
   run_py scripts/check_package_docs_inventory.py
   run_py scripts/check_documentation_ownership.py
   run_py scripts/check_api_docs_coverage.py

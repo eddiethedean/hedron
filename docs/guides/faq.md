@@ -2,19 +2,19 @@
 
 ## Which version should I install?
 
-Install the latest public release from PyPI:
-`pip install "hedron>=1.0.0"`. Contributors working from a git checkout use
-`uv sync` (workspace packages). The repository and PyPI both provide `v1.0.5`. See
+Install the current stable application range from PyPI. Contributors working from a git
+checkout use `uv sync`; that checkout can be ahead of PyPI. See
 [Installation](../getting-started/installation.md).
 
 ```bash
-pip install "hedron>=1.0.0"
+pip install "hedron>=1.0.6,<1.1"
 # or
-uv add "hedron>=1.0.0"
+uv add "hedron>=1.0.6,<1.1"
 ```
 
-The `>=1.0.0` requirement accepts current and future compatible releases; review release notes and
-run your application's integration tests when upgrading.
+`>=1.0.0` is the compatibility floor for reusable libraries. Use `==1.0.6` when an
+evaluation or production environment must reproduce the exact published release. In every
+case, commit a lockfile and review release notes before upgrading.
 `hedron-core`, `hedron`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps` are **Stable**
 packages in 1.0; host adapters and vendor/tooling satellites remain Beta,
 and no package has a commercial SLA. Capability detail:
@@ -122,12 +122,13 @@ the same directory by accident.
 ## What do Beta, Supported, and Deferred mean?
 
 Short version for builders: **require from PyPI** (`hedron>=1.0.0`).
-Packages are Beta; that does not mean “do not use” — it means expect
-occasional `0.x` churn and review upgrades deliberately.
+The coordinated Stable package set is `hedron-core`, `hedron`, `edron`, `hedron-data`,
+`hedron-charts`, and `hedron-maps`. Other satellite packages retain their own Beta or
+tooling-grade labels.
 
 Evaluators (three axes — skip if you are just building):
 
-- **Beta / Alpha** — **package** maturity on PyPI; pin versions.
+- **Stable / Beta** — **package** maturity on PyPI; pin every deployed version.
 - **Supported** — **capability** readiness on a host; ship with pins. **Not** the same as API level `stable`.
 - **Deferred** — documented, not ready; do not treat as Supported.
 - API levels (`stable` / `beta` / …) in [STABILITY](../api/STABILITY.md) are a third axis.
@@ -137,27 +138,28 @@ Snapshot: [What’s ready today](whats-ready.md).
 
 ## What is a “train”? Why these version pins?
 
-A **train** is a minor release line (for example `0.60.x`). Patch releases inside the
-train are meant to be compatible; the next minor (`0.60`) may add breaking changes.
+A **train** is a coordinated release line, currently `1.0.x`, across the Stable package
+set. Stable APIs follow the 1.x compatibility policy; Beta or Experimental surfaces retain
+their narrower change rules.
 
-Install with the lower-bound requirement `hedron>=1.0.0` so compatible releases can be
-selected automatically. Review release notes before adopting a new train. That is ordinary
-Python packaging, not a second registry. Contributors working from a git checkout use `uv sync`;
-application installs use PyPI.
+New applications should use the current bounded range `hedron>=1.0.6,<1.1` and commit a
+lockfile. `hedron>=1.0.0` remains the broad compatibility floor. Review release notes before
+adopting a new release. That is ordinary Python packaging, not a second registry.
 
 See [Current release](current-release.md) and [Compatibility](../COMPATIBILITY.md).
 
 ## Why use a lower-bound requirement?
 
-`hedron>=1.0.0` keeps the documented 1.0 compatibility floor without forcing every application
-to repeat the currently published patch version. Review release notes and run integration tests
-before upgrading to a new train. See [Compatibility](../COMPATIBILITY.md).
+`hedron>=1.0.0` expresses the documented 1.0 compatibility floor for reusable libraries.
+Applications should normally bound the current minor (`hedron>=1.0.6,<1.1`) and commit the
+resolved lockfile. Exact evidence uses `hedron==1.0.6`. See
+[Compatibility](../COMPATIBILITY.md).
 
 ## Are Auto, DataTable, and charts available?
 
 **Auto** (built-in — no extra) and **DataTable/DataEditor** (`hedron[data]`) are
-**Supported**. Those packages are **Beta** on PyPI — use their documented lower-bound
-requirements.
+**Supported**. `hedron-data` and `hedron-charts` are part of the coordinated Stable 1.0
+package set; individual vendor adapters can still carry a lower API or capability maturity.
 
 Charts install through `hedron[charts]>=1.0.0`; the sample kit installs as
 `hedron-sample-kit>=0.2.3,<0.3`. Earlier satellite versions target older cores. See

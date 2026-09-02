@@ -191,8 +191,8 @@ hedron                         FastAPI flagship and beginner API
 ├── FastAPI / Starlette        routing, DI, security, ASGI, responses
 └── optional integrations      Explorer, data, charts, extras, notebook, mcp, gradio, sample plugins
 
-hedron-flask ──> hedron-core   stable Flask adapter
-hedron-django ─> hedron-core   stable Django >=5.2,<6 adapter
+hedron-flask ──> hedron-core   Beta Flask package; documented page/fragment path Supported
+hedron-django ─> hedron-core   Beta Django >=5.2,<6 package; documented path Supported
 hedron-jinja ──> hedron-core   optional .hdj format
 hedron-gradio ─> hedron-core   optional allowlisted Gradio client (Beta; bounded Supported inventory)
 ```

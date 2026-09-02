@@ -44,7 +44,7 @@ inventory. The coordinated stable inventory is published on the 1.0 train.
 pip install "hedron[data,dev,posit]>=1.0.0"
 ```
 
-The checkout and public PyPI contain the verified `v1.0.5` release.
+The checkout and public PyPI contain the verified `v1.0.6` release.
 
 ## Alternate facade
 

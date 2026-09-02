@@ -2,10 +2,15 @@
 title: Modern CSS in 0.60
 description: The 0.60 styling contract, capability tiers, fallbacks, and authoring patterns.
 search:
-  boost: 1.5
+  exclude: true
 ---
 
 # Modern CSS in 0.60
+
+!!! warning "Historical implementation contract"
+
+    This phase-era page is retained for traceability. Use
+    [Modern CSS in 1.0](modern-css.md) for current application guidance.
 
 Hedron 0.60 upgrades the styling path without adding a second theme registry, CSS runtime,
 client-side style injector, or mandatory Node toolchain. Python expresses finite semantic intent;

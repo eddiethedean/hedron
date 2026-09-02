@@ -21,7 +21,7 @@ organized by intent.
 | Accept a form safely | `@app.action`, `FormBody`, `CsrfField` | [Minimal form POST](../guides/minimal-form.md) |
 | Choose a lower-level interaction API | `HedronRouter`, explicit `InteractionResult` | [Which interaction API?](../getting-started/interaction-apis.md) |
 | Build a reusable component | `Component`, `Props`, `NodeLike` | [Component demos](../components/index.md) |
-| Style a product surface | `DesignSystem`, `StyleRecipe`, `StyleScope` | [Presentation](PRESENTATION.md) · [Modern CSS](../guides/modern-css-0.60.md) |
+| Style a product surface | `DesignSystem`, `StyleRecipe`, `StyleScope` | [Presentation](PRESENTATION.md) · [Modern CSS](../guides/modern-css.md) |
 | Add data and tables | `DataWorkspace`, `DataTable`, `Auto` | [Data applications](../guides/data-apps.md) · [Data API](DATA.md) |
 | Add authentication | `SessionAuthFlow`, `AuthResult` | [Authentication](../guides/authentication.md) · [Auth API](AUTH.md) |
 | Test requests and fragments | `AppScenario`, `TestClient`, HTMX assertions | [Testing API](TESTING.md) |

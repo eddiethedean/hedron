@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.3.0]
+
+- Lowered all W3 content constructs through native Hedron primitives with no opaque document body.
+- Added stable heading aliases, fragment-target anchors, responsive code/table containers, language
+  labels, and native clipboard-copy controls without inline scripts.
+- Added package-owned docs CSS served as an immutable, CSP-safe asset.
+- Promoted the configuration and manifest contracts to schema 3; this is an intentional clean break
+  from the 0.2 compiler line.
+
 ## [0.2.0]
 
 - Replaced HTML round-tripping with direct token-to-AST lowering and stable source spans.

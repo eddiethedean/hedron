@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+from importlib import resources
 from pathlib import Path
 from typing import Any
 from xml.sax.saxutils import escape as xml_escape
@@ -40,6 +41,20 @@ def create_docs_app(
         explorer="off",
         default_styles=True,
     )
+    docs_css = resources.files("hedron_docs").joinpath("static").joinpath("docs.css").read_bytes()
+
+    @app.get("/_hedron-docs/docs.css", include_in_schema=False)
+    def docs_stylesheet() -> Response:  # pyright: ignore[reportUnusedFunction]
+        return Response(
+            docs_css,
+            media_type="text/css",
+            headers={
+                "Cache-Control": "public, max-age=31536000, immutable",
+                "ETag": f'"{hashlib.sha256(docs_css).hexdigest()}"',
+                "X-Content-Type-Options": "nosniff",
+            },
+        )
+
     for page in site.pages:
         _register_page(app, site, page)
     for asset in site.assets:
@@ -207,6 +222,10 @@ def _shell(site: SiteManifest, page: PageRecord | None, *content: Any, request: 
         allow_external=True,
     )
     head = Head(
+        html.link(
+            rel="stylesheet",
+            href=SafeUrl.parse("/_hedron-docs/docs.css", purpose=UrlPurpose.NAVIGATION),
+        ),
         html.meta(name="description", content=description),
         html.link(rel="canonical", href=canonical),
         html.meta(property="og:title", content=title),

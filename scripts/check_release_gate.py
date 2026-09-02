@@ -160,8 +160,8 @@ def _is_independent_version_package(project: dict[str, object]) -> bool:
     ``hedron-charts`` ``0.2.x`` Beta is an independent satellite per D-066 / RFC-0069.
     ``hedron-sample-kit`` / ``hedron-notebook`` / ``hedron-sim`` ``0.2.x`` Beta are
     independent satellites per D-093 / RFC-0081. ``hedron-posit`` ``0.67.x`` is an
-    independent patch satellite. ``edron`` is a separately released ``0.2.x`` Beta
-    facade per RFC-0094.
+    independent patch satellite. ``hedron-docs`` ``0.3.x`` is an independent W3 documentation
+    compiler line. ``edron`` is a separately released ``0.2.x`` Beta facade per RFC-0094.
     """
     if _is_alpha_package(project):
         return True
@@ -175,6 +175,7 @@ def _is_independent_version_package(project: dict[str, object]) -> bool:
         "hedron-notebook",
         "hedron-sim",
         "edron-sim",
+        "hedron-docs",
         "hedron-posit",
         "edron",
     }:

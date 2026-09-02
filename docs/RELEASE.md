@@ -55,7 +55,7 @@ Build wheels and test them in a clean environment before tagging:
 
 ```bash
 uv build --all-packages
-uv run python scripts/check_published_quickstart.py 1.0.5 --dist-dir dist --attempts 1
+uv run python scripts/check_published_quickstart.py 1.0.6 --dist-dir dist --attempts 1
 uv run python scripts/check_workbench_release_artifacts.py --dist-dir dist
 ```
 
@@ -67,7 +67,7 @@ registry and record the result before changing public documentation.
 Use this exact sequence; do not push both tags together:
 
 1. Fast-forward `main` to the green `v1.0` release commit and verify Read the Docs.
-2. Create and push the coordinated Hedron tag (for example, `v1.0.5`). The coordinated workflow
+2. Create and push the coordinated Hedron tag (for example, `v1.0.6`). The coordinated workflow
    publishes every workspace distribution, including Edron and `edron-sim`, except the separately
    owned native artifacts.
 3. Wait for the coordinated workflow, native-wheel workflow, attestations, PyPI visibility, and

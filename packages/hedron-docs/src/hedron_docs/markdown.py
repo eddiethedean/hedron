@@ -28,7 +28,8 @@ _TAB = re.compile(r'^===\s+["\'](?P<label>.+?)["\']\s*$')
 _DIRECTIVE = re.compile(r"^:::\s*(?P<target>.*?)\s*$")
 _API_TARGET = re.compile(r"^[A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*$", re.UNICODE)
 _DEMO_TARGET = re.compile(r"^[a-z][a-z0-9]*(?:[-_.][a-z0-9]+)*$")
-_EXPLICIT_HEADING_ID = re.compile(r"\s*\{#(?P<id>[A-Za-z][\w:.-]*)\}\s*$", re.UNICODE)
+_EXPLICIT_HEADING_IDS = re.compile(r"\s*\{(?P<ids>(?:#[A-Za-z][\w:.-]*\s*)+)\}\s*$", re.UNICODE)
+_CODE_LANGUAGE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_+#./-]{0,31}$")
 _ATTRIBUTE_LIST = re.compile(r"\{\s*(?:[#.][\w:-]+)(?:\s+[#.][\w:-]+)*\s*\}")
 _EXTENSION_PREFIX = ("!!!", "???", "???+", "===", ":::")
 _FENCE_START = re.compile(r"^ {0,3}(?P<marker>`{3,}|~{3,})")
@@ -473,6 +474,14 @@ class _Parser:
                         column_offset + 1,
                     )
                 language = token.info.strip().split(maxsplit=1)[0] if token.info.strip() else ""
+                if language and not _CODE_LANGUAGE.fullmatch(language):
+                    line = base_line + (token.map[0] if token.map else 0)
+                    raise self._error(
+                        "HED-DOCS-0107",
+                        f"unsupported code language label: {language!r}",
+                        line,
+                        column_offset + 1,
+                    )
                 append(
                     self._node_from_token(
                         "code",
@@ -518,11 +527,13 @@ class _Parser:
         text = "".join(self._plain_text(child) for child in children)
         if builder.kind == "heading":
             attrs["level"] = token.tag.removeprefix("h") or "2"
-            text, children, explicit_id = self._heading_parts(text, children)
+            text, children, explicit_id, aliases = self._heading_parts(text, children)
             base_id = explicit_id or slugify(text)
             self.heading_counts[base_id] = self.heading_counts.get(base_id, 0) + 1
             count = self.heading_counts[base_id]
             attrs["id"] = base_id if count == 1 else f"{base_id}-{count}"
+            if aliases:
+                attrs["aliases"] = ",".join(aliases)
         elif builder.kind == "list":
             attrs["ordered"] = "true" if token.type == "ordered_list_open" else "false"
             if token.type == "ordered_list_open" and token.attrGet("start"):
@@ -563,7 +574,7 @@ class _Parser:
                     line, column, _, _ = locator.range_for(locator.cursor, locator.cursor + 1)
                     raise source_error(
                         "HED-DOCS-0107",
-                        "inline attribute lists are not supported by the 0.2 typed node contract",
+                        "inline attribute lists are not supported by the 0.3 typed node contract",
                         self.source_path,
                         line=line,
                         column=column,
@@ -601,7 +612,7 @@ class _Parser:
             if child.type == "text":
                 if _ATTRIBUTE_LIST.fullmatch(
                     child.content.strip()
-                ) and not _EXPLICIT_HEADING_ID.search(token.content):
+                ) and not _EXPLICIT_HEADING_IDS.search(token.content):
                     line, column, _, _ = locator.range_for(locator.cursor, locator.cursor + 1)
                     raise source_error(
                         "HED-DOCS-0107",
@@ -631,7 +642,7 @@ class _Parser:
                     line, column, _, _ = locator.range_for(locator.cursor, locator.cursor + 1)
                     raise source_error(
                         "HED-DOCS-0107",
-                        "image attribute lists are not supported by the 0.2 typed node contract",
+                        "image attribute lists are not supported by the 0.3 typed node contract",
                         self.source_path,
                         line=line,
                         column=column,
@@ -668,11 +679,15 @@ class _Parser:
 
     def _heading_parts(
         self, text: str, children: tuple[DocNode, ...]
-    ) -> tuple[str, tuple[DocNode, ...], str | None]:
-        match = _EXPLICIT_HEADING_ID.search(text)
+    ) -> tuple[str, tuple[DocNode, ...], str | None, tuple[str, ...]]:
+        match = _EXPLICIT_HEADING_IDS.search(text)
         if match is None:
-            return text, children, None
+            return text, children, None, ()
         trim = len(match.group(0))
+        identifiers = tuple(
+            item[1:] for item in re.findall(r"#[A-Za-z][\w:.-]*", match.group("ids"))
+        )
+        canonical, aliases = identifiers[0], identifiers[1:]
         remaining = trim
         mutable = list(children)
         while remaining and mutable:
@@ -693,7 +708,7 @@ class _Parser:
                     end_column=max(last.column, (last.end_column or last.column) - remaining),
                 )
                 remaining = 0
-        return text[:-trim], tuple(mutable), match.group("id")
+        return text[:-trim], tuple(mutable), canonical, aliases
 
     def _check_tree_budgets(self, nodes: tuple[DocNode, ...]) -> None:
         count = 0

@@ -227,7 +227,7 @@ Local Playwright is still optional for docs-only work. On docs-only PRs, CI skip
 | `packages/hedron` | FastAPI flagship |
 | `packages/hedron-explorer` | Dev Explorer (`hedron[dev]`) |
 | `packages/hedron-data` | DataTable / DataEditor (`hedron[data]`) |
-| `packages/hedron-charts` | Visualization adapters (`hedron[charts]`, Beta) |
+| `packages/hedron-charts` | Stable first-party visualization package (`hedron[charts]`); individual vendor adapters retain their documented maturity |
 | `packages/hedron-sample-kit` | Sample plugin (Beta tooling-grade) |
 | `packages/hedron-flask` | Flask adapter |
 | `packages/hedron-django` | Django adapter |
@@ -240,7 +240,7 @@ Local Playwright is still optional for docs-only work. On docs-only PRs, CI skip
 | `packages/hedron-gradio` | Allowlisted Gradio client interoperability (Beta) |
 | `packages/hedron-sim` | Offline HTMX documentation simulator (Beta tooling-grade) |
 | `packages/hedron-posit` | Unified Posit Workbench / Connect adapter (Beta) |
-| `packages/hedron-elements` | Web Component ABI incubator (Alpha) |
+| `packages/hedron-elements` | Web Component ABI incubator (Beta package; individual capabilities may remain Experimental) |
 | `packages/fastapi-workbench` | Independent plain-FastAPI Workbench adapter (`1.x`) |
 | `tests/` | Unit, integration, conformance, adapters, security, browser |
 | `examples/reference-app` | FastAPI cumulative example |

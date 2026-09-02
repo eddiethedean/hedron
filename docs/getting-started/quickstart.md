@@ -14,9 +14,10 @@ If terms such as project folder, terminal, virtual environment, or development s
 use [Your first application with VS Code](first-app-vscode.md). In Posit Workbench, use the
 [`hedron-posit` beginner walkthrough](first-app-posit-workbench.md).
 
-Install from PyPI: `hedron>=1.0.0`. For a higher-level application API, start with
-[Edron](edron-quickstart.md). Other pins and extras:
-[Installation](installation.md).
+Install from PyPI: `hedron>=1.0.0` is the compatibility floor. For a new application,
+prefer the current bounded range `hedron>=1.0.6,<1.1`; use `hedron==1.0.6` when you
+need an exact reproducible environment. For a higher-level application API, start with
+[Edron](edron-quickstart.md). Other pins and extras: [Installation](installation.md).
 
 ## You will learn
 
@@ -156,8 +157,14 @@ class QuickNote(BaseModel):
 def add_note(data: Annotated[QuickNote, FormBody()]):
     return Text(data.message)
 
-# Inside home(): add_note.form()
+# Inside the Stack returned by home():
+# add_note.form(submit_label="Add note")
 ```
+
+Add that final expression as another child of the existing `Stack`, restart if necessary,
+and reload the page. Hedron renders the model-derived field, includes the CSRF boundary, and
+returns validation errors through the form. For persistence and an explicit refresh target,
+continue to [Build a notes app](../examples/build-notes-app.md).
 
 Scaffolds: `hedron new NAME --template crud` (also shows `DataWorkspace.with_screen`).
 
@@ -186,18 +193,15 @@ For Python installation, Windows commands, optional extras, proxies, and adapter
 
 ## What was generated?
 
-`hedron new` writes an ordinary `app.py` and a `pyproject.toml` with a bounded Hedron pin.
-The project configuration reserves `components/` as the component root; create that
-directory when you add your first project-owned component. The generated page declares a
-canonical view and returns a small fragment for that view.
+`hedron new` writes an ordinary `app.py`, a `pyproject.toml` with a bounded Hedron pin,
+and an empty `components/` directory for project-owned components. The generated page
+declares a canonical view and returns a small fragment for that view.
 
 ```text
 my-hedron-app/
-app.py           # application, page, action, and view handlers
-pyproject.toml   # dependencies and bounded Hedron pin
-
-# Created later when you add project-owned components:
-components/
+├── app.py           # application, page, action, and view handlers
+├── pyproject.toml   # dependencies and bounded Hedron pin
+└── components/      # empty component root, ready for project components
 ```
 
 These are normal Python project files. Hedron does not generate a separate JavaScript

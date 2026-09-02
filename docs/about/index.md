@@ -15,10 +15,12 @@ maintained before adopting or contributing to it.
 - [Architecture](../ARCHITECTURE.md)
 - [Security policy](../SECURITY.md)
 - [Support](../guides/support.md)
+- [Governance and succession](../guides/governance.md)
 
 ## Follow the project
 
 - [Current release and support](../guides/current-release.md)
+- [Versioned documentation](../guides/versions.md)
 - [Release notes](../guides/release-notes.md)
 - [Upgrade guide](../guides/upgrade.md)
 - [What’s next](../guides/whats-next.md)

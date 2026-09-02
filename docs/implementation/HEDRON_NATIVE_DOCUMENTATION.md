@@ -212,6 +212,10 @@ directive budgets. The package golden/adversarial tests are the executable W2 ev
 
 ### W3 — Native Hedron content lowering
 
+**Implementation status:** Complete in the experimental `hedron-docs` 0.3 line. This is an
+intentional clean schema break from W2; the renderer does not retain a compatibility path for the
+0.2 manifest or configuration contracts.
+
 **Purpose:** render documentation content through actual Hedron primitives.
 
 Deliverables:
@@ -226,6 +230,14 @@ Deliverables:
 
 Exit: the vertical-slice document set renders with native nodes and no untracked opaque document
 body.
+
+The 0.3 implementation lowers every W3 construct through Hedron primitives or safe native
+semantic elements. Headings emit canonical and alias anchors with fragment-target markers; links,
+images, lists, quotes, alerts, tabs, tables, footnotes, and inline emphasis preserve typed
+structure; code blocks use `CodeViewer` plus a native `ClipboardCopy` control and language label;
+code and table output is wrapped for narrow-screen overflow. Package-owned CSS is served as an
+immutable asset, and the renderer has an explicit empty compatibility-node registry: no trusted raw
+HTML is admitted. Semantic render snapshots and security regressions are the W3 evidence.
 
 ### W4 — Content manifest, routes, and navigation
 

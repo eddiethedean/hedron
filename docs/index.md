@@ -14,7 +14,7 @@ search:
 
 <span class="docs-home__eyebrow">Python UI, without the black box</span>
 
-<img class="hedron-theme-wordmark" src="assets/hedron-logo-hero.svg" alt="Hedron">
+<img class="hedron-theme-wordmark" src="assets/hedron-logo-light.svg" alt="Hedron">
 
 # Build clear, durable interfaces in Python.
 
@@ -140,7 +140,7 @@ app = Hedron()
 <div class="docs-home__updates">
   <a href="guides/current-release/">
     <span>Stable release</span>
-    <strong>Hedron 1.0.5 is available</strong>
+    <strong>Hedron 1.0.6 is available</strong>
     <p>Review supported versions, install pins, and package maturity.</p>
   </a>
   <a href="guides/whats-new-1.0/">

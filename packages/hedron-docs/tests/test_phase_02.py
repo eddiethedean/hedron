@@ -174,7 +174,7 @@ def test_phase_02_unsafe_or_malformed_syntax_is_diagnostic(tmp_path: Path, sourc
 def test_phase_02_config_schema_and_navigation_are_strict(tmp_path: Path) -> None:
     config_path = tmp_path / "hedron-docs.toml"
     config_path.write_text(
-        """schema_version = 2
+        """schema_version = 3
 [site]
 title = "Docs"
 navigation = [
@@ -191,7 +191,7 @@ max_directives = 4
         encoding="utf-8",
     )
     config = load_config(config_path)
-    assert config.schema_version == 2
+    assert config.schema_version == 3
     assert config.max_depth == 12
     assert config.navigation == (
         NavigationItem("Home", "index.md"),
@@ -238,7 +238,7 @@ def test_phase_02_manifest_is_a_clean_schema_break(tmp_path: Path) -> None:
         "pages": [],
         "assets": [],
     }
-    with pytest.raises(ValueError, match="hedron-docs-manifest-2"):
+    with pytest.raises(ValueError, match="hedron-docs-manifest-3"):
         SiteManifest.from_dict(old)
 
     docs = tmp_path / "docs"
@@ -249,8 +249,8 @@ def test_phase_02_manifest_is_a_clean_schema_break(tmp_path: Path) -> None:
     )
     manifest = compile_site(DocsBuildConfig(docs_dir=docs, output=tmp_path / "site.json"))
     serialized = json.loads(manifest.dumps())
-    assert serialized["schema_version"] == "hedron-docs-manifest-2"
-    assert serialized["compiler_version"] == "0.2.0"
+    assert serialized["schema_version"] == "hedron-docs-manifest-3"
+    assert serialized["compiler_version"] == "0.3.0"
     assert serialized["pages"][0]["nodes"][0]["span"]["source"] == "index.md"
     response = TestClient(create_docs_app(manifest)).get("/")
     assert response.status_code == 200

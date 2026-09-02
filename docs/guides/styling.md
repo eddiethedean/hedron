@@ -27,7 +27,7 @@ brand-wide decisions, and scoped CSS when a component genuinely owns a visual de
     registry-derived validation profiles, accessibility-mode mappings, bounded recipe families,
     server-first theme preferences, and zero-application-CSS contracts for the remaining product
     surfaces. The complete capability matrix—including the 0.59 CSS foundation and its
-    Progressive, Experimental, and Deferred tiers—is in [Modern CSS in 0.60](modern-css-0.60.md).
+    Progressive, Experimental, and Deferred tiers—is in [Modern CSS in 1.0](modern-css.md).
 
 ### The 0.60 styling upgrade in one view
 
@@ -146,7 +146,7 @@ application stylesheet can safely use it.
 
 For the machine-readable capability inventory, including gates and exact fallback language, see
 [`modern-css-inventory-059.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/modern-css-inventory-059.toml)
-and the [Modern CSS in 0.60](modern-css-0.60.md) guide.
+and the [Modern CSS in 1.0](modern-css.md) guide.
 
 ## 1. Start with the shared vocabulary
 
@@ -821,7 +821,7 @@ Use this sequence when a screen is ready for review:
 ## Reference map
 
 - [Presentation API](../api/PRESENTATION.md) — shared vocabulary and progressive styling APIs
-- [Modern CSS in 0.60](modern-css-0.60.md) — complete feature tiers and fallbacks
+- [Modern CSS in 1.0](modern-css.md) — current production boundary and checklist
 - [Themes and scoped styles](../api/THEME.md) — themes, CSS layers, and `styles.css`
 - [StyleScope](../components/style-scope.md) — subtree theme/mode/density boundaries
 - [Component demos](../components/index.md) — visual pages for every built-in

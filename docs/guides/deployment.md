@@ -85,15 +85,15 @@ app = Hedron(
 
 ### Hello scaffold (`hedron new`)
 
-A fresh scaffold is typically `pyproject.toml`, `README.md`, and `app.py` — no
-`components/` tree required:
+A fresh FastAPI scaffold contains `pyproject.toml`, `app.py`, and an empty
+`components/` directory. It does not generate a README:
 
 ```dockerfile
 FROM python:3.12-slim
 WORKDIR /app
-COPY pyproject.toml README.md app.py ./
-RUN pip install --no-cache-dir "hedron>=1.0.0" "uvicorn[standard]" \
-    && pip install --no-cache-dir -e . \
+COPY pyproject.toml app.py ./
+COPY components ./components
+RUN pip install --no-cache-dir . "uvicorn[standard]" \
     && hedron build
 ENV HEDRON_ENV=production
 # Inject HEDRON_SESSION_SECRET at runtime through your deployment platform.
@@ -101,8 +101,9 @@ EXPOSE 8000
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
-If your app also vendors a `components/` package, add `COPY components ./components`
-before the `RUN` line.
+Keep this file list synchronized with your application. If the empty `components/`
+directory is not committed by your version-control system, either create it in the image
+(`RUN mkdir -p components`) or remove that `COPY` until you add a project component.
 
 ### Apps with a `src/` layout
 
@@ -174,14 +175,30 @@ no special SSE configuration then.
 
 ### nginx
 
+For an ordinary Hedron application using pages, fragments, and polling, start with:
+
 ```nginx
 location / {
     proxy_pass http://127.0.0.1:8000;
     proxy_http_version 1.1;
     proxy_set_header Host $host;
     proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header Connection "";
-    proxy_buffering off;          # critical for SSE
+}
+```
+
+If you deliberately enable experimental SSE, apply streaming settings only to the SSE
+route rather than weakening buffering and timeouts for the whole application:
+
+```nginx
+location /events/ {
+    proxy_pass http://127.0.0.1:8000;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_buffering off;
     proxy_cache off;
     proxy_read_timeout 3600s;
 }
@@ -189,14 +206,26 @@ location / {
 
 ### Caddy
 
+The default reverse proxy needs no streaming override:
+
 ```caddy
 example.com {
-    reverse_proxy 127.0.0.1:8000 {
+    reverse_proxy 127.0.0.1:8000
+}
+```
+
+For experimental SSE, scope flushing and the extended timeout to the event route:
+
+```caddy
+example.com {
+    @events path /events/*
+    reverse_proxy @events 127.0.0.1:8000 {
         flush_interval -1
         transport http {
             read_timeout 3600s
         }
     }
+    reverse_proxy 127.0.0.1:8000
 }
 ```
 
@@ -252,8 +281,15 @@ needs `HEDRON_REDIS_URL`.
 Suggested uvicorn production shape:
 
 ```bash
-uvicorn app:app --host 0.0.0.0 --port 8000 --workers 2 --proxy-headers --forwarded-allow-ips='*'
+uvicorn app:app --host 0.0.0.0 --port 8000 --workers 2 \
+  --proxy-headers --forwarded-allow-ips="127.0.0.1"
 ```
+
+Set `--forwarded-allow-ips` to the actual proxy IP or CIDR visible to the application.
+Do not use `*` unless every connection is forced through a trusted proxy that removes
+client-supplied forwarding headers; otherwise a direct client can spoof scheme or address
+information. In container platforms, the trusted value is often the ingress or sidecar
+network rather than `127.0.0.1`.
 
 For SSE-heavy apps, prefer fewer long-lived workers (or a dedicated SSE service) and
 sticky sessions so reconnects land on a process that still holds channel state.

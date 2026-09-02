@@ -12,7 +12,7 @@ from hedron_core.compat import tomllib
 
 from .errors import source_error
 
-CONFIG_SCHEMA_VERSION = 2
+CONFIG_SCHEMA_VERSION = 3
 _MAX_MKDOCS_CONFIG_BYTES = 2_000_000
 _MAX_MKDOCS_NODES = 20_000
 _MAX_MKDOCS_DEPTH = 64

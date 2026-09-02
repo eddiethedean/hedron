@@ -349,9 +349,9 @@ excluded = ["live_server_emulation", "database_auth_queue_emulation", "arbitrary
 owner = "hedron-docs"
 maturity = "beta"
 channel = "pypi"
-pin = ">=0.2.0,<0.3"
+pin = ">=0.3.0,<0.4"
 evidence = "HEDRON_NATIVE_DOCS_CUTOVER.md"
 disposition = "incubator"
-supported = ["deterministic_manifest", "native_hedron_rendering", "bounded_search"]
+supported = ["deterministic_manifest", "native_hedron_rendering", "bounded_search", "native_w3_content_lowering", "stable_anchor_aliases", "responsive_code_tables", "native_copy_controls"]
 experimental = ["typed_source_ast", "markdown_compatibility", "mkdocs_migration_import"]
 excluded = ["production_docs_cutover", "arbitrary_mkdocs_plugins", "request_time_compilation"]

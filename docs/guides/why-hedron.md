@@ -113,7 +113,8 @@ rerun engine. `Auto` and data extras cover common object display, not every Stre
 
 - You need a pure client-rendered SPA with a separate JS build
 - You require every Streamlit/Dash widget on day one (see [What’s next](whats-next.md))
-- You cannot accept `0.x` Beta pinning and upgrade notes
+- You require a commercial SLA, managed service, or a guarantee that every opt-in Beta
+  satellite will remain source-compatible across minor releases
 - You only need notebook-style reruns and do not want FastAPI routing
 
 ## Next

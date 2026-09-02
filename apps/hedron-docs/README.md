@@ -1,6 +1,7 @@
 # hedron-docs proving app
 
-This is the deployable ASGI entrypoint for the experimental `hedron-docs` 0.2 compiler slice.
+This is the deployable ASGI entrypoint for the experimental `hedron-docs` 0.3 native-rendering
+compiler slice.
 It compiles the bundled fixture corpus once during application startup and serves only the immutable
 manifest at request time.
 

@@ -143,6 +143,8 @@ Constructor/props live on the [component catalog](../components/index.md). Index
 
 | Export | Primary docs |
 |---|---|
+| `AutoForm`, `ErrorState`, `InfiniteScroll`, `Loading`, `Pagination`, `ChatInput`, `DownloadButton`, `FileUpload` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md), Autodoc |
+| `Page`, `Stack`, `Grid`, `TextInput`, `RefreshButton`, `Poll`, `Lazy`, `Metric`, `Toast`, `ToastHost` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md), Autodoc |
 | `ActionDock`, `Alert`, `AmbientBackdrop`, `AmbientCanvas`, `AmbientLayer`, `AppShell`, `AppShellChrome`, `Aside`, `AttrHost`, `Badge` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `AccountSummary`, `AppFooter`, `Avatar`, `Brand`, `EnvironmentBanner`, `NavStatus` | [Components](../components/index.md), [PRESENTATION.md](PRESENTATION.md) |
 | `BottomDock`, `Button`, `Card`, `Carousel`, `ChatMessage`, `Checkbox` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |

@@ -6,6 +6,13 @@ Application-oriented guidance for the current **1.0.x** train. CI soft ceilings 
 remains incomplete — prefer polling when that proof is required before you rely on live
 transports in production.
 
+!!! info "No public production benchmark baseline"
+
+    Hedron does not currently publish a hardware-normalized requests-per-second or tail-latency
+    claim. The repository budgets catch regressions on maintainer infrastructure; they are not
+    capacity promises for an adopter application. Evaluate the exact component tree, middleware,
+    database, worker model, and proxy topology you plan to ship.
+
 ## Prefer fragments over full documents
 
 HTMX fragment routes should return only the replaced region. Full `Page` responses on
@@ -84,6 +91,12 @@ def test_status_fragment_budget() -> None:
 
 For stable timing data, warm the application first and collect a distribution across many
 requests; the single-request form above is a readable regression guard, not a load test.
+
+For an adoption benchmark, record at minimum: Python and package versions, CPU/memory limits,
+worker count, route type (document or fragment), response bytes, data-store state, concurrency,
+warm-up policy, p50/p95/p99 latency, errors, and the exact command used. Publish those inputs with
+the result so another evaluator can reproduce it. Benchmark polling and live transports
+separately because their connection and proxy costs are materially different.
 
 ## See also
 

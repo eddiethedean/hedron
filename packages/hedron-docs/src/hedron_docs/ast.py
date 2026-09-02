@@ -234,7 +234,7 @@ class DocNode:
         children = cast(list[object], children_value)
         span_value = data.get("span")
         if span_value is None:
-            raise ValueError("manifest 2 document nodes require a source span")
+            raise ValueError("manifest 3 document nodes require a source span")
         span = SourceSpan.from_dict(span_value)
         line = data.get("line", span.start_line)
         if isinstance(line, bool) or not isinstance(line, int) or line != span.start_line:

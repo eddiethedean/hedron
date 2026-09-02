@@ -47,7 +47,7 @@ def test_compile_is_deterministic_and_round_trips(tmp_path: Path) -> None:
     assert manifest.pages[1].path == "/guide/"
     links = [node for node in manifest.pages[1].nodes if node.kind == "paragraph"][0].children
     assert [node.attr("href") for node in links if node.kind == "link"] == ["/", "/"]
-    assert json.loads(manifest.dumps())["schema_version"] == "hedron-docs-manifest-2"
+    assert json.loads(manifest.dumps())["schema_version"] == "hedron-docs-manifest-3"
 
 
 def test_native_constructs_and_security_boundary(tmp_path: Path) -> None:

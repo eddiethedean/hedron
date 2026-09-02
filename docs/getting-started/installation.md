@@ -20,8 +20,17 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 
 <!-- hedron-install-matrix -->
 
-Hedron **1.0.5** is published on PyPI. Use the stable `>=1.0.0` compatibility floor and review
-release notes before adopting a new train. `hedron-core`, `hedron`,
+Hedron **1.0.6** is published on PyPI. The three useful requirement styles are:
+
+| Intent | Requirement | Use it when |
+|---|---|---|
+| Minimum compatible API | `hedron>=1.0.0` | A reusable library supports every documented 1.0 release |
+| Recommended application range | `hedron>=1.0.6,<1.1` | Starting an app on the current stable train |
+| Exact reproducible version | `hedron==1.0.6` | Locking production, CI, or evidence collection |
+
+The quickstart uses the compatibility floor so it remains valid across the 1.0 train; the
+generated project writes the current bounded application range. Commit your resolver's lockfile
+and review release notes before upgrading. `hedron-core`, `hedron`,
 `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps` are **Stable** packages; host/tooling
 satellites retain their documented Beta or tooling-grade maturity. Capability detail:
 [What’s ready](../guides/whats-ready.md).

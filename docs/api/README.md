@@ -34,7 +34,7 @@ helpers) is compatibility-protected on the 1.0.x repository train. Everything el
 Live transports stay **experimental**; prefer polling. Upgrade notes:
 [upgrade guide](../guides/upgrade.md).
 
-The repository tip and latest installable PyPI release are verified **`v1.0.5`**.
+The repository tip and latest installable PyPI release are verified **`v1.0.6`**.
 Public-index users should require `hedron>=1.0.0`.
 
 !!! note "Contracts vs full reference"
@@ -120,9 +120,12 @@ Also: [Configuration](../CONFIGURATION.md) ·
 - [Job interaction contracts](JOBS.md) — polling Supported; SSE experimental
 
 
-## Later trains (opt-in)
+## Advanced and historical contracts
 
-These contracts compile onto the golden path. They are **not** required for Hello.
+These pages document opt-in capabilities and the phase contracts from which current APIs
+were implemented. They are **not** a recommended learning sequence and are not required for
+Hello. A page labeled “proposed” is design history, not an installable 1.0 capability; use
+[What’s ready](../guides/whats-ready.md) for current adoption claims.
 
 - [Refreshable views](REFRESHABLE_VIEWS.md)
 - [Type-driven authoring](TYPE_DRIVEN_AUTHORING.md)

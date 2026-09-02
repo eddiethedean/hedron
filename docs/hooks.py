@@ -19,6 +19,11 @@ _SIM_INCLUDES = _DOCS / "includes" / "sim"
 _SIM_MARKER = re.compile(r"<!--\s*hedron-sim:([a-z0-9-]+)\s*-->", re.IGNORECASE)
 _RELEASE_STATUS_MARKER = "<!-- hedron-release-status -->"
 _INSTALL_MATRIX_MARKER = "<!-- hedron-install-matrix -->"
+_HISTORICAL_SEARCH_PATTERNS = (
+    r"guides/whats-new-0\.\d+\.md",
+    r"guides/modern-css-0\.\d+\.md",
+    r"guides/(?:react-island|style-bundles|visualization-theme)-063\.md",
+)
 
 
 def _release_facts() -> dict[str, object]:
@@ -94,7 +99,7 @@ def on_page_markdown(markdown: str, **kwargs: object) -> str:
     page = kwargs.get("page")
     file = getattr(page, "file", None)
     source = getattr(file, "src_uri", "")
-    if re.fullmatch(r"guides/whats-new-0\.\d+\.md", source):
+    if any(re.fullmatch(pattern, source) for pattern in _HISTORICAL_SEARCH_PATTERNS):
         metadata = getattr(page, "meta", None)
         if isinstance(metadata, dict):
             search = metadata.setdefault("search", {})

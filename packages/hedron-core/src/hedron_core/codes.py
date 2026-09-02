@@ -13,7 +13,7 @@ HED_BUILD_FAILED = "HED-BUILD-0002"
 HED_BUILD_MISSING_MANIFEST = "HED-BUILD-0003"
 HED_BUILD_RUNTIME_COMPILE = "HED-BUILD-0004"
 
-# Markdown documentation compiler (hedron-docs 0.2)
+# Markdown documentation compiler (hedron-docs 0.3)
 HED_DOCS_0001 = "HED-DOCS-0001"  # generic documentation compiler failure
 HED_DOCS_0002 = "HED-DOCS-0002"  # configuration file missing
 HED_DOCS_0003 = "HED-DOCS-0003"  # invalid configuration
