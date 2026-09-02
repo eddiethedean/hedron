@@ -1,6 +1,6 @@
 # Hedron Docs
 
-This is the **deployable proving application** for `hedron-docs` 0.3.
+This is the **deployable proving application** for `hedron-docs` 0.5.
 
 ![Hedron documentation mark](assets/hedron-docs.svg)
 

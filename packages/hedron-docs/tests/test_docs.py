@@ -340,9 +340,12 @@ def test_deployable_proving_app() -> None:
     app_root = repository / "apps" / "hedron-docs"
     config = load_config(app_root / "hedron-docs.toml")
     manifest = compile_site(config)
-    assert len(manifest.pages) == 2
+    assert len(manifest.pages) == 5
     assert len(manifest.assets) == 1
     client = TestClient(create_docs_app(manifest))
     assert client.get("/").status_code == 200
+    assert client.get("/quickstart/").status_code == 200
     assert client.get("/guide/").status_code == 200
+    assert client.get("/api/").status_code == 200
+    assert client.get("/component/").status_code == 200
     assert client.get(manifest.assets[0].path).status_code == 200

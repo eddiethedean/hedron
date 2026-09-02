@@ -6,7 +6,7 @@ import hashlib
 from importlib import resources
 from pathlib import Path
 from typing import Any
-from urllib.parse import quote, unquote, urlsplit
+from urllib.parse import quote, unquote, urlencode, urlsplit
 from xml.sax.saxutils import escape as xml_escape
 
 from fastapi import Request
@@ -40,6 +40,31 @@ from .search import search
 _DOCS_CSS = resources.files("hedron_docs").joinpath("static").joinpath("docs.css").read_bytes()
 _DOCS_CSS_DIGEST = hashlib.sha256(_DOCS_CSS).hexdigest()[:16]
 _DOCS_CSS_PATH = f"/_hedron-docs/docs-{_DOCS_CSS_DIGEST}.css"
+
+
+class _NavGroup:
+    """Ordered navigation group assembled from manifest navigation paths."""
+
+    def __init__(self, label: str = "", path: tuple[str, ...] = ()) -> None:
+        self.label = label
+        self.path = path
+        self.entries: list[tuple[str, _NavGroup | PageRecord]] = []
+        self._groups: dict[str, _NavGroup] = {}
+
+    def add_page(self, page: PageRecord) -> None:
+        self.entries.append(("page", page))
+
+    def add_grouped_page(self, labels: tuple[str, ...], page: PageRecord) -> None:
+        if not labels:
+            self.add_page(page)
+            return
+        label = labels[0]
+        group = self._groups.get(label)
+        if group is None:
+            group = _NavGroup(label, self.path + (label,))
+            self._groups[label] = group
+            self.entries.append(("group", group))
+        group.add_grouped_page(labels[1:], page)
 
 
 def create_docs_app(
@@ -103,7 +128,9 @@ def create_docs_app(
             mode = ColorMode(str(raw_mode))
         except ValueError:
             mode = ColorMode.SYSTEM
-        response = RedirectResponse(_same_origin_return_path(request), status_code=303)
+        response = RedirectResponse(
+            _safe_return_path(request.query_params.get("return_to", "")), status_code=303
+        )
         apply_color_mode_cookie(response, mode, request=request)
         return response
 
@@ -121,6 +148,7 @@ def create_docs_app(
                     html.h1("Page not found"),
                     html.p("The requested document does not exist."),
                     request=request,
+                    title_override="Page not found",
                 ),
                 request=request,
                 status_code=404,
@@ -161,9 +189,15 @@ def create_docs_app(
             if query:
                 body.append(html.p(f"{len(results)} result(s) for {query!r}", role="status"))
                 body.append(html.ul(*result_nodes) if result_nodes else html.p("No results found."))
-            return _shell(site, None, *body, request=request)
+            return _shell(site, None, *body, request=request, title_override="Search")
         except ValueError as exc:
-            return _shell(site, None, html.p(str(exc), role="alert"), request=request)
+            return _shell(
+                site,
+                None,
+                html.p(str(exc), role="alert"),
+                request=request,
+                title_override="Search",
+            )
 
     @app.get("/robots.txt", include_in_schema=False)
     def robots(request: Request) -> PlainTextResponse:  # pyright: ignore[reportUnusedFunction]
@@ -224,9 +258,15 @@ def _register_asset(app: Hedron, asset: AssetRecord) -> None:
     app.get(asset.path, name=route_name, include_in_schema=False)(asset_response)
 
 
-def _shell(site: SiteManifest, page: PageRecord | None, *content: Any, request: Request) -> Page:
+def _shell(
+    site: SiteManifest,
+    page: PageRecord | None,
+    *content: Any,
+    request: Request,
+    title_override: str | None = None,
+) -> Page:
     nav_pages = sorted(site.pages, key=lambda item: (item.nav_order or (10**9,), item.path))
-    visible_pages = [item for item in nav_pages[:80] if item.publication_state == "published"]
+    visible_pages = [item for item in nav_pages if item.publication_state == "published"]
 
     def nav_link(item: PageRecord) -> Any:
         current = bool(page and item.path == page.path)
@@ -242,15 +282,49 @@ def _shell(site: SiteManifest, page: PageRecord | None, *content: Any, request: 
             )
         )
 
-    links = [nav_link(item) for item in visible_pages]
+    nav_root = _NavGroup()
+    for item in visible_pages:
+        if len(item.nav_path) > 1:
+            nav_root.add_grouped_page(item.nav_path[:-1], item)
+        else:
+            nav_root.add_page(item)
+
+    def nav_list(group: _NavGroup, class_: str) -> Any:
+        children: list[Any] = []
+        for kind, value in group.entries:
+            if kind == "page":
+                assert isinstance(value, PageRecord)
+                children.append(nav_link(value))
+            else:
+                assert isinstance(value, _NavGroup)
+                section_attrs: dict[str, Any] = {}
+                section_current = bool(
+                    page
+                    and (
+                        (len(value.path) == 1 and page.current_section == value.label)
+                        or page.nav_path[: len(value.path)] == value.path
+                    )
+                )
+                if section_current:
+                    section_attrs["data"] = {"hedron-nav-section-current": "true"}
+                children.append(
+                    html.li(
+                        html.span(
+                            value.label,
+                            class_="hedron-docs-nav-section",
+                            **section_attrs,
+                        ),
+                        nav_list(value, "hedron-docs-nav-group-list"),
+                        class_="hedron-docs-nav-group",
+                    )
+                )
+        return html.ul(*children, class_=class_)
+
     navigation = Nav(
-        html.ul(*links, class_="hedron-docs-primary-nav"),
+        nav_list(nav_root, "hedron-docs-primary-nav"),
         html.details(
             html.summary("Menu"),
-            html.ul(
-                *(nav_link(item) for item in visible_pages),
-                class_="hedron-docs-mobile-nav-list",
-            ),
+            nav_list(nav_root, "hedron-docs-mobile-nav-list"),
             class_="hedron-docs-mobile-nav",
         ),
         aria={"label": "Primary navigation"},
@@ -259,7 +333,7 @@ def _shell(site: SiteManifest, page: PageRecord | None, *content: Any, request: 
         Link("Search", "/search", class_="hedron-docs-search-link"),
         ColorModeToggle(
             preference=read_color_mode_preference(request),
-            action="/preferences/theme",
+            action=_theme_action(request),
             id="docs-color-mode",
             csrf_token=_csrf_token(request),
         ),
@@ -270,11 +344,12 @@ def _shell(site: SiteManifest, page: PageRecord | None, *content: Any, request: 
         header_tools,
         class_="hedron-docs-brand-row",
     )
-    extras: list[Any] = []
+    before_content: list[Any] = []
+    after_content: list[Any] = []
     if page and page.breadcrumbs:
         breadcrumb_nodes: list[Any] = []
         for label, path in page.breadcrumbs:
-            if path:
+            if path and path != page.path:
                 breadcrumb_nodes.append(
                     html.li(
                         html.a(
@@ -283,18 +358,20 @@ def _shell(site: SiteManifest, page: PageRecord | None, *content: Any, request: 
                         )
                     )
                 )
-            else:
+            elif path == page.path:
                 breadcrumb_nodes.append(html.li(label, aria={"current": "page"}))
-        if not breadcrumb_nodes or page.title != page.breadcrumbs[-1][0]:
+            else:
+                breadcrumb_nodes.append(html.li(label))
+        if not any(path == page.path for _, path in page.breadcrumbs):
             breadcrumb_nodes.append(html.li(page.nav_title or page.title, aria={"current": "page"}))
-        extras.append(
+        before_content.append(
             html.nav(
                 html.ol(*breadcrumb_nodes),
                 aria={"label": "Breadcrumb"},
             )
         )
     if page and page.toc:
-        extras.append(
+        before_content.append(
             html.aside(
                 html.strong("On this page"),
                 html.ul(
@@ -312,7 +389,7 @@ def _shell(site: SiteManifest, page: PageRecord | None, *content: Any, request: 
             )
         )
     if page and (page.previous_path or page.next_path):
-        extras.append(
+        after_content.append(
             html.nav(
                 *(
                     [
@@ -342,7 +419,7 @@ def _shell(site: SiteManifest, page: PageRecord | None, *content: Any, request: 
             )
         )
     if page and (page.edit_url or page.source_url):
-        extras.append(
+        after_content.append(
             html.p(
                 *(
                     [
@@ -372,8 +449,12 @@ def _shell(site: SiteManifest, page: PageRecord | None, *content: Any, request: 
         )
     body = Container(
         Stack(
-            *(content or (Text("Page not found"),)),
-            *extras,
+            *before_content,
+            html.article(
+                *(content or (Text("Page not found"),)),
+                class_="hedron-docs-article",
+            ),
+            *after_content,
             gap="lg",
         ),
         max_width="lg",
@@ -405,7 +486,7 @@ def _shell(site: SiteManifest, page: PageRecord | None, *content: Any, request: 
         content_width="wide",
         mobile_collapse=True,
     )
-    title = (page.nav_title or page.title) if page else site.title
+    title = title_override or ((page.nav_title or page.title) if page else site.title)
     description = page.description if page else site.description
     canonical_path = (
         page.canonical_url
@@ -453,18 +534,29 @@ def _base_url(site: SiteManifest, request: Request) -> str:
     return (site.base_url or str(request.base_url)).rstrip("/")
 
 
-def _same_origin_return_path(request: Request) -> str:
-    """Return a safe local redirect target after a preference form submit."""
+def _theme_action(request: Request) -> str:
+    return SafeUrl.parse(
+        "/preferences/theme?" + urlencode({"return_to": _request_return_path(request)}),
+        purpose=UrlPurpose.FORM_ACTION,
+    ).value
 
-    referer = request.headers.get("referer", "")
-    if referer:
-        parsed = urlsplit(referer)
-        request_host = request.url.hostname or ""
-        if parsed.netloc and parsed.hostname != request_host:
-            referer = ""
-        elif parsed.path:
-            return parsed.path + (("?" + parsed.query) if parsed.query else "")
-    return "/"
+
+def _request_return_path(request: Request) -> str:
+    path = request.url.path or "/"
+    return path + (("?" + request.url.query) if request.url.query else "")
+
+
+def _safe_return_path(value: str) -> str:
+    """Accept only a local absolute path for post-form redirects."""
+
+    if not value or "\\" in value or any(ord(char) < 0x20 for char in value):
+        return "/"
+    parsed = urlsplit(value)
+    if parsed.scheme or parsed.netloc or not parsed.path.startswith("/"):
+        return "/"
+    if parsed.path.startswith("//"):
+        return "/"
+    return parsed.path + (("?" + parsed.query) if parsed.query else "")
 
 
 def _csrf_token(request: Request) -> str | None:

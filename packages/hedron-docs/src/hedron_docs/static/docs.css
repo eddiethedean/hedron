@@ -91,6 +91,31 @@
   padding: 0;
 }
 
+.hedron-docs-primary-nav,
+.hedron-docs-nav-group-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.hedron-docs-nav-group + .hedron-docs-nav-group {
+  margin-block-start: 0.75rem;
+}
+
+.hedron-docs-nav-section {
+  display: block;
+  margin-block-end: 0.25rem;
+  color: var(--hedron-default-muted, #675e78);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.hedron-docs-nav-group-list {
+  padding-inline-start: 0.5rem;
+}
+
 .hedron-docs-mobile-nav-list li + li {
   margin-block-start: 0.5rem;
 }
