@@ -855,7 +855,6 @@ body {
   box-shadow: 0 18px 45px rgba(0, 9, 12, 0.24), inset 0 1px rgba(255, 255, 255, 0.045);
   color: #dcebed;
   overflow: hidden;
-  transform: rotate(0.45deg);
 }
 
 .docs-home__quickstart-bar {
@@ -887,13 +886,13 @@ body {
 }
 
 .docs-home__quickstart-body {
-  padding: 1rem 1.05rem 1.05rem;
+  padding: 1.05rem 1.15rem 1.1rem;
 }
 
 .docs-home__quickstart-label {
-  color: #66848a;
+  color: #78989e;
   display: block;
-  font-size: 0.52rem;
+  font-size: 0.54rem;
   font-weight: 780;
   letter-spacing: 0.09em;
   margin: 0.15rem 0 0.35rem;
@@ -912,7 +911,8 @@ body {
 }
 
 .docs-home__quickstart-body .prompt,
-.docs-home__quickstart-body .kw {
+.docs-home__quickstart-body .kw,
+.docs-home__quickstart-body .decorator {
   color: #63ddd2;
 }
 
@@ -924,7 +924,7 @@ body {
   background: transparent;
   border: 0;
   color: #dbe9eb;
-  font-size: 0.64rem;
+  font-size: 0.66rem;
   line-height: 1.62;
   margin: 0 0 1rem;
   overflow: auto;

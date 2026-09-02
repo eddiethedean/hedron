@@ -35,20 +35,24 @@ where it earns its place.
 
 </div>
 
-<aside class="docs-home__quickstart" aria-label="Quick install">
+<aside class="docs-home__quickstart" aria-label="Hedron starter app">
   <div class="docs-home__quickstart-bar">
     <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
-    <strong>quickstart.py</strong>
+    <strong>app.py</strong>
   </div>
   <div class="docs-home__quickstart-body">
-    <span class="docs-home__quickstart-label">01 · Install</span>
-    <code><span class="prompt">$</span> pip install hedron</code>
-    <span class="docs-home__quickstart-label">02 · Compose</span>
-    <pre><code><span class="kw">from</span> hedron <span class="kw">import</span> Page, Text
+    <span class="docs-home__quickstart-label">00 · Install</span>
+    <code><span class="prompt">$</span> uv add <span class="str">"hedron&gt;=1.0.0"</span> uvicorn</code>
+    <span class="docs-home__quickstart-label">01 · Build</span>
+    <pre><code><span class="kw">from</span> hedron <span class="kw">import</span> Hedron, Text
 
-page = Page(
-    Text(<span class="str">"Hello, Hedron."</span>)
-)</code></pre>
+app = Hedron()
+
+<span class="decorator">@app.page</span>(<span class="str">"/"</span>)
+<span class="kw">def</span> home():
+    <span class="kw">return</span> Text(<span class="str">"Hello, Hedron."</span>)</code></pre>
+    <span class="docs-home__quickstart-label">10 · Run</span>
+    <code><span class="prompt">$</span> uv run uvicorn app:app</code>
     <a href="getting-started/quickstart/">Build your first app <span aria-hidden="true">↗</span></a>
   </div>
 </aside>
