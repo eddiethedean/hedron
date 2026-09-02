@@ -924,7 +924,7 @@ wheels = [
 
 [[package]]
 name = "edron"
-version = "1.0.5"
+version = "1.0.6"
 source = { editable = "packages/edron" }
 dependencies = [
     { name = "hedron" },
@@ -1351,7 +1351,7 @@ wheels = [
 
 [[package]]
 name = "hedron"
-version = "1.0.5"
+version = "1.0.6"
 source = { editable = "packages/hedron" }
 dependencies = [
     { name = "fastapi" },
@@ -1473,7 +1473,7 @@ provides-extras = ["dev", "data", "charts", "maps", "markdown", "code", "images"
 
 [[package]]
 name = "hedron-charts"
-version = "1.0.5"
+version = "1.0.6"
 source = { editable = "packages/hedron-charts" }
 dependencies = [
     { name = "hedron-core" },
@@ -1575,7 +1575,7 @@ provides-extras = ["matplotlib", "plotly", "altair", "pydeck", "folium", "graphv
 
 [[package]]
 name = "hedron-conformance"
-version = "1.0.5"
+version = "1.0.6"
 source = { editable = "packages/hedron-conformance" }
 dependencies = [
     { name = "hedron-core" },
@@ -1590,7 +1590,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-core"
-version = "1.0.5"
+version = "1.0.6"
 source = { editable = "packages/hedron-core" }
 dependencies = [
     { name = "packaging" },
@@ -1609,7 +1609,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-data"
-version = "1.0.5"
+version = "1.0.6"
 source = { editable = "packages/hedron-data" }
 dependencies = [
     { name = "hedron-core" },
@@ -1673,7 +1673,7 @@ provides-extras = ["pandas", "polars", "pyarrow", "dataframes", "sqlalchemy", "s
 
 [[package]]
 name = "hedron-django"
-version = "1.0.5"
+version = "1.0.6"
 source = { editable = "packages/hedron-django" }
 dependencies = [
     { name = "asgiref" },
@@ -1711,7 +1711,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-elements"
-version = "1.0.5"
+version = "1.0.6"
 source = { editable = "packages/hedron-elements" }
 dependencies = [
     { name = "hedron-core" },
@@ -1722,7 +1722,7 @@ requires-dist = [{ name = "hedron-core", editable = "packages/hedron-core" }]
 
 [[package]]
 name = "hedron-explorer"
-version = "1.0.5"
+version = "1.0.6"
 source = { editable = "packages/hedron-explorer" }
 dependencies = [
     { name = "fastapi" },
@@ -1744,7 +1744,7 @@ provides-extras = ["fastapi"]
 
 [[package]]
 name = "hedron-extras"
-version = "1.0.5"
+version = "1.0.6"
 source = { editable = "packages/hedron-extras" }
 dependencies = [
     { name = "hedron-core" },
@@ -1776,7 +1776,7 @@ provides-extras = ["code-editor", "json-editor", "data-explorer", "chart-workben
 
 [[package]]
 name = "hedron-flask"
-version = "1.0.5"
+version = "1.0.6"
 source = { editable = "packages/hedron-flask" }
 dependencies = [
     { name = "flask" },
@@ -1804,7 +1804,7 @@ requires-dist = [{ name = "hedron-core", editable = "packages/hedron-core" }]
 
 [[package]]
 name = "hedron-jinja"
-version = "1.0.5"
+version = "1.0.6"
 source = { editable = "packages/hedron-jinja" }
 dependencies = [
     { name = "hedron-core" },
@@ -1821,7 +1821,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-maps"
-version = "1.0.5"
+version = "1.0.6"
 source = { editable = "packages/hedron-maps" }
 dependencies = [
     { name = "hedron-core" },
@@ -1930,7 +1930,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-workspace"
-version = "1.0.5"
+version = "1.0.6"
 source = { virtual = "." }
 
 [package.dev-dependencies]
