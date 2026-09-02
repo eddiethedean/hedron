@@ -3,13 +3,17 @@
 from __future__ import annotations
 
 import pytest
+from fastapi import APIRouter
+from fastapi.testclient import TestClient
 
 from hedron import Hedron, Page, Text
 from hedron_core.bundles import FeatureBundle, include_bundle, included_bundles
 from hedron_core.cache import get_cache_traces, record_cache_trace
 from hedron_core.cache.types import CacheEvent
 from hedron_core.compile_gate import assert_runtime_compile_allowed
+from hedron_core.component import Component
 from hedron_core.diagnostics import HedronError
+from hedron_core.models import Props
 from hedron_core.registry import get_registry, reset_registry_for_tests
 from hedron_core.updates import (
     BaseHandleDescriptor,
@@ -116,3 +120,67 @@ def test_public_view_registration_uses_the_owning_handle_registry() -> None:
         assert [item.app_id for item in list_handle_descriptors()] == [first.hedron_app_id]
     with second._hedron_runtime.activate():
         assert [item.app_id for item in list_handle_descriptors()] == [second.hedron_app_id]
+
+
+def test_router_inclusion_uses_own_runtime_after_another_app_seals() -> None:
+    """An app must not consult the compatibility builder owned by another app."""
+    first = Hedron(title="first-include", explorer="off", session_secret="first-include-secret")
+    second = Hedron(title="second-include", explorer="off", session_secret="second-include-secret")
+    router = APIRouter()
+
+    @router.get("/plain")
+    def plain() -> dict[str, str]:
+        return {"status": "ok"}
+
+    # Sealing the second app changes the process compatibility builder. The
+    # first app still has an open builder and must remain able to include a
+    # normal FastAPI router.
+    with TestClient(second):
+        pass
+    first.include_router(router)
+    assert TestClient(first).get("/plain").json() == {"status": "ok"}
+
+
+def test_component_inclusion_uses_own_runtime_after_another_app_seals() -> None:
+    first = Hedron(title="first-component", explorer="off", session_secret="first-component-secret")
+    second = Hedron(
+        title="second-component", explorer="off", session_secret="second-component-secret"
+    )
+
+    with TestClient(second):
+        pass
+    first.include_component(lambda: Text("component"), path="/component")
+    response = TestClient(first).get("/component")
+    assert response.status_code == 200
+    assert "component" in response.text
+
+
+def test_component_prepare_runs_once_per_request() -> None:
+    class _Props(Props):
+        pass
+
+    class Prepared(Component[_Props]):
+        props_type = _Props
+
+        def __init__(self) -> None:
+            super().__init__(_Props())
+            self.prepare_calls = 0
+
+        async def prepare(self, ctx: object) -> None:
+            del ctx
+            self.prepare_calls += 1
+
+        def render(self) -> object:
+            return Text("prepared")
+
+    app = Hedron(title="prepare-once", explorer="off", session_secret="prepare-secret")
+    component = Prepared()
+
+    @app.page("/")
+    def home() -> Prepared:
+        return component
+
+    response = TestClient(app).get("/")
+    assert response.status_code == 200
+    assert "prepared" in response.text
+    assert component.prepare_calls == 1

@@ -7,6 +7,7 @@ import contextlib
 import functools
 import inspect
 import logging
+import math
 import secrets
 import time
 from collections.abc import Callable, Collection, Coroutine, Sequence
@@ -462,7 +463,9 @@ async def prepare_endpoint_value(value: NodeLike, *, request: Request) -> None:
     if header_deadline and _prepare_deadline_header_trusted(request):
         try:
             secs = float(header_deadline)
-            if secs > 0:
+            # Reject NaN/infinity explicitly; ``float('inf')`` would otherwise
+            # silently disable the configured prepare deadline.
+            if math.isfinite(secs) and secs > 0:
                 header_end = time.monotonic() + secs
                 deadline = header_end if deadline is None else min(deadline, header_end)
         except ValueError:

@@ -318,13 +318,13 @@ class HedronPagesMixin:
         from hedron_core.catalog import get_sealed_catalog
         from hedron_core.registry.builder import active_builder
 
-        builder = active_builder()
-        fail_closed_late_registration(
-            registry_sealed=builder.is_sealed,
-            catalog_sealed=get_sealed_catalog() is not None,
-            openapi_cached=cached_openapi(cast(FastAPI, self)) is not None,
-        )
         with self._runtime_scope():
+            builder = active_builder()
+            fail_closed_late_registration(
+                registry_sealed=builder.is_sealed,
+                catalog_sealed=get_sealed_catalog() is not None,
+                openapi_cached=cached_openapi(cast(FastAPI, self)) is not None,
+            )
             self._root_router.include_component(descriptor, path=path, **kwargs)
             self._sync_root_route()
 

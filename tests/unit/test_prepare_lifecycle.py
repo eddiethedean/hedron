@@ -5,7 +5,9 @@ from __future__ import annotations
 import asyncio
 
 import pytest
+from starlette.requests import Request
 
+from hedron import Hedron
 from hedron_core.builtins.content import Text
 from hedron_core.builtins.document import Page
 from hedron_core.component import Component
@@ -167,3 +169,35 @@ async def test_cached_is_single_flight_under_concurrent_await() -> None:
     assert values == [1, 1, 1]
     assert calls["n"] == 1
     assert ctx.cache["k"] == 1
+
+
+@pytest.mark.anyio
+async def test_prepare_deadline_header_rejects_non_finite_values(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Trusted proxy headers must not turn a finite prepare budget into infinity."""
+    from hedron.routing.route import prepare_endpoint_value
+
+    app = Hedron(title="prepare-deadline", explorer="off", session_secret="prepare-secret")
+    app.state.hedron_trusted_peers = ["127.0.0.1"]
+    captured: dict[str, object] = {}
+
+    async def fake_prepare_tree(
+        value: object, *, context: PrepareContext, **kwargs: object
+    ) -> None:
+        del value, kwargs
+        captured["deadline"] = context.deadline
+
+    monkeypatch.setattr("hedron_core.prepare.prepare_tree", fake_prepare_tree)
+    request = Request(
+        {
+            "type": "http",
+            "method": "GET",
+            "path": "/",
+            "headers": [(b"x-hedron-prepare-deadline", b"inf")],
+            "client": ("127.0.0.1", 1234),
+            "app": app,
+        }
+    )
+    await prepare_endpoint_value(Text("x"), request=request)
+    assert captured["deadline"] is None

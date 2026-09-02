@@ -193,16 +193,21 @@ class Hedron(HedronPagesMixin, FastAPI):
             return meta
 
     def include_router(self, router: Any, *args: Any, **kwargs: Any) -> None:  # type: ignore[override]
-        from hedron.registration import fail_closed_late_registration
-        from hedron_core.catalog import get_sealed_catalog
-        from hedron_core.registry.builder import active_builder
+        # Router inclusion is application-owned registration.  Keep the
+        # runtime active for the entire operation so late-registration checks
+        # and nested Hedron routers consult this app's builder rather than the
+        # process compatibility builder (which may belong to another app).
+        with self._hedron_runtime.activate():
+            from hedron.registration import fail_closed_late_registration
+            from hedron_core.catalog import get_sealed_catalog
+            from hedron_core.registry.builder import active_builder
 
-        builder = active_builder()
-        fail_closed_late_registration(
-            registry_sealed=builder.is_sealed,
-            catalog_sealed=get_sealed_catalog() is not None,
-            openapi_cached=cached_openapi(self) is not None,
-        )
-        if isinstance(router, HedronRouter):
-            router.attach_host_app(self)
-        super().include_router(router, *args, **kwargs)
+            builder = active_builder()
+            fail_closed_late_registration(
+                registry_sealed=builder.is_sealed,
+                catalog_sealed=get_sealed_catalog() is not None,
+                openapi_cached=cached_openapi(self) is not None,
+            )
+            if isinstance(router, HedronRouter):
+                router.attach_host_app(self)
+            super().include_router(router, *args, **kwargs)
