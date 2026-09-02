@@ -12,9 +12,9 @@ Every other distribution is a Beta satellite even when it shares the `1.0.0` ver
 `fastapi-workbench` is currently `1.0.8`. The removed `hedron-workbench` package is not part of
 the release inventory.
 
-A Git tag includes the `v` prefix; Python metadata does not. Never move or replace a
-published tag except for an explicitly authorized corrective retag after a failed
-publication.
+Release tags use the `release-` namespace and carry no package-version semantics; the
+checked-out repository metadata is the version source. Never move or replace a published tag
+except for an explicitly authorized corrective retag after a failed publication.
 
 ## Preconditions
 
@@ -29,7 +29,7 @@ publication.
    --verify` and retain the generated evidence under `docs/acceptance/`.
 5. Confirm the package inventory contains `hedron`, its maintained satellites,
    `hedron-posit`, and `fastapi-workbench`; it must not contain `hedron-workbench`.
-6. Confirm the tag does not already exist locally or on the remote. A failed
+6. Confirm the release tag does not already exist locally or on the remote. A failed
    publication requires an authorized corrective action after metadata and workflow
    fixes.
 7. Confirm the protected `release` GitHub environment requires maintainer approval. The main and
@@ -64,10 +64,10 @@ registry and record the result before changing public documentation.
 
 ## Tag and publish
 
-Use this exact sequence; do not push both tags together:
+Use this exact sequence; create one unique release tag per publication:
 
 1. Fast-forward `main` to the green `v1.0` release commit and verify Read the Docs.
-2. Create and push the coordinated Hedron tag (for example, `v1.0.8`). The coordinated workflow
+2. Create and push a unique release tag (for example, `release-20260902-01`). The coordinated workflow
    publishes every workspace distribution, including Edron and `edron-sim`, except the separately
    owned native artifacts.
 3. Wait for the coordinated workflow, native-wheel workflow, attestations, PyPI visibility, and
@@ -84,4 +84,4 @@ not require a second publication tag.
 Every upload requires explicit maintainer authorization through the protected release workflow.
 After publication, update `docs/release.toml` first; rendered release callouts and validation
 derive from it. Then update release notes, rerun the documentation/release checks, and verify all
-PyPI project pages. Never move either tag after publication.
+PyPI project pages. Never move a release tag after publication.

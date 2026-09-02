@@ -65,8 +65,9 @@ complete removal evidence.
 ## Release shape
 
 The Stable 1.0 package boundary is `hedron-core`, `hedron`, `edron`, `hedron-data`,
-`hedron-charts`, and `hedron-maps`. Edron publishes from its independent `edron-v*` tag only after
-the coordinated Hedron packages are available. Every other satellite remains Beta, may share the
+`hedron-charts`, and `hedron-maps`. A unique `release-*` tag publishes the coordinated package
+boundary, including Edron; the separate `edron-v*` workflow remains available for historical
+recovery. Every other satellite remains Beta, may share the
 version number or release independently, and must publish an explicit compatible Hedron range.
 SemVer protects only the enumerated stable 1.x inventory; Beta/Experimental surfaces stay visibly
 outside that promise. The cut makes no commercial SLA, multi-year LTS, human-AT, or blanket WCAG

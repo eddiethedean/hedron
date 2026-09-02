@@ -84,13 +84,21 @@ def test_github_release_requires_successful_pypi_publish() -> None:
     assert "steps.pypi.outcome == 'failure' || steps.pypi.outputs.publish_failed == '1'" in workflow
 
 
+def test_release_workflow_uses_metadata_version_with_release_namespace() -> None:
+    workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
+    assert '      - "release-*"' in workflow
+    assert "Resolve release version from checked-out metadata" in workflow
+    assert "startsWith(github.ref, 'refs/tags/release-')" in workflow
+    assert "Using legacy version tag for manual recovery" in workflow
+
+
 def test_built_quickstart_is_verified_before_pypi_upload() -> None:
     """Immutable uploads must not be the first exercise of the release verifier."""
     workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
     prepublish = workflow.index("      - name: Verify built quick start before publication")
     upload = workflow.index("      - name: Publish to PyPI", prepublish)
     assert prepublish < upload
-    assert '"${{ steps.ref.outputs.version }}" --dist-dir dist --attempts 1' in workflow
+    assert '"${{ steps.version.outputs.version }}" --dist-dir dist --attempts 1' in workflow
 
 
 def test_workbench_artifacts_are_verified_before_pypi_upload() -> None:

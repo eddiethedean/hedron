@@ -3,11 +3,11 @@ name: Release
 on:
   push:
     tags:
-      - "v*"
+      - "release-*"
   workflow_dispatch:
     inputs:
       publish_tag:
-        description: "Tag to publish (e.g. v0.28.2). Required when publish_only is true."
+        description: "Release tag to publish (e.g. release-20260902-01). Required when publish_only is true."
         type: string
         default: ""
       publish_only:
@@ -259,8 +259,9 @@ jobs:
         id: gate
         run: |
           set -euo pipefail
-          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
-            echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+          if [[ "${GITHUB_REF}" == refs/tags/release-* ]]; then
+            version="$(uv run --python 3.12 python -c 'import tomllib; from pathlib import Path; print(tomllib.loads(Path("pyproject.toml").read_text())["project"]["version"])')"
+            echo "version=${version}" >> "$GITHUB_OUTPUT"
           else
             echo "version=${HEDRON_GATE_VERSION}" >> "$GITHUB_OUTPUT"
           fi
@@ -286,7 +287,7 @@ jobs:
       always() &&
       !cancelled() &&
       (
-        startsWith(github.ref, 'refs/tags/v') ||
+        startsWith(github.ref, 'refs/tags/release-') ||
         (github.event_name == 'workflow_dispatch' && inputs.publish_tag != '')
       ) &&
       (needs.test.result == 'success' || needs.test.result == 'skipped') &&
@@ -317,14 +318,20 @@ jobs:
             TAG="${GITHUB_REF_NAME}"
           fi
           case "$TAG" in
-            v*) VERSION="${TAG#v}" ;;
+            release-*) ;;
+            v*)
+              if [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
+                echo "Refusing legacy version tag outside manual recovery: $TAG" >&2
+                exit 1
+              fi
+              echo "Using legacy version tag for manual recovery: $TAG" >&2
+              ;;
             *)
-              echo "Refusing to publish from non-version tag: $TAG" >&2
+              echo "Refusing to publish from non-release tag: $TAG" >&2
               exit 1
               ;;
           esac
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ steps.ref.outputs.tag }}
@@ -339,12 +346,18 @@ jobs:
         run: uv python install 3.12
       - name: Sync
         run: uv sync --locked --python 3.12
+      - name: Resolve release version from checked-out metadata
+        id: version
+        run: |
+          set -euo pipefail
+          version="$(uv run --python 3.12 python -c 'import tomllib; from pathlib import Path; print(tomllib.loads(Path("pyproject.toml").read_text())["project"]["version"])')"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
       - name: Verify tag, versions, license, and changelog
         run: |
           set -euo pipefail
           # Engineering publish for 0.21 allows Planned human-AT session gates.
           # 0.28+ capability gates are Verified — do not pass --allow-planned.
-          version="${{ steps.ref.outputs.version }}"
+          version="${{ steps.version.outputs.version }}"
           if [[ "$version" == 0.21* ]]; then
             uv run --python 3.12 python scripts/check_release_gate.py \
               "$version" --allow-planned
@@ -354,7 +367,7 @@ jobs:
       - name: Build evidence bundle
         run: |
           uv run --python 3.12 python scripts/build_evidence_bundle.py \
-            --version "${{ steps.ref.outputs.version }}"
+            --version "${{ steps.version.outputs.version }}"
           uv run --python 3.12 --with pip-audit python scripts/dep_audit.py
       - name: Build all workspace packages
         run: |
@@ -378,14 +391,14 @@ jobs:
       - name: Verify built quick start before publication
         run: >
           uv run --python 3.12 python scripts/check_published_quickstart.py
-          "${{ steps.ref.outputs.version }}" --dist-dir dist --attempts 1
+          "${{ steps.version.outputs.version }}" --dist-dir dist --attempts 1
       - name: Verify exact approved candidate artifacts
-        if: ${{ steps.ref.outputs.version == '1.0.0' }}
+        if: ${{ steps.version.outputs.version == '1.0.0' }}
         run: uv run --python 3.12 python scripts/verify_release_artifacts.py
       - name: Write release checksum manifest
         run: >
           uv run --python 3.12 python scripts/write_release_manifest.py
-          "${{ steps.ref.outputs.version }}"
+          "${{ steps.version.outputs.version }}"
       - name: Attest build provenance
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
@@ -695,7 +708,7 @@ jobs:
         if: ${{ !cancelled() && steps.pypi.outcome == 'success' && steps.pypi.outputs.publish_failed != '1' }}
         run: >
           uv run --python 3.12 python scripts/check_published_quickstart.py
-          "${{ steps.ref.outputs.version }}"
+          "${{ steps.version.outputs.version }}"
       - name: Create GitHub Release
         if: ${{ !cancelled() && steps.pypi.outcome == 'success' && steps.pypi.outputs.publish_failed != '1' && steps.verify_quickstart.outcome == 'success' }}
         shell: bash
@@ -704,7 +717,7 @@ jobs:
         run: |
           set -euo pipefail
           TAG="${{ steps.ref.outputs.tag }}"
-          VERSION="${{ steps.ref.outputs.version }}"
+          VERSION="${{ steps.version.outputs.version }}"
           NOTES="$(uv run --python 3.12 python scripts/release_notes.py "$VERSION" --package hedron)"
           shopt -s nullglob
           # SUPPLY: omit plain linux_* wheels (PyPI rejects them); keep manylinux/musllinux.
