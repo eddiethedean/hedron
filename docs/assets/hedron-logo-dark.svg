@@ -6,7 +6,6 @@
       <stop offset="1" stop-color="#2dd4bf"/>
     </linearGradient>
   </defs>
-  <rect width="410" height="128" fill="#111820"/>
   <path fill="url(#hedron-gradient)" d="M62 5 111.6 33.6v58.8L62 121 12.4 92.4V33.6L62 5Z"/>
   <path fill="#0f172a" d="m30 38 18-10v76L30 94V38Zm46-10 18 10v56l-18 10V28Z"/>
   <path fill="#f8fafc" d="m48 60 28-16v24L48 84V60Z"/>

@@ -775,6 +775,7 @@ body {
 }
 
 .md-typeset .docs-home__hero .hedron-theme-wordmark {
+  content: url("../assets/hedron-logo-dark.svg");
   margin: 0 0 1.5rem;
   width: min(11rem, 48vw);
 }
