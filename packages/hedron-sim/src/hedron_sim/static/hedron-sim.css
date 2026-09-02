@@ -226,6 +226,11 @@
   }
 }
 
+/* Keep the scaled Edron preview within the readable width of the docs column. */
+.edron-sim {
+  max-width: 43rem;
+}
+
 @container (max-width: 48rem) {
   .edron-sim .hedron-grid[data-hedron-columns="2"],
   .edron-sim .hedron-grid[data-hedron-columns="3"],
