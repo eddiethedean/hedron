@@ -193,7 +193,8 @@ For documentation work:
 ```bash
 uv sync --group docs
 uv run --group docs mkdocs build --strict
-# Preview locally: uv run --group docs mkdocs serve
+# Preview locally at http://127.0.0.1:8000/
+READTHEDOCS_CANONICAL_URL=http://127.0.0.1:8000/ uv run --group docs mkdocs serve
 ```
 
 Start with [CONTRIBUTING.md](CONTRIBUTING.md) for the focused checks and pull-request checklist.

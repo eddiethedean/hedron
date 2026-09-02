@@ -168,10 +168,12 @@ body {
   box-shadow: inset 0 -1px rgba(255, 255, 255, 0.08);
 }
 
-.md-banner__inner {
+.md-banner .md-banner__inner {
   font-size: 0.66rem;
   letter-spacing: 0.012em;
-  padding-block: 0.48rem;
+  line-height: 1.45;
+  margin-block: 0;
+  padding-block: 0.38rem;
 }
 
 .md-banner .md-typeset,
@@ -701,6 +703,7 @@ body {
 }
 
 .docs-home {
+  clear: both;
   max-width: none;
   padding-bottom: 3rem;
 }
@@ -786,7 +789,7 @@ body {
   max-width: 11.5ch;
 }
 
-.docs-home__hero h1 + p {
+.md-typeset .docs-home__hero h1 + p {
   color: #b9d0d2;
   font-size: 0.9rem;
   line-height: 1.67;
