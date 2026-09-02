@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+- Preserve relative browser redirects for path-only Workbench discovery, allowing
+  both session-path and legacy `/proxy/<port>/` entry points to resolve correctly.
+
 ## [1.0.4] — 2026-09-01
 
 ### Fixed

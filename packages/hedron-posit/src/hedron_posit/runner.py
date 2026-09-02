@@ -152,6 +152,7 @@ def prepare_app(
             mode=resolved.mode,
             expected_mount=resolved.browser_mount,
             debug=resolved.debug,
+            relative_redirects=resolved.source == "rserver-url:path",
         )
     return app, resolved
 
@@ -282,4 +283,5 @@ def app_from_environ() -> Any:
         mode=resolved.mode,
         expected_mount=resolved.browser_mount,
         debug=resolved.debug,
+        relative_redirects=resolved.source == "rserver-url:path",
     )
