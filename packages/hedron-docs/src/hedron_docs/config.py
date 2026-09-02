@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -283,22 +284,41 @@ def import_mkdocs(path: str | Path) -> DocsBuildConfig:
                 config_path,
             )
         string_items = cast(list[str], exclude_items)
-        excludes = tuple(item for item in string_items if item.strip())
+        excludes = tuple(item.strip() for item in string_items if item.strip())
     else:
         raise source_error(
             "HED-DOCS-0012", "MkDocs exclude_docs must be a string or array of strings", config_path
         )
     try:
         navigation = _parse_mkdocs_navigation(data.get("nav", []), config_path)
+        repo_url = data.get("repo_url", "")
+        repo_url = repo_url if isinstance(repo_url, str) else ""
+        edit_uri = data.get("edit_uri", "")
+        edit_uri = edit_uri if isinstance(edit_uri, str) else ""
+        site_url_value = data.get("site_url", "")
+        if isinstance(site_url_value, list):
+            values = cast(list[object], site_url_value)
+            env_name = values[0] if values and isinstance(values[0], str) else ""
+            default = values[1] if len(values) > 1 and isinstance(values[1], str) else ""
+            site_url_value = os.environ.get(env_name, default)
+        site_url = site_url_value if isinstance(site_url_value, str) else ""
+        if site_url and urlsplit(site_url).scheme not in {"http", "https"}:
+            site_url = ""
+        edit_template = (
+            repo_url.rstrip("/") + "/" + edit_uri.lstrip("/") + "{path}"
+            if repo_url and edit_uri
+            else ""
+        )
+        source_template = repo_url.rstrip("/") + "/blob/main/{path}" if repo_url else ""
         return DocsBuildConfig(
             docs_dir=docs_dir,
             site_title=str(data.get("site_name", "Documentation")),
             site_description=str(data.get("site_description", "")),
-            base_url=str(data.get("site_url", "")) if isinstance(data.get("site_url"), str) else "",
+            base_url=site_url,
             exclude=excludes,
             navigation=navigation,
-            edit_url_template="",
-            source_url_template="",
+            edit_url_template=edit_template,
+            source_url_template=source_template,
             config_path=config_path,
         )
     except ValueError as exc:

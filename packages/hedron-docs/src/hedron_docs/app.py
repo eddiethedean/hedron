@@ -6,6 +6,7 @@ import hashlib
 from importlib import resources
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote, unquote
 from xml.sax.saxutils import escape as xml_escape
 
 from fastapi import Request
@@ -153,9 +154,13 @@ def create_docs_app(
 
     @app.page("/{path:path}", name="docs_manifest_route")
     def manifest_page(request: Request, path: str = "") -> Page | Response:  # pyright: ignore[reportUnusedFunction]
-        request_path = request.url.path
+        request_path = _canonical_request_path(request.url.path)
+        query = request.url.query
         if request_path != "/" and not request_path.endswith("/"):
-            return RedirectResponse(request_path + "/", status_code=308)
+            location = request_path + "/"
+            if query:
+                location += "?" + query
+            return RedirectResponse(location, status_code=308)
         page = page_by_path.get(request_path)
         if page is None:
             from fastapi import HTTPException
@@ -365,3 +370,18 @@ def _nav_path(path: str) -> str:
 
 def _base_url(site: SiteManifest, request: Request) -> str:
     return (site.base_url or str(request.base_url)).rstrip("/")
+
+
+def _canonical_request_path(path: str) -> str:
+    """Encode decoded request segments exactly as compiler routes do."""
+
+    if path == "/":
+        return "/"
+    try:
+        decoded = unquote(path, errors="strict")
+    except UnicodeDecodeError:
+        return path
+    trailing = decoded.endswith("/")
+    segments = decoded.strip("/").split("/")
+    encoded = "/" + "/".join(quote(segment, safe="-._~") for segment in segments)
+    return encoded + ("/" if trailing else "")

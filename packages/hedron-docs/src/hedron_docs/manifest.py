@@ -25,6 +25,9 @@ from .markdown import parse_markdown
 SCHEMA_VERSION = "hedron-docs-manifest-4"
 _MAX_MANIFEST_BYTES = 64 * 1024 * 1024
 _RESERVED_ROUTES = frozenset({"/search", "/robots.txt", "/sitemap.xml", "/healthz", "/readyz"})
+_RESERVED_ROUTE_KEYS = frozenset(
+    unicodedata.normalize("NFKC", route).casefold() for route in _RESERVED_ROUTES
+)
 _API_TARGET = re.compile(r"^[A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*$", re.UNICODE)
 _DEMO_TARGET = re.compile(r"^[a-z][a-z0-9]*(?:[-_.][a-z0-9]+)*$")
 _CODE_LANGUAGE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_+#./-]{0,31}$")
@@ -306,7 +309,8 @@ class SiteManifest:
                     f"manifest page has invalid publication state: {page.publication_state}"
                 )
             key = page.path.rstrip("/") or "/"
-            if key in _RESERVED_ROUTES or key.startswith("/_hedron-docs"):
+            folded_key = _route_key(key)
+            if folded_key in _RESERVED_ROUTE_KEYS or folded_key.startswith("/_hedron-docs"):
                 raise ValueError(f"manifest page route is reserved: {page.path}")
             folded = _route_key(key)
             if folded in page_keys:
@@ -321,6 +325,8 @@ class SiteManifest:
             if asset.path in asset_paths:
                 raise ValueError(f"manifest contains duplicate asset route: {asset.path}")
             asset_paths.add(asset.path)
+        if self.content_hash and self.content_hash != _content_digest(self.pages, self.assets):
+            raise ValueError("manifest content_hash does not match pages/assets")
 
     @property
     def build_id(self) -> str:
@@ -517,6 +523,21 @@ def _route_key(value: str) -> str:
     return unicodedata.normalize("NFKC", value).casefold().rstrip("/") or "/"
 
 
+def _content_digest(
+    pages: tuple[PageRecord, ...] | list[PageRecord],
+    assets: tuple[AssetRecord, ...] | list[AssetRecord],
+) -> str:
+    payload = {
+        "pages": [page.to_dict() for page in pages],
+        "assets": [asset.to_dict() for asset in assets],
+    }
+    return hashlib.sha256(
+        json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode(
+            "utf-8"
+        )
+    ).hexdigest()
+
+
 def _validate_relative_source(value: str) -> None:
     if type(value) is not str or not value or value.startswith(("/", "\\")):
         raise ValueError("manifest source paths must be relative")
@@ -689,7 +710,6 @@ def compile_site(config: DocsBuildConfig) -> SiteManifest:
     assets: dict[str, AssetRecord] = {}
     seen_paths: dict[str, Path] = {}
     docs_root = cfg.docs_dir.resolve()
-    reserved = _RESERVED_ROUTES
     for source_path in sorted(cfg.docs_dir.rglob("*.md")):
         if not source_path.is_file() or _excluded(
             source_path.relative_to(cfg.docs_dir), cfg.exclude
@@ -749,7 +769,9 @@ def compile_site(config: DocsBuildConfig) -> SiteManifest:
         )
         path = _public_path(rel)
         route_key = path.rstrip("/") or "/"
-        if route_key in reserved or route_key.startswith("/_hedron-docs"):
+        if _route_key(route_key) in _RESERVED_ROUTE_KEYS or _route_key(route_key).startswith(
+            "/_hedron-docs"
+        ):
             raise source_error(
                 "HED-DOCS-0205", f"route is reserved by the docs application: {path}", source_path
             )
@@ -784,6 +806,7 @@ def compile_site(config: DocsBuildConfig) -> SiteManifest:
     page_by_path = {page.path: page for page in pages}
     nav_entries = _flatten_navigation(cfg.navigation, cfg.docs_dir, page_by_path)
     nav_by_path = {entry[1]: entry for entry in nav_entries}
+    nav_title_by_path = {entry[1]: entry[0][-1] for entry in nav_entries}
     ordered_paths = [entry[1] for entry in nav_entries]
     ordered_paths.extend(page.path for page in pages if page.path not in nav_by_path)
     position = {path: index for index, path in enumerate(ordered_paths)}
@@ -820,11 +843,11 @@ def compile_site(config: DocsBuildConfig) -> SiteManifest:
                 breadcrumbs=breadcrumbs,
                 current_section=(nav_titles[0] if nav_titles else ""),
                 previous_path=previous,
-                previous_title=(previous_page.nav_title or previous_page.title)
-                if previous_page
-                else "",
+                previous_title=nav_title_by_path.get(
+                    previous, previous_page.title if previous_page else ""
+                ),
                 next_path=next_path,
-                next_title=(next_page.nav_title or next_page.title) if next_page else "",
+                next_title=nav_title_by_path.get(next_path, next_page.title if next_page else ""),
                 edit_url=edit_url,
                 source_url=source_url,
                 toc=page.headings,
@@ -833,9 +856,9 @@ def compile_site(config: DocsBuildConfig) -> SiteManifest:
                 keywords=tuple(sorted(set(page.search_text.lower().split()))[:32]),
             )
         )
-    content_hash = hashlib.sha256(
-        "\n".join(f"{page.source}\0{page.path}\0{page.source_hash}" for page in finalized).encode()
-    ).hexdigest()
+    content_hash = _content_digest(
+        finalized, tuple(sorted(assets.values(), key=lambda asset: asset.path))
+    )
     compiler_version = "0.4.0"
     compiler_hash = hashlib.sha256(f"hedron-docs:{compiler_version}".encode()).hexdigest()
     config_hash = hashlib.sha256(
@@ -871,6 +894,7 @@ def _flatten_navigation(
     items: tuple[Any, ...], docs_dir: Path, pages: dict[str, PageRecord]
 ) -> list[tuple[tuple[str, ...], str, tuple[tuple[str, str], ...], tuple[int, ...]]]:
     result: list[tuple[tuple[str, ...], str, tuple[tuple[str, str], ...], tuple[int, ...]]] = []
+    seen_routes: set[str] = set()
 
     def visit(
         children: tuple[Any, ...],
@@ -892,6 +916,13 @@ def _flatten_navigation(
                         f"navigation target does not exist: {item.path}",
                         docs_dir / item.path,
                     )
+                if route in seen_routes:
+                    raise source_error(
+                        "HED-DOCS-0208",
+                        f"navigation target is listed more than once: {item.path}",
+                        docs_dir / item.path,
+                    )
+                seen_routes.add(route)
                 result.append((next_labels, route, crumbs + ((item.title, route),), item_order))
             else:
                 visit(item.children, next_labels, crumbs + ((item.title, ""),), item_order)
@@ -918,13 +949,12 @@ def _internal_links(page: PageRecord, pages: dict[str, PageRecord]) -> set[str]:
                 "HED-DOCS-0209", f"internal link does not resolve: {href}", Path(page.source)
             )
         if parts.fragment:
-            anchors = {heading_id.casefold() for heading_id, _, _ in target_page.headings}
+            anchors = {heading_id for heading_id, _, _ in target_page.headings}
             for target_node in _walk(target_page.nodes):
                 if target_node.kind == "heading":
-                    anchors.update(
-                        alias.casefold() for alias in _split_aliases(target_node.attr("aliases"))
-                    )
-            if parts.fragment.casefold() not in anchors:
+                    anchors.update(alias for alias in _split_aliases(target_node.attr("aliases")))
+            fragment = unquote(parts.fragment)
+            if fragment not in anchors:
                 raise source_error(
                     "HED-DOCS-0210",
                     f"internal link anchor does not resolve: {href}",
@@ -962,15 +992,35 @@ def _config_fingerprint(cfg: DocsBuildConfig) -> dict[str, Any]:
         "base_url": cfg.base_url,
         "exclude": list(cfg.exclude),
         "navigation": [nav(item) for item in cfg.navigation],
-        "limits": [cfg.max_source_bytes, cfg.max_asset_bytes, cfg.max_nodes, cfg.max_depth],
+        "allow_external_links": cfg.allow_external_links,
+        "templates": [
+            cfg.edit_url_template,
+            cfg.source_url_template,
+            cfg.release_label,
+            cfg.release_url,
+        ],
+        "limits": {
+            "max_source_bytes": cfg.max_source_bytes,
+            "max_asset_bytes": cfg.max_asset_bytes,
+            "max_nodes": cfg.max_nodes,
+            "max_depth": cfg.max_depth,
+            "max_table_cells": cfg.max_table_cells,
+            "max_code_blocks": cfg.max_code_blocks,
+            "max_code_block_bytes": cfg.max_code_block_bytes,
+            "max_directives": cfg.max_directives,
+            "max_query_length": cfg.max_query_length,
+        },
     }
 
 
 def _excluded(path: Path, patterns: tuple[str, ...]) -> bool:
     text = path.as_posix()
     return any(
-        fnmatch.fnmatch(text, pattern)
-        or (pattern.endswith("/**") and (text == pattern[:-3] or text.startswith(pattern[:-2])))
+        fnmatch.fnmatch(text, pattern.lstrip("/"))
+        or (
+            pattern.lstrip("/").endswith("/**")
+            and (text == pattern.lstrip("/")[:-3] or text.startswith(pattern.lstrip("/")[:-2]))
+        )
         for pattern in patterns
     )
 
