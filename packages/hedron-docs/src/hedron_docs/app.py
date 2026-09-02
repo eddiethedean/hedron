@@ -9,7 +9,7 @@ from typing import Any
 from xml.sax.saxutils import escape as xml_escape
 
 from fastapi import Request
-from fastapi.responses import JSONResponse, PlainTextResponse, Response
+from fastapi.responses import JSONResponse, PlainTextResponse, RedirectResponse, Response
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from hedron import Hedron, Link, Page, Text
@@ -58,8 +58,6 @@ def create_docs_app(
             },
         )
 
-    for page in site.pages:
-        _register_page(app, site, page)
     for asset in site.assets:
         _register_asset(app, asset)
 
@@ -151,19 +149,21 @@ def create_docs_app(
             media_type="application/xml",
         )
 
+    page_by_path = {page.path: page for page in site.pages}
+
+    @app.page("/{path:path}", name="docs_manifest_route")
+    def manifest_page(request: Request, path: str = "") -> Page | Response:  # pyright: ignore[reportUnusedFunction]
+        request_path = request.url.path
+        if request_path != "/" and not request_path.endswith("/"):
+            return RedirectResponse(request_path + "/", status_code=308)
+        page = page_by_path.get(request_path)
+        if page is None:
+            from fastapi import HTTPException
+
+            raise HTTPException(status_code=404, detail="document not found")
+        return _shell(site, page, render_document(page.nodes), request=request)
+
     return app
-
-
-def _register_page(app: Hedron, site: SiteManifest, page: PageRecord) -> None:
-    route_name = f"docs_page_{hashlib.sha256(page.path.encode('utf-8')).hexdigest()[:16]}"
-
-    def document_page(request: Request) -> Page:
-        content = render_document(page.nodes)
-        return _shell(site, page, content, request=request)
-
-    document_page.__name__ = route_name
-    document_page.__qualname__ = route_name
-    app.page(page.path, name=route_name)(document_page)
 
 
 def _register_asset(app: Hedron, asset: AssetRecord) -> None:
@@ -187,17 +187,35 @@ def _register_asset(app: Hedron, asset: AssetRecord) -> None:
 
 
 def _shell(site: SiteManifest, page: PageRecord | None, *content: Any, request: Request) -> Page:
+    nav_pages = sorted(site.pages, key=lambda item: (item.nav_order or (10**9,), item.path))
     links = [
         html.li(
             Link(
-                item.title,
+                item.nav_title or item.title,
                 _nav_path(item.path),
                 mark="current" if page and item.path == page.path else None,
             )
         )
-        for item in site.pages[:80]
+        for item in nav_pages[:80]
+        if item.publication_state == "published"
     ]
-    header = Header(
+    header_children: list[Any] = []
+    if site.release_label:
+        header_children.append(
+            html.aside(
+                html.a(
+                    site.release_label,
+                    href=SafeUrl.parse(
+                        site.release_url, purpose=UrlPurpose.NAVIGATION, allow_external=True
+                    ),
+                )
+                if site.release_url
+                else site.release_label,
+                role="status",
+                class_="hedron-docs-release",
+            )
+        )
+    header_children.append(
         Container(
             Link(site.title, "/", class_="hedron-docs-brand"),
             Nav(html.ul(*links), aria={"label": "Primary navigation"}),
@@ -205,10 +223,103 @@ def _shell(site: SiteManifest, page: PageRecord | None, *content: Any, request: 
             max_width="xl",
         )
     )
+    header = Header(*header_children)
+    extras: list[Any] = []
+    if page and page.breadcrumbs:
+        extras.append(
+            html.nav(
+                *[
+                    html.a(
+                        label, href=SafeUrl.parse(_nav_path(path), purpose=UrlPurpose.NAVIGATION)
+                    )
+                    for label, path in page.breadcrumbs
+                    if path
+                ],
+                aria={"label": "Breadcrumb"},
+            )
+        )
+    if page and page.toc:
+        extras.append(
+            html.aside(
+                html.strong("On this page"),
+                html.ul(
+                    *[
+                        html.li(
+                            html.a(
+                                text,
+                                href=SafeUrl.parse(f"#{anchor}", purpose=UrlPurpose.NAVIGATION),
+                            )
+                        )
+                        for anchor, text, _ in page.toc
+                    ]
+                ),
+                aria={"label": "Table of contents"},
+            )
+        )
+    if page and (page.previous_path or page.next_path):
+        extras.append(
+            html.nav(
+                *(
+                    [
+                        html.a(
+                            f"← {page.previous_title}",
+                            href=SafeUrl.parse(
+                                _nav_path(page.previous_path), purpose=UrlPurpose.NAVIGATION
+                            ),
+                        )
+                    ]
+                    if page.previous_path
+                    else []
+                ),
+                *(
+                    [
+                        html.a(
+                            f"{page.next_title} →",
+                            href=SafeUrl.parse(
+                                _nav_path(page.next_path), purpose=UrlPurpose.NAVIGATION
+                            ),
+                        )
+                    ]
+                    if page.next_path
+                    else []
+                ),
+                aria={"label": "Page navigation"},
+            )
+        )
+    if page and (page.edit_url or page.source_url):
+        extras.append(
+            html.p(
+                *(
+                    [
+                        html.a(
+                            "Edit this page",
+                            href=SafeUrl.parse(
+                                page.edit_url, purpose=UrlPurpose.NAVIGATION, allow_external=True
+                            ),
+                        )
+                    ]
+                    if page.edit_url
+                    else []
+                ),
+                *(
+                    [
+                        html.a(
+                            "View source",
+                            href=SafeUrl.parse(
+                                page.source_url, purpose=UrlPurpose.NAVIGATION, allow_external=True
+                            ),
+                        )
+                    ]
+                    if page.source_url
+                    else []
+                ),
+            )
+        )
     main = Main(
         Container(
             Stack(
                 *(content or (Text("Page not found"),)),
+                *extras,
                 gap="lg",
             ),
             max_width="lg",
@@ -216,11 +327,20 @@ def _shell(site: SiteManifest, page: PageRecord | None, *content: Any, request: 
         id="main-panel",
     )
     footer = Footer(Container(Text(f"{site.title} · Built with Hedron"), max_width="xl"))
-    title = page.title if page else site.title
+    title = (page.nav_title or page.title) if page else site.title
     description = page.description if page else site.description
-    canonical_path = page.path if page else request.url.path
+    canonical_path = (
+        page.canonical_url
+        if page and page.canonical_url
+        else (page.path if page else request.url.path)
+    )
+    canonical_target = (
+        canonical_path
+        if canonical_path.startswith(("http://", "https://"))
+        else _base_url(site, request) + canonical_path
+    )
     canonical = SafeUrl.parse(
-        _base_url(site, request) + canonical_path,
+        canonical_target,
         purpose=UrlPurpose.NAVIGATION,
         allow_external=True,
     )
@@ -234,6 +354,7 @@ def _shell(site: SiteManifest, page: PageRecord | None, *content: Any, request: 
         html.meta(property="og:title", content=title),
         html.meta(property="og:description", content=description),
         html.meta(property="og:url", content=canonical.value),
+        html.meta(property="og:type", content="article" if page else "website"),
     )
     return Page(header, main, footer, title=title, head=head)
 

@@ -6,7 +6,7 @@ Experimental Markdown compiler and Hedron application toolkit.
 manifest through native Hedron components. The 0.3 surface is intentionally experimental and may
 change:
 
-**Package maturity:** Beta tooling-grade · **Repository package version:** `0.3.0` · **Import:** `hedron_docs`
+**Package maturity:** Beta tooling-grade · **Repository package version:** `0.4.0` · **Import:** `hedron_docs`
 
 ```python
 from hedron_docs import compile_site, create_docs_app, load_config
@@ -20,7 +20,7 @@ Local images and linked files are validated, fingerprinted, and embedded in the 
 the app serves them from `/_hedron-docs/assets/...` with content hashes and bounded sizes.
 
 ```toml
-schema_version = 3
+schema_version = 4
 
 [site]
 title = "Project docs"

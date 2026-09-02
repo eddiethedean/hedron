@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.0]
+
+- W4: versioned content manifest, normalized navigation, validated internal links, and manifest-only routing.
+
 ## [0.3.0]
 
 - Lowered all W3 content constructs through native Hedron primitives with no opaque document body.

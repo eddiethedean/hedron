@@ -158,6 +158,9 @@ Markdown-to-Hedron compiler and manifest diagnostics.
 | `HED-DOCS-0205` | `HED_DOCS_0205` |
 | `HED-DOCS-0206` | `HED_DOCS_0206` |
 | `HED-DOCS-0207` | `HED_DOCS_0207` |
+| `HED-DOCS-0208` | `HED_DOCS_0208` |
+| `HED-DOCS-0209` | `HED_DOCS_0209` |
+| `HED-DOCS-0210` | `HED_DOCS_0210` |
 
 ## HED-CHART
 

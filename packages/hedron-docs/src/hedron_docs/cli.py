@@ -35,6 +35,13 @@ def main(argv: list[str] | None = None) -> int:
         config = load_config(args.config)
         manifest = compile_site(config)
         if args.command == "check":
+            output = config.resolved(
+                root=config.config_path.parent if config.config_path else None
+            ).output
+            if output.exists():
+                existing = output.read_text(encoding="utf-8")
+                if existing != manifest.dumps():
+                    raise ValueError(f"generated manifest is stale: {output}")
             print(f"ok: compiled {len(manifest.pages)} page(s)")
             return 0
         output = manifest.write(

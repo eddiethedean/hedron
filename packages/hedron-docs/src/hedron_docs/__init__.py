@@ -1,6 +1,6 @@
 """Experimental Markdown compiler and Hedron docs application toolkit."""
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 from .app import create_docs_app
 from .ast import DocNode, SourceSpan

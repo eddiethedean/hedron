@@ -1,6 +1,6 @@
 [project]
 name = "hedron-docs"
-version = "0.3.0"
+version = "0.4.0"
 description = "Experimental Markdown compiler and Hedron documentation application toolkit"
 readme = "README.md"
 requires-python = ">=3.10,<3.15"

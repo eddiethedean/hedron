@@ -122,12 +122,12 @@ def test_w3_css_is_immutable_and_no_inline_script_dependency(tmp_path: Path) -> 
 
 
 def test_w3_rejects_pre_w3_contracts(tmp_path: Path) -> None:
-    with pytest.raises(ValueError, match="expected 3"):
-        DocsBuildConfig(schema_version=2)
-    with pytest.raises(ValueError, match="manifest-3"):
+    with pytest.raises(ValueError, match="expected 4"):
+        DocsBuildConfig(schema_version=3)
+    with pytest.raises(ValueError, match="manifest-4"):
         SiteManifest.from_dict(
             {
-                "schema_version": "hedron-docs-manifest-2",
+                "schema_version": "hedron-docs-manifest-3",
                 "site": {"title": "Old"},
                 "pages": [],
                 "assets": [],

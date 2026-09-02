@@ -12,7 +12,7 @@ from hedron_core.compat import tomllib
 
 from .errors import source_error
 
-CONFIG_SCHEMA_VERSION = 3
+CONFIG_SCHEMA_VERSION = 4
 _MAX_MKDOCS_CONFIG_BYTES = 2_000_000
 _MAX_MKDOCS_NODES = 20_000
 _MAX_MKDOCS_DEPTH = 64
@@ -53,6 +53,10 @@ class DocsBuildConfig:
     max_code_block_bytes: int = 256_000
     max_directives: int = 100
     max_query_length: int = 200
+    edit_url_template: str = ""
+    source_url_template: str = ""
+    release_label: str = ""
+    release_url: str = ""
     config_path: Path | None = field(default=None, compare=False)
 
     def __post_init__(self) -> None:
@@ -112,6 +116,10 @@ class DocsBuildConfig:
             max_code_block_bytes=self.max_code_block_bytes,
             max_directives=self.max_directives,
             max_query_length=self.max_query_length,
+            edit_url_template=self.edit_url_template,
+            source_url_template=self.source_url_template,
+            release_label=self.release_label,
+            release_url=self.release_url,
             config_path=self.config_path,
         )
 
@@ -143,6 +151,10 @@ def load_config(path: str | Path = "hedron-docs.toml") -> DocsBuildConfig:
         "exclude",
         "allow_external_links",
         "navigation",
+        "edit_url",
+        "source_url",
+        "release_label",
+        "release_url",
     }
     allowed_build = {
         "output",
@@ -192,6 +204,10 @@ def load_config(path: str | Path = "hedron-docs.toml") -> DocsBuildConfig:
             max_code_block_bytes=_as_int(build.get("max_code_block_bytes", 256_000)),
             max_directives=_as_int(build.get("max_directives", 100)),
             max_query_length=_as_int(build.get("max_query_length", 200)),
+            edit_url_template=_as_str(site.get("edit_url", ""), "edit_url"),
+            source_url_template=_as_str(site.get("source_url", ""), "source_url"),
+            release_label=_as_str(site.get("release_label", ""), "release_label"),
+            release_url=_as_str(site.get("release_url", ""), "release_url"),
             config_path=config_path,
         )
     except ValueError as exc:
@@ -281,6 +297,8 @@ def import_mkdocs(path: str | Path) -> DocsBuildConfig:
             base_url=str(data.get("site_url", "")) if isinstance(data.get("site_url"), str) else "",
             exclude=excludes,
             navigation=navigation,
+            edit_url_template="",
+            source_url_template="",
             config_path=config_path,
         )
     except ValueError as exc:

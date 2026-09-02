@@ -13,7 +13,7 @@ HED_BUILD_FAILED = "HED-BUILD-0002"
 HED_BUILD_MISSING_MANIFEST = "HED-BUILD-0003"
 HED_BUILD_RUNTIME_COMPILE = "HED-BUILD-0004"
 
-# Markdown documentation compiler (hedron-docs 0.3)
+# Markdown documentation compiler (hedron-docs 0.4)
 HED_DOCS_0001 = "HED-DOCS-0001"  # generic documentation compiler failure
 HED_DOCS_0002 = "HED-DOCS-0002"  # configuration file missing
 HED_DOCS_0003 = "HED-DOCS-0003"  # invalid configuration
@@ -41,6 +41,9 @@ HED_DOCS_0204 = "HED-DOCS-0204"  # no Markdown documents found
 HED_DOCS_0205 = "HED-DOCS-0205"  # reserved route
 HED_DOCS_0206 = "HED-DOCS-0206"  # source escapes documentation root
 HED_DOCS_0207 = "HED-DOCS-0207"  # unsafe manifest URL
+HED_DOCS_0208 = "HED-DOCS-0208"  # navigation target missing
+HED_DOCS_0209 = "HED-DOCS-0209"  # internal link target missing
+HED_DOCS_0210 = "HED-DOCS-0210"  # internal link anchor missing
 
 # Assets
 HED_ASSET_UNSUPPORTED_VERSION = "HED-ASSET-0001"

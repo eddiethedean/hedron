@@ -241,6 +241,9 @@ HTML is admitted. Semantic render snapshots and security regressions are the W3 
 
 ### W4 — Content manifest, routes, and navigation
 
+**Implementation status:** Complete in the experimental `hedron-docs` 0.4 line. This is an
+intentional clean schema break from W3.
+
 **Purpose:** make publication deterministic and request routing bounded.
 
 Deliverables:
@@ -256,6 +259,12 @@ Deliverables:
 
 Exit: every preview route is declared by the manifest, every internal link resolves or has an
 approved migration disposition, and two clean compiles match byte-for-byte.
+
+The 0.4 implementation emits a versioned manifest with content/compiler/config digests, normalized
+navigation records, route and anchor validation, inbound/outbound link indexes, jailed fingerprinted
+assets, canonical and social metadata, and deterministic previous/next/TOC relationships. Runtime
+document handling is a manifest-only catch-all route with canonical slash redirects; `check` rejects
+stale generated manifests before publication.
 
 ### W5 — Hedron application shell
 

@@ -1,8 +1,8 @@
-schema_version = 3
+schema_version = 4
 
 [site]
 title = "Hedron Docs"
-description = "Deployable hedron-docs 0.3 proving application"
+description = "Deployable hedron-docs 0.4 proving application"
 docs_dir = "docs"
 allow_external_links = true
 

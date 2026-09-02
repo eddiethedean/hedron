@@ -8,7 +8,8 @@ import hashlib
 import json
 import mimetypes
 import re
-from dataclasses import dataclass
+import unicodedata
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any, cast
 from urllib.parse import quote, unquote, urlsplit, urlunsplit
@@ -21,7 +22,7 @@ from .config import DocsBuildConfig
 from .errors import source_error
 from .markdown import parse_markdown
 
-SCHEMA_VERSION = "hedron-docs-manifest-3"
+SCHEMA_VERSION = "hedron-docs-manifest-4"
 _MAX_MANIFEST_BYTES = 64 * 1024 * 1024
 _RESERVED_ROUTES = frozenset({"/search", "/robots.txt", "/sitemap.xml", "/healthz", "/readyz"})
 _API_TARGET = re.compile(r"^[A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*$", re.UNICODE)
@@ -124,6 +125,24 @@ class PageRecord:
     nodes: tuple[DocNode, ...]
     search_text: str
     source_hash: str
+    canonical_url: str = ""
+    nav_title: str = ""
+    nav_path: tuple[str, ...] = ()
+    nav_order: tuple[int, ...] = ()
+    breadcrumbs: tuple[tuple[str, str], ...] = ()
+    current_section: str = ""
+    previous_path: str = ""
+    previous_title: str = ""
+    next_path: str = ""
+    next_title: str = ""
+    edit_url: str = ""
+    source_url: str = ""
+    publication_state: str = "published"
+    toc: tuple[tuple[str, str, int], ...] = ()
+    outbound_links: tuple[str, ...] = ()
+    inbound_links: tuple[str, ...] = ()
+    keywords: tuple[str, ...] = ()
+    rank_class: str = "default"
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -135,6 +154,24 @@ class PageRecord:
             "nodes": [node.to_dict() for node in self.nodes],
             "search_text": self.search_text,
             "source_hash": self.source_hash,
+            "canonical_url": self.canonical_url,
+            "nav_title": self.nav_title,
+            "nav_path": list(self.nav_path),
+            "nav_order": list(self.nav_order),
+            "breadcrumbs": [list(item) for item in self.breadcrumbs],
+            "current_section": self.current_section,
+            "previous_path": self.previous_path,
+            "previous_title": self.previous_title,
+            "next_path": self.next_path,
+            "next_title": self.next_title,
+            "edit_url": self.edit_url,
+            "source_url": self.source_url,
+            "publication_state": self.publication_state,
+            "toc": [list(item) for item in self.toc],
+            "outbound_links": list(self.outbound_links),
+            "inbound_links": list(self.inbound_links),
+            "keywords": list(self.keywords),
+            "rank_class": self.rank_class,
         }
 
     @classmethod
@@ -167,6 +204,10 @@ class PageRecord:
             raise ValueError("manifest page source/path/title must be strings")
         _validate_relative_source(cast(str, source))
         _validate_page_path(cast(str, path))
+        nav_path = _manifest_strings(data, "nav_path")
+        nav_order = _manifest_ints(data, "nav_order")
+        breadcrumbs = _manifest_pairs(data, "breadcrumbs")
+        toc = _manifest_headings(data, "toc")
         return cls(
             source=cast(str, source),
             path=cast(str, path),
@@ -176,6 +217,24 @@ class PageRecord:
             nodes=tuple(DocNode.from_dict(item) for item in nodes),
             search_text=_manifest_string(data, "search_text"),
             source_hash=_manifest_string(data, "source_hash"),
+            canonical_url=_manifest_string(data, "canonical_url"),
+            nav_title=_manifest_string(data, "nav_title"),
+            nav_path=nav_path,
+            nav_order=nav_order,
+            breadcrumbs=breadcrumbs,
+            current_section=_manifest_string(data, "current_section"),
+            previous_path=_manifest_string(data, "previous_path"),
+            previous_title=_manifest_string(data, "previous_title"),
+            next_path=_manifest_string(data, "next_path"),
+            next_title=_manifest_string(data, "next_title"),
+            edit_url=_manifest_string(data, "edit_url"),
+            source_url=_manifest_string(data, "source_url"),
+            publication_state=_manifest_string(data, "publication_state", "published"),
+            toc=toc,
+            outbound_links=_manifest_strings(data, "outbound_links"),
+            inbound_links=_manifest_strings(data, "inbound_links"),
+            keywords=_manifest_strings(data, "keywords"),
+            rank_class=_manifest_string(data, "rank_class", "default"),
         )
 
 
@@ -187,8 +246,13 @@ class SiteManifest:
     pages: tuple[PageRecord, ...]
     assets: tuple[AssetRecord, ...] = ()
     max_query_length: int = 200
-    compiler_version: str = "0.3.0"
+    compiler_version: str = "0.4.0"
     schema_version: str = SCHEMA_VERSION
+    content_hash: str = ""
+    compiler_hash: str = ""
+    config_hash: str = ""
+    release_label: str = ""
+    release_url: str = ""
 
     def __post_init__(self) -> None:
         if self.schema_version != SCHEMA_VERSION:
@@ -200,14 +264,51 @@ class SiteManifest:
         if self.max_query_length < 1:
             raise ValueError("manifest max_query_length must be positive")
         _validate_base_url(self.base_url)
+        if self.release_url:
+            try:
+                SafeUrl.parse(self.release_url, purpose=UrlPurpose.NAVIGATION, allow_external=True)
+            except HedronError as exc:
+                raise ValueError("manifest release_url is unsafe") from exc
+        for name, value in (
+            ("content_hash", self.content_hash),
+            ("compiler_hash", self.compiler_hash),
+            ("config_hash", self.config_hash),
+        ):
+            if value and not re.fullmatch(r"[0-9a-f]{64}", value):
+                raise ValueError(f"manifest {name} must be a SHA-256 hex digest")
         page_keys: set[str] = set()
         for page in self.pages:
             _validate_page_path(page.path)
             _validate_nodes(page.nodes, expected_source=page.source)
+            for related in (
+                page.previous_path,
+                page.next_path,
+                *page.outbound_links,
+                *page.inbound_links,
+            ):
+                if related:
+                    _validate_page_path(related)
+            for external in (page.canonical_url, page.edit_url, page.source_url):
+                if external:
+                    try:
+                        candidate_url = external
+                        if candidate_url.startswith("/") and candidate_url != "/":
+                            candidate_url = candidate_url.rstrip("/")
+                        SafeUrl.parse(
+                            candidate_url,
+                            purpose=UrlPurpose.NAVIGATION,
+                            allow_external=True,
+                        )
+                    except HedronError as exc:
+                        raise ValueError(f"manifest page URL is unsafe: {external}") from exc
+            if page.publication_state not in {"published", "draft", "hidden"}:
+                raise ValueError(
+                    f"manifest page has invalid publication state: {page.publication_state}"
+                )
             key = page.path.rstrip("/") or "/"
             if key in _RESERVED_ROUTES or key.startswith("/_hedron-docs"):
                 raise ValueError(f"manifest page route is reserved: {page.path}")
-            folded = key.casefold()
+            folded = _route_key(key)
             if folded in page_keys:
                 raise ValueError(f"manifest contains duplicate page route: {page.path}")
             page_keys.add(folded)
@@ -215,6 +316,8 @@ class SiteManifest:
         for asset in self.assets:
             _validate_asset_path(asset.path)
             _validate_relative_source(asset.source)
+            if not asset.media_type or any(char in asset.media_type for char in "\r\n"):
+                raise ValueError(f"manifest asset has invalid media type: {asset.path}")
             if asset.path in asset_paths:
                 raise ValueError(f"manifest contains duplicate asset route: {asset.path}")
             asset_paths.add(asset.path)
@@ -229,6 +332,11 @@ class SiteManifest:
         return {
             "schema_version": self.schema_version,
             "compiler_version": self.compiler_version,
+            "content_hash": self.content_hash,
+            "compiler_hash": self.compiler_hash,
+            "config_hash": self.config_hash,
+            "release_label": self.release_label,
+            "release_url": self.release_url,
             "site": {
                 "title": self.title,
                 "description": self.description,
@@ -237,6 +345,18 @@ class SiteManifest:
             },
             "pages": [page.to_dict() for page in self.pages],
             "assets": [asset.to_dict() for asset in self.assets],
+            "navigation": [
+                {
+                    "path": page.path,
+                    "title": page.nav_title or page.title,
+                    "order": list(page.nav_order),
+                    "breadcrumbs": [list(item) for item in page.breadcrumbs],
+                }
+                for page in sorted(
+                    self.pages, key=lambda item: (item.nav_order or (10**9,), item.path)
+                )
+                if page.nav_order
+            ],
         }
 
     def dumps(self) -> str:
@@ -278,6 +398,11 @@ class SiteManifest:
             assets=tuple(AssetRecord.from_dict(item) for item in asset_values),
             max_query_length=max_query_length,
             compiler_version=_manifest_string(data, "compiler_version", "unknown"),
+            content_hash=_manifest_digest(data, "content_hash"),
+            compiler_hash=_manifest_digest(data, "compiler_hash"),
+            config_hash=_manifest_digest(data, "config_hash"),
+            release_label=_manifest_string(data, "release_label"),
+            release_url=_manifest_string(data, "release_url"),
         )
 
 
@@ -315,6 +440,83 @@ def _manifest_string(data: dict[str, object], key: str, default: str = "") -> st
     return value
 
 
+def _manifest_digest(data: dict[str, object], key: str) -> str:
+    value = _manifest_string(data, key)
+    if not re.fullmatch(r"[0-9a-f]{64}", value):
+        raise ValueError(f"manifest field {key!r} must be a SHA-256 hex digest")
+    return value
+
+
+def _manifest_strings(data: dict[str, object], key: str) -> tuple[str, ...]:
+    value = data.get(key, [])
+    if not isinstance(value, list):
+        raise ValueError(f"manifest field {key!r} must be an array of strings")
+    values = cast(list[object], value)
+    if not all(isinstance(item, str) for item in values):
+        raise ValueError(f"manifest field {key!r} must be an array of strings")
+    return tuple(cast(str, item) for item in values)
+
+
+def _manifest_ints(data: dict[str, object], key: str) -> tuple[int, ...]:
+    value = data.get(key, [])
+    if not isinstance(value, list):
+        raise ValueError(f"manifest field {key!r} must be an array of integers")
+    values = cast(list[object], value)
+    if not all(isinstance(item, int) and not isinstance(item, bool) for item in values):
+        raise ValueError(f"manifest field {key!r} must be an array of integers")
+    return tuple(cast(int, item) for item in values)
+
+
+def _manifest_pairs(data: dict[str, object], key: str) -> tuple[tuple[str, str], ...]:
+    value = data.get(key, [])
+    if not isinstance(value, list):
+        raise ValueError(f"manifest field {key!r} must be an array")
+    values = cast(list[object], value)
+    pairs: list[tuple[str, str]] = []
+    for item in values:
+        pair = cast(list[object], item) if isinstance(item, list) else []
+        if (
+            not isinstance(item, list)
+            or len(pair) != 2
+            or not all(isinstance(x, str) for x in pair)
+        ):
+            raise ValueError(f"manifest field {key!r} contains an invalid pair")
+        pairs.append((cast(str, pair[0]), cast(str, pair[1])))
+    return tuple(pairs)
+
+
+def _manifest_headings(data: dict[str, object], key: str) -> tuple[tuple[str, str, int], ...]:
+    value = data.get(key, [])
+    if not isinstance(value, list):
+        raise ValueError(f"manifest field {key!r} must be an array")
+    values = cast(list[object], value)
+    result: list[tuple[str, str, int]] = []
+    for item in values:
+        heading = cast(list[object], item) if isinstance(item, list) else []
+        if (
+            not isinstance(item, list)
+            or len(heading) != 3
+            or not isinstance(heading[0], str)
+            or not isinstance(heading[1], str)
+        ):
+            raise ValueError(f"manifest field {key!r} contains an invalid heading")
+        try:
+            raw_level = heading[2]
+            if not isinstance(raw_level, (int, str)) or isinstance(raw_level, bool):
+                raise ValueError
+            level = int(raw_level)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"manifest field {key!r} contains an invalid heading level") from exc
+        if level < 1 or level > 6:
+            raise ValueError(f"manifest field {key!r} contains an invalid heading level")
+        result.append((heading[0], heading[1], level))
+    return tuple(result)
+
+
+def _route_key(value: str) -> str:
+    return unicodedata.normalize("NFKC", value).casefold().rstrip("/") or "/"
+
+
 def _validate_relative_source(value: str) -> None:
     if type(value) is not str or not value or value.startswith(("/", "\\")):
         raise ValueError("manifest source paths must be relative")
@@ -338,6 +540,8 @@ def _validate_page_path(value: str, *, require_trailing: bool = True) -> None:
         raise ValueError(f"invalid page route: {value!r}")
     if value == "/":
         return
+    if unicodedata.normalize("NFC", value) != value:
+        raise ValueError(f"page route is not Unicode-normalized: {value!r}")
     for segment in value.strip("/").split("/"):
         if not segment:
             raise ValueError(f"page routes must not contain empty segments: {value!r}")
@@ -369,7 +573,7 @@ def _validate_nodes(nodes: tuple[DocNode, ...], *, expected_source: str) -> None
     while pending:
         node = pending.pop()
         if node.span is None:
-            raise ValueError("manifest 3 document nodes require a source span")
+            raise ValueError("manifest 4 document nodes require a source span")
         _validate_relative_source(node.source)
         if node.source != expected_source:
             raise ValueError("manifest node source does not match its page source")
@@ -549,7 +753,7 @@ def compile_site(config: DocsBuildConfig) -> SiteManifest:
             raise source_error(
                 "HED-DOCS-0205", f"route is reserved by the docs application: {path}", source_path
             )
-        collision_key = route_key.casefold()
+        collision_key = _route_key(route_key)
         if collision_key in seen_paths:
             raise source_error(
                 "HED-DOCS-0203", f"route collision with {seen_paths[collision_key]}", source_path
@@ -577,13 +781,79 @@ def compile_site(config: DocsBuildConfig) -> SiteManifest:
     pages.sort(key=lambda page: page.path)
     if not pages:
         raise source_error("HED-DOCS-0204", f"no Markdown documents found under {cfg.docs_dir}")
+    page_by_path = {page.path: page for page in pages}
+    nav_entries = _flatten_navigation(cfg.navigation, cfg.docs_dir, page_by_path)
+    nav_by_path = {entry[1]: entry for entry in nav_entries}
+    ordered_paths = [entry[1] for entry in nav_entries]
+    ordered_paths.extend(page.path for page in pages if page.path not in nav_by_path)
+    position = {path: index for index, path in enumerate(ordered_paths)}
+    inbound: dict[str, set[str]] = {page.path: set() for page in pages}
+    outbound_by_page: dict[str, set[str]] = {}
+    for page in pages:
+        outbound_by_page[page.path] = _internal_links(page, page_by_path)
+        for target in outbound_by_page[page.path]:
+            if target in inbound:
+                inbound[target].add(page.path)
+    finalized: list[PageRecord] = []
+    for page in pages:
+        outbound = outbound_by_page[page.path]
+        entry = nav_by_path.get(page.path)
+        nav_titles, _, breadcrumbs, nav_order = entry if entry else ((), page.path, (), ())
+        previous = ordered_paths[position[page.path] - 1] if position[page.path] else ""
+        next_path = (
+            ordered_paths[position[page.path] + 1]
+            if position[page.path] + 1 < len(ordered_paths)
+            else ""
+        )
+        previous_page = page_by_path.get(previous)
+        next_page = page_by_path.get(next_path)
+        canonical = (cfg.base_url.rstrip("/") + page.path) if cfg.base_url else page.path
+        edit_url = _template_url(cfg.edit_url_template, page.source)
+        source_url = _template_url(cfg.source_url_template, page.source)
+        finalized.append(
+            replace(
+                page,
+                canonical_url=canonical,
+                nav_title=(entry[0][-1] if entry else page.title),
+                nav_path=nav_titles,
+                nav_order=nav_order,
+                breadcrumbs=breadcrumbs,
+                current_section=(nav_titles[0] if nav_titles else ""),
+                previous_path=previous,
+                previous_title=(previous_page.nav_title or previous_page.title)
+                if previous_page
+                else "",
+                next_path=next_path,
+                next_title=(next_page.nav_title or next_page.title) if next_page else "",
+                edit_url=edit_url,
+                source_url=source_url,
+                toc=page.headings,
+                outbound_links=tuple(sorted(outbound)),
+                inbound_links=tuple(sorted(inbound[page.path])),
+                keywords=tuple(sorted(set(page.search_text.lower().split()))[:32]),
+            )
+        )
+    content_hash = hashlib.sha256(
+        "\n".join(f"{page.source}\0{page.path}\0{page.source_hash}" for page in finalized).encode()
+    ).hexdigest()
+    compiler_version = "0.4.0"
+    compiler_hash = hashlib.sha256(f"hedron-docs:{compiler_version}".encode()).hexdigest()
+    config_hash = hashlib.sha256(
+        json.dumps(_config_fingerprint(cfg), sort_keys=True).encode()
+    ).hexdigest()
     return SiteManifest(
         title=cfg.site_title,
         description=cfg.site_description,
         base_url=cfg.base_url,
-        pages=tuple(pages),
+        pages=tuple(finalized),
         assets=tuple(sorted(assets.values(), key=lambda asset: asset.path)),
         max_query_length=cfg.max_query_length,
+        compiler_version=compiler_version,
+        content_hash=content_hash,
+        compiler_hash=compiler_hash,
+        config_hash=config_hash,
+        release_label=cfg.release_label,
+        release_url=cfg.release_url,
     )
 
 
@@ -595,6 +865,105 @@ def _public_path(relative: Path) -> str:
         parts.pop()
     encoded = [quote(part, safe="-._~") for part in parts]
     return "/" + "/".join(encoded) + "/"
+
+
+def _flatten_navigation(
+    items: tuple[Any, ...], docs_dir: Path, pages: dict[str, PageRecord]
+) -> list[tuple[tuple[str, ...], str, tuple[tuple[str, str], ...], tuple[int, ...]]]:
+    result: list[tuple[tuple[str, ...], str, tuple[tuple[str, str], ...], tuple[int, ...]]] = []
+
+    def visit(
+        children: tuple[Any, ...],
+        labels: tuple[str, ...],
+        crumbs: tuple[tuple[str, str], ...],
+        order: tuple[int, ...],
+    ) -> None:
+        for index, item in enumerate(children):
+            item_order = order + (index,)
+            next_labels = labels + (item.title,)
+            if item.path:
+                raw = Path(item.path)
+                if raw.suffix.lower() != ".md":
+                    raw = raw.with_suffix(".md")
+                route = _public_path(raw.with_suffix(""))
+                if route not in pages:
+                    raise source_error(
+                        "HED-DOCS-0208",
+                        f"navigation target does not exist: {item.path}",
+                        docs_dir / item.path,
+                    )
+                result.append((next_labels, route, crumbs + ((item.title, route),), item_order))
+            else:
+                visit(item.children, next_labels, crumbs + ((item.title, ""),), item_order)
+
+    visit(items, (), (), ())
+    return result
+
+
+def _internal_links(page: PageRecord, pages: dict[str, PageRecord]) -> set[str]:
+    targets: set[str] = set()
+    for node in _walk(page.nodes):
+        if node.kind != "link":
+            continue
+        href = node.attr("href")
+        parts = urlsplit(href)
+        if parts.scheme or parts.netloc:
+            continue
+        target_path = parts.path.rstrip("/") or "/"
+        target_page = (
+            page if not parts.path else pages.get(target_path + ("/" if target_path != "/" else ""))
+        )
+        if target_page is None:
+            raise source_error(
+                "HED-DOCS-0209", f"internal link does not resolve: {href}", Path(page.source)
+            )
+        if parts.fragment:
+            anchors = {heading_id.casefold() for heading_id, _, _ in target_page.headings}
+            for target_node in _walk(target_page.nodes):
+                if target_node.kind == "heading":
+                    anchors.update(
+                        alias.casefold() for alias in _split_aliases(target_node.attr("aliases"))
+                    )
+            if parts.fragment.casefold() not in anchors:
+                raise source_error(
+                    "HED-DOCS-0210",
+                    f"internal link anchor does not resolve: {href}",
+                    Path(page.source),
+                )
+        targets.add(target_page.path)
+    return targets
+
+
+def _template_url(template: str, source: str) -> str:
+    if not template:
+        return ""
+    try:
+        value = template.format(path=quote(source, safe="/-._~"), source=source)
+    except (KeyError, ValueError) as exc:
+        raise ValueError(f"invalid documentation URL template: {template!r}") from exc
+    try:
+        SafeUrl.parse(value, purpose=UrlPurpose.NAVIGATION, allow_external=True)
+    except HedronError as exc:
+        raise ValueError(f"documentation URL template is unsafe: {value!r}") from exc
+    return value
+
+
+def _config_fingerprint(cfg: DocsBuildConfig) -> dict[str, Any]:
+    def nav(item: Any) -> dict[str, Any]:
+        return {
+            "title": item.title,
+            "path": item.path,
+            "children": [nav(child) for child in item.children],
+        }
+
+    return {
+        "title": cfg.site_title,
+        "description": cfg.site_description,
+        "base_url": cfg.base_url,
+        "exclude": list(cfg.exclude),
+        "navigation": [nav(item) for item in cfg.navigation],
+        "limits": [cfg.max_source_bytes, cfg.max_asset_bytes, cfg.max_nodes, cfg.max_depth],
+    }
 
 
 def _excluded(path: Path, patterns: tuple[str, ...]) -> bool:
