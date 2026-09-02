@@ -22,6 +22,8 @@ from .errors import source_error
 from .markdown import parse_markdown
 
 SCHEMA_VERSION = "hedron-docs-manifest-1"
+_MAX_MANIFEST_BYTES = 64 * 1024 * 1024
+_RESERVED_ROUTES = frozenset({"/search", "/robots.txt", "/sitemap.xml", "/healthz", "/readyz"})
 
 
 @dataclass(frozen=True, slots=True)
@@ -59,16 +61,37 @@ class AssetRecord:
         if not isinstance(value, dict):
             raise ValueError("manifest asset must be an object")
         data = cast(dict[str, object], value)
+        source = data.get("source")
+        path = data.get("path")
+        media_type = data.get("media_type")
+        content_base64 = data.get("content_base64")
+        source_hash = data.get("source_hash")
+        size_value = data.get("size")
+        if (
+            not all(
+                isinstance(item, str)
+                for item in (source, path, media_type, content_base64, source_hash)
+            )
+            or isinstance(size_value, bool)
+            or not isinstance(size_value, int)
+        ):
+            raise ValueError("manifest asset fields have invalid types")
         asset = cls(
-            source=str(data["source"]),
-            path=str(data["path"]),
-            media_type=str(data["media_type"]),
-            content_base64=str(data["content_base64"]),
-            source_hash=str(data["source_hash"]),
-            size=int(str(data["size"])),
+            source=cast(str, source),
+            path=cast(str, path),
+            media_type=cast(str, media_type),
+            content_base64=cast(str, content_base64),
+            source_hash=cast(str, source_hash),
+            size=size_value,
         )
         if not asset.path.startswith("/_hedron-docs/assets/"):
             raise ValueError(f"invalid asset route: {asset.path}")
+        _validate_asset_path(asset.path)
+        _validate_relative_source(asset.source)
+        if asset.size < 0:
+            raise ValueError(f"asset size must not be negative for {asset.path}")
+        if not re.fullmatch(r"[0-9a-f]{64}", asset.source_hash):
+            raise ValueError(f"invalid asset hash for {asset.path}")
         asset.decoded()
         return asset
 
@@ -114,18 +137,27 @@ class PageRecord:
             item_values = cast(list[object], item)
             if len(item_values) != 3:
                 raise ValueError("manifest heading must be a three-item array")
-            parsed_headings.append(
-                (str(item_values[0]), str(item_values[1]), int(str(item_values[2])))
-            )
+            if not isinstance(item_values[0], str) or not isinstance(item_values[1], str):
+                raise ValueError("manifest heading id/text must be strings")
+            parsed_headings.append((item_values[0], item_values[1], int(str(item_values[2]))))
+        if any(level < 1 or level > 6 for _, _, level in parsed_headings):
+            raise ValueError("manifest heading level must be between 1 and 6")
+        source = data.get("source")
+        path = data.get("path")
+        title = data.get("title")
+        if not all(isinstance(item, str) for item in (source, path, title)):
+            raise ValueError("manifest page source/path/title must be strings")
+        _validate_relative_source(cast(str, source))
+        _validate_page_path(cast(str, path))
         return cls(
-            source=str(data["source"]),
-            path=str(data["path"]),
-            title=str(data["title"]),
-            description=str(data.get("description", "")),
+            source=cast(str, source),
+            path=cast(str, path),
+            title=cast(str, title),
+            description=_manifest_string(data, "description"),
             headings=tuple(parsed_headings),
             nodes=tuple(DocNode.from_dict(item) for item in nodes),
-            search_text=str(data.get("search_text", "")),
-            source_hash=str(data.get("source_hash", "")),
+            search_text=_manifest_string(data, "search_text"),
+            source_hash=_manifest_string(data, "source_hash"),
         )
 
 
@@ -139,6 +171,35 @@ class SiteManifest:
     max_query_length: int = 200
     compiler_version: str = "0.1.0"
     schema_version: str = SCHEMA_VERSION
+
+    def __post_init__(self) -> None:
+        if self.schema_version != SCHEMA_VERSION:
+            raise ValueError(f"unsupported or missing manifest schema (expected {SCHEMA_VERSION})")
+        if type(self.title) is not str or not self.title.strip():
+            raise ValueError("manifest site title must not be empty")
+        if type(self.max_query_length) is not int:
+            raise ValueError("manifest max_query_length must be an integer")
+        if self.max_query_length < 1:
+            raise ValueError("manifest max_query_length must be positive")
+        _validate_base_url(self.base_url)
+        page_keys: set[str] = set()
+        for page in self.pages:
+            _validate_page_path(page.path)
+            _validate_nodes(page.nodes)
+            key = page.path.rstrip("/") or "/"
+            if key in _RESERVED_ROUTES or key.startswith("/_hedron-docs"):
+                raise ValueError(f"manifest page route is reserved: {page.path}")
+            folded = key.casefold()
+            if folded in page_keys:
+                raise ValueError(f"manifest contains duplicate page route: {page.path}")
+            page_keys.add(folded)
+        asset_paths: set[str] = set()
+        for asset in self.assets:
+            _validate_asset_path(asset.path)
+            _validate_relative_source(asset.source)
+            if asset.path in asset_paths:
+                raise ValueError(f"manifest contains duplicate asset route: {asset.path}")
+            asset_paths.add(asset.path)
 
     @property
     def build_id(self) -> str:
@@ -188,15 +249,149 @@ class SiteManifest:
         site_data = cast(dict[str, object], site)
         page_values = cast(list[object], pages)
         asset_values = cast(list[object], assets)
+        max_query_length = site_data.get("max_query_length", 200)
+        if isinstance(max_query_length, bool) or not isinstance(max_query_length, int):
+            raise ValueError("manifest max_query_length must be an integer")
         return cls(
-            title=str(site_data.get("title", "Documentation")),
-            description=str(site_data.get("description", "")),
-            base_url=str(site_data.get("base_url", "")),
+            title=_manifest_string(site_data, "title", "Documentation"),
+            description=_manifest_string(site_data, "description"),
+            base_url=_manifest_string(site_data, "base_url"),
             pages=tuple(PageRecord.from_dict(item) for item in page_values),
             assets=tuple(AssetRecord.from_dict(item) for item in asset_values),
-            max_query_length=int(str(site_data.get("max_query_length", 200))),
-            compiler_version=str(data.get("compiler_version", "unknown")),
+            max_query_length=max_query_length,
+            compiler_version=_manifest_string(data, "compiler_version", "unknown"),
         )
+
+
+def _validate_base_url(value: str) -> None:
+    if type(value) is not str:
+        raise ValueError("manifest base_url must be a string")
+    if not value:
+        return
+    if value != value.strip() or any(ord(char) < 0x20 for char in value):
+        raise ValueError("manifest base_url contains disallowed whitespace")
+    parts = urlsplit(value)
+    try:
+        _ = parts.port
+    except ValueError as exc:
+        raise ValueError("manifest base_url has an invalid port") from exc
+    if (
+        parts.scheme not in {"http", "https"}
+        or not parts.netloc
+        or parts.query
+        or parts.fragment
+        or parts.username is not None
+        or parts.password is not None
+    ):
+        raise ValueError("manifest base_url must be an absolute http(s) URL without query/fragment")
+    try:
+        SafeUrl.parse(value, purpose=UrlPurpose.NAVIGATION, allow_external=True)
+    except HedronError as exc:
+        raise ValueError("manifest base_url is unsafe or invalid") from exc
+
+
+def _manifest_string(data: dict[str, object], key: str, default: str = "") -> str:
+    value = data.get(key, default)
+    if not isinstance(value, str):
+        raise ValueError(f"manifest field {key!r} must be a string")
+    return value
+
+
+def _validate_relative_source(value: str) -> None:
+    if type(value) is not str or not value or value.startswith(("/", "\\")):
+        raise ValueError("manifest source paths must be relative")
+    if any(ord(char) < 0x20 for char in value) or "\\" in value:
+        raise ValueError("manifest source paths contain disallowed characters")
+    parts = Path(value).parts
+    if any(part in {"", ".", ".."} for part in parts):
+        raise ValueError("manifest source paths must not contain dot segments")
+
+
+def _validate_page_path(value: str, *, require_trailing: bool = True) -> None:
+    if type(value) is not str or not value.startswith("/"):
+        raise ValueError(f"invalid page route: {value!r}")
+    if require_trailing and value != "/" and not value.endswith("/"):
+        raise ValueError(f"page routes must end with '/': {value!r}")
+    if (
+        "//" in value
+        or any(char in value for char in "?#\\")
+        or any(ord(char) < 0x20 for char in value)
+    ):
+        raise ValueError(f"invalid page route: {value!r}")
+    if value == "/":
+        return
+    for segment in value.strip("/").split("/"):
+        if not segment:
+            raise ValueError(f"page routes must not contain empty segments: {value!r}")
+        try:
+            decoded = unquote(segment, errors="strict")
+        except UnicodeDecodeError as exc:
+            raise ValueError(f"invalid percent encoding in page route: {value!r}") from exc
+        if (
+            decoded in {".", ".."}
+            or "/" in decoded
+            or "\\" in decoded
+            or any(ord(char) < 0x20 for char in decoded)
+            or quote(decoded, safe="-._~") != segment
+        ):
+            raise ValueError(f"page route is not normalized: {value!r}")
+
+
+def _validate_asset_path(value: str) -> None:
+    if not value.startswith("/_hedron-docs/assets/"):
+        raise ValueError(f"invalid asset route: {value}")
+    _validate_page_path(value, require_trailing=False)
+
+
+def _validate_nodes(nodes: tuple[DocNode, ...]) -> None:
+    """Validate URL-bearing AST nodes before an untrusted manifest reaches the renderer."""
+
+    for node in nodes:
+        try:
+            if node.kind == "link":
+                href = node.attr("href")
+                if not href:
+                    raise ValueError("manifest link is missing href")
+                if href.startswith("#"):
+                    runtime_href = href
+                elif "#" in href:
+                    path, fragment = href.split("#", 1)
+                    runtime_href = (path.rstrip("/") or "/") + "#" + fragment
+                else:
+                    runtime_href = href.rstrip("/") or "/"
+                SafeUrl.parse(
+                    runtime_href,
+                    purpose=UrlPurpose.NAVIGATION,
+                    allow_external=bool(
+                        urlsplit(runtime_href).scheme or urlsplit(runtime_href).netloc
+                    ),
+                )
+            elif node.kind == "image":
+                src = node.attr("src")
+                if not src:
+                    raise ValueError("manifest image is missing src")
+                if not (src.startswith("/") or urlsplit(src).scheme or urlsplit(src).netloc):
+                    raise ValueError("manifest image src must be root-relative or absolute")
+                SafeUrl.parse(
+                    src,
+                    purpose=UrlPurpose.ASSET,
+                    allow_external=bool(urlsplit(src).scheme or urlsplit(src).netloc),
+                )
+            elif node.kind == "heading":
+                heading_id = node.attr("id")
+                if not heading_id:
+                    raise ValueError("manifest heading is missing id")
+                SafeUrl.parse(f"#{heading_id}", purpose=UrlPurpose.NAVIGATION)
+            elif node.kind == "alert" and node.attr("tone", "info") not in {
+                "info",
+                "success",
+                "warning",
+                "danger",
+            }:
+                raise ValueError("manifest alert has an invalid tone")
+        except HedronError as exc:
+            raise ValueError(f"manifest contains an unsafe {node.kind} URL") from exc
+        _validate_nodes(node.children)
 
 
 def load_manifest(value: SiteManifest | str | Path) -> SiteManifest:
@@ -204,9 +399,11 @@ def load_manifest(value: SiteManifest | str | Path) -> SiteManifest:
         return value
     path = Path(value)
     try:
+        if path.stat().st_size > _MAX_MANIFEST_BYTES:
+            raise ValueError(f"manifest exceeds {_MAX_MANIFEST_BYTES} bytes")
         data = json.loads(path.read_text(encoding="utf-8"))
         return SiteManifest.from_dict(data)
-    except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError) as exc:
+    except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError, RecursionError) as exc:
         raise source_error("HED-DOCS-0200", f"invalid manifest: {exc}", path) from exc
 
 
@@ -218,7 +415,7 @@ def compile_site(config: DocsBuildConfig) -> SiteManifest:
     assets: dict[str, AssetRecord] = {}
     seen_paths: dict[str, Path] = {}
     docs_root = cfg.docs_dir.resolve()
-    reserved = {"/search", "/robots.txt", "/sitemap.xml", "/healthz", "/readyz"}
+    reserved = _RESERVED_ROUTES
     for source_path in sorted(cfg.docs_dir.rglob("*.md")):
         if not source_path.is_file() or _excluded(
             source_path.relative_to(cfg.docs_dir), cfg.exclude
@@ -230,7 +427,24 @@ def compile_site(config: DocsBuildConfig) -> SiteManifest:
             raise source_error(
                 "HED-DOCS-0206", "document source escapes the documentation root", source_path
             ) from exc
-        source = source_path.read_text(encoding="utf-8")
+        try:
+            source_size = source_path.stat().st_size
+        except OSError as exc:
+            raise source_error(
+                "HED-DOCS-0202", f"unable to inspect document: {exc}", source_path
+            ) from exc
+        if source_size > cfg.max_source_bytes:
+            raise source_error(
+                "HED-DOCS-0202",
+                f"document exceeds source limit ({cfg.max_source_bytes} bytes)",
+                source_path,
+            )
+        try:
+            source = source_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeError) as exc:
+            raise source_error(
+                "HED-DOCS-0202", f"unable to read document: {exc}", source_path
+            ) from exc
         if len(source.encode("utf-8")) > cfg.max_source_bytes:
             raise source_error(
                 "HED-DOCS-0202",
@@ -297,8 +511,8 @@ def _public_path(relative: Path) -> str:
         return "/"
     if parts and parts[-1] == "index":
         parts.pop()
-    value = "/" + "/".join(parts) + "/"
-    return re.sub(r"/{2,}", "/", value)
+    encoded = [quote(part, safe="-._~") for part in parts]
+    return "/" + "/".join(encoded) + "/"
 
 
 def _excluded(path: Path, patterns: tuple[str, ...]) -> bool:
@@ -312,9 +526,11 @@ def _excluded(path: Path, patterns: tuple[str, ...]) -> bool:
 
 def _walk(nodes: tuple[DocNode, ...] | list[DocNode]) -> list[DocNode]:
     result: list[DocNode] = []
-    for node in nodes:
+    pending = list(reversed(nodes))
+    while pending:
+        node = pending.pop()
         result.append(node)
-        result.extend(_walk(node.children))
+        pending.extend(reversed(node.children))
     return result
 
 
@@ -400,7 +616,7 @@ def _normalize_url(
         except HedronError as exc:
             raise ValueError(f"unsafe or invalid documentation URL: {value!r}") from exc
         return value
-    if value.startswith("#"):
+    if document and value.startswith("#"):
         try:
             SafeUrl.parse(value, purpose=UrlPurpose.NAVIGATION)
         except HedronError as exc:
@@ -426,7 +642,7 @@ def _normalize_url(
     elif candidate.is_file():
         route = _compile_asset(candidate, relative, assets, max_asset_bytes=max_asset_bytes).path
     else:
-        route = "/" + relative.as_posix()
+        route = "/" + "/".join(quote(part, safe="-._~") for part in relative.parts)
     normalized = urlunsplit(("", "", route, parts.query, parts.fragment))
     if document:
         runtime_url = normalized
@@ -451,7 +667,18 @@ def _compile_asset(
 ) -> AssetRecord:
     if not candidate.is_file():
         raise ValueError(f"documentation asset does not exist: {relative.as_posix()!r}")
-    content = candidate.read_bytes()
+    try:
+        size = candidate.stat().st_size
+    except OSError as exc:
+        raise ValueError(f"unable to inspect documentation asset: {relative.as_posix()!r}") from exc
+    if size > max_asset_bytes:
+        raise ValueError(
+            f"documentation asset exceeds limit ({max_asset_bytes} bytes): {relative.as_posix()!r}"
+        )
+    try:
+        content = candidate.read_bytes()
+    except OSError as exc:
+        raise ValueError(f"unable to read documentation asset: {relative.as_posix()!r}") from exc
     if len(content) > max_asset_bytes:
         raise ValueError(
             f"documentation asset exceeds limit ({max_asset_bytes} bytes): {relative.as_posix()!r}"

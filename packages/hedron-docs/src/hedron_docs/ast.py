@@ -5,6 +5,9 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, cast
 
+_MAX_NODE_DEPTH = 256
+_MAX_NODES_PER_TREE = 100_000
+
 
 @dataclass(frozen=True, slots=True)
 class DocNode:
@@ -28,12 +31,25 @@ class DocNode:
         return result
 
     @classmethod
-    def from_dict(cls, value: object) -> DocNode:
+    def from_dict(
+        cls,
+        value: object,
+        *,
+        _depth: int = 0,
+        _counter: list[int] | None = None,
+    ) -> DocNode:
+        if _depth > _MAX_NODE_DEPTH:
+            raise ValueError(f"manifest node nesting exceeds {_MAX_NODE_DEPTH} levels")
+        if _counter is None:
+            _counter = [0]
+        _counter[0] += 1
+        if _counter[0] > _MAX_NODES_PER_TREE:
+            raise ValueError(f"manifest contains more than {_MAX_NODES_PER_TREE} nodes")
         if not isinstance(value, dict):
             raise ValueError("manifest node must be an object with a kind")
         data = cast(dict[str, object], value)
         kind = data.get("kind")
-        if not isinstance(kind, str):
+        if not isinstance(kind, str) or not kind or len(kind) > 64:
             raise ValueError("manifest node must be an object with a kind")
         attrs_value = data.get("attrs", {})
         if not isinstance(attrs_value, dict):
@@ -48,10 +64,15 @@ class DocNode:
         if not isinstance(children_value, list):
             raise ValueError("manifest node children must be an array")
         children = cast(list[object], children_value)
+        line = int(str(data.get("line", 1)))
+        if line < 1:
+            raise ValueError("manifest node line must be positive")
         return cls(
             kind=kind,
             text=str(data.get("text", "")),
             attrs=tuple(sorted((str(key), str(item)) for key, item in attrs.items())),
-            children=tuple(cls.from_dict(child) for child in children),
-            line=int(str(data.get("line", 1))),
+            children=tuple(
+                cls.from_dict(child, _depth=_depth + 1, _counter=_counter) for child in children
+            ),
+            line=line,
         )

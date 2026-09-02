@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, cast
@@ -30,12 +31,15 @@ class DocsBuildConfig:
     def __post_init__(self) -> None:
         if not self.site_title.strip():
             raise ValueError("site_title must not be empty")
-        if (
-            self.max_source_bytes < 1
-            or self.max_asset_bytes < 1
-            or self.max_nodes < 1
-            or self.max_query_length < 1
-        ):
+        limits = (
+            self.max_source_bytes,
+            self.max_asset_bytes,
+            self.max_nodes,
+            self.max_query_length,
+        )
+        if any(type(value) is not int for value in limits):
+            raise ValueError("compiler limits must be integers")
+        if any(value < 1 for value in limits):
             raise ValueError("compiler limits must be positive")
         if self.base_url:
             parts = urlsplit(self.base_url)
@@ -44,6 +48,10 @@ class DocsBuildConfig:
                 or not parts.netloc
                 or parts.query
                 or parts.fragment
+                or parts.username is not None
+                or parts.password is not None
+                or "\\" in self.base_url
+                or any(ord(char) < 0x20 for char in self.base_url)
             ):
                 raise ValueError("base_url must be an absolute http(s) URL without query/fragment")
 
@@ -116,20 +124,25 @@ def load_config(path: str | Path = "hedron-docs.toml") -> DocsBuildConfig:
     if not all(isinstance(item, str) for item in exclude):
         raise source_error("HED-DOCS-0006", "site.exclude must be an array of strings", config_path)
     exclude_strings = [item for item in exclude if isinstance(item, str)]
-    return DocsBuildConfig(
-        docs_dir=Path(str(site.get("docs_dir", "docs"))),
-        output=Path(str(build.get("output", "build/hedron-docs/site.json"))),
-        site_title=str(site.get("title", "Documentation")),
-        site_description=str(site.get("description", "")),
-        base_url=str(site.get("base_url", "")),
-        exclude=tuple(exclude_strings),
-        allow_external_links=_as_bool(site.get("allow_external_links", True)),
-        max_source_bytes=_as_int(build.get("max_source_bytes", 2_000_000)),
-        max_asset_bytes=_as_int(build.get("max_asset_bytes", 10_000_000)),
-        max_nodes=_as_int(build.get("max_nodes", 10_000)),
-        max_query_length=_as_int(build.get("max_query_length", 200)),
-        config_path=config_path,
-    )
+    try:
+        return DocsBuildConfig(
+            docs_dir=Path(_as_str(site.get("docs_dir", "docs"), "docs_dir")),
+            output=Path(_as_str(build.get("output", "build/hedron-docs/site.json"), "output")),
+            site_title=_as_str(site.get("title", "Documentation"), "title"),
+            site_description=_as_str(site.get("description", ""), "description"),
+            base_url=_as_str(site.get("base_url", ""), "base_url"),
+            exclude=tuple(exclude_strings),
+            allow_external_links=_as_bool(site.get("allow_external_links", True)),
+            max_source_bytes=_as_int(build.get("max_source_bytes", 2_000_000)),
+            max_asset_bytes=_as_int(build.get("max_asset_bytes", 10_000_000)),
+            max_nodes=_as_int(build.get("max_nodes", 10_000)),
+            max_query_length=_as_int(build.get("max_query_length", 200)),
+            config_path=config_path,
+        )
+    except ValueError as exc:
+        raise source_error(
+            "HED-DOCS-0005", f"invalid configuration value: {exc}", config_path
+        ) from exc
 
 
 def import_mkdocs(path: str | Path) -> DocsBuildConfig:
@@ -173,18 +186,42 @@ def import_mkdocs(path: str | Path) -> DocsBuildConfig:
     if not isinstance(raw_value, dict):
         raise source_error("HED-DOCS-0012", "MkDocs configuration must be a mapping", config_path)
     data = cast(dict[str, object], raw_value)
-    docs_dir = Path(str(data.get("docs_dir", "docs")))
-    excludes = tuple(
-        str(item) for item in str(data.get("exclude_docs") or "").splitlines() if item.strip()
-    )
-    return DocsBuildConfig(
-        docs_dir=docs_dir,
-        site_title=str(data.get("site_name", "Documentation")),
-        site_description=str(data.get("site_description", "")),
-        base_url=str(data.get("site_url", "")) if isinstance(data.get("site_url"), str) else "",
-        exclude=excludes,
-        config_path=config_path,
-    )
+    docs_dir_value = data.get("docs_dir", "docs")
+    if not isinstance(docs_dir_value, str):
+        raise source_error("HED-DOCS-0012", "MkDocs docs_dir must be a string", config_path)
+    docs_dir = Path(docs_dir_value)
+    exclude_value = data.get("exclude_docs")
+    if exclude_value is None:
+        excludes = ()
+    elif isinstance(exclude_value, str):
+        excludes = tuple(item for item in exclude_value.splitlines() if item.strip())
+    elif isinstance(exclude_value, list):
+        exclude_items = cast(list[object], exclude_value)
+        if not all(isinstance(item, str) for item in exclude_items):
+            raise source_error(
+                "HED-DOCS-0012",
+                "MkDocs exclude_docs must be a string or array of strings",
+                config_path,
+            )
+        string_items = cast(list[str], exclude_items)
+        excludes = tuple(item for item in string_items if item.strip())
+    else:
+        raise source_error(
+            "HED-DOCS-0012", "MkDocs exclude_docs must be a string or array of strings", config_path
+        )
+    try:
+        return DocsBuildConfig(
+            docs_dir=docs_dir,
+            site_title=str(data.get("site_name", "Documentation")),
+            site_description=str(data.get("site_description", "")),
+            base_url=str(data.get("site_url", "")) if isinstance(data.get("site_url"), str) else "",
+            exclude=excludes,
+            config_path=config_path,
+        )
+    except ValueError as exc:
+        raise source_error(
+            "HED-DOCS-0012", f"invalid MkDocs site metadata: {exc}", config_path
+        ) from exc
 
 
 def _mapping(value: object, source: Path) -> dict[str, object]:
@@ -194,12 +231,22 @@ def _mapping(value: object, source: Path) -> dict[str, object]:
 
 
 def _as_int(value: object) -> int:
-    if isinstance(value, bool) or not isinstance(value, (int, float, str)):
+    if isinstance(value, bool):
         raise ValueError("configuration integer value is invalid")
-    return int(value)
+    if isinstance(value, int):
+        return value
+    if isinstance(value, str) and re.fullmatch(r"[+-]?\d+", value.strip()):
+        return int(value)
+    raise ValueError("configuration integer value is invalid")
 
 
 def _as_bool(value: object) -> bool:
     if not isinstance(value, bool):
         raise ValueError("configuration boolean value is invalid")
+    return value
+
+
+def _as_str(value: object, name: str) -> str:
+    if not isinstance(value, str):
+        raise ValueError(f"configuration {name} value must be a string")
     return value

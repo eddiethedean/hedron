@@ -19,6 +19,10 @@ class SearchResult:
 def search(
     manifest: SiteManifest, query: str, *, limit: int = 20, max_length: int = 200
 ) -> tuple[SearchResult, ...]:
+    if type(limit) is not int or limit < 0:
+        raise ValueError("search result limit must be a non-negative integer")
+    if type(max_length) is not int or max_length < 1:
+        raise ValueError("search query length must be a positive integer")
     query = query.strip()
     if not query:
         return ()

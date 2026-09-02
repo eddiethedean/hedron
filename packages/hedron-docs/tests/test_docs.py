@@ -120,6 +120,13 @@ def test_unsafe_url_scheme_fails_during_compilation(tmp_path: Path) -> None:
         compile_site(config)
 
 
+def test_image_fragment_is_not_treated_as_a_safe_anchor(tmp_path: Path) -> None:
+    config = _config(tmp_path)
+    (config.docs_dir / "index.md").write_text("![image](#sprite)\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="documentation asset does not exist"):
+        compile_site(config)
+
+
 def test_external_image_is_validated_and_rendered(tmp_path: Path) -> None:
     config = _config(tmp_path)
     (config.docs_dir / "index.md").write_text(
@@ -220,6 +227,62 @@ def test_search_is_bounded() -> None:
     assert search(manifest, "install")[0].path == "/"
     with pytest.raises(ValueError):
         search(manifest, "x" * 201)
+    with pytest.raises(ValueError):
+        search(manifest, "install", limit=-1)
+
+
+def test_manifest_rejects_unsafe_routes_and_base_urls() -> None:
+    from hedron_docs import PageRecord, SiteManifest
+
+    page = PageRecord("index.md", "/", "Home", "", (), (), "home", "hash")
+    for route in ("//evil/", "/../escape/", "/search"):
+        with pytest.raises(ValueError):
+            SiteManifest("Docs", "", "", (PageRecord("x.md", route, "X", "", (), (), "x", "hash"),))
+    with pytest.raises(ValueError):
+        SiteManifest("Docs", "", "https://user:pass@example.test", (page,))
+
+
+def test_manifest_rejects_unsafe_render_nodes() -> None:
+    from hedron_docs import DocNode, PageRecord, SiteManifest
+
+    unsafe = DocNode(
+        "paragraph", children=(DocNode("link", text="x", attrs=(("href", "javascript:alert(1)"),)),)
+    )
+    page = PageRecord("index.md", "/", "Home", "", (), (unsafe,), "x", "hash")
+    with pytest.raises(ValueError, match="unsafe"):
+        SiteManifest("Docs", "", "", (page,))
+
+
+def test_manifest_node_depth_is_bounded() -> None:
+    from hedron_docs import DocNode
+
+    value: dict[str, object] = {"kind": "text"}
+    for _ in range(257):
+        value = {"kind": "span", "children": [value]}
+    with pytest.raises(ValueError, match="nesting"):
+        DocNode.from_dict(value)
+
+
+def test_config_rejects_non_integral_limits(tmp_path: Path) -> None:
+    config = tmp_path / "hedron-docs.toml"
+    config.write_text("[build]\nmax_nodes = 1.5\n", encoding="utf-8")
+    with pytest.raises(DocsError, match="HED-DOCS-0005"):
+        load_config(config)
+
+
+def test_config_rejects_non_string_paths_and_metadata(tmp_path: Path) -> None:
+    config = tmp_path / "hedron-docs.toml"
+    config.write_text("[site]\ntitle = 42\n", encoding="utf-8")
+    with pytest.raises(DocsError, match="HED-DOCS-0005"):
+        load_config(config)
+
+
+def test_import_mkdocs_accepts_exclusion_arrays(tmp_path: Path) -> None:
+    mkdocs = tmp_path / "mkdocs.yml"
+    mkdocs.write_text(
+        "site_name: Example\nexclude_docs: [private/**, draft.md]\n", encoding="utf-8"
+    )
+    assert import_mkdocs(mkdocs).exclude == ("private/**", "draft.md")
 
 
 def test_config_rejects_unknown_keys_and_imports_mkdocs(tmp_path: Path) -> None:
