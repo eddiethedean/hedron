@@ -596,6 +596,105 @@ body {
   outline-offset: 3px;
 }
 
+.md-typeset .headerlink {
+  color: var(--md-accent-fg-color);
+  font-size: 0.7em;
+  margin-left: 0.35rem;
+  opacity: 0;
+  text-decoration: none;
+  transition: opacity 140ms ease;
+}
+
+.md-typeset :is(h1, h2, h3, h4):hover .headerlink,
+.md-typeset .headerlink:focus-visible {
+  opacity: 0.62;
+}
+
+.md-typeset kbd {
+  background: var(--hedron-surface-raised);
+  border: 1px solid var(--hedron-border-strong);
+  border-bottom-width: 2px;
+  border-radius: 0.34rem;
+  box-shadow: none;
+  color: var(--hedron-ink);
+  font-size: 0.72em;
+  padding: 0.08rem 0.32rem;
+}
+
+.md-typeset .footnote {
+  color: var(--hedron-muted);
+  font-size: 0.72rem;
+}
+
+.md-typeset .task-list-control [type="checkbox"] + .task-list-indicator::before {
+  background-color: var(--hedron-surface-raised);
+  border: 1px solid var(--hedron-border-strong);
+  border-radius: 0.28rem;
+}
+
+.md-typeset .task-list-control [type="checkbox"]:checked + .task-list-indicator::before {
+  background-color: var(--md-accent-fg-color);
+  border-color: var(--md-accent-fg-color);
+}
+
+/* API reference surfaces from mkdocstrings */
+.md-typeset .doc-object {
+  border-left: 1px solid var(--hedron-border);
+  margin: 1.5rem 0 2rem;
+  padding-left: 1rem;
+}
+
+.md-typeset .doc-heading {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.md-typeset .doc-heading code,
+.md-typeset .doc-signature {
+  background: color-mix(in srgb, var(--hedron-surface) 84%, transparent);
+  border: 1px solid var(--hedron-border);
+  border-radius: 0.58rem;
+  color: var(--hedron-ink);
+  font-size: 0.72rem;
+  padding: 0.52rem 0.68rem;
+}
+
+.md-typeset .doc-label {
+  background: var(--hedron-accent-soft);
+  border: 1px solid color-mix(in srgb, var(--md-accent-fg-color) 20%, var(--hedron-border));
+  border-radius: 99px;
+  color: var(--md-accent-fg-color);
+  font-size: 0.54rem;
+  font-weight: 760;
+  letter-spacing: 0.045em;
+  padding: 0.16rem 0.42rem;
+  text-transform: uppercase;
+}
+
+.md-typeset .doc-contents {
+  margin-left: 0.35rem;
+}
+
+.md-top {
+  background: var(--hedron-code);
+  border: 1px solid rgba(117, 225, 215, 0.16);
+  border-radius: 0.55rem;
+  box-shadow: var(--hedron-shadow-lg);
+  color: #def2f0;
+  font-size: 0.62rem;
+  font-weight: 720;
+}
+
+.md-tooltip {
+  background: var(--hedron-code);
+  border: 1px solid rgba(117, 225, 215, 0.14);
+  border-radius: 0.5rem;
+  box-shadow: var(--hedron-shadow-lg);
+  color: #e3f2f1;
+}
+
 /* Documentation home */
 .md-content:has(.docs-home) {
   max-width: 67rem;
@@ -799,7 +898,7 @@ body {
   text-transform: uppercase;
 }
 
-.docs-home__quickstart-body > code {
+.md-typeset .docs-home__quickstart-body > code {
   background: transparent;
   border: 0;
   box-shadow: none;
