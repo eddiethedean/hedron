@@ -62,10 +62,11 @@ hedron-posit run app:create_app --factory
 
 # The flagship command also delegates when the Posit extra is installed:
 hedron run app:app
+hedron run app:app --discover  # when RS_SERVER_URL is omitted
 ```
 
 Use the `hedron-posit` commands for a new app. `hedron run` automatically delegates to an
-installed Posit adapter when `RS_SERVER_URL` is present.
+installed Posit adapter when `RS_SERVER_URL` is present or `--discover` is requested.
 
 The launcher:
 
@@ -122,7 +123,8 @@ executing discovery, or importing the app. `app.workbench_status()` reports the
 facade's redacted resolved state.
 
 `hedron-posit doctor app:app --live` additionally binds, discovers, imports,
-and ASGI-probes generated URLs and cookie paths. Use `--topology` with `local`,
+and ASGI-probes generated URLs and cookie paths. Add `--discover` when
+`RS_SERVER_URL` is omitted. Use `--topology` with `local`,
 `launcher-local`, `launcher-kubernetes`, `launcher-slurm`, or `reverse-proxy`.
 
 For current-session navigation use `app.browser_url*`. For email invites, OAuth

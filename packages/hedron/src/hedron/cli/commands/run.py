@@ -14,8 +14,9 @@ def _cmd_run_app(args: argparse.Namespace) -> int:
     if not target or ":" not in target:
         print("hedron run requires module:attribute", file=sys.stderr)
         return 2
+    discover = bool(getattr(args, "discover", False))
     workbench_runtime = bool(str(os.environ.get("RS_SERVER_URL") or "").strip())
-    if args.workbench or workbench_runtime:
+    if args.workbench or workbench_runtime or discover:
         try:
             from hedron_posit.config import (
                 WorkbenchConfig,
@@ -45,7 +46,10 @@ def _cmd_run_app(args: argparse.Namespace) -> int:
             app_target=target,
             topology=WorkbenchTopology.parse(args.topology),
         )
-        run_target(target, config=config)
+        if discover:
+            run_target(target, config=config, discover=True)
+        else:
+            run_target(target, config=config)
         return 0
 
     import uvicorn

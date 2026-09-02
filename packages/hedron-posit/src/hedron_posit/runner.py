@@ -16,7 +16,7 @@ from fastapi_workbench.runner import load_app as _load_app
 from fastapi_workbench.runner import serve as _serve
 from hedron_core.codes import HED_WB_0009
 from hedron_core.diagnostics import DiagnosticSeverity, HedronError, make_diagnostic
-from hedron_posit.detect import is_workbench_job, rs_server_url
+from hedron_posit.detect import RESOLVED_ACTIVE_ENV, is_workbench_job, rs_server_url
 from hedron_posit.middleware import workbenchify
 from hedron_posit.resolve import (
     RESOLVED_MODE_ENV,
@@ -89,6 +89,7 @@ def export_hedron_state(
         HEDRON_PUBLIC_BASE,
         RESOLVED_MODE_ENV,
         RESOLVED_SOURCE_ENV,
+        RESOLVED_ACTIVE_ENV,
         "HEDRON_TRUSTED_PROXIES",
         "FASTAPI_WORKBENCH_ROOT_PATH",
         "FASTAPI_WORKBENCH_RESOLVED_MOUNT",
@@ -103,6 +104,8 @@ def export_hedron_state(
         env[RESOLVED_MOUNT_ENV] = resolved.browser_mount
         env["FASTAPI_WORKBENCH_ROOT_PATH"] = resolved.browser_mount
         env["FASTAPI_WORKBENCH_RESOLVED_MOUNT"] = resolved.browser_mount
+    if resolved.active:
+        env[RESOLVED_ACTIVE_ENV] = "1"
     if resolved.active and resolved.external_origin:
         origin = resolved.external_origin.rstrip("/")
         mount = resolved.browser_mount

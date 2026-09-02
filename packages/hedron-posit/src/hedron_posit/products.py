@@ -8,7 +8,13 @@ from typing import Literal
 
 from hedron_core.compat import StrEnum
 from hedron_core.diagnostics import DiagnosticSeverity, HedronError, make_diagnostic
-from hedron_posit.detect import is_workbench_env, is_workbench_forced, rs_server_url
+from hedron_posit.detect import (
+    RESOLVED_ACTIVE_ENV,
+    is_workbench_env,
+    is_workbench_forced,
+    rs_server_url,
+    truthy,
+)
 
 PositProductName = Literal["auto", "inactive", "workbench", "connect"]
 EvidenceKind = Literal[
@@ -17,6 +23,7 @@ EvidenceKind = Literal[
     "posit_product",
     "rstudio_product_compat",
     "workbench_env",
+    "workbench_handoff",
     "workbench_force",
     "none",
 ]
@@ -61,6 +68,8 @@ def workbench_product_evidence(environ: Mapping[str, str] | None = None) -> Evid
     env = _env_map(environ)
     if is_workbench_forced(env):
         return "workbench_force"
+    if truthy(str(env.get(RESOLVED_ACTIVE_ENV) or "")):
+        return "workbench_handoff"
     if rs_server_url(env) or is_workbench_env(env):
         return "workbench_env"
     return None

@@ -15,6 +15,8 @@ from fastapi_workbench.detect import (
     truthy,
 )
 
+RESOLVED_ACTIVE_ENV = "HEDRON_WORKBENCH_RESOLVED_ACTIVE"
+
 __all__ = [
     "is_posit_connect_scope",
     "is_workbench_env",
@@ -22,6 +24,7 @@ __all__ = [
     "is_workbench_job",
     "is_workbench_scope",
     "path_has_encoded_absolute_url",
+    "RESOLVED_ACTIVE_ENV",
     "rs_server_url",
     "truthy",
 ]

@@ -87,7 +87,7 @@ def _cmd_check(args: argparse.Namespace) -> int:
             host=cfg.host or "127.0.0.1",
             port=cfg.port or 0,
             discover=bool(getattr(args, "discover", False)),
-            discovery_available=bool(rs_server_url()),
+            discovery_available=bool(rs_server_url()) or bool(getattr(args, "discover", False)),
             explicit_mount=lambda _port: explicit_mount_hint(cfg, bound_port=cfg.port) is not None,
             bind=bind_loopback,
             discover_url=lambda port: discover_rserver_url(binary=cfg.rserver_url_bin, port=port),
@@ -157,7 +157,9 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
         if args.live:
             sock = bind_loopback(cfg.host or "127.0.0.1", cfg.port or 0)
             bound_port = int(sock.getsockname()[1])
-            if rs_server_url() and explicit_mount_hint(cfg, bound_port=bound_port) is None:
+            if (getattr(args, "discover", False) or rs_server_url()) and explicit_mount_hint(
+                cfg, bound_port=bound_port
+            ) is None:
                 discovered = discover_rserver_url(binary=cfg.rserver_url_bin, port=bound_port)
         resolved = resolve_deployment(
             cfg,
@@ -189,7 +191,8 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
                 WorkbenchTopology.LAUNCHER_SLURM,
             }
         )
-        checks["rserver_url_binary"] = not rs_server_url() or (
+        discovery_requested = bool(getattr(args, "discover", False) or rs_server_url())
+        checks["rserver_url_binary"] = not discovery_requested or (
             Path(resolved.rserver_url_bin).is_absolute()
             and os.access(resolved.rserver_url_bin, os.X_OK)
         )
@@ -259,7 +262,7 @@ def main(argv: list[str] | None = None) -> int:
     check_p.add_argument(
         "--discover",
         action="store_true",
-        help="Call rserver-url when RS_SERVER_URL is set (still no app import)",
+        help="Always call rserver-url after binding (still no app import)",
     )
     check_p.add_argument(
         "--matrix",
@@ -291,6 +294,11 @@ def main(argv: list[str] | None = None) -> int:
         "--live",
         action="store_true",
         help="bind, discover, import, and ASGI-probe",
+    )
+    doctor.add_argument(
+        "--discover",
+        action="store_true",
+        help="Always call rserver-url during --live, even without RS_SERVER_URL",
     )
 
     args = parser.parse_args(argv)

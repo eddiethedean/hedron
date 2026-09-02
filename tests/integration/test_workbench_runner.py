@@ -18,7 +18,9 @@ import pytest
 
 from hedron_core.diagnostics import HedronError
 from hedron_posit.config import WorkbenchConfig
+from hedron_posit.detect import RESOLVED_ACTIVE_ENV
 from hedron_posit.middleware import WorkbenchPathMiddleware
+from hedron_posit.products import PositProduct
 from hedron_posit.resolve import RESOLVED_MODE_ENV, RESOLVED_MOUNT_ENV, resolve_deployment
 from hedron_posit.runner import (
     HEDRON_PUBLIC_BASE,
@@ -126,6 +128,7 @@ def test_export_clears_stale_handoff_for_inactive_app() -> None:
     env = {
         "HEDRON_ROOT_PATH": "/stale",
         RESOLVED_MOUNT_ENV: "/stale",
+        RESOLVED_ACTIVE_ENV: "1",
         HEDRON_PUBLIC_BASE: "https://stale.example",
         "HEDRON_TRUSTED_PROXIES": "10.0.0.1",
     }
@@ -133,6 +136,7 @@ def test_export_clears_stale_handoff_for_inactive_app() -> None:
     export_hedron_state(resolved, environ=env)
     assert "HEDRON_ROOT_PATH" not in env
     assert RESOLVED_MOUNT_ENV not in env
+    assert RESOLVED_ACTIVE_ENV not in env
     assert HEDRON_PUBLIC_BASE not in env
     assert env["HEDRON_TRUSTED_PROXIES"] == resolved.forwarded_allow_ips
 
@@ -203,6 +207,53 @@ def test_run_target_exports_process_environ_before_import(
     assert resolved.browser_mount == "/s/cli/p/8050"
     assert app.hedron_workbench.active is True
     assert app.state.hedron_mount_path == "/s/cli/p/8050"
+
+
+def test_run_target_discovery_activates_hedron_posit_without_rserver_url(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """#881: validated discovery must identify Workbench before app construction."""
+    for name in (
+        "RS_SERVER_URL",
+        "HEDRON_POSIT_PRODUCT",
+        "HEDRON_WORKBENCH",
+        "FASTAPI_WORKBENCH",
+        RESOLVED_ACTIVE_ENV,
+        RESOLVED_MOUNT_ENV,
+    ):
+        monkeypatch.delenv(name, raising=False)
+
+    class FakeSock:
+        def getsockname(self) -> tuple[str, int]:
+            return ("127.0.0.1", 8765)
+
+        def close(self) -> None:
+            return None
+
+    served: list[object] = []
+    monkeypatch.setattr("hedron_posit.runner.bind_loopback", lambda _h, _p: FakeSock())
+    monkeypatch.setattr(
+        "hedron_posit.runner.discover_rserver_url",
+        lambda *, binary, port: f"https://wb.example/s/session/p/{port}",
+    )
+    monkeypatch.setattr(
+        "hedron_posit.runner.serve",
+        lambda app, resolved, sock=None: served.append((app, resolved)),
+    )
+
+    run_target(
+        "tests.integration._workbench_sample:create_workbench_app",
+        config=WorkbenchConfig(factory=True),
+        discover=True,
+    )
+
+    assert len(served) == 1
+    app, resolved = served[0]
+    assert resolved.browser_mount == "/s/session/p/8765"
+    assert app.hedron_posit.product is PositProduct.WORKBENCH
+    assert app.hedron_posit.evidence == "workbench_handoff"
+    assert app.hedron_workbench.active is True
+    assert app.state.hedron_cookie_path == "/s/session/p/8765"
 
 
 def test_prepare_workbench_facade_is_not_double_wrapped(

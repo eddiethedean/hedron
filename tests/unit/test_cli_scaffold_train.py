@@ -164,3 +164,37 @@ def test_hedron_run_auto_delegates_to_workbench_launcher(
     )
     assert _cmd_run_app(args) == 0
     assert called["target"] == "sample:app"
+
+
+def test_hedron_run_discover_delegates_without_rserver_url(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    called: dict[str, object] = {}
+
+    def fake_run(target: str, *, config: object, discover: bool = False) -> None:
+        called.update(target=target, config=config, discover=discover)
+
+    monkeypatch.delenv("RS_SERVER_URL", raising=False)
+    monkeypatch.setattr("hedron_posit.runner.run_target", fake_run)
+    args = Namespace(
+        target="sample:app",
+        app=None,
+        workbench=False,
+        discover=True,
+        workbench_mode="auto",
+        host=None,
+        port=None,
+        mount=None,
+        public_base_url=None,
+        forwarded_allow_ips=None,
+        allow_external_bind=False,
+        reload=False,
+        workers=1,
+        debug=False,
+        factory=False,
+        topology="auto",
+    )
+
+    assert _cmd_run_app(args) == 0
+    assert called["target"] == "sample:app"
+    assert called["discover"] is True

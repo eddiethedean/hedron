@@ -5,6 +5,8 @@
 ### Added
 - Add an explicit `run --discover` launcher option for bind-then-`rserver-url`
   discovery when Workbench omits `RS_SERVER_URL`.
+- Honor explicit discovery in `check` and `doctor --live` without requiring
+  `RS_SERVER_URL`.
 
 ## [1.0.6] — 2026-09-02
 

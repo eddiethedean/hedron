@@ -8,6 +8,7 @@ from pathlib import Path
 
 import pytest
 
+from fastapi_workbench.cli import main as generic_main
 from hedron_posit.cli import main
 
 
@@ -45,7 +46,7 @@ def test_check_discover_binds_before_rserver_url(
         encoding="utf-8",
     )
     script.chmod(script.stat().st_mode | stat.S_IEXEC)
-    monkeypatch.setenv("RS_SERVER_URL", "https://wb.example/s/x/")
+    monkeypatch.delenv("RS_SERVER_URL", raising=False)
     assert (
         main(
             [
@@ -63,6 +64,71 @@ def test_check_discover_binds_before_rserver_url(
     payload = json.loads(capsys.readouterr().out)
     assert payload["browser_mount"] == f"/s/disc/p/{bound[0]}"
     assert payload["discovered"] is True
+
+
+def test_generic_check_discover_without_rserver_url(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    script = tmp_path / "fake-rserver-url"
+    script.write_text(
+        '#!/bin/sh\necho "https://wb.example/s/generic/p/$2"\n',
+        encoding="utf-8",
+    )
+    script.chmod(script.stat().st_mode | stat.S_IEXEC)
+    monkeypatch.delenv("RS_SERVER_URL", raising=False)
+
+    assert (
+        generic_main(
+            [
+                "check",
+                "--discover",
+                "--format",
+                "json",
+                "--rserver-url",
+                str(script),
+            ]
+        )
+        == 0
+    )
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["browser_mount"].startswith("/s/generic/p/")
+    assert payload["discovered"] is True
+
+
+def test_doctor_live_discover_without_rserver_url(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    script = tmp_path / "fake-rserver-url"
+    script.write_text(
+        '#!/bin/sh\necho "https://wb.example/s/doctor/p/$2"\n',
+        encoding="utf-8",
+    )
+    script.chmod(script.stat().st_mode | stat.S_IEXEC)
+    monkeypatch.delenv("RS_SERVER_URL", raising=False)
+
+    assert (
+        main(
+            [
+                "doctor",
+                "tests.integration._workbench_sample:create_app",
+                "--factory",
+                "--live",
+                "--discover",
+                "--format",
+                "json",
+                "--rserver-url",
+                str(script),
+            ]
+        )
+        == 0
+    )
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["deployment"]["browser_mount"].startswith("/s/doctor/p/")
+    assert payload["deployment"]["discovered"] is True
 
 
 def test_dry_run_alias() -> None:

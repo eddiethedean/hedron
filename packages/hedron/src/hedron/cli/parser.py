@@ -396,6 +396,11 @@ def _register_runtime_commands(sub: _Subparsers) -> None:
     run_p.add_argument("--workers", type=int, default=1)
     run_p.add_argument("--debug", action="store_true")
     run_p.add_argument("--workbench", action="store_true")
+    run_p.add_argument(
+        "--discover",
+        action="store_true",
+        help="Bind then discover the Workbench mount even without RS_SERVER_URL",
+    )
     run_p.add_argument("--workbench-mode", choices=("auto", "on", "off"), default="auto")
     run_p.add_argument("--mount")
     run_p.add_argument("--public-base-url")
