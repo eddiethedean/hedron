@@ -775,7 +775,6 @@ body {
 }
 
 .md-typeset .docs-home__hero .hedron-theme-wordmark {
-  content: url("../assets/hedron-logo-dark.svg");
   margin: 0 0 1.5rem;
   width: min(11rem, 48vw);
 }
@@ -937,6 +936,25 @@ body {
   border: 0;
   color: inherit;
   padding: 0;
+}
+
+.docs-home__quickstart .md-code__nav,
+.docs-home__quickstart .md-code__button {
+  background: transparent;
+}
+
+.docs-home__quickstart .md-code__button {
+  border: 0;
+  box-shadow: none;
+  color: #8ca8ad;
+  opacity: 0.72;
+}
+
+.docs-home__quickstart .md-code__button:hover,
+.docs-home__quickstart .md-code__button:focus-visible {
+  background: transparent;
+  color: #6fe0d6;
+  opacity: 1;
 }
 
 .docs-home__quickstart-body > a {

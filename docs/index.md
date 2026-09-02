@@ -14,7 +14,7 @@ search:
 
 <span class="docs-home__eyebrow">Python UI, without the black box</span>
 
-<img class="hedron-theme-wordmark" src="assets/hedron-logo-light.svg" alt="Hedron">
+<img class="hedron-theme-wordmark" src="assets/hedron-logo-hero.svg" alt="Hedron">
 
 # Build clear, durable interfaces in Python.
 
@@ -65,22 +65,22 @@ page = Page(
 
 <div class="docs-home__featured">
   <a class="docs-home-card docs-home-card--start" href="getting-started/installation/">
-    <span class="docs-home-card__icon" aria-hidden="true">01</span>
+    <span class="docs-home-card__icon" aria-hidden="true">00</span>
     <strong>Start a new project</strong>
     <span>Install Hedron, scaffold an app, and render your first page.</span>
   </a>
   <a class="docs-home-card docs-home-card--fastapi" href="guides/plain-fastapi/">
-    <span class="docs-home-card__icon" aria-hidden="true">02</span>
+    <span class="docs-home-card__icon" aria-hidden="true">01</span>
     <strong>Add Hedron to FastAPI</strong>
     <span>Keep your routes, dependencies, middleware, lifespan, and OpenAPI.</span>
   </a>
   <a class="docs-home-card docs-home-card--reference" href="api/by-task/">
-    <span class="docs-home-card__icon" aria-hidden="true">03</span>
+    <span class="docs-home-card__icon" aria-hidden="true">10</span>
     <strong>Find an API by task</strong>
     <span>Find the right component, route, action, or helper by task.</span>
   </a>
   <a class="docs-home-card docs-home-card--examples" href="examples/recipes/">
-    <span class="docs-home-card__icon" aria-hidden="true">04</span>
+    <span class="docs-home-card__icon" aria-hidden="true">11</span>
     <strong>Work from a recipe</strong>
     <span>Use focused patterns for common UI and application workflows.</span>
   </a>
@@ -96,28 +96,28 @@ page = Page(
 
 <div class="docs-home__routes">
   <a class="docs-route" href="getting-started/">
-    <span class="docs-route__icon docs-route__icon--start" aria-hidden="true">01</span>
+    <span class="docs-route__icon docs-route__icon--start" aria-hidden="true">00</span>
     <span>
       <strong>Learn the model</strong>
       Understand pages, views, actions, components, and the request lifecycle.
     </span>
   </a>
   <a class="docs-route" href="guides/">
-    <span class="docs-route__icon docs-route__icon--build" aria-hidden="true">02</span>
+    <span class="docs-route__icon docs-route__icon--build" aria-hidden="true">01</span>
     <span>
       <strong>Build an interface</strong>
       Add forms, interactions, data, visuals, authentication, and reusable components.
     </span>
   </a>
   <a class="docs-route" href="guides/ship/">
-    <span class="docs-route__icon docs-route__icon--operate" aria-hidden="true">03</span>
+    <span class="docs-route__icon docs-route__icon--operate" aria-hidden="true">10</span>
     <span>
       <strong>Prepare for production</strong>
       Deploy, test, observe, secure, and scale a production Hedron application.
     </span>
   </a>
   <a class="docs-route" href="api/by-task/">
-    <span class="docs-route__icon docs-route__icon--reference" aria-hidden="true">04</span>
+    <span class="docs-route__icon docs-route__icon--reference" aria-hidden="true">11</span>
     <span>
       <strong>Look something up</strong>
       Look up public APIs, components, configuration, compatibility, and packages.
