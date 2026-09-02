@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.7] — 2026-09-02
+
+### Fixed
+- Require `fastapi-workbench>=1.0.8`, which preserves canonical path-only redirects
+  without a trailing-slash normalization hop (#883).
+
 ## [1.0.6] — 2026-09-02
 
 ### Added
