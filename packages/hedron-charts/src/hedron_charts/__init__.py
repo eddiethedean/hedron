@@ -22,7 +22,7 @@ from hedron_charts.optional_adapters import optional_adapters
 from hedron_charts.pins import RUNTIME_PINS, ensure_pin_stubs, pinned_runtime, verify_pin
 from hedron_charts.spec import ChartPlan, ChartSpec
 
-__version__ = "1.0.6"
+__version__ = "1.0.7"
 
 __all__ = [
     "AltairAdapter",

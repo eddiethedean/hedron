@@ -15,7 +15,7 @@ from hedron_flask.responses import component_response, interaction_response
 from hedron_flask.routing import FlaskUrlReverser, hedron_route
 from hedron_flask.static_mount import mount_hedron_static
 
-__version__ = "1.0.6"
+__version__ = "1.0.7"
 
 __all__ = [
     "FlaskUrlReverser",

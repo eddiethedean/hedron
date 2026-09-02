@@ -1,6 +1,6 @@
 [project]
 name = "hedron-elements"
-version = "1.0.6"
+version = "1.0.7"
 description = "Beta Web Component ABI, shared bridge, and Supported first-party elements for Hedron (RFC-0060)"
 readme = "README.md"
 requires-python = ">=3.10,<3.15"

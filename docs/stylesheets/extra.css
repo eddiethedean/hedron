@@ -207,20 +207,170 @@ button[class*=" md-"] {
 }
 
 .md-sidebar--secondary {
-  border-left: 1px solid var(--hedron-border);
+  border-left: 0;
+}
+
+/* Primary documentation navigation. Keep the desktop rail quiet and let the
+ * active destination carry the visual weight; the header already owns branding. */
+@media screen and (min-width: 76.2344em) {
+  .md-sidebar--primary {
+    background: color-mix(in srgb, var(--hedron-surface) 28%, var(--md-default-bg-color));
+    border-right: 0;
+    box-shadow: inset -1px 0 var(--hedron-border);
+  }
+
+  .md-sidebar--primary .md-nav--primary > .md-nav__title {
+    display: none;
+  }
+
+  .md-sidebar--primary .md-nav--primary > .md-nav__list {
+    padding: 0.45rem 0.6rem 1rem 0;
+  }
+
+  .md-sidebar--primary .md-nav--primary > .md-nav__list > .md-nav__item {
+    margin: 0.14rem 0;
+  }
+
+  .md-sidebar--primary .md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link {
+    border-radius: 0.42rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin: 0;
+    min-height: 1.8rem;
+    padding: 0.42rem 0.5rem;
+    transition: background-color 140ms ease, color 140ms ease;
+  }
+
+  .md-sidebar--primary .md-nav--primary > .md-nav__list > .md-nav__item > a.md-nav__link--active,
+  .md-sidebar--primary .md-nav__container:has(> a.md-nav__link--active) {
+    background: color-mix(in srgb, var(--md-accent-fg-color) 12%, transparent);
+    color: var(--md-accent-fg-color);
+  }
+
+  .md-sidebar--primary .md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link:hover {
+    background: color-mix(in srgb, var(--hedron-surface) 76%, var(--md-accent-fg-color));
+  }
+
+  .md-sidebar--primary .md-nav__container > a.md-nav__link {
+    flex: 1 1 auto;
+    font-size: inherit;
+    font-weight: inherit;
+    margin: 0;
+    padding: 0;
+  }
+
+  .md-sidebar--primary .md-nav__container > label.md-nav__link {
+    align-items: center;
+    display: flex;
+    flex: 0 0 1.35rem;
+    justify-content: flex-end;
+    margin: 0;
+    opacity: 0.58;
+    padding: 0;
+  }
+
+  .md-sidebar--primary .md-nav__container:hover > label.md-nav__link,
+  .md-sidebar--primary .md-nav__container:has(> a.md-nav__link--active) > label.md-nav__link {
+    opacity: 1;
+  }
+
+  .md-sidebar--primary .md-nav[data-md-level="1"] > .md-nav__list {
+    border-left: 1px solid var(--hedron-border);
+    margin: 0.35rem 0 0.55rem 0.72rem;
+    padding-left: 0.62rem;
+  }
+
+  .md-sidebar--primary .md-nav[data-md-level="1"] .md-nav__link {
+    border-radius: 0.32rem;
+    font-size: 0.7rem;
+    line-height: 1.4;
+    margin: 0.08rem 0;
+    padding: 0.25rem 0.38rem;
+  }
+
+  .md-sidebar--primary .md-nav[data-md-level="1"] .md-nav__link--active {
+    background: color-mix(in srgb, var(--md-accent-fg-color) 9%, transparent);
+  }
+}
+
+.md-path {
+  color: var(--hedron-muted);
+  font-size: 0.66rem;
+  margin-bottom: 0.75rem;
+}
+
+.md-path__link {
+  color: var(--hedron-muted);
+  font-weight: 600;
+}
+
+.md-path__link:hover {
+  color: var(--md-accent-fg-color);
+}
+
+.md-content__button {
+  background: var(--hedron-surface);
+  border: 1px solid var(--hedron-border);
+  border-radius: 0.4rem;
+  color: var(--hedron-muted);
+  margin-left: 0.35rem;
+  padding: 0.34rem;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+
+.md-content__button:hover {
+  background: color-mix(in srgb, var(--hedron-surface) 82%, var(--md-accent-fg-color));
+  border-color: color-mix(in srgb, var(--hedron-border) 62%, var(--md-accent-fg-color));
+  color: var(--md-accent-fg-color);
+}
+
+@media screen and (min-width: 60em) {
+  .md-sidebar--secondary .md-nav__title {
+    color: var(--hedron-muted);
+    font-size: 0.61rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    padding: 0 0 0.5rem 0.7rem;
+    text-transform: uppercase;
+  }
+
+  .md-sidebar--secondary .md-nav__list {
+    border-left: 1px solid var(--hedron-border);
+    padding-left: 0.65rem;
+  }
+
+  .md-sidebar--secondary .md-nav__link {
+    border-radius: 0.3rem;
+    color: var(--hedron-muted);
+    font-size: 0.68rem;
+    font-weight: 520;
+    line-height: 1.38;
+    margin: 0.14rem 0;
+    padding: 0.22rem 0.4rem;
+  }
+
+  .md-sidebar--secondary .md-nav__link:hover {
+    background: var(--hedron-surface);
+  }
+
+  .md-sidebar--secondary .md-nav__link--active {
+    background: color-mix(in srgb, var(--md-accent-fg-color) 9%, transparent);
+    color: var(--md-accent-fg-color);
+    font-weight: 700;
+  }
 }
 
 .md-main__inner {
-  margin-top: 1.55rem;
+  margin-top: 1.25rem;
 }
 
 .md-content {
-  max-width: 54rem;
+  max-width: 52rem;
 }
 
 .md-content__inner {
-  margin-bottom: 4rem;
-  padding-top: 0.25rem;
+  margin-bottom: 4.5rem;
+  padding-top: 0.4rem;
 }
 
 .md-typeset {
@@ -238,6 +388,16 @@ button[class*=" md-"] {
   text-decoration: underline;
   text-decoration-color: color-mix(in srgb, currentColor 38%, transparent);
   text-underline-offset: 0.14em;
+}
+
+.md-typeset :where(ul, ol) li::marker {
+  color: color-mix(in srgb, var(--md-accent-fg-color) 74%, var(--hedron-muted));
+  font-weight: 700;
+}
+
+.md-typeset hr {
+  border-bottom: 1px solid var(--hedron-border);
+  margin: 2.2rem 0;
 }
 
 [data-md-color-scheme="slate"] .md-typeset a {
@@ -262,15 +422,18 @@ button[class*=" md-"] {
 
 .md-typeset h1,
 .md-typeset h2,
-.md-typeset h3 {
+.md-typeset h3,
+.md-typeset h4 {
   color: var(--hedron-ink);
   font-weight: 700;
   letter-spacing: -0.025em;
+  scroll-margin-top: 5rem;
 }
 
 .md-typeset h1 {
-  font-size: clamp(2rem, 4vw, 2.75rem);
-  line-height: 1.15;
+  font-size: clamp(2rem, 3.5vw, 2.45rem);
+  line-height: 1.08;
+  margin: 0 0 0.85em;
 }
 
 .md-typeset h1 > code:first-child {
@@ -285,29 +448,94 @@ button[class*=" md-"] {
 }
 
 .md-typeset h2 {
-  margin-top: 2.4em;
+  font-size: 1.42rem;
+  line-height: 1.25;
+  margin: 2.25em 0 0.8em;
 }
 
 .md-typeset h2::after {
-  background:
-    linear-gradient(90deg, var(--md-accent-fg-color) 0 26%, transparent 26% 37%, var(--md-accent-fg-color) 37% 63%, transparent 63% 74%, var(--md-accent-fg-color) 74% 100%);
+  background: linear-gradient(90deg, var(--md-accent-fg-color), var(--hedron-cyan));
+  border-radius: 99px;
   content: "";
   display: block;
-  height: 0.28rem;
-  margin-top: 0.45rem;
-  opacity: 0.55;
-  width: 3.2rem;
+  height: 0.12rem;
+  margin-top: 0.48rem;
+  opacity: 0.72;
+  width: 2.65rem;
 }
 
-.md-typeset code {
+.md-typeset h3 {
+  font-size: 1.08rem;
+  line-height: 1.35;
+  margin: 1.9em 0 0.65em;
+}
+
+.md-typeset :not(pre) > code {
+  background: var(--hedron-surface);
+  border: 1px solid var(--hedron-border);
   border-radius: 0.35rem;
+  box-shadow: none;
+  color: var(--hedron-ink);
+  font-size: 0.84em;
+  line-height: inherit;
+  padding: 0.08em 0.32em;
+}
+
+.md-typeset :is(h1, h2, h3, h4) > code {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  padding: 0;
 }
 
 .md-typeset .highlight {
   border: 1px solid var(--hedron-border);
-  border-radius: 0.4rem;
+  border-radius: 0.55rem;
+  background: var(--md-code-bg-color);
   box-shadow: none;
   overflow: hidden;
+}
+
+/* hedron-default.css is intentionally available to rendered component demos.
+ * Reassert the documentation shell's code styles so application-level `pre`
+ * and `code` defaults cannot create a second frame around source examples. */
+.md-typeset .highlight pre {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  color: var(--md-code-fg-color);
+  font-size: 0.72rem;
+  line-height: 1.62;
+  margin: 0;
+  overflow: auto;
+  padding: 0.9rem 1rem;
+}
+
+.md-typeset .highlight pre > code {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  padding: 0;
+}
+
+.md-typeset .md-code__button {
+  border-radius: 0.3rem;
+  color: var(--hedron-muted);
+  margin: 0.38rem 0.38rem 0 0;
+}
+
+.md-typeset .md-code__button:hover {
+  color: var(--md-accent-fg-color);
 }
 
 .md-typeset .highlight,
@@ -319,16 +547,29 @@ button[class*=" md-"] {
 }
 
 .md-typeset .tabbed-set {
-  background: var(--hedron-surface);
+  background: var(--md-default-bg-color);
   border: 1px solid var(--hedron-border);
-  border-radius: 0.5rem;
+  border-radius: 0.58rem;
   overflow: hidden;
 }
 
 .md-typeset .tabbed-labels {
-  background: color-mix(in srgb, var(--hedron-surface) 82%, var(--md-accent-fg-color));
+  background: var(--hedron-surface);
   border-bottom: 1px solid var(--hedron-border);
-  padding-inline: 0.35rem;
+  gap: 0.2rem;
+  padding-inline: 0.45rem;
+}
+
+.md-typeset .tabbed-labels > label {
+  color: var(--hedron-muted);
+  font-size: 0.7rem;
+  font-weight: 650;
+  padding: 0.68rem 0.72rem 0.55rem;
+}
+
+.md-typeset .tabbed-labels > label:hover,
+.md-typeset .tabbed-set > input:checked + label {
+  color: var(--hedron-ink);
 }
 
 .md-typeset .tabbed-content {
@@ -341,27 +582,30 @@ button[class*=" md-"] {
 
 .md-typeset .admonition,
 .md-typeset details {
-  background: color-mix(in srgb, var(--hedron-surface) 78%, var(--md-accent-fg-color));
-  border-left: 0.2rem solid var(--md-accent-fg-color);
+  background: var(--hedron-surface);
+  border: 1px solid var(--hedron-border);
+  border-left: 0.18rem solid var(--md-accent-fg-color);
 }
 
 .md-typeset .admonition-title,
 .md-typeset summary {
-  background: transparent;
+  background: color-mix(in srgb, var(--hedron-surface) 91%, var(--md-accent-fg-color));
+  border-bottom: 1px solid var(--hedron-border);
   font-weight: 750;
 }
 
 .md-typeset blockquote {
-  background: color-mix(in srgb, var(--hedron-surface) 84%, var(--md-accent-fg-color));
-  border-left: 0.2rem solid var(--md-accent-fg-color);
+  background: var(--hedron-surface);
+  border: 1px solid var(--hedron-border);
+  border-left: 0.18rem solid var(--md-accent-fg-color);
   border-radius: 0 0.45rem 0.45rem 0;
   color: var(--hedron-muted);
   padding: 0.75rem 1rem;
 }
 
 .md-typeset__scrollwrap {
-  border: 1px solid var(--hedron-border);
-  border-radius: 0.5rem;
+  border: 0;
+  border-radius: 0;
   margin-block: 1.35rem;
   overflow: hidden;
 }
@@ -381,16 +625,39 @@ button[class*=" md-"] {
 }
 
 .md-typeset table:not([class]) {
-  border: 0;
-  border-radius: 0.45rem;
+  background: var(--md-default-bg-color);
+  border: 1px solid var(--hedron-border);
+  border-collapse: separate;
+  border-radius: 0.55rem;
+  border-spacing: 0;
   box-shadow: none;
+  font-size: 0.7rem;
   overflow: hidden;
+  width: 100%;
 }
 
 .md-typeset table:not([class]) th {
-  background: color-mix(in srgb, var(--hedron-surface) 88%, var(--md-accent-fg-color));
+  background: var(--hedron-surface);
+  border-bottom: 1px solid var(--hedron-border);
   color: var(--hedron-ink);
   font-weight: 750;
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+}
+
+.md-typeset table:not([class]) td {
+  border-top: 1px solid var(--hedron-border);
+  line-height: 1.5;
+  padding: 0.62rem 0.75rem;
+  vertical-align: top;
+}
+
+.md-typeset table:not([class]) tbody tr:first-child td {
+  border-top: 0;
+}
+
+.md-typeset table:not([class]) tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--hedron-surface) 54%, transparent);
 }
 
 .md-typeset .md-button {
@@ -411,6 +678,262 @@ button[class*=" md-"] {
 
 .md-footer {
   background: #17212b;
+}
+
+/* Documentation home
+ *
+ * Keep the landing page a map of the docs, not a marketing page. The hierarchy
+ * mirrors the navigation: four goal-based destinations, four documentation
+ * routes, then current project information and support. */
+.docs-home {
+  max-width: 51rem;
+  padding-bottom: 2.5rem;
+}
+
+.docs-home__intro {
+  margin: 0 0 2.2rem;
+  max-width: 48rem;
+}
+
+.md-typeset .docs-home__intro .hedron-theme-wordmark {
+  margin-bottom: 1.4rem;
+  width: min(12rem, 54vw);
+}
+
+.docs-home__intro h1 {
+  font-size: clamp(2.25rem, 4.8vw, 3.35rem);
+  letter-spacing: -0.045em;
+  margin-bottom: 0.7rem;
+}
+
+.docs-home__intro p {
+  color: var(--hedron-muted);
+  font-size: 0.98rem;
+  line-height: 1.7;
+  margin: 0;
+  max-width: 46rem;
+}
+
+.docs-home__featured {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0 0 3.5rem;
+}
+
+.docs-home-card {
+  --card-accent: var(--hedron-teal);
+  background: var(--hedron-surface);
+  border: 1px solid var(--hedron-border);
+  border-top: 0.18rem solid var(--card-accent);
+  border-radius: 0.55rem;
+  color: var(--hedron-muted) !important;
+  display: flex;
+  flex-direction: column;
+  min-height: 9.6rem;
+  overflow: hidden;
+  padding: 1.05rem 1.1rem;
+  position: relative;
+  text-decoration: none !important;
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.docs-home-card--start {
+  --card-accent: #0f9f94;
+}
+
+.docs-home-card--fastapi {
+  --card-accent: #1385a8;
+}
+
+.docs-home-card--reference {
+  --card-accent: #6654bd;
+}
+
+.docs-home-card--examples {
+  --card-accent: #3579c4;
+}
+
+.docs-home-card::after {
+  background: url("../assets/polyhedron-mesh.svg") center / contain no-repeat;
+  content: "";
+  height: 7rem;
+  opacity: 0.045;
+  pointer-events: none;
+  position: absolute;
+  right: -2rem;
+  top: -1.7rem;
+  transform: rotate(11deg);
+  width: 7rem;
+}
+
+[data-md-color-scheme="slate"] .docs-home-card::after {
+  opacity: 0.075;
+}
+
+.docs-home-card:hover {
+  border-color: color-mix(in srgb, var(--card-accent) 58%, var(--hedron-border));
+  box-shadow: 0 0.7rem 1.4rem rgba(23, 33, 43, 0.16);
+  transform: translateY(-2px);
+}
+
+.docs-home-card:focus-visible,
+.docs-route:focus-visible,
+.docs-home__updates > a:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--md-accent-fg-color) 62%, transparent);
+  outline-offset: 3px;
+}
+
+.docs-home-card__icon {
+  align-items: center;
+  color: var(--card-accent);
+  display: inline-flex;
+  font-family: var(--md-code-font-family);
+  font-size: 1.2rem;
+  font-weight: 700;
+  height: 2.2rem;
+  margin-bottom: auto;
+}
+
+.docs-home-card strong {
+  color: var(--hedron-ink);
+  display: block;
+  font-size: 0.94rem;
+  line-height: 1.3;
+  margin-bottom: 0.35rem;
+}
+
+.docs-home-card > span:last-child {
+  color: var(--hedron-muted);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.docs-home > h2 {
+  font-size: 1.55rem;
+  margin: 0 0 1.15rem;
+}
+
+.docs-home > h2::after,
+.docs-home__help h2::after {
+  display: none;
+}
+
+.docs-home__routes {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0 0 3.5rem;
+}
+
+.docs-route {
+  align-items: center;
+  border-radius: 0.45rem;
+  color: var(--hedron-muted) !important;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 3.35rem minmax(0, 1fr);
+  padding: 0.65rem;
+  text-decoration: none !important;
+  transition: background-color 150ms ease;
+}
+
+.docs-route:hover {
+  background: var(--hedron-surface);
+}
+
+.docs-route__icon {
+  align-items: center;
+  aspect-ratio: 1;
+  border-radius: 0.48rem;
+  color: #fff;
+  display: flex;
+  font-family: var(--md-code-font-family);
+  font-size: 0.7rem;
+  font-weight: 750;
+  justify-content: center;
+}
+
+.docs-route__icon--start { background: #0f9f94; }
+.docs-route__icon--build { background: #176f8f; }
+.docs-route__icon--operate { background: #3579c4; }
+.docs-route__icon--reference { background: #6654bd; }
+
+.docs-route strong {
+  color: var(--hedron-ink);
+  display: block;
+  font-size: 0.9rem;
+  line-height: 1.35;
+  margin-bottom: 0.2rem;
+}
+
+.docs-route > span:last-child {
+  font-size: 0.76rem;
+  line-height: 1.55;
+}
+
+.docs-home__updates {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 3.5rem;
+}
+
+.docs-home__updates > a {
+  border: 1px solid var(--hedron-border);
+  border-radius: 0.5rem;
+  color: var(--hedron-muted);
+  min-height: 9rem;
+  padding: 1rem;
+  text-decoration: none !important;
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.docs-home__updates > a:hover {
+  border-color: color-mix(in srgb, var(--md-accent-fg-color) 58%, var(--hedron-border));
+  box-shadow: 0 0.5rem 1rem rgba(23, 33, 43, 0.08);
+  transform: translateY(-1px);
+}
+
+.docs-home__updates span {
+  color: var(--md-accent-fg-color);
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.docs-home__updates strong {
+  color: var(--hedron-ink);
+  display: block;
+  font-size: 0.84rem;
+  line-height: 1.4;
+}
+
+.docs-home__updates p {
+  color: var(--hedron-muted);
+  font-size: 0.7rem;
+  line-height: 1.55;
+  margin: 0.45rem 0 0;
+}
+
+.docs-home__help {
+  background: var(--hedron-surface);
+  border: 1px solid var(--hedron-border);
+  border-radius: 0.55rem;
+  padding: 1.25rem 1.4rem;
+}
+
+.docs-home__help h2 {
+  font-size: 1.2rem;
+  margin: 0 0 0.35rem;
+}
+
+.docs-home__help p {
+  color: var(--hedron-muted);
+  font-size: 0.76rem;
+  margin: 0;
 }
 
 .hedron-hero {
@@ -804,6 +1327,23 @@ a.hedron-card:not(.edron-sim .hedron-card):hover {
 }
 
 @media screen and (max-width: 50em) {
+  .docs-home__featured,
+  .docs-home__updates {
+    grid-template-columns: 1fr;
+  }
+
+  .docs-home__featured {
+    margin-bottom: 2.8rem;
+  }
+
+  .docs-home-card {
+    min-height: 8.6rem;
+  }
+
+  .docs-home__updates > a {
+    min-height: 0;
+  }
+
   .hedron-hero {
     padding-top: 1.7rem;
   }
@@ -868,6 +1408,21 @@ a.hedron-card:not(.edron-sim .hedron-card):hover {
   .md-typeset .hedron-actions .md-button {
     text-align: center;
     width: 100%;
+  }
+
+  .docs-home__intro h1 {
+    font-size: 2rem;
+  }
+
+  .docs-route {
+    align-items: start;
+    gap: 0.75rem;
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    padding-inline: 0.25rem;
+  }
+
+  .docs-home__help {
+    padding: 1rem;
   }
 }
 
