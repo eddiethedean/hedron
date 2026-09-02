@@ -268,6 +268,9 @@ stale generated manifests before publication.
 
 ### W5 — Hedron application shell
 
+**Implementation status:** Complete in the experimental `hedron-docs` 0.5 line. This is an
+intentional clean application-shell break from the W4 proving chrome.
+
 **Purpose:** make the site itself a convincing Hedron product application.
 
 Deliverables:
@@ -281,6 +284,14 @@ Deliverables:
 - no-JavaScript ordinary navigation and form behavior.
 
 Exit: home, quickstart, guide, API, component, and 404 vertical slices pass the visual/a11y matrix.
+
+The 0.5 implementation composes `AppShell`, `Brand`, `SkipLink`, `Nav`, and `ColorModeToggle`
+for the complete site chrome. Primary links expose `aria-current`, the narrow layout supplies a
+native `<details>` menu, breadcrumbs and local TOC are semantic landmarks, and previous/next plus
+source/edit actions remain ordinary links. Color mode persists through a same-origin POST form and
+uses Hedron's light/dark/system tokens; release labels and URLs come directly from the immutable
+manifest. The 404 handler renders the same shell with a 404 status, and shell CSS is fingerprinted
+alongside the native content stylesheet without introducing application-authored JavaScript.
 
 ### W6 — Search
 

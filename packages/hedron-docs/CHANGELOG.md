@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0]
+
+- W5: replaced the proving app's bespoke chrome with Hedron AppShell, Brand, and SkipLink.
+- Added responsive no-JavaScript mobile navigation, accessible current-page state, release banners,
+  and a persisted light/dark/system color-mode control.
+- Rendered 404 responses through the same compile-safe shell and corrected document head markup.
+
 ## [0.4.0]
 
 - W4: versioned content manifest, normalized navigation, validated internal links, and manifest-only routing.

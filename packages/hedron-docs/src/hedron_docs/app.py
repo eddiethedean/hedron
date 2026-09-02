@@ -6,16 +6,29 @@ import hashlib
 from importlib import resources
 from pathlib import Path
 from typing import Any
-from urllib.parse import quote, unquote
+from urllib.parse import quote, unquote, urlsplit
 from xml.sax.saxutils import escape as xml_escape
 
 from fastapi import Request
 from fastapi.responses import JSONResponse, PlainTextResponse, RedirectResponse, Response
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from hedron import Hedron, Link, Page, Text
-from hedron_core.builtins.document import Head
-from hedron_core.builtins.landmarks import Footer, Header, Main, Nav
+from hedron import (
+    AppShell,
+    Brand,
+    ColorMode,
+    ColorModeToggle,
+    Hedron,
+    Link,
+    Page,
+    SkipLink,
+    Text,
+    apply_color_mode_cookie,
+    csrf_token_for_request,
+    read_color_mode_preference,
+    resolved_theme_from_request,
+)
+from hedron_core.builtins.landmarks import Nav
 from hedron_core.builtins.layout import Container, Stack
 from hedron_core.html import html
 from hedron_core.security import SafeUrl, UrlPurpose
@@ -73,6 +86,26 @@ def create_docs_app(
             {"status": "ready" if ready else "degraded", "build_id": site.build_id},
             status_code=200 if ready else 503,
         )
+
+    @app.post("/preferences/theme", include_in_schema=False)
+    async def theme_preference(request: Request) -> Response:  # pyright: ignore[reportUnusedFunction]
+        """Persist the shell's color-mode choice through an ordinary HTML form."""
+
+        policy = getattr(request.app.state, "hedron_security", None)
+        if policy is not None and getattr(policy, "csrf_enabled", False):
+            from hedron.security.csrf import prepare_csrf_from_request, validate_csrf
+
+            await prepare_csrf_from_request(request, policy)
+            validate_csrf(request, policy)
+        form = await request.form()
+        raw_mode = form.get("color_mode", ColorMode.SYSTEM.value)
+        try:
+            mode = ColorMode(str(raw_mode))
+        except ValueError:
+            mode = ColorMode.SYSTEM
+        response = RedirectResponse(_same_origin_return_path(request), status_code=303)
+        apply_color_mode_cookie(response, mode, request=request)
+        return response
 
     @app.exception_handler(StarletteHTTPException)
     async def docs_http_error(  # pyright: ignore[reportUnusedFunction]
@@ -193,53 +226,70 @@ def _register_asset(app: Hedron, asset: AssetRecord) -> None:
 
 def _shell(site: SiteManifest, page: PageRecord | None, *content: Any, request: Request) -> Page:
     nav_pages = sorted(site.pages, key=lambda item: (item.nav_order or (10**9,), item.path))
-    links = [
-        html.li(
-            Link(
+    visible_pages = [item for item in nav_pages[:80] if item.publication_state == "published"]
+
+    def nav_link(item: PageRecord) -> Any:
+        current = bool(page and item.path == page.path)
+        attrs: dict[str, Any] = {}
+        if current:
+            attrs["aria"] = {"current": "page"}
+            attrs["data"] = {"hedron-nav-current": "true"}
+        return html.li(
+            html.a(
                 item.nav_title or item.title,
-                _nav_path(item.path),
-                mark="current" if page and item.path == page.path else None,
+                href=SafeUrl.parse(_nav_path(item.path), purpose=UrlPurpose.NAVIGATION),
+                **attrs,
             )
         )
-        for item in nav_pages[:80]
-        if item.publication_state == "published"
-    ]
-    header_children: list[Any] = []
-    if site.release_label:
-        header_children.append(
-            html.aside(
-                html.a(
-                    site.release_label,
-                    href=SafeUrl.parse(
-                        site.release_url, purpose=UrlPurpose.NAVIGATION, allow_external=True
-                    ),
-                )
-                if site.release_url
-                else site.release_label,
-                role="status",
-                class_="hedron-docs-release",
-            )
-        )
-    header_children.append(
-        Container(
-            Link(site.title, "/", class_="hedron-docs-brand"),
-            Nav(html.ul(*links), aria={"label": "Primary navigation"}),
-            Link("Search", "/search"),
-            max_width="xl",
-        )
+
+    links = [nav_link(item) for item in visible_pages]
+    navigation = Nav(
+        html.ul(*links, class_="hedron-docs-primary-nav"),
+        html.details(
+            html.summary("Menu"),
+            html.ul(
+                *(nav_link(item) for item in visible_pages),
+                class_="hedron-docs-mobile-nav-list",
+            ),
+            class_="hedron-docs-mobile-nav",
+        ),
+        aria={"label": "Primary navigation"},
     )
-    header = Header(*header_children)
+    header_tools = html.div(
+        Link("Search", "/search", class_="hedron-docs-search-link"),
+        ColorModeToggle(
+            preference=read_color_mode_preference(request),
+            action="/preferences/theme",
+            id="docs-color-mode",
+            csrf_token=_csrf_token(request),
+        ),
+        class_="hedron-docs-header-tools",
+    )
+    brand = html.div(
+        Brand(site.title, href="/", subtitle="Documentation", mark_text="H"),
+        header_tools,
+        class_="hedron-docs-brand-row",
+    )
     extras: list[Any] = []
     if page and page.breadcrumbs:
+        breadcrumb_nodes: list[Any] = []
+        for label, path in page.breadcrumbs:
+            if path:
+                breadcrumb_nodes.append(
+                    html.li(
+                        html.a(
+                            label,
+                            href=SafeUrl.parse(_nav_path(path), purpose=UrlPurpose.NAVIGATION),
+                        )
+                    )
+                )
+            else:
+                breadcrumb_nodes.append(html.li(label, aria={"current": "page"}))
+        if not breadcrumb_nodes or page.title != page.breadcrumbs[-1][0]:
+            breadcrumb_nodes.append(html.li(page.nav_title or page.title, aria={"current": "page"}))
         extras.append(
             html.nav(
-                *[
-                    html.a(
-                        label, href=SafeUrl.parse(_nav_path(path), purpose=UrlPurpose.NAVIGATION)
-                    )
-                    for label, path in page.breadcrumbs
-                    if path
-                ],
+                html.ol(*breadcrumb_nodes),
                 aria={"label": "Breadcrumb"},
             )
         )
@@ -320,18 +370,41 @@ def _shell(site: SiteManifest, page: PageRecord | None, *content: Any, request: 
                 ),
             )
         )
-    main = Main(
-        Container(
-            Stack(
-                *(content or (Text("Page not found"),)),
-                *extras,
-                gap="lg",
-            ),
-            max_width="lg",
+    body = Container(
+        Stack(
+            *(content or (Text("Page not found"),)),
+            *extras,
+            gap="lg",
         ),
-        id="main-panel",
+        max_width="lg",
     )
-    footer = Footer(Container(Text(f"{site.title} · Built with Hedron"), max_width="xl"))
+    footer = Container(Text(f"{site.title} · Built with Hedron"), max_width="xl")
+    banner = None
+    if site.release_label:
+        banner_content: Any = site.release_label
+        if site.release_url:
+            banner_content = html.a(
+                site.release_label,
+                href=SafeUrl.parse(
+                    site.release_url, purpose=UrlPurpose.NAVIGATION, allow_external=True
+                ),
+            )
+        banner = html.p(
+            html.strong("Release: "),
+            banner_content,
+            role="status",
+            class_="hedron-docs-release",
+        )
+    shell = AppShell(
+        nav=navigation,
+        body=body,
+        brand=brand,
+        banner=banner,
+        app_footer=footer,
+        panel_id="main-panel",
+        content_width="wide",
+        mobile_collapse=True,
+    )
     title = (page.nav_title or page.title) if page else site.title
     description = page.description if page else site.description
     canonical_path = (
@@ -349,7 +422,7 @@ def _shell(site: SiteManifest, page: PageRecord | None, *content: Any, request: 
         purpose=UrlPurpose.NAVIGATION,
         allow_external=True,
     )
-    head = Head(
+    head = [
         html.link(
             rel="stylesheet",
             href=SafeUrl.parse(_DOCS_CSS_PATH, purpose=UrlPurpose.NAVIGATION),
@@ -360,8 +433,16 @@ def _shell(site: SiteManifest, page: PageRecord | None, *content: Any, request: 
         html.meta(property="og:description", content=description),
         html.meta(property="og:url", content=canonical.value),
         html.meta(property="og:type", content="article" if page else "website"),
+    ]
+    color_mode = read_color_mode_preference(request)
+    return Page(
+        SkipLink("#main-panel"),
+        shell,
+        title=title,
+        head=head,
+        data_theme=None if color_mode is ColorMode.SYSTEM else resolved_theme_from_request(request),
+        data_hedron_theme="default",
     )
-    return Page(header, main, footer, title=title, head=head)
 
 
 def _nav_path(path: str) -> str:
@@ -370,6 +451,27 @@ def _nav_path(path: str) -> str:
 
 def _base_url(site: SiteManifest, request: Request) -> str:
     return (site.base_url or str(request.base_url)).rstrip("/")
+
+
+def _same_origin_return_path(request: Request) -> str:
+    """Return a safe local redirect target after a preference form submit."""
+
+    referer = request.headers.get("referer", "")
+    if referer:
+        parsed = urlsplit(referer)
+        request_host = request.url.hostname or ""
+        if parsed.netloc and parsed.hostname != request_host:
+            referer = ""
+        elif parsed.path:
+            return parsed.path + (("?" + parsed.query) if parsed.query else "")
+    return "/"
+
+
+def _csrf_token(request: Request) -> str | None:
+    policy = getattr(request.app.state, "hedron_security", None)
+    if policy is None or not getattr(policy, "csrf_enabled", False):
+        return None
+    return csrf_token_for_request(request, policy)
 
 
 def _canonical_request_path(path: str) -> str:

@@ -2,9 +2,10 @@ schema_version = 4
 
 [site]
 title = "Hedron Docs"
-description = "Deployable hedron-docs 0.4 proving application"
+description = "Deployable hedron-docs 0.5 proving application"
 docs_dir = "docs"
 allow_external_links = true
+release_label = "Development build"
 
 [build]
 output = "build/site.json"

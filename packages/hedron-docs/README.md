@@ -3,10 +3,10 @@
 Experimental Markdown compiler and Hedron application toolkit.
 
 `hedron-docs` turns a bounded Markdown corpus into a deterministic JSON manifest and renders that
-manifest through native Hedron components. The 0.3 surface is intentionally experimental and may
+manifest through native Hedron components. The 0.5 surface is intentionally experimental and may
 change:
 
-**Package maturity:** Beta tooling-grade · **Repository package version:** `0.4.0` · **Import:** `hedron_docs`
+**Package maturity:** Beta tooling-grade · **Repository package version:** `0.5.0` · **Import:** `hedron_docs`
 
 ```python
 from hedron_docs import compile_site, create_docs_app, load_config
@@ -40,12 +40,16 @@ max_directives = 100
 max_query_length = 200
 ```
 
-The 0.3 compiler lowers CommonMark, tables, definition lists, footnotes, admonitions, details,
+The 0.4 compiler lowers CommonMark, tables, definition lists, footnotes, admonitions, details,
 content tabs, API directives, and allowlisted demo references directly from parser tokens into a
 closed typed AST, then renders them through native Hedron primitives. Headings expose stable alias
 anchors; code and tables are responsive; code blocks include language labels and native copy
 controls. Every parsed node carries a stable source span. Raw HTML and unknown extension syntax
 fail with a diagnostic containing a code, title, location, explanation, and remediation.
+
+The 0.5 application shell is Hedron-native: it provides accessible skip links and landmarks,
+responsive primary/mobile navigation, breadcrumbs, release banners, source actions, and a
+no-JavaScript color-mode preference form.
 
 The package is not a drop-in MkDocs plugin. `import-mkdocs` reads site metadata, navigation, and
 exclusions as a migration aid; it never executes arbitrary MkDocs plugins or theme code.

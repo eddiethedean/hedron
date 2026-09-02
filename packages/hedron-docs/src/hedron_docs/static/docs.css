@@ -59,6 +59,62 @@
   margin-inline-start: 0.45rem;
 }
 
+/* W5: docs-specific polish around Hedron's native application shell. */
+.hedron-docs-brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  inline-size: 100%;
+}
+
+.hedron-docs-header-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.hedron-docs-release {
+  margin: 0;
+  text-align: center;
+}
+
+.hedron-docs-mobile-nav {
+  display: none;
+}
+
+.hedron-docs-mobile-nav-list {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+}
+
+.hedron-docs-mobile-nav-list li + li {
+  margin-block-start: 0.5rem;
+}
+
+@media (max-width: 48rem) {
+  .hedron-docs-brand-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .hedron-docs-header-tools {
+    inline-size: 100%;
+    justify-content: space-between;
+  }
+
+  .hedron-docs-primary-nav {
+    display: none;
+  }
+
+  .hedron-docs-mobile-nav {
+    display: block;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   :root {
     scroll-behavior: smooth;
