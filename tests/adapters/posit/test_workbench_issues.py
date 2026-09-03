@@ -1,4 +1,4 @@
-"""Regression coverage for Posit Workbench issues #747 and #748."""
+"""Regression coverage for Posit Workbench issues #747, #748, and #885."""
 
 from __future__ import annotations
 
@@ -24,6 +24,23 @@ def test_full_uvicorn_root_path_preserves_workbench_origin() -> None:
     assert resolved.active is True
     assert resolved.browser_mount == "/s/session/p/8000"
     assert resolved.external_origin == "https://workbench.example"
+
+
+def test_public_base_handoff_supersedes_stale_uvicorn_root_path() -> None:
+    mount = "/s/session/current/p/8765"
+    resolved = resolve_deployment(
+        WorkbenchConfig(port=8765),
+        environ={
+            "RS_SERVER_URL": "http://127.0.0.1:8787/",
+            "HEDRON_WORKBENCH_PUBLIC_BASE_URL": f"https://workbench.example{mount}",
+            "UVICORN_ROOT_PATH": "https://workbench.example/s/session/old/p/8765",
+        },
+        bound_port=8765,
+    )
+
+    assert resolved.browser_mount == mount
+    assert resolved.external_origin == "https://workbench.example"
+    assert resolved.source == "explicit:public_base"
 
 
 @pytest.mark.parametrize(

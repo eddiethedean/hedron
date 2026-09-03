@@ -190,6 +190,17 @@ def test_explicit_mount_hint_extracts_uvicorn_root_path_from_full_url() -> None:
     assert explicit_mount_hint(WorkbenchConfig(), env) == "/s/session/p/8000"
 
 
+def test_explicit_mount_hint_prefers_public_base_over_stale_uvicorn_root_path() -> None:
+    mount = "/s/session/current/p/8765"
+    env = {
+        "RS_SERVER_URL": "http://127.0.0.1:8787/",
+        "FASTAPI_WORKBENCH_PUBLIC_BASE_URL": f"https://workbench.example{mount}",
+        "UVICORN_ROOT_PATH": "/s/session/old/p/8765",
+    }
+
+    assert explicit_mount_hint(WorkbenchConfig(), env, bound_port=8765) == mount
+
+
 def test_explicit_mount_hint_includes_resolved_mount_env() -> None:
     env = {
         "RS_SERVER_URL": "https://wb.example/",
