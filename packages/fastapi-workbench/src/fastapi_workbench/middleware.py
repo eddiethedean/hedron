@@ -41,8 +41,34 @@ _LOCAL_RESPONSE_HEADERS = {
     b"hx-push-url",
     b"hx-replace-url",
 }
-_COOKIE_PATH_ROOT = re.compile(rb"(?i)(;[ \t]*path=)/(?=;|$)")
 _COOKIE_PATH = re.compile(rb"(?i)(;[ \t]*path=)([^;]*)")
+
+
+def _replace_cookie_path(
+    value: bytes,
+    *,
+    accepted: frozenset[bytes],
+    replacement: bytes,
+    case_insensitive: bool = False,
+) -> bytes:
+    """Replace one Path attribute while preserving whitespace and optional quotes."""
+    match = _COOKIE_PATH.search(value)
+    if match is None:
+        return value
+    raw = match.group(2)
+    leading = raw[: len(raw) - len(raw.lstrip())]
+    trailing = raw[len(raw.rstrip()) :]
+    token = raw.strip()
+    quote_mark = b""
+    if len(token) >= 2 and token[:1] == token[-1:] and token[:1] in {b'"', b"'"}:
+        quote_mark = token[:1]
+        token = token[1:-1]
+    comparable = token.lower() if case_insensitive else token
+    choices = frozenset(item.lower() for item in accepted) if case_insensitive else accepted
+    if comparable not in choices:
+        return value
+    rendered = leading + quote_mark + replacement + quote_mark + trailing
+    return value[: match.start(2)] + rendered + value[match.end(2) :]
 
 
 class _RejectedRequestTarget(Exception):
@@ -225,7 +251,13 @@ class WorkbenchPathMiddleware:
         if not match:
             return base_scope
         rest = (match.group("rest") or "").rstrip("/")
-        if not rest or not (path == rest or path.startswith(rest + "/")):
+        if not rest:
+            return base_scope
+        path_carries_canonical_mount = path == rest or path.startswith(rest + "/")
+        proxy_stripped_path_with_expected_mount = bool(
+            self.expected_mount and rest == self.expected_mount and path.startswith("/")
+        )
+        if not path_carries_canonical_mount and not proxy_stripped_path_with_expected_mount:
             return base_scope
         new_scope = _copy_scope(base_scope)
         new_scope["root_path"] = rest
@@ -270,20 +302,12 @@ class WorkbenchPathMiddleware:
             return value
         mount_bytes = mount.encode("ascii")
         # Rewrite Path=/ and literal Path=auto (browsers treat "auto" as a path).
-        rewritten = _COOKIE_PATH_ROOT.sub(
-            lambda match: match.group(1) + mount_bytes,
+        return _replace_cookie_path(
             value,
-            count=1,
+            accepted=frozenset({b"/", b"auto"}),
+            replacement=mount_bytes,
+            case_insensitive=True,
         )
-        if rewritten != value:
-            return rewritten
-        match = _COOKIE_PATH.search(value)
-        if match is None:
-            return value
-        current = match.group(2).strip()
-        if current.lower() == b"auto" or current == b"/":
-            return value[: match.start(2)] + mount_bytes + value[match.end(2) :]
-        return value
 
     def set_owned_cookie_names(self, names: tuple[str, ...] | frozenset[str]) -> None:
         """Refresh the owned-cookie set after late registration (HedronPosit)."""
@@ -293,6 +317,55 @@ class WorkbenchPathMiddleware:
         """Apply launcher-resolved redirect behavior to an existing wrapper."""
         self.relative_redirects = bool(enabled)
 
+    def apply_runtime_handoff(
+        self,
+        *,
+        mode: WorkbenchMode | str | None = None,
+        expected_mount: str | None = None,
+        expected_origins: tuple[str, ...] | None = None,
+        debug: bool = False,
+        relative_redirects: bool | None = None,
+        owned_cookie_names: tuple[str, ...] = (),
+        absolute_redirects: bool = False,
+        absolute_origin: str | None = None,
+    ) -> None:
+        """Merge launcher-resolved state into a wrapper created at import time.
+
+        Applications commonly call :func:`workbenchify` in their module while
+        the launcher can discover the session mount only after binding a port.
+        Re-wrapping would apply path and response transformations twice, so the
+        launcher updates the single existing wrapper instead.
+        """
+        if mode is not None:
+            self.mode = WorkbenchMode.parse(mode)
+        if expected_mount is not None:
+            self.expected_mount = normalize_mount_path(expected_mount)
+        if expected_origins is not None:
+            origins: set[str] = set()
+            for origin in expected_origins:
+                try:
+                    origins.add(normalize_http_origin(origin))
+                except ValueError:
+                    continue
+            self.expected_origins = frozenset(origins)
+        if debug:
+            self.debug = True
+        if relative_redirects is not None:
+            self.relative_redirects = bool(relative_redirects)
+        if owned_cookie_names:
+            self.owned_cookie_names = frozenset({*self.owned_cookie_names, *owned_cookie_names})
+        if absolute_redirects:
+            if absolute_origin is None:
+                raise ValueError("absolute_redirects requires an absolute_origin")
+            self.absolute_origin = normalize_http_origin(absolute_origin)
+            self.absolute_redirects = True
+        # A launcher handoff is positive deployment evidence. Keep request-time
+        # mounts enabled for proxy variants even when the wrapper was initially
+        # constructed without a resolved deployment.
+        if mode is not None or expected_mount is not None or expected_origins is not None:
+            self.active = True
+            self.runtime_mounts = True
+
     def _prepare_connect_cookie(self, value: bytes, mount: str) -> bytes:
         """Undo app-side scoping that Connect will apply at its outer proxy."""
         if not self.owned_cookie_names:
@@ -300,13 +373,9 @@ class WorkbenchPathMiddleware:
         first = value.split(b"=", 1)[0].strip().decode("latin-1")
         if first not in self.owned_cookie_names:
             return value
-        match = _COOKIE_PATH.search(value)
-        if match is None:
-            return value
-        path = match.group(2).rstrip(b"/") or b"/"
-        if path != mount.encode("ascii"):
-            return value
-        return value[: match.start(2)] + b"/" + value[match.end(2) :]
+        mount_bytes = mount.encode("ascii")
+        accepted = frozenset({mount_bytes, mount_bytes + b"/"})
+        return _replace_cookie_path(value, accepted=accepted, replacement=b"/")
 
     @staticmethod
     def _relative_local_redirect(value: str, mount: str, request_path: str) -> str:
@@ -399,6 +468,9 @@ class WorkbenchPathMiddleware:
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         if scope.get("type") not in {"http", "websocket"}:
+            await self.app(scope, receive, send)
+            return
+        if self.mode is WorkbenchMode.OFF:
             await self.app(scope, receive, send)
             return
         if self.debug and self._should_normalize(scope):
@@ -511,8 +583,38 @@ def workbenchify(
                 "construct it with workbench_mode='on'/workbench_mount=..., or use "
                 "fastapi-workbench run so cookie and asset paths are configured before import"
             )
-        if existing is not None and relative_redirects is not None:
-            existing.set_relative_redirects(relative_redirects)
+        if existing is not None:
+            resolved_mode = mode
+            resolved_mount = expected_mount
+            resolved_debug = debug
+            resolved_origins = expected_origins
+            resolved_absolute_origin = absolute_origin
+            resolved_relative_redirects = relative_redirects
+            if config is not None:
+                from fastapi_workbench.resolve import resolve_deployment
+
+                resolved = resolve_deployment(config, environ=environ)
+                resolved_mode = resolved_mode or resolved.mode
+                resolved_mount = (
+                    resolved_mount if resolved_mount is not None else resolved.browser_mount
+                )
+                resolved_debug = resolved_debug or resolved.debug
+                if resolved_origins is None:
+                    resolved_origins = (resolved.external_origin,)
+                if absolute_redirects and resolved_absolute_origin is None:
+                    resolved_absolute_origin = resolved.external_origin
+                if resolved_relative_redirects is None:
+                    resolved_relative_redirects = resolved.source == "rserver-url:path"
+            existing.apply_runtime_handoff(
+                mode=resolved_mode,
+                expected_mount=resolved_mount,
+                expected_origins=resolved_origins,
+                debug=resolved_debug,
+                relative_redirects=resolved_relative_redirects,
+                owned_cookie_names=owned_cookie_names,
+                absolute_redirects=absolute_redirects,
+                absolute_origin=resolved_absolute_origin,
+            )
         return app
     resolved_mode = mode
     resolved_debug = debug

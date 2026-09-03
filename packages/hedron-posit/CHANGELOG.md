@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.9] — 2026-09-02
+
+### Fixed
+- Require `fastapi-workbench>=1.0.10` and propagate Hedron launcher handoff state into
+  pre-wrapped generic FastAPI and Hedron Workbench adapters without adding a second middleware.
+- Preserve session-mount redirects across proxy-prefixed, path-stripped ASGI ingress and quoted
+  owned-cookie paths.
+- Keep Connect's scope-detected response and cookie adaptation active while generic
+  `workbench_mode="off"` remains a complete pass-through.
+- Reject configuration-based activation of an already-constructed inactive `HedronPosit` facade
+  before mutating its middleware state.
+- Keep inactive facades inactive when handed origin trust metadata, and make the launcher's
+  resolved environment authoritative instead of resolving again from process state.
+
 ## [1.0.8] — 2026-09-02
 
 ### Fixed

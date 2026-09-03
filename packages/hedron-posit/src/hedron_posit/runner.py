@@ -149,11 +149,14 @@ def prepare_app(
             export_hedron_state(resolved, environ=dict(environ))
     app = load_app(target, factory=cfg.factory)
     if wrap:
+        # The caller-selected environment has already been resolved above. Pass
+        # that handoff directly so workbenchify cannot consult process state a
+        # second time and disagree with an isolated environ mapping.
         app = workbenchify(
             app,
-            config=cfg,
             mode=resolved.mode,
             expected_mount=resolved.browser_mount,
+            expected_origins=(resolved.external_origin,),
             debug=resolved.debug,
             relative_redirects=resolved.source == "rserver-url:path",
         )

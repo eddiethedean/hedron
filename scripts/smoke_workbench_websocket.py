@@ -42,7 +42,7 @@ async def _probe(
         try:
             await _probe_once(url, expected, authorization_key_file)
             return
-        except Exception as exc:  # Connection setup can race the readiness HTTP probe.
+        except Exception as exc:  # noqa: BLE001  # readiness can race connection setup
             failure = exc
             if attempt + 1 < attempts:
                 await asyncio.sleep(0.5)

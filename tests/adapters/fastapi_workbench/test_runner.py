@@ -3,8 +3,12 @@
 from __future__ import annotations
 
 import os
+from urllib.parse import quote
 
 import pytest
+from fastapi import FastAPI, Response
+from fastapi.responses import RedirectResponse
+from fastapi.testclient import TestClient
 
 from fastapi_workbench.config import ResolvedDeployment, WorkbenchConfig, WorkbenchMode
 from fastapi_workbench.middleware import WorkbenchPathMiddleware, workbenchify
@@ -42,6 +46,90 @@ def test_prepare_app_updates_existing_wrapper_for_path_only_discovery(
     assert prepared is wrapped
     assert resolved.source == "rserver-url:path"
     assert wrapped.relative_redirects is True
+
+
+def test_prepare_app_reconfigures_a_pre_wrapped_production_app(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Launcher discovery must reach wrappers created during application import."""
+    mount = "/s/production-session/p/8123"
+    inner = FastAPI()
+
+    @inner.get("/health")
+    def health(response: Response) -> dict[str, bool]:
+        response.set_cookie("session", "opaque", path="/")
+        return {"ok": True}
+
+    @inner.get("/go")
+    def go() -> RedirectResponse:
+        return RedirectResponse("/health", status_code=303)
+
+    # This is a documented application pattern: wrapping at import time before
+    # the launcher has bound a port and discovered the Workbench session URL.
+    wrapped = workbenchify(inner)
+    assert isinstance(wrapped, WorkbenchPathMiddleware)
+    monkeypatch.setattr("fastapi_workbench.runner.load_app", lambda *_args, **_kwargs: wrapped)
+
+    prepared, _ = prepare_app(
+        target="sample:app",
+        config=WorkbenchConfig(
+            mode=WorkbenchMode.ON,
+            mount=mount,
+            public_base_url=f"https://workbench.example{mount}",
+        ),
+        apply_environ=False,
+        owned_cookie_names=("session",),
+    )
+
+    assert prepared is wrapped
+    assert wrapped.mode is WorkbenchMode.ON
+    assert wrapped.expected_mount == mount
+    assert wrapped.expected_origins == frozenset({"https://workbench.example"})
+    assert wrapped.owned_cookie_names == frozenset({"session"})
+
+    client = TestClient(prepared)
+    response = client.get(f"{mount}/health")
+    assert response.status_code == 200
+    assert response.json() == {"ok": True}
+    assert f"Path={mount}" in response.headers["set-cookie"]
+
+    redirect = client.get(f"{mount}/go", follow_redirects=False)
+    assert redirect.status_code == 303
+    assert redirect.headers["location"] == f"{mount}/health"
+
+
+def test_prepare_app_hands_discovered_origin_to_a_pre_wrapped_app(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    inner = FastAPI()
+    wrapped = workbenchify(inner)
+    assert isinstance(wrapped, WorkbenchPathMiddleware)
+    monkeypatch.setattr("fastapi_workbench.runner.load_app", lambda *_args, **_kwargs: wrapped)
+
+    prepared, _ = prepare_app(
+        target="sample:app",
+        config=WorkbenchConfig(mode=WorkbenchMode.ON),
+        bound_port=8124,
+        discovered_raw="https://workbench.example/s/discovered/p/8124/",
+        apply_environ=False,
+    )
+
+    assert prepared is wrapped
+    encoded = "/" + quote(
+        "https://workbench.example/s/discovered/p/8124/health",
+        safe="",
+    )
+    normalized = wrapped.normalize_scope(
+        {
+            "type": "http",
+            "path": encoded,
+            "raw_path": encoded.encode(),
+            "root_path": "",
+            "query_string": b"",
+        }
+    )
+    assert normalized["path"] == "/s/discovered/p/8124/health"
+    assert normalized["root_path"] == "/s/discovered/p/8124"
 
 
 def test_run_target_exports_process_environ_before_import(

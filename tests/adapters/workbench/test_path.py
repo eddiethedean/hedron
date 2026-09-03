@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from urllib.parse import quote, urljoin
 
 import pytest
@@ -9,7 +10,7 @@ from starlette._utils import get_route_path
 from starlette.types import Scope
 
 from fastapi_workbench.mount import is_local_path
-from hedron_posit.config import WorkbenchMode
+from hedron_posit.config import WorkbenchConfig, WorkbenchMode
 from hedron_posit.middleware import WorkbenchPathMiddleware, workbenchify
 
 
@@ -48,6 +49,51 @@ def test_mode_off_is_noop() -> None:
     out = mw.normalize_scope(incoming)
     assert out is incoming
     assert incoming == original
+
+
+def test_mode_off_does_not_rewrite_response_headers_or_cookies() -> None:
+    async def response_app(scope: Scope, receive: object, send: object) -> None:
+        del scope, receive
+        await send(  # type: ignore[operator]
+            {
+                "type": "http.response.start",
+                "status": 303,
+                "headers": [
+                    (b"location", b"/login"),
+                    (b"set-cookie", b"session=value; Path=/"),
+                ],
+            }
+        )
+        await send({"type": "http.response.body", "body": b""})  # type: ignore[operator]
+
+    messages: list[object] = []
+
+    async def receive() -> object:
+        return {"type": "http.request", "body": b"", "more_body": False}
+
+    async def send(message: object) -> None:
+        messages.append(message)
+
+    mw = WorkbenchPathMiddleware(
+        response_app,
+        mode=WorkbenchMode.OFF,
+        expected_mount="/s/disabled/p/1",
+        owned_cookie_names=("session",),
+    )
+    asyncio.run(
+        mw(
+            _scope(path="/login", root_path="/s/disabled/p/1"),
+            receive,  # type: ignore[arg-type]
+            send,  # type: ignore[arg-type]
+        )
+    )
+
+    start = messages[0]
+    assert isinstance(start, dict)
+    assert dict(start["headers"]) == {
+        b"location": b"/login",
+        b"set-cookie": b"session=value; Path=/",
+    }
 
 
 def test_strip_session_mount_once() -> None:
@@ -169,6 +215,25 @@ def test_workbenchify_wrap_once() -> None:
     assert isinstance(once, WorkbenchPathMiddleware)
 
 
+def test_hedron_pre_wrapped_app_receives_launcher_handoff_without_second_wrapper() -> None:
+    once = workbenchify(_NullApp())
+    assert isinstance(once, WorkbenchPathMiddleware)
+
+    twice = workbenchify(
+        once,
+        config=WorkbenchConfig(
+            mode=WorkbenchMode.ON,
+            mount="/s/hedron-prewrapped/p/8050",
+            public_base_url="https://workbench.example/s/hedron-prewrapped/p/8050",
+        ),
+    )
+
+    assert twice is once
+    assert once.mode is WorkbenchMode.ON
+    assert once.expected_mount == "/s/hedron-prewrapped/p/8050"
+    assert once.expected_origins == frozenset({"https://workbench.example"})
+
+
 def test_absolute_redirect_rewrite_is_bounded_to_location() -> None:
     mw = WorkbenchPathMiddleware(
         _NullApp(),
@@ -201,6 +266,74 @@ def test_absolute_redirect_rewrite_requires_trusted_origin() -> None:
             mode=WorkbenchMode.ON,
             absolute_redirects=True,
         )
+
+
+@pytest.mark.parametrize(
+    ("cookie", "expected"),
+    [
+        (b"session=value; Path=/; HttpOnly", b"session=value; Path=/s/session/p/1; HttpOnly"),
+        (b'session=value; path="/"; secure', b'session=value; path="/s/session/p/1"; secure'),
+        (b"session=value; PATH='auto'", b"session=value; PATH='/s/session/p/1'"),
+    ],
+)
+def test_owned_cookie_path_rewrite_handles_real_header_spellings(
+    cookie: bytes, expected: bytes
+) -> None:
+    mw = WorkbenchPathMiddleware(
+        _NullApp(),
+        mode=WorkbenchMode.ON,
+        owned_cookie_names=("session",),
+    )
+    message = {
+        "type": "http.response.start",
+        "status": 200,
+        "headers": [(b"set-cookie", cookie)],
+    }
+
+    rewritten = mw._rewrite_response_start(message, "/s/session/p/1")
+
+    assert dict(rewritten["headers"])[b"set-cookie"] == expected
+
+
+def test_owned_cookie_rewrite_does_not_touch_third_party_or_custom_paths() -> None:
+    mw = WorkbenchPathMiddleware(
+        _NullApp(),
+        mode=WorkbenchMode.ON,
+        owned_cookie_names=("session",),
+    )
+    headers = [
+        (b"set-cookie", b"analytics=value; Path=/"),
+        (b"set-cookie", b"session=value; Path=/already-scoped"),
+    ]
+    message = {"type": "http.response.start", "status": 200, "headers": headers}
+
+    rewritten = mw._rewrite_response_start(message, "/s/session/p/1")
+
+    assert rewritten is message
+
+
+def test_connect_cookie_rebase_handles_quoted_trailing_slash_path() -> None:
+    mw = WorkbenchPathMiddleware(
+        _NullApp(),
+        mode=WorkbenchMode.AUTO,
+        active=False,
+        owned_cookie_names=("session",),
+    )
+    message = {
+        "type": "http.response.start",
+        "status": 200,
+        "headers": [(b"set-cookie", b'session=value; Path="/content/app/"; Secure; HttpOnly')],
+    }
+
+    rewritten = mw._rewrite_response_start(
+        message,
+        "/content/app",
+        connect_proxy=True,
+    )
+
+    assert dict(rewritten["headers"])[b"set-cookie"] == (
+        b'session=value; Path="/"; Secure; HttpOnly'
+    )
 
 
 def test_path_only_discovery_uses_relative_location_for_both_entry_points() -> None:

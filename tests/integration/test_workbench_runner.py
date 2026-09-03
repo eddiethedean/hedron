@@ -13,11 +13,15 @@ import urllib.error
 import urllib.request
 from dataclasses import replace
 from pathlib import Path
+from urllib.parse import quote
 
 import pytest
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
 
 from hedron_core.diagnostics import HedronError
-from hedron_posit.config import WorkbenchConfig
+from hedron_posit import HedronPosit
+from hedron_posit.config import WorkbenchConfig, WorkbenchMode
 from hedron_posit.detect import RESOLVED_ACTIVE_ENV
 from hedron_posit.middleware import WorkbenchPathMiddleware
 from hedron_posit.products import PositProduct
@@ -172,6 +176,119 @@ def test_prepare_app_exports_into_caller_environ(monkeypatch: pytest.MonkeyPatch
     assert RESOLVED_MOUNT_ENV not in os.environ or os.environ.get(RESOLVED_MOUNT_ENV) != (
         "/s/isolated/p/1"
     )
+
+
+def test_hedron_launcher_reconfigures_a_generic_pre_wrapped_fastapi_app(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from fastapi_workbench.middleware import (
+        WorkbenchPathMiddleware as GenericWorkbenchPathMiddleware,
+    )
+    from fastapi_workbench.middleware import workbenchify as generic_workbenchify
+
+    mount = "/s/hedron-launcher/p/8310"
+    inner = FastAPI()
+
+    @inner.get("/health")
+    def health() -> dict[str, bool]:
+        return {"ok": True}
+
+    wrapped = generic_workbenchify(inner)
+    assert isinstance(wrapped, GenericWorkbenchPathMiddleware)
+    monkeypatch.setattr("hedron_posit.runner.load_app", lambda *_args, **_kwargs: wrapped)
+
+    prepared, _ = prepare_app(
+        target="sample:app",
+        config=WorkbenchConfig(
+            mode=WorkbenchMode.ON,
+            mount=mount,
+            public_base_url=f"https://workbench.example{mount}",
+        ),
+        apply_environ=False,
+    )
+
+    assert prepared is wrapped
+    assert wrapped.mode is WorkbenchMode.ON
+    assert wrapped.expected_mount == mount
+    assert wrapped.expected_origins == frozenset({"https://workbench.example"})
+    response = TestClient(prepared).get(f"{mount}/health")
+    assert response.status_code == 200
+    assert response.json() == {"ok": True}
+
+
+def test_hedron_launcher_preserves_discovered_origin_with_isolated_environ(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from fastapi_workbench.middleware import (
+        WorkbenchPathMiddleware as GenericWorkbenchPathMiddleware,
+    )
+    from fastapi_workbench.middleware import workbenchify as generic_workbenchify
+
+    for name in (
+        "HEDRON_ROOT_PATH",
+        "HEDRON_WORKBENCH_RESOLVED_PUBLIC_BASE",
+        "FASTAPI_WORKBENCH_RESOLVED_PUBLIC_BASE",
+    ):
+        monkeypatch.delenv(name, raising=False)
+
+    wrapped = generic_workbenchify(FastAPI())
+    assert isinstance(wrapped, GenericWorkbenchPathMiddleware)
+    monkeypatch.setattr("hedron_posit.runner.load_app", lambda *_args, **_kwargs: wrapped)
+    isolated: dict[str, str] = {}
+
+    prepared, resolved = prepare_app(
+        target="sample:app",
+        config=WorkbenchConfig(mode=WorkbenchMode.ON),
+        environ=isolated,
+        bound_port=8124,
+        discovered_raw="https://workbench.example/s/discovered/p/8124/",
+        apply_environ=True,
+    )
+
+    assert prepared is wrapped
+    assert resolved.external_origin == "https://workbench.example"
+    assert wrapped.expected_origins == frozenset({"https://workbench.example"})
+    encoded = "/" + quote(
+        "https://workbench.example/s/discovered/p/8124/health",
+        safe="",
+    )
+    normalized = wrapped.normalize_scope(
+        {
+            "type": "http",
+            "path": encoded,
+            "raw_path": encoded.encode(),
+            "root_path": "",
+            "query_string": b"",
+        }
+    )
+    assert normalized["path"] == "/s/discovered/p/8124/health"
+
+
+def test_hedron_launcher_does_not_reresolve_isolated_environ(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    app = HedronPosit(
+        title="isolated-inactive",
+        security="standard",
+        explorer="off",
+        session_secret="test-secret-ok",
+    )
+    assert app.hedron_workbench.active is False
+    monkeypatch.setenv("HEDRON_WORKBENCH_MODE", "on")
+    monkeypatch.setattr("hedron_posit.runner.load_app", lambda *_args, **_kwargs: app)
+
+    prepared, resolved = prepare_app(
+        target="sample:app",
+        config=WorkbenchConfig(),
+        environ={},
+        apply_environ=False,
+    )
+
+    assert prepared is app
+    assert resolved.active is False
+    assert app.hedron_workbench.active is False
+    assert app._workbench_asgi.active is False
+    assert app._workbench_asgi.runtime_mounts is False
 
 
 def test_run_target_exports_process_environ_before_import(

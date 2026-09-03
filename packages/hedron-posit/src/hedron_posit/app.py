@@ -166,6 +166,15 @@ class HedronPosit(Hedron):
         middleware_mode = self.hedron_workbench.mode
         if hands_off and expected_mount and middleware_mode is WorkbenchMode.OFF:
             middleware_mode = WorkbenchMode.AUTO
+        if (
+            self.hedron_posit.product is PositProduct.CONNECT
+            and middleware_mode is WorkbenchMode.OFF
+        ):
+            # Workbench is off, but Connect still needs request-root response
+            # adaptation and the one-outer-proxy cookie handoff. Keep the
+            # public deployment status off while enabling only scope-detected
+            # middleware behavior.
+            middleware_mode = WorkbenchMode.AUTO
         absolute_origin = self._workbench_absolute_redirect_origin()
         self._workbench_asgi = WorkbenchPathMiddleware(
             super().__call__,

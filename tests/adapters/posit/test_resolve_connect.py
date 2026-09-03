@@ -16,15 +16,45 @@ from hedron_posit import (
     resolve_posit_deployment,
     resolve_product,
 )
+from hedron_posit.config import WorkbenchConfig
 from hedron_posit.connect import native_connect_base_from_request
 from hedron_posit.cookies import require_supported_cookie_mode
 from hedron_posit.detect import RESOLVED_ACTIVE_ENV
+from hedron_posit.middleware import workbenchify
 
 
 def test_resolve_inactive_by_default() -> None:
     product, evidence = resolve_product(environ={})
     assert product is PositProduct.INACTIVE
     assert evidence == "none"
+
+
+def test_config_activation_of_constructed_inactive_facade_fails_loudly() -> None:
+    app = HedronPosit(
+        title="inactive-config",
+        security="standard",
+        explorer="off",
+        session_secret="test-secret-ok",
+    )
+    with pytest.raises(ValueError, match="already-constructed inactive"):
+        workbenchify(
+            app,
+            config=WorkbenchConfig(mode="on", mount="/s/config/p/8000"),
+        )
+
+
+def test_inactive_config_does_not_mutate_constructed_facade_middleware() -> None:
+    app = HedronPosit(
+        title="inactive-config",
+        security="standard",
+        explorer="off",
+        session_secret="test-secret-ok",
+    )
+
+    assert workbenchify(app, config=WorkbenchConfig()) is app
+    assert app.hedron_workbench.active is False
+    assert app._workbench_asgi.active is False
+    assert app._workbench_asgi.runtime_mounts is False
 
 
 def test_resolve_connect_from_posit_product() -> None:

@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.10] — 2026-09-02
+
+### Fixed
+- Merge launcher-discovered mounts, origins, modes, redirect policy, and owned cookies into
+  applications that called `workbenchify()` before launcher discovery.
+- Canonicalize proxy-prefixed ASGI roots when an upstream proxy has already stripped the request
+  path and the remaining root exactly matches the resolved Workbench session mount.
+- Rebase quoted owned-cookie `Path` attributes, including the Posit Connect outer-proxy handoff.
+- Make `mode="off"` a complete pass-through for response headers and cookies as well as scopes.
+- Preserve the resolved public origin when the launcher receives an isolated environment mapping.
+
+### Tests
+- Add a production-shaped FastAPI matrix covering Workbench ingress variants, static files,
+  OpenAPI, generated URLs, sessions, redirects, HTMX headers, encoded values, and WebSockets.
+
 ## [1.0.9] — 2026-09-02
 
 ### Fixed
