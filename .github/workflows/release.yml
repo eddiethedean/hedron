@@ -384,7 +384,7 @@ jobs:
             uv build --package "$pkg"
           done
           ls -la dist
-      - name: Verify Workbench wheel contract and immutable artifact parity
+      - name: Verify all package wheels and immutable PyPI parity
         run: >
           uv run --python 3.12 python scripts/check_workbench_release_artifacts.py
           --dist-dir dist

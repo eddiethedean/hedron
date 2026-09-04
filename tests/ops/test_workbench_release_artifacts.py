@@ -15,6 +15,7 @@ SCRIPTS = ROOT / "scripts"
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
+import check_changed_package_versions as version_check  # noqa: E402
 import check_workbench_release_artifacts as artifacts  # noqa: E402
 
 
@@ -27,6 +28,23 @@ def test_workbench_dependency_floors_select_corrected_artifacts() -> None:
     )["project"]
     assert hedron["optional-dependencies"]["posit"] == ["hedron-posit>=1.0.2,<2.0"]
     assert "fastapi-workbench>=1.0.10,<2.0" in posit["dependencies"]
+
+
+def test_workspace_parity_inventory_covers_all_main_release_packages() -> None:
+    projects = artifacts.workspace_package_versions()
+    assert "hedron-core" in projects
+    assert "hedron" in projects
+    assert "hedron-native" not in projects
+    assert len(projects) == 22
+
+
+def test_toast_fix_would_have_required_a_version_bump() -> None:
+    errors = version_check.version_change_errors(
+        "f8e281be422b8f77156f51f8a58515c66487915a",
+        "04b462ff8f89d41cf8c83f895033a0d8eddd785e",
+    )
+    assert any(error.startswith("hedron:") for error in errors)
+    assert any(error.startswith("hedron-core:") for error in errors)
 
 
 def wheel_bytes(entries: dict[str, bytes]) -> bytes:
@@ -105,3 +123,26 @@ def test_published_parity_rejects_reused_version_with_changed_payload(
     assert len(errors) == 1
     assert "fastapi-workbench==1.0.1 already exists on PyPI" in errors[0]
     assert "bump the package version" in errors[0]
+
+
+def test_published_parity_covers_core_package_changes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    local = wheel_bytes({"hedron_core/static/hedron-ui.mjs": b"toast-fix\n"})
+    stale = wheel_bytes({"hedron_core/static/hedron-ui.mjs": b"stale\n"})
+    wheel = tmp_path / "hedron_core-1.0.8-py3-none-any.whl"
+    wheel.write_bytes(local)
+
+    def fake_published(distribution: str, version: str) -> tuple[str, bytes]:
+        assert distribution == "hedron-core"
+        assert version == "1.0.8"
+        return "hedron_core-1.0.8-py3-none-any.whl", stale
+
+    monkeypatch.setattr(artifacts, "published_wheel", fake_published)
+    errors = artifacts.validate_published_parity(
+        {"hedron-core": wheel},
+        {"hedron-core": "1.0.8"},
+        {"hedron-core": "hedron-core"},
+    )
+    assert len(errors) == 1
+    assert "hedron-core==1.0.8 already exists on PyPI" in errors[0]

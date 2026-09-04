@@ -71,6 +71,26 @@ jobs:
           echo "docs_only=${docs_only}" >> "$GITHUB_OUTPUT"
           echo "docs_only=${docs_only} (${#files[@]} files)"
 
+  package_versions:
+    name: Detect package version changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify changed packages have version bumps
+        if: github.event_name == 'pull_request'
+        run: >-
+          python3 scripts/check_changed_package_versions.py
+          "${{ github.event.pull_request.base.sha }}"
+          "${{ github.event.pull_request.head.sha }}"
+      - name: Skip package version check outside pull requests
+        if: github.event_name != 'pull_request'
+        run: echo "Not a pull_request — package version diff check not applicable."
+
   test:
     name: Tests (Python ${{ matrix.python-version }})
     needs: changes
@@ -440,12 +460,13 @@ jobs:
     name: CI required
     if: always()
     needs:
-      [changes, test, dependency-bounds, quality, browser, realwb, realconnect, evidence, release]
+      [changes, package_versions, test, dependency-bounds, quality, browser, realwb, realconnect, evidence, release]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
       DOCS_ONLY: ${{ needs.changes.outputs.docs_only }}
       CHANGES_RESULT: ${{ needs.changes.result }}
+      PACKAGE_VERSIONS_RESULT: ${{ needs.package_versions.result }}
       TEST_RESULT: ${{ needs.test.result }}
       BOUNDS_RESULT: ${{ needs.dependency-bounds.result }}
       QUALITY_RESULT: ${{ needs.quality.result }}
@@ -468,6 +489,7 @@ jobs:
             fi
           }
           require_success changes "$CHANGES_RESULT"
+          require_success package_versions "$PACKAGE_VERSIONS_RESULT"
           require_success quality "$QUALITY_RESULT"
           if [ "$DOCS_ONLY" = "true" ]; then
             exit 0

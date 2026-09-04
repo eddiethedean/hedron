@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify the built Workbench package pair and immutable PyPI artifact parity.
+"""Verify built release artifacts and immutable PyPI artifact parity.
 
 This check deliberately reads and installs wheels from ``dist/``. Importing the
 workspace source tree cannot detect a stale wheel that has already been uploaded
@@ -30,6 +30,7 @@ from packaging.requirements import Requirement
 
 ROOT = Path(__file__).resolve().parents[1]
 PAIR = ("fastapi-workbench", "hedron-posit")
+EXCLUDED_FROM_MAIN_RELEASE = {"hedron-native"}
 PYPI_JSON = "https://pypi.org/pypi/{name}/{version}/json"
 
 
@@ -38,6 +39,23 @@ def project_version(distribution: str) -> str:
         (ROOT / "packages" / distribution / "pyproject.toml").read_text(encoding="utf-8")
     )
     return str(data["project"]["version"])
+
+
+def workspace_package_versions() -> dict[str, tuple[str, str]]:
+    """Return publishable workspace package directories and their metadata.
+
+    The main release workflow builds every workspace package except
+    ``hedron-native``. Keeping this inventory derived from package metadata
+    prevents a new package from silently bypassing the immutable-artifact gate.
+    """
+    projects: dict[str, tuple[str, str]] = {}
+    for project_file in sorted((ROOT / "packages").glob("*/pyproject.toml")):
+        directory = project_file.parent.name
+        if directory in EXCLUDED_FROM_MAIN_RELEASE:
+            continue
+        project = tomllib.loads(project_file.read_text(encoding="utf-8"))["project"]
+        projects[directory] = (str(project["name"]), str(project["version"]))
+    return projects
 
 
 def find_wheel(dist_dir: Path, distribution: str, version: str) -> Path:
@@ -153,13 +171,27 @@ def published_wheel(distribution: str, version: str) -> tuple[str, bytes] | None
     return str(candidate["filename"]), raw
 
 
-def validate_published_parity(wheels: dict[str, Path], versions: dict[str, str]) -> list[str]:
+def validate_published_parity(
+    wheels: dict[str, Path],
+    versions: dict[str, str],
+    package_names: dict[str, str] | None = None,
+) -> list[str]:
+    """Reject a rebuilt wheel whose immutable version already differs on PyPI.
+
+    ``package_names`` maps local package directories to distribution names. It
+    is optional so the focused Workbench contract tests can continue to use the
+    historical ``PAIR`` fixture.
+    """
     errors: list[str] = []
-    for distribution in PAIR:
-        published = published_wheel(distribution, versions[distribution])
+    distributions = tuple(package_names) if package_names is not None else PAIR
+    for distribution in distributions:
+        package_name = (
+            package_names[distribution] if package_names is not None else distribution
+        )
+        published = published_wheel(package_name, versions[distribution])
         if published is None:
             print(
-                f"ok: {distribution}=={versions[distribution]} is not yet on PyPI; "
+                f"ok: {package_name}=={versions[distribution]} is not yet on PyPI; "
                 "the built wheel is a new immutable artifact"
             )
             continue
@@ -174,13 +206,13 @@ def validate_published_parity(wheels: dict[str, Path], versions: dict[str, str])
                 if local_payload.get(name) != public_payload.get(name)
             )
             errors.append(
-                f"{distribution}=={versions[distribution]} already exists on PyPI but its "
+                f"{package_name}=={versions[distribution]} already exists on PyPI but its "
                 f"immutable wheel differs from the release candidate ({filename}); bump the "
                 f"package version. Changed payload: {', '.join(changed[:8])}"
             )
         else:
             print(
-                f"ok: {distribution}=={versions[distribution]} candidate matches its "
+                f"ok: {package_name}=={versions[distribution]} candidate matches its "
                 "immutable PyPI runtime payload"
             )
     return errors
@@ -254,12 +286,22 @@ def main(argv: Iterable[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
     dist_dir = args.dist_dir.resolve()
-    versions = {name: project_version(name) for name in PAIR}
+    projects = workspace_package_versions()
+    versions = {directory: version for directory, (_, version) in projects.items()}
     try:
-        wheels = {name: find_wheel(dist_dir, name, versions[name]) for name in PAIR}
+        wheels = {
+            directory: find_wheel(dist_dir, directory, version)
+            for directory, version in versions.items()
+        }
         errors = validate_pair_contract(wheels, versions)
         if not args.skip_published_parity:
-            errors.extend(validate_published_parity(wheels, versions))
+            errors.extend(
+                validate_published_parity(
+                    wheels,
+                    versions,
+                    {directory: name for directory, (name, _) in projects.items()},
+                )
+            )
         if errors:
             print("\n".join(errors), file=sys.stderr)
             return 1

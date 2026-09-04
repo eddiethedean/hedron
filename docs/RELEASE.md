@@ -59,8 +59,10 @@ uv run python scripts/check_published_quickstart.py 1.0.8 --dist-dir dist --atte
 uv run python scripts/check_workbench_release_artifacts.py --dist-dir dist
 ```
 
-Run the quick-start check first against local artifacts. After upload, rerun it against the
-registry and record the result before changing public documentation.
+The artifact check validates the Workbench contract and compares every publishable workspace
+wheel with its immutable PyPI version. If a version already exists with different contents, it
+fails and requires a version bump. Run the quick-start check first against local artifacts. After
+upload, rerun it against the registry and record the result before changing public documentation.
 
 ## Tag and publish
 

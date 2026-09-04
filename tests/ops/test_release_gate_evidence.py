@@ -92,6 +92,13 @@ def test_release_workflow_uses_metadata_version_with_release_namespace() -> None
     assert "Using legacy version tag for manual recovery" in workflow
 
 
+def test_ci_requires_package_version_change_detection() -> None:
+    workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
+    assert "name: Detect package version changes" in workflow
+    assert "scripts/check_changed_package_versions.py" in workflow
+    assert "package_versions" in workflow[workflow.index("  required:") :]
+
+
 def test_built_quickstart_is_verified_before_pypi_upload() -> None:
     """Immutable uploads must not be the first exercise of the release verifier."""
     workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
@@ -102,12 +109,12 @@ def test_built_quickstart_is_verified_before_pypi_upload() -> None:
 
 
 def test_workbench_artifacts_are_verified_before_pypi_upload() -> None:
-    """The release must exercise built wheels and reject stale immutable PyPI versions."""
+    """The release must reject stale immutable PyPI versions for all packages."""
     workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
-    prepublish = workflow.index(
-        "      - name: Verify Workbench wheel contract and immutable artifact parity"
-    )
+    prepublish = workflow.index("      - name: Verify all package wheels and immutable PyPI parity")
     upload = workflow.index("      - name: Publish to PyPI", prepublish)
+    build = workflow.index("      - name: Build all workspace packages")
+    assert build < prepublish
     assert prepublish < upload
     assert "scripts/check_workbench_release_artifacts.py" in workflow[prepublish:upload]
     assert workflow.count('|| [ "$name" = "fastapi-workbench" ]') == 2
@@ -157,7 +164,7 @@ def test_v1_branch_has_one_stable_required_ci_context() -> None:
     workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
     assert "branches: [main, v1.0]" in workflow
     assert "name: CI required" in workflow
-    assert "needs:\n      [changes, test, dependency-bounds" in workflow
+    assert "needs:\n      [changes, package_versions, test, dependency-bounds" in workflow
 
 
 def test_local_release_gate_accepts_both_license_spelling_aliases() -> None:

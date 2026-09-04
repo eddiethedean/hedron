@@ -462,7 +462,10 @@ quality_wheels_smoke() {
   rm -rf dist/*.whl dist/*.tar.gz
   mkdir -p dist
   run env UV_NO_SYNC=1 UV_PYTHON="$PYTHON" uv build --all-packages --wheel --out-dir dist
-  run_py scripts/check_workbench_release_artifacts.py --dist-dir dist
+  # Registry immutability is a release-only concern. Ordinary CI intentionally
+  # validates the freshly built wheels locally; release.yml runs the same check
+  # without this flag immediately before publication.
+  run_py scripts/check_workbench_release_artifacts.py --dist-dir dist --skip-published-parity
 
   rm -rf /tmp/hedron-smoke
   uv venv /tmp/hedron-smoke --python "$PYTHON"
