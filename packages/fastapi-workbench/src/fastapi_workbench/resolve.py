@@ -111,6 +111,24 @@ def explicit_mount_hint(
         alias_name="BASE_PATH",
         warnings=w,
     )
+    if mount_explicit is None and not is_workbench_job(env):
+        # An explicit public base includes the authoritative browser mount.
+        # Prefer it over UVICORN_ROOT_PATH, which may survive a Workbench
+        # restart and describe the previous session on the same port.
+        public_explicit = _first_str(
+            explicit=config.public_base_url,
+            namespaced=env.get(_ENV_PUBLIC),
+            resolved=env.get(RESOLVED_PUBLIC_BASE_ENV),
+            alias=env.get("PUBLIC_BASE_URL") if compatibility_aliases else None,
+            alias_name="PUBLIC_BASE_URL",
+            # resolve_deployment() also resolves this value for precedence and
+            # diagnostics; do not duplicate compatibility warnings here.
+            warnings=[],
+        )
+        if public_explicit is not None:
+            _, public_mount, _ = _validated_public_base(public_explicit)
+            if public_mount not in {"", "/"}:
+                return public_mount
     if mount_explicit is None and rs_server_url(env) and not is_workbench_job(env):
         uvicorn_root = env.get(_UVICORN_ROOT_PATH)
         if uvicorn_root is not None and str(uvicorn_root).strip():
@@ -542,6 +560,20 @@ def resolve_deployment(
     else:
         port = 0
 
+    public_explicit = _first_str(
+        explicit=cfg.public_base_url,
+        namespaced=env.get(_ENV_PUBLIC),
+        resolved=env.get(RESOLVED_PUBLIC_BASE_ENV),
+        alias=env.get("PUBLIC_BASE_URL") if compatibility_aliases else None,
+        alias_name="PUBLIC_BASE_URL",
+        warnings=warnings,
+    )
+    public_origin: str | None = None
+    public_mount = ""
+    public_parsed: SplitResult | None = None
+    if public_explicit is not None:
+        public_origin, public_mount, public_parsed = _validated_public_base(public_explicit)
+    public_mount_authoritative = public_mount not in {"", "/"}
     mount_explicit = explicit_mount_hint(
         cfg,
         env,
@@ -564,15 +596,8 @@ def resolve_deployment(
         and str(uvicorn_root).strip()
         and rs_server_url(env)
         and not job_context
+        and not public_mount_authoritative
         and not any(value is not None and str(value).strip() for value in prior_mount_values)
-    )
-    public_explicit = _first_str(
-        explicit=cfg.public_base_url,
-        namespaced=env.get(_ENV_PUBLIC),
-        resolved=env.get(RESOLVED_PUBLIC_BASE_ENV),
-        alias=env.get("PUBLIC_BASE_URL") if compatibility_aliases else None,
-        alias_name="PUBLIC_BASE_URL",
-        warnings=warnings,
     )
     if (
         public_explicit is None
@@ -582,6 +607,8 @@ def resolve_deployment(
         and uvicorn_root
     ):
         public_explicit = _uvicorn_root_path_public_base(uvicorn_root)
+        if public_explicit is not None and public_parsed is None:
+            public_origin, public_mount, public_parsed = _validated_public_base(public_explicit)
 
     legacy_debug = truthy(env.get("WORKBENCH_DEBUG")) if compatibility_aliases else False
     debug = cfg.debug or truthy(env.get(_ENV_DEBUG)) or legacy_debug
@@ -627,12 +654,6 @@ def resolve_deployment(
     browser_mount = ""
     external_origin = _local_origin(host, port or None)
 
-    public_origin: str | None = None
-    public_mount = ""
-    public_parsed: SplitResult | None = None
-    if public_explicit is not None:
-        public_origin, public_mount, public_parsed = _validated_public_base(public_explicit)
-
     if mount_explicit is not None:
         browser_mount = _validated_mount(mount_explicit, source="explicit Workbench mount")
         if uvicorn_root_used:
@@ -640,6 +661,16 @@ def resolve_deployment(
                 "rserver-url:full-url"
                 if _uvicorn_root_path_public_base(str(uvicorn_root)) is not None
                 else "rserver-url:path"
+            )
+        elif public_explicit is not None and not any(
+            value is not None and str(value).strip() for value in prior_mount_values
+        ):
+            source = (
+                str(env.get(RESOLVED_SOURCE_ENV) or "launcher:resolved")
+                if env.get(RESOLVED_PUBLIC_BASE_ENV)
+                and cfg.public_base_url is None
+                and not env.get(_ENV_PUBLIC)
+                else "explicit:public_base"
             )
         else:
             source = (
