@@ -9,7 +9,7 @@ upload, smoke-test, and documentation sequence without moving an existing tag.
 Hedron is a Python monorepo with independently publishable distributions. The Stable 1.0 package
 boundary is `hedron-core`, `hedron`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps`.
 Every other distribution is a Beta satellite even when it shares the `1.0.0` version number;
-`fastapi-workbench` is currently `1.0.8`. The removed `hedron-workbench` package is not part of
+`fastapi-workbench` is currently `1.0.11`. The removed `hedron-workbench` package is not part of
 the release inventory.
 
 Release tags use the `release-` namespace and carry no package-version semantics; the
