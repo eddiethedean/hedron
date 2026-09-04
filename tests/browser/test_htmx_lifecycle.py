@@ -34,6 +34,7 @@ def browser_app_url() -> Iterator[str]:
 
     from hedron import Hedron, InteractionResult, Page, Stack, Text
     from hedron.interaction import FragmentRegion, InteractionPolicy, OobUpdate
+    from hedron_core.builtins import Toast, ToastHost
     from hedron_core.html import html
 
     reset_browser_plugin_state()
@@ -46,6 +47,7 @@ def browser_app_url() -> Iterator[str]:
     regions = (
         FragmentRegion(id="chart-region", selector="#chart-region"),
         FragmentRegion(id="oob-status", selector="#oob-status"),
+        FragmentRegion(id="hedron-toast", selector="#hedron-toast"),
     )
 
     @app.page("/", fragment_regions=regions)
@@ -54,11 +56,21 @@ def browser_app_url() -> Iterator[str]:
             Stack(
                 html.div(Text("Primary panel"), id="chart-region"),
                 html.div(Text("OOB status idle"), id="oob-status"),
+                ToastHost(),
                 html.button(
                     "Refresh",
                     type="button",
                     **{
                         "hx-get": "/charts/fragment",
+                        "hx-target": "#chart-region",
+                        "hx-swap": "innerHTML",
+                    },
+                ),
+                html.button(
+                    "Show expiring toast",
+                    type="button",
+                    **{
+                        "hx-get": "/toast",
                         "hx-target": "#chart-region",
                         "hx-swap": "innerHTML",
                     },
@@ -84,6 +96,20 @@ def browser_app_url() -> Iterator[str]:
             oob=(OobUpdate(content=Text("OOB status refreshed"), element_id="oob-status"),),
             policy=InteractionPolicy(declared_regions=regions, vary_on_target=True),
             cache="vary-htmx",
+        )
+
+    @app.view("/toast", fragment_regions=regions)
+    def toast_fragment() -> InteractionResult:
+        return InteractionResult(
+            content=Text("Toast request complete"),
+            oob=(
+                OobUpdate(
+                    content=Toast("Saved", tone="success", ttl_ms=100),
+                    element_id="hedron-toast",
+                    swap="beforeend",
+                ),
+            ),
+            policy=InteractionPolicy(declared_regions=regions, vary_on_target=True),
         )
 
     port = _free_port()
@@ -124,6 +150,20 @@ def test_htmx_fragment_and_oob_update(browser_app_url: str) -> None:
                 timeout=10_000,
             )
             assert "OOB status refreshed" in page.locator("#oob-status").inner_text()
+        finally:
+            browser.close()
+
+
+def test_toast_ttl_expires_after_oob_beforeend_swap(browser_app_url: str) -> None:
+    with sync_playwright() as pw:
+        browser, page = _open_ready_page(pw, browser_app_url)
+        try:
+            page.get_by_role("button", name="Show expiring toast").click()
+            page.wait_for_selector("#hedron-toast [data-hedron-toast]")
+            page.wait_for_function(
+                "() => !document.querySelector('#hedron-toast [data-hedron-toast]')",
+                timeout=2_000,
+            )
         finally:
             browser.close()
 
