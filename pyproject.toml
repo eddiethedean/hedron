@@ -95,8 +95,9 @@ dev = [
 ]
 docs = [
     "mkdocs>=1.6,<2",
-    # Material 9.7.2+ prints a MkDocs 2.0 campaign banner on every build; stay below that.
-    "mkdocs-material>=9.5,<9.7.2",
+    # 9.7.7 contains the search-suggestion XSS fix; keep the docs lane on the
+    # patched 9.7 release while avoiding an unreviewed major-version change.
+    "mkdocs-material>=9.7.7,<9.8",
     "pymdown-extensions>=11.0,<12",
     "mkdocstrings[python]>=0.27,<0.31",
     "hedron-sim",

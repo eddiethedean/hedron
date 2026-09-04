@@ -1,8 +1,8 @@
 # Pinned for reproducible Read the Docs / local MkDocs builds.
 # Keep in sync with the [dependency-groups] docs entries in pyproject.toml.
 mkdocs>=1.6,<2
-# Material 9.7.2+ prints a MkDocs 2.0 campaign banner on every build; stay below that.
-mkdocs-material>=9.5,<9.7.2
+# 9.7.7 contains the search-suggestion XSS fix; keep the RTD lane on patched 9.7.
+mkdocs-material>=9.7.7,<9.8
 pymdown-extensions>=11.0,<12
 mkdocstrings[python]>=0.27,<0.31
 
