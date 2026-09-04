@@ -366,6 +366,7 @@ def test_default_stylesheet_ships_the_new_class_hooks() -> None:
         ".hedron-icon",
         ".hedron-nav-group",
         ".hedron-app-shell-header",
+        ".hedron-app-shell-env > .hedron-text",
         ".hedron-type-eyebrow",
         ".hedron-visually-hidden",
         "--hedron-nav-width",

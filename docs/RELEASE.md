@@ -55,7 +55,7 @@ Build wheels and test them in a clean environment before tagging:
 
 ```bash
 uv build --all-packages
-uv run python scripts/check_published_quickstart.py 1.0.9 --dist-dir dist --attempts 1
+uv run python scripts/check_published_quickstart.py 1.0.10 --dist-dir dist --attempts 1
 uv run python scripts/check_workbench_release_artifacts.py --dist-dir dist
 ```
 

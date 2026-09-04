@@ -2675,6 +2675,10 @@
     text-transform: uppercase;
   }
 
+  .hedron-app-shell-env > .hedron-text {
+    margin-block: 0;
+  }
+
   .hedron-app-shell-account {
     display: flex;
     align-items: center;
