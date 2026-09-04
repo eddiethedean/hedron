@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.9] — 2026-09-04
+
+### Fixed
+
+- Expire toast notifications after HTMX out-of-band swaps.
+
 ## [1.0.8] — 2026-09-02
 
 - Maintenance release for the coordinated 1.0 train.

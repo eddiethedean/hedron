@@ -9,7 +9,7 @@ from hedron_maps.pins import RUNTIME_PINS, assert_pins_present
 
 
 def test_package_version_and_pin() -> None:
-    assert __version__ == "1.0.8"
+    assert __version__ == "1.0.9"
     assert MAPLIBRE_VERSION == "5.6.1"
     assert MAPLIBRE_VERSION != "4.5.0"
     assert_pins_present()

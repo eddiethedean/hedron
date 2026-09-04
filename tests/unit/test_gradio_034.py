@@ -27,7 +27,7 @@ FIXTURES = Path(__file__).resolve().parents[1] / "fixtures" / "gradio"
 def test_package_version_is_beta_line() -> None:
     from hedron_gradio import __version__
 
-    assert __version__ == "0.2.3"
+    assert __version__ == "0.2.4"
 
 
 def test_validate_remote_url_blocks_private_host() -> None:

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.3] — 2026-09-04
+
+### Fixed
+
+- Publish the current recording and simulator asset fixes under a new immutable version.
+
 ## [0.2.2] — 2026-08-27
 
 ### Fixed

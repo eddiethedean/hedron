@@ -1,6 +1,6 @@
 [project]
 name = "hedron-gradio"
-version = "0.2.3"
+version = "0.2.4"
 description = "Production-grade Gradio client interop for Hedron (RFC-0049 / RFC-0067)"
 readme = "README.md"
 requires-python = ">=3.10,<3.15"
