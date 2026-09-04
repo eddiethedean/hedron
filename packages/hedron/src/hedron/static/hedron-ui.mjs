@@ -201,17 +201,23 @@ function toastHost() {
   return document.getElementById("hedron-toast");
 }
 
+const scheduledToastExpiries = new WeakSet();
+
+function scheduleToastExpiry(node) {
+  if (scheduledToastExpiries.has(node)) return;
+  const ttl = node.getAttribute("data-hedron-ttl");
+  if (!ttl) return;
+  const ms = Number(ttl);
+  if (!Number.isFinite(ms) || ms <= 0) return;
+  scheduledToastExpiries.add(node);
+  window.setTimeout(() => node.remove(), ms);
+}
+
 function enqueueToast(node) {
   const host = toastHost();
   if (!(host instanceof HTMLElement) || !(node instanceof HTMLElement)) return;
   host.appendChild(node);
-  const ttl = node.getAttribute("data-hedron-ttl");
-  if (ttl) {
-    const ms = Number(ttl);
-    if (Number.isFinite(ms) && ms > 0) {
-      window.setTimeout(() => node.remove(), ms);
-    }
-  }
+  scheduleToastExpiry(node);
 }
 
 function applyErrorTemplate(elt) {
@@ -222,7 +228,7 @@ function applyErrorTemplate(elt) {
   host.replaceChildren(tpl.content.cloneNode(true));
 }
 
-document.addEventListener("htmx:afterSwap", (event) => {
+function handleToastSwap(event) {
   const swapped = event.detail?.elt;
   if (swapped instanceof HTMLElement && swapped.matches("[data-hedron-toast]")) {
     enqueueToast(swapped);
@@ -231,9 +237,13 @@ document.addEventListener("htmx:afterSwap", (event) => {
   if (host instanceof HTMLElement) {
     host.querySelectorAll("[data-hedron-toast]").forEach((node) => {
       if (node.parentElement !== host) enqueueToast(node);
+      else scheduleToastExpiry(node);
     });
   }
-});
+}
+
+document.addEventListener("htmx:afterSwap", handleToastSwap);
+document.addEventListener("htmx:oobAfterSwap", handleToastSwap);
 
 document.addEventListener("click", (event) => {
   if (!(event.target instanceof Element)) return;
