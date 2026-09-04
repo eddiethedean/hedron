@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.11] — 2026-09-04
+
+### Fixed
+- Prefer an explicit public-base mount over stale `UVICORN_ROOT_PATH` data while preserving
+  path-only runtime redirect semantics when the public base supplies only an origin.
+- Keep non-interactive Workbench jobs and resolved launcher source metadata on their existing
+  safe paths during public-base resolution.
+
+### Tests
+- Add regression coverage for public-base precedence, origin-only discovery, job suppression,
+  source replay, and compatibility-warning deduplication.
+
 ## [1.0.10] — 2026-09-02
 
 ### Fixed

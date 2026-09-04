@@ -568,6 +568,12 @@ def resolve_deployment(
         alias_name="PUBLIC_BASE_URL",
         warnings=warnings,
     )
+    public_origin: str | None = None
+    public_mount = ""
+    public_parsed: SplitResult | None = None
+    if public_explicit is not None:
+        public_origin, public_mount, public_parsed = _validated_public_base(public_explicit)
+    public_mount_authoritative = public_mount not in {"", "/"}
     mount_explicit = explicit_mount_hint(
         cfg,
         env,
@@ -590,7 +596,7 @@ def resolve_deployment(
         and str(uvicorn_root).strip()
         and rs_server_url(env)
         and not job_context
-        and public_explicit is None
+        and not public_mount_authoritative
         and not any(value is not None and str(value).strip() for value in prior_mount_values)
     )
     if (
@@ -601,6 +607,8 @@ def resolve_deployment(
         and uvicorn_root
     ):
         public_explicit = _uvicorn_root_path_public_base(uvicorn_root)
+        if public_explicit is not None and public_parsed is None:
+            public_origin, public_mount, public_parsed = _validated_public_base(public_explicit)
 
     legacy_debug = truthy(env.get("WORKBENCH_DEBUG")) if compatibility_aliases else False
     debug = cfg.debug or truthy(env.get(_ENV_DEBUG)) or legacy_debug
@@ -645,12 +653,6 @@ def resolve_deployment(
     active = mode is WorkbenchMode.ON or forced
     browser_mount = ""
     external_origin = _local_origin(host, port or None)
-
-    public_origin: str | None = None
-    public_mount = ""
-    public_parsed: SplitResult | None = None
-    if public_explicit is not None:
-        public_origin, public_mount, public_parsed = _validated_public_base(public_explicit)
 
     if mount_explicit is not None:
         browser_mount = _validated_mount(mount_explicit, source="explicit Workbench mount")

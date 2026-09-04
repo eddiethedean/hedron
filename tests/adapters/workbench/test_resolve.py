@@ -300,6 +300,21 @@ def test_origin_only_public_base_preserves_discovered_mount() -> None:
     assert resolved.discovered is True
 
 
+def test_origin_only_public_base_preserves_uvicorn_path_source() -> None:
+    resolved = resolve_deployment(
+        WorkbenchConfig(public_base_url="https://canonical.example"),
+        environ={
+            "RS_SERVER_URL": "https://wb.example/",
+            "UVICORN_ROOT_PATH": "/s/current/p/8050",
+        },
+        bound_port=8050,
+    )
+
+    assert resolved.browser_mount == "/s/current/p/8050"
+    assert resolved.external_origin == "https://canonical.example"
+    assert resolved.source == "rserver-url:path"
+
+
 def test_noninteractive_workbench_job_does_not_activate_public_base() -> None:
     resolved = resolve_deployment(
         WorkbenchConfig(),
