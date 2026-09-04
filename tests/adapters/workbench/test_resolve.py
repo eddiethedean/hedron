@@ -14,6 +14,7 @@ from hedron_posit.resolve import (
     RESOLVED_MODE_ENV,
     RESOLVED_MOUNT_ENV,
     RESOLVED_PUBLIC_BASE_ENV,
+    RESOLVED_SOURCE_ENV,
     parse_rserver_url_output,
     resolve_deployment,
 )
@@ -286,6 +287,34 @@ def test_workbench_uvicorn_root_path_is_ignored_for_different_bound_port() -> No
     assert resolved.active is False
 
 
+def test_origin_only_public_base_preserves_discovered_mount() -> None:
+    resolved = resolve_deployment(
+        WorkbenchConfig(public_base_url="https://canonical.example"),
+        environ={},
+        bound_port=8050,
+        discovered_raw="https://internal.example/s/current/p/8050",
+    )
+
+    assert resolved.browser_mount == "/s/current/p/8050"
+    assert resolved.external_origin == "https://canonical.example"
+    assert resolved.discovered is True
+
+
+def test_noninteractive_workbench_job_does_not_activate_public_base() -> None:
+    resolved = resolve_deployment(
+        WorkbenchConfig(),
+        environ={
+            "RS_SERVER_URL": "https://wb.example/",
+            "FASTAPI_WORKBENCH_PUBLIC_BASE_URL": "https://wb.example/s/current/p/8050",
+            "AUDIT_DETAILS_PATH": "/tmp/audit",
+        },
+    )
+
+    assert resolved.active is False
+    assert resolved.browser_mount == ""
+    assert resolved.source == "workbench-job:non-interactive"
+
+
 def test_operator_public_origin_may_differ_from_discovery_origin() -> None:
     resolved = resolve_deployment(
         WorkbenchConfig(public_base_url="https://canonical.example/s/x/p/1"),
@@ -328,6 +357,28 @@ def test_launcher_handoff_is_consumed_as_active_state() -> None:
     assert resolved.active is True
     assert resolved.browser_mount == "/s/resolved/p/7"
     assert resolved.external_origin == "https://wb.example"
+
+
+def test_resolved_public_base_replay_preserves_source() -> None:
+    resolved = resolve_deployment(
+        WorkbenchConfig(),
+        environ={
+            RESOLVED_PUBLIC_BASE_ENV: "https://wb.example/s/replayed/p/7",
+            RESOLVED_SOURCE_ENV: "rserver-url:path",
+        },
+    )
+
+    assert resolved.browser_mount == "/s/replayed/p/7"
+    assert resolved.source == "rserver-url:path"
+
+
+def test_public_base_alias_warning_is_not_duplicated() -> None:
+    resolved = resolve_deployment(
+        WorkbenchConfig(),
+        environ={"PUBLIC_BASE_URL": "https://wb.example/s/alias/p/7"},
+    )
+
+    assert sum("PUBLIC_BASE_URL" in warning for warning in resolved.warnings) == 1
 
 
 def test_redaction_removes_url_credentials_and_assignments() -> None:

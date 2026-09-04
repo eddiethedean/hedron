@@ -111,7 +111,7 @@ def explicit_mount_hint(
         alias_name="BASE_PATH",
         warnings=w,
     )
-    if mount_explicit is None:
+    if mount_explicit is None and not is_workbench_job(env):
         # An explicit public base includes the authoritative browser mount.
         # Prefer it over UVICORN_ROOT_PATH, which may survive a Workbench
         # restart and describe the previous session on the same port.
@@ -121,11 +121,14 @@ def explicit_mount_hint(
             resolved=env.get(RESOLVED_PUBLIC_BASE_ENV),
             alias=env.get("PUBLIC_BASE_URL") if compatibility_aliases else None,
             alias_name="PUBLIC_BASE_URL",
-            warnings=w,
+            # resolve_deployment() also resolves this value for precedence and
+            # diagnostics; do not duplicate compatibility warnings here.
+            warnings=[],
         )
         if public_explicit is not None:
             _, public_mount, _ = _validated_public_base(public_explicit)
-            return public_mount
+            if public_mount not in {"", "/"}:
+                return public_mount
     if mount_explicit is None and rs_server_url(env) and not is_workbench_job(env):
         uvicorn_root = env.get(_UVICORN_ROOT_PATH)
         if uvicorn_root is not None and str(uvicorn_root).strip():
@@ -660,7 +663,13 @@ def resolve_deployment(
         elif public_explicit is not None and not any(
             value is not None and str(value).strip() for value in prior_mount_values
         ):
-            source = "explicit:public_base"
+            source = (
+                str(env.get(RESOLVED_SOURCE_ENV) or "launcher:resolved")
+                if env.get(RESOLVED_PUBLIC_BASE_ENV)
+                and cfg.public_base_url is None
+                and not env.get(_ENV_PUBLIC)
+                else "explicit:public_base"
+            )
         else:
             source = (
                 str(env.get(RESOLVED_SOURCE_ENV) or "launcher:resolved")
