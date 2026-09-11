@@ -14,6 +14,7 @@ T = TypeVar("T")
 
 __all__ = [
     "await_if_needed",
+    "invoke",
     "gather",
     "is_async_callable",
     "run_sync",
@@ -33,6 +34,19 @@ async def await_if_needed(value: T | Awaitable[T]) -> T:
     if inspect.isawaitable(value):
         return await value  # type: ignore[no-any-return]
     return value  # type: ignore[return-value]
+
+
+async def invoke(fn: Callable[..., T], /, *args: Any, **kwargs: Any) -> T:
+    """Call async handlers directly and offload synchronous handlers.
+
+    Routing wrappers are async so they can normalize component responses, but
+    invoking a synchronous user handler directly from those wrappers would
+    block the event loop.  Keep the dispatch decision in one place so all
+    route surfaces preserve FastAPI's sync/async behavior.
+    """
+    if is_async_callable(fn):
+        return await await_if_needed(fn(*args, **kwargs))
+    return await await_if_needed(await run_sync(fn, *args, **kwargs))
 
 
 def mark_cpu_heavy(fn: Callable[..., T]) -> Callable[..., T]:
