@@ -9,7 +9,9 @@ from typing import ClassVar
 
 import pytest
 
+from hedron import cache_data
 from hedron_core.async_bridge import run_coro, run_prepare, running_loop
+from hedron_core.cache import reset_cache_for_tests
 from hedron_core.cache.keying import build_cache_key
 from hedron_core.egress import EgressDecision, EgressDecisionKind, EgressTransportError
 from hedron_core.egress_http import (
@@ -81,6 +83,30 @@ def test_cache_keys_are_order_independent_but_contract_sensitive() -> None:
     assert first == reordered
     assert first != changed
     assert len(first) == 24
+
+
+def test_cache_keys_preserve_mapping_key_types() -> None:
+    numeric = build_cache_key(identity="mapping", args=({1: "value"},))
+    textual = build_cache_key(identity="mapping", args=({"1": "value"},))
+    mixed = build_cache_key(identity="mapping", args=({1: "value", "1": "other"},))
+
+    assert numeric != textual
+    assert mixed != numeric
+    assert mixed != textual
+
+
+def test_cache_data_does_not_reuse_distinct_mapping_key_types() -> None:
+    reset_cache_for_tests()
+    calls: list[object] = []
+
+    @cache_data(scope="public")
+    def lookup(mapping: object) -> str:
+        calls.append(mapping)
+        return "numeric" if 1 in mapping else "text"  # type: ignore[operator]
+
+    assert lookup({1: "value"}) == "numeric"
+    assert lookup({"1": "value"}) == "text"
+    assert len(calls) == 2
 
 
 def test_cache_keys_hash_secrets_and_support_models_and_repr_fallback() -> None:

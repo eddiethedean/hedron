@@ -28,10 +28,20 @@ def _normalize_arg(value: object) -> object:
         raise ValueError(f"Cannot use {type_name} as a cache key argument")
     if isinstance(value, Mapping):
         mapping = cast(Mapping[object, object], value)
-        return {
-            str(k): _normalize_arg(v)
-            for k, v in sorted(mapping.items(), key=lambda item: str(item[0]))
-        }
+        items = [
+            (
+                {
+                    "type": f"{type(key).__module__}.{type(key).__qualname__}",
+                    "value": _normalize_arg(key),
+                },
+                _normalize_arg(item),
+            )
+            for key, item in mapping.items()
+        ]
+        items.sort(
+            key=lambda item: json.dumps(item[0], sort_keys=True, default=str, separators=(",", ":"))
+        )
+        return {"__mapping__": items}
     if isinstance(value, (list, tuple)):
         return [_normalize_arg(item) for item in cast(Sequence[object], value)]
     dump = getattr(value, "model_dump", None)

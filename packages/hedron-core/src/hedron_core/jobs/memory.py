@@ -53,9 +53,6 @@ class InMemoryJobBackend:
                 raise ValueError("job payload must be JSON-compatible") from exc
             if payload_size > self.max_payload_bytes:
                 raise ValueError("job payload exceeds max_payload_bytes")
-            self._trim_terminal_jobs_unlocked()
-            if len(self._jobs) >= self.max_jobs:
-                raise RuntimeError("in-memory job capacity exhausted; configure a durable backend")
             scoped: str | None = None
             if idempotency_key:
                 scoped = idempotency_scope_key(
@@ -79,6 +76,9 @@ class InMemoryJobBackend:
                         raise PermissionError("Idempotency key is already bound to another scope")
                     # The pointed-to job expired or was removed, so reclaim the key.
                     del self._idempotency[matched_scope]
+            self._trim_terminal_jobs_unlocked()
+            if len(self._jobs) >= self.max_jobs:
+                raise RuntimeError("in-memory job capacity exhausted; configure a durable backend")
             job_id = secrets.token_urlsafe(16)
             now = time.time()
             status = JobStatus(
