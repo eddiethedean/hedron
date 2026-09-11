@@ -34,6 +34,7 @@ continued experimentation, or non-admission:
 | **1.4** | Visualization and media graduation | Which optional adapters meet the first-party contract? |
 | **1.5** | Stateful browser composition | Can partial updates retain local state safely? |
 | **1.6** | Controlled ecosystem expansion | Which advanced integrations have a trustworthy operating model? |
+| **1.7** | Evidence-gated large-application build scalability | Can large applications rebuild quickly while preserving reproducible output? |
 
 See the [full 1.X planning sequence](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#proposed-1x-sequence)
 for scope and shared entry/exit policy.
@@ -50,6 +51,40 @@ Exact APIs and maturity remain blocked on the Stage 0 freeze; see
 [RFC-0097](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0097-FIRST-CLASS-UI-TESTING.md)
 and the
 [acceptance plan](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_1_1.md).
+
+### Proposed 1.2–1.7 outcomes
+
+- **1.2 — Durable work:** submit an export, observe progress, cancel or retry under an explicit
+  policy, and retrieve an authorized result across worker restarts. Polling remains the baseline;
+  live observation graduates only for a proven deployment matrix.
+- **1.3 — Inclusive flows:** evaluate forms, navigation, dialogs, data, and job status with people
+  using assistive technology, then verify remediation. Exercise RTL, text expansion, and
+  locale/timezone formatting in a complete reference flow.
+- **1.4 — Visualization and media:** evaluate one optional adapter at a time through a usable
+  analysis/export flow, with accessible alternatives, bounded data, controlled assets, and
+  reliable cleanup. Each adapter receives its own maturity decision.
+- **1.5 — State retention:** try one opt-in path that preserves declared focus, selection, or
+  disclosure state across partial updates, with clear reset rules and ordinary replacement as
+  the fallback. Server state remains authoritative.
+- **1.6 — Ecosystem:** choose individual integrations with a clear maintenance and authorization
+  model. Prove useful operations, denied access, failure recovery, isolation, and package
+  compatibility before promoting a satellite or capability.
+- **1.7 — Build feedback:** reproduce large-application build measurements, define a supported
+  size ceiling, and optimize only demonstrated rebuild bottlenecks. Incremental output must match
+  a fresh build; meeting the budgets can close the evaluation without a runtime change.
+
+### How delivery is sequenced
+
+The first priority is the 1.1 testing foundation, followed by the 1.2 durable workflow contract.
+Human-evaluation preparation and build measurements can start in parallel. Visualization uses
+the relevant accessibility evidence; state retention uses the job/interaction and focus contracts.
+An integration depends only on the contracts it actually consumes, so unrelated satellite work
+does not hold up a proven improvement. Maintenance fixes continue independently of feature phases.
+
+Each phase moves through a scope freeze, one useful reference-app flow, hardening, and an explicit
+release decision. Only 1.1 currently has a detailed acceptance packet; 1.2–1.7 remain proposals
+whose APIs, support matrices, and measured budgets must be settled before implementation.
+An optional feature may be deferred, but a release must complete its declared required scope.
 
 ## Deliberately not planned as defaults
 

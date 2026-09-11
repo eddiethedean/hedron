@@ -6946,6 +6946,10 @@ through `python scripts/check_100.py --gate <GATE-ID> --verify`.
 
 ## Proposed 1.X sequence
 
+**Planning revision:** 2026-09-11. The source workspace is on `1.0.14`; published-channel facts
+remain owned by [docs/release.toml](release.toml). This revision develops the 1.1–1.7 delivery plan
+without changing release status, package versions, or the stable support boundary.
+
 **Planning status:** Proposed, unscheduled, and subject to the 1.0 stability policy. This is a
 candidate ordering for post-1.0 work, not a release or calendar commitment. The phase number is a
 planning bucket, not a promise that every item in the bucket ships together. Each phase can end in
@@ -6958,8 +6962,35 @@ promotion, continued Beta/Experimental status, a narrower scope, or an explicit 
 | **1.3** | Inclusive and international UX | Can the stable surface work for more users and locales? | 1.0 interaction corpus plus human-evaluation protocol |
 | **1.4** | Visualization and media graduation | Which optional adapters can meet the first-party contract? | 1.3 accessibility/fallback corpus |
 | **1.5** | Stateful browser composition | Can partial updates retain local state without a second app runtime? | 1.2 interaction ownership and 1.3 browser evidence |
-| **1.6** | Controlled ecosystem expansion | Which advanced integrations have a trustworthy operating model? | Core, browser, and security contracts are proven |
+| **1.6** | Controlled ecosystem expansion | Which advanced integrations have a trustworthy operating model? | The core, browser, and security contracts consumed by the selected integration are proven |
 | **1.7** | Evidence-gated large-application build scalability | Are current rebuild times acceptable at the largest application size Hedron promises to support? | A supported size ceiling and repeatable cold/no-op/one-change benchmark corpus |
+
+### Delivery priorities and dependencies
+
+The first delivery priority is the 1.1 testing foundation. The next runtime priority is the 1.2
+durable job contract, including a complete polling experience even if no live transport graduates.
+Human evaluation preparation for 1.3 and baseline measurements for 1.7 can proceed alongside these
+phases; neither depends on a new browser API to begin gathering evidence.
+
+Phase numbers express the preferred delivery order. Admission depends on specific verified
+contracts, not on completing every earlier phase:
+
+- **1.2 consumes 1.1:** reuse the browser lifecycle, failure evidence, and isolation corpus.
+- **1.3 consumes the existing human-evaluation protocol:** reuse 1.1 automation when available;
+  recruit participants and define tasks independently of the harness implementation.
+- **1.4 consumes 1.3:** use the relevant accessible interaction and fallback criteria for each
+  candidate adapter; unrelated locale work need not block an adapter packet.
+- **1.5 consumes 1.2 and 1.3:** use verified generation/cancellation and focus/announcement contracts.
+  A decision to retain polling in 1.2 still satisfies the transport dependency.
+- **1.6 consumes only the contracts an integration needs:** a read-only adapter need not wait for
+  morph retention; mutation or shared-session candidates require the relevant ownership evidence.
+- **1.7 is a parallel measurement lane:** optimization starts only after the supported-size corpus
+  demonstrates a missed budget. It does not depend on ecosystem graduation.
+
+Maintenance of the supported 1.0 line continues independently. Correctness and security fixes stay
+eligible for patch releases; proposed feature work must not delay them. Every admitted feature
+delivers a usable increment of the reference application, explicit failure behavior, and upgrade
+evidence. Evaluation-only outcomes retain their measured corpus and explicit disposition.
 
 ### 1.1 — First-class UI testing and adoption confidence
 
@@ -7002,6 +7033,21 @@ parallel runs leak no port, process, thread, browser context, override, registry
 artifact; every satellite testing disposition and admitted contribution passes fleet conformance;
 and every stable 1.0 testing import and non-browser path remains compatible.
 
+**Delivery checkpoints.** Follow the existing packet rather than introducing a second gate list:
+
+| Checkpoint | Reviewable result | Authority |
+|---|---|---|
+| `1.1a0` | Compare the two thin-wrapper prototypes, run the fresh-user exercise, inventory fleet testing ownership, and freeze APIs, schemas, host matrix, and measured budgets | `FREEZE-110` |
+| `1.1a1` | Exercise a secured profile form through managed startup, invalid/valid submission, semantic lookup, settling, deliberate failure evidence, and cleanup in Chromium | `HOST-110` through `ARTIFACT-110`; required vertical slice |
+| `1.1b1` | Package pytest/scaffold integration and admitted satellite contributions; prove isolation, security, accessibility, and repeated/parallel execution | `PYTEST-110`, `SATELLITE-110`, behavior and assurance gates |
+| `1.1rc1` | Reproduce the declared host/dependency matrix in Chromium, Firefox, and WebKit from clean packages; finish compatibility, docs, and rollback evidence | Every non-release gate Verified |
+
+**Ownership and handoff.** `hedron.testing` owns the optional managed host and pytest integration;
+`hedron_core.testing` retains portable render/HTTP facts; each satellite owns its contributed
+fixtures. Edron uses the same harness through its facade. The handoff to later phases is a reusable
+reference-flow corpus and versioned failure evidence, with optional imports and package boundaries
+preserved. Names remain candidates until the existing Stage 0 freeze.
+
 **Non-goals.** No fake DOM/widget emulator, complete Playwright wrapper, second test runner,
 production browser instrumentation, ambient remote testing/capture, Stable pixel-golden framework,
 new client-side state/runtime authority, or automated accessibility-conformance claim.
@@ -7023,9 +7069,32 @@ candidate SSE, streaming, or WebSocket observation as equivalent projections of 
 Prove multi-worker behavior, proxy buffering, backpressure, reconnects, stale generations, rate
 budgets, and disconnect recovery before considering promotion.
 
+**Delivery sequence.**
+
+1. **Freeze the operation contract.** Reconcile existing job backends, action state, `TaskFlow`,
+   replay, and status helpers. Define allowed transitions, authorization on every observation and
+   cancellation, progress ordering, expiry, and terminal-result retention. Record backend-specific
+   guarantees; retries must not imply exactly-once application side effects.
+2. **Deliver the polling slice.** Submit a bounded export, show progress, cancel or retry according
+   to policy, and download an authorized result. Demonstrate denied access by another principal or
+   tenant, expired results, worker restart, and application restart across multiple web workers.
+3. **Evaluate live observation.** Start with the smallest useful candidate, such as SSE status.
+   Compare it with polling under duplicate/out-of-order events, disconnect/reconnect, slow clients,
+   proxy buffering, and bounded memory. Admit streaming or WebSockets only through separate rows.
+4. **Publish operating evidence.** Supply deployment examples, timeout/retention guidance,
+   correlation diagnostics, saturation behavior, and an exercised return to polling.
+
+**Ownership.** `hedron-core` owns portable jobs and action semantics; `hedron` owns FastAPI
+transport and request integration; Flask/Django own their host projections. Backend integrations
+own their declared delivery guarantees. Edron delegates the same job authority. Applications own
+side effects, transactions, durable infrastructure, and business authorization.
+
 **Exit evidence.** The phase publishes one of three decisions: a transport is Supported for a
 bounded matrix; it remains Experimental with explicit limits; or polling is the production-only
 disposition. Ordinary HTTP and no-JavaScript behavior remain correct in all three cases.
+The required export slice passes against every admitted durable backend with restart, expiry,
+authorization, cancellation-race, and resource-budget evidence. A skipped backend or proxy row
+cannot support a production claim.
 
 **Non-goals.** Hedron does not provide a queue, scheduler, worker fleet, durable store, or
 application authorization system.
@@ -7041,9 +7110,30 @@ reviewed remediation, and expand the browser corpus for keyboard, zoom, reduced 
 forced-colors, focus, and error states. Add RTL/writing-mode and locale-aware formatting contracts
 only where ownership is clear, including text expansion and direction-sensitive layout fixtures.
 
+**Delivery sequence.**
+
+1. **Prepare human evaluation.** Select critical form, navigation, dialog, data, and asynchronous
+   status tasks from the reference application. Reuse phase 0.21's protocol, name evaluation and
+   remediation responsibilities, and record the browser/assistive-technology combinations used.
+2. **Close interaction gaps.** Turn observed keyboard, focus-return, announcement, error-recovery,
+   zoom/reflow, reduced-motion, and forced-colors problems into reproducible regression cases.
+   Record severity, remediation, retest evidence, and any remaining limitation per task.
+3. **Deliver a locale slice.** Exercise a reference flow in LTR and RTL, with text expansion,
+   mixed-direction content, locale/timezone formatting, and input round trips. Keep display
+   formatting separate from canonical server values and define invalid/ambiguous input behavior.
+4. **Publish bounded results.** Link the evaluated tasks, human findings, remediations, and
+   automated corpus. Record untested combinations explicitly and assign follow-up ownership.
+
+**Ownership.** `hedron-core` owns component semantics, themes, layout direction, and formatting
+contracts; host adapters own request locale propagation; data/charts/maps own their specialist
+interactions and alternatives. Applications supply translations, locale selection, and domain
+rules. Human evaluation remains a distinct evidence requirement from automated browser checks.
+
 **Exit evidence.** Human sessions, remediation decisions, automated browser results, and regression
 fixtures are redacted, reproducible, and linked to the supported surface. The phase explicitly
 records unsupported locales or interaction patterns rather than implying universal coverage.
+Completion requires the selected human sessions and reviewed remediation outcomes; an automated
+pass alone cannot close the inherited human-evaluation gap.
 
 **Non-goals.** No automatic WCAG, legal-compliance, VPAT, ACR, or certification claim from a test
 suite or release label.
@@ -7059,6 +7149,25 @@ bounded payloads, offline/CSP-safe assets, accessible text/table/static alternat
 selection and filtering, safe export/download and media ranges, redaction, provenance, and browser
 and performance fixtures. Keep rendering and browser ownership in the native package; Hedron only
 provides the authoring projection.
+
+**Delivery sequence.**
+
+1. **Select and baseline candidates.** Inventory current chart, map, and media paths, then choose
+   the first adapter using a concrete adopter need and maintenance cost. Freeze supported vendor
+   versions, asset origins, payload ceilings, event schemas, and fallback behavior for that adapter.
+2. **Deliver one analysis flow.** Render authorized data, select/filter it through typed interactions,
+   switch theme, and export a result. Exercise keyboard access and the text/table/static fallback
+   when scripting or assets are unavailable; verify selection cannot widen server authorization.
+3. **Prove lifecycle and limits.** Repeatedly mount, update, remove, and restore the visualization;
+   test stale events, oversized data, malformed exports, and release of browser resources. Give
+   media download/range behavior its own corpus when included in the candidate packet.
+4. **Decide per adapter.** Publish compatibility, asset/license provenance, measured costs,
+   operational limits, and the individual maturity decision before selecting another candidate.
+
+**Ownership.** `hedron-charts`, `hedron-maps`, and the existing media owners maintain their
+respective projections. Vendor libraries retain rendering authority; shared core lifecycle and
+security contracts govern their integration. A facade or vendor version bump cannot by itself
+promote the underlying capability.
 
 **Exit evidence.** Each adapter receives an independent disposition—Supported, Beta,
 Experimental, or not admitted—with a versioned support matrix and fallback examples. A failed
@@ -7077,6 +7186,25 @@ owned browser-local state. Test one morph path at a time across replacement, val
 stale response, cancellation, asset failure, and JavaScript-disabled fallback. Require lifecycle
 cleanup and observable ownership diagnostics for Alpine, HTMX, and Web Components.
 
+**Delivery sequence.**
+
+1. **Freeze the retention inventory.** Specify which focus, selection, disclosure, and draft-input
+   states may survive; define identity, one writer, reset conditions, and conflict behavior for
+   each. Cover entity changes, permission changes, logout, and navigation across application scope.
+2. **Prototype one replacement boundary.** Use the existing host/region and lifecycle contracts to
+   retain state in one editable reference-app panel. Compare normal replacement with the candidate
+   morph path and expose why each state value was retained or reset.
+3. **Exercise adversarial ordering.** Test validation failures, overlapping generations,
+   cancellation, nested/OOB updates, history restoration, removed targets, and failed asset loads.
+   Prove exactly one active listener/instance per declared owner after repeated transitions.
+4. **Make an explicit admission decision.** Publish the supported component/operation matrix,
+   reset diagnostics, performance limits, and an ordinary-replacement fallback. No global default
+   change is implied by admitting an opt-in retention path.
+
+**Ownership.** Core host identities and lifecycle contracts define retention boundaries; `hedron`
+owns request-generation integration; Alpine and `hedron-elements` own their declared local state.
+Components outside the proven retention matrix continue to reset under ordinary replacement.
+
 **Exit evidence.** The phase either admits one bounded morph/retention path with browser evidence or
 keeps ordinary replacement as the Supported behavior. Retained state has one writer, a defined
 reset rule, and no authority over server/domain state.
@@ -7094,6 +7222,27 @@ require materially different trust and operations guarantees. Combining them int
 with the smallest bounded integration or satellite that has a clear principal, tenant boundary,
 authorization check, audit record, replay behavior, resource/persistence owner, and failure-isolation
 story. Gate each integration independently and publish its maturity separately.
+
+**Delivery sequence.**
+
+1. **Choose a bounded candidate.** Rank integrations by adopter need, maintenance capacity,
+   compatibility, and unresolved authority questions. Record an explicit admit/defer decision for
+   MCP mutations, shared notebooks, host adapters, and other satellites instead of promising all.
+2. **Freeze the integration contract.** Specify installation, credentials, principal/tenant
+   propagation, authorization, audit, replay, resource limits, lifecycle, and support versions.
+   Read-only and mutation surfaces receive separate dispositions.
+3. **Build a consumer example.** Install published-style packages into a clean application and
+   exercise one useful operation, denial, timeout, revocation, and recovery. Mutation candidates
+   must demonstrate duplicate delivery and transaction boundaries; shared sessions must prove
+   isolation and cleanup for concurrent users.
+4. **Graduate independently.** Run the applicable 1.1 contribution and conformance corpus, verify
+   import isolation and missing-extra diagnostics, and publish runbooks and rollback guidance.
+   A satellite may ship on its own version line once its own packet passes.
+
+**Ownership.** Each satellite owns its integration and support matrix. Core supplies shared
+contracts; the host supplies authenticated request context; application policy remains authoritative.
+Posit and `fastapi-workbench` retain their existing deployment boundaries and independent release
+rules. New plugin capabilities require explicit registration and bounded lifecycle ownership.
 
 **Exit evidence.** Every promoted integration has deny-by-default behavior, explicit installation
 and authority semantics, no-enumeration and redaction tests, operational runbooks, and a support
@@ -7143,6 +7292,27 @@ correct intervention, beginning with a no-op fast path and per-component CSS/ass
 Consider event-driven watching, persistent daemons, parallel compilation, graph-based module
 relinking, or remote caches only when a measured residual bottleneck independently justifies them.
 
+**Delivery sequence.**
+
+1. **Reproduce before optimizing.** Package the workload generator, repeated timing runs, and
+   machine-readable results. Separate environment installation from build time and record both
+   developer-filesystem and CI measurements. Freeze the supported ceiling and budgets from these
+   runs; the exploratory table above remains historical evidence.
+2. **Attribute a measured miss.** Record discovery, CSS compilation, asset hashing/copying, module
+   relinking, and manifest costs, with invalidation reasons. Select no-op reuse or the smallest
+   dependency-aware invalidation change only for a demonstrated repeated cost.
+3. **Prove incremental correctness.** Compare incremental outputs with a fresh build after edits,
+   additions, deletions, renames, changed imports, themes, plugin metadata, and compiler/config
+   changes. Exercise interrupted writes, corrupt cache entries, and concurrent attempts; preserve
+   the previous valid build and explain full-rebuild fallback.
+4. **Publish the disposition.** Report repeated timing distributions, memory, artifact equality,
+   cache bounds, and cleanup. Close with either a measured no-change decision or a verified
+   optimization whose ongoing benchmark cost fits CI.
+
+**Ownership.** `hedron.build` and the CLI own build orchestration and watching; core CSS, assets,
+and registry modules own deterministic inputs and outputs. Plugin authors declare build inputs;
+caching must not bypass registry sealing or production validation.
+
 **Exit evidence.** The roadmap records the supported application-size ceiling and one of two
 outcomes: all required platforms meet the frozen budgets and no implementation ships, or the
 smallest admitted optimization restores the budgets without changing deterministic manifests,
@@ -7160,7 +7330,33 @@ Every phase begins with four frozen artifacts: an adopter problem statement, the
 an ownership/maturity matrix, and a machine-readable acceptance packet. The packet must list what
 will be measured, what is explicitly excluded, and what result counts as non-admission.
 
+#### Phase preparation and completion
+
+Use four checkpoints for each candidate phase:
+
+| Checkpoint | Required reviewable result |
+|---|---|
+| Scope freeze | Accepted owning RFC/decision, current-source inventory, required/deferred scope, named maintainers, exact contracts, dependency matrix, and measured acceptance budgets |
+| Vertical slice | One packaged reference-app flow with the useful behavior, failure/recovery path, fallback, and diagnostics; new public spellings are documented |
+| Hardening | Required compatibility, browser/host, security, accessibility, performance, package, and cleanup rows pass with reproducible evidence |
+| Release decision | Explicit per-capability maturity, unresolved limitations, migration/rollback instructions, immutable artifacts, and an approved release disposition |
+
+Only 1.1 currently has the linked detailed RFC, implementation plan, and machine packet in this
+sequence. The 1.2–1.7 steps above are planning scope; their owners must create and accept the
+corresponding packets before implementation gates can be claimed. Proposed gate names or commands
+must not be presented as existing checkers. Numeric limits for new work are frozen from measured
+baselines, with exact-limit and over-limit behavior where relevant.
+
+For each phase, choose the smallest coherent required slice and list optional extensions
+separately. An optional candidate may be deferred without holding up a complete required slice.
+A required gate cannot be silently dropped or marked Verified after a skip; narrowing required
+scope needs a recorded phase decision and matching packet updates. Evaluation work may conclude
+with non-admission, but that decision alone is not a reason to publish a feature release.
+
 Every cut preserves the 1.0 stable inventory and supplies migration guidance for changed Beta or
 Experimental surfaces. Evidence is proportionate to the claim and covers compatibility, security,
 accessibility, browser behavior, performance, packaging, and rollback. The public roadmap,
-support matrix, and release notes change only after the phase decision is verified.
+support matrix, and release notes may claim shipped behavior only after the phase decision is
+verified. Proposed plans may be refined earlier with their planning status explicit. Public API
+removals or incompatible authority/default changes stay outside this additive 1.X sequence and
+require a separately accepted compatibility and major-version decision.
