@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.12] — 2026-09-11
+
+### Fixed
+
+- Protect in-memory data-source row identity keys from mutation.
+
 ## [1.0.11] — 2026-09-11
 
 ### Fixed
