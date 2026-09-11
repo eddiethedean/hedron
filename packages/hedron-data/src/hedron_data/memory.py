@@ -335,6 +335,16 @@ class InMemoryDataSource:
 
             row_errors = False
             for upd in updates:
+                if upd.field == self._key_field:
+                    errors.append(
+                        FieldError(
+                            row_key=upd.row_key,
+                            field=upd.field,
+                            message="Field is the immutable row key",
+                        )
+                    )
+                    row_errors = True
+                    continue
                 if upd.field not in self._writable:
                     errors.append(
                         FieldError(

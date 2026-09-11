@@ -40,6 +40,19 @@ def test_039_inmemory_rejects_duplicate_and_missing_keys() -> None:
         InMemoryDataSource(rows=[{"name": "alice"}], key_field="id")
 
 
+def test_inmemory_row_key_cannot_be_changed_after_indexing() -> None:
+    source = InMemoryDataSource(
+        [{"id": "a", "name": "Ada"}],
+        writable_fields=frozenset({"id", "name"}),
+    )
+
+    result = source.apply(DataChanges(updates=(CellUpdate(row_key="a", field="id", value="b"),)))
+
+    assert not result.ok
+    assert result.errors[0].message == "Field is the immutable row key"
+    assert source.fetch(DataQuery()).rows == [{"id": "a", "name": "Ada"}]
+
+
 def test_039_inmemory_sorts_mixed_json_types() -> None:
     source = InMemoryDataSource(
         [{"id": "1", "value": 1}, {"id": "2", "value": "2"}, {"id": "3", "value": None}],
