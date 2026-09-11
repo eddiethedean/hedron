@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.12] — 2026-09-11
+
+### Fixed
+
+- Coordinated maintenance release for the 1.0 package train.
+
 ## [1.0.11] — 2026-09-11
 
 ### Fixed
