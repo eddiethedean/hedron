@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.11] — 2026-09-11
+
+### Fixed
+
+- Fix chart remount loops, numeric scatter spacing, and independent print export.
+
 ## [1.0.10] — 2026-09-04
 
 - Maintenance release for the coordinated 1.0 train.

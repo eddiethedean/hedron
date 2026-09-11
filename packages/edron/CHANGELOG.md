@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.11] — 2026-09-11
+
+### Fixed
+
+- Coordinate the 1.0.11 bug-fix release across the Hedron authoring facade.
+
 ## [1.0.10] — 2026-09-04
 
 - Maintenance release for the coordinated 1.0 train.
