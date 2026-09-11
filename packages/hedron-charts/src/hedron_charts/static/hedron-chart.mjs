@@ -65,6 +65,10 @@ function yDomain(ys) {
 }
 
 function xDomain(plan, marks) {
+  const scale = ((plan && plan.scales) || []).find(
+    (candidate) => candidate && candidate.name === "x"
+  );
+  if (!scale || scale.type !== "linear") return null;
   const configured = plan && plan.domains && plan.domains.x;
   if (
     Array.isArray(configured) &&
@@ -282,11 +286,7 @@ function cleanup(el) {
   instances.delete(el);
 }
 
-function chartSize(el, entry) {
-  const content = entry && entry.contentRect;
-  if (content && (content.width || content.height)) {
-    return String(content.width) + ":" + String(content.height);
-  }
+function chartSize(el) {
   const rect = el.getBoundingClientRect();
   return String(rect.width) + ":" + String(rect.height);
 }
@@ -315,10 +315,10 @@ function mount(el) {
   instances.add(el);
 
   if (typeof ResizeObserver !== "undefined") {
-    el._hedronChartSize = chartSize(el, null);
-    el._hedronChartRo = new ResizeObserver((entries) => {
+    el._hedronChartSize = chartSize(el);
+    el._hedronChartRo = new ResizeObserver(() => {
       if (el._hedronChartGen !== gen) return;
-      const nextSize = chartSize(el, entries && entries[0]);
+      const nextSize = chartSize(el);
       if (nextSize === el._hedronChartSize) return;
       el._hedronChartSize = nextSize;
       // Re-render on resize using the same plan.
