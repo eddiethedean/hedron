@@ -89,6 +89,26 @@ def test_idempotency_scope_key_does_not_delete_cross_scope_pointer() -> None:
     assert backend._idempotency[scoped] == other.job_id
 
 
+def test_idempotent_retry_precedes_capacity_and_terminal_eviction() -> None:
+    backend = InMemoryJobBackend(max_jobs=1)
+    first = backend.submit("demo", {}, idempotency_key="same", auth_subject="alice")
+
+    assert (
+        backend.submit("demo", {}, idempotency_key="same", auth_subject="alice").job_id
+        == first.job_id
+    )
+
+    backend.mark(first.job_id, JobState.SUCCEEDED)
+    assert (
+        backend.submit("demo", {}, idempotency_key="same", auth_subject="alice").job_id
+        == first.job_id
+    )
+
+    replacement = backend.submit("demo", {}, idempotency_key="new", auth_subject="alice")
+    assert replacement.job_id != first.job_id
+    assert backend.get(first.job_id) is None
+
+
 def test_mark_and_status_interaction() -> None:
     backend = InMemoryJobBackend()
     handle = backend.submit("demo", {})
