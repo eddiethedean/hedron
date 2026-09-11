@@ -1,11 +1,5 @@
 # Changelog
 
-## [1.0.11] — 2026-09-11
-
-### Fixed
-
-- Protect in-memory data-source row identity keys from mutation.
-
 ## [1.0.10] — 2026-09-04
 
 - Maintenance release for the coordinated 1.0 train.
