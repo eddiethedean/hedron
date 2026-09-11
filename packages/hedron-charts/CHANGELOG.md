@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.0.13] — 2026-09-11
+
+### Fixed
+
+- Fix chart remount loops across box models, preserve ordinal axes, use numeric scatter spacing, and support independent print export.
+
+## [1.0.12] — 2026-09-11
+
+### Fixed
+
+- Coordinated maintenance release for the 1.0 package train.
+
+## [1.0.11] — 2026-09-11
+
+### Fixed
+
+- Coordinated maintenance release for the 1.0 package train.
+
 ## [1.0.10] — 2026-09-04
 
 - Maintenance release for the coordinated 1.0 train.

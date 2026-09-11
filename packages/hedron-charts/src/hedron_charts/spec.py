@@ -176,6 +176,7 @@ class ChartPlan(ChartModel):
     spec_fingerprint: str
     data_fingerprint: str
     domains: dict[str, list[Any]] = Field(default_factory=dict)
+    scales: tuple[ScaleDef, ...] = ()
     guides: tuple[GuideDef, ...] = ()
     marks: tuple[dict[str, Any], ...] = ()
     mark_count: int = 0
