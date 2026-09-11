@@ -46,9 +46,7 @@ def test_inmemory_row_key_cannot_be_changed_after_indexing() -> None:
         writable_fields=frozenset({"id", "name"}),
     )
 
-    result = source.apply(
-        DataChanges(updates=(CellUpdate(row_key="a", field="id", value="b"),))
-    )
+    result = source.apply(DataChanges(updates=(CellUpdate(row_key="a", field="id", value="b"),)))
 
     assert not result.ok
     assert result.errors[0].message == "Field is the immutable row key"
