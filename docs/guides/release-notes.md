@@ -3,6 +3,20 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 1.0.14 — 2026-09-11
+
+Coordinated correctness release for the Stable 1.0 package train. The release is tagged on
+GitHub, published on PyPI, and verified against the full release matrix.
+
+### Fixed
+
+- Completed awaitable results returned by synchronous route handlers instead of passing a
+  coroutine into response serialization.
+- Protected in-memory data-source row identity from caller mutation.
+- Corrected chart remount loops across CSS box models, ordinal numeric-string categories,
+  numeric scatter spacing, and independent print export.
+- Prevented typed cache-key collisions and enforced bounded job idempotency admission.
+
 ## 1.0.7 — 2026-09-02
 
 Coordinated maintenance release for the Stable 1.0 package train. The release is tagged on
