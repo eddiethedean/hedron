@@ -64,11 +64,43 @@ function yDomain(ys) {
   return { min, max };
 }
 
+function xDomain(plan, marks) {
+  const configured = plan && plan.domains && plan.domains.x;
+  if (
+    Array.isArray(configured) &&
+    configured.length >= 2 &&
+    Number.isFinite(Number(configured[0])) &&
+    Number.isFinite(Number(configured[1]))
+  ) {
+    const min = Number(configured[0]);
+    const max = Number(configured[1]);
+    return min === max ? { min: min - 1, max: max + 1 } : { min, max };
+  }
+  const values = marks
+    .map((mark) => Number(mark.values && mark.values.x))
+    .filter((value) => Number.isFinite(value));
+  if (!values.length) return null;
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  return min === max ? { min: min - 1, max: max + 1 } : { min, max };
+}
+
+function xPosition(value, index, count, box, plotW, domain) {
+  const numeric = Number(value);
+  if (domain && Number.isFinite(numeric)) {
+    return box.margin + ((numeric - domain.min) / (domain.max - domain.min)) * plotW;
+  }
+  return count > 1
+    ? box.margin + (index / (count - 1)) * plotW
+    : box.margin + plotW / 2;
+}
+
 function renderSvg(el, plan) {
   const box = layoutBox(plan);
   const marks = plan.marks || [];
   const ys = yValues(plan);
   const domain = yDomain(ys);
+  const xScale = xDomain(plan, marks);
   const range = domain.max - domain.min;
   const plotW = Math.max(1, box.width - 2 * box.margin);
   const plotH = Math.max(1, box.height - 2 * box.margin);
@@ -97,10 +129,7 @@ function renderSvg(el, plan) {
     const vals = mark.values || {};
     const y = Number(vals.y);
     if (Number.isNaN(y)) return;
-    const x =
-      marks.length > 1
-        ? box.margin + (i / (marks.length - 1)) * plotW
-        : box.margin + plotW / 2;
+    const x = xPosition(vals.x, i, marks.length, box, plotW, xScale);
     const py = box.margin + plotH - ((y - domain.min) / range) * plotH;
     points.push([x, py, mark.identity || String(i), vals]);
   });
@@ -187,10 +216,11 @@ function renderCanvas(el, plan) {
   canvas.setAttribute("aria-label", (plan.accessibility && plan.accessibility.title) || "Chart");
   const ctx = canvas.getContext("2d");
   if (!ctx) return canvas;
+  const marks = plan.marks || [];
   const ys = yValues(plan);
   const domain = yDomain(ys);
+  const xScale = xDomain(plan, marks);
   const range = domain.max - domain.min;
-  const marks = plan.marks || [];
   const plotW = Math.max(1, box.width - 2 * box.margin);
   const plotH = Math.max(1, box.height - 2 * box.margin);
   ctx.strokeStyle = "#2563eb";
@@ -199,10 +229,7 @@ function renderCanvas(el, plan) {
   marks.forEach((mark, i) => {
     const y = Number(mark.values && mark.values.y);
     if (Number.isNaN(y)) return;
-    const x =
-      marks.length > 1
-        ? box.margin + (i / (marks.length - 1)) * plotW
-        : box.margin + plotW / 2;
+    const x = xPosition(mark.values && mark.values.x, i, marks.length, box, plotW, xScale);
     const py = box.margin + plotH - ((y - domain.min) / range) * plotH;
     if (i === 0) ctx.moveTo(x, py);
     else ctx.lineTo(x, py);
@@ -248,10 +275,20 @@ function cleanup(el) {
     } catch (_) {}
     el._hedronChartRo = null;
   }
+  el._hedronChartSize = null;
   const host = el.querySelector("[data-hedron-chart-host]");
   if (host) host.innerHTML = "";
   el.removeAttribute("data-hedron-chart-mounted");
   instances.delete(el);
+}
+
+function chartSize(el, entry) {
+  const content = entry && entry.contentRect;
+  if (content && (content.width || content.height)) {
+    return String(content.width) + ":" + String(content.height);
+  }
+  const rect = el.getBoundingClientRect();
+  return String(rect.width) + ":" + String(rect.height);
 }
 
 function mount(el) {
@@ -278,8 +315,12 @@ function mount(el) {
   instances.add(el);
 
   if (typeof ResizeObserver !== "undefined") {
-    el._hedronChartRo = new ResizeObserver(() => {
+    el._hedronChartSize = chartSize(el, null);
+    el._hedronChartRo = new ResizeObserver((entries) => {
       if (el._hedronChartGen !== gen) return;
+      const nextSize = chartSize(el, entries && entries[0]);
+      if (nextSize === el._hedronChartSize) return;
+      el._hedronChartSize = nextSize;
       // Re-render on resize using the same plan.
       mount(el);
     });
