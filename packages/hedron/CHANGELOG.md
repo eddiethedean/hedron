@@ -1,11 +1,5 @@
 # Changelog
 
-## [1.0.11] — 2026-09-11
-
-### Fixed
-
-- Run synchronous route handlers off the event loop.
-
 ## [1.0.10] — 2026-09-04
 
 ### Fixed
