@@ -59,8 +59,7 @@ def export_json(plan: ChartPlan, *, authorized: bool = True) -> str:
     return json.dumps(payload, sort_keys=True, separators=(",", ":"), default=str)
 
 
-def export_svg(plan: ChartPlan, *, authorized: bool = True, width: int | None = None) -> str:
-    _authorized(plan, "svg", authorized=authorized)
+def _render_svg(plan: ChartPlan, *, width: int | None = None) -> str:
     w = width or int(plan.layout.get("width_hint") or 640)
     h = int(plan.layout.get("height_hint") or 360)
     max_px = plan.export.max_px
@@ -119,6 +118,11 @@ def export_svg(plan: ChartPlan, *, authorized: bool = True, width: int | None = 
     )
 
 
+def export_svg(plan: ChartPlan, *, authorized: bool = True, width: int | None = None) -> str:
+    _authorized(plan, "svg", authorized=authorized)
+    return _render_svg(plan, width=width)
+
+
 def _escape(text: str) -> str:
     return (
         text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
@@ -127,7 +131,7 @@ def _escape(text: str) -> str:
 
 def export_print_html(plan: ChartPlan, *, authorized: bool = True) -> str:
     _authorized(plan, "print", authorized=authorized)
-    svg = export_svg(plan, authorized=True)
+    svg = _render_svg(plan)
     summary = _escape(plan.accessibility.summary)
     return (
         "<!DOCTYPE html><html><head><meta charset='utf-8'>"

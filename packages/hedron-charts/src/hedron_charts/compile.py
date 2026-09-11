@@ -884,6 +884,7 @@ def compile_chart(spec: ChartSpec | Mapping[str, object]) -> ChartPlan:
         spec_fingerprint=spec_fp,
         data_fingerprint=data_fp,
         domains=domains,
+        scales=tuple(scales),
         guides=tuple(guides),
         marks=tuple(mark_records),
         mark_count=len(mark_records),

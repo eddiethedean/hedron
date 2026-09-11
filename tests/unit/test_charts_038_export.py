@@ -9,9 +9,11 @@ from hedron_charts.export import (
     assert_no_remote_urls,
     export_csv,
     export_json,
+    export_print_html,
     export_svg,
     plan_export_bundle,
 )
+from hedron_charts.spec import ExportPolicy
 from hedron_core.diagnostics import HedronError
 
 
@@ -35,6 +37,17 @@ def test_bundle_has_no_remote_urls() -> None:
     plan = sample_plan()
     bundle = plan_export_bundle(plan)
     assert_no_remote_urls(bundle)
+
+
+def test_print_export_does_not_require_svg_download_permission() -> None:
+    plan = sample_plan().model_copy(update={"export": ExportPolicy(svg=False, print=True)})
+
+    html = export_print_html(plan, authorized=True)
+    bundle = plan_export_bundle(plan, authorized=True)
+
+    assert "<!DOCTYPE html>" in html
+    assert "print" in bundle
+    assert "svg" not in bundle
 
 
 def test_secret_fields_redacted_in_plan_rows() -> None:
