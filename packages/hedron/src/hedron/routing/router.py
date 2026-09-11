@@ -18,7 +18,7 @@ from starlette.datastructures import State
 from starlette.requests import Request
 from starlette.responses import Response
 
-from hedron.async_utils import await_if_needed
+from hedron.async_utils import invoke
 from hedron.fastapi_compat import cached_openapi
 from hedron.openapi import operation_id_for
 from hedron.replay import ReplayOutcome, ReplayStore
@@ -489,8 +489,7 @@ def _wrap_endpoint(
                 return begun
             replay_guard = begun
         try:
-            result = fn(*args, **kwargs)
-            result = await await_if_needed(result)
+            result = await invoke(fn, *args, **kwargs)
             # Endpoint returns are untyped callables; narrow at the convert boundary.
             response = await HedronRoute.convert_endpoint_result(
                 request,

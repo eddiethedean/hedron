@@ -18,7 +18,7 @@ from fastapi.routing import APIRoute
 from starlette.datastructures import State
 from starlette.responses import Response as StarletteResponse
 
-from hedron.async_utils import await_if_needed
+from hedron.async_utils import await_if_needed, invoke
 from hedron.context import render_context_from_request
 from hedron.responses import (
     HTML,
@@ -96,8 +96,7 @@ class HedronRoute(APIRoute):
         async def wrapped(*args: Any, **kwargs: Any) -> Any:
             from hedron.routing.router import current_request
 
-            result = endpoint(*args, **kwargs)
-            result = await await_if_needed(result)
+            result = await invoke(endpoint, *args, **kwargs)
             if isinstance(result, StarletteResponse) or not _is_hedron_value(result):
                 return result
             request = current_request.get()
