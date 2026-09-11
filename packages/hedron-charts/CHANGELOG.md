@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Fix chart remount loops, numeric scatter spacing, and independent print export.
+- Coordinated maintenance release for the 1.0 package train.
 
 ## [1.0.10] — 2026-09-04
 

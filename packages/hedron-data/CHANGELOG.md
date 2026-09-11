@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Protect in-memory data-source row identity keys from mutation.
+- Coordinated maintenance release for the 1.0 package train.
 
 ## [1.0.10] — 2026-09-04
 

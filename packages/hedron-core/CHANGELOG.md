@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Fix bounded job idempotency admission and typed cache-key normalization.
+- Coordinated maintenance release for the 1.0 package train.
 
 ## [1.0.10] — 2026-09-04
 

@@ -46,7 +46,7 @@ async def invoke(fn: Callable[..., T], /, *args: Any, **kwargs: Any) -> T:
     """
     if is_async_callable(fn):
         return await await_if_needed(fn(*args, **kwargs))
-    return await run_sync(fn, *args, **kwargs)
+    return await await_if_needed(await run_sync(fn, *args, **kwargs))
 
 
 def mark_cpu_heavy(fn: Callable[..., T]) -> Callable[..., T]:
