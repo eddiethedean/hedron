@@ -1,11 +1,5 @@
 # Changelog
 
-## [1.0.11] — 2026-09-11
-
-### Fixed
-
-- Fix bounded job idempotency admission and typed cache-key normalization.
-
 ## [1.0.10] — 2026-09-04
 
 ### Fixed
