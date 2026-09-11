@@ -39,9 +39,7 @@ def _normalize_arg(value: object) -> object:
             for key, item in mapping.items()
         ]
         items.sort(
-            key=lambda item: json.dumps(
-                item[0], sort_keys=True, default=str, separators=(",", ":")
-            )
+            key=lambda item: json.dumps(item[0], sort_keys=True, default=str, separators=(",", ":"))
         )
         return {"__mapping__": items}
     if isinstance(value, (list, tuple)):
