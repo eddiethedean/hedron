@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import sys
-from types import ModuleType
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -36,17 +35,7 @@ from hedron_data.spreadsheet import export_rows_xlsx
 from hedron_data.table import DataTable
 from hedron_jinja.source import generic_safety_escape_diagnostics, parse_hdj_source
 
-
-class WatchError(Exception):
-    """Stub WatchError so RedisStatusStore CAS works without redis-py."""
-
-
-_redis_mod = ModuleType("redis")
-_exc_mod = ModuleType("redis.exceptions")
-_exc_mod.WatchError = WatchError  # type: ignore[attr-defined]
-_redis_mod.exceptions = _exc_mod  # type: ignore[attr-defined]
-sys.modules.setdefault("redis", _redis_mod)
-sys.modules.setdefault("redis.exceptions", _exc_mod)
+WatchError = type("WatchError", (Exception,), {})
 
 
 class _FakePipeline:

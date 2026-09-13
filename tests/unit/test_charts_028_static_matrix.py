@@ -15,14 +15,13 @@ _DATA = [{"x": "a", "y": 1}, {"x": "b", "y": 2}]
 
 def _assert_accessible_chart(html: str, title: str) -> None:
     assert title in html
-    assert 'role="img"' in html or "aria-label" in html or "hedron-chart" in html
-    assert (
-        "<table" in html.lower()
-        or "hedron-chart-fallback" in html
-        or "demo" in html.lower()
-        or "description" in html.lower()
-        or title in html
+    lowered = html.lower()
+    semantic_host = ('role="img"' in html or 'role="group"' in html) and (
+        "aria-label=" in html or "aria-labelledby=" in html
     )
+    static_figure = "<figure" in lowered and "<h2" in lowered and "<p" in lowered
+    assert semantic_host or static_figure
+    assert "<table" in lowered or "hedron-chart-fallback" in lowered or "<svg" in lowered
 
 
 @pytest.mark.parametrize("cls", [LineChart, BarChart, AreaChart, ScatterChart])

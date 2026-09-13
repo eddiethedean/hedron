@@ -130,7 +130,7 @@ edron-sim = { workspace = true }
 fastapi-workbench = { workspace = true }
 
 [tool.pytest.ini_options]
-testpaths = ["tests", "examples"]
+testpaths = ["tests", "examples", "packages/hedron-docs/tests"]
 pythonpath = ["."]
 addopts = ["--import-mode=importlib", "-n", "auto", "--dist=loadfile"]
 markers = [

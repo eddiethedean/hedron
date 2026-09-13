@@ -57,7 +57,7 @@ def test_browser_context_separates_spoofable_fields() -> None:
 
     redacted = ctx.redacted_cookies()
     assert redacted["sessionid"] == "[redacted]"
-    assert redacted["theme"] != "light" or len("light") <= 8
+    assert redacted["theme"] != "light"
     # short non-secret values may still be partially shown / redacted conservatively
     assert "sessionid" in redacted
 

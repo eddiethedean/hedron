@@ -5,25 +5,11 @@ Not a multi-process / real-Redis worker proof — see opt-in redis markers for t
 
 from __future__ import annotations
 
-import sys
-from types import ModuleType
 from typing import Any
-
-import pytest
 
 from hedron_core.jobs import JobState, RedisJobBackend, _legacy_idempotency_scope_key
 
-
-class WatchError(Exception):
-    """Stub WatchError so RedisJobBackend CAS works without redis-py installed."""
-
-
-_redis_mod = ModuleType("redis")
-_exc_mod = ModuleType("redis.exceptions")
-_exc_mod.WatchError = WatchError  # type: ignore[attr-defined]
-_redis_mod.exceptions = _exc_mod  # type: ignore[attr-defined]
-sys.modules.setdefault("redis", _redis_mod)
-sys.modules.setdefault("redis.exceptions", _exc_mod)
+WatchError = type("WatchError", (Exception,), {})
 
 
 class _SharedRedis:
@@ -176,7 +162,7 @@ def test_redis_idempotency_reads_matching_legacy_scope() -> None:
 
 
 def test_redis_job_backend_cas_contends_on_watch() -> None:
-    """Concurrent mutation during WATCH raises WatchError and retries safely."""
+    """A conflict in the backend transaction is retried without lost updates."""
     shared: Any = _SharedRedis()
     backend = RedisJobBackend(shared)
     handle = backend.submit("demo", {"n": 1}, tenant_id="t")
@@ -184,19 +170,27 @@ def test_redis_job_backend_cas_contends_on_watch() -> None:
     original = shared.get(key)
     assert original is not None
 
-    pipe = shared.pipeline()
-    pipe.watch(key)
-    # Mutate under another client while watched.
-    shared.set(key, original.replace('"queued"', '"running"'))
-    pipe.multi()
-    pipe.set(key, original)
-    with pytest.raises(WatchError):
-        pipe.execute()
+    class _ContendingPipeline(_SharedPipeline):
+        def __init__(self, client: _SharedRedis) -> None:
+            super().__init__(client)
+            self.executions = 0
 
-    # Backend mark still succeeds via CAS retry after contention.
+        def execute(self) -> list[object]:
+            self.executions += 1
+            if self.executions == 1:
+                # Mutate under another client while the backend's WATCH is active.
+                current = self._client.get(key)
+                assert current is not None
+                self._client.set(key, current.replace('"queued"', '"running"'))
+            return super().execute()
+
+    pipeline = _ContendingPipeline(shared)
+    shared.pipeline = lambda: pipeline  # type: ignore[method-assign]
+
     marked = backend.mark(handle.job_id, JobState.SUCCEEDED)
     assert marked is not None
     assert marked.state is JobState.SUCCEEDED
+    assert pipeline.executions == 2
 
 
 def test_redis_mark_refreshes_idempotency_ttl_skew() -> None:

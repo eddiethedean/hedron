@@ -2,25 +2,13 @@
 
 from __future__ import annotations
 
-import sys
-from types import ModuleType
 from typing import Any
 
 from hedron_core.jobs import JobBackend, JobState
 from hedron_core.jobs_celery import CeleryJobBackend
 from hedron_core.jobs_rq import RQJobBackend
 
-
-class WatchError(Exception):
-    """Stub WatchError so RedisStatusStore CAS works without redis-py."""
-
-
-_redis_mod = ModuleType("redis")
-_exc_mod = ModuleType("redis.exceptions")
-_exc_mod.WatchError = WatchError  # type: ignore[attr-defined]
-_redis_mod.exceptions = _exc_mod  # type: ignore[attr-defined]
-sys.modules.setdefault("redis", _redis_mod)
-sys.modules.setdefault("redis.exceptions", _exc_mod)
+WatchError = type("WatchError", (Exception,), {})
 
 
 class _SharedPipeline:

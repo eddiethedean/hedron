@@ -8,6 +8,7 @@ import re
 import sys
 from functools import lru_cache
 from pathlib import Path
+from types import ModuleType
 
 if sys.version_info < (3, 11):
     import tomli
@@ -311,6 +312,14 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     tests continue to execute.  On 1.0 they are explicit skips rather than
     failures, while canonical phase-1.0 fixtures remain fully active.
     """
+    # A few Redis contract modules used to install collection-time fake
+    # ``redis`` modules. Remove those placeholders before any version-specific
+    # retirement logic, including the legacy 0.x bridge job.
+    redis_module = sys.modules.get("redis")
+    if redis_module is not None and not hasattr(redis_module, "Redis"):
+        sys.modules.pop("redis", None)
+        sys.modules.pop("redis.exceptions", None)
+
     try:
         from hedron import __version__
     except ImportError:
@@ -339,6 +348,40 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     for item in retired.values():
         item.add_marker(pytest.mark.historical_0x)
         item.add_marker(pytest.mark.skip(reason=reason))
+
+
+@pytest.fixture(autouse=True)
+def _redis_watch_error_module(request: pytest.FixtureRequest) -> None:
+    """Provide only the Redis exception needed by in-process contract fakes.
+
+    The fixture is scoped to each test, so it cannot mask the optional real
+    Redis client or leak a fake module into other tests.
+    """
+    # Real-Redis tests must be allowed to import the actual optional package.
+    if request.node.get_closest_marker("redis") is not None:
+        yield
+        return
+
+    existing = sys.modules.get("redis")
+    existing_exceptions = sys.modules.get("redis.exceptions")
+    if existing is None:
+        fake = ModuleType("redis")
+        fake_exceptions = ModuleType("redis.exceptions")
+        fake_watch_error = type("WatchError", (Exception,), {})
+        fake_exceptions.WatchError = fake_watch_error  # type: ignore[attr-defined]
+        fake.exceptions = fake_exceptions  # type: ignore[attr-defined]
+        sys.modules["redis"] = fake
+        sys.modules["redis.exceptions"] = fake_exceptions
+    yield
+    if existing is None:
+        sys.modules.pop("redis", None)
+        sys.modules.pop("redis.exceptions", None)
+    else:
+        sys.modules["redis"] = existing
+        if existing_exceptions is None:
+            sys.modules.pop("redis.exceptions", None)
+        else:
+            sys.modules["redis.exceptions"] = existing_exceptions
 
 
 def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:

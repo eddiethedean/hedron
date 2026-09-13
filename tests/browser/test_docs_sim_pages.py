@@ -163,7 +163,7 @@ def docs_site(tmp_path_factory: pytest.TempPathFactory) -> Path:
     try:
         import mkdocs  # noqa: F401
     except ImportError:
-        pytest.skip("mkdocs not installed — sync with --group docs")
+        pytest.fail("mkdocs is required for the documentation browser suite")
 
     site = tmp_path_factory.mktemp("mkdocs-site")
     # Use the current interpreter so we do not recreate the project venv
@@ -184,7 +184,7 @@ def docs_site(tmp_path_factory: pytest.TempPathFactory) -> Path:
         check=False,
     )
     if proc.returncode != 0:
-        pytest.skip(f"mkdocs build failed: {proc.stderr[-800:]}")
+        pytest.fail(f"mkdocs build failed: {proc.stderr[-800:]}")
     assert (site / "index.html").is_file()
     return site
 

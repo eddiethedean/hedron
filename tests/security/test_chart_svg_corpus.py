@@ -106,9 +106,9 @@ def test_line_chart_tabular_fallback_escaped() -> None:
         description="D",
         alt="A",
     )
-    # Force SVG fallback path by temporarily hiding matplotlib if present —
-    # still assert title/description and escaped content when rendered.
     html_out = render(node, mode=RenderMode.FRAGMENT).html
     assert "T" in html_out
-    # Script tags from data must not execute as markup tags.
-    assert "<script>" not in html_out or "&lt;script&gt;" in html_out or "script" in html_out
+    # Script tags from data must be escaped in every rendering path.
+    lowered = html_out.lower()
+    assert "<script" not in lowered
+    assert "&lt;script&gt;" in lowered
