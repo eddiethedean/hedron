@@ -1371,6 +1371,7 @@
     width: min(calc(100% - 2rem), 34rem);
     max-height: min(46rem, calc(100dvh - 2rem));
     padding: 0;
+    text-align: start;
     overflow: auto;
     border: 1px solid var(--hedron-default-border);
     border-radius: var(--hedron-default-radius-lg);
