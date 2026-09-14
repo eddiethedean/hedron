@@ -1351,7 +1351,7 @@ wheels = [
 
 [[package]]
 name = "hedron"
-version = "1.0.14"
+version = "1.0.15"
 source = { editable = "packages/hedron" }
 dependencies = [
     { name = "fastapi" },
@@ -1590,7 +1590,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-core"
-version = "1.0.14"
+version = "1.0.15"
 source = { editable = "packages/hedron-core" }
 dependencies = [
     { name = "packaging" },
