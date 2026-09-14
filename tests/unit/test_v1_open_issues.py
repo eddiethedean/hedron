@@ -193,12 +193,12 @@ def test_page_header_supports_editorial_wrap_and_tracking_contract() -> None:
 
 
 def test_native_typography_css_applies_scoped_role_markers() -> None:
-    css = (
-        Path("packages/hedron-core/src/hedron_core/static/hedron-default.css")
-        .read_text(encoding="utf-8")
+    css = Path("packages/hedron-core/src/hedron_core/static/hedron-default.css").read_text(
+        encoding="utf-8"
     )
     for role in ("display", "eyebrow", "title", "body", "label", "caption", "mono"):
         assert f'[data-hedron-type-role="{role}"]' in css
     assert '[data-hedron-type-role="title"]' in css
     assert css.index('[data-hedron-type-role="title"]') > css.index("h1 {")
-    assert 'font-weight: 400;\n    line-height: var(--hedron-type-body-line-height' in css
+    assert '[data-hedron-type-role="body"] { font-weight: 400; }' in css
+    assert "line-height: var(--hedron-type-body-line-height" in css

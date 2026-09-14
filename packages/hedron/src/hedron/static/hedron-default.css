@@ -2970,6 +2970,7 @@
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 0.1em;
+    line-height: var(--hedron-type-body-line-height, 1.65);
     text-transform: uppercase;
   }
 
@@ -2984,28 +2985,32 @@
   .hedron-type-body,
   [data-hedron-type-role="body"] {
     font-size: var(--hedron-type-body-size, 1rem);
-    font-weight: 400;
     line-height: var(--hedron-type-body-line-height, 1.65);
   }
+
+  [data-hedron-type-role="body"] { font-weight: 400; }
 
   .hedron-type-label,
   [data-hedron-type-role="label"] {
     font-size: var(--hedron-type-label-size, 0.86rem);
     font-weight: 700;
+    line-height: var(--hedron-type-body-line-height, 1.65);
   }
 
   .hedron-type-caption,
   [data-hedron-type-role="caption"] {
     color: var(--hedron-color-muted, var(--hedron-default-muted));
     font-size: var(--hedron-type-supporting-size, 0.8rem);
-    font-weight: 400;
     line-height: var(--hedron-type-body-line-height, 1.65);
   }
+
+  [data-hedron-type-role="caption"] { font-weight: 400; }
 
   .hedron-type-mono,
   [data-hedron-type-role="mono"] {
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-size: 0.9rem;
+    line-height: var(--hedron-type-body-line-height, 1.65);
   }
   body,
   :where(.hedron-text, .hedron-heading, .hedron-page-header-title, .hedron-page-header-description, .hedron-type-eyebrow) {
