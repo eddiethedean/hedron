@@ -984,27 +984,6 @@
     grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 
-  .hedron-grid-item[data-hedron-span="1"] { grid-column: span 1; }
-  .hedron-grid-item[data-hedron-span="2"] { grid-column: span 2; }
-  .hedron-grid-item[data-hedron-span="3"] { grid-column: span 3; }
-  .hedron-grid-item[data-hedron-span="4"] { grid-column: span 4; }
-  .hedron-grid-item[data-hedron-span="5"] { grid-column: span 5; }
-  .hedron-grid-item[data-hedron-span="6"] { grid-column: span 6; }
-
-  /* Tracks apply only when columns are absent so fixed column counts win. */
-  .hedron-grid[data-hedron-track="narrow"]:not([data-hedron-columns]) {
-    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-  }
-  .hedron-grid[data-hedron-track="default"]:not([data-hedron-columns]) {
-    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-  }
-  .hedron-grid[data-hedron-track="wide"]:not([data-hedron-columns]) {
-    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
-  }
-  .hedron-grid[data-hedron-track="fluid"]:not([data-hedron-columns]) {
-    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-  }
-
   .hedron-grid:has(> .hedron-sidebar) {
     grid-template-columns: minmax(14rem, 17rem) minmax(0, 1fr);
     gap: clamp(1.5rem, 4vw, 3.5rem);
@@ -1371,6 +1350,7 @@
     width: min(calc(100% - 2rem), 34rem);
     max-height: min(46rem, calc(100dvh - 2rem));
     padding: 0;
+    text-align: start;
     overflow: auto;
     border: 1px solid var(--hedron-default-border);
     border-radius: var(--hedron-default-radius-lg);
@@ -3264,31 +3244,6 @@
   }
 
   @media (min-width: 80rem) {
-    .hedron-grid[data-hedron-columns-xl="1"] { grid-template-columns: minmax(0, 1fr); }
-    .hedron-grid[data-hedron-columns-xl="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .hedron-grid[data-hedron-columns-xl="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .hedron-grid[data-hedron-columns-xl="4"] { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    .hedron-grid[data-hedron-columns-xl="5"] { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-    .hedron-grid[data-hedron-columns-xl="6"] { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-    .hedron-grid[data-hedron-track-xl="narrow"]:not([data-hedron-columns-xl]):not([data-hedron-columns]) {
-      grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-    }
-    .hedron-grid[data-hedron-track-xl="default"]:not([data-hedron-columns-xl]):not([data-hedron-columns]) {
-      grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-    }
-    .hedron-grid[data-hedron-track-xl="wide"]:not([data-hedron-columns-xl]):not([data-hedron-columns]) {
-      grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
-    }
-    .hedron-grid[data-hedron-track-xl="fluid"]:not([data-hedron-columns-xl]):not([data-hedron-columns]) {
-      grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-    }
-    .hedron-grid-item[data-hedron-span-xl="1"] { grid-column: span 1; }
-    .hedron-grid-item[data-hedron-span-xl="2"] { grid-column: span 2; }
-    .hedron-grid-item[data-hedron-span-xl="3"] { grid-column: span 3; }
-    .hedron-grid-item[data-hedron-span-xl="4"] { grid-column: span 4; }
-    .hedron-grid-item[data-hedron-span-xl="5"] { grid-column: span 5; }
-    .hedron-grid-item[data-hedron-span-xl="6"] { grid-column: span 6; }
-
     .hedron-form-grid[data-hedron-columns-xl="2"] {
       --hedron-grid-columns: repeat(2, minmax(0, 1fr));
     }
@@ -3459,6 +3414,26 @@
 
   .hedron-grid-item {
     min-width: 0;
+  }
+  .hedron-grid-item[data-hedron-span="1"] { grid-column: span 1; }
+  .hedron-grid-item[data-hedron-span="2"] { grid-column: span 2; }
+  .hedron-grid-item[data-hedron-span="3"] { grid-column: span 3; }
+  .hedron-grid-item[data-hedron-span="4"] { grid-column: span 4; }
+  .hedron-grid-item[data-hedron-span="5"] { grid-column: span 5; }
+  .hedron-grid-item[data-hedron-span="6"] { grid-column: span 6; }
+
+  /* Tracks apply only when columns are absent so fixed column counts win. */
+  .hedron-grid[data-hedron-track="narrow"]:not([data-hedron-columns]) {
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  }
+  .hedron-grid[data-hedron-track="default"]:not([data-hedron-columns]) {
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  }
+  .hedron-grid[data-hedron-track="wide"]:not([data-hedron-columns]) {
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  }
+  .hedron-grid[data-hedron-track="fluid"]:not([data-hedron-columns]) {
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
   }
 
   .hedron-surface {
