@@ -200,5 +200,7 @@ def test_native_typography_css_applies_scoped_role_markers() -> None:
         assert f'[data-hedron-type-role="{role}"]' in css
     assert '[data-hedron-type-role="title"]' in css
     assert css.index('[data-hedron-type-role="title"]') > css.index("h1 {")
-    assert '[data-hedron-type-role="body"]:not(strong) { font-weight: 400; }' in css
+    assert (
+        ':where(h1, h2, h3, h4, h5, h6)[data-hedron-type-role="body"] { font-weight: 400; }' in css
+    )
     assert "line-height: var(--hedron-type-body-line-height" in css

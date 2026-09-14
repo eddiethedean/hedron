@@ -2989,7 +2989,7 @@
     letter-spacing: normal;
   }
 
-  [data-hedron-type-role="body"]:not(strong) { font-weight: 400; }
+  :where(h1, h2, h3, h4, h5, h6)[data-hedron-type-role="body"] { font-weight: 400; }
 
   .hedron-type-label,
   [data-hedron-type-role="label"] {
@@ -3006,16 +3006,16 @@
     letter-spacing: normal;
   }
 
-  [data-hedron-type-role="caption"]:not(strong) { font-weight: 400; }
+  :where(h1, h2, h3, h4, h5, h6)[data-hedron-type-role="caption"] { font-weight: 400; }
 
   .hedron-type-mono,
   [data-hedron-type-role="mono"] {
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-size: 0.9rem;
     line-height: var(--hedron-type-body-line-height, 1.65);
-    font-weight: 400;
     letter-spacing: normal;
   }
+  :where(h1, h2, h3, h4, h5, h6)[data-hedron-type-role="mono"] { font-weight: 400; }
   body,
   :where(.hedron-text, .hedron-heading, .hedron-page-header-title, .hedron-page-header-description, .hedron-type-eyebrow) {
     font-feature-settings: var(--hedron-font-feature-settings, normal);
