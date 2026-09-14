@@ -11,7 +11,10 @@ from hedron_core import (
     AlpineAttrs,
     AlpineDirective,
     AlpineExpression,
+    Button,
     Interaction,
+    Stack,
+    compile_style_bundle,
     html,
     render,
 )
@@ -99,4 +102,64 @@ def test_collapsible_app_shell_keeps_rail_and_main_in_desktop_columns(engine: st
         assert button.get_attribute("aria-expanded") == "false"
         assert button.inner_text() == "Expand navigation"
 
+        context.close()
+
+
+@pytest.mark.parametrize("engine", ("chromium", "firefox", "webkit"))
+def test_button_bundle_preserves_native_variants(engine: str) -> None:
+    if os.environ.get("HEDRON_BROWSER", "").strip() not in {"1", "true", "yes"}:
+        pytest.skip("HEDRON_BROWSER not set")
+    selected = os.environ.get("HEDRON_BROWSER_ENGINE")
+    if selected and selected != engine:
+        pytest.skip(f"engine filter {selected}")
+    pytest.importorskip("playwright")
+    from playwright.sync_api import sync_playwright
+
+    native_css = (
+        Path(__file__).resolve().parents[2]
+        / "packages/hedron-core/src/hedron_core/static/hedron-default.css"
+    ).read_text(encoding="utf-8")
+    bundle_css = compile_style_bundle(components=("button",)).css
+    assert ".hedron-button-secondary:hover" in bundle_css
+    assert ".hedron-button-danger:hover" in bundle_css
+    assert bundle_css.index(".hedron-button-secondary:hover") < bundle_css.index(
+        '.hedron-button[data-hedron-appearance="outline"]'
+    )
+    markup = render(
+        Stack(
+            Button("Primary", id="primary"),
+            Button("Secondary", variant="secondary", id="secondary"),
+            Button(
+                "Secondary solid", variant="secondary", appearance="solid", id="secondary-solid"
+            ),
+            Button("Danger", variant="danger", id="danger"),
+            Button("Danger outline", variant="danger", appearance="outline", id="danger-outline"),
+        )
+    ).html
+
+    with sync_playwright() as pw:
+        browser = getattr(pw, engine).launch(headless=True)
+        context = browser.new_context(color_scheme="light")
+        page = context.new_page()
+        page.set_content(f"<style>{native_css}</style><style>{bundle_css}</style>{markup}")
+        assert (
+            page.locator("#primary").evaluate("(e) => getComputedStyle(e).backgroundColor")
+            == "rgb(37, 99, 235)"
+        )
+        assert (
+            page.locator("#secondary").evaluate("(e) => getComputedStyle(e).backgroundColor")
+            == "rgba(0, 0, 0, 0)"
+        )
+        assert (
+            page.locator("#danger").evaluate("(e) => getComputedStyle(e).backgroundColor")
+            == "rgb(199, 57, 57)"
+        )
+        assert (
+            page.locator("#danger-outline").evaluate("(e) => getComputedStyle(e).backgroundColor")
+            == "rgba(0, 0, 0, 0)"
+        )
+        secondary = page.locator("#secondary-solid")
+        danger = page.locator("#danger")
+        assert secondary.is_visible()
+        assert danger.is_visible()
         context.close()

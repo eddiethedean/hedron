@@ -10,6 +10,7 @@ from tests.unit.charts_038_helpers import sample_spec
 from hedron_charts.compile import compile_chart
 from hedron_charts.export import export_svg
 from hedron_core import (
+    Button,
     compare_style_bundle_sizes,
     compile_style_bundle,
     emit_visualization_theme_css,
@@ -38,6 +39,32 @@ def test_bundle_is_deterministic_smaller_and_dependency_ordered() -> None:
     ]
     static = Path(__file__).parents[2] / "packages/hedron-core/src/hedron_core/static/bundles"
     assert all((static / ref.href.rsplit("/", 1)[-1]).is_file() for ref in refs)
+
+
+def test_button_bundle_preserves_variant_and_appearance_contract() -> None:
+    css = compile_style_bundle(components=("button",)).css
+    markup = render(
+        Button("Secondary", variant="secondary", appearance="outline", width="full")
+    ).html
+    assert "hedron-button-secondary" in markup
+    assert 'data-hedron-appearance="outline"' in markup
+    assert 'data-hedron-width="full"' in markup
+    for selector in (
+        ".hedron-button-secondary",
+        ".hedron-button-danger",
+        '.hedron-button[data-hedron-appearance="outline"]',
+        '.hedron-button[data-hedron-appearance="ghost"]',
+        '.hedron-button[data-hedron-appearance="soft"]',
+        '.hedron-button[data-hedron-appearance="raised"]',
+        '.hedron-button[data-hedron-width="full"]',
+    ):
+        assert selector in css
+    static = (
+        Path(__file__).parents[2] / "packages/hedron-core/src/hedron_core/static/bundles/button.css"
+    )
+    static_css = static.read_text(encoding="utf-8")
+    for selector in (".hedron-button-secondary", ".hedron-button-danger"):
+        assert selector in static_css
 
 
 def test_visualization_palette_has_shared_roles_and_non_color_encodings() -> None:
