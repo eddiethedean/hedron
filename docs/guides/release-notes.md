@@ -3,6 +3,16 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 1.0.16 — 2026-09-14
+
+Coordinated maintenance release for the Stable 1.0 package train. The release is tagged on
+GitHub and queued for publication on PyPI through the protected release workflow.
+
+### Fixed
+
+- Replaced the direct Read the Docs badge endpoint with a PyPI-friendly Shields.io badge in the
+  Hedron and Edron package READMEs.
+
 ## 1.0.15 — 2026-09-14
 
 Coordinated maintenance release for the Stable 1.0 package train. The release is tagged on

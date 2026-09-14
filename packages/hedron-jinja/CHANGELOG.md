@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.16] — 2026-09-14
+
+### Fixed
+
+- Coordinated maintenance release for the 1.0 package train.
+
 ## [1.0.15] — 2026-09-14
 
 ### Fixed

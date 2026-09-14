@@ -11,8 +11,8 @@ responsibilities remain with the adopting organization.
 
 | Evidence | Source |
 |---|---|
-| Hedron package and files | Published `1.0.15` |
-| Edron package and files | Published `1.0.15` |
+| Hedron package and files | Published `1.0.16` |
+| Edron package and files | Published `1.0.16` |
 | Source tag, wheels, checksums, and attached evidence | Published from immutable `release-20260911-01` tag |
 | Current install and support facts | [Current release](current-release.md) |
 
