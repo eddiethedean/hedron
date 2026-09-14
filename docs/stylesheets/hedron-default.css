@@ -984,27 +984,6 @@
     grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 
-  .hedron-grid-item[data-hedron-span="1"] { grid-column: span 1; }
-  .hedron-grid-item[data-hedron-span="2"] { grid-column: span 2; }
-  .hedron-grid-item[data-hedron-span="3"] { grid-column: span 3; }
-  .hedron-grid-item[data-hedron-span="4"] { grid-column: span 4; }
-  .hedron-grid-item[data-hedron-span="5"] { grid-column: span 5; }
-  .hedron-grid-item[data-hedron-span="6"] { grid-column: span 6; }
-
-  /* Tracks apply only when columns are absent so fixed column counts win. */
-  .hedron-grid[data-hedron-track="narrow"]:not([data-hedron-columns]) {
-    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-  }
-  .hedron-grid[data-hedron-track="default"]:not([data-hedron-columns]) {
-    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-  }
-  .hedron-grid[data-hedron-track="wide"]:not([data-hedron-columns]) {
-    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
-  }
-  .hedron-grid[data-hedron-track="fluid"]:not([data-hedron-columns]) {
-    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-  }
-
   .hedron-grid:has(> .hedron-sidebar) {
     grid-template-columns: minmax(14rem, 17rem) minmax(0, 1fr);
     gap: clamp(1.5rem, 4vw, 3.5rem);
@@ -2977,46 +2956,65 @@
     background: var(--hedron-data-table-sticky-surface, var(--hedron-default-surface));
   }
 
-  .hedron-type-display {
+  .hedron-type-display,
+  [data-hedron-type-role="display"] {
     font-size: var(--hedron-type-display-size, clamp(1.9rem, 4vw, 2.75rem));
     font-weight: 820;
     letter-spacing: -0.02em;
     line-height: var(--hedron-type-heading-line-height, 1.1);
   }
 
-  .hedron-type-eyebrow {
+  .hedron-type-eyebrow,
+  [data-hedron-type-role="eyebrow"] {
     color: var(--hedron-color-muted, var(--hedron-default-muted));
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 0.1em;
+    line-height: var(--hedron-type-body-line-height, 1.65);
     text-transform: uppercase;
   }
 
-  .hedron-type-title {
+  .hedron-type-title,
+  [data-hedron-type-role="title"] {
     font-size: var(--hedron-type-heading-size, 1.25rem);
     font-weight: 760;
     letter-spacing: -0.01em;
     line-height: var(--hedron-type-heading-line-height, 1.2);
   }
 
-  .hedron-type-body {
+  .hedron-type-body,
+  [data-hedron-type-role="body"] {
     font-size: var(--hedron-type-body-size, 1rem);
+    line-height: var(--hedron-type-body-line-height, 1.65);
+    letter-spacing: normal;
+  }
+
+  [data-hedron-type-role="body"]:not(strong) { font-weight: 400; }
+
+  .hedron-type-label,
+  [data-hedron-type-role="label"] {
+    font-size: var(--hedron-type-label-size, 0.86rem);
+    font-weight: 700;
     line-height: var(--hedron-type-body-line-height, 1.65);
   }
 
-  .hedron-type-label {
-    font-size: var(--hedron-type-label-size, 0.86rem);
-    font-weight: 700;
-  }
-
-  .hedron-type-caption {
+  .hedron-type-caption,
+  [data-hedron-type-role="caption"] {
     color: var(--hedron-color-muted, var(--hedron-default-muted));
     font-size: var(--hedron-type-supporting-size, 0.8rem);
+    line-height: var(--hedron-type-body-line-height, 1.65);
+    letter-spacing: normal;
   }
 
-  .hedron-type-mono {
+  [data-hedron-type-role="caption"]:not(strong) { font-weight: 400; }
+
+  .hedron-type-mono,
+  [data-hedron-type-role="mono"] {
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-size: 0.9rem;
+    line-height: var(--hedron-type-body-line-height, 1.65);
+    font-weight: 400;
+    letter-spacing: normal;
   }
   body,
   :where(.hedron-text, .hedron-heading, .hedron-page-header-title, .hedron-page-header-description, .hedron-type-eyebrow) {
@@ -3264,31 +3262,6 @@
   }
 
   @media (min-width: 80rem) {
-    .hedron-grid[data-hedron-columns-xl="1"] { grid-template-columns: minmax(0, 1fr); }
-    .hedron-grid[data-hedron-columns-xl="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .hedron-grid[data-hedron-columns-xl="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .hedron-grid[data-hedron-columns-xl="4"] { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    .hedron-grid[data-hedron-columns-xl="5"] { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-    .hedron-grid[data-hedron-columns-xl="6"] { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-    .hedron-grid[data-hedron-track-xl="narrow"]:not([data-hedron-columns-xl]):not([data-hedron-columns]) {
-      grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-    }
-    .hedron-grid[data-hedron-track-xl="default"]:not([data-hedron-columns-xl]):not([data-hedron-columns]) {
-      grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-    }
-    .hedron-grid[data-hedron-track-xl="wide"]:not([data-hedron-columns-xl]):not([data-hedron-columns]) {
-      grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
-    }
-    .hedron-grid[data-hedron-track-xl="fluid"]:not([data-hedron-columns-xl]):not([data-hedron-columns]) {
-      grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-    }
-    .hedron-grid-item[data-hedron-span-xl="1"] { grid-column: span 1; }
-    .hedron-grid-item[data-hedron-span-xl="2"] { grid-column: span 2; }
-    .hedron-grid-item[data-hedron-span-xl="3"] { grid-column: span 3; }
-    .hedron-grid-item[data-hedron-span-xl="4"] { grid-column: span 4; }
-    .hedron-grid-item[data-hedron-span-xl="5"] { grid-column: span 5; }
-    .hedron-grid-item[data-hedron-span-xl="6"] { grid-column: span 6; }
-
     .hedron-form-grid[data-hedron-columns-xl="2"] {
       --hedron-grid-columns: repeat(2, minmax(0, 1fr));
     }
@@ -3459,6 +3432,26 @@
 
   .hedron-grid-item {
     min-width: 0;
+  }
+  .hedron-grid-item[data-hedron-span="1"] { grid-column: span 1; }
+  .hedron-grid-item[data-hedron-span="2"] { grid-column: span 2; }
+  .hedron-grid-item[data-hedron-span="3"] { grid-column: span 3; }
+  .hedron-grid-item[data-hedron-span="4"] { grid-column: span 4; }
+  .hedron-grid-item[data-hedron-span="5"] { grid-column: span 5; }
+  .hedron-grid-item[data-hedron-span="6"] { grid-column: span 6; }
+
+  /* Tracks apply only when columns are absent so fixed column counts win. */
+  .hedron-grid[data-hedron-track="narrow"]:not([data-hedron-columns]) {
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  }
+  .hedron-grid[data-hedron-track="default"]:not([data-hedron-columns]) {
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  }
+  .hedron-grid[data-hedron-track="wide"]:not([data-hedron-columns]) {
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  }
+  .hedron-grid[data-hedron-track="fluid"]:not([data-hedron-columns]) {
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
   }
 
   .hedron-surface {
