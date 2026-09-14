@@ -53,3 +53,16 @@ def test_stylesheet_has_responsive_grid_selectors() -> None:
     assert '.hedron-grid[data-hedron-columns-md="3"]' in css
     assert '.hedron-grid-item[data-hedron-span-md="2"]' in css
     assert '.hedron-grid[data-hedron-track="default"]:not([data-hedron-columns])' in css
+
+
+def test_responsive_grid_rules_follow_base_rules_and_cover_xl() -> None:
+    css = Path("packages/hedron-core/src/hedron_core/static/hedron-default.css").read_text(
+        encoding="utf-8"
+    )
+    base_span = css.index('.hedron-grid-item[data-hedron-span="2"]')
+    sm_media = css.index("@media (min-width: 36rem)")
+    assert base_span < sm_media
+    for count in range(1, 7):
+        assert f'.hedron-grid[data-hedron-columns-xl="{count}"]' in css
+        assert f'.hedron-grid-item[data-hedron-span-xl="{count}"]' in css
+    assert '.hedron-grid[data-hedron-track-xl="default"]' in css
