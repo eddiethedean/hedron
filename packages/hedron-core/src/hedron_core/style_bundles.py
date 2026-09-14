@@ -130,7 +130,8 @@ _COMPONENT_CSS: Mapping[str, str] = {
     "button": """@layer components {
   .hedron-button, button.hedron-button { border: 1px solid var(--hedron-color-accent, #2563eb); border-radius: var(--hedron-shape-radius, .8rem); background: var(--hedron-color-accent, #2563eb); color: var(--hedron-color-on-accent, #fff); padding: .55rem .85rem; }
   .hedron-button:hover { background: var(--hedron-color-accent-hover, var(--hedron-color-accent, #2563eb)); }
-  .hedron-button-secondary {
+  .hedron-button-secondary,
+  button.hedron-button.hedron-button-secondary {
     border-color: var(--hedron-color-border-strong, var(--hedron-color-border, #dce2eb));
     background: var(--hedron-color-surface, #fff);
     color: var(--hedron-color-fg, #172033);
@@ -140,7 +141,8 @@ _COMPONENT_CSS: Mapping[str, str] = {
     background: var(--hedron-color-accent-soft, #eef4ff);
     color: var(--hedron-color-accent, #2563eb);
   }
-  .hedron-button-danger {
+  .hedron-button-danger,
+  button.hedron-button.hedron-button-danger {
     background: var(--hedron-color-danger, #c73939);
     color: var(--hedron-color-on-danger, #fff);
   }
