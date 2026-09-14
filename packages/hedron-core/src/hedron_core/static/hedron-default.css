@@ -2984,6 +2984,7 @@
   .hedron-type-body,
   [data-hedron-type-role="body"] {
     font-size: var(--hedron-type-body-size, 1rem);
+    font-weight: 400;
     line-height: var(--hedron-type-body-line-height, 1.65);
   }
 
@@ -2997,6 +2998,8 @@
   [data-hedron-type-role="caption"] {
     color: var(--hedron-color-muted, var(--hedron-default-muted));
     font-size: var(--hedron-type-supporting-size, 0.8rem);
+    font-weight: 400;
+    line-height: var(--hedron-type-body-line-height, 1.65);
   }
 
   .hedron-type-mono,
