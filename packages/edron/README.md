@@ -14,7 +14,7 @@
 [![PyPI](https://img.shields.io/pypi/v/edron.svg)](https://pypi.org/project/edron/)
 [![Python](https://img.shields.io/pypi/pyversions/edron.svg)](https://pypi.org/project/edron/)
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=v1.0&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
-[![Docs](https://readthedocs.org/projects/hedron/badge/?version=latest)](https://hedron.readthedocs.io/en/latest/guides/edron-user-guide/)
+[![Docs](https://img.shields.io/readthedocs/hedron?style=flat&label=docs)](https://hedron.readthedocs.io/en/latest/guides/edron-user-guide/)
 [![API: Stable](https://img.shields.io/badge/API-stable-brightgreen.svg)](https://hedron.readthedocs.io/en/latest/api/EDRON_REFERENCE/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/v1.0/packages/edron/LICENSE)
 

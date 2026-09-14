@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="https://github.com/eddiethedean/hedron/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI" alt="CI"></a>
-  <a href="https://hedron.readthedocs.io/en/latest/"><img src="https://readthedocs.org/projects/hedron/badge/?version=latest" alt="Docs"></a>
+  <a href="https://hedron.readthedocs.io/en/latest/"><img src="https://img.shields.io/readthedocs/hedron?style=flat&label=docs" alt="Docs"></a>
   <a href="https://pypi.org/project/hedron/"><img src="https://img.shields.io/pypi/v/hedron.svg?label=hedron" alt="Hedron on PyPI"></a>
   <a href="https://pypi.org/project/hedron/"><img src="https://img.shields.io/pypi/pyversions/hedron.svg" alt="Python versions"></a>
   <a href="https://microsoft.github.io/pyright/"><img src="https://img.shields.io/badge/Pyright-strict-3178c6.svg" alt="Pyright strict"></a>
