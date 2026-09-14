@@ -124,7 +124,11 @@ def test_button_bundle_preserves_native_variants(engine: str) -> None:
         Stack(
             Button("Primary", id="primary"),
             Button("Secondary", variant="secondary", id="secondary"),
+            Button(
+                "Secondary solid", variant="secondary", appearance="solid", id="secondary-solid"
+            ),
             Button("Danger", variant="danger", id="danger"),
+            Button("Danger outline", variant="danger", appearance="outline", id="danger-outline"),
         )
     ).html
 
@@ -139,10 +143,34 @@ def test_button_bundle_preserves_native_variants(engine: str) -> None:
         )
         assert (
             page.locator("#secondary").evaluate("(e) => getComputedStyle(e).backgroundColor")
-            == "rgb(255, 255, 255)"
+            == "rgba(0, 0, 0, 0)"
         )
         assert (
             page.locator("#danger").evaluate("(e) => getComputedStyle(e).backgroundColor")
             == "rgb(199, 57, 57)"
         )
+        assert (
+            page.locator("#danger-outline").evaluate("(e) => getComputedStyle(e).backgroundColor")
+            == "rgba(0, 0, 0, 0)"
+        )
+        secondary = page.locator("#secondary-solid")
+        secondary_before = secondary.evaluate("(e) => getComputedStyle(e).backgroundColor")
+        secondary_box = secondary.bounding_box()
+        assert secondary_box is not None
+        page.mouse.move(
+            secondary_box["x"] + secondary_box["width"] / 2,
+            secondary_box["y"] + secondary_box["height"] / 2,
+        )
+        page.wait_for_timeout(50)
+        assert secondary.evaluate("(e) => getComputedStyle(e).backgroundColor") != secondary_before
+        danger = page.locator("#danger")
+        danger_before = danger.evaluate("(e) => getComputedStyle(e).backgroundColor")
+        danger_box = danger.bounding_box()
+        assert danger_box is not None
+        page.mouse.move(
+            danger_box["x"] + danger_box["width"] / 2,
+            danger_box["y"] + danger_box["height"] / 2,
+        )
+        page.wait_for_timeout(50)
+        assert danger.evaluate("(e) => getComputedStyle(e).backgroundColor") != danger_before
         context.close()
