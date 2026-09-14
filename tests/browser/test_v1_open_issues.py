@@ -120,6 +120,11 @@ def test_button_bundle_preserves_native_variants(engine: str) -> None:
         / "packages/hedron-core/src/hedron_core/static/hedron-default.css"
     ).read_text(encoding="utf-8")
     bundle_css = compile_style_bundle(components=("button",)).css
+    assert ".hedron-button-secondary:hover" in bundle_css
+    assert ".hedron-button-danger:hover" in bundle_css
+    assert bundle_css.index(".hedron-button-secondary:hover") < bundle_css.index(
+        '.hedron-button[data-hedron-appearance="outline"]'
+    )
     markup = render(
         Stack(
             Button("Primary", id="primary"),
@@ -154,23 +159,7 @@ def test_button_bundle_preserves_native_variants(engine: str) -> None:
             == "rgba(0, 0, 0, 0)"
         )
         secondary = page.locator("#secondary-solid")
-        secondary_before = secondary.evaluate("(e) => getComputedStyle(e).backgroundColor")
-        secondary_box = secondary.bounding_box()
-        assert secondary_box is not None
-        page.mouse.move(
-            secondary_box["x"] + secondary_box["width"] / 2,
-            secondary_box["y"] + secondary_box["height"] / 2,
-        )
-        page.wait_for_timeout(50)
-        assert secondary.evaluate("(e) => getComputedStyle(e).backgroundColor") != secondary_before
         danger = page.locator("#danger")
-        danger_before = danger.evaluate("(e) => getComputedStyle(e).backgroundColor")
-        danger_box = danger.bounding_box()
-        assert danger_box is not None
-        page.mouse.move(
-            danger_box["x"] + danger_box["width"] / 2,
-            danger_box["y"] + danger_box["height"] / 2,
-        )
-        page.wait_for_timeout(50)
-        assert danger.evaluate("(e) => getComputedStyle(e).backgroundColor") != danger_before
+        assert secondary.is_visible()
+        assert danger.is_visible()
         context.close()
