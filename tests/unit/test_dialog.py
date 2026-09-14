@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from hedron_core import Dialog
 from hedron_core.rendering import render
 
@@ -30,3 +32,12 @@ def test_dialog_empty_id_allocates_stable_auto_id() -> None:
     assert 'id="hedron-dialog-' in a
     assert 'id="hedron-dialog-' in b
     assert a != b  # distinct allocations across instances
+
+
+def test_dialog_styles_reset_inherited_alignment() -> None:
+    css = Path("packages/hedron-core/src/hedron_core/static/hedron-default.css").read_text(
+        encoding="utf-8"
+    )
+    dialog_start = css.index("  .hedron-dialog {", css.index("@layer base"))
+    dialog_end = css.index("  }", dialog_start) + 3
+    assert "text-align: start;" in css[dialog_start:dialog_end]
