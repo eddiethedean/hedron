@@ -60,8 +60,7 @@ def test_button_bundle_preserves_variant_and_appearance_contract() -> None:
     ):
         assert selector in css
     static = (
-        Path(__file__).parents[2]
-        / "packages/hedron-core/src/hedron_core/static/bundles/button.css"
+        Path(__file__).parents[2] / "packages/hedron-core/src/hedron_core/static/bundles/button.css"
     )
     static_css = static.read_text(encoding="utf-8")
     for selector in (".hedron-button-secondary", ".hedron-button-danger"):
