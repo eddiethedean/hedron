@@ -3316,9 +3316,17 @@
   }
 
   .hedron-password-field {
-    display: inline-flex;
+    display: flex;
+    inline-size: 100%;
+    min-inline-size: 0;
     gap: 0.5rem;
     align-items: center;
+  }
+
+  .hedron-password-field > input {
+    flex: 1 1 0;
+    inline-size: 0;
+    min-inline-size: 0;
   }
 
   .hedron-password-field button {

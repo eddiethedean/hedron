@@ -17,6 +17,14 @@ def test_password_toggle_and_busy_reveal() -> None:
     assert 'type="password"' in html
     assert "data-hedron-password-toggle" in html
     assert "Show password" in html
+    css = Path("packages/hedron-core/src/hedron_core/static/hedron-default.css").read_text(
+        encoding="utf-8"
+    )
+    assert ".hedron-password-field" in css
+    assert "inline-size: 100%" in css
+    assert ".hedron-password-field > input" in css
+    assert "flex: 1 1 0" in css
+    assert "flex: 0 0 auto" in css
     reveal = assert_renders(SwapReveal("hello"), contains="data-hedron-reveal")
     assert "respect" in reveal
     assert "is-revealed" in reveal
