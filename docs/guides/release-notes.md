@@ -3,6 +3,18 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 1.0.15 — 2026-09-14
+
+Coordinated maintenance release for the Stable 1.0 package train. The release is tagged on
+GitHub, published on PyPI and npm, and verified against the full release CI matrix.
+
+### Fixed
+
+- Restored responsive grid precedence and extra-large breakpoint rules.
+- Preserved button variants in the component bundle.
+- Made password fields fill their form controls.
+- Isolated dialog text alignment and applied scoped typography roles to native CSS.
+
 ## 1.0.14 — 2026-09-11
 
 Coordinated correctness release for the Stable 1.0 package train. The release is tagged on

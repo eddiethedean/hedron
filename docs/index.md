@@ -140,7 +140,7 @@ app = Hedron()
 <div class="docs-home__updates">
   <a href="guides/current-release/">
     <span>Stable release</span>
-    <strong>Hedron 1.0.14 is available</strong>
+    <strong>Hedron 1.0.15 is available</strong>
     <p>Review supported versions, install pins, and package maturity.</p>
   </a>
   <a href="guides/whats-new-1.0/">
