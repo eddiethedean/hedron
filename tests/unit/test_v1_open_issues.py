@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from fastapi_workbench.config import WorkbenchConfig
@@ -188,3 +190,14 @@ def test_page_header_supports_editorial_wrap_and_tracking_contract() -> None:
     assert 'data-hedron-type-wrap="pretty"' in output
     assert 'data-hedron-type-tracking="loose"' in output
     assert 'data-hedron-type-tracking="wide"' in output
+
+
+def test_native_typography_css_applies_scoped_role_markers() -> None:
+    css = (
+        Path("packages/hedron-core/src/hedron_core/static/hedron-default.css")
+        .read_text(encoding="utf-8")
+    )
+    for role in ("display", "eyebrow", "title", "body", "label", "caption", "mono"):
+        assert f'[data-hedron-type-role="{role}"]' in css
+    assert '[data-hedron-type-role="title"]' in css
+    assert css.index('[data-hedron-type-role="title"]') > css.index("h1 {")
