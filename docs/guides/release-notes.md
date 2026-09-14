@@ -6,7 +6,7 @@ details remain in the [package changelogs](changelog.md).
 ## 1.0.16 — 2026-09-14
 
 Coordinated maintenance release for the Stable 1.0 package train. The release is tagged on
-GitHub and queued for publication on PyPI through the protected release workflow.
+GitHub, published on PyPI, and verified against the full release CI matrix.
 
 ### Fixed
 

@@ -6,7 +6,7 @@
 
 **Roadmap position:** `v1.0.16` is Verified, tagged, and published on PyPI, including Edron.
 `v0.67.0` remains the immutable migration baseline for compatibility evidence.
-**Date:** 2026-09-11
+**Date:** 2026-09-14
 **Implementation:** Stable platform — `hedron`, `hedron-core`, `edron`, `hedron-data`,
 `hedron-charts`, and `hedron-maps` `1.0.16`. Beta satellites — `hedron-explorer`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,

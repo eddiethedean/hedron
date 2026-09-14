@@ -33,6 +33,13 @@ def _release_facts() -> dict[str, object]:
 def _release_status_markdown(facts: dict[str, object]) -> str:
     release = facts["release"]
     assert isinstance(release, dict)
+    if release.get("registry_status") == "deferred":
+        return (
+            '!!! warning "1.0.16 is tagged; PyPI upload pending approval"\n\n'
+            f'    **Hedron {release["pypi_version"]}** is currently available from PyPI. '
+            "The tagged 1.0.16 release passed the full release CI matrix; protected publication "
+            "awaits maintainer approval.\n"
+        )
     return (
         '!!! success "1.0 is published"\n\n'
         f'    **Hedron {release["pypi_version"]}** is available from PyPI. '
@@ -40,10 +47,17 @@ def _release_status_markdown(facts: dict[str, object]) -> str:
     )
 
 
+def _install_pin(release: dict[str, object]) -> str:
+    deferred = release.get("registry_status") == "deferred"
+    floor = release["pypi_pin_floor"] if deferred else release["pin_floor"]
+    ceiling = release["pypi_pin_ceiling"] if deferred else release["pin_ceiling"]
+    return f">={floor},<{ceiling}"
+
+
 def _install_matrix_markdown(facts: dict[str, object]) -> str:
     release = facts["release"]
     assert isinstance(release, dict)
-    hedron_pin = f'>={release["pin_floor"]},<{release["pin_ceiling"]}'
+    hedron_pin = _install_pin(release)
     return (
         "| Package | Install | Best for |\n"
         "|---|---|---|\n"
@@ -66,9 +80,9 @@ def on_config(config):
         "development_version": release["development_version"],
         "is_development": version in {"local", "latest", "main"}
         or version_type == "branch",
-        "hedron_pin": f'>={release["pin_floor"]},<{release["pin_ceiling"]}',
+        "hedron_pin": _install_pin(release),
         "edron_version": edron["published_version"],
-        "edron_pin": f'>={edron["pin_floor"]},<{edron["pin_ceiling"]}',
+        "edron_pin": _install_pin(edron),
     }
     try:
         from hedron_sim.assets import copy_assets

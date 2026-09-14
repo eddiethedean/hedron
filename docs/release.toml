@@ -1,7 +1,7 @@
 [release]
 # Public release facts. Adopter-facing "current", "living", and install-pin claims
 # must agree with this file.
-# Stable release channel. The 1.0.16 cut is tagged and published.
+# Stable release channel. The 1.0.16 cut is tagged, published, and release CI verified.
 train = "1.0"
 published_version = "1.0.16"
 stable_version = "1.0.16"
