@@ -2978,47 +2978,66 @@
     background: var(--hedron-data-table-sticky-surface, var(--hedron-default-surface));
   }
 
-  .hedron-type-display {
+  .hedron-type-display,
+  [data-hedron-type-role="display"] {
     font-size: var(--hedron-type-display-size, clamp(1.9rem, 4vw, 2.75rem));
     font-weight: 820;
     letter-spacing: -0.02em;
     line-height: var(--hedron-type-heading-line-height, 1.1);
   }
 
-  .hedron-type-eyebrow {
+  .hedron-type-eyebrow,
+  [data-hedron-type-role="eyebrow"] {
     color: var(--hedron-color-muted, var(--hedron-default-muted));
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 0.1em;
+    line-height: var(--hedron-type-body-line-height, 1.65);
     text-transform: uppercase;
   }
 
-  .hedron-type-title {
+  .hedron-type-title,
+  [data-hedron-type-role="title"] {
     font-size: var(--hedron-type-heading-size, 1.25rem);
     font-weight: 760;
     letter-spacing: -0.01em;
     line-height: var(--hedron-type-heading-line-height, 1.2);
   }
 
-  .hedron-type-body {
+  .hedron-type-body,
+  [data-hedron-type-role="body"] {
     font-size: var(--hedron-type-body-size, 1rem);
+    line-height: var(--hedron-type-body-line-height, 1.65);
+    letter-spacing: normal;
+  }
+
+  :where(h1, h2, h3, h4, h5, h6)[data-hedron-type-role="body"] { font-weight: 400; }
+
+  .hedron-type-label,
+  [data-hedron-type-role="label"] {
+    font-size: var(--hedron-type-label-size, 0.86rem);
+    font-weight: 700;
     line-height: var(--hedron-type-body-line-height, 1.65);
   }
 
-  .hedron-type-label {
-    font-size: var(--hedron-type-label-size, 0.86rem);
-    font-weight: 700;
-  }
-
-  .hedron-type-caption {
+  .hedron-type-caption,
+  [data-hedron-type-role="caption"] {
     color: var(--hedron-color-muted, var(--hedron-default-muted));
     font-size: var(--hedron-type-supporting-size, 0.8rem);
+    line-height: var(--hedron-type-body-line-height, 1.65);
+    letter-spacing: normal;
   }
 
-  .hedron-type-mono {
+  :where(h1, h2, h3, h4, h5, h6)[data-hedron-type-role="caption"] { font-weight: 400; }
+
+  .hedron-type-mono,
+  [data-hedron-type-role="mono"] {
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-size: 0.9rem;
+    line-height: var(--hedron-type-body-line-height, 1.65);
+    letter-spacing: normal;
   }
+  :where(h1, h2, h3, h4, h5, h6)[data-hedron-type-role="mono"] { font-weight: 400; }
   body,
   :where(.hedron-text, .hedron-heading, .hedron-page-header-title, .hedron-page-header-description, .hedron-type-eyebrow) {
     font-feature-settings: var(--hedron-font-feature-settings, normal);
