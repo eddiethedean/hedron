@@ -1,6 +1,15 @@
 @layer components {
   .hedron-button, button.hedron-button { border: 1px solid var(--hedron-color-accent, #2563eb); border-radius: var(--hedron-shape-radius, .8rem); background: var(--hedron-color-accent, #2563eb); color: var(--hedron-color-on-accent, #fff); padding: .55rem .85rem; }
   .hedron-button:hover { background: var(--hedron-color-accent-hover, var(--hedron-color-accent, #2563eb)); }
+  .hedron-button-secondary { border-color: var(--hedron-color-border-strong, var(--hedron-color-border, #dce2eb)); background: var(--hedron-color-surface, #fff); color: var(--hedron-color-fg, #172033); }
+  .hedron-button-secondary:hover { border-color: var(--hedron-color-accent, #2563eb); background: var(--hedron-color-accent-soft, #eef4ff); color: var(--hedron-color-accent, #2563eb); }
+  .hedron-button-danger { background: var(--hedron-color-danger, #c73939); color: var(--hedron-color-on-danger, #fff); }
+  .hedron-button-danger:hover { background: color-mix(in srgb, var(--hedron-color-danger, #c73939) 84%, black); color: var(--hedron-color-on-danger, #fff); }
+  .hedron-button[data-hedron-appearance="outline"] { border-color: var(--hedron-color-border, #dce2eb); background: transparent; color: var(--hedron-color-text, CanvasText); }
+  .hedron-button[data-hedron-appearance="ghost"], .hedron-button[data-hedron-appearance="plain"] { border-color: transparent; background: transparent; color: var(--hedron-color-text, CanvasText); }
+  .hedron-button[data-hedron-appearance="soft"] { border-color: transparent; background: var(--hedron-color-surface-muted, #f6f8fb); color: var(--hedron-color-text, CanvasText); }
+  .hedron-button[data-hedron-appearance="raised"] { border-color: var(--hedron-color-border, #dce2eb); background: var(--hedron-color-surface, #fff); color: var(--hedron-color-text, CanvasText); box-shadow: 0 .35rem .9rem color-mix(in srgb, CanvasText 12%, transparent); }
+  .hedron-button[data-hedron-width="full"] { display: flex; width: 100%; }
   .hedron-button:disabled, .hedron-button[aria-disabled="true"] { opacity: .6; cursor: not-allowed; }
   .hedron-button[aria-busy="true"] { cursor: progress; }
 }
