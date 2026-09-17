@@ -44,8 +44,21 @@ def project_metadata(text: str) -> tuple[str, str]:
     return str(project["name"]), str(project["version"])
 
 
+def unreleased_development_version(ref: str) -> tuple[str, str] | None:
+    release_text = git_show(ref, "docs/release.toml")
+    if release_text is None:
+        return None
+    release = tomllib.loads(release_text).get("release", {})
+    development = release.get("development_version")
+    published = release.get("published_version")
+    if not isinstance(development, str) or not isinstance(published, str):
+        return None
+    return development, published
+
+
 def version_change_errors(base: str, head: str) -> list[str]:
     errors: list[str] = []
+    development_versions = unreleased_development_version(head)
     package_dirs = sorted(
         {
             Path(path).parts[1]
@@ -71,10 +84,17 @@ def version_change_errors(base: str, head: str) -> list[str]:
                 "rename the package explicitly instead of reusing its version"
             )
         elif head_version == base_version:
-            errors.append(
-                f"{head_name}: package files changed but version stayed at {head_version}; "
-                "bump the package version"
-            )
+            if (
+                development_versions is not None
+                and head_version == development_versions[0]
+                and development_versions[0] != development_versions[1]
+            ):
+                print(f"ok: {head_name} remains on unreleased development version {head_version}")
+            else:
+                errors.append(
+                    f"{head_name}: package files changed but version stayed at {head_version}; "
+                    "bump the package version"
+                )
         else:
             print(f"ok: {head_name} changed version {base_version} -> {head_version}")
     return errors
