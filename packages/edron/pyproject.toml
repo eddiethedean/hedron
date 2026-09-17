@@ -24,7 +24,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron>=1.0.0,<2.0",
+    "hedron>=1.0.18,<2.0",
     "hedron-data>=1.0.0,<2.0",
     "hedron-charts>=1.0.0,<2.0",
     "hedron-maps>=1.0.0,<2.0",
