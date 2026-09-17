@@ -12,6 +12,8 @@ from email.parser import BytesParser
 from email.policy import compat32
 from pathlib import Path
 
+from packaging.version import Version
+
 from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -72,12 +74,20 @@ def _fail(message: str) -> None:
     raise ValueError(message)
 
 
+def _requirements_for_version(version: str) -> tuple[str, ...]:
+    train = ".".join(version.split(".")[:2])
+    requirements = REQUIREMENTS_BY_VERSION[train]
+    if train == "1.0" and Version(version) >= Version("1.0.18"):
+        return ("hedron>=1.0.18,<2.0", *requirements[1:])
+    return requirements
+
+
 def _project_version() -> str:
     project = tomllib.loads((PACKAGE / "pyproject.toml").read_text(encoding="utf-8"))["project"]
     version = str(project["version"])
     dependencies = {str(item) for item in project.get("dependencies", [])}
     try:
-        expected_dependencies = REQUIREMENTS_BY_VERSION[".".join(version.split(".")[:2])]
+        expected_dependencies = _requirements_for_version(version)
     except KeyError:
         _fail(f"no Edron release train is configured for {version}")
     for expected in expected_dependencies:
@@ -129,8 +139,7 @@ def check_artifacts(dist_dir: Path, expected_version: str) -> None:
             _fail(f"wheel metadata is {name} {version}, expected edron {expected_version}")
         requirement_keys = {_requirement_key(item) for item in requirements}
         expected_requirements = {
-            _requirement_key(item)
-            for item in REQUIREMENTS_BY_VERSION[".".join(expected_version.split(".")[:2])]
+            _requirement_key(item) for item in _requirements_for_version(expected_version)
         }
         missing_requirements = expected_requirements - requirement_keys
         if missing_requirements:
