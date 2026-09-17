@@ -5,6 +5,7 @@
 ### Changed
 
 - Coordinated Folio theme and accent support release.
+- Close MBTiles SQLite connections after each tile read.
 
 ## [1.0.17] — Unreleased
 

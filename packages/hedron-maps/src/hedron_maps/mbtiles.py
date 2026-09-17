@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import sqlite3
 from collections.abc import Callable
+from contextlib import closing
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
@@ -41,7 +42,7 @@ def read_tile(path: Path, *, z: int, x: int, y: int) -> bytes | None:
             remediation="Declare the archive at construction, not from a request path.",
         )
     query = "SELECT tile_data FROM tiles WHERE zoom_level=? AND tile_column=? AND tile_row=?"
-    with sqlite3.connect(str(resolved)) as con:
+    with closing(sqlite3.connect(str(resolved))) as con, con:
         con.execute("PRAGMA query_only=ON")
         row = con.execute(query, (z, x, y)).fetchone()
         if row is None:
