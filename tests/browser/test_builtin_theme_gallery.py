@@ -133,6 +133,10 @@ def test_gallery_compositions_have_readable_text_and_no_page_overflow(engine: st
                                 "getComputedStyle(e).backgroundColor"
                             ), label
                         if path == "/media":
+                            page.wait_for_function(
+                                "() => Array.from(document.images).every(image => "
+                                "image.complete && image.naturalWidth > 0)"
+                            )
                             assert page.locator("img").evaluate_all(
                                 "images => images.every(image => "
                                 "image.complete && image.naturalWidth > 0)"
