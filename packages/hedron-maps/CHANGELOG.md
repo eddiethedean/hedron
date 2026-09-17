@@ -5,6 +5,7 @@
 ### Changed
 
 - Coordinated Folio theme and accent support release.
+- Convert XYZ tile rows to TMS before MBTiles lookup.
 
 ## [1.0.17] — Unreleased
 

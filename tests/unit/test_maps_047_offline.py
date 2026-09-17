@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import sqlite3
+
 import pytest
 
 from hedron_core import HedronError
@@ -88,3 +90,20 @@ def test_mbtiles_declared_handle_and_synthetic_tile() -> None:
         for item in bundle.projections[0].data.values()
         if isinstance(item, str) or True
     )
+
+
+def test_mbtiles_xyz_reads_are_consistently_converted_to_tms(tmp_path) -> None:
+    path = tmp_path / "tiles.mbtiles"
+    with sqlite3.connect(path) as connection:
+        connection.execute(
+            "CREATE TABLE tiles ("
+            "zoom_level INTEGER, tile_column INTEGER, tile_row INTEGER, tile_data BLOB)"
+        )
+        connection.executemany(
+            "INSERT INTO tiles VALUES (1, 0, ?, ?)",
+            [(0, b"SOUTH"), (1, b"NORTH")],
+        )
+
+    assert read_tile(path, z=1, x=0, y=0) == b"NORTH"
+    assert read_tile(path, z=1, x=0, y=1) == b"SOUTH"
+    assert read_tile(path, z=1, x=1, y=0) is None
