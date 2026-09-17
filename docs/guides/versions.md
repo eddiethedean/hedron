@@ -2,10 +2,9 @@
 
 Hedron publishes release snapshots and development documentation on Read the Docs.
 
-- **Stable** documents the newest published release, currently **1.0.16**.
-- **Latest** follows `main` and may describe the **1.0.17 development workspace** before
-  those changes are released.
-- A numbered version such as **1.0.16** is an immutable snapshot built from that Git tag.
+- **Stable** documents the newest published release, currently **1.0.17**.
+- **Latest** follows `main` and may describe changes after the **1.0.17** release.
+- A numbered version such as **1.0.17** is an immutable snapshot built from that Git tag.
 
 Use the version menu in the documentation header to switch versions. Before copying a
 command or API example, confirm that the documentation version matches the package version

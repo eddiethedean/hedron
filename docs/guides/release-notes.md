@@ -3,10 +3,11 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
-## 1.0.17 — Unreleased
+## 1.0.17 — 2026-09-17
 
-Coordinated theme-polish release for the 1.0 package train. Publication is pending;
-1.0.16 remains the current published release and public install pin.
+Coordinated theme-polish release for the 1.0 package train. The release is tagged on GitHub
+as `v1.0.17` with release train `release-20260917-01`, published on PyPI, and verified
+against the full release CI matrix.
 
 ### Fixed
 

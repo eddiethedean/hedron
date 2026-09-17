@@ -4,15 +4,15 @@
 > product readiness use [What’s ready](guides/whats-ready.md); for the public roadmap use
 > [What’s next](guides/whats-next.md). Do not treat gate tables as the getting-started guide.
 
-**Roadmap position:** `v1.0.16` is Verified, tagged, and published on PyPI, including Edron.
-**Development workspace:** `1.0.17` is preparing the coordinated theme-polish patch;
-tagging, release CI, and publication remain pending.
+**Roadmap position:** `v1.0.17` is Verified, tagged, and published on PyPI, including Edron.
+**Development workspace:** `1.0.17` is the current coordinated stable package train, including
+the built-in theme-polish release.
 `v0.67.0` remains the immutable migration baseline for compatibility evidence.
-**Date:** 2026-09-14
+**Date:** 2026-09-17
 **Implementation:** Stable platform — `hedron`, `hedron-core`, `edron`, `hedron-data`,
-`hedron-charts`, and `hedron-maps` `1.0.16`. Beta satellites — `hedron-explorer`,
+`hedron-charts`, and `hedron-maps` `1.0.17`. Beta satellites — `hedron-explorer`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
-and `hedron-elements` `1.0.16`; `hedron-posit` `1.0.9`; `fastapi-workbench` `1.0.11`;
+and `hedron-elements` `1.0.17`; `hedron-posit` `1.0.9`; `fastapi-workbench` `1.0.11`;
 `hedron-native` `0.1.3`; `hedron-sample-kit` `0.2.3`; `hedron-notebook` and
 `hedron-gradio` `0.2.4`; `hedron-sim` `0.2.3`; `hedron-mcp` `0.2.5`; and `edron-sim`
 `0.1.0` (MIT, D-033).

@@ -35,9 +35,9 @@ def _release_status_markdown(facts: dict[str, object]) -> str:
     assert isinstance(release, dict)
     if release.get("registry_status") == "deferred":
         return (
-            '!!! warning "1.0.16 is tagged; PyPI upload pending approval"\n\n'
+            '!!! warning "1.0.17 is tagged; PyPI upload pending approval"\n\n'
             f'    **Hedron {release["pypi_version"]}** is currently available from PyPI. '
-            "The tagged 1.0.16 release passed the full release CI matrix; protected publication "
+            "The tagged 1.0.17 release passed the full release CI matrix; protected publication "
             "awaits maintainer approval.\n"
         )
     return (

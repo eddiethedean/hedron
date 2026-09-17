@@ -34,7 +34,7 @@ helpers) is compatibility-protected on the 1.0.x repository train. Everything el
 Live transports stay **experimental**; prefer polling. Upgrade notes:
 [upgrade guide](../guides/upgrade.md).
 
-The latest installable PyPI release is verified **`v1.0.16`**. The development
+The latest installable PyPI release is verified **`v1.0.17`**. The development
 workspace is **`1.0.17`** (unreleased).
 Public-index users should require `hedron>=1.0.0`.
 

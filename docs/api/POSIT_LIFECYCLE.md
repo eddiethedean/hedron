@@ -6,7 +6,7 @@ Package: [`hedron-posit`](https://pypi.org/project/hedron-posit/).
 [RFC-0079](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0079-CONFORMANCE-AUTHORITY-POSIT-LIFECYCLE.md) /
 [#522](https://github.com/eddiethedean/hedron/issues/522). Companions
 [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513).
-PyPI contains the verified `v1.0.16` release; the development workspace is `1.0.17`
+PyPI contains the verified `v1.0.17` release; the development workspace is `1.0.17`
 (unreleased). The deployment lifecycle symbols below are
 Beta satellite APIs, outside the stable package boundary.
 
