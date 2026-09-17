@@ -31,7 +31,7 @@ _THEME = re.compile(r"^[A-Za-z][A-Za-z0-9_-]*$")
 class ThemePreference:
     """Allowlisted page preference; persistence remains application-owned."""
 
-    theme: str = "default"
+    theme: str = "folio"
     color_mode: ColorMode = "system"
 
     def __post_init__(self) -> None:
@@ -45,14 +45,16 @@ def resolve_theme_preference(
     theme: str | None,
     color_mode: str | None,
     *,
-    allowed_themes: tuple[str, ...] = ("default", "aurora"),
+    allowed_themes: tuple[str, ...] = ("folio", "classic", "aurora"),
 ) -> ThemePreference:
     allowed = tuple(dict.fromkeys(allowed_themes))
     if any(not _THEME.fullmatch(name) for name in allowed):
         raise ValueError("allowed theme names must be safe identifiers")
-    selected = theme or "default"
+    selected = theme or "folio"
+    if selected == "default" and "classic" in allowed:
+        selected = "classic"
     if selected not in allowed:
-        selected = "default" if "default" in allowed else allowed[0]
+        selected = "folio" if "folio" in allowed else allowed[0]
     mode = color_mode or "system"
     if mode not in ("system", "light", "dark"):
         mode = "system"
@@ -121,7 +123,7 @@ class ThemePicker(Component[Any]):
     def __init__(
         self,
         *,
-        themes: tuple[str, ...] = ("default", "aurora"),
+        themes: tuple[str, ...] = ("folio", "classic", "aurora"),
         color_modes: tuple[ColorMode, ...] = ("system", "light", "dark"),
         selected: ThemePreference | None = None,
         action: SafeUrl | str = "/preferences/theme",

@@ -152,7 +152,7 @@ def _resolve_design(args: argparse.Namespace, *, name: str | None = None) -> Des
             getattr(app, "state", None), "hedron_theme", None
         )
     if not design_name:
-        design_name = "default"
+        design_name = "folio"
     if isinstance(stored, DesignSystem) and stored.name == design_name:
         return stored
     return DesignSystem.from_theme(_theme_from_meta(str(design_name)))

@@ -67,7 +67,12 @@ def _inject_build_assets(
 ) -> str:
     import html as html_lib
 
-    from hedron_core.page_assets import inject_alpine_plan, inject_htmx_bridge, inject_page_theme
+    from hedron_core.page_assets import (
+        folio_accent_asset_path,
+        inject_alpine_plan,
+        inject_htmx_bridge,
+        inject_page_theme,
+    )
 
     policy = getattr(request.app.state, "hedron_security", None)
     if not isinstance(policy, SecurityPolicy):
@@ -113,6 +118,10 @@ def _inject_build_assets(
     if getattr(request.app.state, "hedron_default_styles", True):
         css = _mounted_static_href("/hedron-static/hedron-default.css", request)
         add(f'<link rel="stylesheet" href="{css}">')
+        accent_css_path = folio_accent_asset_path(html_text, theme)
+        if accent_css_path:
+            accent_css = _mounted_static_href(accent_css_path, request)
+            add(f'<link rel="stylesheet" href="{accent_css}">')
 
     for asset in result.assets:
         href = html_lib.escape(_mounted_static_href(asset.href, request), quote=True)

@@ -52,6 +52,7 @@ class Hedron(HedronPagesMixin, FastAPI):
         explorer_dependencies: FastAPI dependencies required for ``secured`` Explorer.
         theme: Registered theme name, ``Theme``, ``DesignSystem``, or ``None``
             (no construction-time selection; lifespan may still default).
+        accent: Folio accent preset or hex color. Omission keeps Folio green.
         default_styles: When ``True``, emit default theme styles on PAGE responses.
         demand_driven_assets: When ``True``, emit HTMX, Alpine, UI, and specialist browser
             assets only when the rendered document declares the corresponding capability.
@@ -87,7 +88,8 @@ class Hedron(HedronPagesMixin, FastAPI):
         session_secret: str | None = DEFAULT_SESSION_SECRET,
         enable_sessions: bool = True,
         explorer_dependencies: Sequence[DependsParam] | None = None,
-        theme: str | Theme | DesignSystem | None = "default",
+        theme: str | Theme | DesignSystem | None = "folio",
+        accent: str | None = None,
         default_styles: bool = True,
         demand_driven_assets: bool = False,
         build_dir: str | Path | None = None,
@@ -112,6 +114,12 @@ class Hedron(HedronPagesMixin, FastAPI):
             self._hedron_runtime.tracing = tracing_config
         user_lifespan = kwargs.pop("lifespan", None)
         with self._hedron_runtime.activate():
+            if accent is not None:
+                from hedron_core.theme import folio_theme
+
+                if theme is not None and theme != "folio":
+                    raise ValueError("accent is supported with theme='folio' only")
+                theme = folio_theme(accent=accent)
             resolved_theme, design_system = normalize_theme_selection(theme)
             kwargs.setdefault(
                 "lifespan",

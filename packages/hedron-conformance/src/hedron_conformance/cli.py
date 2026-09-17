@@ -45,7 +45,9 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("compile", help="Compile/validate the bundled fixture suite")
     sub.add_parser("profiles", help="List profile registry ids and suite digests")
     theme_p = sub.add_parser("theme", help="Validate the shared phase 0.63 theme contract")
-    theme_p.add_argument("--name", default="default", choices=("default", "aurora"))
+    theme_p.add_argument(
+        "--name", default="folio", choices=("folio", "classic", "aurora", "default")
+    )
 
     args = parser.parse_args(argv)
     if args.command == "schema":
@@ -73,9 +75,13 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(rows, indent=2, sort_keys=True))
         return 0
     if args.command == "theme":
-        from hedron_core import builtin_themes, theme_contract_report
+        from hedron_core import builtin_themes, default_theme, theme_contract_report
 
-        theme = next(item for item in builtin_themes() if item.name == args.name)
+        theme = (
+            default_theme()
+            if args.name == "default"
+            else next(item for item in builtin_themes() if item.name == args.name)
+        )
         report = theme_contract_report(theme)
         print(json.dumps(report, indent=2, sort_keys=True))
         return 0 if report["conformance"]["ok"] else 1

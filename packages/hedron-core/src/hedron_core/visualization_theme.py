@@ -6,7 +6,7 @@ import re
 from collections.abc import Mapping
 from dataclasses import dataclass
 
-from hedron_core.theme import Theme, default_theme
+from hedron_core.theme import Theme, folio_theme
 
 __all__ = [
     "VISUALIZATION_ROLES",
@@ -117,7 +117,7 @@ def resolve_visualization_theme(
         raise ValueError("unsupported visualization accessibility mode")
     if not 1 <= series_count <= 8:
         raise ValueError("series_count must be between 1 and 8")
-    source = theme or default_theme()
+    source = theme or folio_theme()
     roles: dict[str, str] = {
         "axis": _theme_value(
             source, "chart.axis", mode, _theme_value(source, "color.muted", mode, "#64748b")

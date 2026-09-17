@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.18] — Unreleased
+
+### Changed
+
+- Added Folio as the new automatic theme, retained Classic under an explicit
+  name, and neutralized Folio's dark-mode background.
+- Added a Folio accent option to Hedron and Edron apps and production builds,
+  with green as the default, named accents, and custom hex seeds.
+
 ## [1.0.17] — Unreleased
 
 ### Fixed

@@ -42,7 +42,7 @@ def gallery_client() -> Iterator[TestClient]:
     ],
 )
 @pytest.mark.parametrize("mode", ["light", "dark"])
-@pytest.mark.parametrize("theme", ["default", "aurora"])
+@pytest.mark.parametrize("theme", ["folio", "classic", "aurora"])
 def test_gallery_route_renders_in_explicit_mode(
     gallery_client: TestClient, route: str, mode: str, theme: str
 ) -> None:

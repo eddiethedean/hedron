@@ -1,0 +1,168 @@
+/* The showcase adds composition to Folio's built-in palette and components. */
+body:has(.showcase-shell) {
+  padding: clamp(1rem, 2.5vw, 2rem);
+}
+
+.showcase-shell {
+  --hedron-nav-width: 12.5rem;
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+}
+
+.showcase-shell .hedron-app-shell-header {
+  border-bottom: 1px solid var(--hedron-default-border);
+  padding-block: 0.5rem 1rem;
+  background: var(--hedron-default-bg);
+}
+
+.showcase-shell .hedron-app-shell-nav {
+  border: 0;
+  border-radius: 0;
+  padding: 1rem 0;
+  background: transparent;
+}
+
+.showcase-shell .hedron-nav-group-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+}
+
+.showcase-shell .hedron-nav-link {
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.2rem;
+}
+
+.showcase-shell .hedron-nav-link.active {
+  background: var(--hedron-default-accent-soft);
+  color: var(--hedron-default-accent);
+  font-weight: 600;
+}
+
+.showcase-shell .hedron-page-header {
+  padding-block: 0;
+  border: 0;
+}
+
+.showcase-shell .hedron-page-header h1 {
+  font-size: clamp(2rem, 3.1vw, 2.75rem);
+  line-height: 1.12;
+}
+
+.showcase-shell .showcase-metrics {
+  gap: 0;
+  padding-block: 0.5rem 1.5rem;
+  border-bottom: 1px solid var(--hedron-default-border);
+}
+
+.showcase-shell .hedron-split {
+  align-items: stretch;
+  column-gap: 0.75rem;
+}
+
+.showcase-shell .showcase-pipeline .hedron-card-footer {
+  padding-block: 0.65rem;
+}
+
+.showcase-shell .showcase-metrics .hedron-metric {
+  padding: 0 1.5rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.showcase-shell .showcase-metrics .hedron-metric:first-child {
+  padding-inline-start: 0;
+}
+
+.showcase-shell .showcase-metrics .hedron-metric + .hedron-metric {
+  border-inline-start: 1px solid var(--hedron-default-border);
+}
+
+.showcase-shell .showcase-metrics [data-metric-value] {
+  margin-block: 0.3rem;
+  font-size: clamp(1.8rem, 2.5vw, 2.5rem);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+
+.showcase-shell .showcase-metrics [data-metric-delta] {
+  font-size: 0.75rem;
+}
+
+.showcase-shell .hedron-split-divider {
+  visibility: hidden;
+}
+
+.showcase-shell .hedron-card-header,
+.showcase-shell .hedron-card-footer {
+  background: transparent;
+}
+
+.showcase-shell .hedron-card-header h3 {
+  font-size: 0.9rem;
+  letter-spacing: -0.01em;
+}
+
+.showcase-shell .showcase-pipeline,
+.showcase-shell .showcase-approval,
+.showcase-shell .showcase-runs,
+.showcase-shell .showcase-activity {
+  height: 100%;
+}
+
+.showcase-shell .showcase-approval {
+  border-top: 3px solid var(--hedron-default-accent);
+}
+
+.showcase-shell .showcase-runs .hedron-card-body {
+  padding: 0;
+}
+
+.showcase-shell .showcase-runs table {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.showcase-shell .showcase-runs caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.showcase-shell .showcase-runs th,
+.showcase-shell .showcase-runs td {
+  padding: 0.75rem 1rem;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 900px) {
+  .showcase-shell .showcase-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 1.5rem;
+  }
+  .showcase-shell .showcase-metrics .hedron-metric:nth-child(3) {
+    padding-inline-start: 0;
+    border-inline-start: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .showcase-shell .showcase-metrics .hedron-metric {
+    padding-inline: 0.75rem;
+  }
+  .showcase-shell .hedron-card-footer .hedron-action-group {
+    align-items: start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 767px) {
+  .showcase-shell .hedron-split-divider {
+    display: none;
+  }
+}

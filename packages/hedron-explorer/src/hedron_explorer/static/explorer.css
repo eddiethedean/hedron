@@ -1,4 +1,33 @@
 /* Hedron Explorer shell */
+.theme-lab-controls {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-block: 1.5rem;
+}
+.theme-lab-controls .theme-lab-field {
+  display: grid;
+  gap: 0.25rem;
+}
+.theme-lab-controls select,
+.theme-lab-controls button {
+  min-height: 2.5rem;
+  padding: 0.4rem 0.75rem;
+  font: inherit;
+}
+.theme-lab-controls .theme-lab-accent {
+  display: none;
+}
+.theme-lab-controls:has(select[name="left"] option[value="folio"]:checked) .theme-lab-accent,
+.theme-lab-controls:has(select[name="right"] option[value="folio"]:checked) .theme-lab-accent {
+  display: grid;
+}
+.theme-lab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+  gap: 1.5rem;
+}
 :root {
   --bg: #f7f5f1;
   --ink: #1c1a16;

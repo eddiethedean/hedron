@@ -35,9 +35,9 @@ from hedron_core.manifests import (
 from hedron_core.registry import get_registry, update_component_meta
 from hedron_core.theme import (
     Theme,
-    default_theme,
     emit_theme_css,
     ensure_default_theme_registered,
+    folio_theme,
     get_theme,
 )
 from hedron_core.theme_contract import (
@@ -251,17 +251,21 @@ def _execute_build(
             "@layer reset {\n}\n",
         ]
 
-        theme_name = settings.theme or "default"
+        theme_name = settings.theme or "folio"
         theme_meta = get_theme(theme_name)
-        if theme_meta is None:
-            if theme_name != "default":
+        if settings.accent is not None:
+            if theme_name != "folio":
+                raise ValueError("accent is supported with theme='folio' only")
+            theme = folio_theme(accent=settings.accent)
+        elif theme_meta is None:
+            if theme_name != "folio":
                 raise error(
                     HED_THEME_UNKNOWN,
                     title="Unknown theme",
                     explanation=f"Theme {theme_name!r} is not registered.",
-                    remediation='Register the theme or set theme = "default".',
+                    remediation='Register the theme or set theme = "folio".',
                 )
-            theme = default_theme()
+            theme = folio_theme()
         else:
             theme = Theme(
                 name=theme_meta.name,

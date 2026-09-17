@@ -6,6 +6,7 @@ import html as html_lib
 import logging
 from pathlib import Path
 from typing import Any, cast
+from urllib.parse import urlencode
 
 from fastapi import HTTPException, Request
 
@@ -794,10 +795,38 @@ async def settings_view(request: Request) -> str:
 async def theme_lab_view(request: Request) -> str:
     """Read-only visual inspection surface for registered themes."""
     report = theme_lab_report(
-        left=request.query_params.get("left") or "default",
+        left=request.query_params.get("left") or "folio",
         right=request.query_params.get("right") or "aurora",
         profile=request.query_params.get("profile") or "core",
+        accent=request.query_params.get("accent") or "green",
     )
+    selection = report["selection"]
+
+    def options(choices: list[str], selected: str) -> str:
+        return "".join(
+            f'<option value="{html_lib.escape(choice, quote=True)}"'
+            f"{' selected' if choice == selected else ''}>"
+            f"{html_lib.escape(choice.title())}</option>"
+            for choice in choices
+        )
+
+    controls = (
+        '<form class="theme-lab-controls" method="get">'
+        '<div class="theme-lab-field"><label for="theme-lab-left">Theme</label>'
+        '<select name="left" id="theme-lab-left">'
+        f"{options(report['available_themes'], selection['left'])}</select></div>"
+        '<div class="theme-lab-field"><label for="theme-lab-right">Compare with</label>'
+        '<select name="right" id="theme-lab-right">'
+        f"{options(report['available_themes'], selection['right'])}</select></div>"
+        '<div class="theme-lab-field theme-lab-accent">'
+        '<label for="theme-lab-accent">Folio accent</label>'
+        '<select name="accent" id="theme-lab-accent">'
+        f"{options(report['available_accents'], selection['accent'])}</select></div>"
+        '<input type="hidden" name="profile" '
+        f'value="{html_lib.escape(str(report["profile"]), quote=True)}">'
+        '<button type="submit">Apply</button></form>'
+    )
+    export_query = urlencode({**selection, "profile": report["profile"]})
     cards: list[str] = []
     for theme in cast(list[dict[str, Any]], report["themes"]):
         validation = cast(dict[str, Any], theme["validation"])
@@ -811,7 +840,12 @@ async def theme_lab_view(request: Request) -> str:
             "<article class='theme-lab-card' "
             f"data-theme-lab-theme='{html_lib.escape(str(theme['name']))}'>"
             f"<h3>{html_lib.escape(str(theme['name']))}</h3>"
-            f"<p>Validation: <strong>{'pass' if validation['ok'] else 'review'}</strong></p>"
+            + (
+                f"<p>Accent: <strong>{html_lib.escape(str(theme['accent']).title())}</strong></p>"
+                if theme["accent"]
+                else ""
+            )
+            + f"<p>Validation: <strong>{'pass' if validation['ok'] else 'review'}</strong></p>"
             f"<p>Modes: {html_lib.escape(', '.join(theme['modes']))}</p>"
             "<table><thead><tr><th>Token</th><th>Resolved value</th></tr></thead>"
             f"<tbody>{rows}</tbody></table>"
@@ -826,12 +860,14 @@ async def theme_lab_view(request: Request) -> str:
         "<h2>Theme Lab</h2>"
         "<p>Read-only inspection backed by the shared resolver and validator. "
         "It never executes theme packages or writes the target project.</p>"
+        f"{controls}"
         f"<div class='theme-lab-grid'>{''.join(cards)}</div>"
         f"<h3>Spec diff</h3><pre>{html_lib.escape(str(report['diff']))}</pre>"
         f"<h3>Fallback and gamut warnings</h3><pre>{html_lib.escape(str(report['warnings']))}</pre>"
         f"<h3>Exercises</h3><ul>{exercises}</ul>"
         "<p><a href='"
         f"{request.url.path.replace('theme-lab', 'api/theme-lab')}"
+        f"?{html_lib.escape(export_query, quote=True)}"
         "'>Export report as JSON</a></p>"
     )
     return shell("Theme Lab", body, request=request, active="theme-lab")

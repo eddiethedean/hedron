@@ -5,7 +5,12 @@ from __future__ import annotations
 from collections.abc import Iterable
 from typing import Any
 
-from hedron_core.theme import builtin_themes, ensure_builtin_themes_registered
+from hedron_core.theme import (
+    FOLIO_ACCENTS,
+    builtin_themes,
+    ensure_builtin_themes_registered,
+    folio_theme,
+)
 from hedron_core.theme_contract import theme_contract_report
 from hedron_core.theme_platform import (
     ThemeBuilder,
@@ -16,20 +21,29 @@ from hedron_core.theme_platform import (
 )
 
 
-def _theme_specs() -> dict[str, Any]:
+def _theme_specs(accent: str) -> dict[str, Any]:
     """Resolve only registered built-ins; package code is never imported here."""
     ensure_builtin_themes_registered()
-    return {theme.name: ThemeBuilder.from_theme(theme).build_spec() for theme in builtin_themes()}
+    return {
+        theme.name: ThemeBuilder.from_theme(
+            folio_theme(accent=accent) if theme.name == "folio" else theme
+        ).build_spec()
+        for theme in builtin_themes()
+    }
 
 
 def _selected_names(names: Iterable[str] | None, available: dict[str, Any]) -> list[str]:
-    requested = tuple(dict.fromkeys(str(name) for name in (names or ("default", "aurora"))))
+    requested = tuple(
+        dict.fromkeys(
+            "classic" if name == "default" else str(name) for name in (names or ("folio", "aurora"))
+        )
+    )
     selected = [name for name in requested if name in available]
-    return selected or ["default"]
+    return selected or ["folio"]
 
 
 def theme_lab_report(
-    *, left: str = "default", right: str = "aurora", profile: str = "core"
+    *, left: str = "folio", right: str = "aurora", profile: str = "core", accent: str = "green"
 ) -> dict[str, Any]:
     """Return an exportable, deterministic report for the Explorer Theme Lab.
 
@@ -37,7 +51,10 @@ def theme_lab_report(
     JSON or HTML.  Its exercise descriptions are intentionally declarative;
     the browser test harness remains the authority for computed behavior.
     """
-    available = _theme_specs()
+    accent = accent if accent in FOLIO_ACCENTS else "green"
+    available = _theme_specs(accent)
+    left = "classic" if left == "default" else left if left in available else "folio"
+    right = "classic" if right == "default" else right if right in available else "aurora"
     names = _selected_names((left, right), available)
     themes: list[dict[str, Any]] = []
     for name in names:
@@ -47,6 +64,7 @@ def theme_lab_report(
         themes.append(
             {
                 "name": name,
+                "accent": accent if name == "folio" else None,
                 "spec": explain_theme_spec(spec),
                 "validation": validation.to_dict(),
                 "conformance": conformance_report(spec, profile=profile),
@@ -63,7 +81,8 @@ def theme_lab_report(
     left_spec = available[names[0]]
     right_spec = available[names[1]] if len(names) > 1 else left_spec
     warnings: list[dict[str, str]] = []
-    for name, spec in ((names[0], left_spec), (names[1], right_spec)):
+    for name in names:
+        spec = available[name]
         for token, value in spec.tokens.items():
             if isinstance(value, str) and ("color(" in value or "var(" in value):
                 warnings.append(
@@ -79,6 +98,12 @@ def theme_lab_report(
         "schema": "hedron.theme-lab/1",
         "read_only": True,
         "available_themes": sorted(available),
+        "available_accents": list(FOLIO_ACCENTS),
+        "selection": {
+            "left": left,
+            "right": right,
+            "accent": accent,
+        },
         "profile": profile,
         "themes": themes,
         "diff": diff_theme_specs(left_spec, right_spec),

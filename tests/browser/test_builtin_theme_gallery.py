@@ -17,9 +17,11 @@ from hedron_core import (
     Inline,
     Stack,
     aurora_theme,
+    classic_theme,
     compile_style_bundle,
     default_theme,
     emit_theme_css,
+    folio_theme,
     render,
 )
 
@@ -112,7 +114,7 @@ def test_gallery_compositions_have_readable_text_and_no_page_overflow(engine: st
             )
 
         page.route("http://hedron.test/**", serve)
-        for theme in ("default", "aurora"):
+        for theme in ("folio", "classic", "aurora"):
             for mode in ("light", "dark"):
                 # Explicit preference must win over the opposite OS palette.
                 page.emulate_media(color_scheme="dark" if mode == "light" else "light")
@@ -161,7 +163,7 @@ def test_gallery_overlays_focus_and_control_layout(engine: str) -> None:
             )
 
         page.route("http://hedron.test/**", serve)
-        for theme in ("default", "aurora"):
+        for theme in ("folio", "classic", "aurora"):
             for mode in ("light", "dark"):
                 page.goto(f"http://hedron.test/components?theme={theme}&mode={mode}")
                 page.get_by_role("button", name="Review changes", exact=True).click()
@@ -242,7 +244,7 @@ def test_button_appearances_preserve_emphasis_sizes_and_disabled_states(engine: 
         browser = getattr(pw, engine).launch(headless=True)
         page = browser.new_page(viewport={"width": 1200, "height": 1600})
         page.emulate_media(reduced_motion="reduce")
-        for theme in (default_theme(), aurora_theme()):
+        for theme in (folio_theme(), classic_theme(), default_theme(), aurora_theme()):
             for mode in ("light", "dark"):
                 for source in ("static", "emitted", "bundle"):
                     styles = css if source == "static" else css + emit_theme_css(theme)

@@ -6,7 +6,8 @@ import os
 from importlib import resources
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import Response
 from fastapi.staticfiles import StaticFiles
 
 from hedron.fastapi_compat import remove_route
@@ -32,6 +33,23 @@ def mount_hedron_static(app: FastAPI, *, path: str = "/hedron-static") -> None:
     for route in app.routes:
         if getattr(route, "path", None) == path:
             return
+
+    def folio_accent_css(accent: str) -> Response:
+        from hedron_core.diagnostics import HedronError
+        from hedron_core.theme import emit_folio_accent_css
+
+        try:
+            css = emit_folio_accent_css(accent)
+        except HedronError as exc:
+            raise HTTPException(status_code=404, detail="Unknown Folio accent") from exc
+        return Response(css, media_type="text/css")
+
+    app.add_api_route(
+        f"{path}/folio-accent/{{accent}}.css",
+        folio_accent_css,
+        methods=["GET"],
+        include_in_schema=False,
+    )
     app.mount(path, StaticFiles(directory=str(static_dir)), name="hedron-static")
 
 

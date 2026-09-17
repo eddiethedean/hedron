@@ -23,6 +23,7 @@ from hedron_core.theme import (
     Theme,
     builtin_themes,
     contrast_diagnostics,
+    default_theme,
     run_visual_conformance,
 )
 from hedron_core.theme_contract import (
@@ -65,6 +66,7 @@ def _themes_for(names: Sequence[str] | None) -> list[Theme]:
     available = {theme.name: theme for theme in builtin_themes()}
     if not names:
         return list(available.values())
+    available["default"] = default_theme()
     selected: list[Theme] = []
     for name in names:
         theme = available.get(name)
@@ -124,8 +126,9 @@ def _theme_input(args: argparse.Namespace) -> Theme | ThemeSpec:
             return ThemeSpec.from_dict(payload)
         except (OSError, ValueError, json.JSONDecodeError) as exc:
             raise SystemExit(f"hedron theme: invalid spec {spec_path}: {exc}") from exc
-    name = getattr(args, "theme_name", None) or "default"
+    name = getattr(args, "theme_name", None) or "folio"
     available = {theme.name: theme for theme in builtin_themes()}
+    available["default"] = default_theme()
     if name not in available:
         raise SystemExit(f"hedron theme: unknown theme {name!r}")
     return available[name]

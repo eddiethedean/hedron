@@ -88,5 +88,33 @@ def test_theme_lab_is_read_only_and_exports_shared_report() -> None:
     payload = report.json()
     assert payload["schema"] == "hedron.theme-lab/1"
     assert payload["read_only"] is True
-    assert {item["name"] for item in payload["themes"]} == {"default", "aurora"}
+    assert {item["name"] for item in payload["themes"]} == {"folio", "aurora"}
     assert payload["exercises"]
+
+
+def test_theme_lab_folio_accent_updates_report_and_export_without_changing_other_themes() -> None:
+    from hedron_core.theme import folio_theme
+
+    client = _client()
+    query = "?left=folio&right=classic&accent=blue"
+    page = client.get("/hedron-explorer/theme-lab" + query)
+    assert page.status_code == 200
+    assert 'class="theme-lab-field theme-lab-accent"' in page.text
+    assert '<option value="blue" selected>' in page.text
+    assert "Accent: <strong>Blue</strong>" in page.text
+    assert "accent=blue" in page.text
+    blue = client.get("/hedron-explorer/api/theme-lab" + query).json()
+    green = client.get("/hedron-explorer/api/theme-lab?left=folio&right=classic").json()
+    assert blue["selection"] == {"left": "folio", "right": "classic", "accent": "blue"}
+    assert blue["available_accents"] == ["green", "blue", "violet", "amber", "rose"]
+    expected_accent = folio_theme(accent="blue").tokens["color.accent"]
+    assert blue["themes"][0]["spec"]["tokens"]["color.accent"] == expected_accent
+    assert blue["themes"][1] == green["themes"][1]
+    assert blue["read_only"] is True
+
+
+def test_theme_lab_invalid_accent_falls_back_to_green() -> None:
+    client = _client()
+    response = client.get("/hedron-explorer/api/theme-lab?accent=%3Cscript%3E")
+    assert response.status_code == 200
+    assert response.json()["selection"]["accent"] == "green"

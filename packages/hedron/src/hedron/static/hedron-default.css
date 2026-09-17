@@ -4144,3 +4144,143 @@
     .hedron-connector-flow { background-image: none !important; forced-color-adjust: auto; }
   }
 }
+
+/* Folio is the automatic theme. "classic" and the legacy "default" preserve the original design. */
+@layer tokens {
+  :root:not([data-hedron-theme]),
+  :root[data-hedron-theme="folio"] {
+    --hedron-default-bg: #f4f2eb;
+    --hedron-default-surface: #fffef9;
+    --hedron-default-surface-muted: #eae8df;
+    --hedron-default-fg: #252b28;
+    --hedron-default-muted: #5d665f;
+    --hedron-default-border: #d2d5ca;
+    --hedron-default-border-strong: #a6afa4;
+    --hedron-default-accent: #17675e;
+    --hedron-default-link: var(--hedron-default-accent);
+    --hedron-default-link-hover: var(--hedron-default-accent-hover);
+    --hedron-default-link-active: var(--hedron-default-accent-hover);
+    --hedron-default-link-visited: var(--hedron-default-accent);
+    --hedron-default-accent-hover: #105149;
+    --hedron-default-accent-soft: #dfede6;
+    --hedron-default-on-accent: #fffef9;
+    --hedron-default-danger: #c73939;
+    --hedron-default-danger-soft: #fff0f0;
+    --hedron-default-on-danger: #fffef9;
+    --hedron-default-success: #137a59;
+    --hedron-default-success-soft: #e9f8f1;
+    --hedron-default-warning: #9a6200;
+    --hedron-default-warning-soft: #fff6dd;
+    --hedron-default-info-soft: #e4eeec;
+    --hedron-default-selection-bg: #c5ddd0;
+    --hedron-default-selection-fg: #252b28;
+    --hedron-default-shadow: none;
+    --hedron-default-shadow-raised: 0 8px 24px rgb(25 38 30 / 14%);
+    --hedron-default-radius-sm: 0.2rem;
+    --hedron-default-radius: 0.3rem;
+    --hedron-default-radius-lg: 0.4rem;
+    --hedron-default-content-width: 74rem;
+    --hedron-font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --hedron-font-display: Georgia, "Times New Roman", serif;
+    --hedron-type-measure-narrow: 32ch;
+    --hedron-type-measure-default: 60ch;
+    --hedron-type-measure-wide: 75ch;
+    --hedron-type-effect-none: none;
+    --hedron-type-effect-subtle: 0 1px 1px rgb(15 23 42 / 10%);
+    --hedron-type-effect-display: 0 2px 12px rgb(15 23 42 / 14%);
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-hedron-theme]):not([data-theme="light"]),
+    :root[data-hedron-theme="folio"]:not([data-theme="light"]) {
+      --hedron-default-bg: #191a1b;
+      --hedron-default-surface: #232426;
+      --hedron-default-surface-muted: #2d2e30;
+      --hedron-default-fg: #eeece6;
+      --hedron-default-muted: #b9b9b3;
+      --hedron-default-border: #414345;
+      --hedron-default-border-strong: #616467;
+      --hedron-default-accent: #8ed3be;
+      --hedron-default-accent-hover: #b0e3d3;
+      --hedron-default-accent-soft: #293d3a;
+      --hedron-default-on-accent: #142c24;
+      --hedron-default-danger: #ff8585;
+      --hedron-default-danger-soft: #442326;
+      --hedron-default-on-danger: #321214;
+      --hedron-default-success: #65d5aa;
+      --hedron-default-success-soft: #183b32;
+      --hedron-default-warning: #f3c86b;
+      --hedron-default-warning-soft: #41351f;
+      --hedron-default-info-soft: #263f3b;
+      --hedron-default-selection-bg: #34504e;
+      --hedron-default-selection-fg: #eeece6;
+      --hedron-default-shadow: none;
+      --hedron-default-shadow-raised: 0 18px 46px rgb(0 0 0 / 38%);
+      color-scheme: dark;
+    }
+  }
+
+  :root:not([data-hedron-theme])[data-theme="dark"],
+  :root[data-hedron-theme="folio"][data-theme="dark"] {
+    --hedron-default-bg: #191a1b;
+    --hedron-default-surface: #232426;
+    --hedron-default-surface-muted: #2d2e30;
+    --hedron-default-fg: #eeece6;
+    --hedron-default-muted: #b9b9b3;
+    --hedron-default-border: #414345;
+    --hedron-default-border-strong: #616467;
+    --hedron-default-accent: #8ed3be;
+    --hedron-default-accent-hover: #b0e3d3;
+    --hedron-default-accent-soft: #293d3a;
+    --hedron-default-on-accent: #142c24;
+    --hedron-default-danger: #ff8585;
+    --hedron-default-danger-soft: #442326;
+    --hedron-default-on-danger: #321214;
+    --hedron-default-success: #65d5aa;
+    --hedron-default-success-soft: #183b32;
+    --hedron-default-warning: #f3c86b;
+    --hedron-default-warning-soft: #41351f;
+    --hedron-default-info-soft: #263f3b;
+    --hedron-default-selection-bg: #34504e;
+    --hedron-default-selection-fg: #eeece6;
+    --hedron-default-shadow: none;
+    --hedron-default-shadow-raised: 0 18px 46px rgb(0 0 0 / 38%);
+    color-scheme: dark;
+  }
+
+}
+
+@layer base {
+  :root:not([data-hedron-theme]) body,
+  :root:is([data-hedron-theme="folio"], [data-hedron-theme^="folio-"]) body {
+    background: var(--hedron-color-bg, var(--hedron-default-bg));
+  }
+
+  :root:not([data-hedron-theme]) :where(h1, h2),
+  :root:is([data-hedron-theme="folio"], [data-hedron-theme^="folio-"]) :where(h1, h2) {
+    font-family: var(--hedron-font-display, Georgia, "Times New Roman", serif);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+  }
+}
+
+@layer components {
+  :root:not([data-hedron-theme]) .hedron-app-shell-nav,
+  :root:is([data-hedron-theme="folio"], [data-hedron-theme^="folio-"]) .hedron-app-shell-nav {
+    background: var(--hedron-color-surface, var(--hedron-default-surface));
+    backdrop-filter: none;
+  }
+
+  :root:not([data-hedron-theme]) .hedron-metric [data-metric-value="true"],
+  :root:is([data-hedron-theme="folio"], [data-hedron-theme^="folio-"]) .hedron-metric [data-metric-value="true"] {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+}
+
+@layer components {
+  :root:not([data-hedron-theme]) :where(input, progress),
+  :root:is([data-hedron-theme="folio"], [data-hedron-theme^="folio-"]) :where(input, progress) {
+    accent-color: var(--hedron-color-accent, var(--hedron-default-accent));
+  }
+}

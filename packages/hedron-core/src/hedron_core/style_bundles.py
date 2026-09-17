@@ -16,7 +16,7 @@ from importlib import resources
 from pathlib import Path
 
 from hedron_core.rendering import AssetRef
-from hedron_core.theme import Theme, default_theme, emit_theme_css
+from hedron_core.theme import Theme, emit_theme_css, folio_theme
 
 __all__ = [
     "STYLE_BUNDLE_COMPONENTS",
@@ -173,7 +173,7 @@ def compile_style_bundle(
 ) -> StyleBundle:
     """Compile a deterministic complete or component-scoped CSS bundle."""
     selected = _normalize_components(components)
-    resolved_theme = theme or default_theme()
+    resolved_theme = theme or folio_theme()
     if complete:
         css = _complete_stylesheet() + emit_theme_css(resolved_theme)
         logical_id = "hedron:styles:complete"

@@ -44,7 +44,7 @@ def _configure_startup(
 ) -> bool:
     """Configure registry, plugins, and build manifests (sync; called from lifespan)."""
     ensure_default_theme_registered()
-    app.state.hedron_theme = theme or getattr(app.state, "hedron_theme", "default")
+    app.state.hedron_theme = theme or getattr(app.state, "hedron_theme", "folio")
 
     is_production = is_production_env(production=production)
     app.state.hedron_production = is_production
@@ -158,7 +158,7 @@ def compose_lifespan(
     *,
     production: bool | None = None,
     build_dir: str | Path | None = None,
-    theme: str | None = "default",
+    theme: str | None = "folio",
 ) -> Lifespan:
     """Build Hedron's FastAPI lifespan that seals registries and loads plugins.
 

@@ -112,7 +112,7 @@ from hedron_core.component import NodeLike
 from hedron_core.icons import register_first_party_icons
 
 Mode = Literal["light", "dark"]
-ThemeName = Literal["default", "aurora"]
+ThemeName = Literal["folio", "classic", "aurora"]
 APPEARANCES: tuple[Appearance, ...] = ("solid", "outline", "soft", "ghost", "plain", "raised")
 EMPHASES: tuple[Emphasis, ...] = ("primary", "secondary", "danger", "neutral")
 
@@ -158,7 +158,8 @@ def _chrome(
     )
     mode_controls = Inline(
         Badge(f"{theme.title()} · {mode}", tone="info"),
-        LinkButton("Default", _href(current, mode, "default")),
+        LinkButton("Folio", _href(current, mode, "folio")),
+        LinkButton("Classic", _href(current, mode, "classic")),
         LinkButton("Aurora", _href(current, mode, "aurora")),
         LinkButton("Light", _href(current, "light", theme)),
         LinkButton("Dark", _href(current, "dark", theme)),
@@ -193,7 +194,7 @@ def _chrome(
 
 
 @app.page("/")
-def dashboard(mode: Mode = "light", theme: ThemeName = "default") -> Page:
+def dashboard(mode: Mode = "light", theme: ThemeName = "folio") -> Page:
     return _chrome(
         "Operations dashboard",
         "/",
@@ -271,7 +272,7 @@ def dashboard(mode: Mode = "light", theme: ThemeName = "default") -> Page:
 
 
 @app.page("/forms")
-def forms(mode: Mode = "light", theme: ThemeName = "default") -> Page:
+def forms(mode: Mode = "light", theme: ThemeName = "folio") -> Page:
     return _chrome(
         "Form controls",
         "/forms",
@@ -376,7 +377,7 @@ def gallery_art() -> FileResponse:
 
 
 @app.page("/media")
-def media(mode: Mode = "light", theme: ThemeName = "default") -> Page:
+def media(mode: Mode = "light", theme: ThemeName = "folio") -> Page:
     return _chrome(
         "Media and capture",
         "/media",
@@ -441,7 +442,7 @@ def media(mode: Mode = "light", theme: ThemeName = "default") -> Page:
 
 
 @app.page("/surfaces")
-def surfaces(mode: Mode = "light", theme: ThemeName = "default") -> Page:
+def surfaces(mode: Mode = "light", theme: ThemeName = "folio") -> Page:
     return _chrome(
         "Surfaces and workflows",
         "/surfaces",
@@ -541,7 +542,7 @@ def surfaces(mode: Mode = "light", theme: ThemeName = "default") -> Page:
 
 
 @app.page("/content")
-def content(mode: Mode = "light", theme: ThemeName = "default") -> Page:
+def content(mode: Mode = "light", theme: ThemeName = "folio") -> Page:
     return _chrome(
         "Identity and content",
         "/content",
@@ -635,7 +636,7 @@ def content(mode: Mode = "light", theme: ThemeName = "default") -> Page:
 
 
 @app.page("/settings")
-def settings(mode: Mode = "light", theme: ThemeName = "default") -> Page:
+def settings(mode: Mode = "light", theme: ThemeName = "folio") -> Page:
     profile_form = Form(
         FormErrors(["The reply-to address needs verification."]),
         Grid(
@@ -729,7 +730,9 @@ def settings(mode: Mode = "light", theme: ThemeName = "default") -> Page:
                         label="Accent color",
                         control=ColorInput(
                             "accent",
-                            value="#6d3ce7" if theme == "aurora" else "#2563eb",
+                            value={"aurora": "#6d3ce7", "classic": "#2563eb", "folio": "#17675e"}[
+                                theme
+                            ],
                         ),
                     ),
                     title="Appearance",
@@ -751,7 +754,7 @@ def settings(mode: Mode = "light", theme: ThemeName = "default") -> Page:
 
 
 @app.page("/orders")
-def orders(mode: Mode = "light", theme: ThemeName = "default") -> Page:
+def orders(mode: Mode = "light", theme: ThemeName = "folio") -> Page:
     return _chrome(
         "Orders and fulfillment",
         "/orders",
@@ -818,7 +821,7 @@ def orders(mode: Mode = "light", theme: ThemeName = "default") -> Page:
 
 
 @app.page("/support")
-def support(mode: Mode = "light", theme: ThemeName = "default") -> Page:
+def support(mode: Mode = "light", theme: ThemeName = "folio") -> Page:
     return _chrome(
         "Customer support",
         "/support",
@@ -888,7 +891,7 @@ def support(mode: Mode = "light", theme: ThemeName = "default") -> Page:
 
 
 @app.page("/components")
-def components(mode: Mode = "light", theme: ThemeName = "default") -> Page:
+def components(mode: Mode = "light", theme: ThemeName = "folio") -> Page:
     sizes: tuple[Size, ...] = ("sm", "md", "lg")
     return _chrome(
         "Component states",

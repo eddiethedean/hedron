@@ -35,6 +35,7 @@ _KNOWN_KEYS = frozenset(
         "component_roots",
         "build_dir",
         "theme",
+        "accent",
         "asset_policy",
         "plugins",
         "explorer",
@@ -66,13 +67,14 @@ class HedronSettings:
     format_version: int = CONFIG_FORMAT_VERSION
     component_roots: tuple[str, ...] = ()
     build_dir: str = ".hedron/build"
-    theme: str | None = "default"
+    theme: str | None = "folio"
     asset_policy: AssetPolicy = field(default_factory=AssetPolicy)
     plugins: tuple[str, ...] | None = None
     explorer: str = "off"
     compiler_checks: bool = True
     diagnostic_severities: Mapping[str, str] = field(default_factory=dict[str, str])
     source_path: str | None = None
+    accent: str | None = None
 
     def resolved_roots(self, *, base: Path | None = None) -> tuple[Path, ...]:
         root = base or Path.cwd()
@@ -91,6 +93,7 @@ def settings_digest(settings: HedronSettings) -> str:
             "component_roots": list(settings.component_roots),
             "build_dir": settings.build_dir,
             "theme": settings.theme,
+            "accent": settings.accent,
             "asset_policy": {
                 "allow_remote": settings.asset_policy.allow_remote,
                 "strict_csp": settings.asset_policy.strict_csp,
@@ -270,9 +273,23 @@ def load_hedron_settings(
     explorer = raw.get("explorer", "off")
     if not isinstance(explorer, str):
         raise _invalid_type("explorer", "a string", explorer)
-    theme = raw.get("theme", "default")
+    theme = raw.get("theme", "folio")
     if theme is not None and not isinstance(theme, str):
         raise _invalid_type("theme", "a string or null", theme)
+    accent = raw.get("accent")
+    if accent is not None:
+        if not isinstance(accent, str):
+            raise _invalid_type("accent", "a string or null", accent)
+        if theme not in (None, "folio"):
+            raise error(
+                HED_CONFIG_INVALID,
+                title="Accent requires Folio",
+                explanation="The accent option is supported with the Folio theme only.",
+                remediation='Set theme = "folio" or remove accent.',
+            )
+        from hedron_core.theme import folio_theme
+
+        folio_theme(accent=accent)
     diagnostic_severities = {key: cast(str, value) for key, value in diagnostics_raw.items()}
 
     return HedronSettings(
@@ -280,6 +297,7 @@ def load_hedron_settings(
         component_roots=component_roots,
         build_dir=build_dir,
         theme=theme,
+        accent=accent,
         asset_policy=_parse_asset_policy(raw.get("asset_policy")),
         plugins=plugins,
         explorer=explorer,

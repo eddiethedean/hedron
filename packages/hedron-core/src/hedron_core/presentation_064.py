@@ -17,7 +17,7 @@ from dataclasses import dataclass
 from types import MappingProxyType
 from typing import Final, Literal, cast
 
-from hedron_core.theme import Theme, default_theme
+from hedron_core.theme import Theme, folio_theme
 
 __all__ = [
     "PRESENTATION_SCHEMA",
@@ -657,7 +657,7 @@ class PresentationContract:
 
 def presentation_tokens(theme: Theme | None = None) -> dict[str, str]:
     """Return the closed 0.64 semantic scale resolved against a theme."""
-    resolved = theme or default_theme()
+    resolved = theme or folio_theme()
     values = dict(_PRESENTATION_DEFAULTS)
     values.update({key: value for key, value in resolved.tokens.items() if key in values})
     return dict(sorted(values.items()))
@@ -735,7 +735,7 @@ PRESENTATION_TOKEN_MANIFEST: Final[dict[str, object]] = {
 
 def presentation_token_manifest(theme: Theme | None = None) -> dict[str, object]:
     """Return declared, consumed, and theme-overridden presentation tokens."""
-    resolved = theme or default_theme()
+    resolved = theme or folio_theme()
     declared = tuple(sorted(_PRESENTATION_DEFAULTS))
     consumed = {key: list(_PRESENTATION_TOKEN_CONSUMERS[key]) for key in declared}
     overridden = {
@@ -763,7 +763,7 @@ def presentation_token_manifest(theme: Theme | None = None) -> dict[str, object]
 
 
 def presentation_contract(theme: Theme | None = None) -> PresentationContract:
-    resolved = theme or default_theme()
+    resolved = theme or folio_theme()
     tokens = presentation_tokens(resolved)
     return PresentationContract(
         theme=resolved.name,

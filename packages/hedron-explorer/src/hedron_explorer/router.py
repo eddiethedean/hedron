@@ -182,9 +182,10 @@ def explorer_router() -> APIRouter:
     @router.get("/api/theme-lab", include_in_schema=False, response_model=None)
     async def api_theme_lab(request: Request) -> dict[str, object]:
         return theme_lab_report(
-            left=request.query_params.get("left") or "default",
+            left=request.query_params.get("left") or "folio",
             right=request.query_params.get("right") or "aurora",
             profile=request.query_params.get("profile") or "core",
+            accent=request.query_params.get("accent") or "green",
         )
 
     return router

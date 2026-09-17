@@ -33,7 +33,7 @@ The result is one application with one routing, rendering, security, state, and 
 authority—without a generated frontend project, Node.js toolchain, virtual DOM, or whole-script
 rerun loop.
 
-[![Hedron Showcase command center in dark mode](https://raw.githubusercontent.com/eddiethedean/hedron/v1.0/docs/assets/hedron-showcase.jpg)](https://hedron.readthedocs.io/en/latest/examples/showcase/)
+[![Hedron Showcase workspace overview using Folio](https://raw.githubusercontent.com/eddiethedean/hedron/v1.0/docs/assets/hedron-showcase.jpg)](https://hedron.readthedocs.io/en/latest/examples/showcase/)
 
 <p align="center"><strong><a href="https://hedron.readthedocs.io/en/latest/examples/showcase/">Explore the complete showcase →</a> · <a href="https://github.com/eddiethedean/hedron/blob/v1.0/examples/showcase/app.py">View the reproducible source</a></strong></p>
 

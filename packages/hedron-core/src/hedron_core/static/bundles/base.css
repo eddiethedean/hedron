@@ -13,6 +13,7 @@
     background: var(--hedron-color-bg, #f6f8fb);
     color: var(--hedron-color-fg, #172033);
   }
+  :where(h1, h2) { font-family: var(--hedron-font-display, inherit); }
   :where(button, a, input, select, textarea, [tabindex]):focus-visible {
     outline: var(--hedron-focus-ring, 3px solid var(--hedron-color-focus, #2563eb));
     outline-offset: 2px;

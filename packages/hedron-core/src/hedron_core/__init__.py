@@ -563,6 +563,7 @@ from hedron_core.theme import (
     Theme,
     aurora_theme,
     builtin_themes,
+    classic_theme,
     compatibility_theme_vars,
     compile_palette,
     contrast_diagnostics,
@@ -572,6 +573,7 @@ from hedron_core.theme import (
     design_system_vars,
     emit_theme_css,
     ensure_builtin_themes_registered,
+    folio_theme,
     run_visual_conformance,
     theme_element_compatibility,
     validate_element_style_contract,
@@ -675,7 +677,7 @@ from hedron_core.visualization_theme import (
     resolve_visualization_theme,
 )
 
-__version__ = "1.0.17"
+__version__ = "1.0.18"
 
 __all__ = [
     "__version__",
@@ -827,7 +829,9 @@ __all__ = [
     "decide_preload",
     "decide_prefetch",
     "default_interaction_policy",
+    "classic_theme",
     "default_theme",
+    "folio_theme",
     "DependencyLifetime",
     "DependencyPlan",
     "DescriptionList",

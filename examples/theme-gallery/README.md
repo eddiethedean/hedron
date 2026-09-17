@@ -2,15 +2,22 @@
 
 Visual QA fixture for Hedron's built-in themes. Nine screens compose dashboards,
 settings, orders, support, button states, forms, surfaces and workflows, identity
-and content, and media. Switch between Default and Aurora while forcing either
+and content, and media. Switch between Folio, Classic, and Aurora while forcing either
 palette independently of the operating-system preference.
 
 ```bash
 uv run uvicorn --app-dir examples/theme-gallery app:app --reload
 ```
 
-Open <http://127.0.0.1:8000/> and use the Default, Aurora, Light, and Dark controls
+Open <http://127.0.0.1:8000/> and use the Folio, Classic, Aurora, Light, and Dark controls
 in the header.
+Folio, the automatic theme, uses warm paper surfaces, ink text, deep teal accents, serif display
+headings, and compact corners. Its dark palette uses charcoal and pale mint.
+Surfaces are flat and bordered; shadows are reserved for overlays. Aurora
+retains its violet palette and luminous background. Set `theme="classic"` to
+keep the original blue theme, or `theme="folio"` to select Folio explicitly. Existing `theme="default"` configurations remain an
+alias for Classic.
+
 The gallery intentionally uses Hedron built-ins without an application
 stylesheet, so visual regressions point back to the shared theme.
 
@@ -28,7 +35,7 @@ Run the browser checks after installing the Playwright browsers:
 HEDRON_BROWSER=1 uv run pytest tests/browser/test_builtin_theme_gallery.py -n 0
 ```
 
-The suite checks both themes and palettes at desktop and phone widths in
+The suite checks all three themes and palettes at desktop and phone widths in
 Chromium, Firefox, and WebKit. It checks rendered text contrast against solid
 and translucent fallback surfaces, page overflow, button hover colors, sizes,
 and disabled states across complete, emitted-theme, and selected-bundle CSS.

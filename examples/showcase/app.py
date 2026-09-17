@@ -11,6 +11,9 @@ The data is synthetic; the boundaries are real.
 from __future__ import annotations
 
 import os
+from pathlib import Path
+
+from starlette.staticfiles import StaticFiles
 
 from hedron import (
     AccountSummary,
@@ -21,13 +24,12 @@ from hedron import (
     AppShellChrome,
     Badge,
     Brand,
-    Button,
     Card,
-    EnvironmentBanner,
     FlowStep,
     Grid,
     Hedron,
     Link,
+    LinkButton,
     Metric,
     NavStatus,
     Page,
@@ -36,43 +38,38 @@ from hedron import (
     Progress,
     ResourceList,
     ResourceRow,
+    SafeUrl,
+    SplitView,
     Stack,
     Status,
     Table,
     TableColumn,
     Text,
-    Theme,
     Timeline,
-    compile_palette,
+    UrlPurpose,
     html,
     swap,
 )
 from hedron_core import NodeLike
-from hedron_core.theme import default_theme, register_theme_instance
+from hedron_core.theme import folio_theme
 
 PANEL_ID = "showcase-panel"
 
-# The showcase deliberately uses the public theme authoring surface: one brand
-# seed drives the accessible light/dark tokens, while Hedron owns the CSS.
-BRAND = compile_palette("#0d9488")
-THEME: Theme = default_theme().extend(
-    "showcase",
-    tokens=BRAND,
-    palette={"brand.seed": "#0d9488", "brand.soft": BRAND["color.accent-soft"]},
-    density="comfortable",
-    shape={"radius": "0.65rem", "radius-lg": "1rem"},
-    nav_width="13rem",
-    elevation={"raised": "0 1px 2px rgb(15 23 42 / 8%)"},
-)
-register_theme_instance(THEME)
+THEME = folio_theme()
 
 app = Hedron(
     title="Hedron Showcase",
     security="standard",
-    explorer="off",
+    explorer="development",
     session_secret=os.environ.get("HEDRON_SESSION_SECRET", "showcase-local-only"),
-    theme=THEME.name,
+    theme="folio",
+    accent=os.environ.get("HEDRON_ACCENT"),
     default_styles=True,
+)
+app.mount(
+    "/showcase-assets",
+    StaticFiles(directory=Path(__file__).parent / "assets"),
+    name="showcase-assets",
 )
 
 pipeline_region = app.region("pipeline-card", description="Pipeline status")
@@ -100,68 +97,78 @@ def _nav_groups(current: str) -> dict[str, list[Link]]:
 def _chrome(title: str, current: str, *content: NodeLike) -> Page:
     return Page(
         AppShell(
-            banner=EnvironmentBanner(
-                "Synthetic workspace · no customer data leaves this process",
-                tone="info",
-            ),
             brand=Brand("Hedron", href="/", mark_text="H"),
-            env_badge=Text("SHOWCASE", role="label"),
-            account=AccountSummary("alex@northstar.test", detail="Platform lead"),
+            env_badge=Badge("Northstar workspace", tone="neutral"),
+            account=AccountSummary("Alex Morgan", detail="Platform lead"),
             nav_groups=_nav_groups(current),
             nav_footer=Stack(
                 NavStatus("All systems operational", tone="success"),
-                Text("v1.0 stable surface", as_="small"),
+                Text("Live demo · synthetic data", as_="small"),
                 gap="sm",
             ),
-            app_footer=AppFooter("Built with Python · rendered on the server"),
+            app_footer=AppFooter("Hedron / Folio", "Built with Python · rendered on the server"),
             content_width="wide",
             chrome=AppShellChrome(
                 preset="editorial",
                 header_behavior="sticky",
                 nav_behavior="sticky",
-                nav_offset="banner",
-                shell_gap="editorial",
-                content_inset="wide",
+                nav_offset="header",
+                shell_gap="standard",
+                content_inset="none",
                 banner_spacing="standard",
-                header_density="spacious",
+                header_density="compact",
             ),
             panel_id=PANEL_ID,
             body=Stack(*content, gap="lg"),
+            class_="showcase-shell",
         ),
         title=f"{title} · Hedron Showcase",
-        data_hedron_theme=THEME.name,
+        data_hedron_theme=app.hedron_theme,
+        head=html.link(
+            rel="stylesheet",
+            href=SafeUrl.parse("/showcase-assets/showcase.css", purpose=UrlPurpose.NAVIGATION),
+        ),
     )
 
 
 def _metrics() -> Grid:
     return Grid(
-        Metric("Monthly volume", "1.28M", delta="+18.4%", delta_tone="up"),
-        Metric("Successful runs", "98.7%", delta="+2.1%", delta_tone="up"),
-        Metric("Open incidents", "7", delta="-3", delta_tone="up"),
-        Metric("Time to deploy", "11m", delta="-24%", delta_tone="up"),
+        Metric("Rows processed", "1.28M", delta="↑ 18.4% this month", delta_tone="up"),
+        Metric("Success rate", "98.7%", delta="↑ 2.1% this month", delta_tone="up"),
+        Metric("Active pipelines", "24", delta="3 running now", delta_tone="neutral"),
+        Metric("Median deploy", "11m", delta="↓ 24% this month", delta_tone="up"),
         columns=4,
+        class_="showcase-metrics",
     )
 
 
 def _pipeline_card(*, refreshed: bool = False) -> Card:
     flow = ProcessFlow(
-        FlowStep("Ingest", status="complete", description="1,284 sources connected"),
-        FlowStep("Validate", status="complete", description="Zero schema drift detected"),
-        FlowStep("Transform", status="current", description="18 of 24 partitions applied"),
-        FlowStep("Publish", status="pending", description="Awaiting release approval"),
+        FlowStep("Ingest", status="complete", description="1,284 sources"),
+        FlowStep("Validate", status="complete", description="42 checks passed"),
+        FlowStep("Transform", status="current", description="18 / 24 partitions"),
+        FlowStep("Publish", status="pending", description="Awaiting approval"),
         label="Data release pipeline",
         direction="horizontal",
+        density="compact",
     )
     return Card(
-        flow,
-        Status(
-            "Transform in progress · refreshed just now" if refreshed else "Transform in progress",
-            variant="compact",
-            tone="info",
+        ActionGroup(
+            Text("Warehouse sync", as_="strong"),
+            Badge("Running", tone="info"),
+            align="between",
         ),
+        flow,
         id=pipeline_region.id,
         title="Data release pipeline",
+        class_="showcase-pipeline",
         footer=ActionGroup(
+            Text(
+                "Transform in progress · refreshed just now"
+                if refreshed
+                else "Transform in progress · started 18m ago",
+                as_="small",
+            ),
             html.button(
                 "Refresh pipeline",
                 type="button",
@@ -171,28 +178,45 @@ def _pipeline_card(*, refreshed: bool = False) -> Card:
                     "hx-swap": "outerHTML",
                 },
             ),
-            align="end",
+            align="between",
         ),
     )
 
 
 def _approval_card(*, approved: bool = False) -> Card:
     body: list[NodeLike] = [
+        ActionGroup(
+            Text("v1.0.5-rc1", as_="strong"),
+            Badge("Approved", tone="success")
+            if approved
+            else Badge("Needs review", tone="warning"),
+            align="between",
+        ),
         Text(
-            "The production release is ready for the final owner check."
+            "All checks passed. One final owner review before production."
             if not approved
             else "Release approved. The publish step is now queued for the worker pool."
         ),
-        Badge("Approved", tone="success") if approved else Badge("Needs review", tone="warning"),
+        Progress(100 if approved else 75, label="Release readiness"),
+        Text("Release approved" if approved else "3 of 4 release stages complete", as_="small"),
     ]
     if not approved:
-        body.append(approve.button("Approve release"))  # pyright: ignore[reportCallIssue]
-    return Card(*body, id=approval_region.id, title="Release gate")
+        body.append(approve.button("Approve release"))
+    return Card(*body, id=approval_region.id, title="Release gate", class_="showcase-approval")
+
+
+@app.view("/pipeline/refresh", fragment_regions=(pipeline_region,))
+def refresh_pipeline():
+    return swap(_pipeline_card(refreshed=True))
 
 
 @app.action("/approve", fallback="/", fragment_regions=(approval_region,))
 def approve():
-    return swap(_approval_card(approved=True))
+    return swap(
+        _approval_card(approved=True),
+        retarget=approval_region.selector,
+        reswap="outerHTML",
+    )
 
 
 def _activity_card() -> Card:
@@ -200,12 +224,13 @@ def _activity_card() -> Card:
         Timeline(
             [
                 ("09:42", "Release candidate built", Text("v1.0.4 · 42 checks passed")),
-                ("09:18", "Workspace upgraded", Text("Northstar moved to the Scale plan")),
+                ("09:18", "Backfill completed", Text("96,410 customer records synced")),
                 ("08:55", "Risk signal resolved", Text("Webhook latency returned to baseline")),
             ],
             label="Recent activity",
         ),
         title="Recent activity",
+        class_="showcase-activity",
     )
 
 
@@ -251,9 +276,15 @@ def _runs_card() -> Card:
             caption="Recent runs",
             density="compact",
             sticky_header=True,
-            zebra=True,
+            zebra=False,
         ),
         title="Recent runs",
+        class_="showcase-runs",
+        footer=ActionGroup(
+            Text("4 latest runs · updated just now", as_="small"),
+            Link("View deployments →", "/deployments"),
+            align="between",
+        ),
     )
 
 
@@ -263,28 +294,24 @@ def overview() -> Page:
         "Overview",
         "/",
         PageHeader(
-            "Command center",
-            eyebrow="HEDRON / SHOWCASE",
-            description="A complete server-rendered workspace composed from Python values.",
+            "Workspace overview",
+            eyebrow="NORTHSTAR / OPERATIONS",
+            description="Your pipelines, releases, and recent activity at a glance.",
             actions=ActionGroup(
-                Button("Export report", variant="secondary"),
-                Button("New pipeline"),
+                LinkButton("View deployments", "/deployments", appearance="outline"),
                 label="Overview actions",
                 align="end",
             ),
         ),
-        Alert(
-            "Everything is operating normally. The transform pipeline is the only active change.",
-            title="Workspace health",
-            tone="success",
-        ),
         _metrics(),
-        Grid(
+        SplitView(
             _pipeline_card(),
-            Stack(_approval_card(), Progress(64, label="64 percent of release checklist complete")),
-            columns=2,
+            _approval_card(),
+            ratio="2:1",
+            class_="showcase-workflow",
         ),
-        Grid(_runs_card(), Stack(_transfers_card(), _activity_card(), gap="lg"), columns=2),
+        SplitView(_runs_card(), _activity_card(), ratio="2:1", class_="showcase-details"),
+        _transfers_card(),
     )
 
 

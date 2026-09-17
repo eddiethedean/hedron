@@ -49,6 +49,9 @@ DEFAULT_STATIC_PREFIX = "/hedron-static"
 _THEME_NAME_RE = re.compile(r"^[A-Za-z0-9_-]+$")
 _HTML_TAG_RE = re.compile(r"<html\b", re.IGNORECASE)
 _THEME_ATTR_RE = re.compile(r"\bdata-hedron-theme\s*=", re.IGNORECASE)
+_THEME_VALUE_RE = re.compile(
+    r"""\bdata-hedron-theme\s*=\s*(['"])([A-Za-z0-9_-]+)\1""", re.IGNORECASE
+)
 _COLOR_MODE_ATTR_RE = re.compile(r"\bdata-theme\s*=", re.IGNORECASE)
 _SAFE_PASSTHROUGH_ATTRS = frozenset({"integrity", "crossorigin"})
 
@@ -377,6 +380,22 @@ def _insert_before_close(html_text: str, close: str, injection: str) -> str:
     return html_text + injection
 
 
+def folio_accent_asset_path(html_text: str, theme: str | None = None) -> str | None:
+    """Resolve an allowlisted Folio accent stylesheet for the document theme."""
+    from hedron_core.theme import FOLIO_ACCENTS
+
+    document = _HTML_TAG_RE.search(html_text)
+    if document:
+        opening_tag = html_text[document.start() : html_text.find(">", document.start())]
+        selected_theme = _THEME_VALUE_RE.search(opening_tag)
+        if selected_theme:
+            theme = selected_theme.group(2)
+    accent = theme.removeprefix("folio-") if theme and theme.startswith("folio-") else ""
+    if accent in FOLIO_ACCENTS or re.fullmatch(r"[0-9a-f]{6}", accent):
+        return f"{DEFAULT_STATIC_PREFIX}/folio-accent/{accent}.css"
+    return None
+
+
 def inject_page_assets(
     html_text: str,
     mode: RenderMode,
@@ -435,6 +454,12 @@ def inject_page_assets(
         if css not in seen_href and css not in html_text:
             seen_href.add(css)
             head_tags.append(f'<link rel="stylesheet" href="{css}">')
+        accent_css_path = folio_accent_asset_path(html_text, theme)
+        if accent_css_path:
+            accent_css = _prefix_href(accent_css_path, static_href=static_href)
+            if accent_css not in seen_href and accent_css not in html_text:
+                seen_href.add(accent_css)
+                head_tags.append(f'<link rel="stylesheet" href="{accent_css}">')
 
     for spec in emit_specs:
         if not take(spec):

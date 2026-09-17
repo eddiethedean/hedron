@@ -152,7 +152,7 @@ dependencies = [
 
 [tool.edron]
 component_roots = ["components"]
-theme = "default"
+theme = "folio"
 explorer = "off"
 '''
 

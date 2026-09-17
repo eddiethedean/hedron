@@ -447,7 +447,7 @@ def _register_theme_commands(sub: _Subparsers) -> None:
         "export",
         help="Export a resolved theme as CSS, design-token JSON, or a full report",
     )
-    theme_export_p.add_argument("--theme", dest="theme_name", default="default")
+    theme_export_p.add_argument("--theme", dest="theme_name", default="folio")
     theme_export_p.add_argument("--spec", default=None, help="ThemeSpec JSON input")
     theme_export_p.add_argument(
         "--profile",
@@ -481,7 +481,7 @@ def _register_theme_commands(sub: _Subparsers) -> None:
     theme_contract_p = theme_sub.add_parser(
         "contract", help="Emit the complete theme-contract evidence report"
     )
-    theme_contract_p.add_argument("--theme", dest="theme_name", default="default")
+    theme_contract_p.add_argument("--theme", dest="theme_name", default="folio")
     theme_contract_p.add_argument("--spec", default=None, help="ThemeSpec JSON input")
     theme_contract_p.add_argument("--stylesheet", default=None)
     theme_contract_p.add_argument("--output", default=None)
@@ -530,7 +530,7 @@ def _register_theme_commands(sub: _Subparsers) -> None:
     style_explain_p.add_argument(
         "--design",
         default=None,
-        help="Design or theme name (default: app theme or 'default')",
+        help="Design or theme name (default: app theme or 'folio')",
     )
     style_explain_p.add_argument(
         "--format",
@@ -546,7 +546,7 @@ def _register_theme_commands(sub: _Subparsers) -> None:
     style_preview_p.add_argument(
         "--design",
         default=None,
-        help="Design or theme name (default: app theme or 'default')",
+        help="Design or theme name (default: app theme or 'folio')",
     )
     style_preview_p.add_argument(
         "--output",

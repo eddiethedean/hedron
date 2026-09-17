@@ -36,6 +36,7 @@ class App:
         *,
         title: str,
         theme: Any = None,
+        accent: str | None = None,
         security: Any = "standard",
         session_secret: str | None = None,
         production: bool | None = None,
@@ -56,6 +57,8 @@ class App:
         }
         if theme is not None:
             kwargs["theme"] = theme
+        if accent is not None:
+            kwargs["accent"] = accent
         if session_secret is not None:
             kwargs["session_secret"] = session_secret
         self.title = title

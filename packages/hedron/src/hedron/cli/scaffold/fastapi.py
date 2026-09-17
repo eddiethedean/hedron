@@ -26,7 +26,7 @@ dependencies = [
 
 [tool.hedron]
 component_roots = ["components"]
-theme = "default"
+theme = "folio"
 explorer = "off"
 '''
 
@@ -41,7 +41,7 @@ app = Hedron(
     title="Hedron App",
     security="standard",
     explorer="off",
-    theme="default",
+    theme="folio",
     session_secret=os.environ.get(
         # Convention only — Hedron does not load HEDRON_SESSION_SECRET itself.
         "HEDRON_SESSION_SECRET", "replace-in-production"

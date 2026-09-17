@@ -39,7 +39,10 @@ __all__ = [
     "derived_theme_tokens",
     "contrast_diagnostics",
     "contrast_ratio",
+    "classic_theme",
     "default_theme",
+    "folio_theme",
+    "FOLIO_ACCENTS",
     "emit_theme_css",
     "ensure_builtin_themes_registered",
     "ensure_default_theme_registered",
@@ -637,6 +640,169 @@ def default_theme() -> Theme:
     )
 
 
+def classic_theme() -> Theme:
+    """The original blue theme, retained under an explicit visual name."""
+    return replace(default_theme(), name="classic")
+
+
+_FOLIO_ACCENTS = {
+    "green": "#17675e",
+    "blue": "#315da8",
+    "violet": "#7150a0",
+    "amber": "#976321",
+    "rose": "#a34463",
+}
+FOLIO_ACCENTS: tuple[str, ...] = tuple(_FOLIO_ACCENTS)
+
+
+def folio_theme(*, accent: str = "green") -> Theme:
+    """Return Folio with a named or hex accent, retaining its neutral surfaces."""
+    theme = Theme(
+        name="folio",
+        tokens={
+            "shape.radius-sm": "0.2rem",
+            "shape.radius": "0.3rem",
+            "shape.radius-lg": "0.4rem",
+            "elevation.raised": "none",
+            "color.bg": "#f4f2eb",
+            "color.surface": "#fffef9",
+            "color.surface-muted": "#eae8df",
+            "color.fg": "#252b28",
+            "color.accent": "#17675e",
+            "color.accent-hover": "#105149",
+            "color.accent-soft": "#dfede6",
+            "color.border": "#d2d5ca",
+            "color.border-strong": "#a6afa4",
+            "color.on-accent": "#fffef9",
+            "color.focus": "#17675e",
+            "color.danger": "#c73939",
+            "color.danger-soft": "#fff0f0",
+            "color.on-danger": "#fffef9",
+            "color.success": "#137a59",
+            "color.success-soft": "#e9f8f1",
+            "color.warning": "#9a6200",
+            "color.warning-soft": "#fff6dd",
+            "color.info-soft": "#e4eeec",
+            "color.selection-bg": "#c5ddd0",
+            "color.selection-fg": "#252b28",
+            "color.muted": "#5d665f",
+            "font.family": '"Helvetica Neue", Helvetica, Arial, sans-serif',
+            "font.display": "Georgia, 'Times New Roman', serif",
+            "font.size": "1rem",
+            "space.unit": "0.25rem",
+            "motion.duration": "150ms",
+            "focus.ring": "3px solid #17675e",
+            "chart.axis": "#65736a",
+            "chart.grid": "#d2d5ca",
+            "chart.label": "#252b28",
+            "chart.selection": "#17675e",
+            "chart.focus": "#17675e",
+            "chart.surface": "#fffef9",
+            "chart.tooltip-bg": "#252b28",
+            "chart.tooltip-fg": "#fffef9",
+            "surface.translucent.opacity": "78%",
+            "surface.translucent.blur": "8px",
+            "surface.glass.opacity": "72%",
+            "surface.glass.blur": "14px",
+            "surface.glass.border": "rgb(255 255 255 / 36%)",
+        },
+        modes={
+            "dark": {
+                "color.bg": "#191a1b",
+                "color.surface": "#232426",
+                "color.surface-muted": "#2d2e30",
+                "color.fg": "#eeece6",
+                "color.accent": "#8ed3be",
+                "color.accent-hover": "#b0e3d3",
+                "color.accent-soft": "#293d3a",
+                "color.border": "#414345",
+                "color.border-strong": "#616467",
+                "color.on-accent": "#142c24",
+                "color.focus": "#8ed3be",
+                "color.danger": "#ff8585",
+                "color.danger-soft": "#442326",
+                "color.on-danger": "#321214",
+                "color.success": "#65d5aa",
+                "color.success-soft": "#183b32",
+                "color.warning": "#f3c86b",
+                "color.warning-soft": "#41351f",
+                "color.info-soft": "#263f3b",
+                "color.selection-bg": "#34504e",
+                "color.selection-fg": "#eeece6",
+                "color.muted": "#b9b9b3",
+                "focus.ring": "3px solid #8ed3be",
+                "chart.axis": "#b9b9b3",
+                "chart.grid": "#505255",
+                "chart.label": "#eeece6",
+                "chart.selection": "#8ed3be",
+                "chart.focus": "#8ed3be",
+                "chart.surface": "#232426",
+                "chart.tooltip-bg": "#eeece6",
+                "chart.tooltip-fg": "#191a1b",
+                "surface.glass.border": "rgb(255 255 255 / 20%)",
+            }
+        },
+    )
+    if not isinstance(accent, str):
+        raise TypeError("Folio accent must be a preset name or a hex color string")
+    choice = accent.strip().lower()
+    seed = _FOLIO_ACCENTS.get(choice, choice)
+    if not _HEX_COLOR.fullmatch(seed):
+        raise error(
+            HED_THEME_INVALID,
+            title="Invalid Folio accent",
+            explanation=f"Accent {accent!r} is not a Folio preset or hex color.",
+            remediation="Choose green, blue, violet, amber, rose, or a 3- or 6-digit hex color.",
+        )
+    rgb = _parse_hex(seed)
+    canonical = _to_hex(rgb)
+    if canonical == _FOLIO_ACCENTS["green"]:
+        return theme
+
+    hue, _, saturation = colorsys.rgb_to_hls(*rgb)
+    light_accent = _darken_until(hue, saturation, theme.tokens["color.bg"], 4.5, 0.45)
+    dark_accent = _with_lightness(hue, saturation, 0.75)
+    suffix = choice if choice in _FOLIO_ACCENTS else canonical[1:]
+    light_soft = _with_lightness(hue, min(saturation, 0.4), 0.93)
+    light_accent = _darken_until(
+        hue, saturation, light_soft, 4.5, colorsys.rgb_to_hls(*_parse_hex(light_accent))[1]
+    )
+    dark_soft = _with_lightness(hue, min(saturation, 0.3), 0.2)
+    return theme.extend(
+        f"folio-{suffix}",
+        tokens={
+            "color.accent": light_accent,
+            "color.accent-hover": _darken_until(hue, saturation, light_accent, 1.2, 0.3),
+            "color.accent-soft": light_soft,
+            "color.focus": light_accent,
+            "color.info-soft": light_soft,
+            "color.selection-bg": _with_lightness(hue, min(saturation, 0.4), 0.85),
+            "focus.ring": f"3px solid {light_accent}",
+            "chart.selection": light_accent,
+            "chart.focus": light_accent,
+        },
+        modes={
+            "dark": {
+                "color.accent": dark_accent,
+                "color.accent-hover": _with_lightness(hue, saturation, 0.83),
+                "color.accent-soft": dark_soft,
+                "color.on-accent": theme.modes["dark"]["color.bg"],
+                "color.focus": dark_accent,
+                "color.info-soft": dark_soft,
+                "color.selection-bg": _with_lightness(hue, min(saturation, 0.3), 0.25),
+                "focus.ring": f"3px solid {dark_accent}",
+                "chart.selection": dark_accent,
+                "chart.focus": dark_accent,
+            }
+        },
+    )
+
+
+def emit_folio_accent_css(accent: str) -> str:
+    """Emit the deterministic local stylesheet for a Folio accent asset path."""
+    return emit_theme_css(folio_theme(accent=accent if accent in FOLIO_ACCENTS else f"#{accent}"))
+
+
 def aurora_theme() -> Theme:
     """Return Hedron's expressive violet first-party theme."""
     return Theme(
@@ -724,7 +890,7 @@ def aurora_theme() -> Theme:
 
 def builtin_themes() -> tuple[Theme, ...]:
     """Return all themes shipped by Hedron in stable display order."""
-    return (default_theme(), aurora_theme())
+    return (folio_theme(), classic_theme(), aurora_theme())
 
 
 def _token_to_css_var(name: str) -> str:
@@ -1048,12 +1214,16 @@ def ensure_builtin_themes_registered() -> tuple[Theme, ...]:
     themes = builtin_themes()
     for theme in themes:
         _ensure_theme_registered(theme)
+    # Keep existing theme="default" configurations working without advertising
+    # an ambiguous name in pickers or the built-in theme gallery.
+    _ensure_theme_registered(default_theme())
     return themes
 
 
 def ensure_default_theme_registered() -> Theme:
     """Register built-in themes and return the backwards-compatible default."""
-    return ensure_builtin_themes_registered()[0]
+    ensure_builtin_themes_registered()
+    return default_theme()
 
 
 def get_theme(name: str | None) -> ThemeMeta | None:

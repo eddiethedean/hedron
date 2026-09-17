@@ -8,6 +8,8 @@ Meet Hedron through the complete synthetic operations console instead of a colle
 snippets. This page documents the real runnable application, so the UI you run locally is the UI
 represented here; there is no separate documentation-only showcase implementation.
 
+![Hedron workspace overview using the Folio theme](../assets/hedron-showcase.jpg)
+
 ## Run the real app
 
 From a repository checkout:
@@ -23,14 +25,15 @@ FastAPI-compatible routing.
 
 The complete source is [`examples/showcase/app.py`](https://github.com/eddiethedean/hedron/blob/v1.0/examples/showcase/app.py).
 
-The built-in theme emits coordinated light/dark tokens and follows the browser color preference;
+The showcase uses Folio's paper light palette and neutral charcoal dark palette, following the
+browser color preference. A small application stylesheet refines its dashboard composition;
 the app shell and content grids collapse for narrow screens.
 
 ## What this showcases
 
 | Surface | Hedron building block |
 |---|---|
-| Product chrome | `AppShell`, `Brand`, environment banner, account summary, grouped navigation |
+| Product chrome | `AppShell`, `Brand`, workspace badge, account summary, grouped navigation |
 | Operational overview | `PageHeader`, `Alert`, `Metric`, `Card`, `Status` |
 | Workflow visibility | `ProcessFlow`, `Progress`, `Timeline`, `ResourceList` |
 | Structured data | `Table`, column metadata, status badges, bounded result views |
