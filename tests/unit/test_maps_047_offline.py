@@ -118,3 +118,27 @@ def test_mbtiles_read_closes_connection(tmp_path: Path, monkeypatch: pytest.Monk
     for connection in opened:
         with pytest.raises(sqlite3.ProgrammingError):
             connection.execute("SELECT 1")
+
+
+def test_mbtiles_read_closes_connection_on_sql_error(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    path = tmp_path / "invalid.mbtiles"
+    path.touch()
+
+    opened: list[sqlite3.Connection] = []
+    real_connect = sqlite3.connect
+
+    def connect(*args: object, **kwargs: object) -> sqlite3.Connection:
+        connection = real_connect(*args, **kwargs)
+        opened.append(connection)
+        return connection
+
+    monkeypatch.setattr("hedron_maps.mbtiles.sqlite3.connect", connect)
+
+    with pytest.raises(sqlite3.OperationalError):
+        read_tile(path, z=0, x=0, y=0)
+
+    assert len(opened) == 1
+    with pytest.raises(sqlite3.ProgrammingError):
+        opened[0].execute("SELECT 1")
