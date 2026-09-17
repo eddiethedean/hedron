@@ -167,7 +167,7 @@ def bounded_token_chunks(
             chunks_emitted += 1
             buffer.clear()
     if buffer and chunks_emitted < budget.max_chunks:
-        chunk = join_with.join(buffer)
+        chunk = "".join(buffer)
         if total_chars + len(chunk) <= budget.max_chars:
             if chunks_emitted > 0 and budget.chunk_delay_seconds > 0:
                 time.sleep(budget.chunk_delay_seconds)
@@ -209,7 +209,7 @@ async def async_token_chunks(
             chunks_emitted += 1
             buffer.clear()
     if buffer and chunks_emitted < budget.max_chunks:
-        chunk = join_with.join(buffer)
+        chunk = "".join(buffer)
         if total_chars + len(chunk) <= budget.max_chars:
             if chunks_emitted > 0 and budget.chunk_delay_seconds > 0:
                 await asyncio.sleep(budget.chunk_delay_seconds)

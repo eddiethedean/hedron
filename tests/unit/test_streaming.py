@@ -86,16 +86,16 @@ def test_token_stream_preserves_joiner_across_chunk_boundaries() -> None:
             values,
             budget=StreamBudget(deadline_seconds=None),
             join_with=" ",
-            max_chunk_tokens=2,
+            max_chunk_tokens=3,
         )
     )
 
-    assert chunks == ["a b", " c d", " e"]
+    assert chunks == ["a b c", " d e"]
     assert "".join(chunks) == " ".join(values)
 
 
 def test_async_token_stream_preserves_joiner_and_budget() -> None:
-    values = ["a", "b", "c"]
+    values = ["a", "b", "c", "d", "e"]
 
     async def tokens():
         for value in values:
@@ -106,13 +106,13 @@ def test_async_token_stream_preserves_joiner_and_budget() -> None:
             chunk
             async for chunk in async_token_chunks(
                 tokens(),
-                budget=StreamBudget(max_chars=5, deadline_seconds=None),
+                budget=StreamBudget(max_chars=9, deadline_seconds=None),
                 join_with=" ",
-                max_chunk_tokens=2,
+                max_chunk_tokens=3,
             )
         ]
 
-    assert asyncio.run(collect()) == ["a b", " c"]
+    assert asyncio.run(collect()) == ["a b c", " d e"]
 
 
 def test_chunk_delay_is_honored() -> None:
