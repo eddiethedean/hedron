@@ -95,24 +95,34 @@ class StreamedDocument:
 
     def iter_phases(self) -> Iterator[tuple[str, str]]:
         """Yield (phase, html) where phase is 'metadata' then 'body'."""
-        if self.metadata_preamble:
-            yield ("metadata", self.metadata_preamble)
         started = time.monotonic()
+        chunks_emitted = 0
         total = 0
-        for index, chunk in enumerate(self.chunks):
-            if index >= self.budget.max_chunks:
+        if self.metadata_preamble:
+            if (
+                len(self.metadata_preamble) > self.budget.max_chars
+                or self.budget.deadline_seconds is not None
+                and time.monotonic() - started > self.budget.deadline_seconds
+            ):
+                return
+            yield ("metadata", self.metadata_preamble)
+            chunks_emitted = 1
+            total = len(self.metadata_preamble)
+        for chunk in self.chunks:
+            if chunks_emitted >= self.budget.max_chunks:
                 break
             if (
                 self.budget.deadline_seconds is not None
                 and time.monotonic() - started > self.budget.deadline_seconds
             ):
                 break
-            total += len(chunk)
-            if total > self.budget.max_chars:
+            if total + len(chunk) > self.budget.max_chars:
                 break
-            if index > 0 and self.budget.chunk_delay_seconds > 0:
+            if chunks_emitted > 0 and self.budget.chunk_delay_seconds > 0:
                 time.sleep(self.budget.chunk_delay_seconds)
             yield ("body", chunk)
+            chunks_emitted += 1
+            total += len(chunk)
 
 
 @dataclass(slots=True)

@@ -56,6 +56,28 @@ def test_streamed_document_metadata_first() -> None:
     assert phases[1][0] == "body"
 
 
+def test_streamed_document_budget_includes_metadata_preamble() -> None:
+    doc = StreamedDocument(
+        chunks=["B"],
+        region_id="doc",
+        metadata_preamble="123456",
+        budget=StreamBudget(max_chunks=2, max_chars=7, deadline_seconds=None),
+    )
+
+    assert list(doc.iter_phases()) == [("metadata", "123456"), ("body", "B")]
+
+
+def test_streamed_document_rejects_over_budget_preamble() -> None:
+    doc = StreamedDocument(
+        chunks=["body"],
+        region_id="doc",
+        metadata_preamble="too large",
+        budget=StreamBudget(max_chunks=10, max_chars=3, deadline_seconds=None),
+    )
+
+    assert list(doc.iter_phases()) == []
+
+
 def test_token_stream_chunks() -> None:
     stream = TokenStream(
         tokens=["hel", "lo", " ", "world"],
