@@ -5,6 +5,7 @@
 ### Changed
 
 - Coordinated Folio theme and accent support release.
+- Advance dataset versions for successful in-memory delete mutations.
 
 ## [1.0.17] — Unreleased
 

@@ -134,6 +134,29 @@ def test_039_inmemory_multi_field_batch_same_row_version() -> None:
     assert source._row_versions["1"] == "2"  # one bump for the whole row
 
 
+def test_inmemory_delete_advances_dataset_version_and_rejects_stale_delete() -> None:
+    source = InMemoryDataSource([{"id": "a"}, {"id": "b"}], version="1")
+
+    first = source.apply(DataChanges(deletes=("a",), dataset_version="1"))
+    stale = source.apply(DataChanges(deletes=("b",), dataset_version="1"))
+
+    assert first.ok is True
+    assert first.version == "2"
+    assert stale.ok is False
+    assert stale.conflicts
+    assert source.fetch(DataQuery()).rows == [{"id": "b"}]
+
+
+def test_inmemory_failed_delete_batch_does_not_advance_version() -> None:
+    source = InMemoryDataSource([{"id": "a"}], version="1")
+
+    result = source.apply(DataChanges(deletes=("a", "missing"), dataset_version="1"))
+
+    assert result.ok is False
+    assert result.version == "1"
+    assert source.fetch(DataQuery()).rows == [{"id": "a"}]
+
+
 def test_open_bug_inmemory_fetch_and_nested_secret_are_isolated() -> None:
     source = InMemoryDataSource([{"id": "1", "payload": {"name": "Ada"}}])
     page = source.fetch(DataQuery())
