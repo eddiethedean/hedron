@@ -5,6 +5,7 @@
 ### Changed
 
 - Added the Folio theme and configurable Folio accents.
+- Preserve nonempty token-stream separators across chunk boundaries and budgets.
 
 ## [1.0.17] — Unreleased
 

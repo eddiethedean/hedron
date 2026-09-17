@@ -2,12 +2,21 @@
 
 from __future__ import annotations
 
+import asyncio
+
 import pytest
 from fastapi import FastAPI
 from starlette.testclient import TestClient
 
 from hedron.streaming import stream_chunked_list, stream_tokens
-from hedron_core.streaming import ChunkedList, StreamBudget, StreamedDocument, TokenStream
+from hedron_core.streaming import (
+    ChunkedList,
+    StreamBudget,
+    StreamedDocument,
+    TokenStream,
+    async_token_chunks,
+    bounded_token_chunks,
+)
 
 
 def test_chunked_list_respects_budget() -> None:
@@ -68,6 +77,42 @@ def test_token_stream_chunks() -> None:
     response = stream_tokens(stream)
     assert response.headers["X-Hedron-Stream-Region"] == "chat"
     assert response.media_type == "text/html"
+
+
+def test_token_stream_preserves_joiner_across_chunk_boundaries() -> None:
+    values = ["a", "b", "c", "d", "e"]
+    chunks = list(
+        bounded_token_chunks(
+            values,
+            budget=StreamBudget(deadline_seconds=None),
+            join_with=" ",
+            max_chunk_tokens=2,
+        )
+    )
+
+    assert chunks == ["a b", " c d", " e"]
+    assert "".join(chunks) == " ".join(values)
+
+
+def test_async_token_stream_preserves_joiner_and_budget() -> None:
+    values = ["a", "b", "c"]
+
+    async def tokens():
+        for value in values:
+            yield value
+
+    async def collect() -> list[str]:
+        return [
+            chunk
+            async for chunk in async_token_chunks(
+                tokens(),
+                budget=StreamBudget(max_chars=5, deadline_seconds=None),
+                join_with=" ",
+                max_chunk_tokens=2,
+            )
+        ]
+
+    assert asyncio.run(collect()) == ["a b", " c"]
 
 
 def test_chunk_delay_is_honored() -> None:
