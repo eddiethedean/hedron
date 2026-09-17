@@ -109,6 +109,48 @@ def test_cache_data_does_not_reuse_distinct_mapping_key_types() -> None:
     assert len(calls) == 2
 
 
+def test_cache_data_isolates_distinct_captured_closures() -> None:
+    reset_cache_for_tests()
+    calls: list[int] = []
+
+    def factory(multiplier: int):
+        @cache_data(scope="public")
+        def calculate(value: int) -> int:
+            calls.append(multiplier)
+            return value * multiplier
+
+        return calculate
+
+    double, triple = factory(2), factory(3)
+
+    assert double(10) == 20
+    assert double(10) == 20
+    assert triple(10) == 30
+    assert triple(10) == 30
+    assert calls == [2, 3]
+
+
+def test_async_cache_data_isolates_captured_closures() -> None:
+    reset_cache_for_tests()
+    calls: list[int] = []
+
+    def factory(multiplier: int):
+        @cache_data(scope="public")
+        async def calculate(value: int) -> int:
+            calls.append(multiplier)
+            return value * multiplier
+
+        return calculate
+
+    double, triple = factory(2), factory(3)
+
+    async def run() -> tuple[int, int, int, int]:
+        return await double(10), await double(10), await triple(10), await triple(10)
+
+    assert asyncio.run(run()) == (20, 20, 30, 30)
+    assert calls == [2, 3]
+
+
 def test_cache_keys_hash_secrets_and_support_models_and_repr_fallback() -> None:
     class Model:
         def model_dump(self) -> object:

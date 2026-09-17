@@ -25,7 +25,13 @@ __all__ = ["cache_component", "cache_data"]
 
 
 def _identity_for(fn: Callable[..., object]) -> str:
-    return f"{fn.__module__}.{fn.__qualname__}"
+    identity = f"{fn.__module__}.{fn.__qualname__}"
+    if fn.__closure__:
+        # Closure cells are deliberately not serialized into cache keys: they
+        # may contain secrets or unstable objects. A per-decoration nonce keeps
+        # factory-created functions isolated without exposing captured values.
+        identity = f"{identity}#closure-{id(fn):x}"
+    return identity
 
 
 def _bound_arguments(

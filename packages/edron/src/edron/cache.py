@@ -54,6 +54,10 @@ class CachedFunction(Generic[P, R]):
         self.tags = tuple(tags)
         self.vary_on = tuple(vary_on)
         self._identity = f"{fn.__module__}.{fn.__qualname__}"
+        if fn.__closure__:
+            # Match Hedron's closure identity without serializing captured
+            # values, which may be unstable or sensitive.
+            self._identity = f"{self._identity}#closure-{id(fn):x}"
         self._tag = f"edron:{self._identity}:{id(self)}"
         # Retain the exact backend that owns each key. A CachedFunction may be
         # imported once and called by multiple application runtime contexts.
