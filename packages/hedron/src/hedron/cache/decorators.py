@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import functools
 import inspect
+import secrets
 import time
 from collections.abc import Awaitable, Callable, Mapping
 from typing import ParamSpec, TypeVar, cast, overload
+from weakref import WeakKeyDictionary
 
 from hedron.cache.policy import should_reject_cache
 from hedron_core.cache import (
@@ -23,14 +25,21 @@ R = TypeVar("R")
 
 __all__ = ["cache_component", "cache_data"]
 
+_CLOSURE_IDENTITIES: WeakKeyDictionary[Callable[..., object], str] = WeakKeyDictionary()
+
 
 def _identity_for(fn: Callable[..., object]) -> str:
     identity = f"{fn.__module__}.{fn.__qualname__}"
     if fn.__closure__:
         # Closure cells are deliberately not serialized into cache keys: they
-        # may contain secrets or unstable objects. A per-decoration nonce keeps
-        # factory-created functions isolated without exposing captured values.
-        identity = f"{identity}#closure-{id(fn):x}"
+        # may contain secrets or unstable objects. Keep the nonce attached to
+        # the callable so Edron and Hedron share one identity, while using a
+        # random value so a later callable cannot inherit a recycled object id.
+        nonce = _CLOSURE_IDENTITIES.get(fn)
+        if nonce is None:
+            nonce = secrets.token_hex(16)
+            _CLOSURE_IDENTITIES[fn] = nonce
+        identity = f"{identity}#closure-{nonce}"
     return identity
 
 

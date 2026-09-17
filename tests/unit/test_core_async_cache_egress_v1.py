@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import gc
 import http.client
 import ssl
 from typing import ClassVar
@@ -149,6 +150,25 @@ def test_async_cache_data_isolates_captured_closures() -> None:
 
     assert asyncio.run(run()) == (20, 20, 30, 30)
     assert calls == [2, 3]
+
+
+def test_cache_data_does_not_reuse_discarded_closure_identity() -> None:
+    reset_cache_for_tests()
+
+    def factory(multiplier: int):
+        @cache_data(scope="public")
+        def calculate(value: int) -> int:
+            return value * multiplier
+
+        return calculate
+
+    first = factory(2)
+    assert first(10) == 20
+    del first
+    gc.collect()
+
+    second = factory(3)
+    assert second(10) == 30
 
 
 def test_cache_keys_hash_secrets_and_support_models_and_repr_fallback() -> None:
