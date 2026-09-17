@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.18] — Unreleased
+
+### Changed
+
+- Added Folio accent controls to Theme Lab.
+
 ## [1.0.17] — Unreleased
 
 ### Changed

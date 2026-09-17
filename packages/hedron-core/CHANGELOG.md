@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.18] — Unreleased
+
+### Changed
+
+- Added the Folio theme and configurable Folio accents.
+
 ## [1.0.17] — Unreleased
 
 ### Fixed

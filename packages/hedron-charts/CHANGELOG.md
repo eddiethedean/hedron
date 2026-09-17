@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.18] — Unreleased
+
+### Changed
+
+- Coordinated Folio theme and accent support release.
+
 ## [1.0.17] — Unreleased
 
 ### Fixed

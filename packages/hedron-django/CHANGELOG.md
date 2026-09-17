@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.18] — Unreleased
+
+### Changed
+
+- Added Folio accent asset support for Django applications.
+
 ## [1.0.17] — Unreleased
 
 ### Changed

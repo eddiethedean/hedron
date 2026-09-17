@@ -133,7 +133,15 @@ GROUPS = {
     "interaction": ("Interaction", "FastAPI and HTMX-oriented request/response components."),
     "data": ("Data", "Automatic rendering, tabular display, and editable data."),
     "utilities": ("Utilities", "Metrics, viewers, progress, status, disclosure, tabs, and files."),
-    "theme": ("Theme", "User-facing color-mode preference controls."),
+    "theme": (
+        "Theme",
+        "Folio is the default theme: warm paper surfaces, deep teal accents, serif headings, "
+        "flat panels, and a neutral charcoal dark palette. The original default remains "
+        "available as `Classic`; the legacy `default` name is retained as its compatibility "
+        "alias. Use `Hedron(theme='folio', accent='blue')` or choose Folio accents in Explorer's "
+        "Theme Lab; green is the default, with blue, violet, amber, rose, and hex seeds also "
+        "supported. Production configuration accepts the same `theme` and `accent` values.",
+    ),
     "charts": ("Charts", "Accessible visualization components and optional plotting adapters."),
 }
 

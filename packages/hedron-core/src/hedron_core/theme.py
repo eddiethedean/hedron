@@ -743,7 +743,7 @@ def folio_theme(*, accent: str = "green") -> Theme:
             }
         },
     )
-    if not isinstance(accent, str):
+    if type(accent) is not str:
         raise TypeError("Folio accent must be a preset name or a hex color string")
     choice = accent.strip().lower()
     seed = _FOLIO_ACCENTS.get(choice, choice)

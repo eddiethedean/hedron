@@ -38,12 +38,12 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```text
-ThemePicker(*, themes: 'tuple[str, ...]' = ('default', 'aurora'), color_modes: 'tuple[ColorMode, ...]' = ('system', 'light', 'dark'), selected: 'ThemePreference | None' = None, action: 'SafeUrl | str' = '/preferences/theme', csrf_token: 'str | None' = None, compact: 'bool' = False, id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
+ThemePicker(*, themes: 'tuple[str, ...]' = ('folio', 'classic', 'aurora'), color_modes: 'tuple[ColorMode, ...]' = ('system', 'light', 'dark'), selected: 'ThemePreference | None' = None, action: 'SafeUrl | str' = '/preferences/theme', csrf_token: 'str | None' = None, compact: 'bool' = False, id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `themes` | `tuple[str, ...]` | Constructor parameter. Default: `('default', 'aurora')`. |
+| `themes` | `tuple[str, ...]` | Constructor parameter. Default: `('folio', 'classic', 'aurora')`. |
 | `color_modes` | `tuple[ColorMode, ...]` | Constructor parameter. Default: `('system', 'light', 'dark')`. |
 | `selected` | `ThemePreference | None` | Constructor parameter. Default: `None`. |
 | `action` | `SafeUrl | str` | Constructor parameter. Default: `'/preferences/theme'`. |

@@ -139,11 +139,11 @@ def test_button_bundle_preserves_native_variants(engine: str) -> None:
         page.set_content(f"<style>{native_css}</style><style>{bundle_css}</style>{markup}")
         assert (
             page.locator("#primary").evaluate("(e) => getComputedStyle(e).backgroundColor")
-            == "rgb(37, 99, 235)"
+            == "rgb(23, 103, 94)"
         )
         assert (
             page.locator("#secondary").evaluate("(e) => getComputedStyle(e).backgroundColor")
-            == "rgb(255, 255, 255)"
+            == "rgb(255, 254, 249)"
         )
         assert (
             page.locator("#danger").evaluate("(e) => getComputedStyle(e).backgroundColor")
@@ -151,7 +151,7 @@ def test_button_bundle_preserves_native_variants(engine: str) -> None:
         )
         assert (
             page.locator("#danger-outline").evaluate("(e) => getComputedStyle(e).backgroundColor")
-            == "rgb(255, 255, 255)"
+            == "rgb(255, 254, 249)"
         )
         secondary = page.locator("#secondary-solid")
         danger = page.locator("#danger")
