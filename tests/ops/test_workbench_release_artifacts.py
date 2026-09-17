@@ -38,13 +38,32 @@ def test_workspace_parity_inventory_covers_all_main_release_packages() -> None:
     assert len(projects) == 22
 
 
-def test_toast_fix_would_have_required_a_version_bump() -> None:
+def test_unreleased_train_allows_same_version_for_package_fixes() -> None:
     errors = version_check.version_change_errors(
         "f8e281be422b8f77156f51f8a58515c66487915a",
         "04b462ff8f89d41cf8c83f895033a0d8eddd785e",
     )
-    assert any(error.startswith("hedron:") for error in errors)
-    assert any(error.startswith("hedron-core:") for error in errors)
+    assert errors == []
+
+
+def test_unreleased_development_train_allows_same_package_version(monkeypatch) -> None:
+    monkeypatch.setattr(
+        version_check,
+        "changed_paths",
+        lambda base, head: ["packages/hedron/src/hedron/cache.py"],
+    )
+    monkeypatch.setattr(
+        version_check,
+        "git_show",
+        lambda ref, path: {
+            "packages/hedron/pyproject.toml": '[project]\nname = "hedron"\nversion = "1.0.18"\n',
+            "docs/release.toml": (
+                '[release]\ndevelopment_version = "1.0.18"\npublished_version = "1.0.17"\n'
+            ),
+        }.get(path),
+    )
+
+    assert version_check.version_change_errors("base", "head") == []
 
 
 def wheel_bytes(entries: dict[str, bytes]) -> bytes:
