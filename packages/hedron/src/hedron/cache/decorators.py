@@ -28,7 +28,7 @@ __all__ = ["cache_component", "cache_data"]
 _CLOSURE_IDENTITIES: WeakKeyDictionary[Callable[..., object], str] = WeakKeyDictionary()
 
 
-def _identity_for(fn: Callable[..., object]) -> str:
+def cache_callable_identity(fn: Callable[..., object]) -> str:
     identity = f"{fn.__module__}.{fn.__qualname__}"
     if fn.__closure__:
         # Closure cells are deliberately not serialized into cache keys: they
@@ -73,7 +73,7 @@ def _decorate(
 ) -> Callable[P, R]:
     del component  # reserved for future prepared-component policy hooks
     ttl = validate_cache_ttl(ttl)
-    identity = _identity_for(fn)
+    identity = cache_callable_identity(fn)
     is_async = inspect.iscoroutinefunction(fn)
 
     if is_async:

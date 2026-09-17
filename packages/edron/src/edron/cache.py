@@ -15,7 +15,7 @@ from threading import RLock
 from typing import Any, Generic, ParamSpec, TypeVar, cast
 
 from edron.errors import BindingError
-from hedron.cache.decorators import _identity_for
+from hedron.cache.decorators import cache_callable_identity
 from hedron_core.cache.backend import CacheBackend, validate_cache_ttl
 
 P = ParamSpec("P")
@@ -54,7 +54,7 @@ class CachedFunction(Generic[P, R]):
         self.version = version
         self.tags = tuple(tags)
         self.vary_on = tuple(vary_on)
-        self._identity = _identity_for(fn)
+        self._identity = cache_callable_identity(fn)
         self._tag = f"edron:{self._identity}:{id(self)}"
         # Retain the exact backend that owns each key. A CachedFunction may be
         # imported once and called by multiple application runtime contexts.
