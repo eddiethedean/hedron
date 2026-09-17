@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.0.17] — Unreleased
+
+### Fixed
+
+- Unify built-in button appearances, emphasis, sizes, icon buttons, and disabled
+  hover states across the full stylesheet and selected bundles.
+- Complete Default and Aurora light/dark semantic palettes and improve muted
+  text and success badge contrast on tinted surfaces.
+- Align card insets, content spacing, identity, workflow, model-inspection,
+  file-picker, and chart surfaces with the shared themes.
+- Let native dialog cancellation finish before synchronizing reactive state,
+  so Escape does not leave the page blocked beneath an invisible modal.
+
 ## [1.0.16] — 2026-09-14
 
 ### Fixed

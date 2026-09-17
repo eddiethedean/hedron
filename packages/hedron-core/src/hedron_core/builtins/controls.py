@@ -355,7 +355,7 @@ class IconButton(Component[IconButtonProps]):
             type=self.props.type,
             disabled=self.props.disabled or None,
             id=self.props.id,
-            class_=class_names("hedron-icon-button", self.props.class_),
+            class_=class_names("hedron-button hedron-icon-button", self.props.class_),
             aria={"label": self.props.label},
             data=data or None,
         )

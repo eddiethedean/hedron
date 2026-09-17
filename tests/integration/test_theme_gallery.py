@@ -11,7 +11,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 
-def _load_gallery() -> ModuleType:
+def load_gallery() -> ModuleType:
     path = Path(__file__).resolve().parents[2] / "examples" / "theme-gallery" / "app.py"
     spec = importlib.util.spec_from_file_location("hedron_theme_gallery_test_app", path)
     assert spec is not None and spec.loader is not None
@@ -22,12 +22,25 @@ def _load_gallery() -> ModuleType:
 
 @pytest.fixture
 def gallery_client() -> Iterator[TestClient]:
-    module = _load_gallery()
+    module = load_gallery()
     with TestClient(module.app) as client:
         yield client
 
 
-@pytest.mark.parametrize("route", ["/", "/settings", "/orders", "/support", "/components"])
+@pytest.mark.parametrize(
+    "route",
+    [
+        "/",
+        "/settings",
+        "/orders",
+        "/support",
+        "/components",
+        "/forms",
+        "/surfaces",
+        "/content",
+        "/media",
+    ],
+)
 @pytest.mark.parametrize("mode", ["light", "dark"])
 @pytest.mark.parametrize("theme", ["default", "aurora"])
 def test_gallery_route_renders_in_explicit_mode(

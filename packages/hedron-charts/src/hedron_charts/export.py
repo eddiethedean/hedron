@@ -108,11 +108,14 @@ def _render_svg(plan: ChartPlan, *, width: int | None = None) -> str:
     poly = " ".join(points)
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" '
+        f'viewBox="0 0 {w} {h}" '
         f'role="img" aria-labelledby="title desc">'
         f'<title id="title">{_escape(title)}</title>'
         f'<desc id="desc">{_escape(desc)}</desc>'
-        f'<rect x="0" y="0" width="{w}" height="{h}" fill="var(--hedron-chart-empty, #fff)"/>'
-        f'<polyline fill="none" stroke="var(--hedron-chart-series-1, #2563eb)" '
+        f'<rect x="0" y="0" width="{w}" height="{h}" '
+        f'fill="var(--hedron-chart-surface, var(--hedron-default-surface, #fff))"/>'
+        f'<polyline fill="none" '
+        f'stroke="var(--hedron-chart-series-1, var(--hedron-default-accent, #2563eb))" '
         f'stroke-width="2" points="{poly}"/>'
         f"</svg>"
     )

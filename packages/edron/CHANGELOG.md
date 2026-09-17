@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.17] — Unreleased
+
+### Changed
+
+- Coordinated maintenance release for the 1.0 package train.
+
 ## [1.0.16] — 2026-09-14
 
 ### Fixed

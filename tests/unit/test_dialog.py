@@ -17,6 +17,12 @@ def test_dialog_renders_native_dialog() -> None:
     assert "open" in result.html
 
 
+def test_dialog_syncs_native_close_without_interrupting_cancel() -> None:
+    markup = render(Dialog("Confirm", "Are you sure?")).html
+    assert 'x-on:close="open = false"' in markup
+    assert "x-on:cancel=" not in markup
+
+
 def test_dialog_rejects_ids_that_break_ui_openers() -> None:
     import pytest
 

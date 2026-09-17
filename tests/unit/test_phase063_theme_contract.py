@@ -33,7 +33,8 @@ def test_custom_theme_controls_legacy_stylesheet_consumers() -> None:
     assert "--hedron-color-link-hover:" in css
     assert "--hedron-color-link-active:" in css
     assert "--hedron-color-link-visited:" in css
-    assert "--hedron-color-selection-bg: #9b2c8c;" in css
+    # Selection is an explicit built-in palette token and follows inheritance.
+    assert "--hedron-color-selection-bg: #cfe0ff;" in css
     assert "--hedron-default-accent: var(--hedron-color-accent, #2563eb);" in css
     assert "--hedron-default-radius: var(--hedron-shape-radius, 0.2rem);" in css
     assert "--hedron-default-shadow: var(--hedron-elevation-raised, none);" in css

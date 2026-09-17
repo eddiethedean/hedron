@@ -5,6 +5,8 @@
 > [What’s next](guides/whats-next.md). Do not treat gate tables as the getting-started guide.
 
 **Roadmap position:** `v1.0.16` is Verified, tagged, and published on PyPI, including Edron.
+**Development workspace:** `1.0.17` is preparing the coordinated theme-polish patch;
+tagging, release CI, and publication remain pending.
 `v0.67.0` remains the immutable migration baseline for compatibility evidence.
 **Date:** 2026-09-14
 **Implementation:** Stable platform — `hedron`, `hedron-core`, `edron`, `hedron-data`,

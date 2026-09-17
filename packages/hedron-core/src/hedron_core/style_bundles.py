@@ -68,24 +68,9 @@ class StyleBundle:
         }
 
 
-_BASE_CSS = """@layer reset, tokens, base, components, application, utilities, overrides;
-@layer reset {
-  *, *::before, *::after { box-sizing: border-box; }
-  html { min-width: 20rem; text-size-adjust: 100%; }
-  body { margin: 0; }
-  button, input, select, textarea { font: inherit; }
-}
-@layer base {
-  :where(button, a, input, select, textarea, [tabindex]):focus-visible {
-    outline: var(--hedron-focus-ring, 3px solid var(--hedron-color-focus, #2563eb));
-    outline-offset: 2px;
-  }
-  :where([aria-busy="true"], .hedron-is-busy) { cursor: progress; }
-  :where([aria-invalid="true"], .hedron-has-error) {
-    border-color: var(--hedron-color-danger, #c73939);
-  }
-}
-"""
+_BASE_CSS = (
+    resources.files("hedron_core").joinpath("static/bundles/base.css").read_text(encoding="utf-8")
+)
 
 _ACCESSIBILITY_CSS = """@layer utilities {
   @media (forced-colors: active) {
@@ -127,54 +112,9 @@ _COMPONENT_CSS: Mapping[str, str] = {
   .hedron-app-shell-nav { background: var(--hedron-color-surface, #fff); border-inline-end: 1px solid var(--hedron-color-border, #dce2eb); }
 }
 """,
-    "button": """@layer components {
-  .hedron-button { border: 1px solid var(--hedron-color-accent, #2563eb); border-radius: var(--hedron-shape-radius, .8rem); background: var(--hedron-color-accent, #2563eb); color: var(--hedron-color-on-accent, #fff); padding: .55rem .85rem; }
-  .hedron-button:hover { background: var(--hedron-color-accent-hover, var(--hedron-color-accent, #2563eb)); }
-  .hedron-button-secondary {
-    border-color: var(--hedron-color-border-strong, var(--hedron-color-border, #dce2eb));
-    background: var(--hedron-color-surface, #fff);
-    color: var(--hedron-color-fg, #172033);
-  }
-  .hedron-button-secondary:hover {
-    border-color: var(--hedron-color-accent, #2563eb);
-    background: var(--hedron-color-accent-soft, #eef4ff);
-    color: var(--hedron-color-accent, #2563eb);
-  }
-  .hedron-button-danger {
-    background: var(--hedron-color-danger, #c73939);
-    color: var(--hedron-color-on-danger, #fff);
-  }
-  .hedron-button-danger:hover {
-    background: color-mix(in srgb, var(--hedron-color-danger, #c73939) 84%, black);
-    color: var(--hedron-color-on-danger, #fff);
-  }
-  .hedron-button[data-hedron-appearance="outline"] {
-    border-color: var(--hedron-color-border, #dce2eb);
-    background: transparent;
-    color: var(--hedron-color-text, CanvasText);
-  }
-  .hedron-button[data-hedron-appearance="ghost"],
-  .hedron-button[data-hedron-appearance="plain"] {
-    border-color: transparent;
-    background: transparent;
-    color: var(--hedron-color-text, CanvasText);
-  }
-  .hedron-button[data-hedron-appearance="soft"] {
-    border-color: transparent;
-    background: var(--hedron-color-surface-muted, #f6f8fb);
-    color: var(--hedron-color-text, CanvasText);
-  }
-  .hedron-button[data-hedron-appearance="raised"] {
-    border-color: var(--hedron-color-border, #dce2eb);
-    background: var(--hedron-color-surface, #fff);
-    color: var(--hedron-color-text, CanvasText);
-    box-shadow: 0 .35rem .9rem color-mix(in srgb, CanvasText 12%, transparent);
-  }
-  .hedron-button[data-hedron-width="full"] { display: flex; width: 100%; }
-  .hedron-button:disabled, .hedron-button[aria-disabled="true"] { opacity: .6; cursor: not-allowed; }
-  .hedron-button[aria-busy="true"] { cursor: progress; }
-}
-""",
+    "button": resources.files("hedron_core")
+    .joinpath("static/bundles/button.css")
+    .read_text(encoding="utf-8"),
     "card": """@layer components {
   .hedron-card { background: var(--hedron-color-surface, #fff); color: var(--hedron-color-fg, #172033); border: 1px solid var(--hedron-color-border, #dce2eb); border-radius: var(--hedron-shape-radius, .8rem); box-shadow: var(--hedron-elevation-raised, none); }
   .hedron-card[aria-busy="true"] { opacity: .75; }

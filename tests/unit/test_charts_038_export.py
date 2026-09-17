@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from xml.etree import ElementTree
+
 import pytest
 from tests.unit.charts_038_helpers import sample_plan
 
@@ -31,6 +33,16 @@ def test_unauthorized_export_fails() -> None:
     with pytest.raises(HedronError) as ei:
         export_csv(plan, authorized=False)
     assert ei.value.diagnostic.code == "HED-CHART-0061"
+
+
+def test_svg_preview_scales_with_its_viewport_and_uses_theme_surface() -> None:
+    svg = ElementTree.fromstring(export_svg(sample_plan(), width=480))
+    assert svg.attrib["viewBox"] == f"0 0 {svg.attrib['width']} {svg.attrib['height']}"
+    assert svg.attrib["width"] == "480"
+    background = svg.find("{http://www.w3.org/2000/svg}rect")
+    assert background is not None
+    assert "--hedron-chart-surface" in background.attrib["fill"]
+    assert "--hedron-default-surface" in background.attrib["fill"]
 
 
 def test_bundle_has_no_remote_urls() -> None:

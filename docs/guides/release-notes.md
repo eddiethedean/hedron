@@ -3,6 +3,28 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 1.0.17 — Unreleased
+
+Coordinated theme-polish release for the 1.0 package train. Publication is pending;
+1.0.16 remains the current published release and public install pin.
+
+### Fixed
+
+- Unified button appearances, emphasis, sizes, icon buttons, and disabled states
+  across full stylesheets and selected component bundles.
+- Completed the Default and Aurora light/dark palettes and improved text contrast
+  on tinted surfaces.
+- Aligned cards, forms, content, identity, workflow, and model-inspection surfaces
+  with the shared spacing and color system.
+- Corrected static chart preview scaling and theme colors.
+- Fixed native dialog cancellation leaving the page blocked below an invisible modal.
+
+### Added
+
+- Expanded the theme review gallery to nine composed screens, with desktop/phone
+  contrast, overflow, button-state, overlay, and focus checks in Chromium, Firefox,
+  and WebKit.
+
 ## 1.0.16 — 2026-09-14
 
 Coordinated maintenance release for the Stable 1.0 package train. The release is tagged on

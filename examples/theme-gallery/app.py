@@ -7,59 +7,114 @@ Run with::
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Literal
 
+from fastapi.responses import FileResponse
+
 from hedron import (
+    AccountSummary,
+    ActionGroup,
     Alert,
     AppShell,
     Badge,
+    Brand,
     Button,
+    CameraCapture,
     Card,
+    Carousel,
     ChatInput,
     ChatMessage,
+    Checkbox,
     ChipInput,
+    CircularProgress,
+    ClipboardCopy,
     CodeViewer,
     ColorInput,
     ConfirmButton,
+    ConnectorFlow,
+    ConnectorNode,
+    ConnectorTrack,
+    DateInput,
+    DateTimeInput,
+    DescriptionList,
+    Dialog,
+    Dialogue,
+    DirectoryUpload,
+    Divider,
+    EnvironmentBanner,
     Expander,
+    FileUpload,
+    FlowStep,
     Footer,
     Form,
     FormErrors,
     FormField,
+    Gallery,
+    GeolocationButton,
     Grid,
     Header,
     Heading,
     Hedron,
+    HelpInspector,
+    IconButton,
+    Identity,
+    Image,
     Inline,
     Link,
     LinkButton,
+    List,
+    Map,
+    Math,
     Metric,
+    MicrophoneCapture,
+    MultiSelect,
+    NavStatus,
     NumberInput,
     Page,
     Pagination,
+    ParameterViewer,
     Pills,
     Popover,
+    PredictionLabel,
+    ProcessFlow,
     Progress,
     RadioGroup,
     RangeInput,
     RatingInput,
+    ResourceList,
+    ResourceRow,
+    ScrollRegion,
     SegmentedControl,
     Select,
+    SelectSlider,
     Skeleton,
     Stack,
+    StateView,
     Status,
     SubmitButton,
+    Surface,
     Table,
     Tabs,
     Text,
     TextArea,
     TextInput,
+    TimeInput,
     Timeline,
+    Toast,
     ToggleSwitch,
+    Tooltip,
+    Typography,
 )
+from hedron_charts import LineChart
+from hedron_core.builtins.appearance import Appearance, Emphasis, Size
+from hedron_core.component import NodeLike
+from hedron_core.icons import register_first_party_icons
 
 Mode = Literal["light", "dark"]
 ThemeName = Literal["default", "aurora"]
+APPEARANCES: tuple[Appearance, ...] = ("solid", "outline", "soft", "ghost", "plain", "raised")
+EMPHASES: tuple[Emphasis, ...] = ("primary", "secondary", "danger", "neutral")
 
 app = Hedron(
     title="Hedron theme gallery",
@@ -67,6 +122,7 @@ app = Hedron(
     explorer="off",
     session_secret="local-theme-gallery-only",
 )
+register_first_party_icons()
 
 
 def _href(path: str, mode: Mode, theme: ThemeName) -> str:
@@ -87,7 +143,7 @@ def _chrome(
     current: str,
     mode: Mode,
     theme: ThemeName,
-    *content: object,
+    *content: NodeLike,
 ) -> Page:
     navigation = (
         _nav_link("Dashboard", "/", current, mode, theme),
@@ -95,6 +151,10 @@ def _chrome(
         _nav_link("Orders", "/orders", current, mode, theme),
         _nav_link("Support", "/support", current, mode, theme),
         _nav_link("Components", "/components", current, mode, theme),
+        _nav_link("Forms", "/forms", current, mode, theme),
+        _nav_link("Surfaces", "/surfaces", current, mode, theme),
+        _nav_link("Content", "/content", current, mode, theme),
+        _nav_link("Media", "/media", current, mode, theme),
     )
     mode_controls = Inline(
         Badge(f"{theme.title()} · {mode}", tone="info"),
@@ -151,6 +211,23 @@ def dashboard(mode: Mode = "light", theme: ThemeName = "default") -> Page:
             Metric("Churn risk", "2.8%", delta="+0.3%", delta_tone="down"),
             columns=4,
         ),
+        LineChart(
+            [
+                {"month": month, "revenue": revenue}
+                for month, revenue in (
+                    ("Apr", 82),
+                    ("May", 96),
+                    ("Jun", 104),
+                    ("Jul", 110),
+                    ("Aug", 114),
+                    ("Sep", 128),
+                )
+            ],
+            x="month",
+            y="revenue",
+            title="Revenue trend",
+            description="Monthly revenue in thousands of dollars.",
+        ),
         Grid(
             Card(
                 Table(
@@ -187,6 +264,370 @@ def dashboard(mode: Mode = "light", theme: ThemeName = "default") -> Page:
                     title="Recent activity",
                 ),
                 gap="1rem",
+            ),
+            columns=2,
+        ),
+    )
+
+
+@app.page("/forms")
+def forms(mode: Mode = "light", theme: ThemeName = "default") -> Page:
+    return _chrome(
+        "Form controls",
+        "/forms",
+        mode,
+        theme,
+        Grid(
+            Card(
+                FormField(
+                    name="search",
+                    label="Search",
+                    control=TextInput("search", placeholder="Search projects"),
+                ),
+                FormField(
+                    name="password",
+                    label="Password",
+                    control=TextInput("password", type="password", value="sample-password"),
+                ),
+                FormField(
+                    name="disabled",
+                    label="Disabled",
+                    control=TextInput(
+                        "disabled", value="Managed by your organization", disabled=True
+                    ),
+                ),
+                FormField(
+                    name="invalid",
+                    label="Invalid",
+                    control=TextInput("invalid", value="Incomplete"),
+                    error="Enter a complete value.",
+                ),
+                FormField(
+                    name="notes", label="Notes", control=TextArea("notes", placeholder="Add a note")
+                ),
+                title="Text and validation",
+            ),
+            Card(
+                FormField(name="date", label="Date", control=DateInput("date", value="2026-09-17")),
+                FormField(name="time", label="Time", control=TimeInput("time", value="09:30")),
+                FormField(
+                    name="datetime",
+                    label="Date and time",
+                    control=DateTimeInput("datetime", value="2026-09-17T09:30"),
+                ),
+                FormField(
+                    name="teams",
+                    label="Teams",
+                    control=MultiSelect(
+                        "teams",
+                        (
+                            ("design", "Design"),
+                            ("engineering", "Engineering"),
+                            ("operations", "Operations"),
+                        ),
+                        values=("design", "engineering"),
+                    ),
+                ),
+                FormField(
+                    name="priority",
+                    label="Priority",
+                    control=SelectSlider("priority", ("Low", "Medium", "High"), value="Medium"),
+                ),
+                title="Native selections",
+            ),
+            Card(
+                Checkbox("terms", "I agree to the workspace guidelines", checked=True),
+                ToggleSwitch("enabled", "Enable notifications", checked=True),
+                ToggleSwitch("locked", "Managed notification setting", checked=True, disabled=True),
+                SegmentedControl(
+                    "view", "View", (("list", "List"), ("board", "Board")), value="list"
+                ),
+                Pills(
+                    "period",
+                    "Reporting period",
+                    (("week", "Week"), ("month", "Month")),
+                    value="month",
+                ),
+                RatingInput("rating", "Quality rating", value=4),
+                title="Choices",
+            ),
+            Card(
+                FileUpload(label="Upload attachment", hint="Choose a document or image."),
+                DirectoryUpload(label="Upload folder"),
+                ChipInput("tags", values=("Design", "Reviewed"), placeholder="Add a tag"),
+                FormField(
+                    name="budget", label="Budget", control=NumberInput("budget", value=2500, min=0)
+                ),
+                FormField(
+                    name="opacity",
+                    label="Opacity",
+                    control=RangeInput("opacity", value=70, min=0, max=100),
+                ),
+                title="Files and values",
+            ),
+            columns=2,
+        ),
+    )
+
+
+@app.get("/gallery-art.svg")
+def gallery_art() -> FileResponse:
+    return FileResponse(Path(__file__).with_name("landscape.svg"), media_type="image/svg+xml")
+
+
+@app.page("/media")
+def media(mode: Mode = "light", theme: ThemeName = "default") -> Page:
+    return _chrome(
+        "Media and capture",
+        "/media",
+        mode,
+        theme,
+        Gallery(
+            [
+                {
+                    "src": "/gallery-art.svg",
+                    "alt": "Layered blue and violet hills",
+                    "caption": "Workspace cover",
+                },
+                {
+                    "src": "/gallery-art.svg",
+                    "alt": "Layered blue and violet hills",
+                    "caption": "Project cover",
+                },
+            ],
+            lightbox=True,
+        ),
+        Grid(
+            Card(Image("/gallery-art.svg", alt="Layered blue and violet hills"), title="Image"),
+            Card(
+                Carousel(
+                    [
+                        (
+                            "Overview",
+                            Stack(
+                                Heading("A connected workspace", level=3),
+                                Text("Shared foundations for every screen."),
+                            ),
+                        ),
+                        (
+                            "Details",
+                            Stack(
+                                Heading("Built for your team", level=3),
+                                Text("Consistent controls and readable content."),
+                            ),
+                        ),
+                    ],
+                    label="Product tour",
+                ),
+                title="Carousel",
+            ),
+            Card(
+                CameraCapture(),
+                MicrophoneCapture(),
+                GeolocationButton(),
+                title="Native capture controls",
+            ),
+            Card(
+                Map(
+                    center=(40.71, -74.01),
+                    zoom=10,
+                    markers=[{"lat": 40.71, "lon": -74.01, "label": "New York workspace"}],
+                ),
+                title="Map fallback",
+            ),
+            columns=2,
+        ),
+    )
+
+
+@app.page("/surfaces")
+def surfaces(mode: Mode = "light", theme: ThemeName = "default") -> Page:
+    return _chrome(
+        "Surfaces and workflows",
+        "/surfaces",
+        mode,
+        theme,
+        Grid(
+            *(
+                Card(
+                    Stack(
+                        Heading(appearance.title(), level=3),
+                        Text("Shared shape, spacing, and palette."),
+                        Button("Action", appearance="outline"),
+                    ),
+                    appearance=appearance,
+                )
+                for appearance in APPEARANCES
+            ),
+            columns=3,
+        ),
+        Grid(
+            Surface(Text("Default surface")),
+            Surface(Text("Plain surface"), appearance="plain"),
+            Surface(Text("Raised surface"), appearance="raised"),
+            columns=3,
+        ),
+        Grid(
+            Card(
+                Text("The inset belongs to the body; the header and footer stay flush."),
+                title="Compact card",
+                padding="sm",
+                footer=Button("Continue", size="sm"),
+            ),
+            Card(
+                Text("A roomier body uses the same spacing scale."),
+                title="Spacious card",
+                padding="lg",
+                footer=Button("Continue"),
+            ),
+            columns=2,
+        ),
+        ProcessFlow(
+            FlowStep("Connect", status="complete", description="Source verified"),
+            FlowStep("Import", status="current", description="Reading records"),
+            FlowStep("Review", status="blocked", description="Approval required"),
+            FlowStep("Publish", status="pending", description="Waiting for review"),
+            label="Import workflow",
+        ),
+        ConnectorFlow(
+            ConnectorNode(
+                "Source workspace", detail="Customer records", runtime="Ready", state="succeeded"
+            ),
+            ConnectorTrack(
+                Text("Syncing records", as_="small"), active=True, label="Active transfer"
+            ),
+            ConnectorNode(
+                "Analytics warehouse",
+                kind="target",
+                detail="Reporting dataset",
+                runtime="Running",
+                state="running",
+            ),
+            appearance="soft",
+            background="dots",
+        ),
+        Grid(
+            StateView(
+                "No projects yet",
+                description="Create your first project to get started.",
+                actions=Button("Create project"),
+            ),
+            StateView(
+                "Preparing your workspace",
+                kind="loading",
+                description="This may take a moment.",
+                children=Skeleton(lines=2),
+            ),
+            StateView("Changes saved", kind="success", description="Your workspace is up to date."),
+            StateView(
+                "Unable to connect",
+                kind="error",
+                description="Try again in a moment.",
+                actions=Button("Retry", appearance="outline"),
+            ),
+            StateView(
+                "Access required",
+                kind="permission",
+                description="Ask a workspace owner for access.",
+            ),
+            StateView(
+                "You are offline",
+                kind="offline",
+                description="Your changes will sync when you reconnect.",
+            ),
+            columns=2,
+        ),
+    )
+
+
+@app.page("/content")
+def content(mode: Mode = "light", theme: ThemeName = "default") -> Page:
+    return _chrome(
+        "Identity and content",
+        "/content",
+        mode,
+        theme,
+        Grid(
+            Card(
+                Brand("Northstar", mark_text="N", subtitle="A connected workspace"),
+                Identity("Maya Chen", detail="Workspace owner"),
+                AccountSummary("Northstar Studio", detail="Scale plan", mark_text="NS"),
+                EnvironmentBanner("Preview workspace", tone="warning"),
+                NavStatus("All changes synced", tone="success"),
+                title="Identity and chrome",
+            ),
+            Card(
+                Typography("PRODUCT UPDATE", role="eyebrow"),
+                Typography("Clear, considered interfaces", role="title"),
+                Typography(
+                    "Body copy, labels, and supporting text share one readable scale.", role="body"
+                ),
+                Typography("Supporting details stay legible in both palettes.", role="caption"),
+                Divider(),
+                DescriptionList(
+                    ("Workspace", "Northstar Studio"),
+                    ("Region", "US East"),
+                    ("Plan", Badge("Scale", tone="info")),
+                ),
+                List("Readable typography", "Consistent surfaces", "Predictable controls"),
+                Link("Read the documentation", _href("/", mode, theme)),
+                title="Typography and lists",
+            ),
+            Card(
+                ResourceList(
+                    ResourceRow(
+                        "Design system",
+                        description="Shared components and foundations",
+                        href=_href("/components", mode, theme),
+                        meta=Badge("Updated", tone="success"),
+                    ),
+                    ResourceRow(
+                        "Quarterly report",
+                        description="Revenue and customer health",
+                        actions=Button("Download", appearance="outline", size="sm"),
+                    ),
+                    label="Workspace resources",
+                ),
+                title="Resources",
+            ),
+            Card(
+                ParameterViewer(
+                    {"temperature": 0.7, "max_tokens": 2048, "model": "workspace-assistant"}
+                ),
+                PredictionLabel(
+                    (
+                        {"class_id": "Healthy", "score": 0.94, "calibrated": True},
+                        {"class_id": "At risk", "score": 0.06},
+                    )
+                ),
+                Math(r"P(A \\mid B) = \\frac{P(B \\mid A) P(A)}{P(B)}", display=True),
+                title="Model inspection",
+            ),
+            Card(
+                Dialogue(
+                    (
+                        {"speaker": "Maya", "text": "Can you summarize the workspace activity?"},
+                        {
+                            "speaker": "Assistant",
+                            "text": "Revenue is up and all systems are healthy.",
+                        },
+                    )
+                ),
+                title="Transcript",
+            ),
+            Card(
+                ScrollRegion(
+                    CodeViewer("def workspace_health():\n    return 'healthy'", language="python"),
+                    size="sm",
+                    label="Source code",
+                ),
+                HelpInspector(
+                    "How this works",
+                    Text("Theme tokens carry the same palette through every built-in component."),
+                    open=True,
+                ),
+                CircularProgress(72, label="Indexing progress"),
+                title="Code and inspection",
             ),
             columns=2,
         ),
@@ -448,11 +889,48 @@ def support(mode: Mode = "light", theme: ThemeName = "default") -> Page:
 
 @app.page("/components")
 def components(mode: Mode = "light", theme: ThemeName = "default") -> Page:
+    sizes: tuple[Size, ...] = ("sm", "md", "lg")
     return _chrome(
         "Component states",
         "/components",
         mode,
         theme,
+        Grid(
+            *(
+                Card(
+                    *(
+                        Inline(
+                            Button(emphasis.title(), appearance=appearance, emphasis=emphasis),
+                            Button(
+                                "Disabled", appearance=appearance, emphasis=emphasis, disabled=True
+                            ),
+                        )
+                        for emphasis in EMPHASES
+                    ),
+                    title=f"{appearance.title()} buttons",
+                )
+                for appearance in APPEARANCES
+            ),
+            columns=2,
+        ),
+        Card(
+            ActionGroup(
+                *(
+                    Button(f"{size.upper()} action", size=size, leading_icon="check")
+                    for size in sizes
+                )
+            ),
+            ActionGroup(
+                *(
+                    IconButton(
+                        f"{size.upper()} settings", icon="⚙", size=size, appearance="outline"
+                    )
+                    for size in sizes
+                )
+            ),
+            Button("Full width action", width="full"),
+            title="Sizes and icons",
+        ),
         Tabs(
             (
                 "Actions",
@@ -509,5 +987,38 @@ def components(mode: Mode = "light", theme: ThemeName = "default") -> Page:
                 title="Radio group",
             ),
             columns=2,
+        ),
+        Grid(
+            Card(
+                *(
+                    Alert(
+                        "Changes to this workspace are visible to your team.",
+                        title=tone.title(),
+                        tone=tone,
+                    )
+                    for tone in ("info", "success", "warning", "danger")
+                ),
+                title="Feedback tones",
+            ),
+            Card(
+                Toast("Report exported successfully.", tone="success", ttl_ms=None),
+                Popover(
+                    Text("A themed details disclosure."), label="Details popover", mode="details"
+                ),
+                Popover(Text("A themed native overlay."), label="Native popover"),
+                Button(
+                    "Review changes",
+                    appearance="outline",
+                    attrs={"data-hedron-dialog-open": "#gallery-dialog"},
+                ),
+                Tooltip("Copy the workspace ID", ClipboardCopy("workspace-northstar")),
+                title="Overlays and helpers",
+            ),
+            columns=2,
+        ),
+        Dialog(
+            "Review changes",
+            Text("The dialog uses the same surface, type, and control palette."),
+            id="gallery-dialog",
         ),
     )

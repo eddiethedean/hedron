@@ -95,6 +95,11 @@ def test_builtin_theme_light_and_dark_pairs_meet_aa_contrast(theme: Theme) -> No
         assert _contrast_ratio(palette["color.bg"], palette["color.muted"]) >= 4.5
         assert _contrast_ratio(palette["color.accent"], palette["color.on-accent"]) >= 4.5
         assert _contrast_ratio(palette["color.danger"], palette["color.on-danger"]) >= 4.5
+        for tone in ("success", "warning", "danger", "accent"):
+            assert _contrast_ratio(palette[f"color.{tone}"], palette[f"color.{tone}-soft"]) >= 4.5
+        for surface in ("surface", "surface-muted", "accent-soft"):
+            assert _contrast_ratio(palette["color.muted"], palette[f"color.{surface}"]) >= 4.5
+        assert _contrast_ratio(palette["color.selection-bg"], palette["color.selection-fg"]) >= 4.5
 
 
 def test_default_stylesheet_is_local_layered_and_customizable() -> None:

@@ -101,10 +101,9 @@ class Dialog(Component[DialogProps]):
                         "x-on:close",
                         AlpineExpression.assign("open", AlpineExpression.literal(False)),
                     ),
-                    AlpineDirective(
-                        "x-on:cancel",
-                        AlpineExpression.assign("open", AlpineExpression.literal(False)),
-                    ),
+                    # Let native cancellation close the modal before syncing
+                    # state through `close`. Removing `open` during `cancel`
+                    # can leave Chromium/WebKit's top layer inert but invisible.
                     AlpineDirective(
                         "x-on:hedron-dialog-open",
                         AlpineExpression.assign("open", AlpineExpression.literal(True)),

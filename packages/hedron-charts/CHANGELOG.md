@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.17] — Unreleased
+
+### Fixed
+
+- Scale static SVG chart previews with their containers and use the shared
+  theme surface and accent rather than hard-coded light colors.
+
 ## [1.0.16] — 2026-09-14
 
 ### Fixed

@@ -28,6 +28,9 @@ injection, middleware, lifespan, async I/O, JSON routes, and OpenAPI remain avai
 reproduction). Review the [compatibility matrix](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/)
 before combining independently versioned satellites.
 
+The development workspace is preparing **1.0.17** with built-in theme polish;
+it is not yet published. See the [release notes](docs/guides/release-notes.md).
+
 ```text
 Python pages and components
             │

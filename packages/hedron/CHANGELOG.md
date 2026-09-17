@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.17] — Unreleased
+
+### Fixed
+
+- Bundle cohesive Default and Aurora component styling, including button states,
+  readable tinted surfaces, card spacing, identity, workflows, and inspectors.
+
 ## [1.0.16] — 2026-09-14
 
 ### Fixed
