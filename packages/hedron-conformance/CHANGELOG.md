@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.1] — 2026-09-18
+
+### Fixed
+
+- Align conformance tooling with the coordinated 1.1.1 release train.
+
 ## [1.1.0] — 2026-09-18
 
 ### Changed

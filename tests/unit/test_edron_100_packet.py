@@ -61,7 +61,7 @@ def test_edron_metadata_and_generated_projects_require_1_x() -> None:
         "project"
     ]
     assert str(project["version"]).startswith("1.")
-    assert "hedron>=1.1.0,<2.0" in project["dependencies"]
+    assert "hedron>=1.1.1,<2.0" in project["dependencies"]
     assert "hedron-data>=1.0.0,<2.0" in project["dependencies"]
 
     for relative in (
