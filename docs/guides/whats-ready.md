@@ -7,7 +7,7 @@ screen-reader claims. `hedron-core`, `hedron`, `edron`, `hedron-data`, `hedron-c
 `hedron-maps` are **Stable** packages in the 1.0 inventory; host, tooling, and vendor-adapter
 satellites remain Beta. There is no SLA.
 
-This page is the **adopter** maturity summary for the published **1.0.17** release
+This page is the **adopter** maturity summary for the published **1.1.0** release
 ([Current release and support](current-release.md)). Full capability matrices and
 maintainer gate notes:
 [What’s ready — evidence](whats-ready-evidence.md).
@@ -28,7 +28,7 @@ maintainer gate notes:
 | **Experimental** | Public; may change; prefer documented fallbacks (usually polling) |
 | **Deferred** | Documented, not ready — do not treat as Supported |
 
-Hedron, Edron, data, charts, and maps on the **1.0.x** line are the coordinated Stable train. Older 0.x
+Hedron, Edron, data, charts, and maps on the **1.1.x** line are the coordinated Stable train. Older 0.x
 packages remain migration fallbacks only.
 Package maturity, capability
 readiness, and API compatibility are separate axes —

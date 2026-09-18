@@ -2,7 +2,7 @@
 description: Locate the release, provenance, compatibility, security, and acceptance evidence for 1.0.
 ---
 
-# 1.0 evidence bundle
+# 1.1.0 evidence bundle
 
 Use this page to establish what was published, how it was built, what was verified, and which
 responsibilities remain with the adopting organization.
@@ -11,9 +11,9 @@ responsibilities remain with the adopting organization.
 
 | Evidence | Source |
 |---|---|
-| Hedron package and files | Published `1.0.17` |
-| Edron package and files | Published `1.0.17` |
-| Source tag, wheels, checksums, and attached evidence | Published from immutable `release-20260911-01` tag |
+| Hedron package and files | Published `1.1.0` |
+| Edron package and files | Published `1.1.0` |
+| Source tag, wheels, checksums, and attached evidence | Published from immutable `release-20260918-02` tag |
 | Current install and support facts | [Current release](current-release.md) |
 
 The GitHub release attaches `release-manifest.json`, built distributions, generated evidence,

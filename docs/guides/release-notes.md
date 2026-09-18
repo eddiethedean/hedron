@@ -9,6 +9,9 @@ The open-enhancement completion release adds identity and resource presentation 
 pagination and collection state, request-aware navigation, secure form and secret lifecycles,
 application-aware builds, native shell and presentation refinements, and computed-style contracts.
 The complementary flow and release checks are recorded in the [Phase 1.1 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_1_1.md).
+It was published to PyPI from the immutable [`release-20260918-02`](https://github.com/eddiethedean/hedron/releases/tag/release-20260918-02)
+tag after the [release CI workflow](https://github.com/eddiethedean/hedron/actions/runs/35377247537)
+passed its full validation matrix.
 
 ## 1.0.17 — 2026-09-17
 
