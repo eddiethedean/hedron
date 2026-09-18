@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.4] — 2026-09-17
+
+### Added
+
+- Add an accessible full-screen control for embedded simulator islands, with
+  browser-prefixed support and a visible permission/unsupported fallback.
+
 ## [0.2.3] — 2026-09-04
 
 ### Fixed

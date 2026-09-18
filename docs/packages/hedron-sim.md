@@ -2,8 +2,8 @@
 
 Offline HTMX simulation for Hedron docs and demos.
 
-**Package maturity:** Beta tooling-grade · **Repository package version:** `0.2.2` ·
-pin `>=0.2.2,<0.3`
+**Package maturity:** Beta tooling-grade · **Repository package version:** `0.2.4` ·
+pin `>=0.2.4,<0.3`
 **Flagship extra:** none — install directly · **Import:** `hedron_sim`
 The source tree targets Hedron `>=0.67.0,<2.0`. Author demos
 with ordinary Hedron components, then
@@ -12,7 +12,7 @@ embed them in **static** docs — no FastAPI process required.
 ## Install
 
 ```bash
-pip install "hedron-sim>=0.2.2,<0.3"
+pip install "hedron-sim>=0.2.4,<0.3"
 ```
 
 Requires `hedron` / `hedron-core` for the component imports used in demos.

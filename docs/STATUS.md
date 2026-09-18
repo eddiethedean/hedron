@@ -14,7 +14,7 @@ Folio theme and accent support and the cache, data, maps, and streaming bug fixe
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
 and `hedron-elements` `1.0.18` (unreleased); `hedron-posit` `1.0.9`; `fastapi-workbench` `1.0.11`;
 `hedron-native` `0.1.3`; `hedron-sample-kit` `0.2.3`; `hedron-notebook` and
-`hedron-gradio` `0.2.4`; `hedron-sim` `0.2.3`; `hedron-mcp` `0.2.5`; and `edron-sim`
+`hedron-gradio` `0.2.4`; `hedron-sim` `0.2.4`; `hedron-mcp` `0.2.5`; and `edron-sim`
 `0.1.0` (MIT, D-033).
 **Package maturity:** Stable — `hedron`, `hedron-core`, `edron`, `hedron-data`,
 `hedron-charts`, and `hedron-maps`. Beta — `hedron-explorer`, `hedron-flask`,
