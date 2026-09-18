@@ -974,19 +974,32 @@ def _fallback_rows(spec: MapSpec, _layers: Sequence[JsonObject]) -> tuple[dict[s
                         label = value
                         break
             geometry = feature.get("geometry")
-            def coordinates(value: object) -> list[tuple[object, object]]:
+            def coordinates(
+                value: object,
+            ) -> list[tuple[object, object]]:
                 if isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
                     values = list(cast(Sequence[object], value))
-                    if len(values) >= 2 and all(isinstance(item, (int, float)) for item in values[:2]):
+                    if len(values) >= 2 and all(
+                        isinstance(item, (int, float)) for item in values[:2]
+                    ):
                         return [(values[0], values[1])]
                     points: list[tuple[object, object]] = []
                     for item in values:
                         points.extend(coordinates(item))
                     return points
                 return []
-            points = coordinates(geometry.get("coordinates") if isinstance(geometry, Mapping) else None)
+            points = coordinates(
+                geometry.get("coordinates") if isinstance(geometry, Mapping) else None
+            )
             for point_index, (lon, lat) in enumerate(points):
-                rows.append({"id": f"{feature.get('id', index)}-{point_index}", "label": label, "lat": lat, "lon": lon})
+                rows.append(
+                    {
+                        "id": f"{feature.get('id', index)}-{point_index}",
+                        "label": label,
+                        "lat": lat,
+                        "lon": lon,
+                    }
+                )
     return tuple(rows[:MAX_FEATURES])
 
 
