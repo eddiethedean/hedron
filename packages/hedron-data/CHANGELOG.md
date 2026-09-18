@@ -8,7 +8,7 @@
 - Advance dataset versions for successful in-memory delete mutations.
 - Enforce read-only, hidden, and secret schema restrictions on direct inserts.
 
-## [1.0.17] — Unreleased
+## [1.0.17] — 2026-09-17
 
 ### Changed
 

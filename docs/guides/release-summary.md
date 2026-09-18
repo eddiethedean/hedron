@@ -13,7 +13,7 @@ The exact maintainer commands and publication rules live in
 | Migration baseline | **v0.67.0** |
 | PyPI latest | **v1.0.17** |
 | Public-index requirement | `hedron>=1.0.0` |
-| Repository development | `uv sync` (editable 1.0.17 checkout; current published train) |
+| Repository development | `uv sync` (editable 1.0.18 checkout; unreleased development train) |
 | Charts package | `hedron-charts>=1.0.0` |
 | Maps package | `hedron-maps>=1.0.0` |
 | Generic Workbench adapter | `fastapi-workbench>=1.0.8,<2.0` |

@@ -6,7 +6,7 @@
 
 - Added Folio accent asset support for Flask applications.
 
-## [1.0.17] — Unreleased
+## [1.0.17] — 2026-09-17
 
 ### Changed
 

@@ -10,7 +10,7 @@
   with green as the default, named accents, and custom hex seeds.
 - Isolate captured-state closures in cache decorators instead of conflating their entries.
 
-## [1.0.17] — Unreleased
+## [1.0.17] — 2026-09-17
 
 ### Fixed
 

@@ -6,7 +6,7 @@
 
 - Coordinated Folio theme and accent support release.
 
-## [1.0.17] — Unreleased
+## [1.0.17] — 2026-09-17
 
 ### Fixed
 

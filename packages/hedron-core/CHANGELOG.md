@@ -8,7 +8,7 @@
 - Account for metadata preambles in streamed-document chunk, character, and deadline budgets.
 - Preserve nonempty token-stream separators across chunk boundaries and budgets.
 
-## [1.0.17] — Unreleased
+## [1.0.17] — 2026-09-17
 
 ### Fixed
 
