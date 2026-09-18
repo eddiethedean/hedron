@@ -8,6 +8,8 @@
   for (const accent of data.accents) $("accent").add(new Option(title(accent), accent));
   for (const section of data.sections) $("section").add(new Option(title(section), section));
   $("accent").value = "green";
+  const initialSection = document.body.dataset.initialSection;
+  if (data.sections.includes(initialSection)) $("section").value = initialSection;
 
   function selected(name) {
     return data.themes[name === "folio" ? `folio:${$("accent").value}` : name];
@@ -60,6 +62,10 @@
   function applyFrame(frame, name) {
     const doc = frame.contentDocument;
     if (!doc?.getElementById("theme-css") || !frame.contentWindow.HedronSim) return;
+    // The runtime can exist before its DOMContentLoaded boot. Initialize before
+    // finding links: boot replaces the stage, so clicking an earlier reference
+    // could otherwise follow its native href instead of a local sim route.
+    frame.contentWindow.HedronSim.boot(doc);
     doc.documentElement.dataset.hedronTheme = selected(name).theme.name;
     doc.documentElement.dataset.theme = $("mode").value;
     doc.getElementById("theme-css").textContent = selected(name).css;

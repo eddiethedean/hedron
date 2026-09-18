@@ -5,6 +5,11 @@ settings, orders, support, button states, forms, surfaces and workflows, identit
 and content, and media. Switch between Folio, Classic, and Aurora while forcing either
 palette independently of the operating-system preference.
 
+Try the same app's button matrix in the backend-free
+[docs Component Explorer](https://hedron.readthedocs.io/en/latest/guides/component-explorer/),
+or compare themes and inspect tokens in the
+[Styles Explorer](https://hedron.readthedocs.io/en/latest/guides/styles-explorer/).
+
 ```bash
 uv run uvicorn --app-dir examples/theme-gallery app:app --reload
 ```

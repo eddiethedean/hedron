@@ -172,6 +172,16 @@ def build_files() -> dict[Path, str]:
     shell = shell.replace(
         "<!-- EXPLORER_DATA -->", f"<template id=explorer-data>{payload}</template>"
     )
+    # A direct entrance to the same visual QA app, not a second approximation of
+    # its components. Both entrances share the gallery routes and theme runtime.
+    component_shell = (
+        shell.replace("Styles Explorer", "Component Explorer")
+        .replace('data-initial-section="dashboard"', 'data-initial-section="components"')
+        .replace(
+            "Real components. Canonical themes. No backend.",
+            "The visual QA app: appearances, emphases, sizes, and component states. No backend.",
+        )
+    )
     preview = (
         '<!doctype html><html lang="en" data-theme="light" data-hedron-theme="folio"><head>'
         '<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
@@ -187,6 +197,7 @@ def build_files() -> dict[Path, str]:
 
     return {
         OUTPUT / "index.html": shell,
+        OUTPUT / "components.html": component_shell,
         OUTPUT / "preview.html": preview,
         OUTPUT / "hedron-default.css": (STATIC / "hedron-default.css").read_text(encoding="utf-8"),
         OUTPUT / "hedron-ui.mjs": (STATIC / "hedron-ui.mjs").read_text(encoding="utf-8"),

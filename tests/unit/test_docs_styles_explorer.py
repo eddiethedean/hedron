@@ -87,3 +87,26 @@ def test_docs_expose_embedded_and_full_page_explorer() -> None:
     assert "[Open the full-page explorer](../assets/styles-explorer/index.html)" in guide
     assert "Styles Explorer: guides/styles-explorer.md" in (ROOT / "mkdocs.yml").read_text()
     assert "styles-explorer.md" in (ROOT / "docs/guides/styling.md").read_text()
+
+
+def test_component_explorer_reuses_the_visual_qa_app() -> None:
+    source = (ASSETS / "components.html").read_text(encoding="utf-8")
+    assert "<title>Hedron Component Explorer</title>" in source
+    assert 'data-initial-section="components"' in source
+    assert '<iframe id="left"' in source and 'src="preview.html"' in source
+    match = re.search(r"<template id=explorer-data>(.*?)</template>", source, re.DOTALL)
+    assert match is not None
+    assert json.loads(html.unescape(match.group(1))) == _data()
+    preview = (ASSETS / "preview.html").read_text(encoding="utf-8")
+    routes = re.search(r"<template data-hedron-sim-routes>(.*?)</template>", preview, re.DOTALL)
+    assert routes is not None
+    component_html = json.loads(html.unescape(routes.group(1)))["routes"]["GET /components"]["html"]
+    for appearance in ("Solid", "Outline", "Soft", "Ghost", "Plain", "Raised"):
+        assert f"{appearance} buttons" in component_html
+    guide = (ROOT / "docs/guides/component-explorer.md").read_text(encoding="utf-8")
+    assert 'src="../../assets/styles-explorer/components.html"' in guide
+    assert (
+        "[Open the full-page Component Explorer](../assets/styles-explorer/components.html)"
+        in guide
+    )
+    assert "Component Explorer: guides/component-explorer.md" in (ROOT / "mkdocs.yml").read_text()

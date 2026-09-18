@@ -10,6 +10,9 @@ Folio accent, light/dark modes, and mobile/tablet preview widths. Compare themes
 side, filter resolved tokens and component contracts, and download canonical CSS,
 theme JSON, or a comparison report. Selections are shareable through the full-page URL.
 
+Looking for the visual QA app's full button matrix? Open the
+[Component Explorer](component-explorer.md), which starts on its Component states screen.
+
 [Open the full-page explorer](../assets/styles-explorer/index.html){ .md-button .md-button--primary }
 
 <iframe src="../../assets/styles-explorer/index.html" title="Interactive Hedron Styles Explorer" style="width:100%;height:1250px;border:1px solid var(--md-default-fg-color--lightest);border-radius:12px" loading="lazy"></iframe>

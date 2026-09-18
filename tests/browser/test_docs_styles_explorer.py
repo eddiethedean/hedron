@@ -159,3 +159,76 @@ def test_explorer_navigation_themes_comparison_and_exports(static_url, tmp_path)
             for method, url in requests
         )
         browser.close()
+
+
+def test_component_explorer_opens_the_existing_button_matrix(static_url) -> None:
+    engine = os.environ.get("HEDRON_BROWSER_ENGINE", "chromium")
+    with sync_playwright() as pw:
+        browser = getattr(pw, engine).launch()
+        page = browser.new_page(viewport={"width": 1440, "height": 1000})
+        errors = []
+        requests = []
+        page.on("pageerror", lambda error: errors.append(str(error)))
+        page.on("request", lambda request: requests.append((request.method, request.url)))
+        # Exercise the startup race: the runtime is present, but its automatic
+        # DOMContentLoaded boot hasn't initialized the stage yet. The shell must
+        # boot it before choosing a route link, not click a soon-detached anchor.
+        page.add_init_script("""(() => {
+            if (!location.pathname.endsWith('/preview.html')) return;
+            const add = document.addEventListener.bind(document);
+            document.addEventListener = (type, listener, ...options) => {
+                if (type === 'DOMContentLoaded' && listener.name === 'scheduleBoot') {
+                    add(type, () => setTimeout(listener, 1500), ...options);
+                } else {
+                    add(type, listener, ...options);
+                }
+            };
+        })();""")
+        url = static_url.replace("/index.html", "/components.html")
+        page.goto(url)
+        expect(page.get_by_role("heading", name="Component Explorer", exact=True)).to_be_visible()
+        expect(page.locator("#section")).to_have_value("components")
+        preview = page.frame_locator("#left")
+        expect(preview.get_by_role("heading", name="Component states", exact=True)).to_be_visible()
+        for appearance in ("solid", "outline", "soft", "ghost", "plain", "raised"):
+            card = preview.locator("article").filter(
+                has=preview.get_by_role("heading", name=f"{appearance.title()} buttons", exact=True)
+            )
+            for emphasis in ("primary", "secondary", "danger", "neutral"):
+                buttons = card.locator(
+                    f'button[data-hedron-appearance="{appearance}"]'
+                    f'[data-hedron-emphasis="{emphasis}"]'
+                )
+                expect(buttons).to_have_count(2)
+                expect(buttons.first).to_be_enabled()
+                expect(buttons.last).to_be_disabled()
+        page.locator("#theme").select_option("aurora")
+        page.locator("#mode").select_option("dark")
+        expect(preview.locator("html")).to_have_attribute("data-hedron-theme", "aurora")
+        expect(preview.locator("html")).to_have_attribute("data-theme", "dark")
+        preview.get_by_role("tab", name="Loading", exact=True).click()
+        expect(preview.get_by_role("tabpanel").filter(has_text="Loading card")).to_be_visible()
+        preview.get_by_role("link", name="Forms", exact=True).click()
+        expect(page.locator("#section")).to_have_value("forms")
+        expect(preview.locator("[data-hedron-sim-trace]")).to_contain_text("GET /forms → 200")
+        page.reload()
+        expect(page.locator("#section")).to_have_value("forms")
+        expect(page.locator("#theme")).to_have_value("aurora")
+        expect(preview.locator("[data-hedron-sim-trace]")).to_contain_text("GET /forms → 200")
+        # Loading a shared URL must validate its hash. A hash-only navigation
+        # within the current document does not rerun the page's initialization.
+        page.goto("about:blank")
+        page.goto(url + "#section=not-a-route")
+        expect(page.locator("#section")).to_have_value("components")
+        expect(preview.get_by_role("heading", name="Component states", exact=True)).to_be_visible()
+        page.set_viewport_size({"width": 390, "height": 844})
+        assert page.evaluate("document.documentElement.scrollWidth <= innerWidth + 1")
+        assert errors == []
+        base = static_url.split("/assets/")[0]
+        assert all(
+            method == "GET"
+            and url.startswith(base)
+            and not url.startswith((f"{base}/components", f"{base}/forms"))
+            for method, url in requests
+        )
+        browser.close()
