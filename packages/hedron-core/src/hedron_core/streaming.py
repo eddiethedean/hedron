@@ -155,6 +155,7 @@ def bounded_token_chunks(
     total_chars = 0
     buffer: list[str] = []
     chunks_emitted = 0
+    first_token = True
     for token in tokens:
         if chunks_emitted >= budget.max_chunks:
             break
@@ -163,9 +164,10 @@ def bounded_token_chunks(
             and time.monotonic() - started > budget.deadline_seconds
         ):
             break
-        buffer.append(token)
+        buffer.append(token if first_token else f"{join_with}{token}")
+        first_token = False
         if len(buffer) >= max_chunk_tokens:
-            chunk = join_with.join(buffer)
+            chunk = "".join(buffer)
             total_chars += len(chunk)
             if total_chars > budget.max_chars:
                 break
@@ -175,7 +177,7 @@ def bounded_token_chunks(
             chunks_emitted += 1
             buffer.clear()
     if buffer and chunks_emitted < budget.max_chunks:
-        chunk = join_with.join(buffer)
+        chunk = "".join(buffer)
         if total_chars + len(chunk) <= budget.max_chars:
             if chunks_emitted > 0 and budget.chunk_delay_seconds > 0:
                 time.sleep(budget.chunk_delay_seconds)
@@ -195,6 +197,7 @@ async def async_token_chunks(
     total_chars = 0
     buffer: list[str] = []
     chunks_emitted = 0
+    first_token = True
     async for token in tokens:
         if chunks_emitted >= budget.max_chunks:
             break
@@ -203,9 +206,10 @@ async def async_token_chunks(
             and time.monotonic() - started > budget.deadline_seconds
         ):
             break
-        buffer.append(token)
+        buffer.append(token if first_token else f"{join_with}{token}")
+        first_token = False
         if len(buffer) >= max_chunk_tokens:
-            chunk = join_with.join(buffer)
+            chunk = "".join(buffer)
             total_chars += len(chunk)
             if total_chars > budget.max_chars:
                 break
@@ -215,7 +219,7 @@ async def async_token_chunks(
             chunks_emitted += 1
             buffer.clear()
     if buffer and chunks_emitted < budget.max_chunks:
-        chunk = join_with.join(buffer)
+        chunk = "".join(buffer)
         if total_chars + len(chunk) <= budget.max_chars:
             if chunks_emitted > 0 and budget.chunk_delay_seconds > 0:
                 await asyncio.sleep(budget.chunk_delay_seconds)

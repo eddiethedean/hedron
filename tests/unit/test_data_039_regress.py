@@ -9,7 +9,7 @@ from hedron_core.security import Secret
 from hedron_data.advanced import evaluate_formula, rows_to_tree
 from hedron_data.memory import InMemoryDataSource
 from hedron_data.normalize import normalize_rows
-from hedron_data.sources import CellUpdate, DataChanges, DataQuery
+from hedron_data.sources import CellUpdate, ColumnSchema, DataChanges, DataQuery
 
 
 def test_039_normalize_rows_empty_dict() -> None:
@@ -132,6 +132,44 @@ def test_039_inmemory_multi_field_batch_same_row_version() -> None:
     assert page.rows[0]["first"] == "Augusta"
     assert page.rows[0]["last"] == "King"
     assert source._row_versions["1"] == "2"  # one bump for the whole row
+
+
+@pytest.mark.parametrize("flag", ["read_only", "hidden", "secret"])
+def test_inmemory_insert_enforces_restricted_schema_fields(flag: str) -> None:
+    source = InMemoryDataSource(
+        [],
+        schema=(
+            ColumnSchema("id", "ID", read_only=True),
+            ColumnSchema("value", "Value", **{flag: True}),
+        ),
+        writable_fields=frozenset({"value"}),
+    )
+
+    result = source.apply(DataChanges(inserts=({"id": "a", "value": "blocked"},)))
+
+    assert result.ok is False
+    assert result.errors[0].field == "value"
+    assert source.fetch(DataQuery()).rows == []
+
+
+def test_inmemory_restricted_insert_keeps_batch_atomic() -> None:
+    source = InMemoryDataSource(
+        [],
+        schema=(ColumnSchema("value", "Value", secret=True),),
+        writable_fields=frozenset({"value", "name"}),
+    )
+
+    result = source.apply(
+        DataChanges(
+            inserts=(
+                {"id": "good", "name": "Ada"},
+                {"id": "bad", "value": "secret"},
+            )
+        )
+    )
+
+    assert result.ok is False
+    assert source.fetch(DataQuery()).rows == []
 
 
 def test_open_bug_inmemory_fetch_and_nested_secret_are_isolated() -> None:

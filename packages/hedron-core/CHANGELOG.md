@@ -6,6 +6,7 @@
 
 - Added the Folio theme and configurable Folio accents.
 - Account for metadata preambles in streamed-document chunk, character, and deadline budgets.
+- Preserve nonempty token-stream separators across chunk boundaries and budgets.
 
 ## [1.0.17] — Unreleased
 
