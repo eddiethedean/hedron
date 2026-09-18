@@ -237,13 +237,25 @@ async function enhance(el, plan, gen, signal) {
       style,
       center: [Number(center[1]) || 0, Number(center[0]) || 0],
       zoom: Number.isFinite(zoom) ? zoom : 2,
-      interactive: !reducedMotion(),
+      bearing: Number.isFinite(Number(view.bearing)) ? Number(view.bearing) : 0,
+      pitch: Number.isFinite(Number(view.pitch)) ? Number(view.pitch) : 0,
+      padding: Number.isFinite(Number(view.padding)) ? Number(view.padding) : 0,
+      interactive: true,
       attributionControl: true,
       fadeDuration: reducedMotion() ? 0 : 300,
       cooperativeGestures: true,
     });
     bag(el).map = map;
-    map.on("load", () => emit(el, "map-loaded", { ok: true, mode: colorMode() }));
+    map.on("load", () => {
+      if (view.fit === "layers" && plan.bounds && typeof map.fitBounds === "function") {
+        const b = plan.bounds;
+        map.fitBounds([[b.west, b.south], [b.east, b.north]], {
+          padding: Number.isFinite(Number(view.padding)) ? Number(view.padding) : 0,
+          animate: !reducedMotion(),
+        });
+      }
+      emit(el, "map-loaded", { ok: true, mode: colorMode() });
+    });
     map.on("error", (err) =>
       emit(el, "map-failed", { code: "HED-MAP-RUNTIME-0001", message: String(err && err.error || err) })
     );
