@@ -62,6 +62,12 @@ def main(argv: list[str] | None = None) -> int:
 
     copy_assets(DOCS / "javascript", DOCS / "stylesheets")
 
+    from generate_styles_explorer import main as generate_styles_explorer
+
+    explorer_rc = generate_styles_explorer(["--check"] if args.check else [])
+    if explorer_rc != 0:
+        return explorer_rc
+
     # The Edron showcase is generated from its real application source by the
     # package-specific builder. Keep it in this single docs-generation gate so
     # normal docs checks catch drift in either simulator family.

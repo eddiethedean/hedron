@@ -12,6 +12,9 @@ search:
 
 # Style the whole interface, one vocabulary at a time
 
+Want to try the styles? [Open the interactive Styles Explorer](styles-explorer.md)
+to compare themes, browse real components, inspect tokens, and export CSS without a backend.
+
 Hedron styling starts with semantic Python props and ends as ordinary HTML, CSS, and
 `data-hedron-*` markers. Use the built-ins for the common 80%, a `DesignSystem` for
 brand-wide decisions, and scoped CSS when a component genuinely owns a visual detail.

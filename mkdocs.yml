@@ -210,6 +210,7 @@ nav:
     - Interactions: guides/htmx-interactions.md
     - Data and visuals: guides/data-apps.md
     - Styling: guides/styling.md
+    - Styles Explorer: guides/styles-explorer.md
     - Security and identity: guides/security.md
     - Extensions: guides/plugin-consumer.md
     - Migration: guides/streamlit-migration.md

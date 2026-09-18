@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Hedron Styles Explorer</title>
+  <link rel="stylesheet" href="../../stylesheets/styles-explorer.css">
+  <script src="../../javascript/styles-explorer.js" defer></script>
+</head>
+<body>
+  <main>
+    <header><p class="eyebrow">HEDRON / STYLE LAB</p><h1>Styles Explorer</h1>
+      <p>Real components. Canonical themes. No backend.</p></header>
+    <form id="controls" class="controls">
+      <label>Theme<select id="theme"><option value="folio">Folio</option><option value="classic">Classic</option><option value="aurora">Aurora</option></select></label>
+      <label>Compare with<select id="compare"><option value="">No comparison</option><option value="aurora">Aurora</option><option value="classic">Classic</option><option value="folio">Folio</option></select></label>
+      <label>Color mode<select id="mode"><option value="light">Light</option><option value="dark">Dark</option></select></label>
+      <label>Folio accent<select id="accent"></select></label>
+      <label>Gallery<select id="section"></select></label>
+      <label>Preview width<select id="width"><option value="100%">Fit panel</option><option value="390px">Mobile · 390px</option><option value="768px">Tablet · 768px</option></select></label>
+    </form>
+    <p id="status" role="status" aria-live="polite">Loading local gallery…</p>
+    <div class="previews" id="previews">
+      <section><h2 id="left-title">Theme preview</h2><div class="frame-wrap"><iframe id="left" title="Selected theme component gallery" src="preview.html"></iframe></div></section>
+      <section id="comparison" hidden><h2 id="right-title">Comparison</h2><div class="frame-wrap"><iframe id="right" title="Comparison theme component gallery" src="preview.html"></iframe></div></section>
+    </div>
+    <section class="inspector">
+      <h2>Resolved tokens &amp; comparison</h2>
+      <p>Values come from Hedron’s shared theme resolver, including derived and selected-mode tokens. Different values are highlighted.</p>
+      <label>Filter tokens<input id="token-filter" type="search" placeholder="color, space, radius…"></label>
+      <p id="token-count" role="status"></p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">Token</th><th scope="col">Selected theme</th><th scope="col">Comparison</th></tr></thead><tbody id="tokens"></tbody></table></div>
+    </section>
+    <section class="inspector"><h2>Component style contracts</h2>
+      <p>Search registered component parts, slots, states, and required tokens. This inventory is broader than the gallery examples; a contract is not a claim that every state is simulated.</p>
+      <label>Filter components<input id="component-filter" type="search" placeholder="button, card, form…"></label>
+      <div id="contracts"></div>
+    </section>
+    <section class="inspector"><h2>Take the theme with you</h2>
+      <div class="actions"><button type="button" id="export-css">Download CSS</button><button type="button" id="export-json">Download theme JSON</button><button type="button" id="export-report">Download comparison report</button></div>
+      <h3>Use in Python</h3><pre id="python"></pre>
+      <details><summary>Build-time conformance report</summary><pre id="conformance"></pre></details>
+    </section>
+    <aside><strong>Static preview, not an application server.</strong> Navigation uses hedron-sim’s pre-rendered fragments. Inputs, tabs, disclosures, dialogs, and native popovers work locally; submitting a form does not save data. Charts, maps, mathematical rendering, and capture integrations are fallback previews, not simulated external services. Exports use the canonical resolver. Conformance is build-time evidence, not a live accessibility audit. Use your browser/OS to test forced colors, higher contrast, reduced motion, keyboard focus, and zoom.</aside>
+    <noscript>This explorer needs JavaScript; the styling guide remains readable without it.</noscript>
+  </main>
+  <!-- EXPLORER_DATA -->
+</body>
+</html>
