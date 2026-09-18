@@ -77,6 +77,12 @@ def main(argv: list[str] | None = None) -> int:
     if edron_rc != 0:
         return edron_rc
 
+    from generate_showcase_sim import main as generate_showcase
+
+    showcase_rc = generate_showcase(["--check"] if args.check else [])
+    if showcase_rc != 0:
+        return showcase_rc
+
     demos = {
         "hello-refresh.html": build_hello_refresh_demo(
             status_id="service-status",

@@ -8,6 +8,14 @@ Meet Hedron through the complete synthetic operations console instead of a colle
 snippets. This page documents the real runnable application, so the UI you run locally is the UI
 represented here; there is no separate documentation-only showcase implementation.
 
+## Explore the same app without a server
+
+The preview below is generated from the same page, component, fragment, and action callbacks as
+the runnable app. Use the sidebar to move between pages, refresh the pipeline, and approve the
+release gate; `hedron-sim` keeps those interactions local to the documentation page.
+
+<!-- hedron-sim:showcase-dashboard -->
+
 ![Hedron workspace overview using the Folio theme](../assets/hedron-showcase.jpg)
 
 ## Run the real app

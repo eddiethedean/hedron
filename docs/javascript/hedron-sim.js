@@ -108,6 +108,56 @@
     });
   }
 
+  function fullscreenElement() {
+    return document.fullscreenElement || document.webkitFullscreenElement || null;
+  }
+
+  function setFullscreenLabel(root, active) {
+    var button = root.querySelector("[data-hedron-sim-fullscreen]");
+    if (!button) return;
+    button.textContent = active ? "Exit full screen" : "Full screen";
+    button.setAttribute("aria-label", active ? "Exit full screen" : "Open showcase in full screen");
+  }
+
+  function initFullscreen(root) {
+    var button = root.querySelector("[data-hedron-sim-fullscreen]");
+    if (!button || root._hedronSimFullscreenReady) return;
+    root._hedronSimFullscreenReady = true;
+
+    function sync() {
+      setFullscreenLabel(root, fullscreenElement() === root);
+    }
+
+    button.addEventListener("click", function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      var active = fullscreenElement() === root;
+      var promise;
+      if (active) {
+        promise = document.exitFullscreen
+          ? document.exitFullscreen()
+          : document.webkitExitFullscreen
+            ? document.webkitExitFullscreen()
+            : null;
+      } else {
+        var request = root.requestFullscreen || root.webkitRequestFullscreen;
+        if (!request) {
+          setTrace(root, "Full screen is not supported by this browser", true);
+          return;
+        }
+        promise = request.call(root);
+      }
+      if (promise && typeof promise.catch === "function") {
+        promise.catch(function () {
+          setTrace(root, "Full screen permission was not granted", true);
+        });
+      }
+    });
+    document.addEventListener("fullscreenchange", sync);
+    document.addEventListener("webkitfullscreenchange", sync);
+    sync();
+  }
+
   function parseRoutes(root) {
     var node = root.querySelector("[data-hedron-sim-routes]");
     if (!node) return null;
@@ -506,6 +556,7 @@
     if (!table) return;
     root.dataset.hedronSimReady = "true";
     root._hedronSimTable = table;
+    initFullscreen(root);
 
     var stage = root.querySelector("[data-hedron-sim-stage]") || root;
     stage.innerHTML = applyTokens(stage.innerHTML, null);

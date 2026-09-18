@@ -134,8 +134,49 @@ def test_showcase_docs_point_to_real_source_not_simulators(
         assert "<!-- hedron-sim:edron-showcase -->" in text
         assert "edron-sim" in text
     else:
-        assert sim_id not in text
-        assert "documentation-only showcase implementation" in text
+        assert "<!-- hedron-sim:showcase-dashboard -->" in text
+        assert "hedron-sim" in text
+
+
+def test_hedron_showcase_sim_is_generated_from_the_real_app() -> None:
+    import json
+    import subprocess
+
+    root = ROOT
+    proc = subprocess.run(
+        [sys.executable, str(root / "scripts" / "generate_showcase_sim.py"), "--check"],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+
+    preview = (root / "docs" / "includes" / "sim" / "showcase-dashboard.html").read_text(
+        encoding="utf-8"
+    )
+    assert 'data-hedron-sim="showcase-dashboard"' in preview
+    assert 'data-hedron-sim-fullscreen' in preview
+    assert 'hx-get="/deployments"' in preview
+    assert 'hx-get="/pipeline/refresh"' in preview
+    assert 'hx-post="/approve"' in preview
+    match = re.search(
+        r"<template data-hedron-sim-routes>(.*?)</template>", preview, flags=re.DOTALL
+    )
+    assert match is not None
+    payload = json.loads(
+        match.group(1)
+        .replace("&lt;", "<")
+        .replace("&gt;", ">")
+        .replace("&amp;", "&")
+    )
+    assert set(payload["routes"]) == {
+        "GET /deployments",
+        "GET /components",
+        "GET /settings",
+        "GET /pipeline/refresh",
+        "POST /approve",
+    }
 
 
 @pytest.mark.usefixtures("_docs_on_path")

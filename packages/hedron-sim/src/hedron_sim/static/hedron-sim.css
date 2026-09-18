@@ -19,6 +19,39 @@
   color: var(--hs-text);
   margin: 1rem 0 1.4rem;
   overflow: hidden;
+  position: relative;
+}
+
+.hedron-sim__fullscreen {
+  position: absolute;
+  z-index: 3;
+  top: 0.65rem;
+  right: 0.75rem;
+  border: 1px solid var(--hs-line);
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, var(--hs-panel) 92%, transparent);
+  color: var(--hs-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.75rem;
+  line-height: 1;
+  padding: 0.55rem 0.7rem;
+}
+
+.hedron-sim__fullscreen:hover,
+.hedron-sim__fullscreen:focus-visible {
+  border-color: var(--hs-accent);
+  color: var(--hs-accent);
+}
+
+.hedron-sim:fullscreen,
+.hedron-sim:-webkit-full-screen {
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+  border: 0;
+  border-radius: 0;
+  margin: 0;
 }
 
 [data-md-color-scheme="slate"] .hedron-sim {
