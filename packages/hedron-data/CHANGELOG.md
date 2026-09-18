@@ -5,6 +5,7 @@
 ### Changed
 
 - Coordinated Folio theme and accent support release.
+- Enforce read-only, hidden, and secret schema restrictions on direct inserts.
 
 ## [1.0.17] — Unreleased
 
