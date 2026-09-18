@@ -273,6 +273,8 @@ class SQLAlchemyDataSource(Generic[T]):
                     remediation="Set SQLAlchemyDataSource.search_fields.",
                 )
         stmt = _as_selectable(statement)
+        if q.sort:
+            stmt = stmt.order_by(None)
         for name, direction in q.sort:
             col: Any = _column_from_selectable(stmt, name)
             stmt = stmt.order_by(desc(col) if direction == "desc" else asc(col))
@@ -404,7 +406,7 @@ class SQLAlchemyDataSource(Generic[T]):
                 )
             # subquery() is a FromClause at runtime; accept via Any for select_from stubs.
             count_from: Any = (
-                self._apply_query(self._statement, q, include_projection=False)
+                self._apply_query(self._statement, q, include_projection=not project_after_codec)
                 .order_by(None)
                 .subquery()
             )
