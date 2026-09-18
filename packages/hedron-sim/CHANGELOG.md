@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.2.5] — 2026-09-18
+
+- Release the updated simulation stylesheet as a new immutable package artifact.
+
 ## [0.2.4] — 2026-09-17
 
 ### Added
