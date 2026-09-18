@@ -162,6 +162,65 @@ body:has(.showcase-shell) {
 }
 
 @media (max-width: 767px) {
+  .showcase-shell .hedron-app-shell-header {
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 0.65rem;
+    padding-block: 0.65rem 0.8rem;
+  }
+
+  .showcase-shell .hedron-app-shell-env {
+    min-width: 0;
+    max-width: 11rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.65rem;
+    letter-spacing: 0.04em;
+  }
+
+  .showcase-shell .hedron-app-shell-account {
+    margin-inline-start: auto;
+  }
+
+  .showcase-shell .hedron-account-copy {
+    display: none;
+  }
+
+  .showcase-shell .showcase-runs .hedron-table-scroll {
+    overflow-x: visible;
+  }
+
+  .showcase-shell .showcase-runs table {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+  }
+
+  .showcase-shell .showcase-runs th,
+  .showcase-shell .showcase-runs td {
+    padding-inline: 0.5rem;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+
+  .showcase-shell .showcase-runs th:first-child,
+  .showcase-shell .showcase-runs td:first-child {
+    width: 52%;
+  }
+
+  .showcase-shell .showcase-runs th:nth-child(2),
+  .showcase-shell .showcase-runs td:nth-child(2) {
+    width: 48%;
+  }
+
+  .showcase-shell .showcase-runs td:nth-child(2) .hedron-badge {
+    white-space: nowrap;
+    overflow-wrap: normal;
+    font-size: 0.7rem;
+  }
+
   .showcase-shell .hedron-split-divider {
     display: none;
   }

@@ -262,10 +262,10 @@ def _runs_card() -> Card:
     return Card(
         Table(
             columns=[
-                TableColumn(header="Run", size="wide"),
-                TableColumn(header="Status", kind="status"),
-                TableColumn(header="Duration", align="end"),
-                TableColumn(header="Rows", align="end", numeric=True),
+                TableColumn(header="Run", size="wide", priority=1),
+                TableColumn(header="Status", kind="status", priority=1),
+                TableColumn(header="Duration", align="end", priority=3),
+                TableColumn(header="Rows", align="end", numeric=True, priority=4),
             ],
             rows=[
                 ["nightly-warehouse", Badge("Running", tone="info"), "18m", "1,284,012"],
@@ -277,6 +277,7 @@ def _runs_card() -> Card:
             density="compact",
             sticky_header=True,
             zebra=False,
+            responsive="priority",
         ),
         title="Recent runs",
         class_="showcase-runs",
