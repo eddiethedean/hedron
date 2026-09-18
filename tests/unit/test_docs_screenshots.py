@@ -20,3 +20,9 @@ def test_readme_screenshot_links_follow_the_current_main_assets() -> None:
             f"{package}-showcase.jpg"
         ) in readme
         assert f"/v1.0/docs/assets/{package}-showcase.jpg" not in readme
+
+
+def test_root_readme_embeds_the_regenerated_showcase_screenshot() -> None:
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    assert "(docs/assets/hedron-showcase.jpg)" in readme
+    assert (OUTPUT / "hedron-showcase.jpg").is_file()

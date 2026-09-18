@@ -22,6 +22,10 @@ Hedron lets Python teams compose pages, components, forms, and partial-page inte
 maintaining a separate frontend application. It stays inside the FastAPI model: dependency
 injection, middleware, lifespan, async I/O, JSON routes, and OpenAPI remain available beside the UI.
 
+[![Hedron Showcase workspace overview using Folio](docs/assets/hedron-showcase.jpg)](https://hedron.readthedocs.io/en/latest/examples/showcase/)
+
+Preview of the upcoming 1.0.18 Folio theme. [Explore the showcase](https://hedron.readthedocs.io/en/latest/examples/showcase/).
+
 **Hedron 1.0.17 is published on PyPI.** The supported Python range is 3.10–3.14.
 `hedron>=1.0.0` is the compatibility floor; new applications should prefer
 `hedron>=1.0.17,<1.1` and commit a lockfile (or use `hedron==1.0.17` for an exact
