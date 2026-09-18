@@ -1,11 +1,36 @@
-# Upgrade to Hedron 1.0
+# Upgrade to Hedron 1.1
 
 This guide starts with the current 1.1 migration boundary, then retains historical notes for
-older release trains. The immutable migration baseline is `v0.67.0`; the coordinated checkout
-is on the `1.1.x` line on the `v1.1` branch. Read [Current release and support](current-release.md)
-for the published PyPI status before changing an application requirement.
+older release trains. The published release is `1.1.0` on the `1.1.x` line. Read
+[Current release and support](current-release.md) for the published PyPI status before changing
+an application requirement.
 
-## 0.67 → 1.0
+## 1.0 → 1.1
+
+Hedron 1.1 extends the stable 1.x application model without changing the core page, view, and
+action authoring roles. Upgrade the coordinated packages together and review the new contracts
+only where the application needs them:
+
+| 1.1 area | What to review |
+|---|---|
+| Identity and resources | Add presentation hooks where views need identity or resource context |
+| Collections | Normalize paginated responses with bounded page and cursor state |
+| Navigation | Use request-aware navigation decisions for links, redirects, and prefetch |
+| Secure forms | Use write-only secret fields and explicit keep, replace, or clear operations |
+| Application builds | Adopt the application-aware build contract for reproducible release artifacts |
+| Presentation | Review native shell refinements and computed-style browser evidence |
+
+Upgrade the stable packages from PyPI:
+
+```bash
+python -m pip install -U "hedron>=1.1.0,<1.2" "edron>=1.1.0,<1.2"
+```
+
+Read [What’s new in 1.1](whats-new-1.1.md) and the [1.1.0 release notes](release-notes.md)
+for the complete feature and evidence boundary. Keep the application’s existing integration
+tests and add coverage for any newly adopted collection, navigation, or secure-form behavior.
+
+## Historical: 0.67 → 1.0
 
 Hedron 1.0 is a subtractive, canonicalization release. Migrate the ordinary route surface to
 the three function roles below; each old spelling has a structured warning and a static finding.
@@ -41,7 +66,7 @@ publication while retained 1.0 artifacts and full release evidence are unavailab
 
 ## Historical release notes
 
-The sections below document older upgrades and are not the 1.0 authoring path.
+The sections below document older upgrades and are not the 1.1 authoring path.
 
 This guide covers upgrading an application to the stable **0.66.x** train
 (`v0.66.2`) from PyPI or a source checkout. The `v0.67.0` train is Beta preview.
