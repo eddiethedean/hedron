@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import itertools
 import re
-from typing import ClassVar, Literal
+from typing import ClassVar, Literal, cast
 
 from hedron_core.alpine import AlpineAttrs, AlpineDirective, AlpineExpression
 from hedron_core.builtins._base import collect_children
@@ -59,8 +59,13 @@ class Dialog(Component[DialogProps]):
             )
         super().__init__(
             DialogProps(
-                title=title, open=open, modal=modal, id=resolved_id,
-                class_=class_, mark=mark, **kwargs
+                title=title,
+                open=open,
+                modal=modal,
+                id=resolved_id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
             )
         )
         self._body = collect_children(*nodes, children=children)
@@ -84,7 +89,8 @@ class Dialog(Component[DialogProps]):
             },
         }
         if self.props.mark:
-            attrs["data"]["hedron-mark"] = self.props.mark
+            data = cast(dict[str, str | bool | int | float | None], attrs["data"])
+            data["hedron-mark"] = self.props.mark
         if self.props.open:
             attrs["open"] = True
         close = html.form(

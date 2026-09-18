@@ -7,6 +7,7 @@ registry-derived component records.
 
 from __future__ import annotations
 
+import builtins
 import hashlib
 import json
 import re
@@ -64,7 +65,7 @@ class ComputedStyleAssertion:
     actual: str
     case_id: str = ""
 
-    @property
+    @builtins.property
     def passed(self) -> bool:
         return self.expected == self.actual
 
@@ -72,7 +73,7 @@ class ComputedStyleAssertion:
 @dataclass(frozen=True, slots=True)
 class ComputedStyleResult:
     assertions: tuple[ComputedStyleAssertion, ...]
-    provenance: Mapping[str, Any] = field(default_factory=dict)
+    provenance: Mapping[str, Any] = field(default_factory=lambda: {})
 
     @property
     def passed(self) -> bool:

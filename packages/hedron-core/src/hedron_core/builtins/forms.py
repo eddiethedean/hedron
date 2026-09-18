@@ -838,7 +838,9 @@ class FormErrors(Component[FormErrorsProps]):
                     html.a(
                         issue.message,
                         href=SafeUrl.parse(f"#{target}", purpose=UrlPurpose.NAVIGATION),
-                    ) if target else issue.message,
+                    )
+                    if target
+                    else issue.message,
                     data={"hedron-error-code": issue.code},
                 )
             )

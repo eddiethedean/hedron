@@ -113,8 +113,7 @@ def test_secret_field_exposes_clear_control_and_keep_default() -> None:
     assert hidden.attributes["value"] == "keep"
     assert clear.attributes["type"] == "submit"
     assert (
-        resolve_secret_update({"api_key__clear": "1"}, "api_key").operation
-        is SecretOperation.CLEAR
+        resolve_secret_update({"api_key__clear": "1"}, "api_key").operation is SecretOperation.CLEAR
     )
 
 

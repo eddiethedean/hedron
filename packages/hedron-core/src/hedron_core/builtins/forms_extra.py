@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import Literal
+from typing import Literal, cast
 
 from hedron_core.alpine import AlpineAttrs, AlpineDirective, AlpineExpression
 from hedron_core.builtins._base import (
@@ -558,7 +558,8 @@ class ToggleSwitch(Component[ToggleSwitchProps]):
         if data:
             wrap["data"] = data
         if self.props.state_icons:
-            wrap["data"] = {**dict(wrap.get("data", {})), "hedron-state-icons": "true"}
+            data = cast(dict[str, str | bool | int | float | None], wrap.get("data", {}))
+            wrap["data"] = {**data, "hedron-state-icons": "true"}
         input_alpine = (
             AlpineAttrs.model("checked", source=f"component:ToggleSwitch:{self.props.id}:input")
             if self.props.enhance != "native"
@@ -571,7 +572,9 @@ class ToggleSwitch(Component[ToggleSwitchProps]):
                 html.span("Off", class_="hedron-toggle-state-off"),
                 class_="hedron-toggle-state-icons",
                 aria={"hidden": "true"},
-            ) if self.props.state_icons else None,
+            )
+            if self.props.state_icons
+            else None,
             html.label(
                 self.props.label,
                 for_=self.props.id,

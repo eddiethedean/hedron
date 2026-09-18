@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.builtins.appearance import Density, appearance_data, require_choice
@@ -330,7 +330,8 @@ class FlowStep(Component[FlowStepProps]):
                 class_="hedron-process-flow-marker",
                 aria={"hidden": "true"},
             )
-            if self.props.marker else None,
+            if self.props.marker
+            else None,
             html.span(self.props.label, class_="hedron-process-flow-label"),
             html.span(
                 self.props.status_text or _STATUS_TEXT[status],
@@ -364,8 +365,9 @@ class FlowStep(Component[FlowStepProps]):
         if status == "current":
             attrs["aria"] = {"current": "step"}
         body = [node for node in body if node is not None]
-        attrs["data"]["hedron-flow-appearance"] = self.props.appearance
-        attrs["data"]["hedron-flow-media-placement"] = self.props.media_placement
+        data = cast(dict[str, str | bool | int | float | None], attrs["data"])
+        data["hedron-flow-appearance"] = self.props.appearance
+        data["hedron-flow-media-placement"] = self.props.media_placement
         return html.li(*body, **attrs)
 
 

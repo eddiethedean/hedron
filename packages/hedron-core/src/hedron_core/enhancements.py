@@ -10,7 +10,7 @@ import inspect
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Generic, Protocol, TypeVar
+from typing import Any, Generic, Protocol, TypeVar, cast
 
 T = TypeVar("T")
 
@@ -152,19 +152,17 @@ async def fetch_page(
 ) -> PageState[T]:
     """Fetch and normalize one page from any Phase 1.1 data source."""
 
-    result = await source.fetch(
-        page=page, size=size, cursor=cursor, sort=sort, filters=filters
-    )
-    return normalize_page(result)
+    result = await source.fetch(page=page, size=size, cursor=cursor, sort=sort, filters=filters)
+    return cast(PageState[T], normalize_page(result))
 
 
 def normalize_page(value: Any) -> PageState[Any]:
     """Normalize common page/cursor response objects without importing adapters."""
 
     if isinstance(value, PageState):
-        return value
+        return cast(PageState[Any], value)
     if isinstance(value, Mapping):
-        data = value
+        data = cast(Mapping[str, Any], value)
         items = data.get("items", data.get("data", ()))
         return PageState(
             items=tuple(items or ()),
@@ -175,7 +173,7 @@ def normalize_page(value: Any) -> PageState[Any]:
             next_cursor=data.get("next_cursor", data.get("next")),
             previous_cursor=data.get("previous_cursor", data.get("previous")),
         )
-    attrs = {
+    attrs: dict[str, Any] = {
         name: getattr(value, name, None)
         for name in ("items", "total", "page", "size", "pages", "next_cursor", "previous_cursor")
     }
@@ -213,7 +211,7 @@ def resolve_secret_update(form: Mapping[str, Any], name: str) -> SecretUpdate:
         if raw is None:
             return ()
         if isinstance(raw, (list, tuple)):
-            return tuple(str(item) for item in raw)
+            return tuple(str(item) for item in cast(list[Any] | tuple[Any, ...], raw))
         return (str(raw),)
 
     if any(value in {"1", SecretOperation.CLEAR.value} for value in values(f"{name}__clear")):

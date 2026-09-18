@@ -79,7 +79,9 @@ class SecretField(Component[SecretFieldProps]):
                     aria={"label": f"Clear {self.props.label}"},
                 )
             )
-        data = {"hedron-secret-configured": self.props.configured}
+        data: dict[str, str | bool | int | float | None] = {
+            "hedron-secret-configured": self.props.configured
+        }
         if self.props.mark:
             data["hedron-mark"] = self.props.mark
         return html.div(
