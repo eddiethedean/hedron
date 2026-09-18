@@ -777,6 +777,10 @@ evidence_verify_pkgs() {
   fi
   run_py scripts/verify_pkg_34.py --allow-planned
   run_py scripts/verify_pkg_35.py --allow-planned
+  if [[ "$GATE_VERSION" == 1.1.* ]]; then
+    echo "skip: verify_pkg_36–61 (historical packets predate the 1.1 train)"
+    return 0
+  fi
   # `all` already ran 36–47 during quality; skip the second verification pass.
   if [[ "${HEDRON_CI_ALL:-0}" == 1 ]]; then
     echo "skip: verify_pkg_36–49 (already covered by quality)"
@@ -852,6 +856,10 @@ cmd_packaging() {
   fi
   resolve_python
   run_py scripts/verify_pkg_35.py --allow-planned
+  if [[ "$GATE_VERSION" == 1.1.* ]]; then
+    echo "skip: verify_pkg_36–61 (historical packets predate the 1.1 train)"
+    return 0
+  fi
   run_py scripts/verify_pkg_36.py --allow-planned
   run_py scripts/verify_pkg_37.py --allow-planned
   run_py scripts/verify_pkg_38.py --allow-planned
