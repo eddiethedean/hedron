@@ -425,8 +425,8 @@ def _check_package_metadata() -> list[str]:
         dependencies = project.get("dependencies", []) if isinstance(project, dict) else []
         joined = " ".join(str(item) for item in dependencies)
         if distribution == "edron":
-            if "hedron>=1.0.0,<2.0" not in joined:
-                errors.append("edron: Hedron dependency must require the canonical 1.x train")
+            if "hedron>=1.0.18,<2.0" not in joined:
+                errors.append("edron: Hedron dependency must require the closure-safe 1.0.18 floor")
             for dependency in (
                 "hedron-data>=1.0.0,<2.0",
                 "hedron-charts>=1.0.0,<2.0",

@@ -44,9 +44,7 @@ def read_tile(path: Path, *, z: int, x: int, y: int) -> bytes | None:
     query = "SELECT tile_data FROM tiles WHERE zoom_level=? AND tile_column=? AND tile_row=?"
     with closing(sqlite3.connect(str(resolved))) as con, con:
         con.execute("PRAGMA query_only=ON")
-        row = con.execute(query, (z, x, y)).fetchone()
-        if row is None:
-            row = con.execute(query, (z, x, _xyz_to_tms(z, y))).fetchone()
+        row = con.execute(query, (z, x, _xyz_to_tms(z, y))).fetchone()
     if row is None:
         return None
     data = row[0]
