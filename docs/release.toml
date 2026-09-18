@@ -1,13 +1,14 @@
 [release]
 # Public release facts. Adopter-facing "current", "living", and install-pin claims
 # must agree with this file.
-# Stable release channel. The 1.1.0 cut is tagged, published, and release CI verified.
+# Stable release channel. The 1.1.0 cut is tagged and published; 1.1.1 is the
+# next coordinated development release.
 train = "1.1"
 published_version = "1.1.0"
 stable_version = "1.1.0"
 # Beta preview channel; intentionally separate from the stable package metadata.
 beta_version = "0.67.0"
-development_version = "1.1.0"
+development_version = "1.1.1"
 published_date = "2026-09-18"
 pin_floor = "1.1.0"
 pin_ceiling = "1.2"
@@ -23,7 +24,7 @@ registry_status = "uploaded"
 [edron]
 # Edron is released in lockstep with the Hedron 1.1 documentation contract.
 published_version = "1.1.0"
-development_version = "1.1.0"
+development_version = "1.1.1"
 pin_floor = "1.1.0"
 pin_ceiling = "1.2"
 pypi_version = "1.1.0"

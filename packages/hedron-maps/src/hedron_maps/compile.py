@@ -974,6 +974,7 @@ def _fallback_rows(spec: MapSpec, _layers: Sequence[JsonObject]) -> tuple[dict[s
                         label = value
                         break
             geometry = feature.get("geometry")
+
             def coordinates(
                 value: object,
             ) -> list[tuple[object, object]]:
@@ -988,6 +989,7 @@ def _fallback_rows(spec: MapSpec, _layers: Sequence[JsonObject]) -> tuple[dict[s
                         points.extend(coordinates(item))
                     return points
                 return []
+
             points = coordinates(
                 geometry.get("coordinates") if isinstance(geometry, Mapping) else None
             )
