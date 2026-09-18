@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import html
 import json
 import re
@@ -110,3 +111,11 @@ def test_component_explorer_reuses_the_visual_qa_app() -> None:
         in guide
     )
     assert "Component Explorer: guides/component-explorer.md" in (ROOT / "mkdocs.yml").read_text()
+
+
+def test_explorer_shells_version_their_shared_assets() -> None:
+    for filename in ("index.html", "components.html"):
+        source = (ASSETS / filename).read_text(encoding="utf-8")
+        for asset in ("javascript/styles-explorer.js", "stylesheets/styles-explorer.css"):
+            digest = hashlib.sha256((ROOT / "docs" / asset).read_bytes()).hexdigest()[:16]
+            assert f'../../{asset}?v={digest}"' in source

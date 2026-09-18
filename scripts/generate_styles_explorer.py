@@ -8,6 +8,7 @@ pre-rendered route table and the same CSS/theme exports as a running app.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import importlib.util
 import json
 import re
@@ -169,6 +170,11 @@ def build_files() -> dict[Path, str]:
     }
     payload = escape(json.dumps(data, sort_keys=True, separators=(",", ":")))
     shell = (ROOT / "docs/demos/styles-explorer.html").read_text(encoding="utf-8")
+    # RTD/CDN caches shared static assets independently of newly deployed HTML.
+    # Couple each shell to the exact controller and stylesheet it was built with.
+    for asset in ("javascript/styles-explorer.js", "stylesheets/styles-explorer.css"):
+        digest = hashlib.sha256((ROOT / "docs" / asset).read_bytes()).hexdigest()[:16]
+        shell = shell.replace(f'../../{asset}"', f'../../{asset}?v={digest}"')
     shell = shell.replace(
         "<!-- EXPLORER_DATA -->", f"<template id=explorer-data>{payload}</template>"
     )
