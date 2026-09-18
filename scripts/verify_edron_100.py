@@ -33,10 +33,11 @@ def main() -> int:
     project = tomllib.loads((PACKAGE / "pyproject.toml").read_text(encoding="utf-8"))["project"]
     source = (PACKAGE / "src" / "edron" / "__init__.py").read_text(encoding="utf-8")
     dependencies = {str(item) for item in project.get("dependencies", [])}
-    version_marker = f'__version__ = "{CURRENT_VERSION}"'
-    if project.get("version") != CURRENT_VERSION or version_marker not in source:
-        problems.append("Edron 1.0.0 package version is not synchronized")
-    for expected in ("hedron>=1.0.0,<2.0", "hedron-data>=1.0.0,<2.0"):
+    package_version = str(project.get("version", ""))
+    version_marker = f'__version__ = "{package_version}"'
+    if not package_version.startswith("1.0.") or version_marker not in source:
+        problems.append("Edron 1.0 package version is not synchronized")
+    for expected in ("hedron>=1.0.18,<2.0", "hedron-data>=1.0.0,<2.0"):
         if expected not in dependencies:
             problems.append(f"Edron 1.0 dependency pin is missing: {expected}")
 
@@ -90,7 +91,7 @@ def main() -> int:
         print("Edron 1.0 verification failed:", file=sys.stderr)
         print("\n".join(f"- {problem}" for problem in problems), file=sys.stderr)
         return 1
-    print("ok: Edron 1.0.0 uses the canonical Hedron 1.0 contract")
+    print(f"ok: Edron {package_version} uses the canonical Hedron 1.0 contract")
     return 0
 
 

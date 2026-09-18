@@ -5,6 +5,7 @@
 ### Changed
 
 - Coordinated Folio theme and accent support release.
+- Isolate captured-state closures in Edron cache tracking as well as Hedron cache keys.
 
 ## [1.0.17] — Unreleased
 
