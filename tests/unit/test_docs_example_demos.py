@@ -156,7 +156,7 @@ def test_hedron_showcase_sim_is_generated_from_the_real_app() -> None:
         encoding="utf-8"
     )
     assert 'data-hedron-sim="showcase-dashboard"' in preview
-    assert 'data-hedron-sim-fullscreen' in preview
+    assert "data-hedron-sim-fullscreen" in preview
     assert 'hx-get="/deployments"' in preview
     assert 'hx-get="/pipeline/refresh"' in preview
     assert 'hx-post="/approve"' in preview
@@ -165,10 +165,7 @@ def test_hedron_showcase_sim_is_generated_from_the_real_app() -> None:
     )
     assert match is not None
     payload = json.loads(
-        match.group(1)
-        .replace("&lt;", "<")
-        .replace("&gt;", ">")
-        .replace("&amp;", "&")
+        match.group(1).replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&")
     )
     assert set(payload["routes"]) == {
         "GET /deployments",
