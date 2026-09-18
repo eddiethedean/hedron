@@ -8,6 +8,7 @@
   name, and neutralized Folio's dark-mode background.
 - Added a Folio accent option to Hedron and Edron apps and production builds,
   with green as the default, named accents, and custom hex seeds.
+- Isolate captured-state closures in cache decorators instead of conflating their entries.
 
 ## [1.0.17] — Unreleased
 

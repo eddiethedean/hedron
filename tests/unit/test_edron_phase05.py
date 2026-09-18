@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import gc
 import time
 
 from pydantic import BaseModel
@@ -175,6 +176,25 @@ def test_cache_uses_native_ttl_mutable_isolation_and_bounded_entries() -> None:
     load.invalidate("a")
     assert load("a") == ["a"]
     assert calls["count"] == 5
+
+
+def test_cache_does_not_reuse_discarded_closure_identity() -> None:
+    reset_cache_for_tests()
+
+    def factory(multiplier: int):
+        @ed.cache_data(scope="public")
+        def calculate(value: int) -> int:
+            return value * multiplier
+
+        return calculate
+
+    first = factory(2)
+    assert first(10) == 20
+    del first
+    gc.collect()
+
+    second = factory(3)
+    assert second(10) == 30
 
 
 def test_job_flow_honors_explicit_backend_poll_policy_and_sse_terminal_state() -> None:

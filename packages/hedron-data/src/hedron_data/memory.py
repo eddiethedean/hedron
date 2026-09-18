@@ -394,9 +394,29 @@ class InMemoryDataSource:
                     FieldError(row_key=key, field=self._key_field, message="Duplicate key")
                 )
                 continue
+            row_errors = False
             for field_name in list(row):
-                if field_name != self._key_field and field_name not in self._writable:
+                if field_name == self._key_field:
+                    # Row identity is established at insert time even when its
+                    # schema column is read-only.
+                    continue
+                if field_name not in self._writable:
                     del row[field_name]
+                    continue
+                schema_col = next((c for c in self._schema if c.name == field_name), None)
+                if schema_col is not None and (
+                    schema_col.read_only or schema_col.hidden or schema_col.secret
+                ):
+                    errors.append(
+                        FieldError(
+                            row_key=key,
+                            field=field_name,
+                            message="Field is read-only, hidden, or secret",
+                        )
+                    )
+                    row_errors = True
+            if row_errors:
+                continue
             rows[key] = row
             row_versions[key] = next_version()
             accepted_inserts.append(row)
