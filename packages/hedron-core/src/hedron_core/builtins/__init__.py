@@ -119,6 +119,7 @@ from hedron_core.builtins.process_flow import (
 )
 from hedron_core.builtins.resources import ResourceList, ResourceRow
 from hedron_core.builtins.scroll_region import ScrollRegion
+from hedron_core.builtins.secrets import SecretField
 from hedron_core.builtins.shell import (
     AccountSummary,
     AppFooter,
@@ -310,6 +311,7 @@ __all__ = [
     "Section",
     "SegmentedControl",
     "Select",
+    "SecretField",
     "SelectSlider",
     "Sidebar",
     "Skeleton",

@@ -34,11 +34,13 @@ from hedron_posit.products import PositProduct
 from hedron_posit.redact import redact_record, redact_text
 from hedron_posit.urls import (
     ExternalBase,
+    RequestUrlFacade,
     browser_mount_from_request,
     compose_external_url,
     is_ephemeral_workbench_mount,
     local_href,
     mounted_redirect,
+    urls_for_request,
     validate_external_base_url,
 )
 
@@ -541,6 +543,10 @@ class HedronPosit(Hedron):
     def posit_for(self, request: Request) -> PositContext:
         """Return a request-bound context for links, redirects, cookies, and capabilities."""
         return PositContext(app=self, request=request)
+
+    def urls(self, request: Request) -> RequestUrlFacade:
+        """Return purpose-specific navigation and response URLs for a request."""
+        return urls_for_request(request)
 
     @property
     def hands_off(self) -> bool:

@@ -1,12 +1,12 @@
 # Changelog
 
-## [1.0.18] — Unreleased
+## [1.1.0] — 2026-09-18
 
 ### Changed
 
 - Coordinated Folio theme and accent support release.
 - Isolate captured-state closures in Edron cache tracking as well as Hedron cache keys.
-- Require Hedron 1.0.18 or newer for the shared closure-safe cache identity helper.
+- Require Hedron 1.1.0 or newer for the shared closure-safe cache identity helper.
 
 ## [1.0.17] — 2026-09-17
 

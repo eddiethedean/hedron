@@ -4,15 +4,15 @@
 > product readiness use [What’s ready](guides/whats-ready.md); for the public roadmap use
 > [What’s next](guides/whats-next.md). Do not treat gate tables as the getting-started guide.
 
-**Roadmap position:** `v1.0.17` is Verified, tagged, and published on PyPI, including Edron.
-**Development workspace:** `1.0.18` is the unreleased coordinated package train, including
-Folio theme and accent support and the cache, data, maps, and streaming bug fixes.
-`v0.67.0` remains the immutable migration baseline for compatibility evidence.
-**Date:** 2026-09-17
+**Roadmap position:** `v1.1.0` is Verified, tagged, and published on PyPI, including Edron.
+**Development workspace:** `1.1.0` is the coordinated package train implementing the open
+enhancement completion phase and its complementary application features.
+`v1.0.17` remains the immutable migration baseline for compatibility evidence.
+**Date:** 2026-09-18
 **Implementation:** Stable platform — `hedron`, `hedron-core`, `edron`, `hedron-data`,
-`hedron-charts`, and `hedron-maps` `1.0.18` (unreleased). Beta satellites — `hedron-explorer`,
+`hedron-charts`, and `hedron-maps` `1.1.0`. Beta satellites — `hedron-explorer`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
-and `hedron-elements` `1.0.18` (unreleased); `hedron-posit` `1.0.9`; `fastapi-workbench` `1.0.11`;
+and `hedron-elements` `1.1.0`; `hedron-posit` `1.0.9`; `fastapi-workbench` `1.0.11`;
 `hedron-native` `0.1.3`; `hedron-sample-kit` `0.2.3`; `hedron-notebook` and
 `hedron-gradio` `0.2.4`; `hedron-sim` `0.2.4`; `hedron-mcp` `0.2.5`; and `edron-sim`
 `0.1.0` (MIT, D-033).
@@ -23,7 +23,10 @@ and `hedron-elements` `1.0.18` (unreleased); `hedron-posit` `1.0.9`; `fastapi-wo
 `hedron-mcp`, `hedron-gradio`, `fastapi-workbench`, and `edron-sim`. Experimental runtimes
 `hedron-runtime-node` / `hedron-runtime-java` `0.66.2`.
 
-**Phase focus:** Phase **1.0** is **Verified and Published** against immutable `v0.67.0`; all 17
+**Phase focus:** Phase **1.1** is **Verified and Published** against immutable `v1.0.17`; all
+required enhancement and complementary-work rows, reproducible artifacts, release approval, tags,
+and registry uploads are retained. Phase **1.0** remains the verified predecessor against immutable
+`v0.67.0`; all 17
 rows, reproducible artifacts, dual-version compatibility, release approval, tags, and registry
 uploads are retained.
 Dynamic, foreign, and installed-package template execution remain explicitly Deferred. Phase

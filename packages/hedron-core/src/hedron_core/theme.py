@@ -1059,7 +1059,12 @@ def compatibility_theme_vars(theme: Theme) -> dict[str, str]:
         fallback = shape.get(suffix, _DEFAULT_COMPATIBILITY_FALLBACKS[suffix])
         values[f"--hedron-default-{suffix}"] = f"var(--hedron-shape-{suffix}, {fallback})"
     elevation = {key.replace(".", "-"): value for key, value in theme.elevation.items()}
-    shadow_fallback = elevation.get("raised", _DEFAULT_COMPATIBILITY_FALLBACKS["shadow"])
+    shadow_fallback = elevation.get(
+        "default",
+        elevation.get(
+            "ordinary", elevation.get("raised", _DEFAULT_COMPATIBILITY_FALLBACKS["shadow"])
+        ),
+    )
     raised_fallback = elevation.get("raised", _DEFAULT_COMPATIBILITY_FALLBACKS["shadow-raised"])
     values["--hedron-default-shadow"] = f"var(--hedron-elevation-raised, {shadow_fallback})"
     values["--hedron-default-shadow-raised"] = f"var(--hedron-elevation-raised, {raised_fallback})"

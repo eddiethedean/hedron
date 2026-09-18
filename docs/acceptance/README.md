@@ -142,10 +142,13 @@ status commentary, not a satisfied release gate.
   machine gate](release-gate-1.0.toml), and [upgrade fixtures](upgrade-fixtures-1.0.md) define a
   subtractive cut from immutable `v0.67.0`; all rows are Verified with retained compatibility,
   regression, reproducibility, support-window, and release evidence.
-- [`v1.1` first-class UI testing and adoption confidence](RELEASE_1_1.md) — **Proposed and
+- [`v1.1` open enhancement completion](RELEASE_1_1.md) — **Verified and published as `v1.1.0`**
+  for all 20 open feature requests and required complementary application behavior;
+  [machine gate](release-gate-1.1.toml) is Verified.
+- [`v1.2` first-class UI testing and adoption confidence](RELEASE_1_2.md) — **Proposed and
   unscheduled** Stage 0 acceptance packet. All rows in the
-  [machine gate](release-gate-1.1.toml) remain Planned pending API/schema/matrix/budget freeze;
-  `SATELLITE-110` also requires an explicit testing disposition for every coordinated/optional
+  [machine gate](release-gate-1.2.toml) remain Planned pending API/schema/matrix/budget freeze;
+  `SATELLITE-120` also requires an explicit testing disposition for every coordinated/optional
   package; no implementation or release claim is made.
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
   sessions outstanding)

@@ -38,7 +38,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```text
-ToggleSwitch(name: 'str', label: 'str', *, id: 'str | None' = None, checked: 'bool' = False, required: 'bool' = False, disabled: 'bool' = False, mark: 'str | None' = None, aria_describedby: 'str | None' = None, aria_invalid: 'str | None' = None, aria_required: 'str | None' = None, enhance: "Literal['legacy', 'native', 'alpine']" = 'legacy', **kwargs: 'object') -> 'None'
+ToggleSwitch(name: 'str', label: 'str', *, id: 'str | None' = None, checked: 'bool' = False, required: 'bool' = False, disabled: 'bool' = False, mark: 'str | None' = None, aria_describedby: 'str | None' = None, aria_invalid: 'str | None' = None, aria_required: 'str | None' = None, enhance: "Literal['legacy', 'native', 'alpine']" = 'legacy', state_icons: 'bool' = False, compact: 'bool' = False, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
@@ -54,6 +54,8 @@ ToggleSwitch(name: 'str', label: 'str', *, id: 'str | None' = None, checked: 'bo
 | `aria_invalid` | `str | None` | Optional `aria-invalid` value. Default: `None`. |
 | `aria_required` | `str | None` | Optional `aria-required` value. Default: `None`. |
 | `enhance` | `Literal['legacy', 'native', 'alpine']` | Constructor parameter. Default: `'legacy'`. |
+| `state_icons` | `bool` | Constructor parameter. Default: `False`. |
+| `compact` | `bool` | Constructor parameter. Default: `False`. |
 
 ## Composition and backend behavior
 

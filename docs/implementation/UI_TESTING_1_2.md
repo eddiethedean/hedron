@@ -1,10 +1,10 @@
-# Phase 1.1: first-class UI testing and adoption confidence
+# Phase 1.2: first-class UI testing and adoption confidence
 
 **Status:** Proposed refinement; implementation not authorized
 **Predecessor:** Published Hedron `v1.0.0`
 **Authority:** [RFC-0097](../rfcs/RFC-0097-FIRST-CLASS-UI-TESTING.md)
-**Acceptance:** [RELEASE_1_1](../acceptance/RELEASE_1_1.md) ·
-[release-gate-1.1.toml](../acceptance/release-gate-1.1.toml)
+**Acceptance:** [RELEASE_1_2](../acceptance/RELEASE_1_2.md) ·
+[release-gate-1.2.toml](../acceptance/release-gate-1.2.toml)
 
 ## Outcome
 
@@ -14,7 +14,7 @@ evidence. Render tests and `AppScenario` remain the preferred faster layers when
 not required.
 
 This document defines work packages and repository seams. Names and signatures shown here are
-candidates until `FREEZE-110` is Verified.
+candidates until `FREEZE-120` is Verified.
 
 ## Entry lock
 
@@ -40,7 +40,7 @@ the stable 1.0 testing inventory.
 
 ## Repository seam map
 
-| Seam | Current owner | 1.1 responsibility |
+| Seam | Current owner | 1.2 responsibility |
 |---|---|---|
 | Render assertions | `hedron.testing.fastapi` / renderer | Preserve; document as layer one |
 | HTTP/HTMX scenarios | `hedron_core.testing.app`, adapter fixtures | Preserve; document as layer two and reuse portable response facts |
@@ -78,7 +78,7 @@ make an artifact Stable.
 
 ## Work packages
 
-### W0 — Baseline, prototypes, and `FREEZE-110`
+### W0 — Baseline, prototypes, and `FREEZE-120`
 
 - Inventory all current testing exports, browser fixtures, first-party browser helpers, raw
   Playwright setup, sleeps, server launchers, artifact patterns, and CI browser jobs.
@@ -91,7 +91,7 @@ make an artifact Stable.
 - Capture baseline startup, navigation, settle, cleanup, xdist, and artifact measurements.
 - Freeze public names, schemas, maturity, support matrix, budgets, and the Required corpus.
 
-**Exit:** `FREEZE-110` is Verified and no open design question changes authority or release scope.
+**Exit:** `FREEZE-120` is Verified and no open design question changes authority or release scope.
 
 ### W1 — Managed host and isolation
 
@@ -209,7 +209,7 @@ Candidate Stage 0 dispositions include:
 | `hedron-conformance`, `hedron-sim`, `edron-sim`, `hedron-sample-kit`, portable runtime evaluators | Testing product; no nested testing module |
 | Explorer, Jinja, deployment/tooling packages without downstream fixture demand | Private-only or explicit non-fit unless W0 evidence justifies a narrower provider |
 
-**Exit:** `SATELLITE-110` records every package disposition; all admitted contributions use one
+**Exit:** `SATELLITE-120` records every package disposition; all admitted contributions use one
 protocol, preserve optional dependency isolation, and pass conflict, absence, fleet, and package
 artifact tests without an ambient pytest plugin.
 
@@ -223,7 +223,7 @@ artifact tests without an ambient pytest plugin.
 - Run Chromium as the ordinary default and the bounded corpus on Chromium, Firefox, and WebKit.
 - Prove root-path/proxy and external URL paths; add managed adapter rows only at their frozen maturity.
 
-**Exit:** `BEHAVIOR-110`, `A11Y-110`, and the browser/host matrix pass with no blanket accessibility
+**Exit:** `BEHAVIOR-120`, `A11Y-120`, and the browser/host matrix pass with no blanket accessibility
 or managed-adapter parity claim.
 
 ### W9 — Compatibility, fleet, and release closure
@@ -231,12 +231,12 @@ or managed-adapter parity claim.
 - Freeze and compare the stable 1.0 testing inventory, signatures, behavior, imports, and extras.
 - Run clean base, browser, and testing-extra wheel/sdist/offline-install fixtures.
 - Prove package import order and missing-extra messages without optional dependency leakage.
-- Adopt the harness in the reference app and every package family admitted by `SATELLITE-110`
+- Adopt the harness in the reference app and every package family admitted by `SATELLITE-120`
   before promotion.
 - Verify documentation, scaffold, testgen, testing API, stability, support, and compatibility claims.
 - Run security, accessibility, performance, browser, adapter, package, and rollback evidence.
 
-**Exit:** all Required `*-110` rows are Verified and the release packet contains immutable evidence.
+**Exit:** all Required `*-120` rows are Verified and the release packet contains immutable evidence.
 
 ## Dependency and delivery order
 
@@ -299,7 +299,7 @@ a budget.
 - If browser lifecycle, redaction, or cleanup cannot meet the Required gates, the candidate remains
   Beta/internal or the phase ships only adoption/compatibility documentation; it is not promoted by
   schedule.
-- The unassigned HTMX/Alpine transition is not a rollback mechanism and cannot be bundled into 1.1.
+- The unassigned HTMX/Alpine transition is not a rollback mechanism and cannot be bundled into 1.2.
 
 ## Stop conditions
 

@@ -55,7 +55,7 @@ Build wheels and test them in a clean environment before tagging:
 
 ```bash
 uv build --all-packages
-uv run python scripts/check_published_quickstart.py 1.0.18 --dist-dir dist --attempts 1
+uv run python scripts/check_published_quickstart.py 1.1.0 --dist-dir dist --attempts 1
 uv run python scripts/check_workbench_release_artifacts.py --dist-dir dist
 ```
 
@@ -64,11 +64,11 @@ wheel with its immutable PyPI version. If a version already exists with differen
 fails and requires a version bump. Run the quick-start check first against local artifacts. After
 upload, rerun it against the registry and record the result before changing public documentation.
 
-The current candidate is **1.0.18**, which is not yet published. Keep the public release facts
-and install pins at **1.0.17** until publication and registry smoke tests succeed. The coordinated
-1.0.18 changelog sections remain `Unreleased` until the cut; independently versioned satellites
-retain their own versions. Edron 1.0.18 requires `hedron>=1.0.18,<2.0` for the shared closure-safe
-cache identity helper, so publish Hedron before Edron using `release/publish-order.toml`.
+The current coordinated release is **1.1.0**, published after the package, documentation, and
+acceptance checks passed. The coordinated 1.1.0 changelog sections record the cut; independently
+versioned satellites retain their own versions. Edron 1.1.0 requires `hedron>=1.1.0,<2.0` for the
+shared closure-safe cache identity helper, so publish Hedron before Edron using
+`release/publish-order.toml`.
 
 ## Tag and publish
 

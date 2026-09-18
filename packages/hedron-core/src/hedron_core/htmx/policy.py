@@ -215,6 +215,38 @@ class InteractionResult:
     # Request-side hx-select-oob when known (same-target conflict detection).
     select_oob: str | None = None
 
+    @classmethod
+    def error(
+        cls,
+        content: NodeLike | None = None,
+        *,
+        status_code: int = 400,
+        error_retarget: str = "#hedron-errors",
+        headers: Mapping[str, str] | None = None,
+        policy: InteractionPolicy | None = None,
+        explanation: str = "",
+    ) -> InteractionResult:
+        """Create a safe error response for an HTMX interaction.
+
+        Only framework-owned reserved sinks may be selected here. The rejected
+        request's ``HX-Target`` is never reused as the response destination.
+        """
+        from hedron_core.htmx.authorize import RESERVED_RESPONSE_SINK_IDS
+
+        if (
+            not error_retarget.startswith("#")
+            or error_retarget[1:] not in RESERVED_RESPONSE_SINK_IDS
+        ):
+            raise ValueError("error_retarget must be a framework-owned reserved sink")
+        return cls(
+            content=content,
+            status_code=status_code,
+            retarget=error_retarget,
+            headers=dict(headers or {}),
+            policy=policy,
+            explanation=explanation,
+        )
+
     def __post_init__(self) -> None:
         code = self.status_code
         # Reject bool (subclass of int) and non-int; coerce int-like strings.

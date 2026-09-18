@@ -2,18 +2,18 @@
 
 ## Supported versions
 
-Security fixes land on the **current published train** (`1.0.x`). Older lines should upgrade;
+Security fixes land on the **current published train** (`1.1.x`). Older lines should upgrade;
 there is **no multi-year LTS**. Best-effort triage for the immediately
-previous minor (`0.67.x`) continues through approximately **2027-02-27** — after that, upgrade
+previous minor (`1.0.x`) continues through approximately **2027-02-27** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
-The current published train is **`1.0.x`**. Applications require `>=1.0.0`; PyPI publishes
-`v1.0.17`.
+The current published train is **`1.1.x`**. Applications require `>=1.0.0`; PyPI publishes
+`v1.1.0`.
 
 | Version | Supported |
 |---|---|
-| `1.0.x` | Yes (published train — requirement `>=1.0.0`; published `v1.0.17`) |
-| `0.67.x` | Best-effort security triage through approximately 2027-02-27; upgrade to `1.0.x` |
+| `1.1.x` | Yes (published train — requirement `>=1.0.0`; published `v1.1.0`) |
+| `1.0.x` | Best-effort security triage through approximately 2027-02-27; upgrade to `1.1.x` |
 
 ## Reporting a vulnerability
 
@@ -32,7 +32,7 @@ publication.
 1. File the private advisory with the details below.
 2. Expect acknowledgment within a few business days (**no contractual security SLA**).
 3. Coordinated disclosure is preferred; allow reasonable time before public discussion.
-4. Fixes target the current repository train (`1.0.x`); see Supported versions above.
+4. Fixes target the current repository train (`1.1.x`); see Supported versions above.
 
 ### Alternate contact
 

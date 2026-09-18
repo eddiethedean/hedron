@@ -18,7 +18,7 @@ Experimental explicit opt-ins.
 
 ## Install
 
-The flagship extra below resolves the current public `1.0.x` train. The direct satellite
+The flagship extra below resolves the current public `1.1.x` train. The direct satellite
 pin describes the 1.0 repository package and is intended for the coordinated 1.0 publication
 or an editable workspace checkout.
 

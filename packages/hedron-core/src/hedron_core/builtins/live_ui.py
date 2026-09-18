@@ -22,6 +22,8 @@ class DialogProps(Props):
     open: bool = False
     modal: bool = True
     id: str | None = None
+    class_: str | None = None
+    mark: str | None = None
 
 
 class Dialog(Component[DialogProps]):
@@ -40,6 +42,8 @@ class Dialog(Component[DialogProps]):
         modal: bool = True,
         id: str | None = None,
         element_id: str | None = None,
+        class_: str | None = None,
+        mark: str | None = None,
         **kwargs: object,
     ) -> None:
         # ``element_id`` remains accepted as a compatibility alias for ``id``.
@@ -53,7 +57,12 @@ class Dialog(Component[DialogProps]):
                 f"Dialog id {resolved_id!r} must match /^[A-Za-z][\\w:.-]*$/ "
                 "(required by hedron-ui dialog openers)."
             )
-        super().__init__(DialogProps(title=title, open=open, modal=modal, id=resolved_id, **kwargs))
+        super().__init__(
+            DialogProps(
+                title=title, open=open, modal=modal, id=resolved_id,
+                class_=class_, mark=mark, **kwargs
+            )
+        )
         self._body = collect_children(*nodes, children=children)
 
     def render(self) -> NodeLike:
@@ -67,13 +76,15 @@ class Dialog(Component[DialogProps]):
         title_id = f"{dialog_id}-title"
         attrs: dict[str, HtmlAttrValue] = {
             "id": dialog_id,
-            "class_": "hedron-dialog",
+            "class_": " ".join(filter(None, ("hedron-dialog", self.props.class_))),
             "data": {"hedron-dialog": "true", "modal": "true" if self.props.modal else "false"},
             "aria": {
                 "labelledby": title_id,
                 "modal": "true" if self.props.modal else "false",
             },
         }
+        if self.props.mark:
+            attrs["data"]["hedron-mark"] = self.props.mark
         if self.props.open:
             attrs["open"] = True
         close = html.form(

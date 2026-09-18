@@ -13,9 +13,10 @@ def _cmd_build(args: argparse.Namespace) -> int:
     from hedron.config import load_hedron_settings
 
     base = Path(args.project or Path.cwd()).resolve()
-    if getattr(args, "app", None):
-        load_app(args.app)
     settings = load_hedron_settings(base)
+    application = getattr(args, "app", None) or settings.application
+    if application:
+        load_app(application)
     result = run_build(project_dir=base, settings=settings, production=not args.dev)
     print(
         json.dumps(

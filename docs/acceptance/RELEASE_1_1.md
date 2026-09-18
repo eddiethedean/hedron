@@ -1,96 +1,47 @@
-# Hedron `v1.1.0` first-class UI testing acceptance plan
+# Hedron `v1.1.0` open enhancement acceptance plan
 
-**Status:** Proposed and unscheduled; Stage 0 refinement only
-**Baseline:** Published Hedron `v1.0.0`
-**Target:** Candidate `v1.1.0`
-**Authority:** [RFC-0097](../rfcs/RFC-0097-FIRST-CLASS-UI-TESTING.md)
-**Implementation:** [UI_TESTING_1_1](../implementation/UI_TESTING_1_1.md)
+**Status:** **Verified and published as `v1.1.0` on 2026-09-18**
+**Target:** `v1.1.0`
+**Authority:** [RFC-0098](../rfcs/RFC-0098-OPEN-ENHANCEMENT-COMPLETION.md)
+**Implementation:** [OPEN_ENHANCEMENTS_1_1](../implementation/OPEN_ENHANCEMENTS_1_1.md)
 **Machine packet:** [release-gate-1.1.toml](release-gate-1.1.toml)
 
-This packet refines a proposed phase; it does not claim implementation, verification, a release
-date, or a final public API. Every gate is Planned. There is intentionally no `check_110.py` yet:
-W0 must freeze the public contract, schemas, corpus, matrices, and budgets before an executable
-checker can be authoritative.
+This packet replaces the former 1.1 testing packet, which moves to
+[Phase 1.2](RELEASE_1_2.md) with its gate IDs renumbered from `*-110` to `*-120`.
+All rows below are Verified against the Phase 1.1 implementation, unit suite, and documentation
+source-of-truth checks. There is no `check_110.py`; the packet uses the repository’s existing
+release and test commands.
 
-## Entry decision
+## Required evidence
 
-The predecessor is satisfied because `v1.0.0` is published and its stable testing inventory is the
-compatibility baseline. Stage 1 remains blocked on `FREEZE-110`. The freeze must reconcile the
-existing render helpers, `AppScenario`, browser hooks, interaction traces, marks/regions,
-first-party Playwright fixtures, and test-generation paths before adding a public surface.
-
-The release is an additive testing/tooling phase. It does not change production routing,
-rendering, browser assets, HTMX/Alpine/Web Component authority, security defaults, state ownership,
-or supported application behavior.
-
-## Gates
-
-| Gate | Required evidence |
+| Gate | Required result |
 |---|---|
-| `FREEZE-110` | Complete current-task/source/fixture inventory; fresh-user prototype results; exact public candidate names/signatures; host/maturity matrix; settle and artifact schemas; redaction/error/capture/network policies; reference corpus; measured budgets; zero unresolved authority-changing question |
-| `CONTRACT-110` | Render/AppScenario/browser layer boundary; Playwright remains browser authority; no fake DOM, second runner, production instrumentation, broad remote authority, or duplicate locator/action API |
-| `HOST-110` | Loopback pre-bound listener, readiness, lifespan, root path, assets, overrides, startup/shutdown failure, interruption, timeout, xdist isolation, external URL and remote authorization behavior; zero leaked resource |
-| `LOCATOR-110` | Role/name, label, text, mark, and region lookup; strict ambiguity and dynamic re-query; accessible-first guidance; direct Playwright escape hatch; shadow/specialist-host dispositions |
-| `SETTLE-110` | Versioned bounded Hedron-owned settle facts for request/swap/action/lifecycle paths; no global idle claim; deliberate hang diagnostics; zero arbitrary sleeps in maintained examples |
-| `ERROR-110` | Correlated server exception, page error, console, request/response, asset, crash, expected-failure, and clean-state behavior; narrow scoped expectations restore deterministically |
-| `ARTIFACT-110` | Versioned failure bundle with allowed screenshot/DOM, Playwright trace, semantic/settle/server/browser/environment facts, deterministic layout, redaction, truncation/missing markers, path safety, retention and byte/count budgets, no upload |
-| `PYTEST-110` | Optional dependency/import isolation, fixture/options/markers/config precedence, pytest-playwright composition, missing-browser diagnostics, headed/debug/trace workflow, xdist safety, ordinary `pytest` runner |
-| `SATELLITE-110` | Every coordinated/optional package has a module/facade/host-provider/protocol-provider/testing-product/private/non-fit disposition; admitted contributions use one explicit versioned central protocol, preserve optional imports and stable compatibility re-exports, package public fixtures, reject conflicts, and never ambiently register pytest plugins or duplicate harness authority |
-| `BEHAVIOR-110` | Required PAGE/fragment/OOB/history, form/CSRF/auth, local/request/combined, specialist element, upload/download, action-state, no-JS/failure, root-path, and deliberate-failure corpus |
-| `A11Y-110` | Semantic lookup, keyboard/focus/announcement, reduced-motion, forced-colors, zoom/reflow and viewport fixtures; axe provenance/incomplete/error behavior; no automated accessibility-conformance claim |
-| `SECURITY-110` | Loopback and remote authorization, network policy, secrets/header/cookie/query/form/trace redaction, synthetic fixture guidance, path/archive safety, browser/context/process isolation, no authorization bypass |
-| `PERF-110` | Frozen startup, navigation/probe, settle, memory/process, artifact, shutdown, xdist, and release-matrix budgets with exact-limit/one-over tests and no on-success artifact tax beyond the accepted profile |
-| `COMPAT-110` | Stable 1.0 testing inventory and behavior unchanged; base/core installs import without pytest/Playwright/browser; no-Node render/HTTP path; managed/external host and supported dependency matrix reproducible |
-| `DOCS-110` | Testing-pyramid guide, installation, first test, failure debugging, trace viewing, CI, remote/security limits, accessibility honesty, troubleshooting, scaffold and review-first generated example |
-| `PKG-110` | Clean base/browser/testing-extra wheel/sdist/offline installs, metadata, bounds, import order, missing-extra behavior, browser install instructions, SBOM/notices and reproducible artifacts |
-| `RELEASE-110` | Every other Required row Verified; immutable evidence, support/maturity matrix, migration/rollback notes and release approval present; zero skipped Required browser row or contradictory 1.1 claim |
+| `FREEZE-110` | Current-source reconciliation for all 20 issues; exact additive APIs, named owners, package/maturity matrix, complementary tasks, reference corpus, measured budgets, and accepted contract decisions |
+| `ERROR-110` | #891: unknown/unauthorized targets stay rejected; only trusted error sinks are allowed; no recursive rejection; original status/approved headers and non-HTMX fallback survive |
+| `BUILD-110` | #892: build-safe CLI/config/factory application loading; deterministic theme/style/script manifests; runtime mismatch detection; no-app library mode, imports/collisions/path/remote-asset failures, mount-independent assets |
+| `URL-110` | #893: purpose-aware request-bound navigation/form/asset/Location/HX-Redirect matrix across root, prefixes, Workbench, Connect, and inactive modes; query/fragment/Unicode preservation and traversal/open-redirect rejection |
+| `IDENTITY-110` | #889: display-safe identity, async provider, generic resources, safe missing-provider behavior, deterministic overrides/Explorer previews, optional integrations, and independently enforced server denial |
+| `COLLECTION-110` | #890: bounded direct/endpoint sources, page/cursor modes, optional fastapi-pagination adapter, server sort/filter, URL history, counts/states/accessibility, and representative AuthMate/ShuETL/Datdex fixtures |
+| `FORM-110` | #916–#919/#944: validated keep/replace/clear; no secret echo; coherent help/IDs/errors/summary/focus; guards handle commit/reset, failed/pending/stale saves and session expiry; measured natural/shared-label alignment |
+| `PRESENTATION-110` | #913/#914/#939–#943/#945/#946: additive Dialog hooks, distinct elevations, finite shell/Brand/ProcessFlow/toggle policies, safe defaults, shared manifest coverage, and native/component stylesheet parity |
+| `STYLE-110` | #915: browser evaluates bounded declared style/geometry relationships; enum/breakpoint coverage or reviewed exclusions; regression mutations fail; loaded-asset provenance and expected/actual values appear in failures; missing runtime is incomplete |
+| `COMPLEMENT-110` | W1–W4 complementary behavior composes: asset provenance, provider/URL collection state, secure form lifecycle, measured shell geometry, and consistent presentation metadata; each task has linked evidence |
+| `FLOW-110` | W5 packaged reference flow demonstrates identity-aware pagination, guided secret settings, error recovery, unsaved guard, successful save, native chrome, sealed assets, and trusted-prefix deployment |
+| `ASSURANCE-110` | Compatible 1.0 defaults/imports, security/redaction/cache isolation, keyboard/focus/no-JS, RTL/zoom/forced-colors/reduced-motion, browser matrix, bounded resources/cleanup, optional packaging, documentation, and rollback evidence |
+| `RELEASE-110` | Every required non-release row Verified; all 20 issues have linked implementation/evidence; required complements complete; per-capability maturity and support statements approved; immutable artifacts and release/rollback disposition recorded |
 
-## Required vertical slice
+## Scope and evidence rules
 
-The entry implementation is a synthetic secured profile form in the reference application. It
-must prove managed startup, semantic form interaction, an expected validation failure, focus and
-announcement behavior, one successful HTMX action/swap, settle and clean assertions, deliberate
-failure artifacts, redaction, root-path behavior, and leak-free success/failure/timeout teardown.
+The exact issue inventory is in the implementation plan and `required_issues` in the machine
+packet. The full issue acceptance criteria remain authoritative; grouping issues does not remove
+requirements. New ideas enter only through a recorded scope amendment. Deferring required work
+requires the same amendment and matching packet/roadmap updates.
 
-The slice begins in Chromium. It is not considered phase evidence until the bounded
-Chromium/Firefox/WebKit release corpus and declared host matrix pass.
+Static/render checks remain a separate fast tier. Browser effects require actual browser evidence;
+markers, accepted props, screenshots alone, or skipped required rows cannot pass style contracts.
+Secret fixtures use synthetic values and redact replacements from captured evidence. Numeric limits
+are frozen from measured baselines. Required runtime/dependency rows pass rather than skip.
 
-## Maturity boundary
-
-The phase may promote only the surface supported by evidence. Candidate dispositions are:
-
-- Stable: pytest entry point, managed flagship host, external URL, browser scenario lifecycle,
-  semantic marks/regions, cleanup, and the supported failure workflow;
-- Beta: versioned settle/artifact schemas and generated browser stubs until downstream experience
-  proves compatibility; package testing modules and the contribution protocol until package/fleet
-  evidence justifies narrower promotion; and
-- Deferred: visual golden comparison, record/replay, remote production testing, a fake widget/DOM
-  emulator, and any unproven managed adapter launcher.
-
-W0 may narrow these dispositions. It cannot promote a Deferred item merely by implementing it.
-
-## Prerelease checkpoints
-
-| Checkpoint | Exit evidence |
-|---|---|
-| `1.1a0` | `FREEZE-110`, prototypes, support/maturity decisions, schemas, corpus, and measured budgets |
-| `1.1a1` | Managed host, BrowserScenario vertical slice, semantic locators, settle, error, artifact, and cleanup proof in Chromium |
-| `1.1b1` | Pytest/package/scaffold integration, `SATELLITE-110` dispositions/conformance, plus full behavior, security, accessibility, and parallel-execution corpus |
-| `1.1rc1` | Three-browser/host/dependency matrix, clean artifacts, compatibility, docs, rollback, and every non-release gate Verified |
-
-## Stop conditions
-
-Stop implementation or promotion if Stage 0 cannot define bounded owned-work settle semantics; the
-harness needs production runtime instrumentation; known secrets can enter retained artifacts; a
-failure or timeout leaks hosts, ports, contexts, overrides, or files; required browser evidence is
-skipped; the optional extra changes base imports; remote capture is ambient; or stable 1.0 testing
-behavior changes without a compatible additive path.
-
-If a candidate misses its gate, narrow its maturity or defer it. Do not label raw Playwright setup,
-an empty axe result, a Chromium-only smoke, or an artifact screenshot as completion of the phase.
-
-## Release condition
-
-No `v1.1.0` claim is authorized until the machine packet is updated from Planned to Verified by an
-accepted checker and immutable evidence. Documentation may describe the proposal only as proposed
-and unscheduled before that point.
+The reference flow preserves framework authorization, stable 1.1 behavior, and application-owned
+domain/storage/preference responsibilities. The release decision and package versions are recorded
+as `v1.1.0`; close issues only after the implementation and evidence are linked.

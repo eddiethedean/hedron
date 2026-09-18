@@ -17,6 +17,7 @@ from hedron_core.builtins import (
     Checkbox,
     ClipboardCopy,
     Expander,
+    SecretField,
     Select,
     Tabs,
     TextArea,
@@ -157,6 +158,19 @@ def test_demand_driven_page_assets_load_clipboard_runtime() -> None:
     )
 
     assert 'data-hedron-clipboard-copy="true"' in page
+    assert "hedron-ui.mjs" in page
+
+
+def test_demand_driven_page_assets_load_secret_runtime() -> None:
+    request = render(SecretField("api_key", "API key", allow_clear=True), mode=RenderMode.PAGE)
+    page = inject_page_assets(
+        request.html,
+        request.mode,
+        browser_plan=request.browser_plan,
+        demand_driven=True,
+    )
+
+    assert 'data-hedron-secret-operation="clear"' in page
     assert "hedron-ui.mjs" in page
 
 

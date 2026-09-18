@@ -9,7 +9,7 @@ status: shipped
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Shipped (fragment regions + `InteractionResult`; living train **1.0.x**)
+**Status:** Shipped (fragment regions + `InteractionResult`; living train **1.1.x**)
 
 !!! note "Lifecycle API maturity"
 

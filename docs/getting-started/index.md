@@ -8,7 +8,7 @@ search:
 
 <!-- hedron-release-status -->
 
-These are the stable **1.0** learning paths. Release and support details:
+These are the stable **1.1** learning paths. Release and support details:
 [Current release](../guides/current-release.md).
 
 Get from an empty directory to a CSRF-protected form without introducing a frontend

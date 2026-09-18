@@ -28,7 +28,7 @@ Pin versions in production and read [upgrade](upgrade.md) notes before bumping t
 require `hedron-charts>=1.0.0`. The sample kit requires
 `hedron-sample-kit>=0.2.3,<0.3` — see [Compatibility](../COMPATIBILITY.md).
 
-**Support window:** security fixes target the current published train (`1.0.x`). The current
+**Support window:** security fixes target the current published train (`1.1.x`). The current
 requirement is `hedron>=1.0.0`. Previous minors receive best-effort triage as documented in
 [SECURITY.md](../SECURITY.md) (no multi-year LTS). Version and pin SoT:
 [Current release and support](current-release.md). Public-index notes:

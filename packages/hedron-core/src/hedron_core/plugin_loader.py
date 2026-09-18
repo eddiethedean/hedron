@@ -204,7 +204,7 @@ def _require_plugin_meta(target: Any, name: str) -> PluginMeta:
             ),
             remediation=(
                 # Example pin must stay aligned with docs/release.toml train bounds.
-                "Attach PluginMeta(..., hedron_version='>=1.0,<1.1') to the register entry point."
+                "Attach PluginMeta(..., hedron_version='>=1.1,<1.2') to the register entry point."
             ),
         )
     return meta

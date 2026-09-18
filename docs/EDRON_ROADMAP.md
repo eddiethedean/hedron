@@ -4,10 +4,10 @@ status: verified
 
 # Edron release roadmap
 
-**Status:** Edron `1.0.17` implemented, verified, tagged, and published<br>
-**Edron release line:** `1.0` canonical Hedron 1.0 adoption<br>
-**Latest in-tree release:** Edron `1.0.17`; Hedron `>=1.0.0`<br>
-**Latest published release:** Edron `1.0.17` on PyPI (`v1.0.17`)<br>
+**Status:** Edron `1.1.0` implemented, verified, tagged, and published<br>
+**Edron release line:** `1.1` canonical Hedron 1.1 adoption<br>
+**Latest in-tree release:** Edron `1.1.0`; Hedron `>=1.0.0`<br>
+**Latest published release:** Edron `1.1.0` on PyPI (`v1.1.0`)<br>
 **Architecture:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
 **Public API:** [Edron 1.0 API by task](api/EDRON_REFERENCE.md)<br>
 **State and interaction:** [Edron 1.0 state and interaction](api/EDRON_STATE_INTERACTION.md)<br>

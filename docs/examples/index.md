@@ -2,7 +2,7 @@
 
 <!-- hedron-release-status -->
 
-These examples target the stable **1.0** API. Version and support details:
+These examples target the stable **1.1** API. Version and support details:
 [Current release](../guides/current-release.md).
 
 Choose an example by outcome. Prefer a **real server** before simulated documentation demos.

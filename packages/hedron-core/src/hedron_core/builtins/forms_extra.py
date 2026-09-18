@@ -483,6 +483,8 @@ class ToggleSwitchProps(_NamedControlProps):
     label: str
     checked: bool = False
     enhance: Literal["legacy", "native", "alpine"] = "legacy"
+    state_icons: bool = False
+    compact: bool = False
 
 
 class ToggleSwitch(Component[ToggleSwitchProps]):
@@ -503,6 +505,8 @@ class ToggleSwitch(Component[ToggleSwitchProps]):
         aria_invalid: str | None = None,
         aria_required: str | None = None,
         enhance: Literal["legacy", "native", "alpine"] = "legacy",
+        state_icons: bool = False,
+        compact: bool = False,
         **kwargs: object,
     ) -> None:
         super().__init__(
@@ -518,6 +522,8 @@ class ToggleSwitch(Component[ToggleSwitchProps]):
                 aria_invalid=aria_invalid,
                 aria_required=aria_required,
                 enhance=enhance,
+                state_icons=state_icons,
+                compact=compact,
                 **kwargs,
             )
         )
@@ -544,10 +550,15 @@ class ToggleSwitch(Component[ToggleSwitchProps]):
             ),
             "checked": "true" if self.props.checked else "false",
         }
-        wrap: dict[str, HtmlAttrValue] = {"class_": "hedron-toggle-switch"}
+        wrap: dict[str, HtmlAttrValue] = {
+            "class_": "hedron-toggle-switch"
+            + (" hedron-toggle-compact" if self.props.compact else "")
+        }
         data = mark_data(self.props.mark)
         if data:
             wrap["data"] = data
+        if self.props.state_icons:
+            wrap["data"] = {**dict(wrap.get("data", {})), "hedron-state-icons": "true"}
         input_alpine = (
             AlpineAttrs.model("checked", source=f"component:ToggleSwitch:{self.props.id}:input")
             if self.props.enhance != "native"
@@ -555,7 +566,17 @@ class ToggleSwitch(Component[ToggleSwitchProps]):
         )
         return html.div(
             html.input(alpine=input_alpine, **attrs),
-            html.label(self.props.label, for_=self.props.id),
+            html.span(
+                html.span("On", class_="hedron-toggle-state-on"),
+                html.span("Off", class_="hedron-toggle-state-off"),
+                class_="hedron-toggle-state-icons",
+                aria={"hidden": "true"},
+            ) if self.props.state_icons else None,
+            html.label(
+                self.props.label,
+                for_=self.props.id,
+                class_="hedron-toggle-label",
+            ),
             alpine=(
                 AlpineAttrs(
                     state={"checked": self.props.checked},

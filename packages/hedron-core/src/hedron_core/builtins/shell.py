@@ -613,6 +613,11 @@ class AppShellChrome:
     banner_spacing: Literal["tight", "standard", "loose"] = "standard"
     header_density: Literal["compact", "standard", "spacious"] = "standard"
     footer_density: Literal["compact", "standard", "spacious"] = "standard"
+    header_inset: Literal["none", "compact", "standard", "wide"] = "none"
+    footer_inset: Literal["none", "compact", "standard", "wide"] = "none"
+    header_surface: Literal["solid", "translucent", "glass"] = "solid"
+    nav_toggle: Literal["text", "ghost", "icon"] = "text"
+    nav_footer_collapsed: Literal["hide", "compact", "show"] = "compact"
 
     def __post_init__(self) -> None:
         choices = {
@@ -625,6 +630,11 @@ class AppShellChrome:
             "banner_spacing": ("tight", "standard", "loose"),
             "header_density": ("compact", "standard", "spacious"),
             "footer_density": ("compact", "standard", "spacious"),
+            "header_inset": ("none", "compact", "standard", "wide"),
+            "footer_inset": ("none", "compact", "standard", "wide"),
+            "header_surface": ("solid", "translucent", "glass"),
+            "nav_toggle": ("text", "ghost", "icon"),
+            "nav_footer_collapsed": ("hide", "compact", "show"),
         }
         for name, allowed in choices.items():
             require_choice(getattr(self, name), allowed, label=f"chrome.{name}")
@@ -652,6 +662,11 @@ class AppShellProps(Props):
     chrome_banner_spacing: str = "standard"
     chrome_header_density: str = "standard"
     chrome_footer_density: str = "standard"
+    chrome_header_inset: str = "none"
+    chrome_footer_inset: str = "none"
+    chrome_header_surface: str = "solid"
+    chrome_nav_toggle: str = "text"
+    chrome_nav_footer_collapsed: str = "compact"
 
 
 NavGroups = Mapping[str, Sequence[NodeLike]] | Sequence[tuple[str, Sequence[NodeLike]]]
@@ -728,6 +743,11 @@ class AppShell(Component[AppShellProps]):
                 chrome_banner_spacing=resolved_chrome.banner_spacing,
                 chrome_header_density=resolved_chrome.header_density,
                 chrome_footer_density=resolved_chrome.footer_density,
+                chrome_header_inset=resolved_chrome.header_inset,
+                chrome_footer_inset=resolved_chrome.footer_inset,
+                chrome_header_surface=resolved_chrome.header_surface,
+                chrome_nav_toggle=resolved_chrome.nav_toggle,
+                chrome_nav_footer_collapsed=resolved_chrome.nav_footer_collapsed,
                 **kwargs,
             )
         )
@@ -812,6 +832,11 @@ class AppShell(Component[AppShellProps]):
             banner_spacing=self.props.chrome_banner_spacing,  # type: ignore[arg-type]
             header_density=self.props.chrome_header_density,  # type: ignore[arg-type]
             footer_density=self.props.chrome_footer_density,  # type: ignore[arg-type]
+            header_inset=self.props.chrome_header_inset,  # type: ignore[arg-type]
+            footer_inset=self.props.chrome_footer_inset,  # type: ignore[arg-type]
+            header_surface=self.props.chrome_header_surface,  # type: ignore[arg-type]
+            nav_toggle=self.props.chrome_nav_toggle,  # type: ignore[arg-type]
+            nav_footer_collapsed=self.props.chrome_nav_footer_collapsed,  # type: ignore[arg-type]
         )
         children: list[NodeLike] = []
         if self._banner is not None:
@@ -872,6 +897,11 @@ class AppShell(Component[AppShellProps]):
             "hedron-shell-banner-spacing": chrome.banner_spacing,
             "hedron-shell-header-density": chrome.header_density,
             "hedron-shell-footer-density": chrome.footer_density,
+            "hedron-shell-header-inset": chrome.header_inset,
+            "hedron-shell-footer-inset": chrome.footer_inset,
+            "hedron-shell-header-surface": chrome.header_surface,
+            "hedron-nav-toggle": chrome.nav_toggle,
+            "hedron-nav-footer-collapsed": chrome.nav_footer_collapsed,
         }
         if not self.props.mobile_collapse:
             data["hedron-mobile-collapse"] = "off"
@@ -895,6 +925,9 @@ class BrandProps(ElementProps):
     mark_size: Literal["sm", "md", "lg"] = "md"
     mark_shape: Literal["square", "rounded", "circle"] = "rounded"
     mark_tone: Literal["accent", "neutral", "muted"] = "accent"
+    mark_appearance: Literal["solid", "plain"] = "solid"
+    name_role: Literal["body", "display"] = "body"
+    subtitle_role: Literal["body", "muted"] = "muted"
     subtitle: str | None = None
     subtitle_overflow: Literal["wrap", "break", "truncate", "clip"] = "truncate"
     attrs: dict[str, HtmlAttrValue] | None = None
@@ -919,6 +952,9 @@ class Brand(Component[BrandProps]):
         mark_size: Literal["sm", "md", "lg"] = "md",
         mark_shape: Literal["square", "rounded", "circle"] = "rounded",
         mark_tone: Literal["accent", "neutral", "muted"] = "accent",
+        mark_appearance: Literal["solid", "plain"] = "solid",
+        name_role: Literal["body", "display"] = "body",
+        subtitle_role: Literal["body", "muted"] = "muted",
         subtitle: str | None = None,
         subtitle_overflow: Literal["wrap", "break", "truncate", "clip"] = "truncate",
         attrs: dict[str, HtmlAttrValue] | None = None,
@@ -944,6 +980,9 @@ class Brand(Component[BrandProps]):
         require_choice(mark_size, ("sm", "md", "lg"), label="mark_size")
         require_choice(mark_shape, ("square", "rounded", "circle"), label="mark_shape")
         require_choice(mark_tone, ("accent", "neutral", "muted"), label="mark_tone")
+        require_choice(mark_appearance, ("solid", "plain"), label="mark_appearance")
+        require_choice(name_role, ("body", "display"), label="name_role")
+        require_choice(subtitle_role, ("body", "muted"), label="subtitle_role")
         url = None
         if href is not None:
             url = href if isinstance(href, SafeUrl) else _coerce_nav_url(href)
@@ -955,6 +994,9 @@ class Brand(Component[BrandProps]):
                 mark_size=mark_size,
                 mark_shape=mark_shape,
                 mark_tone=mark_tone,
+                mark_appearance=mark_appearance,
+                name_role=name_role,
+                subtitle_role=subtitle_role,
                 subtitle=subtitle,
                 subtitle_overflow=subtitle_overflow,
                 attrs=attrs,
@@ -969,9 +1011,21 @@ class Brand(Component[BrandProps]):
         self._mark_content = mark_content
 
     def render(self) -> NodeLike:
-        label_parts: list[NodeLike] = [html.strong(self.props.name, class_="hedron-brand-name")]
+        label_parts: list[NodeLike] = [
+            html.strong(
+                self.props.name,
+                class_="hedron-brand-name",
+                data={"hedron-typography-role": self.props.name_role},
+            )
+        ]
         if self.props.subtitle:
-            label_parts.append(html.small(self.props.subtitle, class_="hedron-brand-subtitle"))
+            label_parts.append(
+                html.small(
+                    self.props.subtitle,
+                    class_="hedron-brand-subtitle",
+                    data={"hedron-typography-role": self.props.subtitle_role},
+                )
+            )
         label = html.span(*label_parts, class_="hedron-brand-copy")
         mark = html.span(
             self._mark_content or self.props.mark_text or self.props.name[:1],
@@ -981,6 +1035,7 @@ class Brand(Component[BrandProps]):
                 "hedron-mark-size": self.props.mark_size,
                 "hedron-mark-shape": self.props.mark_shape,
                 "hedron-mark-tone": self.props.mark_tone,
+                "hedron-mark-appearance": self.props.mark_appearance,
             },
         )
         data = dict(self.props.data or {})

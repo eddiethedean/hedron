@@ -1,7 +1,7 @@
 # Symbol tiers (1.0 API honesty foundation)
 
 **Status:** Living machine-checked inventory for the flagship root facade on the
-published **1.0.x** train. It records API stability independently from package maturity
+published **1.1.x** train. It records API stability independently from package maturity
 and capability readiness.
 
 ## Why

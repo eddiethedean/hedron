@@ -10,9 +10,9 @@ The boundary remains normative: Hedron owns the declaration and server truth, HT
 and server HTML replacement, Alpine owns disposable browser-local presentation, and Hedron owns
 only the lifecycle handoff between them.
 
-Phase 1.1 is now assigned to first-class UI testing by
+Phase 1.1 owns open enhancement completion; first-class UI testing moves to 1.2 under
 [RFC-0097](../rfcs/RFC-0097-FIRST-CLASS-UI-TESTING.md). Nothing in this document is authorized for
-1.1. Typed lowering, runtime consolidation, compatibility shims, deprecations, default changes, and
+either phase. Typed lowering, runtime consolidation, compatibility shims, deprecations, default changes, and
 2.0 removals require a separate accepted phase decision. Version references below describe the
 original proposal and are retained only as migration design input.
 

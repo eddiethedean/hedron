@@ -8,12 +8,12 @@ HTML `id` stays stable so HTMX can swap it.
 **Requirement** — An install constraint declaring the supported minimum, for example
 `hedron>=1.0.0`. The latest published patch remains a release fact, not a required application pin.
 
-**Train** — A minor version line (`1.0.x`). Compatible patches stay inside the pin;
+**Train** — A minor version line (`1.1.x`). Compatible patches stay inside the pin;
 the next train is an intentional upgrade.
 
 **Published** — A cut available through the named distribution channel. Edron and Hedron
-`v1.0.17` are published on PyPI. `v0.67.0` is the immutable migration baseline. Require the stable
-`1.0.x` compatibility floor and review the latest registry-resolvable release.
+`v1.1.0` are published on PyPI. `v1.0.17` is the immutable migration baseline. Require the stable
+`1.1.x` compatibility floor and review the latest registry-resolvable release.
 
 **Action** — A typed server operation with an HTTP method, input contract, dependencies, and response behavior.
 

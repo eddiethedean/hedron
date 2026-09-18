@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.10] — 2026-09-18
+
+### Added
+- Add the request-bound URL facade used by the Hedron 1.1 navigation, form,
+  asset, Location, and HX-Redirect contracts.
+
 ## [1.0.9] — 2026-09-02
 
 ### Fixed

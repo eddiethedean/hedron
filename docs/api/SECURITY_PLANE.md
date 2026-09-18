@@ -24,7 +24,7 @@ Compatibility: existing `SafeUrl`, `TrustedHtml`, `Secret`, CSRF, and 0.55
 replay/capability/upload APIs retain documented paths and delegate to shared
 authorities where applicable.
 
-Pin and maturity follow the current **1.0.x** train; new symbols are `beta` for
+Pin and maturity follow the current **1.1.x** train; new symbols are `beta` for
 their first release.
 
 ## Example

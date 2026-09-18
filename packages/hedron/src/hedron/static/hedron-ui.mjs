@@ -131,6 +131,21 @@ document.addEventListener("click", (event) => {
     if (shell instanceof HTMLElement) {
       setNavCollapsed(shell, shell.dataset.hedronNavCollapsed !== "true");
     }
+    return;
+  }
+
+  const secretClear = event.target.closest("[data-hedron-secret-operation='clear']");
+  if (secretClear instanceof HTMLButtonElement) {
+    event.preventDefault();
+    const field = secretClear.closest(".hedron-secret-field");
+    const operation = field?.querySelector("[data-hedron-secret-operation='selector']");
+    if (operation instanceof HTMLInputElement) {
+      event.preventDefault();
+      operation.value = "clear";
+      field?.setAttribute("data-hedron-secret-selected-operation", "clear");
+      const replacement = field.querySelector("input[type='password']");
+      if (replacement instanceof HTMLInputElement) replacement.value = "";
+    }
   }
 });
 

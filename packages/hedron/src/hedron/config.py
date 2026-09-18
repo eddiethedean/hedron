@@ -41,6 +41,7 @@ _KNOWN_KEYS = frozenset(
         "explorer",
         "compiler_checks",
         "diagnostic_severities",
+        "application",
     }
 )
 
@@ -75,6 +76,7 @@ class HedronSettings:
     diagnostic_severities: Mapping[str, str] = field(default_factory=dict[str, str])
     source_path: str | None = None
     accent: str | None = None
+    application: str | None = None
 
     def resolved_roots(self, *, base: Path | None = None) -> tuple[Path, ...]:
         root = base or Path.cwd()
@@ -94,6 +96,7 @@ def settings_digest(settings: HedronSettings) -> str:
             "build_dir": settings.build_dir,
             "theme": settings.theme,
             "accent": settings.accent,
+            "application": settings.application,
             "asset_policy": {
                 "allow_remote": settings.asset_policy.allow_remote,
                 "strict_csp": settings.asset_policy.strict_csp,
@@ -290,6 +293,9 @@ def load_hedron_settings(
         from hedron_core.theme import folio_theme
 
         folio_theme(accent=accent)
+    application = raw.get("application")
+    if application is not None and (not isinstance(application, str) or ":" not in application):
+        raise _invalid_type("application", "a module:attribute string", application)
     diagnostic_severities = {key: cast(str, value) for key, value in diagnostics_raw.items()}
 
     return HedronSettings(
@@ -304,4 +310,5 @@ def load_hedron_settings(
         compiler_checks=_bool_value(raw, "compiler_checks", True),
         diagnostic_severities=diagnostic_severities,
         source_path=source_path,
+        application=application,
     )

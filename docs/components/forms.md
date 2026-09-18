@@ -35,3 +35,4 @@ Typed, labelled controls and validation presentation.
 - [`SelectSlider`](select-slider.md) — Range input with optional datalist marks.
 - [`TimeInput`](time-input.md) — Native time input.
 - [`ToggleSwitch`](toggle-switch.md) — Switch-styled checkbox control.
+- [`SecretField`](secret-field.md) — Write-only password editor with explicit keep, replace, and clear operations.

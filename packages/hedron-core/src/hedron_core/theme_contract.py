@@ -43,12 +43,65 @@ __all__ = [
     "package_identity_manifest",
     "resolve_theme",
     "theme_contract_report",
+    "ComputedStyleAssertion",
+    "ComputedStyleResult",
+    "evaluate_computed_style_assertions",
 ]
 
 THEME_RESOLUTION_SCHEMA = "hedron.theme-resolution/1"
 THEME_EXPORT_SCHEMA = "hedron.theme-export/1"
 COMPONENT_MANIFEST_SCHEMA = "hedron.component-theme-manifest/1"
 STATE_MATRIX_SCHEMA = "hedron.component-state-matrix/1"
+
+
+@dataclass(frozen=True, slots=True)
+class ComputedStyleAssertion:
+    """Bounded relationship checked against browser-computed style facts."""
+
+    component: str
+    property: str
+    expected: str
+    actual: str
+    case_id: str = ""
+
+    @property
+    def passed(self) -> bool:
+        return self.expected == self.actual
+
+
+@dataclass(frozen=True, slots=True)
+class ComputedStyleResult:
+    assertions: tuple[ComputedStyleAssertion, ...]
+    provenance: Mapping[str, Any] = field(default_factory=dict)
+
+    @property
+    def passed(self) -> bool:
+        # An empty assertion set or missing provenance means the browser
+        # contract was not actually evaluated.
+        return (
+            bool(self.assertions)
+            and bool(self.provenance)
+            and all(assertion.passed for assertion in self.assertions)
+        )
+
+    def failures(self) -> tuple[ComputedStyleAssertion, ...]:
+        return tuple(assertion for assertion in self.assertions if not assertion.passed)
+
+
+def evaluate_computed_style_assertions(
+    assertions: Iterable[ComputedStyleAssertion],
+    *,
+    provenance: Mapping[str, Any] | None = None,
+) -> ComputedStyleResult:
+    """Evaluate declared relationships without inferring accessibility claims.
+
+    Browser adapters supply the actual values; missing/empty values remain
+    failures so absent browser coverage cannot silently pass.
+    """
+
+    values = tuple(assertions)
+    return ComputedStyleResult(values, dict(provenance or {}))
+
 
 _DEFAULT_VIEWPORTS = ("320", "390", "1440")
 _DEFAULT_MODES = ("light", "dark")

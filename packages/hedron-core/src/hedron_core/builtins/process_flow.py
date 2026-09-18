@@ -263,6 +263,9 @@ class FlowStepProps(ElementProps):
     description: str | None = None
     status_text: str | None = None
     connector: Literal["line", "none"] = "line"
+    appearance: Literal["default", "plain"] = "default"
+    marker: str | None = None
+    media_placement: Literal["trailing", "leading", "above"] = "trailing"
 
 
 class FlowStep(Component[FlowStepProps]):
@@ -281,6 +284,9 @@ class FlowStep(Component[FlowStepProps]):
         description: str | None = None,
         status_text: str | None = None,
         connector: Literal["line", "none"] = "line",
+        appearance: Literal["default", "plain"] = "default",
+        marker: str | None = None,
+        media_placement: Literal["trailing", "leading", "above"] = "trailing",
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
@@ -288,6 +294,8 @@ class FlowStep(Component[FlowStepProps]):
     ) -> None:
         require_choice(status, FLOW_STATUSES, label="status")
         require_choice(kind, FLOW_KINDS, label="kind")
+        require_choice(appearance, ("default", "plain"), label="appearance")
+        require_choice(media_placement, ("trailing", "leading", "above"), label="media_placement")
         if not label.strip():
             raise error(
                 HED_HTML_0006,
@@ -303,6 +311,9 @@ class FlowStep(Component[FlowStepProps]):
                 description=description,
                 status_text=status_text,
                 connector=connector,
+                appearance=appearance,
+                marker=marker,
+                media_placement=media_placement,
                 id=id,
                 class_=class_,
                 mark=mark,
@@ -314,6 +325,12 @@ class FlowStep(Component[FlowStepProps]):
     def render(self) -> NodeLike:
         status = self.props.status
         body: list[NodeLike] = [
+            html.span(
+                self.props.marker,
+                class_="hedron-process-flow-marker",
+                aria={"hidden": "true"},
+            )
+            if self.props.marker else None,
             html.span(self.props.label, class_="hedron-process-flow-label"),
             html.span(
                 self.props.status_text or _STATUS_TEXT[status],
@@ -346,6 +363,9 @@ class FlowStep(Component[FlowStepProps]):
         }
         if status == "current":
             attrs["aria"] = {"current": "step"}
+        body = [node for node in body if node is not None]
+        attrs["data"]["hedron-flow-appearance"] = self.props.appearance
+        attrs["data"]["hedron-flow-media-placement"] = self.props.media_placement
         return html.li(*body, **attrs)
 
 
@@ -354,6 +374,7 @@ class ProcessFlowProps(ElementProps):
     direction: Literal["horizontal", "vertical"] = "horizontal"
     collapse: str = "md"
     density: Density | None = None
+    appearance: Literal["default", "plain"] = "default"
 
 
 class ProcessFlow(Component[ProcessFlowProps]):
@@ -370,12 +391,14 @@ class ProcessFlow(Component[ProcessFlowProps]):
         direction: Literal["horizontal", "vertical"] = "horizontal",
         collapse: str = "md",
         density: Density | None = None,
+        appearance: Literal["default", "plain"] = "default",
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
         **kwargs: Any,
     ) -> None:
         require_choice(collapse, ("never", "sm", "md", "lg"), label="collapse")
+        require_choice(appearance, ("default", "plain"), label="appearance")
         if not label.strip():
             raise error(
                 HED_HTML_0006,
@@ -389,6 +412,7 @@ class ProcessFlow(Component[ProcessFlowProps]):
                 direction=direction,
                 collapse=collapse,
                 density=density,
+                appearance=appearance,
                 id=id,
                 class_=class_,
                 mark=mark,
@@ -402,6 +426,7 @@ class ProcessFlow(Component[ProcessFlowProps]):
             "hedron-process-flow": "true",
             "hedron-direction": self.props.direction,
             "hedron-flow-collapse": self.props.collapse,
+            "hedron-flow-appearance": self.props.appearance,
             **appearance_data(density=self.props.density),
             **mark_data(self.props.mark),
         }

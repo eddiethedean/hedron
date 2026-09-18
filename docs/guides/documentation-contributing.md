@@ -23,7 +23,7 @@ the layer install matrix are expanded from `docs/release.toml` by `docs/hooks.py
 
 ## Current, historical, and maintainer material
 
-- **Current:** user-facing 1.0 guidance in the main navigation and current search index.
+- **Current:** user-facing 1.1 guidance in the main navigation and current search index.
 - **Historical:** earlier release behavior, clearly bannered and excluded from current search
   when it conflicts with 1.0.
 - **Maintainer:** RFCs, implementation plans, acceptance evidence, and release gates excluded

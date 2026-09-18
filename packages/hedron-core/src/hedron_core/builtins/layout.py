@@ -764,6 +764,7 @@ class FormGridProps(ElementProps):
     columns: dict[str, int]
     gap: str = "1rem"
     density: Density | None = None
+    alignment: Literal["stretch", "natural", "label-track"] = "stretch"
 
 
 class FormGrid(Component[FormGridProps]):
@@ -779,6 +780,7 @@ class FormGrid(Component[FormGridProps]):
         columns: int | Mapping[str, int] = 2,
         gap: str = "1rem",
         density: Density | None = None,
+        alignment: Literal["stretch", "natural", "label-track"] = "stretch",
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
@@ -790,6 +792,7 @@ class FormGrid(Component[FormGridProps]):
                 columns=resolved,
                 gap=_validated_gap(gap),
                 density=density,
+                alignment=alignment,
                 id=id,
                 class_=class_,
                 mark=mark,
@@ -807,6 +810,7 @@ class FormGrid(Component[FormGridProps]):
         }
         if self.props.density:
             data["hedron-density"] = self.props.density
+        data["hedron-form-grid-alignment"] = self.props.alignment
         return html.div(
             *self._children,
             id=self.props.id,

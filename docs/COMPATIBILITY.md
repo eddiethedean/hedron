@@ -1,6 +1,6 @@
 # Compatibility policy
 
-**Status:** Accepted for the verified and published **1.0.x** release (`v1.0.17`).
+**Status:** Accepted for the verified and published **1.1.x** release (`v1.1.0`).
 **Reviewed:** 2026-08-28
 
 ## Current train (read this first)
@@ -17,7 +17,7 @@
 
 The **Supported matrix** is the CI-tested range. Package metadata may declare a **wider**
 compatible range; versions outside the Supported column are installable but unsupported
-until evidence is green. In the 1.0 boundary, `hedron-core`, `hedron`, `edron`, `hedron-data`,
+until evidence is green. In the 1.1 boundary, `hedron-core`, `hedron`, `edron`, `hedron-data`,
 `hedron-charts`, and `hedron-maps` are Stable
 platform packages. Host adapters, Explorer, elements, extras, Posit, conformance, Workbench,
 native, MCP, Gradio, notebook, sample-kit, and simulation packages are independent Beta

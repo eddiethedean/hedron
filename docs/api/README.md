@@ -28,14 +28,14 @@ After [First app → What is HTMX → HTMX interactions → Minimal form](../get
 
 **Stability:** API levels are defined in [STABILITY.md](STABILITY.md). A **minimal
 `stable` tier** (render/model/interaction/CSRF/router facades and portable adapter
-helpers) is compatibility-protected on the 1.0.x repository train. Everything else is `beta` or
+helpers) is compatibility-protected on the 1.1.x repository train. Everything else is `beta` or
 `experimental` unless listed. The **Stable** 1.0 package inventory is `hedron-core`, `hedron`,
 `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps`; every other satellite remains Beta.
 Live transports stay **experimental**; prefer polling. Upgrade notes:
 [upgrade guide](../guides/upgrade.md).
 
-The latest installable PyPI release is verified **`v1.0.17`**. The development
-workspace is **`1.0.17`** (unreleased).
+The latest installable PyPI release is verified **`v1.1.0`**. The development
+workspace is **`1.1.0`** (unreleased).
 Public-index users should require `hedron>=1.0.0`.
 
 !!! note "Contracts vs full reference"

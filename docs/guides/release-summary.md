@@ -1,6 +1,6 @@
 # Release process summary
 
-Hedron’s coordinated `v1.0.17` package train is tagged, published, and Verified.
+Hedron’s coordinated `v1.1.0` package train is tagged, published, and Verified.
 
 The exact maintainer commands and publication rules live in
 [`docs/RELEASE.md`](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md).
@@ -9,11 +9,11 @@ The exact maintainer commands and publication rules live in
 
 | Item | Value |
 |---|---|
-| Current stable release | **v1.0.17** (`hedron`, `hedron-core`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps`) |
+| Current stable release | **v1.1.0** (`hedron`, `hedron-core`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps`) |
 | Migration baseline | **v0.67.0** |
-| PyPI latest | **v1.0.17** |
+| PyPI latest | **v1.1.0** |
 | Public-index requirement | `hedron>=1.0.0` |
-| Repository development | `uv sync` (editable 1.0.18 checkout; unreleased development train) |
+| Repository development | `uv sync` (editable 1.1.0 checkout; current published train) |
 | Charts package | `hedron-charts>=1.0.0` |
 | Maps package | `hedron-maps>=1.0.0` |
 | Generic Workbench adapter | `fastapi-workbench>=1.0.8,<2.0` |
@@ -21,7 +21,7 @@ The exact maintainer commands and publication rules live in
 | Entry gate | `python scripts/check_100.py --gate ENTRY-100 --verify` |
 
 Adopter-facing sources of truth: [Current release](current-release.md) ·
-[What’s new in 1.0](whats-new-1.0.md) · [Upgrade](upgrade.md) ·
+[What’s next](whats-next.md) · [Upgrade](upgrade.md) ·
 [What’s ready](whats-ready.md).
 
 ## Contributor checklist

@@ -1,6 +1,6 @@
 # Public stability classifications
 
-**For adopters:** Hedron 1.0.17 is published on PyPI. Require `hedron>=1.0.0`. Treat the **stable**
+**For adopters:** Hedron 1.1.0 is published on PyPI. Require `hedron>=1.0.0`. Treat the **stable**
 tables below as the SemVer compatibility promise; everything
 else is `beta` / `experimental` and may change on the documented schedule. Capability readiness
 (Supported vs Experimental) lives on [What’s ready](../guides/whats-ready.md). Only
@@ -10,7 +10,7 @@ independent Beta satellites.
 <details markdown>
 <summary>Maintainer catalog metadata</summary>
 
-**Status:** Verified and published **1.0.x** release (`v1.0.17`). `v0.67.0` remains the
+**Status:** Verified and published **1.1.x** release (`v1.1.0`). `v0.67.0` remains the
 immutable migration baseline.
 Prior: 0.50 Explorer architecture; 0.49 FastAPI/Pydantic; 0.48 HTMX; 0.25 archetype; 0.24
 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
@@ -19,11 +19,11 @@ D-114/D-115/D-116/D-117 define the verified 1.0 one-way task and component-engin
 retain the public Web Component ABI, and supersede
 D-038's no-calendar clause; the existing
 D-053 / RFC-0056 and D-054 / RFC-0057 evidence and stable-tier obligations remain in force.
-**Version:** `1.0.x` / catalog baseline
+**Version:** `1.1.x` / catalog baseline
 `0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`+`0.17`+`0.18`+`0.19`+`0.20`+`0.21`+`0.22`+`0.23`+`0.24`+`0.25`+`0.26`+`0.27`+`0.28`+`0.50`+`0.51`
 
 This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the
-`1.0.x` repository train. Levels apply to documented contracts; symbols not listed here are
+`1.1.x` repository train. Levels apply to documented contracts; symbols not listed here are
 **internal** unless a later phase explicitly promotes them.
 
 </details>
@@ -195,7 +195,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 - `LineChart` / `AreaChart` / `BarChart` / `ScatterChart`: **stable**.
 - Optional vendor adapters + offline runtime pins: **experimental**.
 
-Schema acceptance is broader than specialized host painting in the `hedron-charts 1.0.x` line; see the
+Schema acceptance is broader than specialized host painting in the `hedron-charts 1.1.x` line; see the
 [Chart API coverage matrix](CHART.md#compiler-contract-versus-current-host-coverage).
 
 ### `hedron-maps` (Stable package) — `stable` API

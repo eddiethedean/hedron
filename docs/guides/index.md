@@ -8,7 +8,7 @@ search:
 
 !!! note "Release context"
 
-    Guides describe the published 1.0 release. See
+    Guides describe the published 1.1 release. See
     [Current release and support](current-release.md) for PyPI pins,
     the migration baseline, package maturity, and support status.
 

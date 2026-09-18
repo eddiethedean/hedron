@@ -3040,6 +3040,25 @@ COMPONENTS = (
         "Keep the surrounding nav landmark labelled and preserve each item’s native focus and link behavior.",
         "Do not use NavGroup to bypass route authorization or nest competing nav landmarks.",
     ),
+    ComponentDoc(
+        "SecretField",
+        "forms",
+        "Write-only password editor with explicit keep, replace, and clear operations.",
+        "SecretField(name, label, *, configured=False, allow_clear=False, id=None, class_=None, mark=None, **kwargs)",
+        "SecretField('api_key', 'API key', configured=True, allow_clear=True)",
+        (
+            p("name", "str", "Base name used for the replacement, operation, and clear fields."),
+            p("label", "str", "Accessible label for the password control."),
+            p("configured", "bool", "Whether a value is already configured; plaintext is never rendered."),
+            p("allow_clear", "bool", "Show the explicit clear action, including its no-JavaScript submit fallback."),
+            p("id", "str | None", "Optional stable control id."),
+            p("class_", "str | None", "Additional CSS class on the field wrapper."),
+            p("mark", "str | None", "Optional stable test mark."),
+        ),
+        "SecretField renders a password replacement control and a keep operation marker without echoing the stored secret. Applications resolve submitted values with `resolve_secret_update` and keep authorization and persistence server-side.",
+        "Keep the label visible and pair validation feedback with the field id; never expose stored secret material in HTML, diagnostics, or history.",
+        "Do not treat the configured marker as the secret value, and do not persist the replacement until the server validates the request.",
+    ),
 )
 
 
@@ -3730,7 +3749,7 @@ hide:
 
 !!! note "Release context"
 
-    Component contracts and demos target the published 1.0 release.
+    Component contracts and demos target the published 1.1 release.
     Registry and support details live on
     [Current release and support](../guides/current-release.md).
 

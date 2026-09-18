@@ -36,6 +36,7 @@ from hedron_posit.resolve import parse_rserver_url_output, resolve_deployment
 from hedron_posit.runner import export_hedron_state, prepare_app
 from hedron_posit.urls import (
     ExternalBase,
+    RequestUrlFacade,
     browser_mount_from_request,
     compose_external_url,
     compose_local_url,
@@ -43,10 +44,11 @@ from hedron_posit.urls import (
     is_ephemeral_workbench_mount,
     local_href,
     mounted_redirect,
+    urls_for_request,
     validate_external_base_url,
 )
 
-__version__ = "1.0.9"
+__version__ = "1.0.10"
 
 __all__ = [
     "ConnectConfig",
@@ -56,6 +58,7 @@ __all__ = [
     "DEFAULT_MATRIX",
     "DeploymentCapabilities",
     "ExternalBase",
+    "RequestUrlFacade",
     "HedronPosit",
     "MatrixCase",
     "PositConfig",
@@ -92,5 +95,6 @@ __all__ = [
     "run_deployment_matrix",
     "validate_deployed_interactions",
     "validate_external_base_url",
+    "urls_for_request",
     "workbenchify",
 ]

@@ -10,6 +10,7 @@ from hedron_core.builtins._base import class_names, collect_children, dom_id_par
 from hedron_core.builtins.style_scope import presentation_data
 from hedron_core.component import Component, NodeLike
 from hedron_core.csrf_strategy import CsrfTokenProvider, resolve_csrf_field_values
+from hedron_core.enhancements import FormIssue, ValidationResult
 from hedron_core.html import NativeElement, html
 from hedron_core.htmx.attrs import HtmxAttrs
 from hedron_core.htmx.attrs import Hx as Hx
@@ -811,14 +812,39 @@ class FormErrorsProps(Props):
 class FormErrors(Component[FormErrorsProps]):
     props_type = FormErrorsProps
 
-    def __init__(self, errors: Sequence[str], **kwargs: object) -> None:
-        super().__init__(FormErrorsProps(errors=tuple(errors), **kwargs))
+    def __init__(
+        self,
+        errors: Sequence[str] | ValidationResult | Sequence[FormIssue],
+        **kwargs: object,
+    ) -> None:
+        if isinstance(errors, ValidationResult):
+            issues = errors.issues
+            strings = tuple(issue.message for issue in issues)
+        else:
+            values = tuple(errors)
+            issues = tuple(value for value in values if isinstance(value, FormIssue))
+            strings = tuple(value for value in values if isinstance(value, str))
+        super().__init__(FormErrorsProps(errors=strings, **kwargs))
+        self._issues = issues
 
     def render(self) -> NodeLike:
-        if not self.props.errors:
+        if not self.props.errors and not self._issues:
             return None
+        items: list[NodeLike] = []
+        for issue in self._issues:
+            target = "-".join(issue.path)
+            items.append(
+                html.li(
+                    html.a(
+                        issue.message,
+                        href=SafeUrl.parse(f"#{target}", purpose=UrlPurpose.NAVIGATION),
+                    ) if target else issue.message,
+                    data={"hedron-error-code": issue.code},
+                )
+            )
+        items.extend(html.li(error) for error in self.props.errors)
         return html.div(
-            html.ul(*[html.li(e) for e in self.props.errors]),
+            html.ul(*items),
             class_="hedron-form-errors",
             role="alert",
         )

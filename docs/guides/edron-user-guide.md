@@ -10,7 +10,7 @@ Edron is a typed, server-rendered Python facade over one native Hedron applicati
 for dashboards, internal tools, data workspaces, and workflows that should remain useful with
 ordinary HTTP and without a separate frontend build system.
 
-This guide targets the Edron and Hedron `1.0.x` Stable contract. Install the published 1.0
+This guide targets the Edron and Hedron `1.1.x` Stable contract. Install the published 1.0
 train from PyPI, or use `uv sync` from the repository for development. Keep the supported
 surface explicit, and treat
 undocumented imports as internal.
@@ -553,7 +553,7 @@ Treat an Edron upgrade as an application release:
 Edron does not reverse database migrations, rotate secrets, cancel external side effects, reclaim
 user files, or undo already-enqueued work. Those actions require an application-owned runbook.
 
-For the current release boundary, see [Edron 1.0 acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_100.md) and the
+For the current release boundary, see [Edron 1.1 acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_100.md) and the
 [Edron roadmap](../EDRON_ROADMAP.md).
 
 ## 14. Migrate from Streamlit

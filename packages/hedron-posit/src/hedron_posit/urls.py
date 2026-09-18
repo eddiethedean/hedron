@@ -23,6 +23,42 @@ _WORKBENCH_SESSION_MOUNT = re.compile(r"^/s/[^/]+/p/[^/]+(?:/|$)")
 
 
 @dataclass(frozen=True, slots=True)
+class RequestUrlFacade:
+    """Request-bound URL forms for components and response headers.
+
+    Each method names its browser/response purpose so applications do not
+    reconstruct Posit deployment rules or accidentally use a Location value as
+    an HTMX redirect value.
+    """
+
+    request: Request
+    mount: str
+    external: ExternalBase | None = None
+
+    def navigation(self, path: str, **kwargs: object) -> str:
+        return local_href(path, mount=self.mount, **kwargs)  # type: ignore[arg-type]
+
+    def form_action(self, path: str, **kwargs: object) -> str:
+        return self.navigation(path, **kwargs)
+
+    def asset(self, path: str, **kwargs: object) -> str:
+        return self.navigation(path, **kwargs)
+
+    def location(self, path: str, **kwargs: object) -> str:
+        if self.external is not None:
+            return compose_external_url(path, base=self.external, **kwargs)  # type: ignore[arg-type]
+        return self.navigation(path, **kwargs)
+
+    def hx_redirect(self, path: str, **kwargs: object) -> str:
+        # HX-Redirect is a root-local value; response middleware adapts it for
+        # deployments. It must not receive an arbitrary absolute target.
+        return compose_local_url(path, mount="", **kwargs)  # type: ignore[arg-type]
+
+    def redirect_response(self, path: str, *, status_code: int = 303, **kwargs: object) -> Response:
+        return mounted_redirect(path, mount=self.mount, status_code=status_code, **kwargs)  # type: ignore[arg-type]
+
+
+@dataclass(frozen=True, slots=True)
 class ExternalBase:
     """A validated public origin and application mount."""
 
@@ -245,6 +281,14 @@ def browser_mount_from_request(request: Request) -> str:
     env_mount = str(getattr(state, "hedron_mount_path", "") or "")
     configured = bool(getattr(state, "hedron_mount_was_configured", False))
     return env_mount if env_mount or configured else scope_mount
+
+
+def urls_for_request(request: Request) -> RequestUrlFacade:
+    """Build a validated URL facade from the active request deployment."""
+
+    mount = browser_mount_from_request(request)
+    external = connect_external_base_from_request(request)
+    return RequestUrlFacade(request=request, mount=mount, external=external)
 
 
 def local_href(

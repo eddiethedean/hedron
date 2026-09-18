@@ -9,11 +9,11 @@ status: shipped
     This page is the historical **FACADE-023** artifact. It records the 0.23-era beginner
     facade as carried through the 0.66.x train; it is not the 1.0 stable inventory. Symbols listed under
     [Expanded stable tier (0.23)](STABILITY.md#expanded-stable-tier-023) remain
-    compatibility-protected **`stable`** on the current **1.0.x** train. Pin
+    compatibility-protected **`stable`** on the current **1.1.x** train. Pin
     `uv sync` from a checkout. Application users should install
     `hedron>=1.0.0` from PyPI; use `uv sync` for repository development.
 
-    For the current 1.0 contract, use the machine-enumerated
+    For the current 1.1 contract, use the machine-enumerated
     [stable inventory](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/stable-inventory-100.toml) and the canonical
     `@app.page` / `@app.view` / `@app.action` roles documented in [Hedron](HEDRON.md).
 

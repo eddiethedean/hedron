@@ -1,8 +1,8 @@
 # Upgrade to Hedron 1.0
 
-This guide starts with the current 1.0 migration boundary, then retains historical notes for
+This guide starts with the current 1.1 migration boundary, then retains historical notes for
 older release trains. The immutable migration baseline is `v0.67.0`; the coordinated checkout
-is on the `1.0.x` line on the `v1.0` branch. Read [Current release and support](current-release.md)
+is on the `1.1.x` line on the `v1.1` branch. Read [Current release and support](current-release.md)
 for the published PyPI status before changing an application requirement.
 
 ## 0.67 → 1.0

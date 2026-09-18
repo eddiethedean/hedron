@@ -15,17 +15,17 @@ maintaining their own release story.
 
 | Package | Version | Maturity | Application requirement | Role |
 |---|---:|---|---|---|
-| `hedron` | `1.0.17` | Stable | `hedron>=1.0.0` | FastAPI-native component and route authoring |
-| `hedron-data` | `1.0.17` | Stable | `hedron-data>=1.0.0` | DataTable, DataEditor, and bounded data contracts |
-| `hedron-charts` | `1.0.17` | Stable | `hedron-charts>=1.0.0` | First-party charts and static/Matplotlib output |
-| `hedron-maps` | `1.0.17` | Stable | `hedron-maps>=1.0.0` | Bounded first-party maps and offline presentation |
-| `edron` | `1.0.17` | Stable | `edron>=1.0.0` | Alternate class-oriented facade over Hedron |
+| `hedron` | `1.1.0` | Stable | `hedron>=1.0.0` | FastAPI-native component and route authoring |
+| `hedron-data` | `1.1.0` | Stable | `hedron-data>=1.0.0` | DataTable, DataEditor, and bounded data contracts |
+| `hedron-charts` | `1.1.0` | Stable | `hedron-charts>=1.0.0` | First-party charts and static/Matplotlib output |
+| `hedron-maps` | `1.1.0` | Stable | `hedron-maps>=1.0.0` | Bounded first-party maps and offline presentation |
+| `edron` | `1.1.0` | Stable | `edron>=1.0.0` | Alternate class-oriented facade over Hedron |
 
 The coordinated release supports CPython **3.10–3.14**. Package maturity, capability
 readiness, and individual API stability are separate: a stable package may contain a
 clearly labeled experimental capability.
 
-The exact 1.0 package and API boundary is maintained in the repository’s
+The exact 1.1 package and API boundary is maintained in the repository’s
 [`release/support-matrix.toml`](https://github.com/eddiethedean/hedron/blob/main/release/support-matrix.toml). Beta
 host/tooling satellites are opt-in compatibility surfaces, not part of the stable platform contract.
 
@@ -39,8 +39,8 @@ host/tooling satellites are opt-in compatibility surfaces, not part of the stabl
 | Repository contribution | `uv sync`, then [Contributor day one](contributor-day-one.md) |
 
 The table's `>=1.0.0` values are compatibility floors, not the recommended production lock.
-For a new Hedron application use `hedron>=1.0.17,<1.1`; for reproducible CI and deployment,
-resolve and commit a lockfile or use `hedron==1.0.17`. Reusable libraries may use the broader
+For a new Hedron application use `hedron>=1.1.0,<1.2`; for reproducible CI and deployment,
+resolve and commit a lockfile or use `hedron==1.1.0`. Reusable libraries may use the broader
 `>=1.0.0` floor when they test against the full supported range. Upgrade deliberately after
 reading the release notes and running the application's own integration tests.
 
@@ -48,7 +48,7 @@ reading the release notes and running the application's own integration tests.
 
 | Train | Security support | Compatibility expectation |
 |---|---|---|
-| `1.0.x` | Current published train | Stable APIs follow the 1.x compatibility policy |
+| `1.1.x` | Current published train | Stable APIs follow the 1.x compatibility policy |
 | `0.67.x` | Best-effort security triage through approximately 2027-02-27 | Upgrade to 1.0; migration aliases are not the new golden path |
 | Earlier `0.x` | Unsupported | Use historical documentation only to plan an upgrade |
 
@@ -68,7 +68,7 @@ major release. See [Stability](../api/STABILITY.md) and [Upgrade](upgrade.md).
 ## Coordinated and independent packages
 
 `hedron-core`, `hedron`, Edron, `hedron-data`, `hedron-charts`, and `hedron-maps` use the
-coordinated 1.0 Stable contract in the repository. Host adapters and vendor/tooling satellites
+coordinated 1.1 Stable contract in the repository. Host adapters and vendor/tooling satellites
 retain independent versions and Beta maturity.
 Do not infer satellite compatibility from a similar
 version number; use the [compatibility matrix](../COMPATIBILITY.md).

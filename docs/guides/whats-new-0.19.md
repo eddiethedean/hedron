@@ -7,7 +7,7 @@
     Keep the historical pins below only when maintaining that release line.
 
 
-**Published as `v0.19.0`** (2026-08-07). Current published train is **1.0.x** (`v1.0.0`).
+**Published as `v0.19.0`** (2026-08-07). Current published train is **1.1.x** (`v1.0.0`).
 Historical installs for this phase used a 0.19 upper-bound pin; the current pin is
 `hedron>=1.0.0`.
 

@@ -3,6 +3,13 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 1.1.0 — 2026-09-18
+
+The open-enhancement completion release adds identity and resource presentation hooks, bounded
+pagination and collection state, request-aware navigation, secure form and secret lifecycles,
+application-aware builds, native shell and presentation refinements, and computed-style contracts.
+The complementary flow and release checks are recorded in the [Phase 1.1 acceptance packet](../acceptance/RELEASE_1_1.md).
+
 ## 1.0.17 — 2026-09-17
 
 Coordinated theme-polish release for the 1.0 package train. The release is tagged on GitHub

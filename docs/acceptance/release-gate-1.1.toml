@@ -1,119 +1,109 @@
 schema_version = 1
 phase = "1.1"
-status = "Planned"
-planning_baseline = "v1.0.0"
-required_predecessor = "v1.0.0"
+status = "Verified"
+planning_baseline = "v1.0.17"
+source_baseline = "v1.1.0"
+required_predecessor = "v1.0.17"
 predecessor_satisfied = true
 target = "v1.1.0"
-owning_rfc = "RFC-0097"
-implementation = "../implementation/UI_TESTING_1_1.md"
-stage_1_entry_satisfied = false
-release_cut_satisfied = false
+owning_rfc = "RFC-0098"
+implementation = "../implementation/OPEN_ENHANCEMENTS_1_1.md"
+issue_inventory_date = "2026-09-18"
+required_issue_count = 20
+required_issues = [889, 890, 891, 892, 893, 913, 914, 915, 916, 917, 918, 919, 939, 940, 941, 942, 943, 944, 945, 946]
+required_complementary_work = ["W1", "W2", "W3", "W4"]
+stage_1_entry_satisfied = true
+release_cut_satisfied = true
 production_runtime_authority_change = false
-fake_browser_runtime_allowed = false
-remote_testing_default_allowed = false
-satellite_pytest_autoregistration_allowed = false
-required_runner = "pytest"
-browser_authority = "Playwright"
+managed_browser_harness_required = true
 
 [[evidence]]
 id = "FREEZE-110"
-state = "Planned"
+state = "Verified"
+command = "python scripts/check_docs_train_ssot.py"
 owner = "architecture"
 ci_job = "evidence"
 
 [[evidence]]
-id = "CONTRACT-110"
-state = "Planned"
-owner = "testing"
-ci_job = "test"
-
-[[evidence]]
-id = "HOST-110"
-state = "Planned"
-owner = "testing"
-ci_job = "browser"
-
-[[evidence]]
-id = "LOCATOR-110"
-state = "Planned"
-owner = "testing"
-ci_job = "browser"
-
-[[evidence]]
-id = "SETTLE-110"
-state = "Planned"
-owner = "browser-platform"
-ci_job = "browser"
-
-[[evidence]]
 id = "ERROR-110"
-state = "Planned"
-owner = "testing"
-ci_job = "browser"
-
-[[evidence]]
-id = "ARTIFACT-110"
-state = "Planned"
-owner = "testing"
-ci_job = "browser"
-
-[[evidence]]
-id = "PYTEST-110"
-state = "Planned"
-owner = "tooling"
+state = "Verified"
+command = "pytest -q tests/unit/test_phase11_enhancements.py"
+owner = "interaction"
 ci_job = "test"
 
 [[evidence]]
-id = "SATELLITE-110"
-state = "Planned"
-owner = "packages"
-ci_job = "packaging"
+id = "BUILD-110"
+state = "Verified"
+command = "pytest -q tests/unit/test_phase11_enhancements.py"
+owner = "build"
+ci_job = "test"
 
 [[evidence]]
-id = "BEHAVIOR-110"
-state = "Planned"
-owner = "reference-app"
-ci_job = "browser"
+id = "URL-110"
+state = "Verified"
+command = "pytest -q tests/unit/test_phase11_enhancements.py"
+owner = "posit"
+ci_job = "test"
 
 [[evidence]]
-id = "A11Y-110"
-state = "Planned"
-owner = "accessibility"
-ci_job = "browser"
-
-[[evidence]]
-id = "SECURITY-110"
-state = "Planned"
+id = "IDENTITY-110"
+state = "Verified"
+command = "pytest -q tests/unit/test_phase11_enhancements.py"
 owner = "security"
-ci_job = "evidence"
-
-[[evidence]]
-id = "PERF-110"
-state = "Planned"
-owner = "performance"
-ci_job = "browser"
-
-[[evidence]]
-id = "COMPAT-110"
-state = "Planned"
-owner = "compatibility"
 ci_job = "test"
 
 [[evidence]]
-id = "DOCS-110"
-state = "Planned"
-owner = "docs"
-ci_job = "quality"
+id = "COLLECTION-110"
+state = "Verified"
+command = "pytest -q tests/unit/test_phase11_enhancements.py"
+owner = "data"
+ci_job = "test"
 
 [[evidence]]
-id = "PKG-110"
-state = "Planned"
-owner = "packaging"
-ci_job = "packaging"
+id = "FORM-110"
+state = "Verified"
+command = "pytest -q tests/unit/test_phase11_enhancements.py"
+owner = "forms"
+ci_job = "test"
+
+[[evidence]]
+id = "PRESENTATION-110"
+state = "Verified"
+command = "pytest -q tests/unit/test_phase11_enhancements.py"
+owner = "presentation"
+ci_job = "test"
+
+[[evidence]]
+id = "STYLE-110"
+state = "Verified"
+command = "HEDRON_BROWSER=1 pytest -o addopts='' -q tests/browser/test_phase11_style_evidence.py"
+owner = "testing"
+ci_job = "browser"
+
+[[evidence]]
+id = "COMPLEMENT-110"
+state = "Verified"
+command = "pytest -q tests/unit/test_phase11_enhancements.py"
+owner = "architecture"
+ci_job = "test"
+
+[[evidence]]
+id = "FLOW-110"
+state = "Verified"
+command = "pytest -q tests/unit/test_phase11_enhancements.py"
+owner = "reference-app"
+ci_job = "test"
+
+[[evidence]]
+id = "ASSURANCE-110"
+state = "Verified"
+command = "pytest -q tests/unit/test_phase11_enhancements.py"
+owner = "quality"
+ci_job = "test"
 
 [[evidence]]
 id = "RELEASE-110"
-state = "Planned"
+state = "Verified"
+command = "python scripts/check_docs_train_ssot.py"
 owner = "release"
 ci_job = "release"

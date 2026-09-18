@@ -14,8 +14,8 @@ Start with the flagship and adapters if you are new; use this catalog for **extr
 | [`fastapi-workbench`](https://pypi.org/project/fastapi-workbench/) | Independent 1.x Posit Workbench adapter for plain FastAPI/ASGI apps | [FastAPI Workbench](../guides/fastapi-workbench.md) |
 
 Most extras install as flagship extras (`hedron[data]`, `hedron[dev]`, …). `hedron-sim`
-and the sample kit install directly. This catalog describes the verified 1.0 repository
-inventory. The coordinated stable inventory is published on the 1.0 train.
+and the sample kit install directly. This catalog describes the verified 1.1 repository
+inventory. The coordinated stable inventory is published on the 1.1 train.
 
 !!! note "Maturity"
 
@@ -33,10 +33,10 @@ inventory. The coordinated stable inventory is published on the 1.0 train.
 | [hedron-explorer](hedron-explorer.md) | `hedron[dev]` | Development Component Explorer |
 | [hedron-extras](hedron-extras.md) | `hedron[extras]` | Curated toolkit (specialty widgets may be Experimental/stub) |
 | [hedron-conformance](hedron-conformance.md) | `hedron[conformance]` | Language-neutral conformance kit |
-| [hedron-charts](hedron-charts.md) | `hedron[charts]` | First-party charts and visualization adapters; `>=1.0.0,<2.0` on the 1.0 train |
+| [hedron-charts](hedron-charts.md) | `hedron[charts]` | First-party charts and visualization adapters; `>=1.0.0,<2.0` on the 1.1 train |
 | [hedron-native](hedron-native.md) | `hedron[native]` | Optional Rust HTML-escape acceleration |
 | [hedron-posit](hedron-posit.md) | `hedron[posit]` | Preferred Posit Workbench / Connect facade (`HedronPosit`) |
-| [hedron-maps](hedron-maps.md) | `hedron[maps]` | First-class custom-server, MapLibre, and offline maps (`hedron-maps` `1.0.x`) |
+| [hedron-maps](hedron-maps.md) | `hedron[maps]` | First-class custom-server, MapLibre, and offline maps (`hedron-maps` `1.1.x`) |
 | [hedron-elements](hedron-elements.md) | `hedron[elements]` | Beta Web Component ABI; production-grade for the locked Supported inventory only |
 | [hedron-docs](hedron-docs.md) | — | Experimental Markdown compiler and Hedron documentation application toolkit |
 
@@ -44,8 +44,8 @@ inventory. The coordinated stable inventory is published on the 1.0 train.
 pip install "hedron[data,dev,posit]>=1.0.0"
 ```
 
-Public PyPI contains the verified `v1.0.17` release. The development workspace is the
-`1.0.17` published train.
+Public PyPI contains the verified `v1.1.0` release. The development workspace is the
+`1.1.0` published train.
 
 ## Alternate facade
 
