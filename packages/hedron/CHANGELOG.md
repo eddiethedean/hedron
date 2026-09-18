@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1] — 2026-09-18
+
+### Fixed
+
+- Attempt cleanup for every registered connection and report disposal failures
+  after all resources have been processed.
+
 ## [1.1.0] — 2026-09-18
 
 ### Changed

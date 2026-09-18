@@ -292,8 +292,17 @@ class ConnectionRegistry:
             names = list(self._instances)
             instances = [self._instances.pop(name) for name in names]
             self._factory_errors.clear()
+        errors: list[BaseException] = []
         for instance in instances:
-            _dispose_instance(instance)
+            try:
+                _dispose_instance(instance)
+            except BaseException as exc:  # noqa: BLE001 - cleanup must continue for all resources
+                errors.append(exc)
+        if errors:
+            detail = str(errors[0])
+            raise RuntimeError(
+                f"Connection cleanup failed for {len(errors)} resource(s): {detail}"
+            ) from errors[0]
 
     async def close_all_async(self) -> None:
         """Awaitable dispose for async connection closes during lifespan shutdown."""
@@ -301,8 +310,16 @@ class ConnectionRegistry:
             names = list(self._instances)
             instances = [self._instances.pop(name) for name in names]
             self._factory_errors.clear()
+        errors: list[BaseException] = []
         for instance in instances:
-            await dispose_instance_async(instance)
+            try:
+                await dispose_instance_async(instance)
+            except BaseException as exc:  # noqa: BLE001 - cleanup must continue for all resources
+                errors.append(exc)
+        if errors:
+            raise RuntimeError(
+                f"Connection cleanup failed for {len(errors)} resource(s): {errors[0]}"
+            ) from errors[0]
 
 
 def install_connections(app: FastAPI, registry: ConnectionRegistry) -> ConnectionRegistry:
