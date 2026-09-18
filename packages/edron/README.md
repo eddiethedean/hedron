@@ -33,7 +33,7 @@ There is no generated frontend project, Node.js build, callback graph, whole-scr
 second router, or second state store. Built-in styling provides responsive layouts and coordinated
 light/dark modes without requiring application CSS.
 
-[![Edron Showcase operations workspace using Folio](https://raw.githubusercontent.com/eddiethedean/hedron/v1.0/docs/assets/edron-showcase.jpg)](https://hedron.readthedocs.io/en/latest/examples/edron-showcase/)
+[![Edron Showcase operations workspace](https://raw.githubusercontent.com/eddiethedean/hedron/main/docs/assets/edron-showcase.jpg)](https://hedron.readthedocs.io/en/latest/examples/edron-showcase/)
 
 <p align="center"><strong><a href="https://hedron.readthedocs.io/en/latest/examples/edron-showcase/">Explore the interactive showcase →</a> · <a href="https://github.com/eddiethedean/hedron/blob/v1.0/examples/edron-showcase/app.py">View the Edron-only source</a></strong></p>
 

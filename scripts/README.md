@@ -15,6 +15,7 @@ scripts here when you add them.
 | `generate_htmx_alpine_component_counts.py` | Regenerates the built-in HTMX/Alpine usage report across the 0.66.2, 0.67.0, and 1.0.0 boundaries; `--check` in CI/PR |
 | `check_htmx_alpine_refinement.py` | Enforces the typed-builder, single-runtime, and correlated request-finalization seams |
 | `generate_sim_demos.py` | After editing `docs/demos/*.py`; regenerates sim HTML and syncs Demo/Code tabs (`--check`) |
+| `generate_docs_screenshots.py` | Recaptures all four docs/README screenshots from local runnable apps with Chromium; run `uv run playwright install chromium` once, then `uv run python scripts/generate_docs_screenshots.py` |
 | `generate_edron_sim_showcase.py` | Regenerates the Edron showcase island from `examples/edron-showcase/app.py` via `edron-sim` (`--check`) |
 | `sync_demo_code_tabs.py` | Refresh guide Demo/Code tabs from `docs/demos/runnable/` (also run via `generate_sim_demos.py`) |
 | `sync_status_roadmap.py` | After editing `docs/STATUS.md` (updates root `STATUS.md`; forbids duplicate Hedron roadmap mirrors). CI: `--check` |
