@@ -474,6 +474,40 @@
   font-weight: 750;
 }
 
+/* MkDocs Material adds list spacing to definition lists. Reset the metric
+ * contract inside the embedded Hedron app so values don't wrap into tall,
+ * poster-like cards at narrow widths. */
+.hedron-sim:not(.edron-sim) .hedron-metric,
+.hedron-sim:not(.edron-sim) .hedron-metric dt,
+.hedron-sim:not(.edron-sim) .hedron-metric dd {
+  margin: 0;
+}
+
+.hedron-sim:not(.edron-sim) .hedron-metric dt {
+  line-height: 1.3;
+}
+
+.hedron-sim:not(.edron-sim) .hedron-metric dd {
+  line-height: 1.35;
+}
+
+.hedron-sim:not(.edron-sim) .hedron-metric [data-metric-value="true"] {
+  white-space: nowrap;
+}
+
+/* The docs host has other demo styles that also target .hedron-app-shell.
+ * Keep the simulator's shell mobile layout explicit so those broad rules
+ * cannot leave the preview with a narrow, unusable main panel. */
+@media (max-width: 48rem) {
+  .hedron-sim:not(.edron-sim) .hedron-app-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hedron-sim:not(.edron-sim) .hedron-app-shell-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .hedron-sim:not(.edron-sim) .hedron-main-panel {
   background: var(--hs-raised);
   border: 1px solid var(--hs-line);
