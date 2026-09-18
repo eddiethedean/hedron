@@ -428,6 +428,7 @@ class InMemoryDataSource:
             del rows[key]
             row_versions.pop(key, None)
             accepted_deletes.append(key)
+            next_version()
 
         ok = not errors and not conflicts
         accepted = DataChanges(
