@@ -45,6 +45,17 @@ def test_default_theme_has_a11y_tokens() -> None:
     assert "prefers-reduced-motion" in css
 
 
+def test_dark_theme_scopes_rebind_legacy_default_tokens() -> None:
+    css = emit_theme_css(folio_theme(accent="amber"))
+    scoped_selector = '[data-hedron-theme="folio-amber"][data-theme="dark"]'
+    scoped_block = css.split(scoped_selector, 1)[1].split("}", 1)[0]
+    root_block = css.split(':root[data-theme="dark"] {', 1)[1].split("}", 1)[0]
+
+    expected = "--hedron-default-accent-soft: var(--hedron-color-accent-soft, #e8f0ff);"
+    assert expected in scoped_block
+    assert expected in root_block
+
+
 def test_aurora_is_a_registered_first_party_theme() -> None:
     themes = ensure_builtin_themes_registered()
     assert [theme.name for theme in themes] == ["folio", "classic", "aurora"]

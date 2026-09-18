@@ -1120,6 +1120,8 @@ def emit_theme_css(theme: Theme) -> str:
         lines.append('  :root:not([data-theme="light"]) {')
         for key, value in sorted(dark_tokens.items()):
             lines.append(f"    {_token_to_css_var(key)}: {value};")
+        for key, value in compatibility.items():
+            lines.append(f"    {key}: {value};")
         lines.append("  }")
         lines.append(
             f'  [data-hedron-theme="{theme.name}"]:not([data-theme="light"])'
@@ -1127,11 +1129,15 @@ def emit_theme_css(theme: Theme) -> str:
         )
         for key, value in sorted(dark_tokens.items()):
             lines.append(f"    {_token_to_css_var(key)}: {value};")
+        for key, value in compatibility.items():
+            lines.append(f"    {key}: {value};")
         lines.append("  }")
         lines.append("}")
         lines.append(':root[data-theme="dark"] {')
         for key, value in sorted(dark_tokens.items()):
             lines.append(f"  {_token_to_css_var(key)}: {value};")
+        for key, value in compatibility.items():
+            lines.append(f"  {key}: {value};")
         lines.append("}")
         lines.append(
             f'[data-hedron-theme="{theme.name}"][data-theme="dark"], '
@@ -1139,11 +1145,15 @@ def emit_theme_css(theme: Theme) -> str:
         )
         for key, value in sorted(dark_tokens.items()):
             lines.append(f"  {_token_to_css_var(key)}: {value};")
+        for key, value in compatibility.items():
+            lines.append(f"  {key}: {value};")
         lines.append("}")
         # Explicit light preference must defeat system dark preference.
         lines.append(':root[data-theme="light"] {')
         for key, value in sorted(emitted_tokens.items()):
             lines.append(f"  {_token_to_css_var(key)}: {value};")
+        for key, value in compatibility.items():
+            lines.append(f"  {key}: {value};")
         lines.append("}")
         lines.append(
             f'[data-hedron-theme="{theme.name}"][data-theme="light"], '
@@ -1151,6 +1161,8 @@ def emit_theme_css(theme: Theme) -> str:
         )
         for key, value in sorted(emitted_tokens.items()):
             lines.append(f"  {_token_to_css_var(key)}: {value};")
+        for key, value in compatibility.items():
+            lines.append(f"  {key}: {value};")
         lines.append("}")
     for mode, values in sorted(theme.accessibility_modes.items()):
         if mode == "forced-colors":

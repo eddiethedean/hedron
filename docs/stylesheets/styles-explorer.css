@@ -14,7 +14,7 @@ button, summary { cursor: pointer; }
 .previews { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; }
 .previews.comparing { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .previews > section { min-width: 0; }
-.frame-wrap { background: #fff; border: 1px solid light-dark(#bac3ce, #556176); border-radius: .6rem; overflow: auto; }
+.frame-wrap { background: var(--preview-frame-bg, #fff); border: 1px solid light-dark(#bac3ce, #556176); border-radius: .6rem; overflow: auto; }
 iframe { display: block; width: 100%; height: 640px; border: 0; margin-inline: auto; }
 .inspector { margin-top: 2rem; border-top: 1px solid light-dark(#bac3ce, #556176); padding-top: .5rem; }
 .inspector > label { max-width: 420px; }

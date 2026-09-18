@@ -62,6 +62,8 @@
   function applyFrame(frame, name) {
     const doc = frame.contentDocument;
     if (!doc?.getElementById("theme-css") || !frame.contentWindow.HedronSim) return;
+    const resolved = tokens(selected(name));
+    frame.closest(".frame-wrap")?.style.setProperty("--preview-frame-bg", resolved["color.bg"] || "#fff");
     // The runtime can exist before its DOMContentLoaded boot. Initialize before
     // finding links: boot replaces the stage, so clicking an earlier reference
     // could otherwise follow its native href instead of a local sim route.
@@ -76,6 +78,7 @@
       const link = doc.querySelector(`a[hx-get="/${section}"]`);
       if (link) {
         link.click();
+        frame.contentWindow.scrollTo(0, 0);
         frame.dataset.section = section;
       }
     }
