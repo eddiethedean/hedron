@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import math
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Any, cast
@@ -29,10 +28,10 @@ def _sort_key(value: JsonValue) -> tuple[int, str, float | str]:
         return (1, "bool", "1" if value else "0")
     if isinstance(value, (int, float)) and not isinstance(value, bool):
         try:
-            numeric = float(value)
+            numeric = value
         except OverflowError:
             return (4, "number", str(value))
-        return (2, "number", numeric if math.isfinite(numeric) else 0.0)
+        return (2, "number", numeric)
     if isinstance(value, str):
         return (3, "str", value)
     return (4, type(value).__name__, str(value))

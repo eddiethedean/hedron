@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1] — 2026-09-18
+
+### Fixed
+
+- Preserve exact numeric values when ordering data and apply requested SQL
+  ordering without retaining a source default order.
+- Correct projected SQL count handling after codec application.
+
 ## [1.1.0] — 2026-09-18
 
 ### Changed

@@ -252,7 +252,7 @@ def _sort_key(value: object) -> tuple[int, str, object]:
         return (1, "bool", "1" if value else "0")
     if isinstance(value, (int, float)):
         try:
-            return (2, "number", float(value))
+            return (2, "number", value)
         except OverflowError:
             return (2, "number-overflow", str(value))
     if isinstance(value, str):
