@@ -296,7 +296,7 @@ class ConnectionRegistry:
         for instance in instances:
             try:
                 _dispose_instance(instance)
-            except BaseException as exc:
+            except BaseException as exc:  # noqa: BLE001 - cleanup must continue for all resources
                 errors.append(exc)
         if errors:
             detail = str(errors[0])
@@ -314,7 +314,7 @@ class ConnectionRegistry:
         for instance in instances:
             try:
                 await dispose_instance_async(instance)
-            except BaseException as exc:
+            except BaseException as exc:  # noqa: BLE001 - cleanup must continue for all resources
                 errors.append(exc)
         if errors:
             raise RuntimeError(
