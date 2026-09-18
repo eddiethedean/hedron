@@ -16,6 +16,8 @@ pytestmark = pytest.mark.browser
 def test_phase11_presentation_styles_have_browser_evidence() -> None:
     if os.environ.get("HEDRON_BROWSER", "").strip().lower() not in {"1", "true", "yes"}:
         pytest.skip("HEDRON_BROWSER not set")
+    if os.environ.get("HEDRON_BROWSER_ENGINE", "chromium").strip().lower() != "chromium":
+        pytest.skip("Chromium-only style evidence")
     pytest.importorskip("playwright")
     from playwright.sync_api import sync_playwright
 
