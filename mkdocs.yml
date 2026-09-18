@@ -255,6 +255,7 @@ nav:
     - Governance: guides/governance.md
     - Versioned documentation: guides/versions.md
     - Releases: guides/release-notes.md
+    - What’s new in 1.1: guides/whats-new-1.1.md
     - Earlier releases: guides/whats-new-archive.md
     - Upgrade guide: guides/upgrade.md
     - What's next: guides/whats-next.md
