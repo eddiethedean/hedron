@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1] — 2026-09-18
+
+### Fixed
+
+- Fit loaded maps to compiled feature bounds, honor map padding and motion
+  preferences, and preserve all coordinates when deriving fallback rows.
+
 ## [1.1.0] — 2026-09-18
 
 ### Changed

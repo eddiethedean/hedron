@@ -1823,7 +1823,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-maps"
-version = "1.1.0"
+version = "1.1.1"
 source = { editable = "packages/hedron-maps" }
 dependencies = [
     { name = "hedron-core" },
