@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.1] — 2026-09-18
+
+### Fixed
+
+- Enforce stream deadlines while awaiting each asynchronous token.
+
 ## [1.1.0] — 2026-09-18
 
 ### Changed

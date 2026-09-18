@@ -1590,7 +1590,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-core"
-version = "1.1.0"
+version = "1.1.1"
 source = { editable = "packages/hedron-core" }
 dependencies = [
     { name = "packaging" },

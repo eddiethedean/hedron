@@ -198,13 +198,19 @@ async def async_token_chunks(
     buffer: list[str] = []
     chunks_emitted = 0
     first_token = True
-    async for token in tokens:
-        if chunks_emitted >= budget.max_chunks:
+    iterator = tokens.__aiter__()
+    while chunks_emitted < budget.max_chunks:
+        remaining = None
+        if budget.deadline_seconds is not None:
+            remaining = budget.deadline_seconds - (time.monotonic() - started)
+            if remaining <= 0:
+                break
+        try:
+            next_token = iterator.__anext__()
+            token = await asyncio.wait_for(next_token, timeout=remaining)
+        except StopAsyncIteration:
             break
-        if (
-            budget.deadline_seconds is not None
-            and time.monotonic() - started > budget.deadline_seconds
-        ):
+        except asyncio.TimeoutError:
             break
         buffer.append(token if first_token else f"{join_with}{token}")
         first_token = False
