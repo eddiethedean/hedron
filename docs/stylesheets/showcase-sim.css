@@ -177,11 +177,37 @@
   }
 
   .hedron-sim .showcase-shell .hedron-app-shell-account {
+    min-width: 0;
     margin-inline-start: auto;
   }
 
   .hedron-sim .showcase-shell .hedron-account-copy {
-    display: none;
+    display: grid;
+    min-width: 0;
+    max-width: 9rem;
+  }
+
+  .hedron-sim .showcase-shell .hedron-account-name,
+  .hedron-sim .showcase-shell .hedron-account-detail {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 480px) {
+    .hedron-sim .showcase-shell .hedron-app-shell-header {
+      flex-wrap: wrap;
+    }
+
+    .hedron-sim .showcase-shell .hedron-app-shell-env {
+      order: 3;
+      flex: 1 1 100%;
+      max-width: none;
+    }
+
+    .hedron-sim .showcase-shell .hedron-account-copy {
+      max-width: 8rem;
+    }
   }
 
   .hedron-sim .showcase-shell .showcase-runs .hedron-table-scroll {

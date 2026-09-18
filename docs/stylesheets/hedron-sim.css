@@ -133,6 +133,13 @@
   padding: clamp(1rem, 3vw, 1.6rem);
 }
 
+/* The showcase has its own application header. Reserve a small control band
+ * above it so the simulator's fullscreen affordance cannot cover the account
+ * summary on narrow or medium-width previews. */
+.hedron-sim:has(.showcase-shell) .hedron-sim__stage {
+  padding-top: 3.25rem;
+}
+
 .hedron-sim__trace {
   border-top: 1px solid var(--hs-line);
   color: var(--hs-accent);
