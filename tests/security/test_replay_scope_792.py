@@ -8,6 +8,7 @@ from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.requests import Request
 
 from hedron import Hedron, Text
+from hedron.replay import MemoryReplayStore, fingerprint_request, legacy_replay_scope
 from hedron.security.policy import SecurityPolicy
 
 
@@ -73,6 +74,49 @@ def test_anonymous_replay_does_not_trust_csrf_header_when_disabled() -> None:
     assert second.text == "<p>private receipt for bob</p>"
     assert "Hedron-Replay" not in second.headers
     assert calls == ["alice", "bob"]
+
+
+def test_anonymous_replay_reads_pre_binding_legacy_scope() -> None:
+    calls: list[str] = []
+    app = _anonymous_app(calls)
+    store = MemoryReplayStore()
+    app.state.hedron_replay_store = store
+    client = TestClient(app)
+    csrf = client.get("/").cookies["hedron_csrf"]
+    key = "legacy-key"
+    fingerprint = fingerprint_request(
+        action_id="receipt",
+        subject="anonymous",
+        tenant="",
+        inputs={
+            "path": "/receipt",
+            "method": "POST",
+            "query": "",
+            "content_type": "",
+            "body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        },
+        policy_version="1",
+    )
+    scope = legacy_replay_scope(tenant="", subject="anonymous", action_id="receipt", session="")
+    claim = store.claim(key=key, fingerprint=fingerprint, scope=scope, retention_seconds=60)
+    assert store.complete(
+        key=key,
+        scope=scope,
+        fingerprint=fingerprint,
+        status=200,
+        body=b"<p>private receipt for legacy</p>",
+    )
+    assert claim.state.value == "first"
+
+    response = client.post(
+        "/receipt",
+        headers={"Idempotency-Key": key, "X-CSRF-Token": csrf, "X-Client": "new"},
+    )
+
+    assert response.status_code == 200
+    assert response.text == "<p>private receipt for legacy</p>"
+    assert response.headers["Hedron-Replay"] == "true"
+    assert calls == []
 
 
 class _SimpleUserBackend(AuthenticationBackend):
