@@ -127,6 +127,9 @@ def test_memory_replay_store_charges_headers_and_key_material() -> None:
 def test_replay_scope_keeps_delimited_identifiers_isolated() -> None:
     from hedron.replay import MemoryReplayStore, ReplayState, replay_scope
 
+    assert replay_scope(tenant="tenant", subject="user", action_id="pay", session="") == (
+        "tenant:user:pay"
+    )
     first_scope = replay_scope(tenant="a:b", subject="c", action_id="pay", session="")
     second_scope = replay_scope(tenant="a", subject="b:c", action_id="pay", session="")
     assert first_scope != second_scope

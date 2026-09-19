@@ -309,6 +309,12 @@ def resolve_replay_store(request: Any) -> ReplayStore:
 def replay_scope(*, tenant: str, subject: str, action_id: str, session: str) -> str:
     # Unauthenticated callers share "anonymous" unless a session id is present.
     identity = subject if subject and subject != "anonymous" else f"anon:{session or 'none'}"
+    # Keep the legacy representation for scopes that cannot be ambiguous so
+    # existing persistent replay entries remain valid across deployment. Use a
+    # structured representation only when an identifier contains the delimiter
+    # that caused the original namespace collision.
+    if ":" not in tenant and ":" not in identity and ":" not in action_id:
+        return f"{tenant}:{identity}:{action_id}"
     # Encode each component structurally so delimiters in application-controlled
     # identifiers cannot merge otherwise distinct replay namespaces.
     return json.dumps(
