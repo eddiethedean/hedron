@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:f7d514bc70c2a8eb9fbd43bdb91335f57d1cfeb3b39dbcd419d27af0e8d4c4a9",
+  "claims": [
+    {
+      "id": "claim_bcfef1f58c2e4980ac194e1dacbe8f1e",
+      "statement": "The README presents Hedron as a server-rendered FastAPI framework that keeps dependency injection, middleware, lifespan, async I/O, JSON routes, and OpenAPI beside the UI, with no Node.js toolchain required.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L21-L50",
+          "version": "repo-lines-v1:sha256:e859f1adbac9a7da6e8a1fa28288dcf3dfd90b783286660c304c63d86197ee02:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2N2E2ZWY1YzcwNDNlMGU5YzUyNmYxNjI5ZjljODQxYTBkMjk0NWI4ZmEwNTc0NjJiYTQyNWQxZTg0NWMyNTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJhMGNlZDA0N2U0MWNlMmNlYzQ1YmVlZWM1MWVkM2ZhNjk1ZmMwNjRjN2U5MzAzYTQzZTFjYzBhOGRmZGUwZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3MDFlMjU5ZWFhOTM3ZjlmNTU2Y2M4ZjIxZDQzYjBiY2I5ZmRkMzQzZjA3Y2ZmN2QyNWQwYTU1OWQ0NzQ5NjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhkZGUxNTUxNTcyNjE0Njg3ZmYyZjBmMDAxZGY2YWQwYTFlM2M1OGJhMWZmMjJiOGMyOTVkNzE4OGE2ZmIwODgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b849c42ce11640aeb046f5cde442ed2f",
+      "statement": "The repository map groups runtime, data/presentation, hosts/environments, extension/interop, quality/tooling, alternate-facade, and learn/verify paths.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L158-L171",
+          "version": "repo-lines-v1:sha256:d60a81b6eeb876b1033d96d9d0543a6826090ea0ae26f144f4829aced1f06853:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4MGI5YWMwNWE1OTM5ODZiNmE5N2RkMjAxMTA1MDZiZjM0NGJlNjc3OGNjYWYwMjc0MzY5YWJlMDA3MDY0NTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4OTBkZTZiNWU4MzA1ZWMxMWJmNzA0MTBiNDc4ZjBkYmZkZDhiMGUwZjY0ZTUzMTRhMDkxMDMyNGI2YjRmOGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiYTEzOTE4NjcwMjY0ODc5YTRjMjk2ZmY2MGUzMWQxOTBkZWNiYzQ3NGVhZjhhM2E4ZWZkZmRiMzhmMTQ3MmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5NDZiNTFiODZhN2U4OGQwNmQ5ZGNmMDgwODlhY2I2YWE4NDQ2MDUwOGUyODg5YjM1N2JmMDQ2NTg3YjExYzIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cd58fe3ce8ae4752b4417caa3d027d73",
+      "statement": "Contributor setup expects CPython 3.10–3.14 and uv, and the standard local loop uses uv sync, Ruff, Pyright, and pytest.",
+      "evidence": [
+        {
+          "resource": "repo://docs/CONTRIBUTING.md#L15-L48",
+          "version": "repo-lines-v1:sha256:cb4d220b181f6601ea5bea9eea02ebe8f4c5fc7dafad14e8f58aa429ab5d645e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjMGE2YWYyMmY3NTQwOTUzNzEwNmU2Mzc4OTVjODY1OGNhMDhiMGYyYjE4YTUyMWVjOWJlZDgwZTBhOWE1YjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNjYzIxOTYyODNhZTJiYjIxODI3ZmEwNDE5NTYzMWU3YzRkNmUwZmJhYTZhOGMxYmMzMWFhYTMyY2NmNDc3NzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI0NWZmZTliYTFkNWFkMzczYjM5NjlhOTliODhlYjAxYmYwN2NhNjM1YzczOTZiOWUyNDU2Nzk5NTYyZTY5OGIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_232dd3f9b3424d849c7491cf98673d05",
+      "statement": "Contributor guidance recommends focused test lanes for unit, integration, adapters, security, conformance, and examples, and says to prefer the narrowest suite that covers a change.",
+      "evidence": [
+        {
+          "resource": "repo://docs/CONTRIBUTING.md#L142-L154",
+          "version": "repo-lines-v1:sha256:ce1f0be8076f668d0c5ff335580a6f98ff2666cd3dcd5ea699ac83178b471c0a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5NGU4Zjc5OWFiZGQzMmFiMzRjYzI1Njc3YjVhN2VlY2VmNjNmM2JkYjAzMjNiNWUzNWVjYjJlNTY4ODc3OGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkZWEwN2YwZjJiYTA0ZjJhMjY3MjY1MzNiMWM3M2JlNzhiZmU5NjU0ZTkzYTMyZTE1MDkyMmFlZDIxNjIzYjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRhMjAwZDM1YmQ1NjNkYzUxZDQ2MDYyYTE5YjYzY2RjODk3MTVmYjE0ZWVhMDc0NDA1YjNlZGE3NzIxM2E5MjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1MGE5ZDVlNTAwNTgzODQ5ZmE1MjA0M2E4NWM0ZDgxOThkMTRmM2E3ZjZlZDk2NThiYmVkYWI3YjNiNDkzNjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_35ad48dc73344b06bfe9baa2b44ee051",
+      "statement": "Documentation-only verification uses the docs group and strict MkDocs plus documentation SSOT, inventory, ownership, API coverage, package link, recipe sync, and generated-content checks.",
+      "evidence": [
+        {
+          "resource": "repo://docs/CONTRIBUTING.md#L50-L80",
+          "version": "repo-lines-v1:sha256:e6b36f52d009dcf864b71601ea08bc01c714ad459df3e0cd4452cf8e2023b9ae:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhZWExMjYxZTA4M2QyODliN2YwMjgzMzJhNmZlOTE5ZTVlMTZkODJjMTQ5NzVjMTE3NzBiNzc3ZTEwMGNkNmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMzZiNjI4MTk2ZTM5ZDIyZGI0MDE0YTY1NTA3MzczYWQwOTM0NTBiOTE4ZDA2NjMwNWIyOGM1ZDNlZjZiNzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxZjUwMTI5MzdhMzFkZTlkODI3YmVhODQ1MDVjMWExMDkxOGYzM2U1YzNhYjZiMWQzN2VmZjBjNDQxZjBiNzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZmN2I2MzZhMGUzODU0Y2FkNjAzZjRlM2JmOTk0YmU0NTVkMzk0MDgxZWZlZTQ2ZThkYjE4MDU2MzY0ZmQ4NmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a95a00a9b05545559beb6c857d65f76c",
+      "statement": "Browser evidence is opt-in through HEDRON_BROWSER=1 and runs with pytest -n 0.",
+      "evidence": [
+        {
+          "resource": "repo://docs/CONTRIBUTING.md#L129-L134",
+          "version": "repo-lines-v1:sha256:e3785ba465bf0247f3d4f9e6a79d0592bd288d86859ff1bffeb364f685cd7f4f:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWE4YWQ0MTU5ZTI1MmY0NTk5MTk5ZTI3ZDU5ZTAwYjMxMTkxNmYyODNiMzU5MWNmNWEwNjBmNGVlODFiZWVhZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMDZjNTYxZDVjMzI3MzQzNjg1MjY4YTQ2YjMzOTFmMzk5OGVlZTg5MGQyYmU1MWYwZDIxY2M0YTUzYWU2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWY0MmI5ODMxOWEzOTBjYTE2YzkxYzg5YjQ3NTk1NDc2YmI4Y2M3M2JmMDhiYTFkMTAyZDhmNjgxYmY1ZGFlZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmFhYTU1ODhmMzJjZGI3YTQ5MWYzODRhOWI4YmU5M2ZlMjI3MzZhNTBjZDdjZWYwMzYwNDhlNTQzZjg5ZjBjMyJ9"
+        },
+        {
+          "resource": "repo://docs/CONTRIBUTING.md#L32-L33",
+          "version": "repo-lines-v1:sha256:f057e1890c19bb5206619c43bf339eb0df3c0ffb9e6595aac9587a48a12d9e37:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzI5OTcyODljMThkYzczOGUzYmUyNzFjOWM5ZjJmNWJjZWRjMTkxMjBlYWMxZTg3ODE4MWIxYjczOGU2NmFhNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTcyNmY4N2ExZDA4N2I3OTY0YWI0YWMzM2NhOTFmOTQ1NGUxZDMzMWM5ZjFkNjE3NjFjY2M2MTIyZWM4YmYzZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTAyOTQ2MGExMzhhNmMzZjJjMDIxZTA4NWNmNzhiYmNmNDhiZjA2MDEzYmJiMmI5NjRiMzRlM2E0OWUyMmY0OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTA2ZjVlOGVhNWNiYmVlMDQ3ZjM5YWY0ZWNkM2Q3MzRkMjljMTg4MmZlYWFkOTIzN2Y2ZDcyNzI3Mjk0Y2NmMiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_98dec50170494db1b5dd1a8173ca1935",
+      "statement": "Public API, security-default, and Supported-claim changes require the repository's RFC and decision workflow.",
+      "evidence": [
+        {
+          "resource": "repo://docs/CONTRIBUTING.md#L204-L220",
+          "version": "repo-lines-v1:sha256:e01a7150599c4e57a64caf90116cc3640c7dd4075d09511384d3e033cae887f2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxZjVhMjRhYTY1NDgxNGM0NmJhNGYzOTE1YmVjNmQ0YTMxYmM0MjAyOWZjMjZmYzcxNWQwNjBhNzY0NGE5NTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4YjU0MjhlMzk1MjY2ZmYwZjViZDFlOWIyMTRjYmMxMTQ3YjQyYzIwNjMyYjY1M2VlMzg3OGU5MzQ3NDJiYTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyMTA4NDk0NmNjODAxODFmOTVmYjc2YTYwYzBmYzY1ZTJhMGVkZTVhZWMwOGMyYmEyMGNhZTZkMzU1MTdiYWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBiZTNhZjQxM2U2MWFmMTNiNzhiZmE2N2VlYjIxMmVjN2MyYWRhY2UwNWJlZjNmNGRkZWY1ZmFmYWQzYjU2OTQifQ"
+        },
+        {
+          "resource": "repo://docs/CONTRIBUTING.md#L272-L278",
+          "version": "repo-lines-v1:sha256:abaef0803c1f3a8920b0852063e76f09f3c9a23c7f2efcb98d90386f532f0ba0:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmNiODBkYzg4ODBlNDQwZDJkNTM3MDIyMWY5MTZlZWRkNDA0ZmFjZDZjZDMyNTQzNDA3NDY0YWFlYWJjNjM5OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTVhYjY3ZTM2MTc1YmI4OTNmYjMwOWM3NDJlODJlNWI2ZDQzZTE5MGU0ODZjMjBiNTQ2YzBhY2Y1M2U5OGMxYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDAxZjJlYzE3NTkzYzEwNTRlYjQ2MzY3ZDg0NTNlZjI0YTE3M2NlOTZiNzExN2Q5MWY5YTY4ZDQ0ZmVmOGIwMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjc2MjE0NmIzOWE4ZGU1ZGVhNDQzMmNmZjkxNjNlZTcwNWJmZDk1NzI4YjY3MzJlOWMwZTQ1Nzc0YzZlYTNlZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_705b7e0209f94e518a6ac540561ec314",
+      "statement": "The stable API and support metadata define compatibility-protected exports and package maturity boundaries that should be checked before widening a public dependency.",
+      "evidence": [
+        {
+          "resource": "repo://release/stable-api.toml#L1-L4",
+          "version": "repo-lines-v1:sha256:3eac55151257d699359e3e294e074e0847f6ce62214ed764256b46d02d4a3d4a:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTJlODVjM2EzZDRhNzAzODgzNjYyOWFjMTAwYTNjNjQ3NDQ5ZTA5MzMwOTM4N2UwNGIxYzdjN2U1MTUxY2EyOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWJhMDZlNDZjNDZhNGJhMjBjZWExZTc5YjM3YTU2NDdkZjdmMzA4NTYwNGJhMzVhMTIzOTkwMzA2MzRjYTkzNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmZjNzQxNDkxZDgyZjM4YTkwZWRhNzIwMmI3MGVmYzY5OThlZjhhN2JlMDViMGJkOThmOTZiY2YyYzEwMzViNyJ9"
+        },
+        {
+          "resource": "repo://release/support-matrix.toml#L14-L104",
+          "version": "repo-lines-v1:sha256:c7dc9a7a1689ac931f7362b5de8cd4c2568c440bb0d0e5c7467c8e911da37fdb:eyJzZWxlY3RlZExpbmVDb3VudCI6OTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5ODQzNjcyNjBlNmJjNDNjYWIxYTRhMjA4YTA4OWQ0NjczNzU0ODIyYTg3OGEyMTA0NTA1MDc0OTAzMDlhZjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmNjBlYTcxZGY5MDEzZmJjYjc3N2ZhMTUxYTM2ZmMwZDJlOWI1ZTVjNTA5M2U3ZWZkZjAzNjg0NDFhNDNiMzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY2YjRjN2Q1ZjBhODI3YTUyMDJkMWE5ZGZkMWU2MWUzMDRkNWFhM2M1YjVhM2ZmMTE0MDhjZTBmZDA3NjQyZmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a1e58853c9a448e9b2c32df40b1ccc7f",
+      "statement": "scripts/ci_checks.sh exposes an openwiki freshness suite and the all suite runs it before the broader local checks.",
+      "evidence": [
+        {
+          "resource": "repo://docs/CONTRIBUTING.md",
+          "version": "repo-file-v1:sha256:df18ba7ee7a85c5bc63bc28e24520558ce9ea9d7ca94af44c8393c63aec1e075"
+        },
+        {
+          "resource": "repo://scripts/ci_checks.sh",
+          "version": "repo-file-v1:sha256:ba8f3daabc64f8cd93918e89e27467314bace6917f45a54e1c8fc36803361988"
+        }
+      ]
+    },
+    {
+      "id": "claim_4e8310a148a1485ab30d819b4b2f4e33",
+      "statement": "The OpenWiki freshness gate is local-only and no GitHub Actions workflow invokes it.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/README.md",
+          "version": "repo-file-v1:sha256:34a3e907b8cc46b4fde4ef05fb5014e47a300a5caa3a5172559cebed8d38616f"
+        },
+        {
+          "resource": "repo://scripts/ci_checks.sh",
+          "version": "repo-file-v1:sha256:ba8f3daabc64f8cd93918e89e27467314bace6917f45a54e1c8fc36803361988"
+        }
+      ]
+    },
+    {
+      "id": "claim_2e58c6f892c748fb89bdaae99cc8bb51",
+      "statement": "When the local gate fails, the repository's Codex OpenWiki skill directs the host to update through the resumable OpenWiki integration and rerun the check.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/openwiki/SKILL.md",
+          "version": "repo-file-v1:sha256:116a2d59523b898271c783b61025e15a8d57a72eb0fcbbc3dac99345ead0d768"
+        },
+        {
+          "resource": "repo://.codex/config.toml",
+          "version": "repo-file-v1:sha256:105d79d76ddaba3b4d108ecb4ea9fb01bffa132a93d6fa2780ae307252afd842"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-19T17:40:19.225Z"
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:191b276fee40b2b0df78451661356087340ef46714c205943084e107af20c93a",
+  "claims": [
+    {
+      "id": "claim_284903e9c44e45f49f3c3216186f8fa8",
+      "statement": "SecurityPolicy is a versioned shared policy whose defaults enable CSRF and headers, keep authenticated responses private, deny external redirects and HTMX evaluation, and deny egress by default.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/security_policy.py#L53-L87",
+          "version": "repo-lines-v1:sha256:7097499a63f4897baa60435751237f6486f034f7b3d9a20ca11ec8156c432e9b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlM2ZiMWU1OGZiYzkwNDc5NGQ1MDczMTRmYTkxYzlmMmYxOThjODhkM2ZmMzk1ZTAwODI4OTAxYzM3ZGM5MWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU3OWRkZDlkYmUzZTljM2EwYTUyMDI4NjYwNGM1N2JjNGJjNjBiMDZlMDA5ZWM3NjE1Y2IxOTcyZmYyMmFkNDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUxMjZkMDFlNjY3ZDQ5ZWU4OTcxMjJjMGVmYzlhNGYzYThjYjg0ZmI1ZDFhNTE4MTlmZWJkNGU3NmU1MjI4ZTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlkMDMxOTJmNmNhOTExMTc4NzVjODI3YjgxODdmOGJjYTdiMWZmOGQzNjQ4NDkwZjM1MjQ1ODJkYTg3YTkxYmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_533846a1c68144caae0479f1a93e7805",
+      "statement": "The standard profile enables same-origin CSP/resource defaults, request budgets, and HTMX hardening; the strict profile tightens CSP, disables Explorer, requires intent and strict posture, and keeps evaluation disabled; development may expose Explorer while still denying evaluation.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/security_policy.py#L132-L189",
+          "version": "repo-lines-v1:sha256:23db81afe02a79d02224152c1a3be7873358dbcf053c1b03560921cd504a1ad9:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyMGI0NTNmNWUwYzkyZDVmNmMyNTFhNWVhMTk2MGQ3MmYzYmQwNzk1NmFlODU3ZGEyMGUzMWE4OGM1NTk2OWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MDlhNTNhNjE4ZDAyOGUxZDMwMDBjMGE3YWJjZWVjYmU1ZmIzN2Y0ZTUxMWVmZTQ2NjQzZmFkNmU2Njg3MmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjMmFmNGNmYzg4NWVhZjhmNDczNjdiNTA2ZThhNjBjMzcxNDdmOTg2ZjczNjRjMzcxZTIzZmNiOTM5M2QzMTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc0Yjk5NzRlYmZiMjUyNjA5ZWRhYjA5ZmRkNmNiMzcwOWQ5NjEyOTgzNzJlMmFiMjg2ODY5MTE1YTQ1MjljYjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3f001fe016b54e75ab897249a09ba85e",
+      "statement": "Hedron's HTMX configuration denies eval and script tags, requires same-origin requests, and disables the history cache outside development, while SecurityHeadersMiddleware enforces policy headers and private caching for authenticated and HTMX responses.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/security_policy.py#L191-L209",
+          "version": "repo-lines-v1:sha256:43412d292d9c00205f00b4f43381bc5d56f6ced965f6fefd47b269783b726623:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiNGJmM2M4ZDQ0YjM5ZTI1YWU3OTZmZTIxZDUxZTU0YWNiZWJkNjkwZGYxM2RkNzhkNTIxYWNkYTBiYWFjNWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2MmJkNjBkZDFlYzI4MzIzN2YzZDM2Mzc5OTMxZmZjMzUxNjE3NjA2OGYxZDVjN2MzZGMxZGMyNTBjNTcyMjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRlYWI2YzQ5ZjMwNTBlZWNmMzBmODRlNTQzYTEwZmY2NzhiM2I2YTNjMmI1YzBjNGI3MjUwZDBlMDVhZTU2NTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkZDcxMTY0ZWE0NmZlYmVlNWI4ZTA4ZjY2NjE5MTM3MWExZGY0ZTg0NTUwMzRlMjAwNzliOTYyNmUyNGM4OTMifQ"
+        },
+        {
+          "resource": "repo://packages/hedron/src/hedron/security/headers.py#L15-L37",
+          "version": "repo-lines-v1:sha256:6ce29ff8d27f40f5074b268e3af58886e060acb8c2eff7baabdb733c9b6f1d1d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3ZWRhOTI5OGYxNTRmYTQzNzlmYWEwOGRkYWUzOWY1ZGZjMGIyNWZlN2FiMzQwZTI3NTAyMmFmM2NiODZjYTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4NGNlYzQ2ZmQwYzhiYjczODhjMmEyMWM2NWI1YjE1NWVjMDIwZTIxYTFiMTJkY2EyNGMxZDNiMWQ0MmJjOGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk0ZDI3OTljNzk3ODkxY2IzNWNiMzYwNmFkYjg5MzVkYTY0ZjIzNTY4NzM5MWUwZTBhMzhiYjg5MzMyNzZkZjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhODQ5NmVlOTY0MjcyZmM5MTFhMmMyMmVlNDFkYTBmY2U3Zjg0OWJmYWRlMzQwNjUxMmJlMWQyYzgxODhjZWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_14762eb86a3041549257da9b3c9eba18",
+      "statement": "The default cookie-backed CSRF strategy shares a request token with the page and cookie, honors forwarded HTTPS only from trusted proxy peers, and validates header or form tokens with a fail-closed HTTP 403 path.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/security/csrf.py#L102-L179",
+          "version": "repo-lines-v1:sha256:e186551899025a2fe8fea17522bd47ef75cd13deff0528181d6d327b6d4f1a89:eyJzZWxlY3RlZExpbmVDb3VudCI6NzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiZmQ5ZjJkZDEzZmJhZDMzNTdiOWE5YTdhMmNkMzA4M2NlNjY0NDg0MDA1YzA1YzdhNjhhNWQxNDYwMzA5Y2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5M2ExMzA2MmYxMGVlNGYxMjE4ZDkzZTM3YTZmODFkMzQ2ZmYxMWVjN2U1NWRkNTQyZTJkMmQyZWYwNzExZjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNjYTcwNGUyZjEzZDI0MzI3NmEyZjkyNDhlOWUzMGFiZDAwZGYyNTExODAzNGQzN2Y2N2EzYjk2NWUxOTQ5ZWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBjZTZlY2NiNGFkNjUzODYzYzlkODEwZTdjYzg5OTZkNTRjOTRmODlhZGM4MWE1OTY5ZWY5Y2QwYzExNjFhZmEifQ"
+        },
+        {
+          "resource": "repo://packages/hedron/src/hedron/security/csrf.py#L182-L240",
+          "version": "repo-lines-v1:sha256:e6e323e8dee1bfd014456b77bae21b838a74b95b23865c9c9299a82d3a428b12:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwMjNmZjhlZGRmNDc2MzI1YjVjNDIzMGM3NGM1ZTA4ZDI0MTkwNjg4YjYyOGI2MDc2OWRiZTBlOTNlMzJkN2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxZGZiNTQ4OTBkZWM5NWNkMGM1YjI5ZThmMjMyY2QwMjlkZTQ0M2MwNWQ3NDhiMTZlYTdlNGU4ZWFlNTAwYjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI5ZWUxOTMyODRlODJmYjc2YWY0ZjRmNTgzZTQzZjA1MDdiNWYxMzJiMTY0ZTZkMzUyM2JhZmI5NGMwYzdiMWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ODU3M2Y2N2Q2NWZiNjdjNGVhN2RjODA1Yjc3OWM4ODE0MTMyMTlmOWRmMTc0MWE3MzZlYzhjYzViZTUzZjQifQ"
+        },
+        {
+          "resource": "repo://packages/hedron/src/hedron/security/csrf.py#L56-L67",
+          "version": "repo-lines-v1:sha256:7aa606437a7b76e99d72a58537269687bc89eb3cf0ce333f583877f028aa9cee:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJhYTBmODcwYzdkODI5NTc1ZDZjOTJiOWQ5ZTU2YzdhZGRhNTZiNTFiMWJkMGNiNzYzNjNjZjJkNWNkNDRhZDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzOGJhZTE4MmM5ZmNhMjI4MjYxNmFlOGUyZWZkYjliY2UxOTY3YTlkOWIwMTA1OTZkODE0OWExY2U2ZWRjZmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUxYzFkMDQ4MWFlNDhlN2YwM2M4MzRlNGEyZDIwNDg1MWM5MzI1OGNkNGYxODYyMzJlZWQxMWI0M2YwN2MzMzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxZWI1ZmZlMjA0ZjQ4ZTcwYWMxZGNlMjg0MDY4ZDFkYjFjMDg0ZDZhMTA0ZDI5YjI0OGZlYmRmOTA3NTkyOTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e3b6c041d34e43b08b0b6b53cc3ec74e",
+      "statement": "Native html elements reject executable or active tags and unknown non-custom tags, and html.raw requires a TrustedHtml value instead of accepting an ordinary string.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/html.py#L129-L160",
+          "version": "repo-lines-v1:sha256:accb4818f69c60c21e973c470c8ba74680d91c22b9ecdc27c17f045bd3d4b058:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhY2M1ZjUzM2Q0ZDcwNDI0NTFlMTUzZTQ3OGEwMWY4ZDljYWIwYzJmOWVmNWE3NmJkZTYwMTA5NmNmNjljNGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM2YzliZDZjYThiMWVhOWEwODZjZWZjMzNiNGIxODM0ODY0NWY1MTdlMDFiOGI3ZDc1Yjc0NGE1OWQ2M2I4YTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZkNDU0ZWQ3YThkZDkyNDM5ZmJkNjc1ZjExMDQ2ODQzNmI3MDljYjA2ZDc3MzllYTQxNzljYWRmMzQyYTEyOTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ3MWE2ZmQxZjkyY2ZjYTdmOGJmNmU0ZGNmNTA5YTg0ZGEyMjExNzE3YzVmNTIxYjM4MzRjYWY4NTY4NGY4MDAifQ"
+        },
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/html.py#L48-L97",
+          "version": "repo-lines-v1:sha256:e3b92ab33c2f2102d4633a91914d75c1180f003d193efe24b1d2efa25ea8d15f:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIzYmRhZTIzZGIzZjI5YjdiNjdiMzkyM2VlNmUxMzk2ZWRlNGM0MGY4MTU3MTIzNTc0NzdhYWYyZGQwMWYzN2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxYWI1NmExOWU1NDg0ZmNmOGEyMjg5YTQ3ZDI3YjE1YTRjZjZhNWY2YzVkMzdiMWUzMzQ1NTZlZjE5ZmY1NWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU5ZWI4YTEzN2Y5NmVjYjdjMWU2ZmVmNmIwMDc5MThkNWNjMWZmMTU2YjQ3MzYzM2YwY2MyMjM3ZjllNGNkMzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE0MDk5YmVlNDQ1Y2NiOTM1NDAyMDEyZDkzYTZiNzU1OTg3NWFhMjdjYjJmZjEwMzBjZTY0ZmFkNjYxMDc0YjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_df268e40827f46ff8c504da03adea001",
+      "statement": "TrustedHtml has no public constructor; reviewed values require a non-empty source and the optional nh3 sanitizer records sanitizer provenance.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/security/trusted.py#L8-L49",
+          "version": "repo-lines-v1:sha256:e9241b49cda2981525f6546c31f276df77a1aee2ab9faef06715e7148204bf89:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJkZDFlZTMzYzQzNDYwMDBhMDA1NWIyNDlhZDNiOGIzZGJlOTdiOTc2YjcyOGUxMmUyZTVkZTc2YjRjZjQxMTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MjRjZDEyNGE0MTZhY2RiMGE3ODRiMDY3ZjVmZTYxM2RhMjFiNWUzYzliMGRhOWFkODk4ZDQ2ZGU5MjMwZWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyNGJlYWZmNTdjNjRkYmRlZWMwZDAxODMxZGY1OGFiNDYyYTdiM2Y0NzU2NGRmOTc0NTQyMTE5NTJiZTQ4MGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQyODM4OTRjMGViMGVlOWNjNjM4NTY0NzYyYzE1MWY4NzliMGUwMzBjZmNhOGE2NWYxYjMzYTcwODk5YjIwZWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_585835b479df46bbb9e29ed99fc79809",
+      "statement": "Local redirects reject non-local paths, while external redirects validate URL syntax and credentials and fail closed unless SecurityPolicy.allow_external_redirects is enabled.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/security/redirects.py#L17-L82",
+          "version": "repo-lines-v1:sha256:5d76158685fe9a521e4bf621f1659d32fabd46168d399b3265c68cd73ac7a196:eyJzZWxlY3RlZExpbmVDb3VudCI6NjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4Zjc0ZDljMDFhZjhlMmE3M2FmODg3NzI4MWRhYWYyOWNmNjZmZjZmZTFkNTE5Mjg2MjVhZmVhMDFhZmI1MmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MDlhNTNhNjE4ZDAyOGUxZDMwMDBjMGE3YWJjZWVjYmU1ZmIzN2Y0ZTUxMWVmZTQ2NjQzZmFkNmU2Njg3MmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzNWI5ODBhNzg4NzE0ZWMzOTU2NjNlMTM2MTJiOTQzMWE3MzFiNDZjNzZiNzI4OTI3N2I0NGZkYTRjYmQ3NzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAxOWRlOGJkMGZkYzRhZGY2M2FiY2I0NTJjYjFmYzYyYjRmYjEwMTUyYjVkYjA4MWJkNWNjMDQ0OGVmOTQ1NmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_95d95e4dee2942a8a76232241d8e1887",
+      "statement": "Declared FragmentRegion values authorize HTMX targets and response selectors, with undeclared targets rejected by default and framework-owned error sinks used instead of reflecting a rejected client target.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/htmx/authorize.py#L154-L195",
+          "version": "repo-lines-v1:sha256:e8ec543ea88105b3b6a250767833da67a33711b7603e3569c6894e2c0b183ddb:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwMzM5MWMwZGI2OWIyM2I4MjA0ZWJjNTA1Yzc5NDk5ZTcwZDA3NDZmNGU3ZmY1NTgyNGU5OTY2MTc3OTFjZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxNWI0OTA4N2E3NjE4YzhhNTEzM2Q2MjMwMzVhZWYwMjU3OTZkNjk0YTZhMzg5MjkyYTNjNTEyNWQwNDQ5MTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNiZjYwYjY0NzA4OTUwNGQwNDU1YjI2ZWZiOWJkNTg4MmIyZmExYmU4NTRlZTgwMjQ3NDc0Y2MzMzdhNjY1ZTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVjNWRmMGMyNTJhNGQ1ZTdkMTgxZGFjMmM2Yjk1ZDU0YWM2NGUwZjAwMzM4NGVhMzk3YTY1NDcxNDMxZDdlMzAifQ"
+        },
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/htmx/authorize.py#L202-L204",
+          "version": "repo-lines-v1:sha256:6ee7a43e16b7a0496ac9da9799bdebd67f5c4ded5a78266c24fbeff4ef512469:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTNmYzBkNThjNWQ5ZWFiODU4YjAyNGNmYmRkNzczNDE4ZDRiNzRhOWM3NGZjNDc0MDE1N2ZlMjk2MWNiZTZmMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjcxZmRhZWZjOTI0NTc4OGM4ZDgyOTliN2ViZTFmMjMwNjI0ZTY2OWZjNTg3MzM3NWFjMzUyMDg5NjllM2U2ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjA1YmIyY2QyMjE1MjE2YjhlZjExNDAyYzA4OTA5Y2VjYmRjMTdkMjE2ZmRhZTE5OWJhYTQ1MmM0MmYwYjU4YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODlhZjBkNDQ3MzllM2E4YTIxZTA5ODYzMzE1ZGUwNmU0MTM3ODY5ZjAyOTA0ODAwYjk0NTM2ODkyMjlkYzE4YSJ9"
+        },
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/htmx/policy.py#L53-L59",
+          "version": "repo-lines-v1:sha256:5b9f915a07d90d1483b53f6fa13d9f6e9fb004562d3d4c9a8bab7e414c7137dd:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGUzZmIxZTU4ZmJjOTA0Nzk0ZDUwNzMxNGZhOTFjOWYyZjE5OGM4OGQzZmYzOTVlMDA4Mjg5MDFjMzdkYzkxYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGJjMjU3NGZkNjJhZTZiMjBkZjg5NTI3NDgwMTdkYzg3ZTIyZTY1ZTU0OGNiOGJmY2IzNTU4NzE0ODU5M2Y4MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWYxMzZiOTc4MzY3MjY4NmNhMTRlZDQ2ZDE4ZmRmN2Y0OWYwNzA0ZWZlOWIwMWU2Nzk4YWYwNTE4MjgwNWM5ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWE4YjljYzBmYmZkZTZjZmUwZGI2MWUxMGM4YWZhOTM3ODg0OTFlNjllZWJkZGEyMmQ1ZmM5ZTM4OTE4M2UzNiJ9"
+        },
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/htmx/policy.py#L93-L110",
+          "version": "repo-lines-v1:sha256:04c88976a910fc81b03aa33166ba01e0d89cf115682e3ef7696bc38a76b3fe93:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlM2ZiMWU1OGZiYzkwNDc5NGQ1MDczMTRmYTkxYzlmMmYxOThjODhkM2ZmMzk1ZTAwODI4OTAxYzM3ZGM5MWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQxMTg1OTJmMjRiYTRmYWNlMWY0MzI3NjBkZDAxNzNlNzJkZmUxNzFkMjk2NjhiZWNlZTgzM2M0M2YwNjUxN2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNjMzRmY2E4ZWNjMjg5YTAwMzY5YWM1YWVjMGViMDAxYzE3MWIxNTQ0YWUzZTU3ZDU3NmU4NGJkZGY4MGNhNWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_88bfd2d38a924a8d9468560f45cb65d7",
+      "statement": "Focused tests verify that a reviewed script value still fails the fragment asset boundary with HED-EXT-0011 and that an unsafe action rejects missing CSRF but succeeds with the seeded token.",
+      "evidence": [
+        {
+          "resource": "repo://tests/integration/test_fastapi_mvp.py#L202-L225",
+          "version": "repo-lines-v1:sha256:81470dbb8c93c8a6ab2df655f51a7cedd55b63205255c3bf49daa42cabdc9b26:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU4MTI5MTBiNTc3MTIwNjE3YjkzMzE4YWIyODI5YmYzZjY4YmI1OWI0MTBkMzg2NjFjZWE4YmIwMTI4NDc2YmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiM2VlODNkMGNjZDUyMmU4Mzg4OTgxYzkzMTE0Nzc3MGJjNzYxZDkyZWVhM2YwZWVkNDUzZDIwOTIzYWE4MDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBhZWNmNTZjYWUyMDkxNzVkZGM0YjAxOTkyNjMxOWQ3OWEzZmM5MDBiNmI2NDczYzkwYjY5MzU5ZTBmZDZlZDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA3MzRjNmJhNmZmZTg3YmM0NTVkODQyZDc3YjE1MTg2NWM5ZTk0ZDYwMGM1Zjg0NzkxMjcxNzBmODVhYzExNjUifQ"
+        },
+        {
+          "resource": "repo://tests/integration/test_fastapi_mvp.py#L57-L85",
+          "version": "repo-lines-v1:sha256:5206b367eeec703058e791ca4b316c23c79fdeec8bf9f7b609e2081b61824851:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4MGI5YjdmOWU4YTNhOTBkYmYxMmI0ZDY1NzFiN2I4Mjk3ZGZhZjFlMzFlM2IwYTMzNDBjZWQzYzMzNmE3NjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlOGNjMTc1YTA5OTQ2MDYyNDE3YWEwYmYxYjYwNDI0MDMxMjcwNGY5M2YwNjJjODY3ZWYwNGRjYTcxMDZiODciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNkM2UxNGEyYmUxYWFmYjU5MzJlNmEwZDQyYTNhNjQzMGVlODM4NjAyMGQxMGQ4MzFmODEwYTI5ZmVlNjczYzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZiMzk0MzkxMmMwNDkxNzk1NTM0MzYxOTcyYjQ2ZjUwYzcxMDUwYmUxNmI5NTI5Zjk0OTFkMWQyZmUyZTUzMWMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_82176eb8a57341c8ad332e7d856a33ca",
+      "statement": "Security tests verify that a bundle ID is not an authorization capability and consuming a disabled MCP projection does not enable it.",
+      "evidence": [
+        {
+          "resource": "repo://tests/security/test_security_046.py#L16-L48",
+          "version": "repo-lines-v1:sha256:deb2d4078f61c5d389959946c0efa84c975bcb4c02a8ee465c2059dacf0d6cc7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVjOGRlOTBlMjI1ODEyMWNkMzM2ODA3OTJmNDJiZGEyMmE1MDM1MWRkZjMyNjI3OTFhOTMzYjVhMTM3Y2E2NzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiNzk5MjBmMDE0OTg2MDdjZmU3YjNkNGE3ZmQwMTY0MTI1N2Y5ODE3OWFkNzI1MWQ2OWM3MGE5YjRjOTFmYmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYzOTM5NzFkMDdiZTdlNDhmMjU1Y2FiZmRiNWE0MGRiYTc3ODJmN2M4OWMzZWFmYTc2OTIzOTVjMDA1NzYzMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-19T17:40:19.225Z"
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:8347f18e50512a6da160953e7f8b30b67fc1eb8fc53e79d3d665972b98c0f5ba",
+  "claims": [
+    {
+      "id": "claim_739a951b41194215bfdc6660597b4b53",
+      "statement": "The portable adapter contract classifies capabilities as portable, ASGI, WSGI, or framework-specific and records support, evidence, notes, and stability.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/adapter.py#L26-L46",
+          "version": "repo-lines-v1:sha256:d5046c5fb28f581dd66b99bba2492cc86dafef96c45110ccfd965c03456c47d8:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyZDM5MDUzNjQ1MGZhYzhmMjE4ZTQ3ZjNkZWU2NWJkYWY1YjA3MWZjNTE3ZjE1NGRjYTg4NmE5YTBhMGUyYWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRkY2Y5MTA5OWU5ZWYwY2UzMDJhMGQ2NTcxYWVlNWFjMjEyNzdkYWE0MjBkOWJiMjI5N2Q5ZjgwNTFkMmZmOTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQzZDE3MWRlNzU0MzFhMDIxYTBkOTRmYTc2ZmFiZjBkNzEzOWM4OThjMWEwYjQ0YjQzY2E2MDkwM2ZhMWI4NDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzNzc0OThiZTc2MDllZWJmMjYxZjU3ODA1OWIwMjdjODkwZDNmMWRhYTg0NGQ0MDA3ZWIxMjFlNmI5ZGU0OWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_69703cb3c94548a4a9d4d89fa662fa1b",
+      "statement": "The adapter capability matrix describes FastAPI, Flask, and Django separately; all expose safe HTML and HTMX header support, while host-specific lifecycle, URL, form, queryset, and streaming capabilities differ.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/adapter.py#L100-L202",
+          "version": "repo-lines-v1:sha256:642392a45b6d017516187336c11a7a87d45de4c8fb3bf96e7d88664d6b5a2c9f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAzLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjN2I1ZTQzM2RjYjBhODRhZGJmZGJiYTVmZTBmZGNiNGU2NDQyYWRkNjViMjI5NzM2YTgwOTk2YzU5YzQwMjJmIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIyMDU0YzdhNWU5OTJhMTliMDQ3N2ZmZDEwNDIxODFkNDg0YmIwMmIyMzQzMjNmYzE5OWI5ZTgzYTNjN2JlZmQ0IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIyZDRhMDA4ZWFmMGY0YzIyZTNiMjE1MmFlZDE2MGM2MWNlMjQ3NTYzODYwODcxNzIwZjgwMzY0ZGU2MGVlNWRlIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_5e134fbff3024080a87e95be1588f264",
+      "statement": "The first-party Flask and Django packages depend on hedron-core and their host frameworks and are classified as Beta packages.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-django/pyproject.toml#L1-L46",
+          "version": "repo-lines-v1:sha256:bcf7e9e689a5bcb19d86e0bbc48c8cace805c488dac4b7c49dafffc28975421a:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwMmE4MWMzODM2ZWRlZjJkMGJhMTFkMjM1M2ZiNmRhYmM3NzcxNTBhN2NhODNlYTBkOWU5YTcwMzEzZmVhYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5NDE2ZTA5Zjc4YmEzMTZjMDMyNTY4MjEzYjg1NWVlNzU2ZTQxNTY1ZDkxOGYwOTUxOWM4MWZkNjIwZjQwNjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMzNGM1MDZjZjM4MDU4MTlmZWI0M2M5ZmMxYWYzYTFiYTVjMzE2ZTFhN2M2NTRmMmYyZDJhNzFhZGM0ZmQ0MmUifQ"
+        },
+        {
+          "resource": "repo://packages/hedron-flask/pyproject.toml#L1-L44",
+          "version": "repo-lines-v1:sha256:c83de31902a122c93cfd536fcb35dc840b97e17b041041ad9ce62604587f449c:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwMmE4MWMzODM2ZWRlZjJkMGJhMTFkMjM1M2ZiNmRhYmM3NzcxNTBhN2NhODNlYTBkOWU5YTcwMzEzZmVhYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5NDE2ZTA5Zjc4YmEzMTZjMDMyNTY4MjEzYjg1NWVlNzU2ZTQxNTY1ZDkxOGYwOTUxOWM4MWZkNjIwZjQwNjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMzNGM1MDZjZjM4MDU4MTlmZWI0M2M5ZmMxYWYzYTFiYTVjMzE2ZTFhN2M2NTRmMmYyZDJhNzFhZGM0ZmQ0MmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c2fc8ef049124002aece96c5267ea6b3",
+      "statement": "hedron-mcp is a separate Beta package described as a deny-by-default MCP Streamable HTTP projection, with a plugin entry point and dependencies on hedron-core, MCP, and Starlette.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-mcp/pyproject.toml#L1-L44",
+          "version": "repo-lines-v1:sha256:a12bba3b1c3beef442bd3af94a17aa74ce708e5e5a1ecbf11720430c8fd14a3c:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwMmE4MWMzODM2ZWRlZjJkMGJhMTFkMjM1M2ZiNmRhYmM3NzcxNTBhN2NhODNlYTBkOWU5YTcwMzEzZmVhYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwNTc4MWM5YWJkMDVjOTRjODM1MDU2MzNkZTJmYWY5YzgxNjU4YTk0ODAwOGNhY2Y5MzJlZmViZTBmOTNkOTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMzNGM1MDZjZjM4MDU4MTlmZWI0M2M5ZmMxYWYzYTFiYTVjMzE2ZTFhN2M2NTRmMmYyZDJhNzFhZGM0ZmQ0MmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0e2d7f479a674369aa8c15b426a703f4",
+      "statement": "FeatureProvider compiles to an immutable FeatureBundle that declares its provider, version, views, commands, components, projections, requirements, dependencies, limitations, and optional capabilities without execution semantics.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/bundles.py#L182-L201",
+          "version": "repo-lines-v1:sha256:3ca6e0ac037f3c018c9b804253685b6177049bb6c161e094410b40336c0e7911:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0ZDVhM2RiZmMzNDAwOWQxZDQxNWM2MTJkOWQ2ODc3NWNjMDkwYmQxOGRmMTI2MjczOWI0MjFkMWRkOGQ3Y2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5MzA2NjM4ODY1OWM4MzE4MTkxNzVkNTFkYmZhZTZiYThhNTQ1NTRiZmI2ZTJlYTJiZTZmMTA4OGY3MTBlMWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcxZWVmZTkzMzczOGVhNDZkOWRmZDc4N2M4NWM1NGVkYTgwZDBiOTNjMzgzNTVhYjcxMGE0MmVkMjg5ZTRiMTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk3ZDdhYzUwZjk5NmM3YzIwODg5YjE4YzMyOGJiMmNiMjNmOGE1MDA1NmNlNmEzNzBlYTBmYjRiN2NkYjFjY2MifQ"
+        },
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/bundles.py#L73-L104",
+          "version": "repo-lines-v1:sha256:0d9e5e01fbbe97f2d7076745f28caff5cb59ff8841aa7eec6296344deb13b06b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwMzA2OWQzZjMyN2IwY2ZkMWQwODcyNzRlYzI3NTY1ODU0ZDg1MmIzMjI1NTNkMzkwMmM4OWY1M2YwMDBlZGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1ODc5ZWM3MjczM2I3ZmYzZWRmYTcwOTNiNjVjNmEzZmZlNWFjNWMzN2FjNTY3ZDhjNWExYjk1MmYxNTZjYWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJiZjAxYmQ4YWFiYjY1NjEwYWZmZDhmYzljMDhkYWI2MDFmMDhhNDViZGI2NWFjYjJjZjZjYTRmMGNlNWI2YTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzNGRjMTdjZjZhMmZlODA3MzYzYTMxNzc2YzQ0NDVmNWVhZTAxYTMxNjM2MmExNjI3NzdmMzMwMDNkNTQ2ZDgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4e08c273f59e4435a2c87804669adc96",
+      "statement": "FeatureBundle inclusion is application-owned and validates catalog sealing, bundle limits, duplicate IDs, dependency order and depth, required capabilities, and privileged namespace ownership.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/bundles.py#L235-L331",
+          "version": "repo-lines-v1:sha256:cd2d0fde1e591a0d1665e88ef9de500fa7ecd0050d5546290c1194708849c897:eyJzZWxlY3RlZExpbmVDb3VudCI6OTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3MWNiYzFiMzM0MDAzOGE4Mzk0YmFlZDJjYjAyNmU1ZmQ1YWIyMDU4NjA3OTc2NmRkY2EwY2RlNWEyYmI3ODAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MDMyZTk2NGQwOTMyMzUxZTVkMTg1MjY5MjgxYjE3MWEzYTA5YjA4YjI4NmU2NjFlYTQ3MDMyM2M4MmViNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMzZjA1NmFiMTJhMjAyNDhlYTcyMjhlMDNjMjUzY2ZlOWQ0MDkyZGExNDYzZmQ4Nzk0YTdjMzI5MGI2OGM0YzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ0YzlmODZjZjJhZGQ0ZThiMmNlNWRmNWQzZGY5MzVjZTljYTAwNmEzZjU2NWI2YTZlYTc0YjQ5MmFkMmE2ZDEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2ffc993fa512497a8c0c6f94a82d8337",
+      "statement": "FeatureBundle registration rolls back bundle and projection state on failure so no partial artifacts remain.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/bundles.py#L360-L421",
+          "version": "repo-lines-v1:sha256:3092a1fec5a1c29f8465d122a33b9f85b7450f99c68a64b0cf2a1d847f9cba8a:eyJzZWxlY3RlZExpbmVDb3VudCI6NjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkM2QxZjU1ZTVmYmJkMjNmYmNmOWMyNjc5ZjM5ZTQ0YjdkMzIxZTg0MDg5YzJhYjRhZjQzODRiYzcwZTZlNGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3N2UwMWRkMGEzNmRiYWMwY2RlODhlNjZkM2Y0ZGIyNDQxMDg1ZmFkZGEwMzU1ZjczOTcwZmZjNWI5YWNkZTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVlZjFiODFjNmZmNGYwZDgyNmNmYjg5ZTQzNTVkNWEwNWQ3MzI4NTc0YjNmMjlkMTc5OGI1M2M5MGI0MDhjNWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY0ZDI5Yzk5MzAxMzY0YWY3ZjVkY2FjZjFlZmZhMTA1ODgyNWU0ZjMwYzQyNTc0ZmI1MDI4ZmY0M2Y5NzYwZDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5b28a904643b451fbeb55e6aa1843021",
+      "statement": "The HedronRouter include_component surface accepts an addressable descriptor or factory, uses fragment transport, and defaults ordinary factories to hidden OpenAPI exposure unless explicitly enabled.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/routing/router.py#L891-L965",
+          "version": "repo-lines-v1:sha256:5e2782ca6e5bfa105dcf5bb02e6b63b0105eb9a2d33a52469c31dc453d3ea4a8:eyJzZWxlY3RlZExpbmVDb3VudCI6NzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlMGI4N2U2NzgzZTgwMzFjMWQ5YjFlMzRjYTU2Mjk5ZWQzNmQ1MGM5YWI0YTg4OWE4MzkxNzYxZGFlZTYxYjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MDlhNTNhNjE4ZDAyOGUxZDMwMDBjMGE3YWJjZWVjYmU1ZmIzN2Y0ZTUxMWVmZTQ2NjQzZmFkNmU2Njg3MmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE1OTNlZmY5YjUyMTg0YTY0YWUzMjA0MWRmNTY0MzU2Y2ZjNWJkMWM1MTY5YjVmNTA4OTlkOWJhMDM5ZWMxMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_869990e5b435434ea861d858b28b7b62",
+      "statement": "The README identifies separate extension areas for feature packages, component packages, Web Components, Jinja/HDJ, and a framework-neutral core, and says host adapters keep their own maturity and compatibility claims.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L93-L106",
+          "version": "repo-lines-v1:sha256:3a9489027f13ec580a04fac1f5a2c9aff2a5efdf1ed4897b07fce68a376b85b8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3N2JiNzBmOGEyNWE0MmEzODA5YmRlYWNlYTY2NTM0YzVmZTU2NTI2NjVjNTBkZGU5YmZiM2E4OWNiOWQwYzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5NjlhMzJmMjU0M2I5OTQxNGJlZjIzMTMwZWY1ZDM0ODg1MWNmYzg1NGIzNWFmMGY0NDM2ZTdiODU2NTg2MjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJmMjY1N2MzMjQxMTcwNjU4ZjkyN2M0NGZjZDA1MTQwZjFiODAwZWI4YTRjMDA3MzQwNjA1NGNkMWYzM2VjY2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMzZjQ0NzBjNDAzOGEzMjQzZTdkY2MyMjYyYzNiYjE1NjdhMWQ2ZWNlYjMzZTVmODUyZGQ4ZWJiZGY5ZGJmOWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_25c7e2c9b22a4647bdfae86bdce0ee4c",
+      "statement": "The stable support boundary lists hedron-core, hedron, edron, hedron-data, hedron-charts, and hedron-maps as stable while host adapters, MCP, native, notebook, Gradio, simulation, and other satellites remain beta or tooling-grade.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L139-L143",
+          "version": "repo-lines-v1:sha256:09a016ab5be25948cecaf86f71c33c4b4689ee2df68d8c8b98bf5078cdd7d259:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTM4ZWNjYjhlM2YwYTM0MjE5ZDNlMTc5ZWJhMTc0MWM4MGJlMTdmZTQ5NTY2MzAxMzU2YTY4MzM1NDQ4NTQ3MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmVmNWU3MzA2MzdmMTE4ZTJlMjNiOGI0OGJhMjVmMTM5YjgwZGI2M2RjYjQ2YTUxYTQyYzU3ODkwMGFjNzlkMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDJjZThjNWY5MjNhMDMxNGRlNDMyMWI1NjUwNTRjMzEwMTYxNThjYmMzM2M3MjVkZDk1NjgzOWU0ZTliNjgyNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjQwOGQ4YTE1OTFhYzBjM2Q5MDc4YTlmYjFhMjM5ZjAzNWJlNGNkNmEzNmY0NWJkOTBkNmI1MjEyZjQ2ZWRlMyJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-19T17:40:19.225Z"
+  }
+}

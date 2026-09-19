@@ -1,0 +1,17 @@
+# Keep local and generated artifacts outside OpenWiki's repository read boundary.
+.git/
+AGENTS.md
+CLAUDE.md
+.venv*/
+.bounds-venv*/
+.ci-venv/
+.pytest_cache/
+.ruff_cache/
+node_modules/
+__pycache__/
+*.pyc
+/build/
+/dist/
+/site/
+target/
+*.db

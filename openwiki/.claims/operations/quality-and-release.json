@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:c0b2ee3333c95eef9788a79f72654ae05cc6367f3dd7d525b7835495027e348a",
+  "claims": [
+    {
+      "id": "claim_9fe224f53544472483eb9a915505dbf3",
+      "statement": "The repository supports CPython 3.10–3.14 and uv, and the standard local loop runs Ruff format/check, Pyright, and pytest.",
+      "evidence": [
+        {
+          "resource": "repo://docs/CONTRIBUTING.md#L15-L48",
+          "version": "repo-lines-v1:sha256:cb4d220b181f6601ea5bea9eea02ebe8f4c5fc7dafad14e8f58aa429ab5d645e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjMGE2YWYyMmY3NTQwOTUzNzEwNmU2Mzc4OTVjODY1OGNhMDhiMGYyYjE4YTUyMWVjOWJlZDgwZTBhOWE1YjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNjYzIxOTYyODNhZTJiYjIxODI3ZmEwNDE5NTYzMWU3YzRkNmUwZmJhYTZhOGMxYmMzMWFhYTMyY2NmNDc3NzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI0NWZmZTliYTFkNWFkMzczYjM5NjlhOTliODhlYjAxYmYwN2NhNjM1YzczOTZiOWUyNDU2Nzk5NTYyZTY5OGIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e335f169267a4a188334b971df0bfe72",
+      "statement": "Contributor guidance maps focused tests to unit, integration, adapter, security, conformance, and example areas, while browser tests require HEDRON_BROWSER=1 and -n 0.",
+      "evidence": [
+        {
+          "resource": "repo://docs/CONTRIBUTING.md#L142-L154",
+          "version": "repo-lines-v1:sha256:ce1f0be8076f668d0c5ff335580a6f98ff2666cd3dcd5ea699ac83178b471c0a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5NGU4Zjc5OWFiZGQzMmFiMzRjYzI1Njc3YjVhN2VlY2VmNjNmM2JkYjAzMjNiNWUzNWVjYjJlNTY4ODc3OGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkZWEwN2YwZjJiYTA0ZjJhMjY3MjY1MzNiMWM3M2JlNzhiZmU5NjU0ZTkzYTMyZTE1MDkyMmFlZDIxNjIzYjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRhMjAwZDM1YmQ1NjNkYzUxZDQ2MDYyYTE5YjYzY2RjODk3MTVmYjE0ZWVhMDc0NDA1YjNlZGE3NzIxM2E5MjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1MGE5ZDVlNTAwNTgzODQ5ZmE1MjA0M2E4NWM0ZDgxOThkMTRmM2E3ZjZlZDk2NThiYmVkYWI3YjNiNDkzNjYifQ"
+        },
+        {
+          "resource": "repo://docs/CONTRIBUTING.md#L32-L33",
+          "version": "repo-lines-v1:sha256:f057e1890c19bb5206619c43bf339eb0df3c0ffb9e6595aac9587a48a12d9e37:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzI5OTcyODljMThkYzczOGUzYmUyNzFjOWM5ZjJmNWJjZWRjMTkxMjBlYWMxZTg3ODE4MWIxYjczOGU2NmFhNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTcyNmY4N2ExZDA4N2I3OTY0YWI0YWMzM2NhOTFmOTQ1NGUxZDMzMWM5ZjFkNjE3NjFjY2M2MTIyZWM4YmYzZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTAyOTQ2MGExMzhhNmMzZjJjMDIxZTA4NWNmNzhiYmNmNDhiZjA2MDEzYmJiMmI5NjRiMzRlM2E0OWUyMmY0OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTA2ZjVlOGVhNWNiYmVlMDQ3ZjM5YWY0ZWNkM2Q3MzRkMjljMTg4MmZlYWFkOTIzN2Y2ZDcyNzI3Mjk0Y2NmMiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_8a562101966549d68ead20a75bc9858a",
+      "statement": "Docs-only verification uses the docs dependency group, strict MkDocs, documentation SSOT and ownership checks, inventory/API coverage, package links, recipe sync, and generated-content checks.",
+      "evidence": [
+        {
+          "resource": "repo://docs/CONTRIBUTING.md#L50-L80",
+          "version": "repo-lines-v1:sha256:e6b36f52d009dcf864b71601ea08bc01c714ad459df3e0cd4452cf8e2023b9ae:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhZWExMjYxZTA4M2QyODliN2YwMjgzMzJhNmZlOTE5ZTVlMTZkODJjMTQ5NzVjMTE3NzBiNzc3ZTEwMGNkNmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMzZiNjI4MTk2ZTM5ZDIyZGI0MDE0YTY1NTA3MzczYWQwOTM0NTBiOTE4ZDA2NjMwNWIyOGM1ZDNlZjZiNzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxZjUwMTI5MzdhMzFkZTlkODI3YmVhODQ1MDVjMWExMDkxOGYzM2U1YzNhYjZiMWQzN2VmZjBjNDQxZjBiNzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZmN2I2MzZhMGUzODU0Y2FkNjAzZjRlM2JmOTk0YmU0NTVkMzk0MDgxZWZlZTQ2ZThkYjE4MDU2MzY0ZmQ4NmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c7bc2555f2654dcca632c71d0a51f3b5",
+      "statement": "scripts/ci_checks.sh is the shared command source for the repository's test, coverage, workbench, docs, typing, quality, browser, evidence, packaging, and local OpenWiki suites; GitHub Actions does not call the local OpenWiki suite.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/ci_checks.sh",
+          "version": "repo-file-v1:sha256:ba8f3daabc64f8cd93918e89e27467314bace6917f45a54e1c8fc36803361988"
+        }
+      ]
+    },
+    {
+      "id": "claim_035436ea4aec4f45b4d38c8b66d27f2c",
+      "statement": "The test suite uses strict pytest configuration and markers, coverage checks independent floors of 73% for hedron and 83% for hedron-core, and quality runs Ruff, Pyright, package checks, documentation checks, package verification, and optional wheel smoke.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/ci_checks.sh#L387-L409",
+          "version": "repo-lines-v1:sha256:f6b0663d36d7472de14864d9de3161bb098fe8d75f2033bca1f0d74e94a69bf8:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVjYTA2NTgzZjZlYjIzMTgyMWViZjM3ZjFjMWFlN2YzNDY0ZmFiNTUxZWUwMjliNDhlNWFhZDk3NTIwMTY4NmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2MjY3OTM1ZmM2MzM0NjVkODQ4YjQwYTRlZDY5NjdlN2I3YTMyM2Y4MWNkNTNjMTEwYWUyMTAyOTY4N2FhMTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3MWJlNzQ0YTE1OThjZGYxOTdhYmVlNGZmYzgwNjZlZWM1YTZkZWJjZmM4ZDRlZTAxMjNlMWE4NDE4NmZhNjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMwYWU2NmRjNTk5ZmZlMjExOWM2YzU2NzQ5OGFmZGYwYzMyNTg1NWRmNTFhMDk1MWU0ZmU5MDhhZDkzYmE4ZmMifQ"
+        },
+        {
+          "resource": "repo://scripts/ci_checks.sh#L412-L469",
+          "version": "repo-lines-v1:sha256:3214297a36a026df8e0a6f71f1118f5f707431868e4a47dc44c1f21ab980c570:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIzOGM4MDZhZmRlMWYzZWFlYmNjYmU1ZWMwYzNmZTk5ZTE5Y2I3NzA5NjAxMWYxY2JiYTdiNjRkNzJhYjkxZmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM0MGM1ZDNkYzNhNzczMDc5M2M4OTI3OTQ4YjU1OTY2NDIwN2Y3OWJhODc3NzNjMjE1MDA0NDMxOTYyZmQ0ODgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBmNzA2YjNkMzkyZTBhYzc4OTIwYmRjMmJjZGE4YzIzNjBhODJjNGNlMTg5OWQzNGVhYzA1MTFjMmMyZWEyYjIifQ"
+        },
+        {
+          "resource": "repo://scripts/ci_checks.sh#L612-L699",
+          "version": "repo-lines-v1:sha256:949721321feabe7cc5062242ec1bc05e7fdf671536660591924b6feaa2aee4c5:eyJzZWxlY3RlZExpbmVDb3VudCI6ODgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyMzBmNTc1YTBhZjY5MmVkOTkzNjgyZDY4ZmY3MzRiMjVmOTBmMmVjODU0YTA1Y2FmNGViNGI0YTE2NGVkOTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIwMTQ3ZGI0NmI2NWY2MTQzYjA4MmZjZTQ4Nzk4NGY1YmJjNTk3YWNlMDk0ZTc3NDkwNTc2YWRmMDRkMGUzYWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQyZWQ2YjJkYzQzNGQ4NGVhZGJkNDcwYmNiYjcyMGU4ZjcyMmI0YTJhYmIwMTEzZjEwMmIwMDFkZWMzYWRhYzYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6599f40948ed4ba0ac0395ea4fd9f890",
+      "statement": "The full local parity command runs every non-browser suite on Python 3.12 with bash scripts/ci_checks.sh all --python 3.12 --skip-browser, and the all suite starts with the local OpenWiki freshness gate.",
+      "evidence": [
+        {
+          "resource": "repo://docs/CONTRIBUTING.md",
+          "version": "repo-file-v1:sha256:df18ba7ee7a85c5bc63bc28e24520558ce9ea9d7ca94af44c8393c63aec1e075"
+        },
+        {
+          "resource": "repo://scripts/ci_checks.sh",
+          "version": "repo-file-v1:sha256:ba8f3daabc64f8cd93918e89e27467314bace6917f45a54e1c8fc36803361988"
+        }
+      ]
+    },
+    {
+      "id": "claim_0fba644414db41bd8085474e1864c0b5",
+      "statement": "The root Pyright configuration analyzes shipped workspace packages at the Python 3.10 floor in strict mode, with broad unknown-type and related findings configured as warnings.",
+      "evidence": [
+        {
+          "resource": "repo://pyproject.toml#L180-L246",
+          "version": "repo-lines-v1:sha256:8b97ea776c09c73689da692932671f2434ac05e173a03dfd65f4380a065e7932:eyJzZWxlY3RlZExpbmVDb3VudCI6NjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4NTIwZTQyMWQ3NWRkZGFhM2IwOTc1M2MxY2IyYWMxMGM2MGQxNzI5ZjY4MGRkMjc2MDdkMzRkZDRmOWY3YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1YThlYzU4NGE5NzJlZmMzZjJhMjE2OTg4ODEwNDFmZDMwOTA4NGZmZWQ1YTEwMTcyMTQ2YmIyZWQyMTc5OTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYzYzQ2Mjc2YTcwMzcwOWI3NDliZTM0NmI1NTZmMDE4NTJjNjU4OGIyMTI1NGE4MDY5YTc5YWU5ZjNhNTQwMWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_091412003ccc4a549fff9733df7a9ab1",
+      "statement": "release/stable-api.toml defines a deliberately small 1.0 SemVer surface: listed exports are compatibility-protected, listed callable and class signatures are locked when provided, and all other exports remain non-stable.",
+      "evidence": [
+        {
+          "resource": "repo://release/stable-api.toml#L1-L4",
+          "version": "repo-lines-v1:sha256:3eac55151257d699359e3e294e074e0847f6ce62214ed764256b46d02d4a3d4a:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTJlODVjM2EzZDRhNzAzODgzNjYyOWFjMTAwYTNjNjQ3NDQ5ZTA5MzMwOTM4N2UwNGIxYzdjN2U1MTUxY2EyOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWJhMDZlNDZjNDZhNGJhMjBjZWExZTc5YjM3YTU2NDdkZjdmMzA4NTYwNGJhMzVhMTIzOTkwMzA2MzRjYTkzNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmZjNzQxNDkxZDgyZjM4YTkwZWRhNzIwMmI3MGVmYzY5OThlZjhhN2JlMDViMGJkOThmOTZiY2YyYzEwMzViNyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_59ed4b3f77cd4cbc8df70a1b69488bee",
+      "statement": "The stable API metadata separately protects the main hedron application surface and the hedron-core Component, Page, Text, render, render contracts, trust markers, Secret, FragmentRegion, and InteractionResult symbols.",
+      "evidence": [
+        {
+          "resource": "repo://release/stable-api.toml#L4-L91",
+          "version": "repo-lines-v1:sha256:1702184cd96ecef559cd34814968df3f0b1f7e69be5032d7fae149c36a718467:eyJzZWxlY3RlZExpbmVDb3VudCI6ODgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImViYTA2ZTQ2YzQ2YTRiYTIwY2VhMWU3OWIzN2E1NjQ3ZGY3ZjMwODU2MDRiYTM1YTEyMzk5MDMwNjM0Y2E5MzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5N2I4YzllYmRmZmQ1MTQyZDhhMzIyMjJiZDM0MzQ2NTVjMjQzMTIyNGVjYmQ4ZWRjMjJjODE5YjI4NDgxMGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcxYTViOGEyNDE5OGUwZTVlM2QyZDQ5NzY2YmE0ZmMyMTllMjgxMzNiMjQxY2U5ZjljZWJlMTZjMTA5YzAzMWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4ZGMxYjJhNzRjNDIzMzU0NzM2OTEwNzRkM2U4ZTRmOWI4ODkyNTFlNWNjNjdiOTM4NGE5NWE3MzA3N2UwMjEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1aef52dd2c444e31a78ffd08f98ce65e",
+      "statement": "Public API, security-default, and supported-claim changes require the RFC and decision workflow, while ordinary fixes and focused test or documentation changes do not.",
+      "evidence": [
+        {
+          "resource": "repo://docs/CONTRIBUTING.md#L204-L220",
+          "version": "repo-lines-v1:sha256:e01a7150599c4e57a64caf90116cc3640c7dd4075d09511384d3e033cae887f2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxZjVhMjRhYTY1NDgxNGM0NmJhNGYzOTE1YmVjNmQ0YTMxYmM0MjAyOWZjMjZmYzcxNWQwNjBhNzY0NGE5NTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4YjU0MjhlMzk1MjY2ZmYwZjViZDFlOWIyMTRjYmMxMTQ3YjQyYzIwNjMyYjY1M2VlMzg3OGU5MzQ3NDJiYTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyMTA4NDk0NmNjODAxODFmOTVmYjc2YTYwYzBmYzY1ZTJhMGVkZTVhZWMwOGMyYmEyMGNhZTZkMzU1MTdiYWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBiZTNhZjQxM2U2MWFmMTNiNzhiZmE2N2VlYjIxMmVjN2MyYWRhY2UwNWJlZjNmNGRkZWY1ZmFmYWQzYjU2OTQifQ"
+        },
+        {
+          "resource": "repo://docs/CONTRIBUTING.md#L272-L278",
+          "version": "repo-lines-v1:sha256:abaef0803c1f3a8920b0852063e76f09f3c9a23c7f2efcb98d90386f532f0ba0:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmNiODBkYzg4ODBlNDQwZDJkNTM3MDIyMWY5MTZlZWRkNDA0ZmFjZDZjZDMyNTQzNDA3NDY0YWFlYWJjNjM5OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTVhYjY3ZTM2MTc1YmI4OTNmYjMwOWM3NDJlODJlNWI2ZDQzZTE5MGU0ODZjMjBiNTQ2YzBhY2Y1M2U5OGMxYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDAxZjJlYzE3NTkzYzEwNTRlYjQ2MzY3ZDg0NTNlZjI0YTE3M2NlOTZiNzExN2Q5MWY5YTY4ZDQ0ZmVmOGIwMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjc2MjE0NmIzOWE4ZGU1ZGVhNDQzMmNmZjkxNjNlZTcwNWJmZDk1NzI4YjY3MzJlOWMwZTQ1Nzc0YzZlYTNlZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_ae56bb5777f948c1a45662cc1a78f0f3",
+      "statement": "The local OpenWiki suite compares the current source fingerprint and Git HEAD against generated page metadata, validates Markdown page versions and verified nonempty Claims sidecars, and is read-only.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/check_openwiki_freshness.py",
+          "version": "repo-file-v1:sha256:fd636dbe236dd449ff68427daca7248f27c09f5158f2e64749d5369e558fc7fe"
+        }
+      ]
+    },
+    {
+      "id": "claim_e9aa17d4112a432a9b4ace8ead3f1771",
+      "statement": "The OpenWiki freshness gate is intentionally local-only and no GitHub Actions workflow invokes it.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/README.md",
+          "version": "repo-file-v1:sha256:34a3e907b8cc46b4fde4ef05fb5014e47a300a5caa3a5172559cebed8d38616f"
+        },
+        {
+          "resource": "repo://scripts/ci_checks.sh",
+          "version": "repo-file-v1:sha256:ba8f3daabc64f8cd93918e89e27467314bace6917f45a54e1c8fc36803361988"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-19T17:40:19.225Z"
+  }
+}

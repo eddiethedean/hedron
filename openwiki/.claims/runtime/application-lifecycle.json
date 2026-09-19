@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:20a4f4c4a750ffd13f73c01b5d2a7f36907fbaefe58d33da8e8b4eb839e07106",
+  "claims": [
+    {
+      "id": "claim_cfef1194cba04ad99d3f3b11a161e8d9",
+      "statement": "Hedron creates an application-owned HedronRuntimeContext before FastAPI construction, composes Hedron and user lifespans, bootstraps integrations, and installs RuntimeContextMiddleware.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/app/hedron.py",
+          "version": "repo-file-v1:sha256:19539ec93dcffd94753bf68e320fed849217b55feb7d2d23fd0b16abdb41143b"
+        }
+      ]
+    },
+    {
+      "id": "claim_43bbf775652b472c97ba52ff6ea4b793",
+      "statement": "HedronRuntimeContext.from_defaults isolates process-local cache and job backends, forks the registry, creates fresh plugin/projection/bundle/handle/cache-trace state, and copies concurrency/tracing configuration.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/runtime.py",
+          "version": "repo-file-v1:sha256:56eb2ab5fc202e6a998112139fcc193ebd5ae3a1ca861b57fd272b459d4b225d"
+        }
+      ]
+    },
+    {
+      "id": "claim_7f5c75da335541b3a365c85f0f2520bb",
+      "statement": "HedronRuntimeContext.activate binds registry, plugins, projections, catalog, cache, jobs, limiter, tracing, compile policy, bundles, and handles for the active application scope.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/runtime.py",
+          "version": "repo-file-v1:sha256:56eb2ab5fc202e6a998112139fcc193ebd5ae3a1ca861b57fd272b459d4b225d"
+        }
+      ]
+    },
+    {
+      "id": "claim_8695fd07c9f044089a68c10d859c792b",
+      "statement": "RuntimeContextMiddleware activates the owning context around HTTP and WebSocket requests while passing other ASGI scopes through unchanged.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/runtime.py",
+          "version": "repo-file-v1:sha256:56eb2ab5fc202e6a998112139fcc193ebd5ae3a1ca861b57fd272b459d4b225d"
+        }
+      ]
+    },
+    {
+      "id": "claim_73b4861c1e6b43b284b7e54715417641",
+      "statement": "compose_lifespan registers defaults, loads build manifests and plugins, starts plugin hooks, seals the registry and interaction catalog, composes the user lifespan, and shuts down the loader while restoring compile policy.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/lifespan.py",
+          "version": "repo-file-v1:sha256:8f914f1c7dd865869984fad1514c8fb0ada026f4b4571abe363849460f319fea"
+        }
+      ]
+    },
+    {
+      "id": "claim_b7636f1a49b24ff7b99aac0462abb51f",
+      "statement": "Production startup requires a valid build manifest, disables runtime CSS compilation, validates production interactions and durable backends, and fails with a build diagnostic when the manifest is missing or invalid.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/lifespan.py",
+          "version": "repo-file-v1:sha256:8f914f1c7dd865869984fad1514c8fb0ada026f4b4571abe363849460f319fea"
+        }
+      ]
+    },
+    {
+      "id": "claim_96f4add43a0d4c31a8a06a1888b6dd18",
+      "statement": "Runtime isolation tests verify that separate Hedron applications do not share route registries, cache telemetry, compile policy, feature bundles, or handle descriptors, and that registration remains owned after another app seals.",
+      "evidence": [
+        {
+          "resource": "repo://tests/unit/test_app_runtime_scope.py",
+          "version": "repo-file-v1:sha256:f72d7a933f4da0f5d75ff5ad1be5801b0555db412c5eaa0a2a8affe498eca393"
+        }
+      ]
+    },
+    {
+      "id": "claim_1f5c81610b1b43a9a964ddc7acb0a599",
+      "statement": "The runtime test packet also checks one-time component preparation and the presence/version of bundled Node and Java conformance runtimes.",
+      "evidence": [
+        {
+          "resource": "repo://tests/unit/test_app_runtime_scope.py",
+          "version": "repo-file-v1:sha256:f72d7a933f4da0f5d75ff5ad1be5801b0555db412c5eaa0a2a8affe498eca393"
+        },
+        {
+          "resource": "repo://tests/unit/test_runtime_052.py",
+          "version": "repo-file-v1:sha256:9084ec00639cf19f700529d87a47112129b1794efe9dee1f3d539d3ce115f7d3"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-19T17:40:19.225Z"
+  }
+}

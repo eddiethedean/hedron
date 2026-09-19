@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:1b3db1ff0b58e7a2c3325933c2741a6ab65f3a15c4e39fde8eee73d3abe44bd4",
+  "claims": [
+    {
+      "id": "claim_6785f78112db4ec3a863e76a760d39db",
+      "statement": "HedronRuntimeContext owns application-scoped registry, cache, job, concurrency, tracing, plugin, projection, bundle, and handle state; from_defaults isolates process-local cache and job defaults, activate binds services, and middleware activates the context for HTTP and WebSocket requests.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/runtime.py#L48-L154",
+          "version": "repo-lines-v1:sha256:e12347d2187a17976f3a96670dbe2caf020efc2c5b9943a4e84cc6465e75aeb7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTA3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjNmJiYjUxM2M5ZmNhNWEzN2FlYjRkOTA1ZTc5ZjNjZWE0NWMzMjU2ZWJmMjBmZTQ3NTc0ZWRiNjcwZDYxNDdkIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0YWZhNDI3NzRiZTZkYTg5ZjhiYmZmNzVlNDg2ZTI5ZjhlN2QxZWJlYjI4ZDczMzlkZDc4MDNlNjhjNDM3YTdjIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJmNjA4ZjcwOGU0OWJlNGEzODc4NGY4Njg2Y2VkMGFkOWJjNWYxNTQ5ZDIxY2VmNjdhNjk2YzAwMDYzMDJjODg3IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_c245eb3c0d61478aa056ee863253bde7",
+      "statement": "SessionState is a typed facade over the host session that validates stored values with Pydantic TypeAdapter, refreshes when the backing session changes, serializes models on write, and refuses writes without SessionMiddleware.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/state.py#L19-L100",
+          "version": "repo-lines-v1:sha256:53649e30ef16c03eb51504674b8776473680f584457c19d417f3bf508d610b53:eyJzZWxlY3RlZExpbmVDb3VudCI6ODIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkZWE1OTlkZjdlMTg4M2VlNjBkZGVkZGFiMmVhODlhZjg4NTFhOGRhZTdlYzczMjIyNDBjYTFjMWExYjlhNDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxMGExMTJiZWFkY2ExMDM0MjczMTcyMzkyN2NiNDVmMGJkNmRlMmFhZGNkOWMxNjk1NjQyOTIzNWMxNzMxMTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyNDk1ZWQ3ZWU1Zjg5ZmIxYzY1ODFhODg1MTA2Mjk0ZDc1Y2FmNzk1OWNmYWU1YWMwMmM4Y2ZjN2FiOTc2NTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE0MWY3NWUyOTkyZjIwMzhiYjg4YWFmZjA5M2I3OThmNzA1Y2FiZjcxYTc3NTgyZGEwOGFlODlkNTkxOGExMmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0e8b9654734b40be98f7e56bade9a5b0",
+      "statement": "JobBackend submits JSON-compatible payloads, returns handles, gets scoped status, requests scoped cancellation, cleans expired records, and marks lifecycle state; process-local implementations do not span processes.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/jobs/backend.py#L53-L163",
+          "version": "repo-lines-v1:sha256:2bc778a6770958d4a904f776526f2293cd2a430b359497082b9b7b8342042e49:eyJzZWxlY3RlZExpbmVDb3VudCI6MTExLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIzMDMwNjlkM2YzMjdiMGNmZDFkMDg3Mjc0ZWMyNzU2NTg1NGQ4NTJiMzIyNTUzZDM5MDJjODlmNTNmMDAwZWRjIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI1NjIwZDg1ZGU0ZWQ3YWI4MDIxYjRhOGRkNGZhMTVlYzUxOTI1Y2RmY2NkZTE4MDU4OTVhNGM4YTNjM2JhNDhjIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJkM2YzZThjMTYwMzUwYWExNjhmYjNkNzExZjFjYWM3ZDM5MjNjZWMzYzUyNzA5MjE3OWE2Y2M4ZmRkMzhkODdjIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_3730fbfa766f4569b807e49def2d8fc1",
+      "statement": "enqueue_durable submits job type, payload, idempotency key, tenant, and auth subject to the selected backend, while schedule_post_response only schedules non-durable FastAPI BackgroundTasks work.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/jobs/durable.py#L22-L43",
+          "version": "repo-lines-v1:sha256:b5da836ec4ce67cfe4fa08d5ff564d537ed6dd383333e490851fc80d3215cde2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2YmU1YTNhN2NmOGFhNDYxY2EwM2Q2YWUwYmEzZTlmMGYxM2E4YzkyYWU1MzI1ZWMyMDRhMWZmZjI3NjFmZTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI1ZWFhY2I2Yjg1NjczYzM1YmEyMDIwYWI5ZDY4MzA1Yjk2ZmRiZjYwYzYzNzkzMWE3YmI4MzUyODNlZWU5ZTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQzZDE3MWRlNzU0MzFhMDIxYTBkOTRmYTc2ZmFiZjBkNzEzOWM4OThjMWEwYjQ0YjQzY2E2MDkwM2ZhMWI4NDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFjNmJiZThkYTBkNTFlYWJiN2ZmNmU2ZTAxYmQwMmVhZTIzMmVmODEwNjJhZDBiZTE1YjMwNTJjZjRlYTBhODgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e7c50a2e663049d0a0ac3ad99a037015",
+      "statement": "TaskFlow submit validates input, builds a scoped payload, submits a durable job, and redirects to its status view; backend failures fail closed by default.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/jobs/flow.py#L161-L214",
+          "version": "repo-lines-v1:sha256:6e8126b0ebdf4b4029e912824b17b606111dc87cfd9a273cf38cc368ea069958:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1ZjM5NjZhZWEzZWJkMDU2MGRhOGNiZTllNWYwN2YwMGZiNTgwZTY4NDIzZDgwNjRkY2E4MzlkNTM2ODgzNmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxYzEwYTk1OTI1NzJlMTMwMWMyZTA1NDQ0Y2JkYjkzMTQxNjA2NDExZTg4ZjdiZGVkYWRhMDgyYTNlYTA1M2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIxY2E4OGZhZDk0YWYwNTA1YzNiNTQxZDQ1YzIxYzBiYjA5MjZlNDI1NGJmZWIyZWJlYWIxZDU4ZjE2NTU2MDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIwMTk0YjgxOTI5MWViNDg3NWU2OWVmN2JiZjc1MmIyNWQ1YmM2ZWQwOGVkNThhNTE5MzUzYTAzMThjZWFjOTIifQ"
+        },
+        {
+          "resource": "repo://packages/hedron/src/hedron/jobs/flow.py#L81-L145",
+          "version": "repo-lines-v1:sha256:318d558b88d4733fce2a3f6a0f0fda3c93128b04ba181e4e25bdfabd1d4ad3cf:eyJzZWxlY3RlZExpbmVDb3VudCI6NjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI0NjdjNWYyNTM3N2M3NDBiNjY0NjkyY2IxMTQ3MDI3M2NhOGMwZWZhMDAyYWJkMjAyNWI0N2JhMjUxYjZkNzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVjNzY1ZWYwNzY5ZGNmMGQxZWY5MGRkNzUwN2I4NjdjMzdjNTcwYjE5ZWM4ZjAyMWZjZjE1YzVkZDYxYTY3OTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU2ZGZiZjQ1M2Y3ZjFiZWJhYjcyODM2MWIwZjM5M2VlYjRjMWZiNjY4ZjllYTIyYjkxNmRhY2Y1ZGZmODFkODMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM3NmFiZmYyNGQ3ZmI2YzhmY2ZmNjc0NGJkZWM0NTFkMTBkZmMzZTQzZGU3Mjc5MTYyMWE5YTlhNzA3NTYzYzMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3a8f8a2fdcbf4609a1747add3e4436fc",
+      "statement": "TaskFlow status lookup authorizes by subject and tenant, returns 404 for missing or unauthorized jobs, polls non-terminal jobs, and renders a successful result only when a terminal job has a result.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/jobs/flow.py#L216-L291",
+          "version": "repo-lines-v1:sha256:0829ef54fe937004935a652909be52b4fb5ac7d29d948d745b63f70cd6b892e7:eyJzZWxlY3RlZExpbmVDb3VudCI6NzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3YjQ0OWY1ZTdiZmE0Mjg1MGZlMWFhYzM4M2U4OWExNmYyOTQ5M2YyNTg2ZWZiNjJhZDE4N2VkMzdmNjE1NGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2NWU2N2M1Y2NmNzcxZDFkNDY4NGQwOWZlZTdlYWYyNzQxMGVlMTllYTMyZjY5MGUyNWQzZGE3MjJlNjk1ZjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwOTFjZjZhYmM0NGQxMzhjNjRiMjk5OTk1ZWM1MDU5NTY2NDFiODNmZGU3YWZkZDYxZWU4MDEzZTNiMTcwYjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNkMWE1MTAyMDNmNTdiN2QyNzA0MzdmYjU5ZTcxMjZlYTE5NjQ3NjNmYmU4MWJhZTg0NTg1Mzc4ZmU2YWFlMDQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0fc161a3578c4837ae4445ac7eee1ecd",
+      "statement": "TaskFlow cancellation requests a scoped backend cancellation and rechecks authorization, while its result view requires an authorized terminal job and rejects non-terminal or unsuccessful states.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/jobs/flow.py#L294-L345",
+          "version": "repo-lines-v1:sha256:c2292811d73e32afcfce34be226975a37632e6a8753888852400d511c829f34c:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiMDcwNjBmNTgyNWYzZjFhMDQ0MjQ0MDRkZjg3MzkxN2I4ZWE3YjA5MzJkZjMyNDRjMTViZDZjOTU3NjFjYzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYyZDNkYzU2ZWJjODk2ODM0OWUzODlhNDI5ZWZjNjUzNzE0ZTg2ZGIyMTNkYTU1NTg4NDJjMmZiM2MwYjRmMTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRkNzg3ZTcyYmE5MjQ4MTYwN2U1YTdjNjE5NTQxYjc2MDA2M2I2MTdmYzEwYjQyZDI4ZTM3NzVlYWYzZmRhZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNmZjgwNjY0NjBiZDNkNDI1Y2U1N2UzM2E2OTQxMjUzZGY1MGM3NjM5MDAyM2Q4ZGU0MzhlOGNhNDI2MmJiZTIifQ"
+        },
+        {
+          "resource": "repo://packages/hedron/src/hedron/jobs/flow.py#L347-L390",
+          "version": "repo-lines-v1:sha256:8542b0b0977998dfda1a04607d942dd873c8ef96a113db212ed54854bcb24314:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiNTg5YThkNjMwMzM1ODU4ZWQzNDExOTY2ZjA5ODI0NjVkNzJjNTM0NTY3NzJkMGM2NDkzMmIxNmU0ZjAyNTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlN2E4MzQzZTBlZmRhOGFjNTQwYmEwMzU1NzQ1MGQ0YWJiYjNhNGI5NjhjNTkyNmQ5YjViODBjMjQ1NjhkOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUzNTY4NWVjMTE2MjY3ZDM5MWJjNjJkZmU2Zjg5YjNmMmM0YjY3M2YzYWYwYWYzZWM4OWQ0MzJlOWQxZTFlY2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3YTFkOTE1ODk3ZDQ0NWVjYTg3ZGZiMTFiYmIxMTZkZjNlZWViMDFiYzljZTE2ZGEwMGRkMmJkZTg5NjBmOGUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a28ca6d88c0540cab3554fe57fa9b182",
+      "statement": "PollPolicy bounds polling intervals to 1000–60000 milliseconds with a default of 2000 milliseconds, and TaskFlow bounds retry attempts and result retention.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/jobs/flow.py#L58-L78",
+          "version": "repo-lines-v1:sha256:5c0a6f14650af4def29bda5d0e4a91e594d6191aa0e5da708003d63293217c1a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlM2ZiMWU1OGZiYzkwNDc5NGQ1MDczMTRmYTkxYzlmMmYxOThjODhkM2ZmMzk1ZTAwODI4OTAxYzM3ZGM5MWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MDMyZTk2NGQwOTMyMzUxZTVkMTg1MjY5MjgxYjE3MWEzYTA5YjA4YjI4NmU2NjFlYTQ3MDMyM2M4MmViNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJkZWU5NDViYjczNDc3NjBiMDMyNThiMzRkZDI5NTQyZGZmNjRhM2YxZDY2MzE5NGE4OWYzYzQ5MjkxOTJiMGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVkODA1NmYxMDhhMjIwMDkwOTRjZTIyZGRkNDdjMWFlYWI0OGQ2MmJmNzk4NTM0MTU5MTZlMTM5YmU5MmQ5OWMifQ"
+        },
+        {
+          "resource": "repo://packages/hedron/src/hedron/jobs/flow.py#L81-L137",
+          "version": "repo-lines-v1:sha256:da3fed382ad9e5e16f05425783861a52d454f20701c59a003d39e263620c9ffe:eyJzZWxlY3RlZExpbmVDb3VudCI6NTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI0NjdjNWYyNTM3N2M3NDBiNjY0NjkyY2IxMTQ3MDI3M2NhOGMwZWZhMDAyYWJkMjAyNWI0N2JhMjUxYjZkNzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRiMjZlNWUxODY2MzlhZmIwM2Q1YmRjMDE0NTIyZmQyNWJkYWExMTgyNjllN2FkMGI1ZjBmOGFmMjMxNWVmZjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU2ZGZiZjQ1M2Y3ZjFiZWJhYjcyODM2MWIwZjM5M2VlYjRjMWZiNjY4ZjllYTIyYjkxNmRhY2Y1ZGZmODFkODMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJkOGMyOTk2ZTI2MzBlNGJmYjk5NTZjMGQ4OTIyMjY3YTZiNTBlNmM0NjM2YWQ4MjhkNzk0ODEzYTQ1YmE0MTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_461d5cf136fc43a2ad78c6bf5fb5dfd8",
+      "statement": "The default in-memory job backend is refused under HEDRON_ENV=production and warns outside production that it does not span processes and multi-worker deployments need Redis, Celery, or RQ.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/jobs/gate.py#L31-L64",
+          "version": "repo-lines-v1:sha256:9b3aebcd4d2ec857706dcb7da381319066254facfb568cfdc6d06d07d14ecccb:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmZDQ2ZjFkODJhYTk4MTExNmZiMWY1YmE4YTk2YjJhYzZjNzQwMzExNDk3OTY1M2Q0YjJhODJjOGNiZWVkMGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlY2NmYTRlODFkNDFkYWE5MTVhMWFlNThhNWQyMjI1MzI1MjlhMzRhYzVhZmM3ODUxMTk4NzFmMzM5MGRkY2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRkMzhiZTA3YTE4ZGY1Mjc5OGQ1Y2UzNDM3YzgwYzQ4ZmRjNjk3YzI1MDMxMmExMzlmYTExYmE0MzM3MmI0MDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQyNDI1N2ZkMjBiZGI4ZDkwYmJjMjYxOTJiNjIxZWRlN2VmMzA5MWFjNzA5YTVkODUwNjE3ZDViYzY3NDFjOGEifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-19T17:40:19.225Z"
+  }
+}

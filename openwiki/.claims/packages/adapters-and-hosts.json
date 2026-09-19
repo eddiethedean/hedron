@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:bdd179e0634156a215eb2759c407a50c8b59c8563d9d62344107700ae9ea0e4e",
+  "claims": [
+    {
+      "id": "claim_bd5068fa81ac44e4a3c8e13b1510ce06",
+      "statement": "HedronFlask initializes native Flask apps or application factories, attaches the extension, mounts static assets, and exposes page/view/action route wrappers that convert Hedron values into Flask responses.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-flask/src/hedron_flask/app.py",
+          "version": "repo-file-v1:sha256:1657559b34ddab10b3fd859aee343e4ecec1389b405e898e625d484ee6dc74fc"
+        },
+        {
+          "resource": "repo://packages/hedron-flask/src/hedron_flask/routing.py",
+          "version": "repo-file-v1:sha256:14eca1edd80ddd6e8c90952533ff7a3656383b6d059a502695a120f4864a78ac"
+        }
+      ]
+    },
+    {
+      "id": "claim_fa580db3b9c04f1ea7cdb9e1e6be91a8",
+      "statement": "The Flask route wrapper validates CSRF for unsafe methods before invoking the view and then lowers compiled interactions, outcomes, render results, and components to framework responses.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-flask/src/hedron_flask/routing.py",
+          "version": "repo-file-v1:sha256:14eca1edd80ddd6e8c90952533ff7a3656383b6d059a502695a120f4864a78ac"
+        }
+      ]
+    },
+    {
+      "id": "claim_323d9a4367814a368a2ff4adf7a7e802",
+      "statement": "Django routing seeds CSRF for safe requests, validates unsafe requests, compiles interactions, and supports synchronous and async preparation, while its security middleware binds and unbinds the request security plane and applies policy headers.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-django/src/hedron_django/middleware.py",
+          "version": "repo-file-v1:sha256:c291c8aa5fa6e4d16b4eb90e3f14aca980a1a891d31010b521d47cf615a6d8c9"
+        },
+        {
+          "resource": "repo://packages/hedron-django/src/hedron_django/routing.py",
+          "version": "repo-file-v1:sha256:41a53910151e60c9d2bc2d2a638e531ef7b96c4e61e20a18d1e13194a5933df8"
+        }
+      ]
+    },
+    {
+      "id": "claim_39a7c22a40ae45fa988ef6995633fbee",
+      "statement": "The Jinja integration uses an immutable application binding for typed component aliases, assets, providers, themes, and handles, freezes bindings before rendering, and exposes the guarded HDJ component/slot/asset grammar.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-jinja/src/hedron_jinja/binding.py",
+          "version": "repo-file-v1:sha256:6a4606f35a6d862ecbe770d809486d5733422a18ca8f92272ecd4cddfd46542d"
+        },
+        {
+          "resource": "repo://packages/hedron-jinja/src/hedron_jinja/integration.py",
+          "version": "repo-file-v1:sha256:b3d9782014b52c852bf234290971bdd1b542b6db56afa684c15a6b7c0e431fe4"
+        }
+      ]
+    },
+    {
+      "id": "claim_539f64e4bee2402293fd71aa41cc4492",
+      "statement": "HedronJinja accumulates render metadata under explicit budgets, rejects direct template streaming before metadata is complete, and provides a metadata-first two_phase_stream path plus a separate render_async path for async environments.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-jinja/src/hedron_jinja/integration.py",
+          "version": "repo-file-v1:sha256:b3d9782014b52c852bf234290971bdd1b542b6db56afa684c15a6b7c0e431fe4"
+        }
+      ]
+    },
+    {
+      "id": "claim_ac7bf42ad24248aca445ac04d4e537b4",
+      "statement": "fastapi-workbench resolves immutable deployment configuration without importing an app, binding a socket, or executing a binary, and validates mount/origin inputs before middleware and runner integration.",
+      "evidence": [
+        {
+          "resource": "repo://packages/fastapi-workbench/src/fastapi_workbench/config.py",
+          "version": "repo-file-v1:sha256:ba72b8929b57b2a6a41f66aa551e397d38e6147406fca81aa232fb30c1308ef3"
+        },
+        {
+          "resource": "repo://packages/fastapi-workbench/src/fastapi_workbench/middleware.py",
+          "version": "repo-file-v1:sha256:a1f631b6e7fad0c303bc91cf16696b1135907ed754d3e32f292c9c01f0853a76"
+        },
+        {
+          "resource": "repo://packages/fastapi-workbench/src/fastapi_workbench/resolve.py",
+          "version": "repo-file-v1:sha256:7783f63fb3292e6ad58dcffe7b1f3e84732a4b4f66770defa06245c60a5765a7"
+        }
+      ]
+    },
+    {
+      "id": "claim_931ead6b2a15472d923a6b532277485f",
+      "statement": "hedron-posit composes Workbench resolution with Posit product detection; Connect disables Workbench activation because Connect owns mounting, and unsupported bridge/cookie configuration fails closed.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-posit/src/hedron_posit/config.py",
+          "version": "repo-file-v1:sha256:3e396969be331b92d5c32f8a738da90522e80fcc90c1b11c457ead7e13c0bb60"
+        },
+        {
+          "resource": "repo://packages/hedron-posit/src/hedron_posit/products.py",
+          "version": "repo-file-v1:sha256:494df073cbfc5a8e8c84b4f924b5151a9bd7b31898dce1e02ebbcfcae6a49b61"
+        }
+      ]
+    },
+    {
+      "id": "claim_38553c7d0de7407b8a0bb9fdc2040cfa",
+      "statement": "Adapter and deployment behavior is protected by focused Flask, Django, Jinja, Workbench, and Posit test suites.",
+      "evidence": [
+        {
+          "resource": "repo://tests/adapters/django/test_django_adapter.py",
+          "version": "repo-file-v1:sha256:06654ac04dc89da013338b79463488b7b82e76f24c0b9b6be76df15a48648fe8"
+        },
+        {
+          "resource": "repo://tests/adapters/fastapi_workbench/test_resolve.py",
+          "version": "repo-file-v1:sha256:be2de4ff34339648aa2870bda5ce820c6067e308186691ccd1c80f8f62c27c75"
+        },
+        {
+          "resource": "repo://tests/adapters/flask/test_flask_adapter.py",
+          "version": "repo-file-v1:sha256:1562f6894c90db35bdd88952d3e6c484fe572f97eb6a0a9bb506f2bfdbed75ed"
+        },
+        {
+          "resource": "repo://tests/adapters/posit/test_resolve_connect.py",
+          "version": "repo-file-v1:sha256:a9c246251d582a2ddd9304a346ffcc6ffd896e2319a756c31fe34f2a95739cd6"
+        },
+        {
+          "resource": "repo://tests/jinja/test_integration.py",
+          "version": "repo-file-v1:sha256:17bcfe9cb87b57c3364cd261e3515d6c0d434a922a01f4ab51a6ffd716d3ee3a"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-19T17:40:19.225Z"
+  }
+}

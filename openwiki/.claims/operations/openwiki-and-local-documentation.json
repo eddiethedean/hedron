@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:eb785292105c68cfc8d12b35de289dece114ac1342c007b2220bc5d1d1777017",
+  "claims": [
+    {
+      "id": "claim_bcb62082a89244458378c3f20169b44c",
+      "statement": "Hedron's Codex OpenWiki integration is project-scoped and configured through .codex/config.toml with the repository's pinned OpenWiki skill under .agents/skills/openwiki.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/openwiki/.openwiki-install.json",
+          "version": "repo-file-v1:sha256:c9b045d6dd7682e1abd74f059ca2fc5d98213b25e0d488c754f7e362cc502a92"
+        },
+        {
+          "resource": "repo://.agents/skills/openwiki/SKILL.md",
+          "version": "repo-file-v1:sha256:116a2d59523b898271c783b61025e15a8d57a72eb0fcbbc3dac99345ead0d768"
+        },
+        {
+          "resource": "repo://.codex/config.toml",
+          "version": "repo-file-v1:sha256:105d79d76ddaba3b4d108ecb4ea9fb01bffa132a93d6fa2780ae307252afd842"
+        }
+      ]
+    },
+    {
+      "id": "claim_3b7019d2db3946929cb3ca479e0c333f",
+      "statement": "OpenWiki updates use a durable begin/plan/next-page/submit-page/finish lifecycle in which Codex researches and writes only the assigned page while OpenWiki owns Claims, indexes, provenance, and run metadata.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/openwiki/SKILL.md",
+          "version": "repo-file-v1:sha256:116a2d59523b898271c783b61025e15a8d57a72eb0fcbbc3dac99345ead0d768"
+        }
+      ]
+    },
+    {
+      "id": "claim_cc81947adf504bfebd49c231be3fdaca",
+      "statement": "The OpenWiki source fingerprint includes Git HEAD, visible Git status, and visible tracked or untracked source paths and bytes while excluding the generated openwiki tree and every path matched by .openwikiignore, including this repository's host-managed AGENTS.md and CLAUDE.md files.",
+      "evidence": [
+        {
+          "resource": "repo://.openwikiignore",
+          "version": "repo-file-v1:sha256:cfaa3fc0025dfb3cb402b6e61b594ef60f080f2ceb337a358463ce4c6804f07e"
+        },
+        {
+          "resource": "repo://scripts/check_openwiki_freshness.py",
+          "version": "repo-file-v1:sha256:fd636dbe236dd449ff68427daca7248f27c09f5158f2e64749d5369e558fc7fe"
+        }
+      ]
+    },
+    {
+      "id": "claim_5f7649ded4034dbab052661a41e13cd7",
+      "statement": "The local freshness checker is read-only and validates the completed current-HEAD checkpoint, factual page/manifest coverage, current source fingerprints and Git heads, Markdown page versions, and verified nonempty Claims sidecars.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/check_openwiki_freshness.py",
+          "version": "repo-file-v1:sha256:fd636dbe236dd449ff68427daca7248f27c09f5158f2e64749d5369e558fc7fe"
+        }
+      ]
+    },
+    {
+      "id": "claim_5943ab144a844235abded4534c552398",
+      "statement": "scripts/ci_checks.sh exposes an openwiki suite and runs that local freshness gate first inside the all suite.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/README.md",
+          "version": "repo-file-v1:sha256:34a3e907b8cc46b4fde4ef05fb5014e47a300a5caa3a5172559cebed8d38616f"
+        },
+        {
+          "resource": "repo://scripts/ci_checks.sh",
+          "version": "repo-file-v1:sha256:ba8f3daabc64f8cd93918e89e27467314bace6917f45a54e1c8fc36803361988"
+        }
+      ]
+    },
+    {
+      "id": "claim_8fd83097fc7a4dd8a4191d184ae5218b",
+      "statement": "The OpenWiki freshness gate is deliberately local-only and is not called by a GitHub Actions workflow.",
+      "evidence": [
+        {
+          "resource": "repo://README.md",
+          "version": "repo-file-v1:sha256:3806a27e087b8dfd26d6a281a8cba8c55af4d562eb83b1bc328ce421dd638855"
+        },
+        {
+          "resource": "repo://scripts/ci_checks.sh",
+          "version": "repo-file-v1:sha256:ba8f3daabc64f8cd93918e89e27467314bace6917f45a54e1c8fc36803361988"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-19T17:40:19.225Z"
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:7976b1d515976cf4d576ea6051c616e8c9821ae37e3a0f5780f828c8a7b66c5b",
+  "claims": [
+    {
+      "id": "claim_406210bffa4c48128fdfb13823f1721a",
+      "statement": "compile_chart parses versioned ChartSpec payloads, rejects unknown/non-finite/prototype-pollution input, and enforces bounds for rows, fields, transforms, facets, marks, payload bytes, and exports.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-charts/src/hedron_charts/compile.py",
+          "version": "repo-file-v1:sha256:99b6e05492c5732419813b76e28c73b0dfcbc7940aa295ae58bd57165585f734"
+        }
+      ]
+    },
+    {
+      "id": "claim_8242f83f2e644706befcb38965af6ce3",
+      "statement": "The chart compiler infers scales, redacts transformed rows, records accessibility and interaction plans, and selects semantic SVG below 2,500 marks or Canvas at/above that threshold or when requested.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-charts/src/hedron_charts/compile.py",
+          "version": "repo-file-v1:sha256:99b6e05492c5732419813b76e28c73b0dfcbc7940aa295ae58bd57165585f734"
+        }
+      ]
+    },
+    {
+      "id": "claim_ce1ff63079464d338c22166df32d2bfd",
+      "statement": "The first-party Chart component serializes a ChartPlan into a hedron-chart element and supplies a reviewed SVG, summary, and table-or-CSV fallback for non-JavaScript use.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-charts/src/hedron_charts/element.py",
+          "version": "repo-file-v1:sha256:997cf8890eb6c574f06e01d7beae823b3f0919d852ca41fcd5c57f214cf2bc42"
+        }
+      ]
+    },
+    {
+      "id": "claim_47a5e8baf5614f81ae5a9c860ce62d79",
+      "statement": "Optional chart adapters compile through shared accessibility and export boundaries rather than creating an unrelated browser contract.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-charts/src/hedron_charts/components.py",
+          "version": "repo-file-v1:sha256:6e873cff3a58ceb567a19f973bbe0f3d945beccc0c9e75e6f92d61342e4d7ff6"
+        },
+        {
+          "resource": "repo://packages/hedron-charts/src/hedron_charts/optional_adapters.py",
+          "version": "repo-file-v1:sha256:6d0c6e9112f9d9db1d048384c4c3d8ce279ab606c7cc66ebcec12dc3456818b3"
+        }
+      ]
+    },
+    {
+      "id": "claim_cf36452c49f24736bb846cdbf554affd",
+      "statement": "compile_map performs no I/O and validates map accessibility, zoom/layer/source budgets, URL origins, policy, style safety, GeoJSON/marker limits, and resource closure before producing a MapPlan.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-maps/src/hedron_maps/compile.py",
+          "version": "repo-file-v1:sha256:fe3f2e1d8a1047849d46b5f3c342c0de8f6fd2f953f91ba0df7f740f0a2d99a1"
+        }
+      ]
+    },
+    {
+      "id": "claim_af3623b58deb4246b96e880e4551fe37",
+      "statement": "The Map component checks tile allowlists and traversal, serializes the compiled plan into a hedron-map element, provides ordinary link/table fallback content, and carries CSRF names and registered interaction commands.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-maps/src/hedron_maps/element.py",
+          "version": "repo-file-v1:sha256:84db631dddb10ff3f15df5a4c70774fe93a97a2a5805de23d08ddb5964fbe194"
+        }
+      ]
+    },
+    {
+      "id": "claim_6c57be7eda3c4c5a8ab10047bf6cd02f",
+      "statement": "CompositionEdge validates identifiers, nesting and payload budgets, concurrency, server authorization, and fallback modes, while BrowserTrace rejects content-bearing fields and payloads over 4096 bytes.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-elements/src/hedron_elements/composition.py",
+          "version": "repo-file-v1:sha256:4889d6de069bac65daa43692bfc7d94072af30a8e901f56a2d5df02f0b9e3d3e"
+        }
+      ]
+    },
+    {
+      "id": "claim_8c31edbfed4b48baa93fe51b96f71a7a",
+      "statement": "Packaged element asset lookup accepts only safe single basenames under the distribution's static directory and rejects traversal or missing files.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-elements/src/hedron_elements/assets.py",
+          "version": "repo-file-v1:sha256:7346f92d551b97920b363e34f06244d27206e12198ced57abff097b0c31c7e52"
+        }
+      ]
+    },
+    {
+      "id": "claim_5001b5fa56b2450d8cc0f50fbfca0e5d",
+      "statement": "Chart SVG/security, map, accessibility, interaction, and element ABI behavior is covered by focused unit and security tests.",
+      "evidence": [
+        {
+          "resource": "repo://tests/security/test_chart_svg_corpus.py",
+          "version": "repo-file-v1:sha256:a7e7056bf9d8e38dc108eeb309386991d97892049d376875e6718cde48aae6b0"
+        },
+        {
+          "resource": "repo://tests/unit/test_charts_038_regress.py",
+          "version": "repo-file-v1:sha256:b1faf195a98a1464a86a42d6bcb9f28a5c9382b0b8d668e90a6d511877ba1804"
+        },
+        {
+          "resource": "repo://tests/unit/test_elements_037_gesture_catalog.py",
+          "version": "repo-file-v1:sha256:1f10fc8ee4fcff9fd4b582cdcf580b74eed0ba13e9cbc4e6d7efe1bff1e0b161"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-19T17:40:19.225Z"
+  }
+}

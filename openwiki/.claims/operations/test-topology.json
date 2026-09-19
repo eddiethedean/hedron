@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:5ef764d0f2994ead8f46981221b03726822b950dba8a9ba3b8d817d67bc822e5",
+  "claims": [
+    {
+      "id": "claim_ff764c3c054b40078c812e5dbb55f87c",
+      "statement": "Pytest discovery covers tests, examples, and hedron-docs tests, uses importlib mode with xdist load-file distribution by default, and the shared test command adds strict config and marker validation.",
+      "evidence": [
+        {
+          "resource": "repo://pyproject.toml",
+          "version": "repo-file-v1:sha256:61155cf7d0792894f66e934e972107f899cf37638628550880e7054e886c1514"
+        },
+        {
+          "resource": "repo://scripts/ci_checks.sh",
+          "version": "repo-file-v1:sha256:ba8f3daabc64f8cd93918e89e27467314bace6917f45a54e1c8fc36803361988"
+        }
+      ]
+    },
+    {
+      "id": "claim_24d71a6ddbbe4318a55d3559b7590a2e",
+      "statement": "Contributor guidance maps focused verification to unit, integration, adapter, security, conformance, and example directories, while browser evidence uses HEDRON_BROWSER=1 and serial pytest execution.",
+      "evidence": [
+        {
+          "resource": "repo://docs/CONTRIBUTING.md",
+          "version": "repo-file-v1:sha256:df18ba7ee7a85c5bc63bc28e24520558ce9ea9d7ca94af44c8393c63aec1e075"
+        }
+      ]
+    },
+    {
+      "id": "claim_d364d2cc1cea4af797760a03b6702237",
+      "statement": "The repository also separates accessibility, browser, performance, upgrade, script, and operations tests for their respective behavioral or release contracts.",
+      "evidence": [
+        {
+          "resource": "repo://tests/a11y/test_charts_038_a11y.py",
+          "version": "repo-file-v1:sha256:f5ded76489e9a32254c77516e87544cd04d30dabafa03c3e9bad1bb9978d9562"
+        },
+        {
+          "resource": "repo://tests/browser/test_charts_038_render.py",
+          "version": "repo-file-v1:sha256:0895c06a5859564fe3e3550786bfc1be9a3e565caa33adc62d698772e7cb7e79"
+        },
+        {
+          "resource": "repo://tests/ops/test_release_gate_evidence.py",
+          "version": "repo-file-v1:sha256:c5bdfe3838005d06281be6edd5ab5c98ab3ff7588ca0439acb618bbe778fbf7b"
+        },
+        {
+          "resource": "repo://tests/performance/test_w025_dataeditor.py",
+          "version": "repo-file-v1:sha256:c9fc5c6319d4e25fd3db734a658df1b5b6da8051147dd816306bc7a18b828077"
+        },
+        {
+          "resource": "repo://tests/scripts/test_check_realwb_029.py",
+          "version": "repo-file-v1:sha256:2d024e70003b0c35792e9b86096fcec15e3cc074f05d07e68a423dbd9b0a446d"
+        },
+        {
+          "resource": "repo://tests/upgrade/phase_1_0/negative/invalid_interaction.py",
+          "version": "repo-file-v1:sha256:ef2de6dab43baf6b9d061ea8d2ee62f8625d27fa2212604733000124a46eedff"
+        }
+      ]
+    },
+    {
+      "id": "claim_3492a50a1240475e888ffb2866edf1da",
+      "statement": "scripts/ci_checks.sh centralizes local and workflow suites for testing, coverage, typing, quality, docs, dependency bounds, browser, backend smoke, evidence, packaging, and OpenWiki freshness.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/ci_checks.sh",
+          "version": "repo-file-v1:sha256:ba8f3daabc64f8cd93918e89e27467314bace6917f45a54e1c8fc36803361988"
+        }
+      ]
+    },
+    {
+      "id": "claim_50a488ca24f0460ba1f0a5c99cc753d1",
+      "statement": "The coverage suite uses branch-aware serial tests with independent floors of 73% for hedron and 83% for hedron-core.",
+      "evidence": [
+        {
+          "resource": "repo://pyproject.toml",
+          "version": "repo-file-v1:sha256:61155cf7d0792894f66e934e972107f899cf37638628550880e7054e886c1514"
+        },
+        {
+          "resource": "repo://scripts/ci_checks.sh",
+          "version": "repo-file-v1:sha256:ba8f3daabc64f8cd93918e89e27467314bace6917f45a54e1c8fc36803361988"
+        }
+      ]
+    },
+    {
+      "id": "claim_a9a4a0fd1528446398c1b25e5abcc5ee",
+      "statement": "The all suite runs the local OpenWiki freshness gate before tests and the more expensive quality, browser, evidence, and packaging checks, while independent jobs inside suites may overlap and wheel/package verification stays sequenced.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/ci_checks.sh",
+          "version": "repo-file-v1:sha256:ba8f3daabc64f8cd93918e89e27467314bace6917f45a54e1c8fc36803361988"
+        }
+      ]
+    },
+    {
+      "id": "claim_43934ce0525443e293d05f68cc188c93",
+      "statement": "The local full parity command can run one Python 3.12 non-browser pass with bash scripts/ci_checks.sh all --python 3.12 --skip-browser.",
+      "evidence": [
+        {
+          "resource": "repo://docs/CONTRIBUTING.md",
+          "version": "repo-file-v1:sha256:df18ba7ee7a85c5bc63bc28e24520558ce9ea9d7ca94af44c8393c63aec1e075"
+        },
+        {
+          "resource": "repo://scripts/ci_checks.sh",
+          "version": "repo-file-v1:sha256:ba8f3daabc64f8cd93918e89e27467314bace6917f45a54e1c8fc36803361988"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-19T17:40:19.225Z"
+  }
+}

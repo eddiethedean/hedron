@@ -206,6 +206,32 @@ uv run --group docs mkdocs build --strict
 READTHEDOCS_CANONICAL_URL=http://127.0.0.1:8000/ uv run --group docs mkdocs serve
 ```
 
+### OpenWiki
+
+This repository includes a project-scoped OpenWiki integration for local Codex
+use. Install the pinned CLI with Node.js 22.22.0 or newer, restart Codex in this
+repository, and ask it to initialize OpenWiki:
+
+```bash
+npm install --global openwiki@0.5.2
+openwiki integrations list --project .
+```
+
+The generated wiki lives under [`openwiki/`](openwiki/). See the checked-in
+[OpenWiki instructions](openwiki/INSTRUCTIONS.md) for the repository-specific
+scope and local update workflow. The local full-check command also verifies
+that every factual page's Claims and source fingerprint are current:
+
+```bash
+bash scripts/ci_checks.sh openwiki --python 3.12
+# or, as the first gate in the full local suite:
+bash scripts/ci_checks.sh all --python 3.12
+```
+
+If the gate reports stale documentation, update OpenWiki in Codex and rerun
+the check. This gate is intentionally local-only; no OpenWiki workflow is
+installed in GitHub Actions.
+
 Start with [CONTRIBUTING.md](CONTRIBUTING.md) for the focused checks and pull-request checklist.
 Security reports follow [SECURITY.md](SECURITY.md), not a public issue.
 

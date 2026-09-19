@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:5d64b71abc6c17bf79721e5394fddcccdec0376884c41575b3999393a89b8f93",
+  "claims": [
+    {
+      "id": "claim_7f81c1dd95794623a39ac2fdbb18d1f6",
+      "statement": "The repository root is a non-package uv workspace whose members include hedron-core, hedron, data and presentation satellites, host adapters, tooling packages, edron, and fastapi-workbench.",
+      "evidence": [
+        {
+          "resource": "repo://pyproject.toml#L1-L36",
+          "version": "repo-lines-v1:sha256:f199fa3ec3e725f3cb63533111657ec79671c4354f4e5ed47e927625c1fac572:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwMmE4MWMzODM2ZWRlZjJkMGJhMTFkMjM1M2ZiNmRhYmM3NzcxNTBhN2NhODNlYTBkOWU5YTcwMzEzZmVhYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5NDE2ZTA5Zjc4YmEzMTZjMDMyNTY4MjEzYjg1NWVlNzU2ZTQxNTY1ZDkxOGYwOTUxOWM4MWZkNjIwZjQwNjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI4NGI4NmI2MjEyOGI2YmJkNGE1MmQ0ZDM4NjYzYTZmNzk3NWMwMDNmN2FmZTU3NzEwMDQ3NTlmNTllYWJmZDQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9819352921c4474e8db68aa6b77865a8",
+      "statement": "The root development dependency group includes the workspace packages together with pytest, Ruff, Pyright, documentation, browser, and integration tooling.",
+      "evidence": [
+        {
+          "resource": "repo://pyproject.toml#L38-L105",
+          "version": "repo-lines-v1:sha256:590713efe7960569dfecb3e87954d2aad4d04e696419249d1ec2696dcc7be795:eyJzZWxlY3RlZExpbmVDb3VudCI6NjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRiYjc0OTliMWNlMWM0ZjRiMjUyN2YzYTMyODRjYWM2YjZhMWUzYmY0OTg4YjU2Nzk4MmMzZGM4ZTlhMTdmMjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5NDE2ZTA5Zjc4YmEzMTZjMDMyNTY4MjEzYjg1NWVlNzU2ZTQxNTY1ZDkxOGYwOTUxOWM4MWZkNjIwZjQwNjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjljMDE4ZWYwMDgzY2Y4OGQ0MDg5ODQyZDhhYjU3Mzg0MTQ5NWE4ODkwNzAzM2IzMDMxMDQ4MDE1NTcxYzQ3YjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZlN2Y1MjQ5ZTI5ODZjZjM1ZGI4ZjZhZjQyZjgwMjM0ZGI5YWNkZjlmZjcxMDY4MGE4MjU4ZWQwMjBiZGQyZDkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_847e45f9773c4bb781af529cedea45eb",
+      "statement": "hedron-core is the framework-neutral rendering core and its declared runtime dependencies are limited to Pydantic, packaging, TOML compatibility for older Python versions, and typing extensions.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-core/pyproject.toml#L1-L44",
+          "version": "repo-lines-v1:sha256:df570c2ddfd537bd6ac4e53185c2e8b1b88e34aa21ef48fb622a1333342830bd:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwMmE4MWMzODM2ZWRlZjJkMGJhMTFkMjM1M2ZiNmRhYmM3NzcxNTBhN2NhODNlYTBkOWU5YTcwMzEzZmVhYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5NDE2ZTA5Zjc4YmEzMTZjMDMyNTY4MjEzYjg1NWVlNzU2ZTQxNTY1ZDkxOGYwOTUxOWM4MWZkNjIwZjQwNjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMzNGM1MDZjZjM4MDU4MTlmZWI0M2M5ZmMxYWYzYTFiYTVjMzE2ZTFhN2M2NTRmMmYyZDJhNzFhZGM0ZmQ0MmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f4eb06c3501642749b43af7477bf10f7",
+      "statement": "hedron is the FastAPI-native component framework and depends on hedron-core plus FastAPI, Starlette, signed-cookie support, packaging, and multipart parsing.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/pyproject.toml#L1-L47",
+          "version": "repo-lines-v1:sha256:c81937705bf1fd62fb57525d673dd17809e238796f09d680950adc9c720ed52a:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwMmE4MWMzODM2ZWRlZjJkMGJhMTFkMjM1M2ZiNmRhYmM3NzcxNTBhN2NhODNlYTBkOWU5YTcwMzEzZmVhYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5NDE2ZTA5Zjc4YmEzMTZjMDMyNTY4MjEzYjg1NWVlNzU2ZTQxNTY1ZDkxOGYwOTUxOWM4MWZkNjIwZjQwNjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhYmYxOGU5NDk1MzMyYjczOWZmNDFiYjQxYzhjOGExYjhiZmEyZWM4MGY0YmRjYWU5ZmU2YWI5MGI5NmJkODAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4f8fdd271e7d40c49dc604654dcaea3b",
+      "statement": "The published support matrix marks hedron-core, hedron, edron, hedron-data, hedron-charts, and hedron-maps as stable, while host adapters and most other satellites are beta.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L139-L143",
+          "version": "repo-lines-v1:sha256:09a016ab5be25948cecaf86f71c33c4b4689ee2df68d8c8b98bf5078cdd7d259:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTM4ZWNjYjhlM2YwYTM0MjE5ZDNlMTc5ZWJhMTc0MWM4MGJlMTdmZTQ5NTY2MzAxMzU2YTY4MzM1NDQ4NTQ3MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmVmNWU3MzA2MzdmMTE4ZTJlMjNiOGI0OGJhMjVmMTM5YjgwZGI2M2RjYjQ2YTUxYTQyYzU3ODkwMGFjNzlkMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDJjZThjNWY5MjNhMDMxNGRlNDMyMWI1NjUwNTRjMzEwMTYxNThjYmMzM2M3MjVkZDk1NjgzOWU0ZTliNjgyNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjQwOGQ4YTE1OTFhYzBjM2Q5MDc4YTlmYjFhMjM5ZjAzNWJlNGNkNmEzNmY0NWJkOTBkNmI1MjEyZjQ2ZWRlMyJ9"
+        },
+        {
+          "resource": "repo://release/support-matrix.toml#L14-L104",
+          "version": "repo-lines-v1:sha256:c7dc9a7a1689ac931f7362b5de8cd4c2568c440bb0d0e5c7467c8e911da37fdb:eyJzZWxlY3RlZExpbmVDb3VudCI6OTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5ODQzNjcyNjBlNmJjNDNjYWIxYTRhMjA4YTA4OWQ0NjczNzU0ODIyYTg3OGEyMTA0NTA1MDc0OTAzMDlhZjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmNjBlYTcxZGY5MDEzZmJjYjc3N2ZhMTUxYTM2ZmMwZDJlOWI1ZTVjNTA5M2U3ZWZkZjAzNjg0NDFhNDNiMzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY2YjRjN2Q1ZjBhODI3YTUyMDJkMWE5ZGZkMWU2MWUzMDRkNWFhM2M1YjVhM2ZmMTE0MDhjZTBmZDA3NjQyZmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8784a9560ab54b35bf6a9d120b30638d",
+      "statement": "The README organizes the broader workspace into runtime, data and presentation, hosts and environments, extension and interop, quality and tooling, and alternate-facade areas.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L158-L171",
+          "version": "repo-lines-v1:sha256:d60a81b6eeb876b1033d96d9d0543a6826090ea0ae26f144f4829aced1f06853:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4MGI5YWMwNWE1OTM5ODZiNmE5N2RkMjAxMTA1MDZiZjM0NGJlNjc3OGNjYWYwMjc0MzY5YWJlMDA3MDY0NTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4OTBkZTZiNWU4MzA1ZWMxMWJmNzA0MTBiNDc4ZjBkYmZkZDhiMGUwZjY0ZTUzMTRhMDkxMDMyNGI2YjRmOGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiYTEzOTE4NjcwMjY0ODc5YTRjMjk2ZmY2MGUzMWQxOTBkZWNiYzQ3NGVhZjhhM2E4ZWZkZmRiMzhmMTQ3MmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5NDZiNTFiODZhN2U4OGQwNmQ5ZGNmMDgwODlhY2I2YWE4NDQ2MDUwOGUyODg5YjM1N2JmMDQ2NTg3YjExYzIifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-19T17:40:19.225Z"
+  }
+}

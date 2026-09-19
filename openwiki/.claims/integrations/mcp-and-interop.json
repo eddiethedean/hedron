@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:e23005c37c24efa8274fac1925c6ffd7104db80711ae6f74673e0e15e07f26e5",
+  "claims": [
+    {
+      "id": "claim_c74d213179ef4549942a348122b06dc7",
+      "statement": "McpProjection is disabled by default with empty resource and tool listings, and mounting or catalog consumption does not expose capabilities until the application explicitly enables and registers them.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-mcp/src/hedron_mcp/exposure.py",
+          "version": "repo-file-v1:sha256:de76a65ed35212d4951e3bc961ba78db7912a10c709ab8cdff1a4d267bebbb2b"
+        },
+        {
+          "resource": "repo://packages/hedron-mcp/src/hedron_mcp/server.py",
+          "version": "repo-file-v1:sha256:9d5b49b43df1e894b5b175ef63904b1003f22e2904a9a95970b2a694410713b7"
+        }
+      ]
+    },
+    {
+      "id": "claim_7a3dd4e4e4af489f907695048c9ab864",
+      "statement": "McpExposure requires an enabled live projection, explicit resource or tool registration, and an authorization callback; catalog presence alone grants no exposure.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-mcp/src/hedron_mcp/exposure.py",
+          "version": "repo-file-v1:sha256:de76a65ed35212d4951e3bc961ba78db7912a10c709ab8cdff1a4d267bebbb2b"
+        },
+        {
+          "resource": "repo://packages/hedron-mcp/src/hedron_mcp/plugin.py",
+          "version": "repo-file-v1:sha256:cb40e9969bf3071ea7448a528da9e89f09536bdb37bd4bad290c6c6ce4766a5d"
+        }
+      ]
+    },
+    {
+      "id": "claim_e57d1e363f12453594a69bbae0318e1b",
+      "statement": "The default principal resolver reads authenticated host session state and does not trust client-controlled x-hedron-principal or x-user headers, while authorization requires a principal and forbids scope claims that exceed it.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-mcp/src/hedron_mcp/server.py",
+          "version": "repo-file-v1:sha256:9d5b49b43df1e894b5b175ef63904b1003f22e2904a9a95970b2a694410713b7"
+        },
+        {
+          "resource": "repo://tests/security/test_mcp_adversarial.py",
+          "version": "repo-file-v1:sha256:9d940b911436edbc431c571dadbee18b15d6f1590aeb5644b6d81fbcb3f7ecfd"
+        }
+      ]
+    },
+    {
+      "id": "claim_95e534334597455b9dec18063dea7a0f",
+      "statement": "MCP resource URI validation permits only the hedron scheme and rejects percent-decoded traversal, control characters, absolute paths, and executable or remote schemes.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-mcp/src/hedron_mcp/server.py",
+          "version": "repo-file-v1:sha256:9d5b49b43df1e894b5b175ef63904b1003f22e2904a9a95970b2a694410713b7"
+        },
+        {
+          "resource": "repo://tests/security/test_mcp_adversarial.py",
+          "version": "repo-file-v1:sha256:9d940b911436edbc431c571dadbee18b15d6f1590aeb5644b6d81fbcb3f7ecfd"
+        }
+      ]
+    },
+    {
+      "id": "claim_874c7f7963a24d83a1aad43a98d8610c",
+      "statement": "MCP tool arguments are validated against their advertised JSON Schema before invocation, and mutating tools require explicit allow_mutations=True.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-mcp/src/hedron_mcp/server.py",
+          "version": "repo-file-v1:sha256:9d5b49b43df1e894b5b175ef63904b1003f22e2904a9a95970b2a694410713b7"
+        }
+      ]
+    },
+    {
+      "id": "claim_466ff4a204fe4e078e666b93dbdfe1bb",
+      "statement": "The Streamable HTTP transport bounds request size, concurrency, rate, sessions, and cancellation; rejects disallowed browser origins; and binds server-minted sessions and cancellation ownership to principals or sessions.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-mcp/src/hedron_mcp/bounds.py",
+          "version": "repo-file-v1:sha256:18e42cca363aaa9738c50aefbf757e29fa94dca5b1fc7dd15d5aebd430aba6f6"
+        },
+        {
+          "resource": "repo://packages/hedron-mcp/src/hedron_mcp/transport.py",
+          "version": "repo-file-v1:sha256:61e2dd8896ed2e66bc35f48a8193514ebc85eed2bdabec804d92f2518e455398"
+        }
+      ]
+    },
+    {
+      "id": "claim_357949d49e924bbbb57738d8a247ecbe",
+      "statement": "MCP audit events redact common secret keys and token patterns, and the default audit buffer is process-local.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-mcp/src/hedron_mcp/audit.py",
+          "version": "repo-file-v1:sha256:ee3870dd6687fceb2a7c07cbd4a66488a6fbdc8a444ce0483aceace9d1d048fb"
+        }
+      ]
+    },
+    {
+      "id": "claim_04f3c656b5e8473fbde41a2b7e3002e3",
+      "statement": "MCP security tests cover confused-deputy and cross-tenant authorization, identifier and URI enumeration, origin policy, non-finite JSON, mutation gating, forged identity headers, and authenticated sessions.",
+      "evidence": [
+        {
+          "resource": "repo://tests/security/test_mcp_adversarial.py",
+          "version": "repo-file-v1:sha256:9d940b911436edbc431c571dadbee18b15d6f1590aeb5644b6d81fbcb3f7ecfd"
+        },
+        {
+          "resource": "repo://tests/unit/test_phase17_mcp.py",
+          "version": "repo-file-v1:sha256:ec68d4d4e7ccebc87146c42cdad24365bbac5a122f0fb6f2555c300bd8602940"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-19T17:40:19.225Z"
+  }
+}

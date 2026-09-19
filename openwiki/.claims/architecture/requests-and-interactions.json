@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:58331d658e964b5ce377cb9bd70defb9b6c2b4ef3ef5a310d5a39aa8f3939825",
+  "claims": [
+    {
+      "id": "claim_3def32c459f14212b4f7be63802540b7",
+      "statement": "Hedron subclasses FastAPI with HedronPagesMixin, creates an application-owned runtime, bootstraps security/session/assets and a root HedronRouter, and installs runtime-context middleware.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/app/hedron.py#L36-L41",
+          "version": "repo-lines-v1:sha256:e6cb30af0ec33d49330d75c3338292a11f80a7065bc5a7ed5bccdad08abe03bf:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzAxYmVmZDMxYWVkOTI0NDI5MDY2OTZmNzc0MDAyYTg0MjVmM2U5M2FhZGY3NjVjNzllMDA2NjQ3YjI5YTI0NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWI0NjhkZTg4ZDg5YWEyYjYyN2ZmNzYwNmI4YjYxNjRhZTRiNmFhNjY2ZWMxYjgyZjI5MTE2ZGQxM2IwOGQ3NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWYzNWUyNDJlZTc5YTI1ZWMwMDU4MDZhNzk4NWMzOGE0NmE1OTA2NGFhNDk1Mjg4MzU5NmQ1ZjYyOTZjOGY5MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGQwMmFlMzJhZGUzYTJmOGJjZjk1OTFiZjQ0ZGNiYzI5NjhmMTU2N2IwMmYzZGFiZGE2MTFiNzQ0MjgxNjFkNyJ9"
+        },
+        {
+          "resource": "repo://packages/hedron/src/hedron/app/hedron.py#L83-L156",
+          "version": "repo-lines-v1:sha256:d2266422056112cfeb390ed179c1ca69a4f6ecfc558766d769815b8894fa5a22:eyJzZWxlY3RlZExpbmVDb3VudCI6NzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmZDdhMDdhODNkZDE5OTZmYjUxNjg0YjQyYWVjYWY0ZTkwZmI3OGJhNzIzMGU1NDJlZDdiZDAxZDQyMzAxYmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MDMyZTk2NGQwOTMyMzUxZTVkMTg1MjY5MjgxYjE3MWEzYTA5YjA4YjI4NmU2NjFlYTQ3MDMyM2M4MmViNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYxNzA1NTY4ZGZhMzk4OWMwMTI0M2VmZDIxY2Y3ZTdlNmUzYjM0Y2Y4YmY4ZjgyZTc1MTEzN2MxZDUzNzAyNzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4MzVkMmJiNjBhZmU0ZThjMzIwZjhiOGVmMWFhZjFlYTdiZTQ1OWI2OWI4MmY3YTU4YzczODVhZWJlNzA1MWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_62f8778ace56454ab40c2d162d2ae644",
+      "statement": "Including a HedronRouter attaches it to the owning application so route registration uses that application's runtime and registry state, while plain FastAPI applications can include the router directly.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/app/hedron.py#L203-L220",
+          "version": "repo-lines-v1:sha256:9bbe9b466a7bb9844557f1633b00a5f3c4e1c839d53a7918a647f050a8c44968:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5NjFkMzAyMGM3ZjE0MDFkODliMmRhY2JiYjI1MzBmZDZjZWM0NmE2MzgxNGUyYTE4MGJjZTIwNzFiYjU0OGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiMTgxZmE3YjhlOWVmODk0MWIyNzlhZWRhN2FmN2Y5NzYzNjBiY2JlZGQzOGYzMGVjY2EwYzEwOWYxYjUwMTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzOWVhZTM5OWY4Zjc1NDhhY2U5MjY0YjAyYjgyODMyMjAzYjI2YTg4NDkxYzFmNjk4MzI2MzVlNTZjY2I1NGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM4YmQ2Mzc1M2QwMTc1NjVkODEzMGU4NjliYmEwZTZjNjgyOWVmODY5N2UzZjNhZTc2NWYzZjE4Y2U3MWMwMWIifQ"
+        },
+        {
+          "resource": "repo://tests/integration/test_fastapi_mvp.py#L125-L140",
+          "version": "repo-lines-v1:sha256:4302d76702ce9edb50eb0522085a6b2c2d243c8f9466d2f4056d37174728f7c5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZjYxYTI1MWRiOTRjYWUwYzU4ZjljMDNjZjVlMjExN2FmN2YzOGQ5NDc5Zjg2NjVjNGFkYmM2ZWRkMGRiYWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwMmJkOWEyNDM2ZTEyZWNmZjUyYzRjNDA4YWE0ODA2Zjg1NDg4ZmMyMDc3NGVjYmUxMTViY2Y0OWYwYzc4NDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI0YWE5MzhhZjRiNDNiNTFiMmE4MzNhZWZkZjAyYzg3MmY1NTJjYjgzNjdiZmUyNzcyMmFhOWFlNGE5ZDQ2M2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhjZWJjN2RmYjNhMWE5NDM5OGYwYTczZTYwNDY0ZDI2Mzc4ODJkYTVmY2IxODM5MjkxZjU5ODVhODMxODljMGYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2a91121cd2264071827a00e53a424d2a",
+      "statement": "The page mixin exposes page, view, region, and action surfaces; page routes can declare fragment regions, regions default to a matching id selector, and actions default to POST with explicit fallback and safety options.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/app/pages.py#L108-L224",
+          "version": "repo-lines-v1:sha256:9818e552ae587bd7a9f7f8275aecd166609d177b6db2daec67edf2470c8fa7d0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI4ZDExMDQ2ZGYzYjFjMjFkMjlmNjQxMWExOTVmNjYxZGM1ZjA1NjIyZjkzYjI2ZjZlNjkzZjUzYjEwZDczYTg1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIzZDdkNjcwYWZhNWNlOTc0ODZlNjNmOGVmYTE2ZjRiMmIzNzAwNDYzMzQ0OTczMTI5YWU3Mzg2M2IwYjA1YjRmIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJjM2YzNWQyMTExZTQ3YzY3YTZkYTFkMThlNWRiZWRjY2Y2N2YyYTZlNDVlZWJjOGNhNThhYTUwOTg5ZmEyM2JkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJkMDRhNWE5ZmFhZTZlZGZhMjY0ZWQyYTdkOTg0MWRlZjNhN2UxYmFhYWQ3MzhlMTM3NTVjMWM3YWQzYjk4YTI4In0"
+        },
+        {
+          "resource": "repo://packages/hedron/src/hedron/app/pages.py#L226-L268",
+          "version": "repo-lines-v1:sha256:0302b78a1a91cb506ec9235459590458aff9012aa902833ba942d18c7226bc7b:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmMDFhNzQzNzhlMjVhYzIyNTUwZWMwZDViYjlmNTkwOTNmYTk2OTIyNzdkYTNjMjk1YzlhMDVkMjIzYmVkZDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2YTU0ZGU0MTVmZjBjNjA3ODIwZGUyYmVlYjVjOTVjMzBhODA5OGExN2I1YWQ5YzUwNmMwZWE0OTA4MzQxMDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEwZGU1MmU1ZWM1MTJkYjMzZjZiYjFmNzdiNDYzY2I3OWU1N2ViNzI5NzAzMmZkNjlmYzMzNjRjMmIzMzczZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU2OWFlMWU5MDNiMTk2OTkwOTE4ZGE0NjY5ODZjZTYwYTQxZGE5NDU2NzM2NTFjYWJiMDNlYWFjNWQxYWE3MmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_99cc12af6d544a5391484d4b8e865b0d",
+      "statement": "HedronRouter pages infer HX-Request fragment versus page mode, views and components default to fragment responses and are hidden from OpenAPI unless exposed, and actions use fragment transport with CSRF and safety metadata.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/routing/router.py#L636-L770",
+          "version": "repo-lines-v1:sha256:d23b9edc7bb0e3a5ab0e83b3235dc9e6187fe5fcefa73d4d78aa2e53cac7afd8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTM1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI1M2IzNWRkMGU0NTQxNDQ4MGZmZjU4OTJjOTVhMjUyYzQ0YWU3ODRmNTJhZWFiYTU3ZjVjZDVhZWM5ZTJhNGQ3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI5MWNhN2FiYjc4NzM3NjU2NTg0MTc0ZTY3MjBiMGI5NTBlNzZlNGQ5ZDYyZTI3YTgyYmFjZGNiODRlYjU2ZGE0IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJjYTRlZGIxM2FiZTk2YWMwYzQ2NzQyYTM1NWYwMzIwNTUzN2NjMGUwMDM4NDQ5MzJkYmU0OGU2ZWFmMTNmZWYxIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI3N2EyMjQxZTIyMzU5ZGM5MmUxOGNjYzVlMjgzNTY1NGVkMzEwYTQwY2ZlNTI2MjRjZjI2OGRhYTBjNTk2YzRlIn0"
+        },
+        {
+          "resource": "repo://packages/hedron/src/hedron/routing/router.py#L805-L965",
+          "version": "repo-lines-v1:sha256:70d46eb11676e845638131dc6de49089463d34fae5951c22d71a2d80ad0495e1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIxMzJhZTljYTc4NTA3NzI1MmY3ODJjNmIxYjU1N2ZlYjc0ZTBhY2U0MWJmZGM2ZmNjM2E1NGUwOTgxNjFmMjI2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI1OTA5YTUzYTYxOGQwMjhlMWQzMDAwYzBhN2FiY2VlY2JlNWZiMzdmNGU1MTFlZmU0NjY0M2ZhZDZlNjY4NzJmIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI0ZTcxNTU2NDBkNWJjNzhmMzM3MGVkNzQ0YzE3YmM2YzNhNTQzOWVjYWJhMjBmYTk0Y2Y2MGJkZDQ5Yjg0ODZmIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_cedddbc6a0644ed38c1b1faef06437ec",
+      "statement": "The endpoint wrapper enforces CSRF before capability checks and side effects, optionally claims an idempotency replay key, invokes sync or async handlers, and converts the result through HedronRoute.convert_endpoint_result.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/routing/router.py#L507-L563",
+          "version": "repo-lines-v1:sha256:6a4c679aff7e093aaf9c3782af3e80959c9f22cd4bfb4c8c97a94bc186e5e546:eyJzZWxlY3RlZExpbmVDb3VudCI6NTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4NTc4ZTI1MmM5NmUyNjIxYzBkNTIyYzE1Y2Y1MGRiNmU2NWMzYjc1ZDRiNzc1Y2U5YWUyY2UzOTdlOTBjOGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwYWYxMTA3YzRkZGY0YjcyZGYxYmYzNzhlNzE0Y2U4NjQ0MDZhMzYwNDQ5MDZkODU0OTUxYzgxMDYxNTJiNmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjYzRhN2QxY2M3OTZhYmEzZTQ2NzIzMzI3ZjUxN2U5ZjgxMTk4MmQyNTBmMDcwMjk4NmU0YjU3NjRhZDk1ODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFhZDkzNzMwNDQ0YTdlODEzMmQzYjg1ZDUyZDFmY2MyYmRlZjgyZmJhZjMzM2FiMWFiNTdkMDFiOGQ2ODk3NjcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_87e078b2972848e2ab1bf9c9cd067aea",
+      "statement": "HedronRoute.convert_endpoint_result preserves native responses, renders InteractionResult, HTML, and components, serializes non-component Model values as JSON, prepares component values, and forces component routes into fragment mode.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/routing/route.py#L159-L277",
+          "version": "repo-lines-v1:sha256:da2853944348d453b33e7e4f98c0059ab4f1d7a5c92905e3d02e0253e78d2012:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE5LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI0MWFiY2QwY2M2OTEzZDRmNTFlYjIxZTRmNWFmYzJlOTBmODZkMzZhNDUwYmI0MmNiMDVjNmYzZTBkNzA2ZjhjIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0NDY2ZWZiOGYxNTRkMTM3OTQ3OWQ2MTUzMTY0MTIyOTA4ODJlZGRhZTdlNzEzMGU3MjhmZDI0ZTJmNmNkOGQxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJmNDdlYzRkNmIzZDk0YjA3NTU3YTlkZGUxZjhiZWI3ZTQwMjk5ZDFhNDE3Y2M2N2Q5OTE5YWEyODRiMDVjMjI3IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIwZjM2MGRiNzE3OWY4YjdiZjk3NmU4NmM4NWY0NmJkNjczZTc4OGZmYzFiZDMwZmRiNmJiZWRiMjBjNTQ0YmU0In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_f87faf3c8b194ffd9cce0e554a06c0b7",
+      "statement": "InteractionPolicy defaults to rejecting undeclared HTMX targets and InteractionResult carries validated content, status, target/swap, OOB, trigger, redirect, refresh, history, cache, and policy fields.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/htmx/policy.py#L145-L216",
+          "version": "repo-lines-v1:sha256:7f84ad62f3c33f24e551bfe487c65ccb2ba9304b157ac65c5849f8d9244bad4d:eyJzZWxlY3RlZExpbmVDb3VudCI6NzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlM2ZiMWU1OGZiYzkwNDc5NGQ1MDczMTRmYTkxYzlmMmYxOThjODhkM2ZmMzk1ZTAwODI4OTAxYzM3ZGM5MWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk0NWMyMzBhODVmZDFjY2RiOTk0MjUxODg1NWI2MGYwYmUyZmMyMzg1NmYzOWIwNTI1NWY1YWRlNGFmMmMwOWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY1ZWI3MWZiOWU1NGE0MDVmNDE0ZjNjN2M3ZjBjMjRlYzZkODA2YjViZjNhYTJkNzlhMzZmYTcyZTQzYTFlY2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI1MTg2ODc4Y2MzYTJjNjE3ZjE3NjBkZGQzYTg0YjYzZTkzZmUwYWNmY2ZhMzZmMDUxZjdlYjZmMGQ2N2QyN2QifQ"
+        },
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/htmx/policy.py#L93-L110",
+          "version": "repo-lines-v1:sha256:04c88976a910fc81b03aa33166ba01e0d89cf115682e3ef7696bc38a76b3fe93:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlM2ZiMWU1OGZiYzkwNDc5NGQ1MDczMTRmYTkxYzlmMmYxOThjODhkM2ZmMzk1ZTAwODI4OTAxYzM3ZGM5MWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQxMTg1OTJmMjRiYTRmYWNlMWY0MzI3NjBkZDAxNzNlNzJkZmUxNzFkMjk2NjhiZWNlZTgzM2M0M2YwNjUxN2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNjMzRmY2E4ZWNjMjg5YTAwMzY5YWM1YWVjMGViMDAxYzE3MWIxNTQ0YWUzZTU3ZDU3NmU4NGJkZGY4MGNhNWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bcac63b4b3b04f1181439e0ac56a30ac",
+      "statement": "Interaction headers default fragment caching to private/no-store and vary on HTMX request and history-restore headers, while HTMX-aware error handlers return JSON for non-HTMX requests and semantic fragments for HTMX requests.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/htmx/headers.py#L91-L137",
+          "version": "repo-lines-v1:sha256:055d16a266488303f310aef8b684a4aba5a05d8c2d670d8775c39eb9f81cfb59:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjllMTA4NTc0ZWJlODA2ZTFkMzk0YjgyMTk4MzEyZmNkMTZmZjI4N2QwNTMwMzU3MDkxMjkyMzZhZjRmMjdlN2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmZTIwOTVlMjg5MjAyNGZjNzg0YjNkYTNiOWM5NGQ3MzM5NzI4Yzc3YTE4NWFjM2RmOWNlOWZkMTA0MGVhYjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1YmVhYWE2YWRmZmU3ODYzMmIyZDljMGJmNDVkMzlmOTE1ZDUyNzY1YzUxYmU0MjMxYzE4OWNiMGJjOGQ3MDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1YmVhYWE2YWRmZmU3ODYzMmIyZDljMGJmNDVkMzlmOTE1ZDUyNzY1YzUxYmU0MjMxYzE4OWNiMGJjOGQ3MDAifQ"
+        },
+        {
+          "resource": "repo://packages/hedron/src/hedron/responses/handlers.py#L77-L117",
+          "version": "repo-lines-v1:sha256:ea943cb517d0681d283270b9818bd986d716a9ec02a3a183812ac2b3a975b3a6:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyMDMxM2JjNmJhYzg0NDIxYTBjOTk1OTYzYzk2OGU3YTVhMDFjZDk3M2RkZjljYWRkMTM3YzcxYzg3MDhkZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhNjYyZjhjYmEyNzc3YjNlMmM3MTQxZDE4NzA4ZjNlNDFhMjNkY2M3MGEwMDg5ZjM0MDYxOTEyNTgwZWY3NmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFjMzkyMTdiMWRhOGI3NzI4YTJlZjdkZmRlZTNhNmJhOTM0ODU5MDllZDc0MzM5OTBmMzIzM2E1YWU2YTMzMGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_32b50fe4e29541d2b3c316474fd6124e",
+      "statement": "Integration tests verify JSON and HTML coexist, component routes are hidden from OpenAPI by default, addressable components can require dependencies, unsafe actions require CSRF, and sync and async endpoints both work.",
+      "evidence": [
+        {
+          "resource": "repo://tests/integration/test_fastapi_mvp.py#L143-L241",
+          "version": "repo-lines-v1:sha256:ec707f4d704dcbd8232881eb255ce800c0c525050ba154d0d6f97818824d71aa:eyJzZWxlY3RlZExpbmVDb3VudCI6OTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI1NTgwOTNiYWYyYjIxZWJkN2M4MTkyOWM4NmE1NDE2YzM4NGRiYmY2ZDM5NjJmYWM0MzlmMTNkNWIxMzI4MDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2ZTBhZWM0YjkyMmVjZTc1NWViNWNmZDMzNDMxYWFmNDA0ZTY2NzViM2Y5ZmI1M2U4YjM1MjJmNTNlMWExZGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgxYTRlYTA2NWVkMDkzNTAyMWUwYzVlNmU0ZGQyNzlmODY4MjJmMTY0ZjM4MGQ2OTMxZmIyZjljNjRkYjM4M2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3Y2NkYWI5MzQ0Zjc5OWNlNzA0YWQ2MzlkZWY2ODI0NDMxYWIxZjU5ODg1Y2JlMzEwMGQ1MWM5NDI5N2I1MjcifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-19T17:40:19.225Z"
+  }
+}

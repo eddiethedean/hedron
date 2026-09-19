@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:faf3c5e276be158278ac90b51d49ea1980737b7287d7fa4815c59712a8f4584c",
+  "claims": [
+    {
+      "id": "claim_f9bb8f9e22a5487c9e241071abc4afaa",
+      "statement": "Component[PropsT] is the reusable server-rendered UI base; subclasses use a Pydantic Props type, construction accepts either a props instance or keyword fields, and props validation errors are emitted with secret-safe messaging.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/component.py#L43-L96",
+          "version": "repo-lines-v1:sha256:7cfc9c3e27156245a2af4743f8957194af96c1c48da8019d796b10d9c719f40b:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0OWYwYTg4MTYzOTZmZDE1YjkzNTJjYTZkY2E4Y2U2MTg4N2I2MTQ1NmUyODM2MjQyYThmYWU3OWZkZjMzYjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI0MDI4OGQ2YjMzYWY0NjNkYjA5Y2I1ZjYwMDFmNWQ2OWUwYWRlNTI4NGNkNzk3YzNhNDBlNGJmNTNlZmUxOWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc2NDczMzE5YzJmMWUwODFkNmJiZDkyYzIwOTczNDc4NmY4Njc4NTIwOTkzOWI0NjdjMzI1YTc5NmQ3ZGMwOWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlYzYxNzFmZDVjMjUxODUyM2U2M2RlMzJhNjEyMTlhOTI4OGFjMDI0NThhZjhmM2M0MWIzNzBiODM2MDVmOGYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_33772528cf00476ab7ab7caebddcf650",
+      "statement": "Components store children and slot values, support required, optional, and repeated slots, and validate required slots before rendering.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/component.py#L100-L170",
+          "version": "repo-lines-v1:sha256:9eff31ae8a606e7dff7fb2a55841f73accfd15c07b5ab4190f6aa448d14b9ec9:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzZDAwY2YyNzA5NjRkNDRhMTNkZmFjODc1MmIwOWZjYzQzNWIwZjE5YjMxNmFiY2Y4MWE3YWE2NGJiMTIyZDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUxMDM0ODFjNTdkMGYwZGMwZjc2Y2QyY2M4YjM2MDRjNGU4Mjk2ZGE0MTIyYWRkMTllODE3NDVkYzdlMzMxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNlYzYxNzFmZDVjMjUxODUyM2U2M2RlMzJhNjEyMTlhOTI4OGFjMDI0NThhZjhmM2M0MWIzNzBiODM2MDVmOGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEwZTE3MmZmMDYyNmNjZjM4MmQwZTI4ZWEyYTI5MGQ5OTRiZWY2MmQ5OWVlZDJkNzAzOTE3YjgwNGMzMzU0NzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_169d50ce9d9740bdb0a28c6291b687b1",
+      "statement": "Component identity uses non-secret identity fields and an optional key, and render-time context exposes the computed instance ID and render key.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/component.py#L172-L218",
+          "version": "repo-lines-v1:sha256:f725e0f2e4e9e586b064396b5f0037fb65056b517bbec0b3d4dc0b87730fea62:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjY2QxNzQ4NzdlNmI5YmY0YTY4NzI0NjUzOTkyMjc3ZjI1MWVhNjZmNWNjMTA5MGFiNWJiN2I3ODM1YWNlOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzNWU3YTIyYmNlZDEzMWExMjJmMTM1YTA0OWNjYTZlMjU3NGY3OWNkN2U3ZWIxNjk2ODVkN2QyYmQ1NThhMjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBmZWFkNThjOTgxNWY1MGNhNDQ0MmYxNmNmZmQ5MzFiZmI4ZTc0NTMxNTc1NzY2ZmEyMGE4NjQ2YzVhYmM4NTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU2ZDM3YWUzZWQ3ZDc1OTVjZGVhNjk4Y2NkZDhkZGJjMzU1Mzk4ZjU5OWNhMGJmNmE0MzNjZjA3NjgxYzEyMDYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0fd574d1786f4560a76beb2ba57dc559",
+      "statement": "Component data preparation is an explicit async prepare hook before synchronous render, and constructors must not perform hidden I/O.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/component.py#L220-L241",
+          "version": "repo-lines-v1:sha256:4279bd317ce6fb55e4e45ddb2a9b8d22fbf4f5a30cb466ed4d4c820272fbd02d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliMzVjM2FjMmIyNDQ5MzgzNjk4Y2ZkZDcyNDljNDFkODNkMWU2OTg0ODhlOWU1NDQ5MjQxODQyMDM5YzE0MTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5N2M3MTI0N2FmM2NkMWVkZjU1NWE3ZDEwNzU5MzE1N2Y2ZGMyYTIyYWYwZGU4MmU3Nzc0YWJmMTBmOGFkZTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmZDljYTNlMTM5ZTk4NzRkODFmZDE1NTA2OGQwMmQyNjVlOGRhYWY3YTJhMDA0MGVlMWU2Zjg3NTgzODZmMWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEwMzZmYjgzOWMyY2E4MDc1ZTBkM2EzNGZkOTEwY2MxM2I2YjBjM2FmYzkwNjE1ZjFhYjljN2IyYmNiOTJmOTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1516684788df493e8b949db7c6ec7a3e",
+      "statement": "The normalizer rejects Secret values and arbitrary generators or iterators, and the component lifecycle detects recursive render cycles and duplicate instance IDs.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/rendering/normalize.py#L103-L185",
+          "version": "repo-lines-v1:sha256:7c3bf452bf8d7fc97b71aab6a9fb02532a98cb8c632570bb476ab76ba3d89187:eyJzZWxlY3RlZExpbmVDb3VudCI6ODMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzZjVlYmIwYzdhNjNjZjhjY2Q2YTZmNDk4ZGJmYzc1MzNmOTA3OTg5NTFmNDA4YWMzZDAzMTgwZjE0MTg2NDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhMmY1NTIwYzg5NThiNWZmNjc5MDJjN2ExNmZlNTJmYTI0NTY1Y2VjMmQwYjY4MzMyYzIxMjYwYTEzOTY0MjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU0YjBmNmM5MjZiMTNhNzU4NGRiNzUzNGRjYTM2YjYzNmMxOTdiMzA0N2Y1ZWZkOGZkMWI1OWM3NmZmMGJiMTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY3ZmJmNjNkODk3M2IzZGZiOTUxNjhkY2FhNjlmYjhiN2ZlOGZiZjRiNmQwZjMwOWI1NThjMzUwMzMxZmUyOTUifQ"
+        },
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/rendering/normalize.py#L205-L263",
+          "version": "repo-lines-v1:sha256:99ed3c532bf93c91f16687cf58499f1248d880e23d853303d28659f62a05c151:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1MDEwYWMxNjU0NzAzYzM2ZjRjNDI2YTEzNmY0ZTdhMjFjYTJlMTcwMmRhNjNhZWZiNTkwNDc5NTVhZWZmZWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MDlhNTNhNjE4ZDAyOGUxZDMwMDBjMGE3YWJjZWVjYmU1ZmIzN2Y0ZTUxMWVmZTQ2NjQzZmFkNmU2Njg3MmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmMjJkMmYzZDYzMTllODIxMDU5N2I1NDllZGZiZjYyM2RlNDU0NDQ4MWIxNGE0M2Q2NWQwMzIzNTBjNDVlYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk3MDNhNjQ5NTNmZGJkNzhmNzllZWE4YTYxMDMzNDdmYjhlNmZjNjRjMjkwOTEwNWEyZmJhMWFmNDA0OWVkODkifQ"
+        },
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/rendering/normalize.py#L59-L70",
+          "version": "repo-lines-v1:sha256:eaa9bcea2c87a3814c5b0566d9225ed0c5d89694df01d5145cc8a9b07f6f45fc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmYThiMWUwN2ZjNjQ4ZTdiNDVlNWI2Y2Q4MmM3MzgwMWIwNzJiZmNlOTAwMWFkM2VjMWM3YTRlNTlkYTIyYTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5MjczM2VjOTliOGVlMzY0ODI3ZTk1YmMzYzA4MWRkMzhlMjg1MmFjNGU5YTA0NDIwYjM4M2JlYjVhNWQxOTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5ZjkzMDgzYzE5NzEyMWI5ODI3MDBiYThhZmFiZDE3MjJjZjFkM2U3NDA0NTA5ZTgwZWZhMjcyNDdmNjJmMDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzZGYyYWNmMDZlOGMzZjAzYzcxMzVjNmU4YWM1YTljYTU0MzJhYmUwNmE3NGFjYTBmZGQ5YTUzYTAwOGY5ODcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5ff76cefe6564879829f9270b41ee56a",
+      "statement": "RenderSession retains render state across calls and returns RenderResult values with HTML, mode, identity deltas, diagnostics, browser and HTMX plans, and trace data.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-core/src/hedron_core/rendering/session.py#L49-L150",
+          "version": "repo-lines-v1:sha256:47a59e824c2f5ae20bf07ec908d0229e37bf52d29ebfafff0cb7d5c6c73dc2f6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI4YWQxYzg3ZGFjNzVkNjEzYzRkZjEyNjZiNmQxNWQzMWM0NTIwYjlmZmI2YTNlOGI2NDJhNThkYWJhNDYxMmFhIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI1OTA5YTUzYTYxOGQwMjhlMWQzMDAwYzBhN2FiY2VlY2JlNWZiMzdmNGU1MTFlZmU0NjY0M2ZhZDZlNjY4NzJmIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI4Y2M0YTdkMWNjNzk2YWJhM2U0NjcyMzMyN2Y1MTdlOWY4MTE5ODJkMjUwZjA3MDI5ODZlNGI1NzY0YWQ5NTg5IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI2ZmY2NDIxZTNhZDY3MzgyMmMxMzlmOWY1MzA4OWEwYzAzMWYxMWNhYTZiOTFhYWQ1NDg4MjQxNjUwZmM0ZDNmIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_35cc59e7bfee427daf7e43d4844059b5",
+      "statement": "The FastAPI response layer selects page or fragment mode, enforces declared HTMX targets, applies policy and cache headers, attaches assets, and returns PageResponse or FragmentResponse.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron/src/hedron/responses/render.py#L218-L317",
+          "version": "repo-lines-v1:sha256:d613f5eadd38cdd0a73c5436c93ac2f04f0d8f0a356365db50ca9f22833d4222:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjNGNjNTY2NmRkZDE0MjRkYTJlYWFkZTI5ODRkMmU3NjQ5YzUwZmE4YTQxOWUyMjUzMzI2NGVjZTg3OGE5ZGRjIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJkNGRlZmMzZmVhMzg2ODRjZWQwNWQ3MDRjY2I4YWZiMmExM2NlZmRhNjQ5Y2Q1NzUyNjRhZjAyNTJmNDUxZTFiIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI4MWY0ODg1MDg4MDJmYmZlOTk1NzhjZWM5NDFhMzM4ZWEyNDU4ZDY1NzkyMzQ5ZmE3YTJiM2FjMmUxY2IzM2QyIn0"
+        },
+        {
+          "resource": "repo://packages/hedron/src/hedron/responses/render.py#L95-L148",
+          "version": "repo-lines-v1:sha256:18fc0f2f0ee218ab34fe8fd182014da4652183e29bcca837202957ceef4ab936:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliZTZjNjg4ZDA2NzU5M2EwOWIzNWE3NGNkN2IwNGYxODk1MGY0NWIzOGU4ZTk2ODNjOThiMDVlMDg4NmY1NzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwYzFmMTg4ZjE0MmVkN2E4MjQ2ODBiMjA3MTcyYzU1MTliYzYxNGE0OGZkYTdjZjE2N2VkYjhkZGY3OTk1NmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFiMjc1YmJmZjVjYjM3YzNiZjk2YmEyMzRjNDliMDcxNjk4NjM2NDY3ZDZmMzJkODU0NTI1NWI2ZjNiNTczMjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRkNjYxNWIyMDFhYjc2OWE1YjFhMDExN2FmODNjNjY4ZGI5ZmY5MDk0YjE1OGFkNWExMTFjY2E3M2EzZGM0NjgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_96b8d00a495b421a905a1f879a957639",
+      "statement": "Integration tests verify that full-page requests include the document shell and assets, HX-Request responses omit the document shell and stylesheet, and invented script tags are rejected unless explicitly reviewed.",
+      "evidence": [
+        {
+          "resource": "repo://tests/integration/test_fastapi_mvp.py#L24-L85",
+          "version": "repo-lines-v1:sha256:433cd9916a7a5a53c876ff0efce0d2e4471edab3973953a6af50c28478d538db:eyJzZWxlY3RlZExpbmVDb3VudCI6NjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmNzdkMGIzYTE2ZDZmN2Q4ZGQxZDkzZGFmNDBmNDk2YzliMjZkZjE3NzliZTE3OTI4ZTU3YTNjMzg3MjNhNDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlOGNjMTc1YTA5OTQ2MDYyNDE3YWEwYmYxYjYwNDI0MDMxMjcwNGY5M2YwNjJjODY3ZWYwNGRjYTcxMDZiODciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEzNTQyMDYyODMzNTk1MmFiOTViMWY5YzkyYjhkZGViYmY1NzIxMmZjZmIwOTY0YWViZTY4MmQ2NWY3YmMwMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZiMzk0MzkxMmMwNDkxNzk1NTM0MzYxOTcyYjQ2ZjUwYzcxMDUwYmUxNmI5NTI5Zjk0OTFkMWQyZmUyZTUzMWMifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-19T17:40:19.225Z"
+  }
+}

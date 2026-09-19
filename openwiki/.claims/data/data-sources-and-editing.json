@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:ba96cd07449c834d6df8d0ad9c623d16b2d94595fd6dc1a8c9ef22917644f311",
+  "claims": [
+    {
+      "id": "claim_773cc872c57246f99688ee0854078511",
+      "statement": "DataQuery validates pagination, sort, filter, and projection inputs, applies allowlists when configured, uses a default page limit of 100, and never permits more than 500 rows.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-data/src/hedron_data/sources.py",
+          "version": "repo-file-v1:sha256:70daa0924f0b7dac37b4a59f20d998978b5456a7ad7695eb2eb3921507724ca3"
+        }
+      ]
+    },
+    {
+      "id": "claim_6f73664bf8df4914b66ebb36729ca17b",
+      "statement": "normalize_rows supports mappings, sequences of mappings or Hedron models, and optional dataframe inputs through Narwhals, while refusing implicit lazy collection and rejecting inline datasets over 10,000 rows.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-data/src/hedron_data/normalize.py",
+          "version": "repo-file-v1:sha256:dca400c5c546085fcf88a4d414823864f473181d510dfc846fb2e40256b38ceb"
+        }
+      ]
+    },
+    {
+      "id": "claim_2d0d1928217343d3bd95fe6dc9e14d15",
+      "statement": "DataPage, ColumnSchema, CellUpdate, DataChanges, DataSaveResult, and the DataEditorSource protocols define the shared fetch/apply and conflict-reporting contract for editable tabular data.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-data/src/hedron_data/sources.py",
+          "version": "repo-file-v1:sha256:70daa0924f0b7dac37b4a59f20d998978b5456a7ad7695eb2eb3921507724ca3"
+        }
+      ]
+    },
+    {
+      "id": "claim_b747218c3da14b6c8a9f007132dd890f",
+      "statement": "DataTable renders an accessible server-side table, preserves total/version metadata, masks secret values, and excludes hidden or secret columns from CSV output.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-data/src/hedron_data/table.py",
+          "version": "repo-file-v1:sha256:5f0cc0b496ba5a18a5c2810b8cd755029f6c8cbfcbfe42985e844bcf0847b96d"
+        }
+      ]
+    },
+    {
+      "id": "claim_e7dd7336740141049a3541bf0e7d1e2d",
+      "statement": "DataEditor keeps save policy on the server: filter_writable_changes rejects unauthorized field writes, filters insert fields, and applies the configured delete policy.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-data/src/hedron_data/editor.py",
+          "version": "repo-file-v1:sha256:f42701ced71b8f5ed4ff34f9abfb0a798e9f8424aa5c979a9b355d3cf48dc6ae"
+        }
+      ]
+    },
+    {
+      "id": "claim_0d031b553f504fc48ad3c54496bcdd7c",
+      "statement": "TransformPlan limits execution to allowlisted operations and enforces row and serialized-byte budgets, while carrying optional tenant, cancellation, and authorization context.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-data/src/hedron_data/plans.py",
+          "version": "repo-file-v1:sha256:f97ef9f2f1cbe0bcf5ab882b4b391789333dfe7955bf7cbedec40cabdee5b889"
+        }
+      ]
+    },
+    {
+      "id": "claim_6e460fa868d040dd8895c3f500d1d5fb",
+      "statement": "OptimisticMutation requires typed patches and idempotency, tracks explicit lifecycle states, and restricts the phase-0.62 inventory to collection edits, reversible toggles, and scalar edits while higher-risk classes are denied by default.",
+      "evidence": [
+        {
+          "resource": "repo://packages/hedron-data/src/hedron_data/optimistic.py",
+          "version": "repo-file-v1:sha256:3242ebd6717da1733053254d463da04ecde556592542f1945b2dcd5edbdb93a8"
+        }
+      ]
+    },
+    {
+      "id": "claim_e32fdffa5c8e405bbf5e6812f2d54a75",
+      "statement": "The repository tests data contracts and transform budgets and verifies that DataEditor JSON saves require the CSRF token header before applying an authorized update.",
+      "evidence": [
+        {
+          "resource": "repo://tests/conformance/test_data_chart_contracts.py",
+          "version": "repo-file-v1:sha256:1ba20cc0c0ae96b8dca3c254703bc79712821d84ebfde2bde759bce5d6438188"
+        },
+        {
+          "resource": "repo://tests/integration/test_data_editor_csrf_save.py",
+          "version": "repo-file-v1:sha256:f073e63426ed41c6ba193c5b6f0e68fa2ce784e222911df9ff6c521ce259c7f2"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-19T17:40:19.225Z"
+  }
+}

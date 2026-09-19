@@ -187,8 +187,11 @@ Both commit CI and release CI call the same suites after checkout / sync / tool 
 | `release` (commit CI) | `packaging` — Packaging rehearsal plus living `verify_pkg_47.py` cut | After `evidence` succeeds (skipped when docs-only) |
 
 Local full parity: `bash scripts/ci_checks.sh all --python 3.12 --skip-browser` runs every
-non-browser job on one Python; omit `--python` for the full 3.10–3.14 test matrix. Pass
-`--all-browsers` to match the `main`-branch browser matrix. See `scripts/ci_checks.sh --help`.
+non-browser job on one Python. It starts with the local OpenWiki freshness gate, which
+requires the generated wiki and verified Claims to match the current model-visible
+source tree; update OpenWiki in Codex if that gate fails. Omit `--python` for the full
+3.10–3.14 test matrix. Pass `--all-browsers` to match the `main`-branch browser matrix.
+See `scripts/ci_checks.sh --help`.
 
 Release workflow (`release.yml`) runs the same `test` / `quality` / `browser` / `evidence`
 suites before `publish` (tag pushes only).
