@@ -22,8 +22,8 @@ until evidence is green. In the 1.1 boundary, `hedron-core`, `hedron`, `edron`, 
 platform packages. Host adapters, Explorer, elements, extras, Posit, conformance, Workbench,
 native, MCP, Gradio, notebook, sample-kit, and simulation packages are independent Beta
 satellites; experimental adapter surfaces remain outside the Stable API even when their owning
-package is Stable. The repository resolves the coordinated 1.0.0 workspace, and the public index
-serves the coordinated 1.0.0 release. The 0.67.0 train remains the immutable migration baseline
+package is Stable. The repository resolves the coordinated 1.1.1 workspace, and the public index
+serves the coordinated 1.1.0 release. The 0.67.0 train remains the immutable migration baseline
 for compatibility evidence.
 
 ### Charts and sample-kit compatibility floor

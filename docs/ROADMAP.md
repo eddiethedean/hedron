@@ -6946,7 +6946,8 @@ through `python scripts/check_100.py --gate <GATE-ID> --verify`.
 
 ## Proposed 1.X sequence
 
-**Planning revision:** 2026-09-18. The coordinated source and published workspace is `1.1.0`;
+**Planning revision:** 2026-09-18. The coordinated source workspace is `1.1.1`; the latest
+published workspace is `1.1.0`;
 published-channel facts remain owned by [docs/release.toml](release.toml). Phase 1.1 is complete;
 the previous 1.1–1.7 plans now continue as the proposed 1.2–1.8 sequence.
 

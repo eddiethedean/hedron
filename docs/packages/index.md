@@ -44,8 +44,8 @@ inventory. The coordinated stable inventory is published on the 1.1 train.
 pip install "hedron[data,dev,posit]>=1.0.0"
 ```
 
-Public PyPI contains the verified `v1.1.0` release. The development workspace is the
-`1.1.0` published train.
+Public PyPI contains the verified `v1.1.0` release. The development workspace is
+`1.1.1`; the published train remains `1.1.0` until the coordinated upload.
 
 ## Alternate facade
 
