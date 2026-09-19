@@ -301,20 +301,36 @@ async def _begin_replay(
         action_id=getattr(fn, "__name__", "action"),
         session=session,
     )
-    if replay_scope_key != legacy_scope_key and replay_claim.state == ReplayState.FIRST:
-        legacy_claim = replay_store.claim(
-            key=replay_key,
-            fingerprint=replay_fp,
-            scope=legacy_scope_key,
-            retention_seconds=replay_policy.retention_seconds,
+    legacy_scope_keys = [legacy_scope_key]
+    if subject == "anonymous" and session:
+        # Before anonymous replay binding was introduced, sessionless entries
+        # used the literal `anon:none` identity. Probe that scope during the
+        # migration window before creating a new entry for the current binding.
+        legacy_anonymous_scope = legacy_replay_scope(
+            tenant=tenant,
+            subject=subject,
+            action_id=getattr(fn, "__name__", "action"),
+            session="",
         )
-        if legacy_claim.state == ReplayState.FIRST:
-            replay_store.abort(
+        if legacy_anonymous_scope not in legacy_scope_keys:
+            legacy_scope_keys.append(legacy_anonymous_scope)
+    if replay_claim.state == ReplayState.FIRST:
+        for legacy_scope_key in legacy_scope_keys:
+            if legacy_scope_key == replay_scope_key:
+                continue
+            legacy_claim = replay_store.claim(
                 key=replay_key,
-                scope=legacy_scope_key,
                 fingerprint=replay_fp,
+                scope=legacy_scope_key,
+                retention_seconds=replay_policy.retention_seconds,
             )
-        else:
+            if legacy_claim.state == ReplayState.FIRST:
+                replay_store.abort(
+                    key=replay_key,
+                    scope=legacy_scope_key,
+                    fingerprint=replay_fp,
+                )
+                continue
             replay_store.abort(
                 key=replay_key,
                 scope=replay_scope_key,
@@ -322,6 +338,7 @@ async def _begin_replay(
             )
             replay_claim = legacy_claim
             replay_scope_key = legacy_scope_key
+            break
     if replay_claim.state == ReplayState.CONFLICT:
         from hedron_core.diagnostics import error
 
