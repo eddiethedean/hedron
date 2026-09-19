@@ -396,7 +396,7 @@ def _apply_calculate(rows: list[dict[str, object]], tr: TransformDef) -> list[di
         )
     if op not in _IMPLEMENTED_CALCULATE_OPERATORS:
         raise _chart_error(
-            "HED-CHART-0032",
+            "HED-CHART-0034",
             "Unsupported transform operator",
             f"Operator {op!r} is cataloged but has no calculate implementation.",
             "Use an implemented operator or select a dedicated structural transform.",

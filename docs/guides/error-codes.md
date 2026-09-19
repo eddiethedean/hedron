@@ -189,6 +189,7 @@ Markdown-to-Hedron compiler and manifest diagnostics.
 | `HED-CHART-0031` | `HED_CHART_0031` |
 | `HED-CHART-0032` | `HED_CHART_0032` |
 | `HED-CHART-0033` | `HED_CHART_0033` |
+| `HED-CHART-0034` | `HED_CHART_0034` |
 | `HED-CHART-0061` | `HED_CHART_0061` |
 | `HED-CHART-0062` | `HED_CHART_0062` |
 | `HED-CHART-0063` | `HED_CHART_0063` |
