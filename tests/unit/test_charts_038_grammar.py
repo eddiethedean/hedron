@@ -40,6 +40,15 @@ def test_unknown_operator_fails() -> None:
     assert str(ei.value.diagnostic.code).startswith("HED-CHART-")
 
 
+@pytest.mark.parametrize("operator", ["eq", "clamp", "year", "row_number"])
+def test_cataloged_but_unimplemented_operator_fails_closed(operator: str) -> None:
+    raw = sample_spec().to_json_dict()
+    raw["transforms"] = [{"op": operator, "field": "y", "params": {"args": ["y", 1]}}]
+    with pytest.raises(HedronError) as ei:
+        compile_chart(raw)
+    assert ei.value.diagnostic.code == "HED-CHART-0032"
+
+
 def test_unknown_schema_version_fails() -> None:
     raw = sample_spec().to_json_dict()
     raw["schema_version"] = 99

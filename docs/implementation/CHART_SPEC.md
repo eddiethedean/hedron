@@ -61,8 +61,8 @@ Calculations use this allowlist only. Unknown operators fail with a reserved `HE
 In `0.2.0`, `filter`, `aggregate`, `sort`, `sample`, `stack`, `bin`, and `fold` have dedicated
 structural implementations. Numeric/string calculations have dedicated behavior for `add`,
 `subtract`, `multiply`, `divide`, `negate`, `abs`, `round`, `floor`, `ceil`, `min`, `max`,
-`coalesce`, `concat`, `lower`, `upper`, and `length`. Other catalog names validate but currently
-preserve the first input value rather than providing distinct temporal/window semantics.
+`coalesce`, `concat`, `lower`, `upper`, and `length`. Other catalog names are reserved for future
+temporal/window semantics and fail with a structured diagnostic until implemented.
 
 **Arithmetic / numeric:** `add`, `subtract`, `multiply`, `divide`, `negate`, `abs`, `round`,
 `floor`, `ceil`, `min`, `max`, `clamp`, `coalesce`.
