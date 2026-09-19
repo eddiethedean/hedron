@@ -1,7 +1,7 @@
 # Upgrade to Hedron 1.1
 
 This guide starts with the current 1.1 migration boundary, then retains historical notes for
-older release trains. The published release is `1.1.0` on the `1.1.x` line. Read
+older release trains. The published release is `1.1.1` on the `1.1.x` line. Read
 [Current release and support](current-release.md) for the published PyPI status before changing
 an application requirement.
 
@@ -23,10 +23,10 @@ only where the application needs them:
 Upgrade the stable packages from PyPI:
 
 ```bash
-python -m pip install -U "hedron>=1.1.0,<1.2" "edron>=1.1.0,<1.2"
+python -m pip install -U "hedron>=1.1.1,<1.2" "edron>=1.1.1,<1.2"
 ```
 
-Read [What’s new in 1.1](whats-new-1.1.md) and the [1.1.0 release notes](release-notes.md)
+Read [What’s new in 1.1](whats-new-1.1.md) and the [1.1.1 release notes](release-notes.md)
 for the complete feature and evidence boundary. Keep the application’s existing integration
 tests and add coverage for any newly adopted collection, navigation, or secure-form behavior.
 

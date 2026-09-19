@@ -1,6 +1,6 @@
 # What’s next
 
-Hedron `v1.1.0` is implemented, Verified, tagged, and published. See
+Hedron `v1.1.1` is implemented, Verified, tagged, and published. See
 [Current release and support](current-release.md) for the exact channel status.
 
 There is no committed 1.2 calendar or commercial SLA. The maintainer roadmap contains a proposed
@@ -28,7 +28,7 @@ evaluation phases can end in promotion, continued experimentation, or non-admiss
 
 | Phase | Theme | Primary question |
 |---|---|---|
-| **1.1** | Open enhancement completion and complementary application features | **Shipped in `v1.1.0`; complete application flows are supported** |
+| **1.1** | Open enhancement completion and complementary application features | **Shipped in `v1.1.1`; complete application flows are supported** |
 | **1.2** | First-class UI testing and adoption confidence | Can a team test real UI behavior and diagnose failures with ordinary pytest? |
 | **1.3** | Production async and durable workflows | Is anything beyond polling ready for production? |
 | **1.4** | Inclusive and international UX | Can the stable surface work for more users and locales? |

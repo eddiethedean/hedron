@@ -1,6 +1,6 @@
 # Compatibility policy
 
-**Status:** Accepted for the verified and published **1.1.x** release (`v1.1.0`).
+**Status:** Accepted for the verified and published **1.1.x** release (`v1.1.1`).
 **Reviewed:** 2026-08-28
 
 ## Current train (read this first)
@@ -23,7 +23,7 @@ platform packages. Host adapters, Explorer, elements, extras, Posit, conformance
 native, MCP, Gradio, notebook, sample-kit, and simulation packages are independent Beta
 satellites; experimental adapter surfaces remain outside the Stable API even when their owning
 package is Stable. The repository resolves the coordinated 1.1.1 workspace, and the public index
-serves the coordinated 1.1.0 release. The 0.67.0 train remains the immutable migration baseline
+serves the coordinated 1.1.1 release. The 0.67.0 train remains the immutable migration baseline
 for compatibility evidence.
 
 ### Charts and sample-kit compatibility floor

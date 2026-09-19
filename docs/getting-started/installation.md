@@ -20,13 +20,13 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 
 <!-- hedron-install-matrix -->
 
-Hedron **1.1.0** is published on PyPI. The three useful requirement styles are:
+Hedron **1.1.1** is published on PyPI. The three useful requirement styles are:
 
 | Intent | Requirement | Use it when |
 |---|---|---|
 | Minimum compatible API | `hedron>=1.0.0` | A reusable library supports every documented 1.0 release |
-| Recommended application range | `hedron>=1.1.0,<1.2` | Starting an app on the current stable train |
-| Exact reproducible version | `hedron==1.1.0` | Locking production, CI, or evidence collection |
+| Recommended application range | `hedron>=1.1.1,<1.2` | Starting an app on the current stable train |
+| Exact reproducible version | `hedron==1.1.1` | Locking production, CI, or evidence collection |
 
 The quickstart uses the compatibility floor so it remains valid across the 1.0 train; the
 generated project writes the current bounded application range. Commit your resolver's lockfile

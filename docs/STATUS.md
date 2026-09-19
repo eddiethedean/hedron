@@ -4,8 +4,8 @@
 > product readiness use [What’s ready](guides/whats-ready.md); for the public roadmap use
 > [What’s next](guides/whats-next.md). Do not treat gate tables as the getting-started guide.
 
-**Roadmap position:** `v1.1.0` is Verified, tagged, and published on PyPI, including Edron.
-**Development workspace:** `1.1.1` is the coordinated package train implementing the open
+**Roadmap position:** `v1.1.1` is Verified, tagged, and published on PyPI, including Edron.
+**Current workspace:** `1.1.1` is the coordinated published package train implementing the open
 enhancement completion phase and its complementary application features.
 `v1.0.17` remains the immutable migration baseline for compatibility evidence.
 **Date:** 2026-09-18

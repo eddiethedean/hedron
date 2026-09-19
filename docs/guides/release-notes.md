@@ -3,6 +3,20 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 1.1.1 — 2026-09-18
+
+Coordinated maintenance release for the Stable 1.1 package train. The release passed the full
+release CI matrix, was approved through the protected publication environment, and was published
+to PyPI and npm from the immutable [`release-20260918-03`](https://github.com/eddiethedean/hedron/releases/tag/release-20260918-03)
+tag.
+
+### Fixed
+
+- Failed closed for unimplemented chart operators instead of silently accepting unsupported work.
+- Prevented replay-scope delimiter collisions and added regression coverage for replay headers and
+  scoped replay behavior.
+- Synchronized current release documentation and install facts with the published 1.1.1 train.
+
 ## 1.1.0 — 2026-09-18
 
 The open-enhancement completion release adds identity and resource presentation hooks, bounded
