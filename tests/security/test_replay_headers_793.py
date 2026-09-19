@@ -130,6 +130,12 @@ def test_replay_scope_keeps_delimited_identifiers_isolated() -> None:
     assert replay_scope(tenant="tenant", subject="user", action_id="pay", session="") == (
         "tenant:user:pay"
     )
+    assert replay_scope(tenant="tenant", subject="anonymous", action_id="pay", session="") == (
+        "tenant:anon:none:pay"
+    )
+    assert replay_scope(
+        tenant="tenant", subject="anonymous", action_id="pay", session="session-1"
+    ) == "tenant:anon:session-1:pay"
     first_scope = replay_scope(tenant="a:b", subject="c", action_id="pay", session="")
     second_scope = replay_scope(tenant="a", subject="b:c", action_id="pay", session="")
     assert first_scope != second_scope

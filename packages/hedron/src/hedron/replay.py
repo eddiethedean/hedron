@@ -310,10 +310,11 @@ def replay_scope(*, tenant: str, subject: str, action_id: str, session: str) -> 
     # Unauthenticated callers share "anonymous" unless a session id is present.
     identity = subject if subject and subject != "anonymous" else f"anon:{session or 'none'}"
     # Keep the legacy representation for scopes that cannot be ambiguous so
-    # existing persistent replay entries remain valid across deployment. Use a
-    # structured representation only when an identifier contains the delimiter
-    # that caused the original namespace collision.
-    if ":" not in tenant and ":" not in identity and ":" not in action_id:
+    # existing persistent replay entries remain valid across deployment. Check
+    # the raw identifiers rather than the derived anonymous identity: the
+    # latter intentionally contains `anon:` and would migrate every anonymous
+    # entry unnecessarily.
+    if ":" not in tenant and ":" not in subject and ":" not in action_id and ":" not in session:
         return f"{tenant}:{identity}:{action_id}"
     # Encode each component structurally so delimiters in application-controlled
     # identifiers cannot merge otherwise distinct replay namespaces.
