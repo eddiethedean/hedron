@@ -97,9 +97,7 @@ def test_anonymous_replay_reads_pre_binding_legacy_scope() -> None:
         },
         policy_version="1",
     )
-    scope = legacy_replay_scope(
-        tenant="", subject="anonymous", action_id="receipt", session=""
-    )
+    scope = legacy_replay_scope(tenant="", subject="anonymous", action_id="receipt", session="")
     claim = store.claim(key=key, fingerprint=fingerprint, scope=scope, retention_seconds=60)
     assert store.complete(
         key=key,

@@ -133,17 +133,16 @@ def test_replay_scope_keeps_delimited_identifiers_isolated() -> None:
     assert replay_scope(tenant="tenant", subject="anonymous", action_id="pay", session="") == (
         "tenant:anon:none:pay"
     )
-    assert replay_scope(
-        tenant="tenant", subject="anonymous", action_id="pay", session="session-1"
-    ) == "tenant:anon:session-1:pay"
+    assert (
+        replay_scope(tenant="tenant", subject="anonymous", action_id="pay", session="session-1")
+        == "tenant:anon:session-1:pay"
+    )
     first_scope = replay_scope(tenant="a:b", subject="c", action_id="pay", session="")
     second_scope = replay_scope(tenant="a", subject="b:c", action_id="pay", session="")
     assert first_scope != second_scope
 
     store = MemoryReplayStore()
-    first = store.claim(
-        key="same-key", fingerprint="fp-a", scope=first_scope, retention_seconds=60
-    )
+    first = store.claim(key="same-key", fingerprint="fp-a", scope=first_scope, retention_seconds=60)
     second = store.claim(
         key="same-key", fingerprint="fp-b", scope=second_scope, retention_seconds=60
     )
@@ -154,9 +153,7 @@ def test_replay_scope_keeps_delimited_identifiers_isolated() -> None:
 def test_replay_scope_migration_keeps_legacy_delimited_entry_replayable() -> None:
     from hedron.replay import MemoryReplayStore, ReplayState, legacy_replay_scope, replay_scope
 
-    legacy_scope = legacy_replay_scope(
-        tenant="a:b", subject="c", action_id="pay", session=""
-    )
+    legacy_scope = legacy_replay_scope(tenant="a:b", subject="c", action_id="pay", session="")
     current_scope = replay_scope(tenant="a:b", subject="c", action_id="pay", session="")
     assert legacy_scope != current_scope
 
@@ -166,9 +163,7 @@ def test_replay_scope_migration_keeps_legacy_delimited_entry_replayable() -> Non
     assert store.complete(
         key="same-key", scope=legacy_scope, fingerprint="fp", status=200, body=b"ok"
     )
-    replay = store.claim(
-        key="same-key", fingerprint="fp", scope=legacy_scope, retention_seconds=60
-    )
+    replay = store.claim(key="same-key", fingerprint="fp", scope=legacy_scope, retention_seconds=60)
     assert replay.state is ReplayState.REPLAYED
 
 
