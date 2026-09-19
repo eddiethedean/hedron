@@ -315,7 +315,9 @@ def replay_scope(*, tenant: str, subject: str, action_id: str, session: str) -> 
     # latter intentionally contains `anon:` and would migrate every anonymous
     # entry unnecessarily.
     if ":" not in tenant and ":" not in subject and ":" not in action_id and ":" not in session:
-        return f"{tenant}:{identity}:{action_id}"
+        return legacy_replay_scope(
+            tenant=tenant, subject=subject, action_id=action_id, session=session
+        )
     # Encode each component structurally so delimiters in application-controlled
     # identifiers cannot merge otherwise distinct replay namespaces.
     return json.dumps(
@@ -323,6 +325,12 @@ def replay_scope(*, tenant: str, subject: str, action_id: str, session: str) -> 
         ensure_ascii=False,
         separators=(",", ":"),
     )
+
+
+def legacy_replay_scope(*, tenant: str, subject: str, action_id: str, session: str) -> str:
+    """Return the pre-collision-fix scope encoding for store migration."""
+    identity = subject if subject and subject != "anonymous" else f"anon:{session or 'none'}"
+    return f"{tenant}:{identity}:{action_id}"
 
 
 __all__ = [
@@ -334,6 +342,7 @@ __all__ = [
     "digest_bytes",
     "extract_idempotency_key",
     "fingerprint_request",
+    "legacy_replay_scope",
     "replay_scope",
     "resolve_replay_store",
 ]
