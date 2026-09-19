@@ -124,6 +124,24 @@ def test_memory_replay_store_charges_headers_and_key_material() -> None:
     assert not store._entries
 
 
+def test_replay_scope_keeps_delimited_identifiers_isolated() -> None:
+    from hedron.replay import MemoryReplayStore, ReplayState, replay_scope
+
+    first_scope = replay_scope(tenant="a:b", subject="c", action_id="pay", session="")
+    second_scope = replay_scope(tenant="a", subject="b:c", action_id="pay", session="")
+    assert first_scope != second_scope
+
+    store = MemoryReplayStore()
+    first = store.claim(
+        key="same-key", fingerprint="fp-a", scope=first_scope, retention_seconds=60
+    )
+    second = store.claim(
+        key="same-key", fingerprint="fp-b", scope=second_scope, retention_seconds=60
+    )
+    assert first.state is ReplayState.FIRST
+    assert second.state is ReplayState.FIRST
+
+
 def test_existing_custom_replay_store_signature_remains_compatible() -> None:
     from hedron.replay import MemoryReplayStore, ReplayOutcome
 

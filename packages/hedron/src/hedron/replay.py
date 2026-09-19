@@ -309,7 +309,13 @@ def resolve_replay_store(request: Any) -> ReplayStore:
 def replay_scope(*, tenant: str, subject: str, action_id: str, session: str) -> str:
     # Unauthenticated callers share "anonymous" unless a session id is present.
     identity = subject if subject and subject != "anonymous" else f"anon:{session or 'none'}"
-    return f"{tenant}:{identity}:{action_id}"
+    # Encode each component structurally so delimiters in application-controlled
+    # identifiers cannot merge otherwise distinct replay namespaces.
+    return json.dumps(
+        [tenant, identity, action_id],
+        ensure_ascii=False,
+        separators=(",", ":"),
+    )
 
 
 __all__ = [
