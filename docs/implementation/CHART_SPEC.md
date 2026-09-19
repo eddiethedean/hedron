@@ -138,7 +138,7 @@ Existing shipped codes **stay**: `HED-CHART-0001`…`0007`, `HED-CHART-0010`…`
 | `HED-CHART-0060`…`0069` | Accessibility / export |
 | `HED-CHART-0070`…`0079` | Security / bounds / prototype pollution |
 
-The `0.2.0` runtime emits `0020`–`0026`, `0030`–`0033`, `0061`–`0063`, and `0070`–`0073`;
+The `0.2.0` runtime emits `0020`–`0026`, `0030`–`0034`, `0061`–`0063`, and `0070`–`0073`;
 those codes are registered in [Error codes](../guides/error-codes.md#hed-chart). Unused values in
 the ranges remain reserved.
 

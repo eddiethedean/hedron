@@ -222,7 +222,7 @@ and `HED-CHART-0063` when SVG dimensions exceed `max_px`. Remote URLs in export 
 can be checked with `hedron_charts.export.assert_no_remote_urls`, which fails closed with
 `HED-CHART-0073`.
 
-Parsing/compilation failures use `HED-CHART-0020`–`HED-CHART-0033` for unsupported schema
+Parsing/compilation failures use `HED-CHART-0020`–`HED-CHART-0034` for unsupported schema
 versions, unknown fields/operators/marks/scales, invalid encodings, and transform failures.
 Row and payload bounds use `HED-CHART-0002` / `HED-CHART-0003`; adapter callback, remote-URL,
 and active-SVG guards use `HED-CHART-0004`–`HED-CHART-0006`. Prototype-pollution keys use
