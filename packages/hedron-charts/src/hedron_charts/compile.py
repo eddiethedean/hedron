@@ -41,6 +41,27 @@ from hedron_core.typing_aliases import JsonValue
 from hedron_core.visualization import DEFAULT_MAX_CHART_ROWS, DEFAULT_MAX_PAYLOAD_BYTES
 from hedron_core.visualization_theme import resolve_visualization_theme
 
+_IMPLEMENTED_CALCULATE_OPERATORS = frozenset(
+    {
+        "add",
+        "subtract",
+        "multiply",
+        "divide",
+        "negate",
+        "abs",
+        "round",
+        "floor",
+        "ceil",
+        "min",
+        "max",
+        "coalesce",
+        "concat",
+        "lower",
+        "upper",
+        "length",
+    }
+)
+
 # Stage 1 locked Canvas threshold (marks).
 CANVAS_MARK_THRESHOLD = 2500
 
@@ -372,6 +393,13 @@ def _apply_calculate(rows: list[dict[str, object]], tr: TransformDef) -> list[di
             "Unknown transform operator",
             f"Operator {op!r} is not in the closed catalog.",
             "Use only operators listed in CHART_SPEC.md.",
+        )
+    if op not in _IMPLEMENTED_CALCULATE_OPERATORS:
+        raise _chart_error(
+            "HED-CHART-0034",
+            "Unsupported transform operator",
+            f"Operator {op!r} is cataloged but has no calculate implementation.",
+            "Use an implemented operator or select a dedicated structural transform.",
         )
     as_name = tr.as_ or f"{tr.field or 'value'}_{op}"
     args = _as_object_list(tr.params.get("args"))

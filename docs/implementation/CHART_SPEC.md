@@ -61,8 +61,8 @@ Calculations use this allowlist only. Unknown operators fail with a reserved `HE
 In `0.2.0`, `filter`, `aggregate`, `sort`, `sample`, `stack`, `bin`, and `fold` have dedicated
 structural implementations. Numeric/string calculations have dedicated behavior for `add`,
 `subtract`, `multiply`, `divide`, `negate`, `abs`, `round`, `floor`, `ceil`, `min`, `max`,
-`coalesce`, `concat`, `lower`, `upper`, and `length`. Other catalog names validate but currently
-preserve the first input value rather than providing distinct temporal/window semantics.
+`coalesce`, `concat`, `lower`, `upper`, and `length`. Other catalog names are reserved for future
+temporal/window semantics and fail with a structured diagnostic until implemented.
 
 **Arithmetic / numeric:** `add`, `subtract`, `multiply`, `divide`, `negate`, `abs`, `round`,
 `floor`, `ceil`, `min`, `max`, `clamp`, `coalesce`.
@@ -138,7 +138,7 @@ Existing shipped codes **stay**: `HED-CHART-0001`…`0007`, `HED-CHART-0010`…`
 | `HED-CHART-0060`…`0069` | Accessibility / export |
 | `HED-CHART-0070`…`0079` | Security / bounds / prototype pollution |
 
-The `0.2.0` runtime emits `0020`–`0026`, `0030`–`0033`, `0061`–`0063`, and `0070`–`0073`;
+The `0.2.0` runtime emits `0020`–`0026`, `0030`–`0034`, `0061`–`0063`, and `0070`–`0073`;
 those codes are registered in [Error codes](../guides/error-codes.md#hed-chart). Unused values in
 the ranges remain reserved.
 

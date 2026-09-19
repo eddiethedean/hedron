@@ -135,9 +135,8 @@ opt-ins.
 The compiler has dedicated implementations for `filter`, `aggregate`, `sort`, `sample`, `stack`,
 `bin`, and `fold`, plus numeric/string calculation behavior for `add`, `subtract`, `multiply`,
 `divide`, `negate`, `abs`, `round`, `floor`, `ceil`, `min`, `max`, `coalesce`, `concat`, `lower`,
-`upper`, and `length`. Other names in the closed operator catalog validate but currently preserve
-the first input value rather than providing distinct window/temporal semantics. Test transformed
-rows in `ChartPlan.transformed_rows` before relying on an advanced operator.
+`upper`, and `length`. Other names in the closed operator catalog are reserved for future
+window/temporal semantics and fail with a structured diagnostic until implemented.
 
 Transform parameters are validated at compilation: `sample.n` and `bin.bins` must be positive,
 including when explicitly set to zero, and `sort.descending` / `sort.desc` must be a JSON boolean.
@@ -223,7 +222,7 @@ and `HED-CHART-0063` when SVG dimensions exceed `max_px`. Remote URLs in export 
 can be checked with `hedron_charts.export.assert_no_remote_urls`, which fails closed with
 `HED-CHART-0073`.
 
-Parsing/compilation failures use `HED-CHART-0020`–`HED-CHART-0033` for unsupported schema
+Parsing/compilation failures use `HED-CHART-0020`–`HED-CHART-0034` for unsupported schema
 versions, unknown fields/operators/marks/scales, invalid encodings, and transform failures.
 Row and payload bounds use `HED-CHART-0002` / `HED-CHART-0003`; adapter callback, remote-URL,
 and active-SVG guards use `HED-CHART-0004`–`HED-CHART-0006`. Prototype-pollution keys use

@@ -251,7 +251,7 @@ assert that the figure, summary, and fallback table remain present before enhanc
 | Row or payload limit exceeded | `HED-CHART-0002` / `HED-CHART-0003` |
 | Callback, remote URL, or active SVG | `HED-CHART-0004`–`HED-CHART-0006` |
 | Unsupported schema, field, mark, encoding, or scale | `HED-CHART-0020`–`HED-CHART-0026` |
-| Invalid transform or domain | `HED-CHART-0030`–`HED-CHART-0033` |
+| Invalid transform or domain | `HED-CHART-0030`–`HED-CHART-0034` |
 | Export unauthorized, disabled, or oversized | `HED-CHART-0061`–`HED-CHART-0063` |
 | Prototype-pollution key or structural bound | `HED-CHART-0070`–`HED-CHART-0072` |
 | Remote URL in an export bundle | `HED-CHART-0073` |
