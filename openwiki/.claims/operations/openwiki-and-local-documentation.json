@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:eb785292105c68cfc8d12b35de289dece114ac1342c007b2220bc5d1d1777017",
+  "pageVersion": "sha256:421bf60e6c8dfe109e3c3a10d1ee91efb329d95806afc52d1ea275c73915592e",
   "claims": [
     {
       "id": "claim_bcb62082a89244458378c3f20169b44c",
@@ -32,7 +32,7 @@
     },
     {
       "id": "claim_cc81947adf504bfebd49c231be3fdaca",
-      "statement": "The OpenWiki source fingerprint includes Git HEAD, visible Git status, and visible tracked or untracked source paths and bytes while excluding the generated openwiki tree and every path matched by .openwikiignore, including this repository's host-managed AGENTS.md and CLAUDE.md files.",
+      "statement": "The OpenWiki source fingerprint includes Git HEAD, visible Git status, and visible tracked or untracked source paths and bytes while excluding the generated openwiki tree and every path matched by .openwikiignore, including this repository's host-managed AGENTS.md and CLAUDE.md files; the local checker can replay that snapshot against the committed descendant that records it so a clean commit does not invalidate an otherwise unchanged update.",
       "evidence": [
         {
           "resource": "repo://.openwikiignore",
@@ -40,17 +40,17 @@
         },
         {
           "resource": "repo://scripts/check_openwiki_freshness.py",
-          "version": "repo-file-v1:sha256:fd636dbe236dd449ff68427daca7248f27c09f5158f2e64749d5369e558fc7fe"
+          "version": "repo-file-v1:sha256:f0517fa5dbb542dde40c9429b7f73dfe2868d3068462839077fc68f66f9ddb10"
         }
       ]
     },
     {
       "id": "claim_5f7649ded4034dbab052661a41e13cd7",
-      "statement": "The local freshness checker is read-only and validates the completed current-HEAD checkpoint, factual page/manifest coverage, current source fingerprints and Git heads, Markdown page versions, and verified nonempty Claims sidecars.",
+      "statement": "The local freshness checker is deterministic and read-only: it validates a completed OpenWiki checkpoint or a verified post-commit replay, factual page and manifest coverage, source fingerprints and Git heads, Markdown page versions, and verified nonempty Claims sidecars.",
       "evidence": [
         {
           "resource": "repo://scripts/check_openwiki_freshness.py",
-          "version": "repo-file-v1:sha256:fd636dbe236dd449ff68427daca7248f27c09f5158f2e64749d5369e558fc7fe"
+          "version": "repo-file-v1:sha256:f0517fa5dbb542dde40c9429b7f73dfe2868d3068462839077fc68f66f9ddb10"
         }
       ]
     },
@@ -85,6 +85,6 @@
   ],
   "verification": {
     "by": "openwiki/0.5.2",
-    "at": "2026-09-19T17:40:19.225Z"
+    "at": "2026-09-19T19:14:00.347Z"
   }
 }

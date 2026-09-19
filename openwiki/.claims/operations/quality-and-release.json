@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:c0b2ee3333c95eef9788a79f72654ae05cc6367f3dd7d525b7835495027e348a",
+  "pageVersion": "sha256:fa99a72857b3f97db78a39885e8108b2848b05d9a60a4d049a07b4cb775e2515",
   "claims": [
     {
       "id": "claim_9fe224f53544472483eb9a915505dbf3",
@@ -124,11 +124,11 @@
     },
     {
       "id": "claim_ae56bb5777f948c1a45662cc1a78f0f3",
-      "statement": "The local OpenWiki suite compares the current source fingerprint and Git HEAD against generated page metadata, validates Markdown page versions and verified nonempty Claims sidecars, and is read-only.",
+      "statement": "The local OpenWiki suite compares the current source fingerprint and Git HEAD—or a verified post-commit replay of the completed snapshot—against generated page metadata, validates Markdown page versions and verified nonempty Claims sidecars, and is read-only.",
       "evidence": [
         {
           "resource": "repo://scripts/check_openwiki_freshness.py",
-          "version": "repo-file-v1:sha256:fd636dbe236dd449ff68427daca7248f27c09f5158f2e64749d5369e558fc7fe"
+          "version": "repo-file-v1:sha256:f0517fa5dbb542dde40c9429b7f73dfe2868d3068462839077fc68f66f9ddb10"
         }
       ]
     },
@@ -149,6 +149,6 @@
   ],
   "verification": {
     "by": "openwiki/0.5.2",
-    "at": "2026-09-19T17:40:19.225Z"
+    "at": "2026-09-19T19:14:00.347Z"
   }
 }

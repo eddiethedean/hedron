@@ -198,12 +198,30 @@ def parse_status() -> list[tuple[str, str]]:
     return entries
 
 
-def source_fingerprint(ignore: OpenWikiIgnore) -> tuple[str, str]:
-    head = repository_head()
+def tracked_paths_at(revision: str) -> set[str]:
+    return {
+        decode(value)
+        for value in split_nul(run_git("ls-tree", "-r", "--name-only", "-z", revision))
+    }
+
+
+def source_fingerprint(
+    ignore: OpenWikiIgnore,
+    *,
+    head: str | None = None,
+    statuses: list[tuple[str, str]] | None = None,
+    baseline: str | None = None,
+) -> tuple[str, str]:
+    resolved_head = repository_head() if head is None else head
     tracked = {
         decode(value)
         for value in split_nul(run_git("ls-files", "--cached", "-z"))
     }
+    if baseline is not None:
+        # A completed OpenWiki run normally observes a dirty worktree and is
+        # then committed. Include paths that existed in that pre-commit tree so
+        # deleted or renamed tracked files replay the same source snapshot.
+        tracked.update(tracked_paths_at(baseline))
     candidates = tracked | {
         decode(value)
         for value in split_nul(run_git("ls-files", "--others", "--exclude-standard", "-z"))
@@ -212,16 +230,16 @@ def source_fingerprint(ignore: OpenWikiIgnore) -> tuple[str, str]:
         candidates.add(".openwikiignore")
 
     visible = sorted(value for value in candidates if is_source_path(value, ignore))
-    statuses = sorted(
+    visible_statuses = sorted(
         (code, value)
-        for code, value in parse_status()
+        for code, value in (parse_status() if statuses is None else statuses)
         if is_source_path(value, ignore)
     )
 
     digest = hashlib.sha256()
     update_field(digest, "format", SOURCE_FINGERPRINT_VERSION)
-    update_field(digest, "head", head)
-    for code, value in statuses:
+    update_field(digest, "head", resolved_head)
+    for code, value in visible_statuses:
         update_field(digest, "status-code", code)
         update_field(digest, "status-path", value)
 
@@ -250,7 +268,53 @@ def source_fingerprint(ignore: OpenWikiIgnore) -> tuple[str, str]:
         else:
             raise RuntimeError(f"unsupported source entry type: {source_path}")
 
-    return f"sha256:{digest.hexdigest()}", head
+    return f"sha256:{digest.hexdigest()}", resolved_head
+
+
+def committed_snapshot_statuses(baseline: str, head: str) -> list[tuple[str, str]]:
+    fields = split_nul(
+        run_git("diff", "--name-status", "--no-renames", "-z", baseline, head, "--")
+    )
+    if len(fields) % 2:
+        raise RuntimeError("git returned malformed NUL-delimited diff output")
+
+    statuses: list[tuple[str, str]] = []
+    for index in range(0, len(fields), 2):
+        change = decode(fields[index])
+        path = decode(fields[index + 1])
+        kind = change[:1]
+        if kind == "A":
+            code = "??"
+        elif kind == "D":
+            code = " D"
+        else:
+            code = f" {kind}"
+        statuses.append((code, path))
+    return statuses
+
+
+def post_commit_fingerprint(
+    ignore: OpenWikiIgnore, baseline: str, head: str
+) -> tuple[str, str] | None:
+    if baseline == head or parse_status():
+        return None
+    try:
+        subprocess.run(
+            ["git", "merge-base", "--is-ancestor", baseline, head],
+            cwd=ROOT,
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return None
+    statuses = committed_snapshot_statuses(baseline, head)
+    return source_fingerprint(
+        ignore,
+        head=baseline,
+        statuses=statuses,
+        baseline=baseline,
+    )
 
 
 def page_path_from_key(key: str) -> Path:
@@ -366,6 +430,16 @@ def main() -> int:
         ignore = OpenWikiIgnore()
         fingerprint, head = source_fingerprint(ignore)
         errors = check_manifest(fingerprint, head)
+        if errors and not parse_status() and LAST_UPDATE_PATH.is_file():
+            metadata = load_json(LAST_UPDATE_PATH)
+            baseline = metadata.get("gitHead")
+            if isinstance(baseline, str):
+                replayed = post_commit_fingerprint(ignore, baseline, head)
+                if replayed is not None:
+                    replay_fingerprint, replay_head = replayed
+                    replay_errors = check_manifest(replay_fingerprint, replay_head)
+                    if not replay_errors:
+                        errors = []
     except (RuntimeError, OSError, ValueError) as error:
         errors = [str(error)]
 

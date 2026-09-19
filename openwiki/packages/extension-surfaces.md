@@ -5,7 +5,7 @@ description: Hedron keeps framework-neutral behavior in hedron-core, application
 tags: [packages, extensions, adapters, bundles]
 verified:
   - by: openwiki/0.5.2
-    at: 2026-09-19T17:40:19.225Z
+    at: 2026-09-19T19:14:00.347Z
 sources:
   - id: openwiki-source-1991748f385ebfab8fa9296f
     resource: repo://packages/hedron-core/src/hedron_core/adapter.py

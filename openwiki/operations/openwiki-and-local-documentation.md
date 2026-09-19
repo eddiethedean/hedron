@@ -6,9 +6,6 @@ tags:
   - openwiki
   - documentation
   - operations
-verified:
-  - by: openwiki/0.5.2
-    at: 2026-09-19T17:40:19.225Z
 sources:
   - id: openwiki-source-6e185c967022a3074c354910
     resource: repo://.agents/skills/openwiki/.openwiki-install.json
@@ -26,7 +23,10 @@ sources:
     resource: repo://scripts/ci_checks.sh
   - id: openwiki-source-4c56c4085c56a3ab75df5178
     resource: repo://scripts/README.md
-generated: { by: "codex", at: "2026-09-19T17:33:55.534Z" }
+generated: { by: "codex", at: "2026-09-19T19:14:00.347Z" }
+verified:
+  - by: openwiki/0.5.2
+    at: 2026-09-19T19:14:00.347Z
 ---
 
 # OpenWiki and Local Documentation
@@ -73,7 +73,11 @@ Git HEAD; the page manifest covers exactly the factual Markdown pages on disk;
 each manifest entry has the current fingerprint and HEAD; each Markdown
 `pageVersion` matches its bytes; and every Claims sidecar has the expected
 schema, matching page version, verification metadata, and at least one grounded
-Claim. It does not call a model, mutate the wiki, or contact a service.
+Claim. When a completed run observed a dirty worktree and the update is then
+recorded in a clean descendant commit, the checker replays that committed
+source snapshot so the commit itself does not make an otherwise unchanged wiki
+stale. New source edits or a later commit still require another OpenWiki update.
+It does not call a model, mutate the wiki, or contact a service.
 
 Run the focused gate with:
 

@@ -8,7 +8,7 @@ tags:
   - security
 verified:
   - by: openwiki/0.5.2
-    at: 2026-09-19T17:40:19.225Z
+    at: 2026-09-19T19:14:00.347Z
 sources:
   - id: openwiki-source-ce4f1fb8920114c2073cb315
     resource: repo://packages/hedron-mcp/src/hedron_mcp/audit.py

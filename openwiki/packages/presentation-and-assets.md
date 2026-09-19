@@ -9,7 +9,7 @@ tags:
   - accessibility
 verified:
   - by: openwiki/0.5.2
-    at: 2026-09-19T17:40:19.225Z
+    at: 2026-09-19T19:14:00.347Z
 sources:
   - id: openwiki-source-b0527fa09268dca7f9912b57
     resource: repo://packages/hedron-charts/src/hedron_charts/compile.py

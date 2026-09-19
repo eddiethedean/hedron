@@ -5,7 +5,7 @@ description: A short routing map for locating Hedron behavior and choosing the s
 tags: [quickstart, agents, navigation, local-development]
 verified:
   - by: openwiki/0.5.2
-    at: 2026-09-19T17:40:19.225Z
+    at: 2026-09-19T19:14:00.347Z
 sources:
   - id: openwiki-source-0f2091252a9c3383cef44ad0
     resource: repo://.agents/skills/openwiki/SKILL.md

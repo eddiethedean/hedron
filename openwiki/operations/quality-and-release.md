@@ -16,10 +16,10 @@ sources:
     resource: repo://scripts/ci_checks.sh
   - id: openwiki-source-4c56c4085c56a3ab75df5178
     resource: repo://scripts/README.md
-generated: { by: "codex", at: "2026-09-19T16:47:17.741Z" }
+generated: { by: "codex", at: "2026-09-19T19:14:00.347Z" }
 verified:
   - by: openwiki/0.5.2
-    at: 2026-09-19T17:40:19.225Z
+    at: 2026-09-19T19:14:00.347Z
 ---
 
 # Quality, testing, and release contracts
@@ -47,8 +47,9 @@ For a docs-only change, sync the docs group and run `uv run --group docs mkdocs 
 
 The OpenWiki suite is a deterministic, read-only documentation gate. It compares
 the current model-visible source fingerprint with the generated page manifest,
-checks the current Git HEAD checkpoint, verifies every factual page's Markdown
-and Claims sidecar, and requires verified non-empty Claims. Run it directly with:
+checks the current Git HEAD checkpoint or a verified replay of the completed
+snapshot across its recording commit, verifies every factual page's Markdown and
+Claims sidecar, and requires verified non-empty Claims. Run it directly with:
 
 ```bash
 bash scripts/ci_checks.sh openwiki --python 3.12

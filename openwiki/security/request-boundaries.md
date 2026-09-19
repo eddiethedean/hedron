@@ -5,7 +5,7 @@ description: Hedron's security model defaults to CSRF, hardened headers, local r
 tags: [security, csrf, html, htmx]
 verified:
   - by: openwiki/0.5.2
-    at: 2026-09-19T17:40:19.225Z
+    at: 2026-09-19T19:14:00.347Z
 sources:
   - id: openwiki-source-722de2944b74ef973aa48cbf
     resource: repo://packages/hedron-core/src/hedron_core/html.py

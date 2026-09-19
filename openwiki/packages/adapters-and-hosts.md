@@ -8,7 +8,7 @@ tags:
   - deployment
 verified:
   - by: openwiki/0.5.2
-    at: 2026-09-19T17:40:19.225Z
+    at: 2026-09-19T19:14:00.347Z
 sources:
   - id: openwiki-source-58f99f87a902d45beb58a50f
     resource: repo://packages/fastapi-workbench/src/fastapi_workbench/config.py
