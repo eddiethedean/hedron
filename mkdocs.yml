@@ -203,6 +203,11 @@ nav:
     - Django adapter: getting-started/django.md
     - VS Code setup: getting-started/first-app-vscode.md
     - Posit Workbench setup: getting-started/first-app-posit-workbench.md
+    - For Streamlit and Posit teams:
+      - Overview: getting-started/for-posit-teams/index.md
+      - How Hedron works: getting-started/for-posit-teams/how-it-works.md
+      - Workbench and Connect: getting-started/for-posit-teams/workbench-connect.md
+      - Migration pilot: getting-started/for-posit-teams/migration-pilot.md
     - For coding agents: getting-started/coding-agents.md
     - Learning path: getting-started/learning-path.md
   - Build:

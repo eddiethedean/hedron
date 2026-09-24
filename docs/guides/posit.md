@@ -3,6 +3,9 @@
 Run the same Hedron application locally, in Posit Workbench, and on Posit Connect
 with one facade.
 
+Introducing this approach to a mixed audience? Start with
+[Hedron for Streamlit and Posit teams](../getting-started/for-posit-teams/index.md).
+
 New to application development or Workbench? Start with
 [Your first application in Posit Workbench](../getting-started/first-app-posit-workbench.md). It
 installs `hedron-posit`, constructs `HedronPosit`, and uses the Workbench-aware launcher before

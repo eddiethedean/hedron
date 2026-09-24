@@ -30,6 +30,7 @@ The shortest safe path is:
 | Your question | Start here |
 |---|---|
 | Is Hedron a good fit for this app? | [Should you migrate?](#should-you-migrate) |
+| I need to introduce Hedron to my team first | [Hedron for Streamlit and Posit teams](../getting-started/for-posit-teams/index.md) |
 | How do I inventory or scaffold my app? | [Start with the migration assistant](#start-with-the-migration-assistant) |
 | Can I convert one small app end to end? | [Worked migration: sales dashboard](#worked-migration-sales-dashboard) |
 | What replaces reruns, callbacks, and `st.session_state`? | [Execution and state](streamlit-execution-state.md) |

@@ -23,6 +23,8 @@ walkthrough for your environment:
 - [Your first application with VS Code](first-app-vscode.md)
 - [Your first application in Posit Workbench](first-app-posit-workbench.md) — installs and uses
   `hedron-posit` / `HedronPosit`
+- [Hedron for Streamlit and Posit teams](for-posit-teams/index.md) — an introduction for
+  mixed technical and management audiences, with slides and a deployment path
 
 ## Golden path
 
