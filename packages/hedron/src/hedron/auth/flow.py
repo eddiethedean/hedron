@@ -41,10 +41,6 @@ SessionT = TypeVar("SessionT")
 SessionRotationPolicy = Literal["on_login", "never"]
 
 
-class _RequestWithSession(Protocol):
-    session: MutableMapping[str, object]
-
-
 class _FormHandle(Protocol):
     def form(self, *, submit_label: str) -> object: ...
 
@@ -54,7 +50,22 @@ class _SessionClear(Protocol):
 
 
 def _request_session(request: object) -> MutableMapping[str, object]:
-    return cast(_RequestWithSession, request).session
+    session = dynamic_attribute(request, "session")
+    if not isinstance(session, MutableMapping):
+        raise error(
+            HED_AUTHFLOW_0003,
+            title="Session unavailable",
+            explanation="This operation requires a mutable request session.",
+            remediation="Enable Hedron sessions or set rotation='never'.",
+        )
+    return cast(MutableMapping[str, object], session)
+
+
+def _optional_request_session(request: object) -> MutableMapping[str, object] | None:
+    session = dynamic_attribute(request, "session")
+    return (
+        cast(MutableMapping[str, object], session) if isinstance(session, MutableMapping) else None
+    )
 
 
 class _AuthFlowApp(Protocol):
@@ -186,7 +197,9 @@ class SessionAuthFlow(Generic[CredentialsT, PrincipalT, SessionT]):
         flow = self
 
         def _dependency(request: Request) -> PrincipalT | None:
-            session = _request_session(request)
+            session = _optional_request_session(request)
+            if session is None:
+                return None
             stored = session.get(flow.session_key)
             if stored is None:
                 return None
@@ -200,7 +213,14 @@ class SessionAuthFlow(Generic[CredentialsT, PrincipalT, SessionT]):
     def _rotate_session(self, request: object) -> None:
         if self.rotation != "on_login":
             return
-        session = _request_session(request)
+        session = _optional_request_session(request)
+        if session is None:
+            raise error(
+                HED_AUTHFLOW_0003,
+                title="Session rotation unavailable",
+                explanation="rotation='on_login' requires a mutable request session.",
+                remediation="Enable Hedron sessions or set rotation='never'.",
+            )
         clear_candidate = dynamic_attribute(session, "clear")
         if not callable(clear_candidate):
             raise error(

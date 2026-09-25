@@ -22278,22 +22278,6 @@
                     "endColumn": 51,
                     "lineCount": 1
                 }
-            },
-            {
-                "code": "reportUnnecessaryComparison",
-                "range": {
-                    "startColumn": 7,
-                    "endColumn": 22,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportInvalidCast",
-                "range": {
-                    "startColumn": 19,
-                    "endColumn": 51,
-                    "lineCount": 1
-                }
             }
         ],
         "./packages/hedron-flask/src/hedron_flask/responses.py": [
@@ -26306,14 +26290,6 @@
                 "range": {
                     "startColumn": 7,
                     "endColumn": 11,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportInvalidCast",
-                "range": {
-                    "startColumn": 17,
-                    "endColumn": 39,
                     "lineCount": 1
                 }
             },

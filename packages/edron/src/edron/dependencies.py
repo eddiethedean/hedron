@@ -4,7 +4,8 @@ from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from typing import Generic, Literal, TypeVar, cast
 
-from hedron_core.typing_support import fastapi_depends, object_namespace
+from hedron._fastapi_depends import fastapi_depends
+from hedron_core.typing_support import object_namespace
 
 T = TypeVar("T")
 ResourceScope = Literal["request", "application"]

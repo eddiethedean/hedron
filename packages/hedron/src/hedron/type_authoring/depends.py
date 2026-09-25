@@ -7,13 +7,13 @@ from dataclasses import dataclass
 
 from fastapi.params import Depends as DependsParam
 
+from hedron._fastapi_depends import fastapi_depends
 from hedron_core.lifetime import (
     DependencyLifetime,
     DependencyPlan,
     compile_fastapi_scope,
     forbid_background_capture,
 )
-from hedron_core.typing_support import fastapi_depends
 
 __all__ = ["DependsOn", "as_fastapi_depends", "plan_for"]
 

@@ -432,10 +432,6 @@ quality_package_typing_policy() {
   # BasedPyright run. Keep the inventory in sync and forbid suppressing the
   # complete Any ban at package boundaries.
   run_py scripts/check_package_typing_inventory.py
-  if rg -n '#.*(reportAny|reportExplicitAny)' packages --glob '*.py'; then
-    echo "Suppressions for the Any diagnostics are forbidden; type the boundary instead." >&2
-    return 1
-  fi
 }
 
 quality_wheels_smoke() {

@@ -6,6 +6,7 @@ import secrets
 from collections.abc import Mapping, Sequence
 from typing import TYPE_CHECKING, Protocol, cast
 
+from flask import current_app
 from werkzeug.exceptions import Forbidden
 
 from hedron_core.csrf import tokens_match
@@ -23,7 +24,6 @@ class _FlaskAppLike(Protocol):
 
 
 class _FlaskRequestLike(Protocol):
-    app: _FlaskAppLike
     environ: Mapping[str, object]
     remote_addr: str | None
 
@@ -102,27 +102,25 @@ def _forwarded_proto_https(request: Request) -> bool:
     return first == "https"
 
 
-def _trusted_proxy_peers(request: Request) -> set[str]:
+def _trusted_proxy_peers() -> set[str]:
     """Peers allowed to supply ``X-Forwarded-*`` (same allowlist model as FastAPI)."""
     import os
 
     peers: set[str] = set()
     raw_env = os.environ.get("HEDRON_TRUSTED_PROXIES", "")
     peers.update(part.strip() for part in raw_env.split(",") if part.strip())
-    request_view = cast(_FlaskRequestLike, request)
-    app = request_view.app
-    if app is not None:
-        configured = app.config.get("HEDRON_TRUSTED_PROXIES")
-        if isinstance(configured, str):
-            peers.update(part.strip() for part in configured.split(",") if part.strip())
-        elif isinstance(configured, (list, tuple, set, frozenset)):
-            configured_values = cast(Sequence[object], configured)
-            peers.update(str(item).strip() for item in configured_values if str(item).strip())
-        extension = app.extensions.get("hedron")
-        ext_peers = dynamic_attribute(extension, "trusted_peers") if extension is not None else None
-        if isinstance(ext_peers, (list, tuple, set, frozenset)):
-            extension_values = cast(Sequence[object], ext_peers)
-            peers.update(str(item).strip() for item in extension_values if str(item).strip())
+    app = cast(_FlaskAppLike, cast(object, current_app))
+    configured = app.config.get("HEDRON_TRUSTED_PROXIES")
+    if isinstance(configured, str):
+        peers.update(part.strip() for part in configured.split(",") if part.strip())
+    elif isinstance(configured, (list, tuple, set, frozenset)):
+        configured_values = cast(Sequence[object], configured)
+        peers.update(str(item).strip() for item in configured_values if str(item).strip())
+    extension = app.extensions.get("hedron")
+    ext_peers = dynamic_attribute(extension, "trusted_peers") if extension is not None else None
+    if isinstance(ext_peers, (list, tuple, set, frozenset)):
+        extension_values = cast(Sequence[object], ext_peers)
+        peers.update(str(item).strip() for item in extension_values if str(item).strip())
     return peers
 
 
@@ -130,7 +128,7 @@ def _forwarded_proto_https_trusted(request: Request) -> bool:
     """Honor ``X-Forwarded-Proto: https`` only from allowlisted proxy peers."""
     if not _forwarded_proto_https(request):
         return False
-    peers = _trusted_proxy_peers(request)
+    peers = _trusted_proxy_peers()
     if not peers:
         return False
     # Werkzeug exposes remote_addr; environ REMOTE_ADDR is the TCP peer.

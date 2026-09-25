@@ -14,7 +14,7 @@ import re
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
 from importlib.metadata import PackageNotFoundError, version
-from typing import Protocol, cast
+from typing import cast
 
 from hedron_core.registry import get_registry
 from hedron_core.theme import (
@@ -30,6 +30,7 @@ from hedron_core.theme_platform import (
     registered_component_theme_contracts,
     validate_theme_spec,
 )
+from hedron_core.typing_support import dynamic_attribute
 
 __all__ = [
     "ComponentStateMatrix",
@@ -130,12 +131,6 @@ def _as_theme(value: Theme | ThemeSpec) -> Theme:
     return value.to_theme() if isinstance(value, ThemeSpec) else value
 
 
-class _ThemeMetadata(Protocol):
-    aliases: Mapping[str, str]
-    groups: Mapping[str, str]
-    recipes: Mapping[str, Mapping[str, str]]
-
-
 @dataclass(frozen=True, slots=True)
 class ThemeResolution:
     """One deterministic, serializable view of a resolved theme."""
@@ -213,7 +208,9 @@ def resolve_theme(theme: Theme | ThemeSpec) -> ThemeResolution:
     else:
         provenance = ({"source": "Theme", "name": resolved.name, "parent": resolved.parent},)
         source_schema = "hedron.theme/1"
-    source_metadata = cast(_ThemeMetadata, cast(object, source))
+    aliases = dynamic_attribute(source, "aliases", {})
+    groups = dynamic_attribute(source, "groups", {})
+    recipes = dynamic_attribute(source, "recipes", {})
     return ThemeResolution(
         name=resolved.name,
         tokens={**derived_theme_tokens(resolved), **dict(resolved.tokens)},
@@ -223,9 +220,12 @@ def resolve_theme(theme: Theme | ThemeSpec) -> ThemeResolution:
         accessibility_modes={
             key: dict(value) for key, value in resolved.accessibility_modes.items()
         },
-        aliases=dict(source_metadata.aliases),
-        groups=dict(source_metadata.groups),
-        recipes={key: dict(value) for key, value in source_metadata.recipes.items()},
+        aliases=dict(cast(Mapping[str, str], aliases)),
+        groups=dict(cast(Mapping[str, str], groups)),
+        recipes={
+            key: dict(value)
+            for key, value in cast(Mapping[str, Mapping[str, str]], recipes).items()
+        },
         content_width=resolved.content_width,
         typography_features=dict(resolved.typography_features),
         typography_role_features={

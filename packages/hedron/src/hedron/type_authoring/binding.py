@@ -8,9 +8,10 @@ from typing import Annotated
 
 from fastapi import Cookie, Header, Query
 
+from hedron._fastapi_depends import fastapi_parameter
 from hedron.type_authoring.normalize import CompiledTypeHandler
 from hedron_core.binding_plan import BoundaryBindingPlan, compile_boundary_binding
-from hedron_core.typing_support import fastapi_parameter, parameter_default
+from hedron_core.typing_support import parameter_default
 from hedron_core.updates import BindingPlan
 
 __all__ = ["boundary_plan_for", "apply_native_or_expanded"]

@@ -14,6 +14,7 @@ from collections.abc import Mapping, MutableMapping
 from pathlib import Path
 from typing import IO
 
+from fastapi_workbench._typing import bound_socket_port, dynamic_attribute
 from fastapi_workbench.codes import FWB_0002, FWB_0003, FWB_0004, FWB_0005, FWB_0009
 from fastapi_workbench.config import ResolvedDeployment, WorkbenchConfig
 from fastapi_workbench.detect import is_workbench_job, rs_server_url
@@ -29,7 +30,6 @@ from fastapi_workbench.resolve import (
     explicit_mount_hint,
     resolve_deployment,
 )
-from hedron_core.typing_support import bound_socket_port, dynamic_attribute
 
 _MAX_DISCOVERY_STREAM = 4096
 _SUPERVISED_TARGET_ENV = "FASTAPI_WORKBENCH_APP_TARGET"

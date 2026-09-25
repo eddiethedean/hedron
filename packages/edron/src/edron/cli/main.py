@@ -12,6 +12,7 @@ from edron.diagnostics import DiagnosticReport, finding
 from edron.migrate.cli import build_migrate_parser
 from edron.scaffolds import TEMPLATES, create_scaffold
 from edron.tooling import check_source, doctor, explain_application, load_application
+from hedron_core.typing_support import dynamic_attribute
 
 
 class _ParsedArgs(Protocol):
@@ -182,8 +183,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     args = cast(_ParsedArgs, cast(object, parser.parse_args(argv)))
     try:
-        if callable(args.func):
-            return args.func(args)
+        handler = dynamic_attribute(args, "func")
+        if callable(handler):
+            return cast(Callable[[object], int], handler)(args)
         if args.command == "run":
             import uvicorn
             from starlette.types import ASGIApp

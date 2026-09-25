@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import ast
+import re
 import sys
 import tomllib
 from pathlib import Path
@@ -11,6 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "pyproject.toml"
 PYTHON_ROOTS = ("examples", "packages", "scripts", "tests", "typings")
+ANY_SUPPRESSION = re.compile(r"#.*\b(?:reportAny|reportExplicitAny)\b")
 
 
 def _explicit_any_uses() -> list[str]:
@@ -35,6 +37,16 @@ def _explicit_any_uses() -> list[str]:
                     alias.name == "Any" for alias in node.names
                 ):
                     failures.append(f"{path.relative_to(ROOT)}:{node.lineno}: import of Any")
+    return failures
+
+
+def _any_suppressions() -> list[str]:
+    failures: list[str] = []
+    root = ROOT / "packages"
+    for path in sorted(root.rglob("*.py")):
+        for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+            if ANY_SUPPRESSION.search(line):
+                failures.append(f"{path.relative_to(ROOT)}:{line_number}: Any diagnostic suppression")
     return failures
 
 
@@ -100,8 +112,15 @@ def main() -> int:
         print("\n".join(f"  {failure}" for failure in any_uses), file=sys.stderr)
         return 1
 
+    suppressions = _any_suppressions()
+    if suppressions:
+        print("Suppressions for reportAny and reportExplicitAny are disallowed:", file=sys.stderr)
+        print("\n".join(f"  {failure}" for failure in suppressions), file=sys.stderr)
+        return 1
+
     print(f"BasedPyright package inventory: {len(workspace_roots)} workspace packages covered")
     print("Explicit Any ban: package code, examples, scripts, tests, and stubs")
+    print("Any diagnostic suppressions: none")
     return 0
 
 

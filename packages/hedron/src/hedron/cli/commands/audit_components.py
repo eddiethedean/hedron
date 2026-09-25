@@ -7,16 +7,12 @@ import json
 from pathlib import Path
 from typing import Protocol, cast
 
+from hedron.cli.arguments import string_argument
 from hedron.cli.discovery import apply_project_discovery as _apply_project_discovery
 from hedron.cli.discovery import load_app as _load_app
 from hedron_core.registry import get_registry
 from hedron_core.typing_aliases import JsonObject, PluginMetaDict
 from hedron_core.typing_support import dynamic_attribute
-
-
-class _AuditArgs(Protocol):
-    app: str | None
-    project: str | None
 
 
 class _EntryPoint(Protocol):
@@ -30,9 +26,8 @@ class _PluginMetadata(Protocol):
 
 
 def _cmd_audit_components(args: argparse.Namespace) -> int:
-    typed_args = cast(_AuditArgs, args)
-    _ignored = _load_app(typed_args.app)
-    base = Path(typed_args.project or Path.cwd()).resolve()
+    _ignored = _load_app(string_argument(args, "app"))
+    base = Path(string_argument(args, "project") or Path.cwd()).resolve()
     _ignored = _apply_project_discovery(base)
     from hedron_core.plugins import get_diagnostic_owners, get_explorer_panels
 

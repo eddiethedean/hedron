@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from fastapi import Request
 
+from hedron._fastapi_depends import fastapi_depends
 from hedron_core.browser import BrowserContext, ViewportHint
-from hedron_core.typing_support import fastapi_depends
 
 __all__ = [
     "browser_context",

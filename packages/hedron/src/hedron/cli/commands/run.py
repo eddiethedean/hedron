@@ -5,6 +5,8 @@ from __future__ import annotations
 import sys
 from typing import Protocol
 
+from hedron_core.typing_support import dynamic_attribute
+
 
 class _RunArgs(Protocol):
     allow_external_bind: bool
@@ -33,7 +35,8 @@ def _cmd_run_app(args: _RunArgs) -> int:
     if not target or ":" not in target:
         print("hedron run requires module:attribute", file=sys.stderr)
         return 2
-    discover = args.discover
+    discover_value = dynamic_attribute(args, "discover", False)
+    discover = discover_value if isinstance(discover_value, bool) else False
     workbench_runtime = bool(str(os.environ.get("RS_SERVER_URL") or "").strip())
     if args.workbench or workbench_runtime or discover:
         try:

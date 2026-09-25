@@ -26,7 +26,7 @@ _SANDBOX_REL = "assets/sandbox/bridge.js"
 
 PLUGIN_META = PluginMeta(
     name="hedron_extras_sandbox",
-    version="1.1.1",
+    version="1.1.2",
     distribution="hedron-extras",
     hedron_version=">=1.0,<2.0",
     depends_on=("hedron_extras",),

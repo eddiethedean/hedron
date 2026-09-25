@@ -147,7 +147,7 @@ def test_025_satellites_have_installable_patch_floors() -> None:
     # Tip may patch above the floor; the 1.0 plugin contract starts at these patches.
     workspace = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))["project"]
     assert charts["version"] == workspace["version"]
-    assert sample["version"] == "0.2.3"
+    assert sample["version"] == "0.2.4"
 
 
 def test_hedron_build_module_is_packaged(tmp_path: Path) -> None:

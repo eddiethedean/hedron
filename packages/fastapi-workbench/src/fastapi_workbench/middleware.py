@@ -13,6 +13,7 @@ from urllib.parse import quote, unquote, urlsplit, urlunsplit
 from starlette.responses import PlainTextResponse
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
+from fastapi_workbench._typing import dynamic_attribute
 from fastapi_workbench.codes import FWB_0006
 from fastapi_workbench.config import WorkbenchConfig, WorkbenchMode
 from fastapi_workbench.detect import (
@@ -29,7 +30,6 @@ from fastapi_workbench.mount import (
 )
 from fastapi_workbench.redact import redact_scope_for_log
 from fastapi_workbench.urls import normalize_http_origin
-from hedron_core.typing_support import dynamic_attribute
 
 log = logging.getLogger("fastapi_workbench")
 _PROXY_PREFIX = re.compile(r"^/proxy/\d+(?P<rest>/.*)$")

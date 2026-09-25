@@ -12,7 +12,7 @@ from fastapi import FastAPI, HTTPException, status
 from fastapi.params import Depends as DependsParam
 from starlette.requests import Request
 
-from hedron_core.typing_support import fastapi_depends
+from hedron._fastapi_depends import fastapi_depends
 
 ExplorerMode = Literal["off", "development", "secured"]
 logger = logging.getLogger("hedron")

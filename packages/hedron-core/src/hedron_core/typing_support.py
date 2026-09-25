@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import inspect
-from collections.abc import Awaitable, Callable, Mapping, Sequence
+from collections.abc import Awaitable, Mapping, Sequence
 from typing import Protocol, cast, get_args, get_origin
 
 
@@ -115,20 +115,6 @@ class _ModuleGlobals(Protocol):
 
 class _SocketNameReader(Protocol):
     def getsockname(self) -> tuple[object, ...]: ...
-
-
-class _FastApiDependsFactory(Protocol):
-    def __call__(
-        self,
-        dependency: Callable[..., object] | None = None,
-        *,
-        use_cache: bool = True,
-        scope: str | None = None,
-    ) -> object: ...
-
-
-class _NoArgumentFactory(Protocol):
-    def __call__(self) -> object: ...
 
 
 class _ObjectNamespace(Protocol):
@@ -318,24 +304,6 @@ def bound_socket_port(sock: object) -> int:
     if isinstance(port, int) and not isinstance(port, bool):
         return port
     raise OSError("socket did not report an integer port")
-
-
-def fastapi_depends(
-    dependency: Callable[..., object] | None = None,
-    *,
-    use_cache: bool = True,
-    scope: str | None = None,
-) -> object:
-    """Call FastAPI's Depends factory through its object-valued public surface."""
-    from fastapi import Depends
-
-    factory = cast(_FastApiDependsFactory, cast(object, Depends))
-    return factory(dependency, use_cache=use_cache, scope=scope)
-
-
-def fastapi_parameter(factory: object) -> object:
-    """Build a FastAPI parameter marker through a typed zero-argument call."""
-    return cast(_NoArgumentFactory, factory)()
 
 
 def object_namespace(value: object) -> Mapping[str, object]:

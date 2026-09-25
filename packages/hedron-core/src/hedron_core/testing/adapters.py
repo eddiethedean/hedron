@@ -8,7 +8,10 @@ from __future__ import annotations
 
 from collections.abc import Callable, Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
+from importlib import import_module
 from typing import Protocol, cast, runtime_checkable
+
+from hedron_core.typing_support import dynamic_attribute
 
 __all__ = [
     "AdapterAppFixture",
@@ -103,6 +106,29 @@ class _DjangoClient(Protocol):
 class _FastAPIApp(Protocol):
     interactions: object
     hedron_app_id: str
+
+
+class _FastAPIResponse(Protocol):
+    status_code: int
+    text: str
+    cookies: Mapping[str, str]
+    headers: Mapping[str, str]
+
+
+class _FastAPITestClient(Protocol):
+    def get(self, path: str, *, headers: Mapping[str, str]) -> _FastAPIResponse: ...
+
+    def post(
+        self,
+        path: str,
+        *,
+        data: Mapping[str, str],
+        headers: Mapping[str, str],
+    ) -> _FastAPIResponse: ...
+
+
+class _FastAPITestClientFactory(Protocol):
+    def __call__(self, app: object) -> _FastAPITestClient: ...
 
 
 class _FlaskResponse(Protocol):
@@ -292,10 +318,9 @@ class _ClientFixture:
 
 def fastapi_fixture(app: _FastAPIApp) -> AdapterAppFixture:
     # Keep this optional dependency inside the adapter entry point.
-    from fastapi.testclient import TestClient
-    from starlette.types import ASGIApp
-
-    client = TestClient(cast(ASGIApp, app))
+    testclient_module: object = import_module("fastapi.testclient")
+    factory = cast(_FastAPITestClientFactory, dynamic_attribute(testclient_module, "TestClient"))
+    client = factory(app)
 
     def _headers(headers: Mapping[str, str], cookies: Mapping[str, str]) -> dict[str, str]:
         merged = dict(headers)
