@@ -2,10 +2,10 @@
 
 Hedron publishes release snapshots and development documentation on Read the Docs.
 
-- **Stable** documents the newest published release, currently **1.1.1**.
-- **Latest** follows `main` and may describe changes after the **1.1.1** release.
-- A numbered version such as **1.1.1** is an immutable snapshot built from the
-  [`release-20260918-03`](https://github.com/eddiethedean/hedron/releases/tag/release-20260918-03) Git tag.
+- **Stable** documents the newest published release, currently **1.1.2**.
+- **Latest** follows `main` and may describe changes after the **1.1.2** release.
+- A numbered version such as **1.1.2** is an immutable snapshot built from the
+  [`release-20260925-01`](https://github.com/eddiethedean/hedron/releases/tag/release-20260925-01) Git tag.
 
 Use the version menu in the documentation header to switch versions. Before copying a
 command or API example, confirm that the documentation version matches the package version

@@ -24,15 +24,15 @@ injection, middleware, lifespan, async I/O, JSON routes, and OpenAPI remain avai
 
 [![Hedron Showcase workspace overview using Folio](docs/assets/hedron-showcase.jpg)](https://hedron.readthedocs.io/en/latest/examples/showcase/)
 
-Hedron 1.1.1 is the published open-enhancement release. [Explore the showcase](https://hedron.readthedocs.io/en/latest/examples/showcase/).
+Hedron 1.1.2 is the published Stable 1.1 release, with strict typing checks across the Python workspace. [Explore the showcase](https://hedron.readthedocs.io/en/latest/examples/showcase/).
 
-**Hedron 1.1.1 is published on PyPI.** The supported Python range is 3.10–3.14.
+**Hedron 1.1.2 is published on PyPI.** The supported Python range is 3.10–3.14.
 `hedron>=1.0.0` is the compatibility floor; new applications should prefer
-`hedron>=1.1.1,<1.2` and commit a lockfile (or use `hedron==1.1.1` for an exact
+`hedron>=1.1.2,<1.2` and commit a lockfile (or use `hedron==1.1.2` for an exact
 reproduction). Review the [compatibility matrix](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/)
 before combining independently versioned satellites.
 
-The current release includes built-in theme polish. See the
+For the strict typing policy and other changes in this release, see the
 [release notes](docs/guides/release-notes.md).
 
 ```text
