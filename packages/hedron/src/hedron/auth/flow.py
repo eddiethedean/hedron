@@ -218,7 +218,10 @@ class SessionAuthFlow(Generic[CredentialsT, PrincipalT, SessionT]):
             raise error(
                 HED_AUTHFLOW_0003,
                 title="Session rotation unavailable",
-                explanation="rotation='on_login' requires a mutable request session.",
+                explanation=(
+                    "rotation='on_login' requires a mutable request session with "
+                    + "session.clear()."
+                ),
                 remediation="Enable Hedron sessions or set rotation='never'.",
             )
         clear_candidate = dynamic_attribute(session, "clear")

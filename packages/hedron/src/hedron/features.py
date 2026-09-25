@@ -77,6 +77,15 @@ def _host_routers(app: object) -> list[object]:
     return routers
 
 
+def _snapshot_host_routes(app: object) -> list[object]:
+    snapshot: list[object] = []
+    for router in _host_routers(app):
+        routes = dynamic_attribute(router, "routes")
+        if isinstance(routes, list):
+            snapshot.extend(cast(list[object], routes))
+    return snapshot
+
+
 def _collect_new_routes(app: object, snapshot: Sequence[object]) -> list[object]:
     found: list[object] = []
     seen: set[int] = set()
@@ -226,9 +235,7 @@ def _include_feature(
             )
         )
     resolved = resolve_feature(feature)
-    router = dynamic_attribute(app, "_root_router")
-    router_routes = dynamic_attribute(router, "routes", [])
-    snapshot_routes = cast(list[object], router_routes) if isinstance(router_routes, list) else []
+    snapshot_routes = _snapshot_host_routes(app)
     app_id = str(dynamic_attribute(app, "hedron_app_id", "") or "")
     prior_ids = {item.logical_id for item in list_handle_descriptors(app_id=app_id)}
     known: list[str] = []
