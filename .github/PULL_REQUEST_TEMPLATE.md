@@ -5,7 +5,7 @@
 ## Test plan
 
 - [ ] `uv run ruff format --check packages tests examples && uv run ruff check packages tests examples`
-- [ ] `uv run pyright` (if packages touched)
+- [ ] `uv run basedpyright` (if packages touched)
 - [ ] Relevant `pytest` suite(s)
 - [ ] `uv run --group docs mkdocs build --strict` (if docs touched)
 - [ ] Browser suite only if HTMX/markup/assets changed (`HEDRON_BROWSER=1`)

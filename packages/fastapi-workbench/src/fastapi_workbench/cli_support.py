@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
-from typing import Any, cast
+from typing import cast
 
 from fastapi_workbench.redact import redact_record
 
@@ -14,13 +14,13 @@ from fastapi_workbench.redact import redact_record
 class CheckResolution:
     """Result of the bind/discover/final-resolve command sequence."""
 
-    value: Any
+    value: object
     bound_port: int | None
     discovered_raw: str | None
 
 
 def deployment_payload(
-    resolved: Any, *, status: Mapping[str, object] | None = None
+    resolved: object, *, status: Mapping[str, object] | None = None
 ) -> dict[str, object]:
     """Build the shared redacted deployment record used by both CLIs."""
     payload = redact_record(resolved.as_dict())
@@ -60,12 +60,12 @@ def resolve_check(
     discover: bool,
     discovery_available: bool,
     explicit_mount: Callable[[int | None], bool],
-    bind: Callable[[str, int], Any],
+    bind: Callable[[str, int], object],
     discover_url: Callable[[int], str],
-    resolve: Callable[[int | None, str | None], Any],
+    resolve: Callable[[int | None, str | None], object],
 ) -> CheckResolution:
     """Bind before discovery, close reliably, then perform final resolution."""
-    sock: Any | None = None
+    sock: object | None = None
     bound_port: int | None = None
     discovered_raw: str | None = None
     try:
@@ -127,10 +127,10 @@ def unmounted_generated_urls(html: str, mount: str) -> list[str]:
 
 
 async def probe_asgi_app(
-    app: Any,
+    app: object,
     mount: str,
     *,
-    extra_checks: Callable[[Any, list[str]], Mapping[str, object]] | None = None,
+    extra_checks: Callable[[object, list[str]], Mapping[str, object]] | None = None,
 ) -> dict[str, object]:
     """Run the common mounted-app probe and return its stable result schema."""
     import httpx

@@ -7,9 +7,11 @@ import json
 import threading
 import time
 from dataclasses import dataclass
-from typing import Any, Literal, Protocol, cast
+from typing import Literal, Protocol, cast
 
+from hedron_core.app_state import request_form, request_headers
 from hedron_core.compat import StrEnum
+from hedron_core.typing_support import dynamic_attribute, set_dynamic_attribute
 
 
 class ReplayState(StrEnum):
@@ -77,6 +79,9 @@ class _Entry:
     in_flight: bool = True
 
 
+_MISSING = object()
+
+
 class MemoryReplayStore:
     """Process-local replay store for tests and single-worker deployments."""
 
@@ -130,7 +135,7 @@ class MemoryReplayStore:
         # Expire completed and abandoned in-flight claims past retention.
         expired = [k for k, v in self._entries.items() if v.expires_at <= now]
         for key in expired:
-            self._remove(key)
+            _ignored = self._remove(key)
 
     def claim(
         self,
@@ -214,7 +219,7 @@ class MemoryReplayStore:
                 # Do not retain an in-flight claim that cannot be replayed;
                 # callers still receive their original response, while a
                 # retry can execute normally instead of seeing IN_FLIGHT.
-                self._remove(slot)
+                _ignored = self._remove(slot)
                 return False
             self._entries[slot] = completed
             self._total_bytes += completed_bytes - current_bytes
@@ -227,7 +232,7 @@ class MemoryReplayStore:
             if entry is None or entry.fingerprint != fingerprint:
                 return
             if entry.in_flight and entry.status is None:
-                self._remove(slot)
+                _ignored = self._remove(slot)
 
 
 def fingerprint_request(
@@ -235,7 +240,7 @@ def fingerprint_request(
     action_id: str,
     subject: str,
     tenant: str,
-    inputs: dict[str, Any],
+    inputs: dict[str, object],
     policy_version: str,
 ) -> str:
     payload = {
@@ -253,16 +258,17 @@ def digest_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-async def extract_idempotency_key(request: Any, policy: IdempotencyPolicy) -> str | None:
-    headers = getattr(request, "headers", {}) or {}
+async def extract_idempotency_key(request: object, policy: IdempotencyPolicy) -> str | None:
+    headers = request_headers(request)
     key = headers.get(policy.header_name) or headers.get(policy.header_name.lower())
     if key:
         return str(key).strip() or None
-    cached = getattr(getattr(request, "state", None), "hedron_idempotency_key", None)
+    state = dynamic_attribute(request, "state")
+    cached = dynamic_attribute(state, "hedron_idempotency_key") if state is not None else None
     if cached:
         return str(cached).strip() or None
     # Prefer already-parsed CSRF form token path; otherwise parse multipart/urlencoded once.
-    form = getattr(request, "_hedron_form", None)
+    form = dynamic_attribute(request, "_hedron_form")
     if not isinstance(form, dict):
         content_type = str(headers.get("content-type") or "")
         if (
@@ -270,9 +276,9 @@ async def extract_idempotency_key(request: Any, policy: IdempotencyPolicy) -> st
             or "application/x-www-form-urlencoded" in content_type
         ):
             try:
-                parsed = await request.form()
-                form = {str(k): parsed.get(k) for k in parsed}
-                request._hedron_form = form  # type: ignore[attr-defined]
+                parsed = await request_form(request)
+                form = {str(key): parsed.get(key) for key in parsed}
+                set_dynamic_attribute(request, "_hedron_form", form)
             except (RuntimeError, ValueError, TypeError, AttributeError, OSError):
                 form = None
     if isinstance(form, dict) and policy.form_field in form:
@@ -283,11 +289,15 @@ async def extract_idempotency_key(request: Any, policy: IdempotencyPolicy) -> st
     return None
 
 
-def resolve_replay_store(request: Any) -> ReplayStore:
-    app = getattr(request, "app", None)
-    state = getattr(app, "state", None) if app is not None else None
-    if state is not None and hasattr(state, "hedron_replay_store"):
-        store = state.hedron_replay_store
+def resolve_replay_store(request: object) -> ReplayStore:
+    app = dynamic_attribute(request, "app")
+    state = dynamic_attribute(app, "state") if app is not None else None
+    if state is not None:
+        stored = dynamic_attribute(state, "hedron_replay_store", _MISSING)
+    else:
+        stored = _MISSING
+    if stored is not _MISSING:
+        store = stored
         if store is None:
             from hedron_core.diagnostics import error
 
@@ -299,10 +309,11 @@ def resolve_replay_store(request: Any) -> ReplayStore:
                     "Install a ReplayStore or omit the attribute for the default memory store."
                 ),
             )
-        return store
+        return cast(ReplayStore, store)
     if state is not None:
-        state.hedron_replay_store = MemoryReplayStore()
-        return state.hedron_replay_store
+        store = MemoryReplayStore()
+        set_dynamic_attribute(state, "hedron_replay_store", store)
+        return store
     return MemoryReplayStore()
 
 

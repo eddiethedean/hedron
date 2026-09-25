@@ -11,7 +11,6 @@ from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
 from hedron.build.fingerprint import relink_fingerprinted_modules
 from hedron.build.manifest import write_build_manifest
@@ -46,6 +45,7 @@ from hedron_core.theme_contract import (
     resolve_theme,
 )
 from hedron_core.typing_aliases import JsonObject
+from hedron_core.typing_support import dynamic_attribute
 
 try:
     from importlib.metadata import version as _pkg_version
@@ -71,14 +71,14 @@ def _atomic_promote(tmp_root: Path, final_dir: Path) -> None:
     backup: Path | None = None
     if final_dir.exists():
         backup = final_dir.parent / f".hedron-build-bak-{uuid.uuid4().hex}"
-        final_dir.rename(backup)
+        _ignored = final_dir.rename(backup)
     try:
-        tmp_root.rename(final_dir)
+        _ignored = tmp_root.rename(final_dir)
     except Exception:
         if final_dir.exists():
             shutil.rmtree(final_dir, ignore_errors=True)
         if backup is not None and backup.exists():
-            backup.rename(final_dir)
+            _ignored = backup.rename(final_dir)
         raise
     if backup is not None:
         shutil.rmtree(backup, ignore_errors=True)
@@ -96,15 +96,15 @@ def _build_lock(final_dir: Path) -> Generator[None, None, None]:
             if os.name == "nt":  # pragma: no cover - exercised on Windows
                 import msvcrt
 
-                lock_file.seek(0)
-                lock_file.write(b"\\0")
+                _ignored = lock_file.seek(0)
+                _ignored = lock_file.write(b"\\0")
                 lock_file.flush()
-                lock_file.seek(0)
+                _ignored = lock_file.seek(0)
                 msvcrt.locking(lock_file.fileno(), msvcrt.LK_LOCK, 1)
                 try:
                     yield
                 finally:
-                    lock_file.seek(0)
+                    _ignored = lock_file.seek(0)
                     msvcrt.locking(lock_file.fileno(), msvcrt.LK_UNLCK, 1)
             else:
                 import fcntl
@@ -134,7 +134,7 @@ def run_build(
         )
 
 
-def _style_component_id(meta: Any) -> str:
+def _style_component_id(meta: object) -> str:
     import sys
 
     mod = sys.modules.get(meta.module)
@@ -142,9 +142,9 @@ def _style_component_id(meta: Any) -> str:
         sid = getattr(mod, "STYLE_COMPONENT_ID", None)
         if isinstance(sid, str) and sid:
             return sid
-        cls = getattr(mod, meta.name, None)
+        cls = dynamic_attribute(mod, meta.name)
         if cls is not None:
-            sid = getattr(cls, "STYLE_COMPONENT_ID", None)
+            sid = dynamic_attribute(cls, "STYLE_COMPONENT_ID")
             if isinstance(sid, str) and sid:
                 return sid
     return meta.logical_id
@@ -176,7 +176,7 @@ def _run_build_locked(
     production: bool,
     assets_url_prefix: str,
 ) -> BuildResult:
-    ensure_default_theme_registered()
+    _ignored = ensure_default_theme_registered()
 
     roots = settings.resolved_roots(base=base)
     registered = [r.resolve() for r in roots]
@@ -205,7 +205,7 @@ def _run_build_locked(
 
     try:
         discovered = discover_component_folders(roots)
-        apply_discovery_to_registry(discovered)
+        _ignored = apply_discovery_to_registry(discovered)
 
         from hedron.plugins import load_plugins
         from hedron_core.production_gate import resolve_production_plugins
@@ -215,7 +215,7 @@ def _run_build_locked(
             None if settings.plugins is None else list(settings.plugins),
             production=production,
         )
-        load_plugins(enabled=enabled)
+        _ignored = load_plugins(enabled=enabled)
 
         return _execute_build(
             base=base,
@@ -405,7 +405,7 @@ def _execute_build(
                 continue
             attrs = dict(asset.attributes)
             if asset.kind == "css":
-                attrs.setdefault("rel", "stylesheet")
+                _ignored = attrs.setdefault("rel", "stylesheet")
             entry = fingerprint_file(
                 path,
                 output_dir=assets_dir,
@@ -458,7 +458,7 @@ def _execute_build(
                 exc,
             )
 
-        relink_fingerprinted_modules(
+        _ignored = relink_fingerprinted_modules(
             assets_dir,
             asset_entries,
             basename_by_path=module_basename_by_path,
@@ -494,7 +494,7 @@ def _execute_build(
         from hedron.interactions import emit_interactions_manifest
 
         profile = "production" if production else "development"
-        emit_interactions_manifest(tmp_root, profile=profile)
+        _ignored = emit_interactions_manifest(tmp_root, profile=profile)
 
         _atomic_promote(tmp_root, final_dir)
         # Ownership transferred; avoid deleting promoted tree in finally.

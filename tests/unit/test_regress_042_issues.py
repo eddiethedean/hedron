@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import sys
 from types import ModuleType
-from typing import Any
 
 import pytest
 from fastapi.testclient import TestClient
@@ -250,7 +249,7 @@ def test_151_public_cache_rejects_positional_user_id() -> None:
 
 
 def test_152_store_oidc_handshake_merges_partial_updates() -> None:
-    session: dict[str, Any] = {}
+    session: dict[str, object] = {}
     store_oidc_handshake(session, state="s1", nonce="n1")
     store_oidc_handshake(session, state="s2")
     handshake = session["hedron_oidc_handshake"]

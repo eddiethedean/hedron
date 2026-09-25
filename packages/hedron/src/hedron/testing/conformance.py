@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import Any, Protocol, cast
+from typing import Protocol, cast
 
 __all__ = ["fastapi_conformance_checks"]
 
@@ -16,7 +16,7 @@ class _Client(Protocol):
     def get(self, url: str) -> _Response: ...
 
 
-def fastapi_conformance_checks(app_factory: Callable[[], Any]) -> list[str]:
+def fastapi_conformance_checks(app_factory: Callable[[], object]) -> list[str]:
     """Return human-readable conformance findings for a Hedron FastAPI app."""
     from fastapi.testclient import TestClient
 

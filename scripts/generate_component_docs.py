@@ -1344,7 +1344,7 @@ COMPONENTS = (
             p("action", "SafeUrl | str | None", "Validated form endpoint."),
             p("method", "'get' | 'post'", "Native submission method."),
             p("hx", "Hx | None", "Validated first-class HTMX options (FORM-022)."),
-            p("**attrs", "Any", "Validated native or HTMX form attributes."),
+            p("**attrs", "object", "Validated native or HTMX form attributes."),
         ),
         "Form is progressively enhanced: ordinary browser submission remains the baseline, while `hx-post`, targets, swaps, sync, and indicators can be added for fragment updates.",
         "Every control needs a label, errors must be associated with controls, and successful submission should produce a perceivable status.",
@@ -1869,7 +1869,7 @@ COMPONENTS = (
         "Auto(value=None, *, as_=None)",
         "Auto({'region': 'iad', 'healthy': True})",
         (
-            p("value", "Any", "Value to inspect and render."),
+            p("value", "object", "Value to inspect and render."),
             p("as_", "str | None", "Explicit renderer override."),
         ),
         "Auto applies bounded data intelligence and records why a renderer was selected. Mappings become description lists, sequences can become lists or tables, and explicit `as_` overrides ambiguity.",
@@ -1884,7 +1884,7 @@ COMPONENTS = (
         "DataTable(rows=None, *, row_model=None, columns=None, page=None, query=None, caption=None, empty_message='No rows', page_size=25, allow_download=False)",
         "DataTable([{'id': '1', 'name': 'Ada'}], caption='Employees', page_size=25)",
         (
-            p("rows", "Any", "Materialized mappings or model rows."),
+            p("rows", "object", "Materialized mappings or model rows."),
             p("row_model", "type[Model] | None", "Typed column source."),
             p("columns", "Sequence[Column] | None", "Explicit column configuration."),
             p(
@@ -1975,7 +1975,7 @@ COMPONENTS = (
         "DataEditor(rows=None, *, key='editor', row_model=None, columns=None, key_field='id', on_save=None, source=None, page=None, save_mode='batch', page_size=25, caption=None, save_endpoint=None, allow_deletes=True)",
         "DataEditor([{'id': '1', 'name': 'Ada'}], key='allocation-editor', key_field='id', allow_deletes=False)",
         (
-            p("rows", "Any", "Materialized editable rows."),
+            p("rows", "object", "Materialized editable rows."),
             p("key", "str", "Stable browser editor identity."),
             p("row_model / columns", "schema inputs", "Field types and edit policy."),
             p("key_field", "str", "Stable row identity field."),
@@ -2002,8 +2002,8 @@ COMPONENTS = (
         "Metric('Monthly revenue', '$84,200', delta='+8.4%', delta_tone='up')",
         (
             p("label", "str", "Metric name."),
-            p("value", "Any", "Current value converted to text."),
-            p("delta", "Any | None", "Optional change."),
+            p("value", "object", "Current value converted to text."),
+            p("delta", "object | None", "Optional change."),
             p("delta_tone", "up | down | neutral", "Domain-aware direction token."),
         ),
         "Metric uses a description list so label, value, and delta remain related in non-visual reading. Tone is exposed as data for theming.",
@@ -2067,7 +2067,7 @@ COMPONENTS = (
         "Pretty-print bounded JSON-like data with recursive secret redaction.",
         "JSONViewer(value, *, max_chars=100_000)",
         "JSONViewer({'job': 42, 'status': 'complete', 'token': 'redacted automatically'})",
-        (p("value", "Any", "JSON-like value."), p("max_chars", "int", "Hard text bound.")),
+        (p("value", "object", "JSON-like value."), p("max_chars", "int", "Hard text bound.")),
         "JSONViewer recursively redacts Secret instances and keys containing common secret, password, or token terms, limits list breadth and recursion depth, formats with indentation, and truncates final text.",
         "Introduce complex payloads and avoid forcing users to navigate huge trees in the primary task flow.",
         "Key-name redaction is defense in depth, not a complete data-loss-prevention system.",
@@ -2264,7 +2264,7 @@ COMPONENTS = (
         (
             p(
                 "spec",
-                "ChartSpec | Mapping[str, Any] | None",
+                "ChartSpec | Mapping[str, object] | None",
                 "Schema-versioned chart specification; rendering without one raises `ValueError`.",
             ),
             p("class_", "str | None", "Optional class on the `hedron-chart` host."),
@@ -2594,7 +2594,7 @@ COMPONENTS = (
         (
             p(
                 "parameters",
-                "Mapping[str, Any]",
+                "Mapping[str, object]",
                 "Parameter map rendered as definition list entries.",
             ),
             p("secret_keys", "Sequence[str]", "Keys whose values are replaced with [redacted]."),
@@ -3049,8 +3049,16 @@ COMPONENTS = (
         (
             p("name", "str", "Base name used for the replacement, operation, and clear fields."),
             p("label", "str", "Accessible label for the password control."),
-            p("configured", "bool", "Whether a value is already configured; plaintext is never rendered."),
-            p("allow_clear", "bool", "Show the explicit clear action, including its no-JavaScript submit fallback."),
+            p(
+                "configured",
+                "bool",
+                "Whether a value is already configured; plaintext is never rendered.",
+            ),
+            p(
+                "allow_clear",
+                "bool",
+                "Show the explicit clear action, including its no-JavaScript submit fallback.",
+            ),
             p("id", "str | None", "Optional stable control id."),
             p("class_", "str | None", "Additional CSS class on the field wrapper."),
             p("mark", "str | None", "Optional stable test mark."),
@@ -3446,7 +3454,7 @@ def _params_are_stub(params: tuple[tuple[str, str, str], ...]) -> bool:
 
 def _annotation_text(annotation: object) -> str:
     if annotation is inspect.Parameter.empty:
-        return "Any"
+        return "object"
     text = str(annotation)
     text = text.replace("typing.", "")
     for prefix in (
@@ -3620,9 +3628,8 @@ def page_text(spec: ComponentDoc) -> str:
         )
     optional = (
         _optional_install_text(spec.package)
-        if "[" in spec.package or (
-            spec.package.startswith("hedron-") and spec.package != "hedron-core"
-        )
+        if "[" in spec.package
+        or (spec.package.startswith("hedron-") and spec.package != "hedron-core")
         else ""
     )
     is_charts = "charts" in spec.package

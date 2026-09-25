@@ -7,11 +7,19 @@ import os
 import sys
 from contextlib import suppress
 from pathlib import Path
+from typing import Protocol, cast
 
 from .app import create_docs_app
 from .config import CONFIG_SCHEMA_VERSION, NavigationItem, import_mkdocs, load_config
 from .errors import DocsError
 from .manifest import compile_site
+
+
+class _CommandArgs(Protocol):
+    command: str
+    config: str
+    mkdocs_config: str
+    output: str
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -21,11 +29,11 @@ def main(argv: list[str] | None = None) -> int:
     subparsers = parser.add_subparsers(dest="command", required=True)
     for command in ("check", "build", "serve"):
         command_parser = subparsers.add_parser(command)
-        command_parser.add_argument("config", nargs="?", default="hedron-docs.toml")
+        _ignored = command_parser.add_argument("config", nargs="?", default="hedron-docs.toml")
     importer = subparsers.add_parser("import-mkdocs")
-    importer.add_argument("mkdocs_config")
-    importer.add_argument("-o", "--output", default="hedron-docs.toml")
-    args = parser.parse_args(argv)
+    _ignored = importer.add_argument("mkdocs_config")
+    _ignored = importer.add_argument("-o", "--output", default="hedron-docs.toml")
+    args = cast(_CommandArgs, cast(object, parser.parse_args(argv)))
     try:
         if args.command == "import-mkdocs":
             config = import_mkdocs(args.mkdocs_config)
@@ -101,7 +109,7 @@ def _write_native_config(config: object, path: Path) -> None:
         f"max_query_length = {config.max_query_length}",
         "",
     ]
-    target.write_text("\n".join(lines), encoding="utf-8")
+    _ignored = target.write_text("\n".join(lines), encoding="utf-8")
 
 
 def _toml_string(value: str) -> str:

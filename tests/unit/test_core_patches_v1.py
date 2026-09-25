@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 import pytest
 
 from hedron_core.patches import (
@@ -150,7 +148,7 @@ def test_list_paths_create_missing_slots_for_assignment() -> None:
 )
 def test_patch_failure_matrix(
     patch: PropertyPatch,
-    kwargs: dict[str, Any],
+    kwargs: dict[str, object],
     message: str,
 ) -> None:
     with pytest.raises(PatchError, match=message) as raised:

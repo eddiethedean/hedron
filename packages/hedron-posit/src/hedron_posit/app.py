@@ -5,15 +5,16 @@ from __future__ import annotations
 import ipaddress
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, replace
-from typing import Any
 from urllib.parse import urlsplit
 
 from starlette.requests import Request
 from starlette.responses import RedirectResponse, Response
 from starlette.types import Receive, Scope, Send
+from typing_extensions import override
 
 from hedron import Hedron
 from hedron.mount import cookie_path_for_mount, normalize_mount_path
+from hedron_core.typing_support import dynamic_attribute, set_dynamic_attribute
 from hedron_posit.config import (
     ConnectConfig,
     DeploymentCapabilities,
@@ -45,6 +46,14 @@ from hedron_posit.urls import (
 )
 
 
+def _state_value(app: object, name: str, default: object = None) -> object:
+    return dynamic_attribute(dynamic_attribute(app, "state"), name, default)
+
+
+def _set_state_value(app: object, name: str, value: object) -> None:
+    set_dynamic_attribute(dynamic_attribute(app, "state"), name, value)
+
+
 class HedronPosit(Hedron):
     """``Hedron`` with Posit Workbench / Connect deployment handling built in.
 
@@ -58,7 +67,7 @@ class HedronPosit(Hedron):
 
     def __init__(
         self,
-        *args: Any,
+        *args: object,
         posit: PositConfig | None = None,
         workbench: WorkbenchConfig | None = None,
         workbench_mode: WorkbenchMode | str | None = None,
@@ -68,7 +77,7 @@ class HedronPosit(Hedron):
         workbench_topology: WorkbenchTopology | str | None = None,
         external_base_url: str | None = None,
         root_path: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         self._hedron_external_base = (
             validate_external_base_url(external_base_url) if external_base_url is not None else None
@@ -131,7 +140,7 @@ class HedronPosit(Hedron):
             resolved_root_path = self.hedron_workbench.browser_mount or "/"
 
         super().__init__(*args, root_path=resolved_root_path, **kwargs)
-        effective_mount = str(self.state.hedron_mount_path or "")
+        effective_mount = str(_state_value(self, "hedron_mount_path", "") or "")
         if self.hedron_workbench.active and effective_mount != self.hedron_workbench.browser_mount:
             normalized = normalize_mount_path(effective_mount)
             updated_wb = replace(
@@ -144,10 +153,10 @@ class HedronPosit(Hedron):
             )
             self.hedron_workbench = updated_wb
             self.hedron_posit = replace(self.hedron_posit, workbench=updated_wb)
-        self.state.hedron_workbench = self.hedron_workbench
-        self.state.hedron_workbench_active = self.hedron_workbench.active
-        self.state.hedron_posit = self.hedron_posit
-        self.state.hedron_posit_hands_off = bool(self._posit_config.hands_off)
+        _set_state_value(self, "hedron_workbench", self.hedron_workbench)
+        _set_state_value(self, "hedron_workbench_active", self.hedron_workbench.active)
+        _set_state_value(self, "hedron_posit", self.hedron_posit)
+        _set_state_value(self, "hedron_posit_hands_off", bool(self._posit_config.hands_off))
         # Give the normalizer FastAPI's ASGI implementation, rather than this
         # facade, to avoid re-entering this method after normalization.
         # hands_off (#510) opts into the same validated same-app Location/HTMX/
@@ -193,13 +202,14 @@ class HedronPosit(Hedron):
             owned_cookie_names=self._owned_cookie_names(),
         )
 
+    @override
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         """Normalize Workbench scopes before FastAPI routes the request."""
         if scope.get("type") == "http" and self.hedron_posit.product is PositProduct.CONNECT:
             # Validate Connect's base/root contract at request ingress. Without
             # this, a malformed base header can survive ordinary requests and
             # fail only when an application later asks for a URL helper.
-            native_connect_base_from_request(
+            _ignored = native_connect_base_from_request(
                 Request(scope),
                 product=self.hedron_posit.product,
                 trusted_peers=self._posit_config.connect.trusted_peers,
@@ -209,8 +219,10 @@ class HedronPosit(Hedron):
     def workbench_status(self) -> dict[str, object]:
         """Return a redacted, non-secret Workbench deployment diagnostic record."""
         payload = redact_record(self.hedron_workbench.as_dict())
-        payload["app_mount"] = redact_text(str(self.state.hedron_mount_path or ""))
-        payload["app_cookie_path"] = redact_text(str(self.state.hedron_cookie_path or "/"))
+        payload["app_mount"] = redact_text(str(_state_value(self, "hedron_mount_path", "") or ""))
+        payload["app_cookie_path"] = redact_text(
+            str(_state_value(self, "hedron_cookie_path", "/") or "/")
+        )
         payload["normalizer_count"] = 1
         return payload
 
@@ -222,7 +234,11 @@ class HedronPosit(Hedron):
             evidence=self.hedron_posit.evidence,
             mount_source=str(self.hedron_workbench.source or self.hedron_posit.evidence),
             browser_mount=redact_text(
-                str(self.hedron_workbench.browser_mount or self.state.hedron_mount_path or "")
+                str(
+                    self.hedron_workbench.browser_mount
+                    or _state_value(self, "hedron_mount_path", "")
+                    or ""
+                )
             ),
             cookie_strategy=self.hedron_posit.cookie_mode.value,
             bridge_enabled=self.hedron_posit.bridge_enabled,
@@ -252,7 +268,7 @@ class HedronPosit(Hedron):
         owned = tuple(sorted({*self._owned_cookie_names(), *registry_names}))
         setter = getattr(self._workbench_asgi, "set_owned_cookie_names", None)
         if callable(setter):
-            setter(owned)
+            _ignored = setter(owned)
         else:
             self._workbench_asgi.owned_cookie_names = frozenset(owned)
 
@@ -302,7 +318,7 @@ class HedronPosit(Hedron):
             if loopback_origin:
                 raise ValueError(
                     "Workbench resolved only a loopback origin; configure "
-                    "workbench_public_base_url or external_base_url for public links"
+                    + "workbench_public_base_url or external_base_url for public links"
                 )
             return ExternalBase(
                 origin=self.hedron_workbench.external_origin,
@@ -315,7 +331,7 @@ class HedronPosit(Hedron):
                 return connect_base
         raise ValueError(
             "no trusted public base URL is available; configure external_base_url, "
-            "run in Workbench, or pass a validated Posit Connect request"
+            + "run in Workbench, or pass a validated Posit Connect request"
         )
 
     def external_base(self, *, request: Request | None = None) -> ExternalBase:
@@ -338,8 +354,8 @@ class HedronPosit(Hedron):
                 return connect_base
         raise ValueError(
             "no trusted public base URL is available for an absolute redirect; "
-            "configure external_base_url, run in Workbench, or pass a validated "
-            "Posit Connect request"
+            + "configure external_base_url, run in Workbench, or pass a validated "
+            + "Posit Connect request"
         )
 
     def _durable_external_base(self, *, request: Request | None = None) -> ExternalBase:
@@ -347,8 +363,8 @@ class HedronPosit(Hedron):
         if is_ephemeral_workbench_mount(base.mount):
             raise ValueError(
                 "Posit Workbench session URLs are ephemeral and cannot be used for "
-                "email, OAuth, or durable callbacks; configure external_base_url to "
-                "a stable deployment (typically Posit Connect)"
+                + "email, OAuth, or durable callbacks; configure external_base_url to "
+                + "a stable deployment (typically Posit Connect)"
             )
         return base
 
@@ -422,7 +438,7 @@ class HedronPosit(Hedron):
         fragment: str | None = None,
     ) -> str:
         """Prefix a local browser path once using construction or request mount."""
-        mount = str(self.state.hedron_mount_path or "")
+        mount = str(_state_value(self, "hedron_mount_path", "") or "")
         if request is not None:
             mount = browser_mount_from_request(request)
         return local_href(path, mount=mount, query=query, fragment=fragment)
@@ -468,7 +484,7 @@ class HedronPosit(Hedron):
                 fragment=fragment,
             )
             return RedirectResponse(url=target, status_code=status_code)
-        mount = str(self.state.hedron_mount_path or "")
+        mount = str(_state_value(self, "hedron_mount_path", "") or "")
         if request is not None:
             mount = browser_mount_from_request(request)
         return mounted_redirect(

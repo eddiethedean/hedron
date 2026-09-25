@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass, field
-from typing import Any, Literal, cast
+from typing import Literal, cast
 
 from hedron_core.typing_aliases import JsonValue
 
@@ -43,7 +43,7 @@ class SavedView:
             owner_id=self.owner_id,
         )
 
-    def serialize(self) -> dict[str, Any]:
+    def serialize(self) -> dict[str, object]:
         view = self.validated()
         return {
             "name": view.name,
@@ -57,7 +57,7 @@ class SavedView:
         }
 
     @classmethod
-    def deserialize(cls, data: Mapping[str, Any]) -> SavedView:
+    def deserialize(cls, data: Mapping[str, object]) -> SavedView:
         sort_raw: object = data.get("sort") or ()
         columns_raw: object = data.get("columns") or ()
         selection_raw: object = data.get("selection") or ()

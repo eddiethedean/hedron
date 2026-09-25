@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from typing import Protocol, cast
 
 from hedron_conformance import __version__
 from hedron_conformance.compile import compile_suite
@@ -13,43 +14,52 @@ from hedron_conformance.runner import run_kit
 from hedron_conformance.schema import fixture_schema_dict, load_bundled_fixtures
 
 
+class _CommandArgs(Protocol):
+    command: str
+    name: str
+    json: bool
+    junit: bool
+    sarif: bool
+    envelope: bool
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="hedron-conformance")
-    parser.add_argument("--version", action="version", version=__version__)
+    _ignored = parser.add_argument("--version", action="version", version=__version__)
     sub = parser.add_subparsers(dest="command", required=True)
 
     run_p = sub.add_parser("run", help="Run bundled fixtures against the reference evaluator")
-    run_p.add_argument(
+    _ignored = run_p.add_argument(
         "--json",
         action="store_true",
         help="Emit machine-readable JSON report",
     )
-    run_p.add_argument(
+    _ignored = run_p.add_argument(
         "--junit",
         action="store_true",
         help="Emit JUnit XML after the run",
     )
-    run_p.add_argument(
+    _ignored = run_p.add_argument(
         "--sarif",
         action="store_true",
         help="Emit SARIF JSON after the run",
     )
-    run_p.add_argument(
+    _ignored = run_p.add_argument(
         "--envelope",
         action="store_true",
         help="Emit a signed-ish result envelope after the run",
     )
 
-    sub.add_parser("schema", help="Print the ConformanceFixture JSON Schema")
-    sub.add_parser("list", help="List bundled fixture ids")
-    sub.add_parser("compile", help="Compile/validate the bundled fixture suite")
-    sub.add_parser("profiles", help="List profile registry ids and suite digests")
+    _ignored = sub.add_parser("schema", help="Print the ConformanceFixture JSON Schema")
+    _ignored = sub.add_parser("list", help="List bundled fixture ids")
+    _ignored = sub.add_parser("compile", help="Compile/validate the bundled fixture suite")
+    _ignored = sub.add_parser("profiles", help="List profile registry ids and suite digests")
     theme_p = sub.add_parser("theme", help="Validate the shared phase 0.63 theme contract")
-    theme_p.add_argument(
+    _ignored = theme_p.add_argument(
         "--name", default="folio", choices=("folio", "classic", "aurora", "default")
     )
 
-    args = parser.parse_args(argv)
+    args = cast(_CommandArgs, cast(object, parser.parse_args(argv)))
     if args.command == "schema":
         print(json.dumps(fixture_schema_dict(), indent=2, sort_keys=True))
         return 0

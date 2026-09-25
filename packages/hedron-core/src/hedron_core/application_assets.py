@@ -75,7 +75,7 @@ def application_spec_to_asset_ref(spec: ApplicationAssetSpec) -> AssetRef:
     attrs: dict[str, str] = {}
     if spec.integrity:
         attrs["integrity"] = spec.integrity
-        attrs.setdefault("crossorigin", "anonymous")
+        _ignored = attrs.setdefault("crossorigin", "anonymous")
     return AssetRef(
         kind=spec.kind,
         href=spec.href,

@@ -4,14 +4,14 @@ from __future__ import annotations
 
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, TypeVar
+from typing import TypeVar
 
 from hedron_core.interaction import FragmentRegion
 
 __all__ = ["SimApp", "SimRoute"]
 
-F = TypeVar("F", bound=Callable[..., Any])
-Handler = Callable[..., Any]
+F = TypeVar("F", bound=Callable[..., object])
+Handler = Callable[..., object]
 
 
 def _as_regions(
@@ -53,7 +53,7 @@ class SimRoute:
     """Handler that renders the empty list container (required with ``accumulate``)."""
     list_remove: bool = False
     """DELETE (or similar): remove one list item by ``data-hedron-sim-list-index``."""
-    effects: tuple[Mapping[str, Any], ...] = ()
+    effects: tuple[Mapping[str, object], ...] = ()
     """Deterministic client effects produced by an already-rendered route."""
 
     @property
@@ -123,7 +123,7 @@ class SimApp:
         accumulate: str | None = None,
         empty: Handler | None = None,
         list_remove: bool = False,
-        effects: Sequence[Mapping[str, Any]] = (),
+        effects: Sequence[Mapping[str, object]] = (),
     ) -> Callable[[F], F]:
         """Register a fragment endpoint with an optional region allowlist."""
 
@@ -154,7 +154,7 @@ class SimApp:
         if route.key in self._routes:
             raise ValueError(
                 f"Duplicate SimApp route registration for {route.key!r}; "
-                "each METHOD path may only be registered once."
+                + "each METHOD path may only be registered once."
             )
         self._routes[route.key] = route
 
@@ -173,7 +173,7 @@ class SimApp:
         accumulate: str | None = None,
         empty: Handler | None = None,
         list_remove: bool = False,
-        effects: Sequence[Mapping[str, Any]] = (),
+        effects: Sequence[Mapping[str, object]] = (),
     ) -> Callable[[F], F]:
         """Register a mutation endpoint (default POST) for form demos."""
         return self.fragment(

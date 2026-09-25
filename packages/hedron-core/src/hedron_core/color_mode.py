@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Literal
 
+from typing_extensions import override
+
 from hedron_core.compat import StrEnum
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
@@ -67,6 +69,7 @@ class ColorModeToggle(Component[ColorModeToggleProps]):
         self._action = action
         self._csrf_token = csrf_token
 
+    @override
     def render(self) -> NodeLike:
         control_id = self.props.id or f"hedron-color-mode-{self.render_instance_id()[2:10]}"
         options: list[NodeLike] = []

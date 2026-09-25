@@ -4,12 +4,20 @@ import base64
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from datetime import date
-from typing import Any, Literal, cast
+from typing import Literal, Protocol, cast
 
 import hedron
 from edron._internal import require_frame
 from edron.errors import BindingError
 from edron.navigation import LayoutSpec
+from hedron_core.typing_support import dynamic_attribute, set_dynamic_attribute
+
+
+class _DynamicCallable(Protocol):
+    def __call__(self, *args: object, **kwargs: object) -> object: ...
+
+
+_MISSING = object()
 
 
 @dataclass
@@ -18,22 +26,22 @@ class Container:
 
     page: Page
     kind: str = "stack"
-    options: dict[str, Any] = field(default_factory=lambda: dict[str, Any]())
-    children: list[Any] = field(default_factory=lambda: list[Any]())
+    options: dict[str, object] = field(default_factory=lambda: dict[str, object]())
+    children: list[object] = field(default_factory=lambda: list[object]())
     _entered: bool = field(default=False, init=False)
 
-    def _append(self, value: Any) -> None:
+    def _append(self, value: object) -> None:
         self.children.append(value)
 
     def __enter__(self) -> Container:
         if self._entered:
             raise RuntimeError("a container cannot be entered twice")
         self._entered = True
-        cast(Any, self.page)._container_stack.append(self)
+        cast(object, self.page)._container_stack.append(self)
         return self
 
-    def __exit__(self, *_: Any) -> None:
-        page = cast(Any, self.page)
+    def __exit__(self, *_: object) -> None:
+        page = cast(object, self.page)
         if not page._container_stack or page._container_stack[-1] is not self:
             raise RuntimeError("containers must be exited in nesting order")
         page._container_stack.pop()
@@ -41,34 +49,38 @@ class Container:
     def text(self, value: str) -> None:
         self.page.text(value, _target=self)
 
-    def selectbox(self, label: str, options: Sequence[Any], **kwargs: Any) -> Any:
+    def selectbox(self, label: str, options: Sequence[object], **kwargs: object) -> object:
         return self.page.selectbox(label, options, _target=self, **kwargs)
 
-    def multiselect(self, label: str, options: Sequence[Any], **kwargs: Any) -> list[Any]:
+    def multiselect(self, label: str, options: Sequence[object], **kwargs: object) -> list[object]:
         return self.page.multiselect(label, options, _target=self, **kwargs)
 
-    def button(self, label: str, **kwargs: Any) -> None:
+    def button(self, label: str, **kwargs: object) -> None:
         return self.page.button(label, _target=self, **kwargs)
 
-    def container(self, **kwargs: Any) -> Container:
+    def container(self, **kwargs: object) -> Container:
         return self.page.container(_target=self, **kwargs)
 
-    def card(self, **kwargs: Any) -> Container:
+    def card(self, **kwargs: object) -> Container:
         return self.page.card(_target=self, **kwargs)
 
-    def __getattr__(self, name: str) -> Any:
-        method = getattr(self.page, name)
+    def __getattr__(self, name: str) -> object:
+        method = dynamic_attribute(self.page, name, _MISSING)
+        if method is _MISSING:
+            raise AttributeError(name)
         if not callable(method):
             raise AttributeError(name)
+        method_object: object = method
+        dynamic_method = cast(_DynamicCallable, method_object)
 
-        def forward(*args: Any, **kwargs: Any) -> Any:
-            page = cast(Any, self.page)
-            previous = page._explicit_target
-            page._explicit_target = self
+        def forward(*args: object, **kwargs: object) -> object:
+            page: object = cast(object, self.page)
+            previous = dynamic_attribute(page, "_explicit_target")
+            set_dynamic_attribute(page, "_explicit_target", self)
             try:
-                return method(*args, **kwargs)
+                return dynamic_method(*args, **kwargs)
             finally:
-                page._explicit_target = previous
+                set_dynamic_attribute(page, "_explicit_target", previous)
 
         return forward
 
@@ -97,7 +109,7 @@ class Page:
             self._append(self._sidebar)
         return self._sidebar
 
-    def _append(self, value: Any, *, _target: Container | None = None) -> None:
+    def _append(self, value: object, *, _target: Container | None = None) -> None:
         target = (
             _target
             or self._explicit_target
@@ -106,16 +118,20 @@ class Page:
         if target is None:
             self._frame.buffer.append(value)
         else:
-            cast(Any, target)._append(value)
+            cast(object, target)._append(value)
 
-    def _native(self, name: str, *args: Any, **kwargs: Any) -> Any:
-        return getattr(hedron, name)(*args, **kwargs)
+    def _native(self, name: str, *args: object, **kwargs: object) -> object:
+        factory = dynamic_attribute(hedron, name, _MISSING)
+        if factory is _MISSING:
+            raise AttributeError(name)
+        factory_object: object = factory
+        return cast(_DynamicCallable, factory_object)(*args, **kwargs)
 
-    def include(self, *nodes: Any) -> None:
+    def include(self, *nodes: object) -> None:
         for node in nodes:
             self._append(node)
 
-    def __call__(self, *nodes: Any) -> None:
+    def __call__(self, *nodes: object) -> None:
         self.include(*nodes)
 
     def heading(self, text: str, *, level: int = 2) -> None:
@@ -158,11 +174,11 @@ class Page:
         self._status(message, "info")
 
     def metric(
-        self, label: str, value: Any, *, delta: Any = None, delta_tone: str = "neutral"
+        self, label: str, value: object, *, delta: object = None, delta_tone: str = "neutral"
     ) -> None:
         self._append(self._native("Metric", label, value, delta=delta, delta_tone=delta_tone))
 
-    def table(self, data: Any, *, caption: str | None = None) -> None:
+    def table(self, data: object, *, caption: str | None = None) -> None:
         try:
             from hedron_data import DataTable
 
@@ -171,14 +187,14 @@ class Page:
             rows = list(data) if data is not None else []
             first_row: object = rows[0] if rows else None
             source_headers = (
-                list(cast(Mapping[object, Any], first_row))
+                list(cast(Mapping[object, object], first_row))
                 if isinstance(first_row, Mapping)
                 else None
             )
             headers = [str(key) for key in source_headers] if source_headers else None
-            values: list[Any] = (
+            values: list[object] = (
                 [
-                    tuple(cast(Mapping[object, Any], row).get(key) for key in source_headers)
+                    tuple(cast(Mapping[object, object], row).get(key) for key in source_headers)
                     for row in rows
                 ]
                 if source_headers
@@ -191,16 +207,16 @@ class Page:
 
     def data_workspace(
         self,
-        workspace: Any,
+        workspace: object,
         *,
-        request: Any = None,
+        request: object = None,
         editable: bool = False,
-        selection: Any = None,
+        selection: object = None,
         caption: str | None = None,
         save_endpoint: str | None = None,
         save_mode: Literal["batch", "row", "cell"] = "batch",
         _target: Container | None = None,
-    ) -> Any:
+    ) -> object:
         """Render one bounded Edron workspace page and return its safe page value.
 
         When ``request`` is omitted, ordinary query parameters are parsed through
@@ -232,14 +248,14 @@ class Page:
         self._append(node, _target=_target)
         return page
 
-    def data_editor(self, workspace: Any, **kwargs: Any) -> Any:
+    def data_editor(self, workspace: object, **kwargs: object) -> object:
         """Editable spelling of :meth:`data_workspace`."""
         kwargs["editable"] = True
         return self.data_workspace(workspace, **kwargs)
 
     def chart(
         self,
-        spec: Any,
+        spec: object,
         *,
         alternative: str | None = None,
         _target: Container | None = None,
@@ -255,7 +271,7 @@ class Page:
         node = spec if isinstance(spec, Chart) else Chart(spec=spec)
         self._append(node, _target=_target)
         if alternative is not None:
-            if not isinstance(cast(Any, alternative), str) or not alternative.strip():
+            if not isinstance(cast(object, alternative), str) or not alternative.strip():
                 raise ValueError("chart alternative must be a non-empty string")
             self._append(
                 self._native("Text", alternative, as_="small", class_="edron-visual-alternative"),
@@ -265,7 +281,7 @@ class Page:
     def _chart(
         self,
         kind: str,
-        data: Any,
+        data: object,
         *,
         x: str,
         y: str | Sequence[str],
@@ -291,7 +307,7 @@ class Page:
 
     def line_chart(
         self,
-        data: Any,
+        data: object,
         *,
         x: str,
         y: str | Sequence[str],
@@ -302,7 +318,7 @@ class Page:
 
     def area_chart(
         self,
-        data: Any,
+        data: object,
         *,
         x: str,
         y: str | Sequence[str],
@@ -313,7 +329,7 @@ class Page:
 
     def bar_chart(
         self,
-        data: Any,
+        data: object,
         *,
         x: str,
         y: str | Sequence[str],
@@ -324,7 +340,7 @@ class Page:
 
     def scatter_chart(
         self,
-        data: Any,
+        data: object,
         *,
         x: str,
         y: str,
@@ -334,19 +350,19 @@ class Page:
     ) -> None:
         self._chart("scatter", data, x=x, y=y, title=title, description=description, color=color)
 
-    def plotly_chart(self, figure: Any, *, description: str | None = None) -> None:
+    def plotly_chart(self, figure: object, *, description: str | None = None) -> None:
         from hedron_charts import compile_figure
 
         adapter, output = compile_figure(figure, title="Plotly chart", description=description)
         self._append(adapter.render_node(output))
 
-    def altair_chart(self, chart: Any, *, description: str | None = None) -> None:
+    def altair_chart(self, chart: object, *, description: str | None = None) -> None:
         from hedron_charts import compile_figure
 
         adapter, output = compile_figure(chart, title="Altair chart", description=description)
         self._append(adapter.render_node(output))
 
-    def matplotlib_chart(self, figure: Any, *, description: str | None = None) -> None:
+    def matplotlib_chart(self, figure: object, *, description: str | None = None) -> None:
         from hedron_charts import compile_figure
 
         adapter, output = compile_figure(figure, title="Matplotlib chart", description=description)
@@ -354,7 +370,7 @@ class Page:
 
     def map(
         self,
-        spec: Any = None,
+        spec: object = None,
         *,
         center: tuple[float, float] = (0.0, 0.0),
         zoom: float = 2.0,
@@ -362,7 +378,7 @@ class Page:
         description: str = "Geographic map",
         alternative: str | None = None,
         _target: Container | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         from hedron_maps import Map
 
@@ -371,7 +387,7 @@ class Page:
             _target=_target,
         )
         if alternative is not None:
-            if not isinstance(cast(Any, alternative), str) or not alternative.strip():
+            if not isinstance(cast(object, alternative), str) or not alternative.strip():
                 raise ValueError("map alternative must be a non-empty string")
             self._append(
                 self._native("Text", alternative, as_="small", class_="edron-visual-alternative"),
@@ -380,7 +396,7 @@ class Page:
 
     def image(
         self,
-        src: Any,
+        src: object,
         *,
         alt: str,
         width: int | None = None,
@@ -389,7 +405,7 @@ class Page:
         _target: Container | None = None,
     ) -> None:
         """Render a native safe image with required alternative text."""
-        if not isinstance(cast(Any, alt), str) or not alt.strip():
+        if not isinstance(cast(object, alt), str) or not alt.strip():
             raise ValueError("image alt must be a non-empty string")
         self._append(
             self._native(
@@ -405,9 +421,9 @@ class Page:
 
     def audio(
         self,
-        src: Any,
+        src: object,
         *,
-        tracks: Sequence[Any] = (),
+        tracks: Sequence[object] = (),
         controls: bool = True,
         autoplay: bool = False,
         loop: bool = False,
@@ -434,15 +450,15 @@ class Page:
 
     def video(
         self,
-        src: Any,
+        src: object,
         *,
-        tracks: Sequence[Any] = (),
+        tracks: Sequence[object] = (),
         controls: bool = True,
         autoplay: bool = False,
         loop: bool = False,
         muted: bool = False,
         preload: str | None = None,
-        poster: Any = None,
+        poster: object = None,
         allow_external: bool = False,
         _target: Container | None = None,
     ) -> None:
@@ -463,33 +479,33 @@ class Page:
             _target=_target,
         )
 
-    def _request_value(self, name: str, default: Any) -> Any:
+    def _request_value(self, name: str, default: object) -> object:
         request = self._frame.request
         if request is None:
             return default
         query = getattr(request, "query_params", {})
         if not isinstance(query, Mapping):
             return default
-        query = cast(Mapping[str, Any], query)
+        query = cast(Mapping[str, object], query)
         return query.get(name, default)
 
     @staticmethod
-    def _options(options: Sequence[Any]) -> list[tuple[str, Any]]:
-        result: list[tuple[str, Any]] = []
+    def _options(options: Sequence[object]) -> list[tuple[str, object]]:
+        result: list[tuple[str, object]] = []
         for item in options:
             value: object = item
             if isinstance(value, (tuple, list)):
-                pair = cast(Sequence[Any], value)
+                pair = cast(Sequence[object], value)
                 if len(pair) == 2:
                     result.append((str(pair[0]), pair[1]))
                     continue
             else:
                 result.append((str(value), value))
                 continue
-            result.append((str(cast(object, value)), cast(Any, value)))
+            result.append((str(cast(object, value)), cast(object, value)))
         return result
 
-    def _labelled(self, label: str, control: Any, *, target: Container | None) -> None:
+    def _labelled(self, label: str, control: object, *, target: Container | None) -> None:
         self._append(
             self._native(
                 "Stack", self._native("Text", label, as_="strong"), control, gap="0.25rem"
@@ -506,7 +522,7 @@ class Page:
         placeholder: str | None = None,
         required: bool = False,
         disabled: bool = False,
-        updates: Any = None,
+        updates: object = None,
         _target: Container | None = None,
     ) -> str:
         value = str(self._request_value(name, default))
@@ -531,7 +547,7 @@ class Page:
         max_value: int | float | None = None,
         step: int | float | None = None,
         disabled: bool = False,
-        updates: Any = None,
+        updates: object = None,
         _target: Container | None = None,
     ) -> int | float | None:
         raw = self._request_value(name, default)
@@ -577,14 +593,14 @@ class Page:
     def selectbox(
         self,
         label: str,
-        options: Sequence[Any],
+        options: Sequence[object],
         *,
         name: str,
-        default: Any = None,
+        default: object = None,
         disabled: bool = False,
-        updates: Any = None,
+        updates: object = None,
         _target: Container | None = None,
-    ) -> Any:
+    ) -> object:
         pairs = self._options(options)
         default = pairs[0][1] if default is None and pairs else default
         raw = self._request_value(name, default)
@@ -605,14 +621,14 @@ class Page:
     def multiselect(
         self,
         label: str,
-        options: Sequence[Any],
+        options: Sequence[object],
         *,
         name: str,
-        default: Sequence[Any] = (),
+        default: Sequence[object] = (),
         disabled: bool = False,
-        updates: Any = None,
+        updates: object = None,
         _target: Container | None = None,
-    ) -> list[Any]:
+    ) -> list[object]:
         pairs = self._options(options)
         raw = self._request_value(name, None)
         values = list(default) if raw is None else ([raw] if isinstance(raw, str) else list(raw))
@@ -637,7 +653,7 @@ class Page:
         value: int | float | None = None,
         step: int | float = 1,
         disabled: bool = False,
-        updates: Any = None,
+        updates: object = None,
         _target: Container | None = None,
     ) -> int | float:
         default = min_value if value is None else value
@@ -661,7 +677,7 @@ class Page:
         name: str,
         default: bool = False,
         disabled: bool = False,
-        updates: Any = None,
+        updates: object = None,
         _target: Container | None = None,
     ) -> bool:
         raw = self._request_value(name, default)
@@ -680,7 +696,7 @@ class Page:
         name: str,
         default: date | None = None,
         disabled: bool = False,
-        updates: Any = None,
+        updates: object = None,
         _target: Container | None = None,
     ) -> date | None:
         raw = self._request_value(name, default.isoformat() if default else None)
@@ -704,7 +720,7 @@ class Page:
         self._append(scope)
         return scope
 
-    def card(self, *, _target: Container | None = None, **kwargs: Any) -> Container:
+    def card(self, *, _target: Container | None = None, **kwargs: object) -> Container:
         container = Container(self, "card", kwargs)
         self._append(container, _target=_target)
         return container
@@ -719,13 +735,13 @@ class Page:
         spec: LayoutSpec | str = "stack",
         *,
         _target: Container | None = None,
-        **options: Any,
+        **options: object,
     ) -> Container:
         """Open a shared, bounded layout container for imperative composition."""
         raw_spec: object = spec
         if isinstance(raw_spec, str):
             resolved = LayoutSpec(kind=spec, **options)  # type: ignore[arg-type]
-        elif isinstance(cast(Any, raw_spec), LayoutSpec):
+        elif isinstance(cast(object, raw_spec), LayoutSpec):
             if options:
                 raise TypeError("layout options cannot be combined with a LayoutSpec")
             resolved = raw_spec
@@ -776,7 +792,7 @@ class Page:
         return children
 
     def expander(
-        self, title: str, *, expanded: bool = False, open: bool | None = None, **kwargs: Any
+        self, title: str, *, expanded: bool = False, open: bool | None = None, **kwargs: object
     ) -> Container:
         container = Container(
             self, "expander", {"title": title, "open": expanded if open is None else open, **kwargs}
@@ -784,7 +800,7 @@ class Page:
         self._append(container)
         return container
 
-    def style_scope(self, **kwargs: Any) -> Container:
+    def style_scope(self, **kwargs: object) -> Container:
         container = Container(self, "style", kwargs)
         self._append(container)
         return container
@@ -793,11 +809,11 @@ class Page:
         self,
         label: str,
         *,
-        action: Any = None,
+        action: object = None,
         variant: str = "primary",
-        size: Any = None,
-        width: Any = None,
-        confirm: Any = None,
+        size: object = None,
+        width: object = None,
+        confirm: object = None,
         disabled: bool = False,
         _target: Container | None = None,
     ) -> None:
@@ -814,7 +830,12 @@ class Page:
         self._append(node, _target=_target)
 
     def form(
-        self, model: Any = None, *, action: Any, submit_label: str = "Submit", **kwargs: Any
+        self,
+        model: object = None,
+        *,
+        action: object,
+        submit_label: str = "Submit",
+        **kwargs: object,
     ) -> None:
         frame = require_frame("page", "fragment")
         node = frame.app._action_form(action, model=model, submit_label=submit_label, **kwargs)
@@ -822,13 +843,13 @@ class Page:
 
     def download_button(
         self,
-        value: Any = None,
+        value: object = None,
         *,
         label: str = "Download",
         filename: str | None = None,
         media_type: str | None = None,
-        download: Any = None,
-        **kwargs: Any,
+        download: object = None,
+        **kwargs: object,
     ) -> None:
         value = value if value is not None else download
         if isinstance(value, bytes):
@@ -857,7 +878,7 @@ class Page:
             )
         )
 
-    def job(self, flow: Any, *, submit_label: str = "Submit", show_cancel: bool = False) -> None:
+    def job(self, flow: object, *, submit_label: str = "Submit", show_cancel: bool = False) -> None:
         """Render the submit surface for a flow already included in the app.
 
         Including a feature mutates the router and must happen during startup.
@@ -866,23 +887,23 @@ class Page:
         as a data hint for the generated status surface; a cancel command is
         only rendered once a job id is available on that surface.
         """
-        require_frame("page", "fragment")
-        submit = getattr(flow, "submit_command", None)
+        _ignored = require_frame("page", "fragment")
+        submit = dynamic_attribute(flow, "submit_command")
         if submit is None:
-            native = getattr(flow, "_native", None)
-            submit = getattr(native, "submit_command", None)
+            native = dynamic_attribute(flow, "_native")
+            submit = dynamic_attribute(native, "submit_command") if native is not None else None
         if submit is None:
             raise BindingError(
                 "job requires a flow included during app startup",
                 code="EDRON_JOB_BIND",
             )
-        native = getattr(flow, "_native", None)
+        native = dynamic_attribute(flow, "_native")
         if native is not None:
-            native.show_cancel = bool(show_cancel)
-        attrs = {"data": {"hedron-job-cancel": "true"}} if show_cancel else {}
+            set_dynamic_attribute(native, "show_cancel", bool(show_cancel))
+        attrs: dict[str, object] = {"data": {"hedron-job-cancel": "true"}} if show_cancel else {}
         self.form(action=submit, submit_label=submit_label, **attrs)
 
-    def _resolve(self, value: Any) -> Any:
+    def _resolve(self, value: object) -> object:
         if isinstance(value, Container):
             children = [self._resolve(child) for child in value.children]
             kind = value.kind
@@ -891,21 +912,21 @@ class Page:
             if kind == "card":
                 options = dict(value.options)
                 variant = options.pop("variant", None)
-                options.pop("recipe", None)
+                _ignored = options.pop("recipe", None)
                 if variant is not None:
                     options["appearance"] = {"outlined": "outline"}.get(variant, variant)
                 return self._native("Card", *children, **options)
             if kind == "grid":
                 options = dict(value.options)
-                options.pop("vertical_alignment", None)
-                options.pop("max_width", None)
-                options.pop("align", None)
-                options.pop("padding", None)
+                _ignored = options.pop("vertical_alignment", None)
+                _ignored = options.pop("max_width", None)
+                _ignored = options.pop("align", None)
+                _ignored = options.pop("padding", None)
                 return self._native("Grid", *children, **options)
             if kind == "container":
                 options = dict(value.options)
-                options.pop("gap", None)
-                options.pop("columns", None)
+                _ignored = options.pop("gap", None)
+                _ignored = options.pop("columns", None)
                 return self._native("Container", *children, **options)
             if kind == "plain":
                 return children[0] if len(children) == 1 else children
@@ -919,12 +940,12 @@ class Page:
             if kind == "style":
                 return self._native("StyleScope", *children, **value.options)
             options = dict(value.options)
-            options.pop("columns", None)
-            options.pop("max_width", None)
-            options.pop("align", None)
-            options.pop("padding", None)
+            _ignored = options.pop("columns", None)
+            _ignored = options.pop("max_width", None)
+            _ignored = options.pop("align", None)
+            _ignored = options.pop("padding", None)
             return self._native("Stack", *children, **options)
         return value
 
-    def _resolved_output(self) -> list[Any]:
+    def _resolved_output(self) -> list[object]:
         return [self._resolve(value) for value in self._frame.buffer.entries]

@@ -29,6 +29,7 @@ from fastapi_workbench.mount import (
 )
 from fastapi_workbench.redact import redact_scope_for_log
 from fastapi_workbench.urls import normalize_http_origin
+from hedron_core.typing_support import dynamic_attribute
 
 log = logging.getLogger("fastapi_workbench")
 _PROXY_PREFIX = re.compile(r"^/proxy/\d+(?P<rest>/.*)$")
@@ -572,16 +573,16 @@ def workbenchify(
     if workbenchified_for_asgi_app(app):
         existing = _workbench_middleware_for_asgi_app(app)
         requested = WorkbenchMode.parse(mode)
-        deployment = getattr(app, "fastapi_workbench", None)
+        deployment = dynamic_attribute(app, "fastapi_workbench")
         if (
             requested is WorkbenchMode.ON
             and deployment is not None
-            and not bool(getattr(deployment, "active", False))
+            and not bool(dynamic_attribute(deployment, "active", False))
         ):
             raise ValueError(
                 "cannot activate an already-constructed inactive Workbench wrapper; "
-                "construct it with workbench_mode='on'/workbench_mount=..., or use "
-                "fastapi-workbench run so cookie and asset paths are configured before import"
+                + "construct it with workbench_mode='on'/workbench_mount=..., or use "
+                + "fastapi-workbench run so cookie and asset paths are configured before import"
             )
         if existing is not None:
             resolved_mode = mode

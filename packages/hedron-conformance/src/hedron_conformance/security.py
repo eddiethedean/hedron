@@ -6,7 +6,6 @@ import json
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
 
 from hedron_core.request_budget import (
     RequestBudget,
@@ -22,7 +21,7 @@ SECURITY_PROFILE_ID = "security-control-plane"
 SECURITY_PROFILE_VERSION = CONFORMANCE_PROFILE_VERSION
 
 
-def _empty_payload() -> dict[str, Any]:
+def _empty_payload() -> dict[str, object]:
     return {}
 
 
@@ -33,7 +32,7 @@ class SecurityConformanceCase:
     invariant: str
     earliest_enforcement: str
     expect: str  # pass | fail_closed
-    payload: Mapping[str, Any] = field(default_factory=_empty_payload)
+    payload: Mapping[str, object] = field(default_factory=_empty_payload)
 
 
 @dataclass(frozen=True, slots=True)
@@ -125,7 +124,7 @@ HOST_DISPOSITIONS = {
 }
 
 
-def security_profile_manifest() -> dict[str, Any]:
+def security_profile_manifest() -> dict[str, object]:
     return {
         "id": SECURITY_PROFILE_ID,
         "version": SECURITY_PROFILE_VERSION,
@@ -235,7 +234,7 @@ def run_security_profile(
 
 def differential_summary(
     results: list[SecurityConformanceResult],
-) -> dict[str, Any]:
+) -> dict[str, object]:
     by_invariant: dict[str, dict[str, bool]] = {}
     for result in results:
         by_invariant.setdefault(result.case_id, {})[result.adapter] = result.ok
@@ -253,4 +252,6 @@ def differential_summary(
 
 def write_fixture(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(security_profile_manifest(), indent=2) + "\n", encoding="utf-8")
+    _ignored = path.write_text(
+        json.dumps(security_profile_manifest(), indent=2) + "\n", encoding="utf-8"
+    )

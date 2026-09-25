@@ -10,10 +10,11 @@ import time
 import zlib
 from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass, field, replace
-from typing import Any, NoReturn, Protocol, cast
+from typing import NoReturn, Protocol, cast
 from urllib.parse import SplitResult, urljoin, urlsplit, urlunsplit
 
 from hedron_core.compat import StrEnum
+from hedron_core.request_budget import BudgetDimension
 
 _REDIRECT_STATUSES = frozenset({301, 302, 303, 307, 308})
 _HTTP_SCHEMES = frozenset({"http", "https"})
@@ -144,7 +145,7 @@ class EgressPolicy:
         _positive_int("max_attempts_per_hop", self.max_attempts_per_hop)
         _positive_int("response_budget_bytes", self.response_budget_bytes)
         _positive_int("decompressed_budget_bytes", self.decompressed_budget_bytes)
-        max_redirects = cast(Any, self.max_redirects)
+        max_redirects = cast(object, self.max_redirects)
         if (
             isinstance(max_redirects, bool)
             or not isinstance(max_redirects, int)
@@ -162,7 +163,7 @@ class EgressPolicy:
         schemes = frozenset(str(item).lower() for item in self.allowed_schemes)
         if not schemes or not schemes.issubset(_HTTP_SCHEMES):
             raise ValueError("allowed_schemes must contain only http and/or https")
-        raw_ports = cast(Any, self.allowed_ports)
+        raw_ports = cast(object, self.allowed_ports)
         if not isinstance(raw_ports, frozenset):
             raise ValueError("allowed_ports must contain integers from 1 through 65535")
         ports = cast(frozenset[object], raw_ports)
@@ -277,13 +278,13 @@ class EgressPolicy:
 
 
 def _positive_int(name: str, value: object) -> None:
-    raw = cast(Any, value)
+    raw = cast(object, value)
     if isinstance(raw, bool) or not isinstance(raw, int) or raw < 1:
         raise ValueError(f"{name} must be a positive integer")
 
 
 def _positive_finite(name: str, value: object) -> None:
-    raw = cast(Any, value)
+    raw = cast(object, value)
     if (
         isinstance(raw, bool)
         or not isinstance(raw, (int, float))
@@ -333,7 +334,7 @@ def _normalize_host(host: str) -> str:
 
 
 def _parse_http_url(url: str) -> SplitResult | None:
-    raw = cast(Any, url)
+    raw = cast(object, url)
     if not isinstance(raw, str) or not raw or "\\" in raw:
         return None
     if any(ord(char) < 32 or ord(char) == 127 for char in raw):
@@ -448,7 +449,7 @@ def _verified_peer(response: EgressResponse, decision: EgressDecision) -> None:
         _raise_denied("connected_address_mismatch", hop=decision.hop)
 
 
-def _charge_request_budget(dimension: str, amount: int, *, hop: int) -> None:
+def _charge_request_budget(dimension: BudgetDimension, amount: int, *, hop: int) -> None:
     from hedron_core.request_budget import BudgetExceeded, get_request_budget
 
     budget = get_request_budget()
@@ -487,7 +488,7 @@ def _decoded_chunks(
         if now - last_chunk_at > decision.read_deadline_seconds:
             _raise_denied("read_deadline_exceeded", hop=decision.hop)
         last_chunk_at = now
-        checked = _as_bytes(cast(Any, raw_chunk))
+        checked = _as_bytes(cast(object, raw_chunk))
         if checked is None:
             _raise_denied("non_byte_response_chunk", hop=decision.hop)
         if len(checked) > decision.response_budget_bytes - encoded:
@@ -542,7 +543,7 @@ def _decoded_chunks(
         if not decoder.eof:
             _raise_denied("truncated_compressed_response", hop=decision.hop)
         if output:
-            _validate_decoded_size(
+            _ignored = _validate_decoded_size(
                 output,
                 encoded=encoded,
                 decoded=decoded,
@@ -578,7 +579,7 @@ def bounded_response(chunks: Iterable[bytes], *, budget_bytes: int) -> bytes:
     _positive_int("budget_bytes", budget_bytes)
     collected = bytearray()
     for chunk in chunks:
-        checked = _as_bytes(cast(Any, chunk))
+        checked = _as_bytes(cast(object, chunk))
         if checked is None:
             raise EgressError("egress denied: non_byte_response_chunk")
         if len(checked) > budget_bytes - len(collected):
@@ -587,7 +588,7 @@ def bounded_response(chunks: Iterable[bytes], *, budget_bytes: int) -> bytes:
     return bytes(collected)
 
 
-def _as_bytes(value: Any) -> bytes | None:
+def _as_bytes(value: object) -> bytes | None:
     if isinstance(value, bytes):
         return value
     if isinstance(value, bytearray):
@@ -650,7 +651,7 @@ def fetch_with_policy(
             if monotonic() - started > policy.total_deadline_seconds:
                 _raise_denied("total_deadline_exceeded", hop=hop)
             _verified_peer(response, decision)
-            status = cast(Any, response.status_code)
+            status = cast(object, response.status_code)
             if isinstance(status, bool) or not isinstance(status, int) or not 100 <= status <= 599:
                 _raise_denied("invalid_response_status", hop=hop)
             headers = _normalized_headers(response.headers, hop=hop)
@@ -725,7 +726,7 @@ def _is_blocked_address(addr: str) -> bool:
         ip = ipaddress.ip_address(addr)
     except ValueError:
         return True
-    mapped = getattr(ip, "ipv4_mapped", None)
+    mapped = ip.ipv4_mapped if isinstance(ip, ipaddress.IPv6Address) else None
     if mapped is not None:
         return _is_blocked_address(str(mapped))
     return bool(
@@ -749,7 +750,7 @@ def _looks_private_host(host: str) -> bool:
     except OSError:
         pass
     try:
-        ipaddress.ip_address(normalized)
+        _ignored = ipaddress.ip_address(normalized)
     except ValueError:
         return False
     return _is_blocked_address(normalized)

@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from collections.abc import Callable, Sequence
 from functools import wraps
-from typing import TYPE_CHECKING, Any, Protocol, TypeVar, cast
+from typing import TYPE_CHECKING, Protocol, TypeVar, cast
 
 from flask import Blueprint, Flask, Response, current_app, request
 
@@ -15,6 +15,7 @@ from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.interaction_067 import Outcome
 from hedron_core.rendering import RenderResult
 from hedron_core.security_policy import SecurityPolicy, SecurityProfile
+from hedron_core.typing_support import call_dynamic, dynamic_attribute
 from hedron_flask.csrf import DEFAULT_CSRF_COOKIE, assert_flask_csrf_strategy, validate_csrf
 from hedron_flask.responses import (  # pyright: ignore[reportPrivateUsage]
     _outcome_response,  # pyright: ignore[reportPrivateUsage]
@@ -27,7 +28,7 @@ if TYPE_CHECKING:
 
 __all__ = ["HedronBlueprint", "convert_view_result", "wrap_hedron_view"]
 
-F = TypeVar("F", bound=Callable[..., Any])
+F = TypeVar("F", bound=Callable[..., object])
 
 _logger = logging.getLogger("hedron.flask")
 
@@ -112,7 +113,7 @@ def convert_view_result(
     if isinstance(value, (Component, str)) or hasattr(value, "__hedron_component__"):
         # Duck-typed component / NodeLike after isinstance/hasattr gate.
         return component_response(
-            cast(NodeLike | Component[Any] | RenderResult, value),
+            cast(NodeLike | Component[object] | RenderResult, value),
             authenticated=authenticated,
             fragment_regions=fragment_regions,
             allow_undeclared_targets=allow_undeclared_targets,
@@ -168,7 +169,8 @@ def wrap_hedron_view(
                 validate_csrf(request, cookie_name=cookie_name, policy=policy)
             else:
                 validate_csrf(request, cookie_name=cookie_name)
-        value = current_app.ensure_sync(view)(*args, **kwargs)
+        sync_view = call_dynamic(dynamic_attribute(current_app, "ensure_sync"), view)
+        value = call_dynamic(sync_view, *args, **kwargs)
         return convert_view_result(
             value,
             authenticated=_authenticated(),
@@ -194,7 +196,7 @@ class HedronBlueprint(Blueprint):
         methods: Sequence[str] | None = None,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         allow_undeclared_targets: bool = False,
-        **options: Any,
+        **options: object,
     ) -> Callable[[F], F]:
         method_list = list(methods or ("GET",))
         require_csrf = any(m.upper() not in _SAFE_METHODS for m in method_list)
@@ -225,7 +227,7 @@ class HedronBlueprint(Blueprint):
         methods: Sequence[str] | None = None,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         allow_undeclared_targets: bool = False,
-        **options: Any,
+        **options: object,
     ) -> Callable[[F], F]:
         method_list = list(methods or ("GET",))
         require_csrf = any(m.upper() not in _SAFE_METHODS for m in method_list)
@@ -256,7 +258,7 @@ class HedronBlueprint(Blueprint):
         methods: Sequence[str] | None = None,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         allow_undeclared_targets: bool = False,
-        **options: Any,
+        **options: object,
     ) -> Callable[[F], F]:
         """Register the canonical replaceable view route.
 
@@ -281,7 +283,7 @@ class HedronBlueprint(Blueprint):
         methods: Sequence[str] | None = None,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         allow_undeclared_targets: bool = False,
-        **options: Any,
+        **options: object,
     ) -> Callable[[F], F]:
         method_list = list(methods or ("POST",))
 
@@ -305,14 +307,14 @@ class HedronBlueprint(Blueprint):
 
     def include_component(
         self,
-        descriptor: AddressableDescriptor[..., Any],
+        descriptor: AddressableDescriptor[..., object],
         *,
         path: str,
         endpoint: str | None = None,
         methods: Sequence[str] | None = None,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         allow_undeclared_targets: bool = False,
-        **options: Any,
+        **options: object,
     ) -> None:
         """Expose an ``@addressable`` factory at ``path`` (GET by default)."""
 
@@ -320,7 +322,7 @@ class HedronBlueprint(Blueprint):
         require_csrf = any(m.upper() not in _SAFE_METHODS for m in method_list)
         ep = endpoint or f"hedron_{descriptor.logical_id.replace(':', '_').replace('.', '_')}"
 
-        def view(**kwargs: Any) -> Any:
+        def view(**kwargs: object) -> object:
             return descriptor.factory(**kwargs)
 
         wrapped = wrap_hedron_view(
@@ -452,7 +454,7 @@ def attach_hedron_to_flask(
     def _hedron_unbind_security_plane(  # pyright: ignore[reportUnusedFunction]
         exc: BaseException | None,
     ) -> None:
-        binding = getattr(g, "hedron_security_binding", None)
+        binding = dynamic_attribute(g, "hedron_security_binding")
         if binding is not None:
             unbind_request_security(binding)
             g.hedron_security_binding = None

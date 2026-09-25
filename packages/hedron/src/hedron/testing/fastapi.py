@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from collections.abc import Generator, Iterator, Mapping, MutableMapping
 from contextlib import contextmanager
-from typing import Any, Protocol, cast
+from typing import Protocol, cast
 
 from hedron.testing.adapters import AdapterAppFixture, AdapterResponse
 from hedron_core.registry import get_registry
@@ -28,12 +28,33 @@ __all__ = [
 class _HeaderClient(Protocol):
     headers: MutableMapping[str, str]
 
+    def get(self, path: str, *, headers: Mapping[str, str]) -> _TestResponse: ...
 
-def render_html(node: Any, *, mode: RenderMode = RenderMode.FRAGMENT) -> str:
+    def post(
+        self,
+        path: str,
+        *,
+        data: Mapping[str, str],
+        headers: Mapping[str, str],
+    ) -> _TestResponse: ...
+
+
+class _CookieItems(Protocol):
+    def items(self) -> list[tuple[str, str]]: ...
+
+
+class _TestResponse(Protocol):
+    cookies: _CookieItems
+    headers: Mapping[str, str]
+    status_code: int
+    text: str
+
+
+def render_html(node: object, *, mode: RenderMode = RenderMode.FRAGMENT) -> str:
     return render(node, mode=mode).html
 
 
-def assert_renders(node: Any, *, contains: str, mode: RenderMode = RenderMode.FRAGMENT) -> str:
+def assert_renders(node: object, *, contains: str, mode: RenderMode = RenderMode.FRAGMENT) -> str:
     html = render_html(node, mode=mode)
     assert contains in html, f"{contains!r} not found in {html!r}"
     return html
@@ -51,8 +72,8 @@ def normalize_snapshot_html(html: str) -> str:
 
 @contextmanager
 def override_dependencies(
-    app: Any,
-    overrides: Mapping[Any, Any],
+    app: object,
+    overrides: Mapping[object, object],
 ) -> Generator[None, None, None]:
     """Apply FastAPI ``dependency_overrides`` and restore the prior map on exit."""
     previous = dict(getattr(app, "dependency_overrides", {}))
@@ -64,7 +85,7 @@ def override_dependencies(
         app.dependency_overrides.update(previous)
 
 
-def named_example(name: str) -> Any | None:
+def named_example(name: str) -> object | None:
     for meta in get_registry().components():
         if name in meta.examples:
             return {"component": meta.logical_id, "example": name}
@@ -77,7 +98,7 @@ def iter_named_examples() -> Iterator[dict[str, str]]:
             yield {"component": meta.logical_id, "example": example}
 
 
-def fragment_client(app: Any, *, target: str | None = None) -> Any:
+def fragment_client(app: object, *, target: str | None = None) -> object:
     """Return a TestClient configured for HTMX fragment requests.
 
     Pass ``target=`` to set ``HX-Target`` on every request from the client.
@@ -91,12 +112,14 @@ def fragment_client(app: Any, *, target: str | None = None) -> Any:
     return client
 
 
-def as_adapter(client: Any) -> AdapterAppFixture:
+def as_adapter(client: object) -> AdapterAppFixture:
     """Wrap a FastAPI ``TestClient`` (or compatible) as an :class:`AdapterAppFixture`."""
+    typed_client = cast(_HeaderClient, client)
 
-    def _cookie_jar(response: Any) -> dict[str, str]:
-        jar = {str(k): str(v) for k, v in getattr(response, "cookies", {}).items()}
-        headers = getattr(response, "headers", {})
+    def _cookie_jar(response: object) -> dict[str, str]:
+        typed_response = cast(_TestResponse, response)
+        jar = {str(key): str(value) for key, value in typed_response.cookies.items()}
+        headers = typed_response.headers
         raw = headers.get("Set-Cookie") or headers.get("set-cookie")
         if raw:
             part = str(raw).split(";", 1)[0]
@@ -121,7 +144,7 @@ def as_adapter(client: Any) -> AdapterAppFixture:
             headers: Mapping[str, str] | None = None,
             cookies: Mapping[str, str] | None = None,
         ) -> AdapterResponse:
-            response = client.get(path, headers=_headers(headers or {}, cookies or {}))
+            response = typed_client.get(path, headers=_headers(headers or {}, cookies or {}))
             return AdapterResponse(
                 response.status_code,
                 response.text,
@@ -137,7 +160,7 @@ def as_adapter(client: Any) -> AdapterAppFixture:
             headers: Mapping[str, str] | None = None,
             cookies: Mapping[str, str] | None = None,
         ) -> AdapterResponse:
-            response = client.post(
+            response = typed_client.post(
                 path,
                 data=dict(data or {}),
                 headers=_headers(headers or {}, cookies or {}),
@@ -152,11 +175,11 @@ def as_adapter(client: Any) -> AdapterAppFixture:
     return _Wrapped()
 
 
-def _response_status(response: Any) -> int:
+def _response_status(response: object) -> int:
     return int(response.status_code)
 
 
-def _response_body(response: Any) -> str:
+def _response_body(response: object) -> str:
     body = getattr(response, "body", None)
     if isinstance(body, str):
         return body
@@ -170,7 +193,7 @@ def _response_body(response: Any) -> str:
 
 
 def assert_non_200_fragment(
-    response: Any,
+    response: object,
     *,
     status_code: int,
     contains: str | None = None,

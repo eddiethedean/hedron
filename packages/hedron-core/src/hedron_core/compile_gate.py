@@ -8,7 +8,6 @@ from collections.abc import Generator
 from contextlib import contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass
-from typing import Any
 
 from hedron_core.codes import HED_BUILD_RUNTIME_COMPILE
 from hedron_core.diagnostics import error
@@ -116,10 +115,10 @@ def assert_runtime_compile_allowed(*, production: bool | None = None, what: str 
         )
 
 
-def production_compile_guard(fn: Any) -> Any:
+def production_compile_guard(fn: object) -> object:
     """Decorator that rejects compile helpers under production env."""
 
-    def wrapped(*args: Any, **kwargs: Any) -> Any:
+    def wrapped(*args: object, **kwargs: object) -> object:
         assert_runtime_compile_allowed()
         return fn(*args, **kwargs)
 

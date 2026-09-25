@@ -11,9 +11,12 @@ import importlib
 import importlib.util
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Any, cast
+from typing import cast
+
+from typing_extensions import override
 
 from edron.diagnostics import DiagnosticReport, EdronDiagnostic, SourceLocation, finding
+from hedron_core.typing_support import dynamic_attribute
 
 
 def _location(path: Path, node: ast.AST, *, qualname: str | None = None) -> SourceLocation:
@@ -33,6 +36,7 @@ class _StaticVisitor(ast.NodeVisitor):
         self.findings: list[EdronDiagnostic] = []
         self._page_class: str | None = None
 
+    @override
     def visit_Import(self, node: ast.Import) -> None:
         for alias in node.names:
             if alias.name == "edron" and alias.asname == "st":
@@ -50,6 +54,7 @@ class _StaticVisitor(ast.NodeVisitor):
                 )
         self.generic_visit(node)
 
+    @override
     def visit_Call(self, node: ast.Call) -> None:
         name = ""
         if isinstance(node.func, ast.Attribute):
@@ -75,6 +80,7 @@ class _StaticVisitor(ast.NodeVisitor):
             )
         self.generic_visit(node)
 
+    @override
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
         is_page = any(
             isinstance(base, ast.Attribute)
@@ -159,7 +165,7 @@ def check_source(source: str | Path) -> DiagnosticReport:
     return DiagnosticReport(tuple(visitor.findings))
 
 
-def load_application(target: str | Path, *, attribute: str = "app") -> Any:
+def load_application(target: str | Path, *, attribute: str = "app") -> object:
     """Load a trusted application for ``run``, ``check --register``, or ``explain``."""
     if isinstance(target, Path) or Path(target).is_file():
         path = Path(target).resolve()
@@ -168,18 +174,18 @@ def load_application(target: str | Path, *, attribute: str = "app") -> Any:
             raise RuntimeError(f"cannot load application file {path}")
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
-        return getattr(module, attribute)
+    return dynamic_attribute(module, attribute)
     module_name, separator, attr = str(target).partition(":")
     if not separator:
         raise ValueError("application must be a file or module:attribute")
     module = importlib.import_module(module_name)
-    value: Any = module
+    value: object = module
     for part in attr.split("."):
-        value = getattr(value, part)
+        value = dynamic_attribute(value, part)
     return value
 
 
-def explain_application(app: Any) -> Mapping[str, Any]:
+def explain_application(app: object) -> Mapping[str, object]:
     """Return a bounded, source-mapped explanation of an Edron app."""
     explain = getattr(app, "explain", None)
     if not callable(explain):
@@ -188,10 +194,10 @@ def explain_application(app: Any) -> Mapping[str, Any]:
             "kind": type(app).__name__,
             "pages": [],
         }
-    return cast(Mapping[str, Any], explain())
+    return cast(Mapping[str, object], explain())
 
 
-def check_application(app: Any) -> DiagnosticReport:
+def check_application(app: object) -> DiagnosticReport:
     """Validate already-registered metadata without invoking an application callback."""
     if not hasattr(app, "explain") or not hasattr(app, "source_map"):
         return DiagnosticReport(
@@ -224,12 +230,12 @@ def check_application(app: Any) -> DiagnosticReport:
 
 def doctor(
     *,
-    application: Any = None,
+    application: object = None,
     deployment_profile: str | None = None,
-    deployment_overrides: Mapping[str, Any] | None = None,
+    deployment_overrides: Mapping[str, object] | None = None,
     environ: Mapping[str, str] | None = None,
     cwd: str | Path | None = None,
-) -> dict[str, Any]:
+) -> dict[str, object]:
     """Report package capabilities without installing or changing anything."""
     import importlib.metadata
 
@@ -254,7 +260,7 @@ def doctor(
 
     def inspect_package(
         name: str, spec: str, module_name: str, *, is_required: bool
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         if name == "edron":
             from edron import __version__ as version
         else:
@@ -274,12 +280,12 @@ def doctor(
                 "required": is_required,
             }
         try:
-            importlib.import_module(module_name)
+            _ignored = importlib.import_module(module_name)
         except (ImportError, OSError, RuntimeError, AttributeError):
             return {"name": name, "version": version, "status": "broken", "required": is_required}
         return {"name": name, "version": version, "status": "available", "required": is_required}
 
-    result: dict[str, Any] = {"schema": "edron.doctor/1", "required": [], "optional": []}
+    result: dict[str, object] = {"schema": "edron.doctor/1", "required": [], "optional": []}
     result["required"] = [
         inspect_package(name, *args, is_required=True) for name, args in requirements.items()
     ]

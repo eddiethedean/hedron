@@ -9,9 +9,10 @@ import threading
 import time
 from collections.abc import MutableMapping
 from dataclasses import dataclass, field
-from typing import Any, Protocol
+from typing import Protocol
 from urllib.parse import parse_qs, quote, urlencode
 
+from hedron_core.typing_support import bound_socket_port
 from hedron_notebook.topology import NotebookTokenError, require_loopback_host
 
 __all__ = [
@@ -46,7 +47,7 @@ def _pick_free_port(host: str) -> int:
     with socket.socket(family, socket.SOCK_STREAM) as sock:
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind((host, 0))
-        return int(sock.getsockname()[1])
+    return bound_socket_port(sock)
 
 
 _ROOT_PATH_SAFE = re.compile(r"^/[A-Za-z0-9._~\-/]*$")
@@ -65,7 +66,7 @@ def _normalize_root_path(root_path: str) -> str:
     return path
 
 
-def _header_map(scope: MutableMapping[str, Any]) -> dict[str, str]:
+def _header_map(scope: MutableMapping[str, object]) -> dict[str, str]:
     headers: dict[str, str] = {}
     for raw_name, raw_value in scope.get("headers") or ():
         name = raw_name.decode("latin-1").lower()
@@ -84,7 +85,7 @@ def _cookie_token(cookie_header: str | None) -> str | None:
     return None
 
 
-def _query_token(scope: MutableMapping[str, Any]) -> str | None:
+def _query_token(scope: MutableMapping[str, object]) -> str | None:
     query = scope.get("query_string") or b""
     query_text = query.decode("latin-1") if isinstance(query, bytes) else str(query)
     values = parse_qs(query_text, keep_blank_values=False).get(PREVIEW_TOKEN_QUERY) or []
@@ -94,7 +95,7 @@ def _query_token(scope: MutableMapping[str, Any]) -> str | None:
 
 
 def _token_presentation(
-    scope: MutableMapping[str, Any],
+    scope: MutableMapping[str, object],
 ) -> tuple[str | None, str | None]:
     """Return ``(token, source)`` where source is ``header``, ``query``, or ``cookie``."""
     headers = _header_map(scope)
@@ -115,7 +116,7 @@ def _tokens_match(expected: str, provided: str | None) -> bool:
         return False
     if len(provided) != len(expected):
         # Keep a digest work unit so length mismatches are not free.
-        secrets.compare_digest(expected, expected)
+        _ignored = secrets.compare_digest(expected, expected)
         return False
     return secrets.compare_digest(expected, provided)
 
@@ -135,13 +136,15 @@ class PreviewTokenGate:
     authorized without re-attaching the query string.
     """
 
-    def __init__(self, app: Any, token: str) -> None:
+    def __init__(self, app: object, token: str) -> None:
         if not token:
             raise NotebookTokenError("preview token must be non-empty", source="gate")
         self.app = app
         self.token = token
 
-    async def __call__(self, scope: MutableMapping[str, Any], receive: Any, send: Any) -> None:
+    async def __call__(
+        self, scope: MutableMapping[str, object], receive: object, send: object
+    ) -> None:
         scope_type = scope.get("type")
         if scope_type == "lifespan":
             await self.app(scope, receive, send)
@@ -186,7 +189,7 @@ class PreviewTokenGate:
         cookie = _set_cookie_header(self.token, root_path=root_path)
         cookie_sent = False
 
-        async def send_with_cookie(message: MutableMapping[str, Any]) -> None:
+        async def send_with_cookie(message: MutableMapping[str, object]) -> None:
             nonlocal cookie_sent
             if message.get("type") == "http.response.start" and not cookie_sent:
                 headers = list(message.get("headers") or [])
@@ -198,7 +201,7 @@ class PreviewTokenGate:
         await self.app(scope, receive, send_with_cookie)
 
 
-def wrap_preview_app(app: Any, token: str) -> PreviewTokenGate:
+def wrap_preview_app(app: object, token: str) -> PreviewTokenGate:
     """Return ``app`` wrapped so requests must present ``token``."""
     return PreviewTokenGate(app, token)
 
@@ -207,11 +210,11 @@ def wrap_preview_app(app: Any, token: str) -> PreviewTokenGate:
 class _UvicornThreadServer:
     """Background uvicorn server used when no fake server is injected."""
 
-    app: Any
+    app: object
     host: str
     port: int
     root_path: str = ""
-    _server: Any = field(default=None, init=False, repr=False)
+    _server: object = field(default=None, init=False, repr=False)
     _thread: threading.Thread | None = field(default=None, init=False, repr=False)
     _started: threading.Event = field(default_factory=threading.Event, init=False, repr=False)
 
@@ -221,7 +224,7 @@ class _UvicornThreadServer:
         except ImportError as exc:  # pragma: no cover - exercised when uvicorn absent
             raise RuntimeError(
                 "uvicorn is required to start a notebook preview server. "
-                "Install hedron-notebook[server] or inject a PreviewServer."
+                + "Install hedron-notebook[server] or inject a PreviewServer."
             ) from exc
 
         config = uvicorn.Config(
@@ -280,7 +283,7 @@ class NotebookPreview:
     height: str = "600"
     hosted_warning: bool = False
     _server: PreviewServer | None = field(default=None, repr=False)
-    _app: Any = field(default=None, repr=False)
+    _app: object = field(default=None, repr=False)
     _closed: bool = field(default=False, init=False, repr=False)
 
     @property
@@ -322,7 +325,7 @@ class NotebookPreview:
 
 
 def start_preview(
-    app: Any,
+    app: object,
     *,
     host: str = "127.0.0.1",
     port: int = 0,
@@ -354,7 +357,7 @@ def start_preview(
         first successful query/header auth. Missing or wrong tokens receive
         HTTP 401 / WebSocket close 4401.
     """
-    require_loopback_host(host)
+    _ignored = require_loopback_host(host)
 
     bind_port = port if port else (server.port if server is not None else _pick_free_port(host))
     session_token = token if token is not None else secrets.token_urlsafe(32)

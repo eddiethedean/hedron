@@ -6,11 +6,12 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Any, cast
+from typing import cast
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 
+from hedron_core.app_state import request_app
 from hedron_core.typing_aliases import JsonObject, JsonValue
 from hedron_explorer.services.catalog import (
     components_json,
@@ -75,7 +76,7 @@ def explorer_router() -> APIRouter:
         base = static_dir.resolve()
         target = (base / asset_path).resolve()
         try:
-            target.relative_to(base)
+            _ignored = target.relative_to(base)
         except ValueError as exc:
             raise HTTPException(status_code=404, detail="Not found") from exc
         if not target.is_file():
@@ -148,7 +149,7 @@ def explorer_router() -> APIRouter:
         if isinstance(result, JSONResponse):
             return result
         if isinstance(result, dict) and "route" in result:
-            result = cast(dict[str, Any], result)
+            result = cast(dict[str, object], result)
             result["scenario"] = redacted_app_scenario(
                 route=str(result.get("route")), ok=bool(result.get("ok"))
             )
@@ -160,7 +161,7 @@ def explorer_router() -> APIRouter:
 
     @router.get("/api/diff", include_in_schema=False, response_model=None)
     async def api_diff(request: Request) -> dict[str, JsonValue]:
-        return explorer_diff_report(request.app)
+        return explorer_diff_report(request_app(request))
 
     @router.get("/api/package-health", include_in_schema=False, response_model=None)
     async def api_package_health() -> Mapping[str, object]:

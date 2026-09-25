@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Mapping
-from typing import Any, cast
+from typing import cast
 
 from hedron_core.job_status_store import (
     CELERY_ENQUEUE_FAILED,
@@ -30,7 +30,7 @@ class CeleryJobBackend:
 
     def __init__(
         self,
-        celery_app: Any,
+        celery_app: object,
         *,
         redis_client: RedisClient | None = None,
         key_prefix: str = "h1:job:",
@@ -65,7 +65,7 @@ class CeleryJobBackend:
             self._app.send_task(job_type, args=[dict(payload)], task_id=handle.job_id)
         except Exception:
             # Release idempotency so a later submit can retry after a broker blip (#199).
-            self._store.mark_enqueue_failed(handle.job_id, error=CELERY_ENQUEUE_FAILED)
+            _ignored = self._store.mark_enqueue_failed(handle.job_id, error=CELERY_ENQUEUE_FAILED)
             raise
         return handle
 
@@ -108,7 +108,7 @@ class CeleryJobBackend:
                 if not restored:
                     _logger.warning(
                         "HED-JOB-0001 Celery revoke restore skipped for job_id=%s "
-                        "(status advanced concurrently)",
+                        + "(status advanced concurrently)",
                         job_id,
                     )
             return False
@@ -122,7 +122,7 @@ class CeleryJobBackend:
         job_id: str,
         state: JobState,
         *,
-        result: Any = None,
+        result: object = None,
         error: str | None = None,
     ) -> JobStatus | None:
         return self._store.mark(job_id, state, result=result, error=error)

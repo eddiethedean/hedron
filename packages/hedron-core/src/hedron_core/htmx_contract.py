@@ -54,7 +54,7 @@ APPROVED_RESPONSE_HEADERS = frozenset(
 _LOCAL_PATH = re.compile(r"^/[A-Za-z0-9._~!$&'()*+,;=:@%/\-]*$")
 _SIMPLE_SELECTOR = re.compile(
     r"^(?:#[A-Za-z_][\w\-]*|\.[A-Za-z_][\w\-]*|\[[A-Za-z_][\w\-]*(?:=(?:"
-    r'"[^"]*"|\'[^\']*\'|[A-Za-z0-9_\-]+))?\])$'
+    + r'"[^"]*"|\'[^\']*\'|[A-Za-z0-9_\-]+))?\])$'
 )
 _ON_ATTR = re.compile(r"^on[a-z]+$", re.IGNORECASE)
 # Closed HTMX relative keywords (hx-target="this", hx-indicator="this").
@@ -273,7 +273,7 @@ def _validate_location_mapping(
     path = location.get("path")
     if not isinstance(path, str):
         raise ValueError("HX-Location mapping requires a local path")
-    _require_local_path(path, "HX-Location")
+    _ignored = _require_local_path(path, "HX-Location")
     cleaned: dict[str, JsonValue] = {"path": path}
     target = location.get("target")
     if target is not None:

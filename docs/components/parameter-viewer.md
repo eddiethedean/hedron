@@ -43,7 +43,7 @@ ParameterViewer(parameters, *, title='Parameters', secret_keys=(), class_=None, 
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `parameters` | `Mapping[str, Any]` | Parameter map rendered as definition list entries. |
+| `parameters` | `Mapping[str, object]` | Parameter map rendered as definition list entries. |
 | `secret_keys` | `Sequence[str]` | Keys whose values are replaced with [redacted]. |
 | `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
 

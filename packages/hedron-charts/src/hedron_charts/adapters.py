@@ -7,7 +7,7 @@ import io
 import json
 import math
 from collections.abc import Mapping, Sequence
-from typing import Any, cast
+from typing import cast
 
 from hedron_charts.limits import (
     accessibility_or_raise,
@@ -89,7 +89,7 @@ class MatplotlibAdapter:
         try:
             import importlib
 
-            importlib.import_module("matplotlib")
+            _ignored = importlib.import_module("matplotlib")
         except ImportError as exc:
             raise missing_extra("matplotlib") from exc
         acc = accessibility.validated()
@@ -98,9 +98,9 @@ class MatplotlibAdapter:
         if not callable(savefig):
             raise TypeError("matplotlib adapter requires a Figure-like object with savefig()")
         if fmt == "png":
-            savefig(buf, format="png", bbox_inches="tight")
+            _ignored = savefig(buf, format="png", bbox_inches="tight")
             raw = buf.getvalue()
-            ensure_limits(None, raw, limits=limits)
+            _ignored = ensure_limits(None, raw, limits=limits)
             encoded = base64.b64encode(raw).decode("ascii")
             return ChartOutput(
                 kind="png",
@@ -110,9 +110,9 @@ class MatplotlibAdapter:
                 payload_bytes=len(raw),
                 metadata={"format": "png"},
             )
-        savefig(buf, format="svg", bbox_inches="tight")
+        _ignored = savefig(buf, format="svg", bbox_inches="tight")
         svg = buf.getvalue().decode("utf-8")
-        ensure_limits(None, svg, limits=limits)
+        _ignored = ensure_limits(None, svg, limits=limits)
         reject_active_svg(svg)
         return ChartOutput(
             kind="svg",
@@ -147,7 +147,7 @@ class MatplotlibAdapter:
                     remediation="Compile charts through MatplotlibAdapter.compile().",
                 )
             try:
-                base64.b64decode(encoded, validate=True)
+                _ignored = base64.b64decode(encoded, validate=True)
             except Exception as exc:
                 raise error(
                     "HED-CHART-0007",
@@ -181,7 +181,7 @@ class PlotlyAdapter:
         try:
             import importlib
 
-            importlib.import_module("plotly.io")
+            _ignored = importlib.import_module("plotly.io")
         except ImportError as exc:
             raise missing_extra("plotly") from exc
         acc = accessibility.validated()
@@ -196,11 +196,11 @@ class PlotlyAdapter:
                 fig_dict,
                 separators=(",", ":"),
                 allow_nan=False,
-                cls=cast(Any, PlotlyJSONEncoder),
+                cls=cast(object, PlotlyJSONEncoder),
             )
         except (ImportError, TypeError, ValueError):
             body = _strict_payload(fig_dict)
-        ensure_limits(None, body, limits=limits)
+        _ignored = ensure_limits(None, body, limits=limits)
         return ChartOutput(
             kind="plotly-json",
             body=body,
@@ -252,7 +252,7 @@ class AltairAdapter:
         try:
             import importlib
 
-            importlib.import_module("altair")
+            _ignored = importlib.import_module("altair")
         except ImportError as exc:
             raise missing_extra("altair") from exc
         acc = accessibility.validated()
@@ -271,11 +271,11 @@ class AltairAdapter:
         # Altair emits a remote JSON-schema identifier as metadata. The browser
         # renderer does not fetch it, and removing it keeps otherwise local chart
         # payloads compatible with Hedron's remote-resource policy.
-        spec.pop("$schema", None)
+        _ignored = spec.pop("$schema", None)
         reject_callbacks(spec)
         reject_remote_urls(spec)
         body = _strict_payload(spec)
-        ensure_limits(None, body, limits=limits)
+        _ignored = ensure_limits(None, body, limits=limits)
         return ChartOutput(
             kind="vega-lite",
             body=body,

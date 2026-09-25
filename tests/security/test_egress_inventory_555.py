@@ -5,7 +5,7 @@ from __future__ import annotations
 import tomllib  # pyright: ignore[reportMissingImports] - stdlib in supported Python
 from collections.abc import Callable
 from pathlib import Path
-from typing import Any, cast
+from typing import cast
 
 ROOT = Path(__file__).parents[2]
 INVENTORY = ROOT / "docs/acceptance/egress-inventory-555.toml"
@@ -16,8 +16,8 @@ def test_every_inventory_surface_has_an_owned_disposition_and_existing_paths() -
         Callable[[str], object],
         tomllib.loads,  # pyright: ignore[reportUnknownMemberType]
     )
-    payload = cast(dict[str, Any], loads(INVENTORY.read_text(encoding="utf-8")))
-    surfaces = cast(list[dict[str, Any]], payload["surface"])
+    payload = cast(dict[str, object], loads(INVENTORY.read_text(encoding="utf-8")))
+    surfaces = cast(list[dict[str, object]], payload["surface"])
     assert len(surfaces) >= 10
     assert len({item["id"] for item in surfaces}) == len(surfaces)
     for item in surfaces:

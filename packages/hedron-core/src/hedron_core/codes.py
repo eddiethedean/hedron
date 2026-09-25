@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from hedron_core.typing_support import module_globals
+
 # Config
 HED_CONFIG_UNKNOWN_KEY = "HED-CONFIG-0001"
 HED_CONFIG_UNSUPPORTED_VERSION = "HED-CONFIG-0002"
@@ -584,7 +586,7 @@ def registered_codes() -> frozenset[str]:
     """Return every ``HED-*`` code constant defined in this module."""
     return frozenset(
         value
-        for name, value in globals().items()
+        for name, value in module_globals().items()
         if isinstance(value, str) and value.startswith("HED-") and name.isupper()
     )
 

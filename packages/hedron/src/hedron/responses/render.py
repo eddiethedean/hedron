@@ -22,6 +22,7 @@ from hedron.responses.html import (
     PageResponse,
 )
 from hedron.security.policy import SecurityPolicy
+from hedron_core.app_state import request_state, state_value
 from hedron_core.builtins.document import Page
 from hedron_core.component import NodeLike
 from hedron_core.interaction import (
@@ -37,6 +38,7 @@ from hedron_core.interaction import (
     validated_extra_headers,
 )
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult, render
+from hedron_core.typing_support import dynamic_attribute
 
 __all__ = [
     "hedron_response",
@@ -124,7 +126,7 @@ def _authorize_component_htmx(
             )
             if declared_regions:
                 try:
-                    resolve_fragment_region(
+                    _ignored = resolve_fragment_region(
                         InteractionPolicy(declared_regions=declared_regions), target
                     )
                 except FragmentRegionError:
@@ -136,7 +138,7 @@ def _authorize_component_htmx(
                 requested=target,
                 declared=tuple(region.selector for region in handle_hosts),
             )
-    authorize_htmx_target(
+    _ignored = authorize_htmx_target(
         InteractionPolicy(
             declared_regions=fragment_regions,
             allow_undeclared_targets=allow_undeclared_targets,
@@ -185,7 +187,12 @@ def render_component_response(
     if policy is None and request is not None:
         app = request.scope.get("app")
         if app is not None:
-            policy = getattr(app.state, "hedron_security", SecurityPolicy.from_name("standard"))
+            declared_policy = dynamic_attribute(dynamic_attribute(app, "state"), "hedron_security")
+            policy = (
+                declared_policy
+                if isinstance(declared_policy, SecurityPolicy)
+                else SecurityPolicy.from_name("standard")
+            )
         else:
             policy = SecurityPolicy.from_name("standard")
 
@@ -277,14 +284,14 @@ def render_component_response(
         result = _attach_manifest_assets(result, request)
 
     headers = dict(result.headers)
-    browser_plan = getattr(result, "browser_plan", None)
-    if browser_plan is not None and not getattr(browser_plan, "feature_off", True):
+    browser_plan = dynamic_attribute(result, "browser_plan")
+    if browser_plan is not None and not dynamic_attribute(browser_plan, "feature_off", True):
         # The browser sends this fingerprint on subsequent HTMX requests.  Exposing
         # it on the response makes the document-plan identity observable to adapters,
         # traces, and reverse proxies without allowing a fragment to install assets.
-        fingerprint = getattr(browser_plan, "fingerprint", "")
+        fingerprint = dynamic_attribute(browser_plan, "fingerprint", "")
         if fingerprint:
-            headers.setdefault("X-Hedron-Browser-Plan", str(fingerprint))
+            _ignored = headers.setdefault("X-Hedron-Browser-Plan", str(fingerprint))
     if policy is not None:
         headers.update(policy.response_headers(authenticated=authenticated))
     if extra_headers:
@@ -382,7 +389,9 @@ async def render_interaction(
 
     sec = policy
     if sec is None:
-        sec = getattr(request.app.state, "hedron_security", SecurityPolicy.from_name("standard"))
+        sec = state_value(
+            request_state(request), "hedron_security", SecurityPolicy.from_name("standard")
+        )
     auth = (
         bool(getattr(request.state, "hedron_authenticated", False))
         if authenticated is None
@@ -453,13 +462,13 @@ async def render_interaction(
         _apply_auth_cache_headers(headers, authenticated=auth)
         response = StarletteResponse(status_code=204, headers=headers)
         if sec.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
-            ensure_csrf_cookie(response, sec, request=request)
+            _ignored = ensure_csrf_cookie(response, sec, request=request)
         return response
     if content is None:
         _apply_auth_cache_headers(headers, authenticated=auth)
         response = StarletteResponse(status_code=result.status_code, headers=headers)
         if sec.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
-            ensure_csrf_cookie(response, sec, request=request)
+            _ignored = ensure_csrf_cookie(response, sec, request=request)
         return response
 
     from hedron.routing.route import prepare_endpoint_value
@@ -482,5 +491,5 @@ async def render_interaction(
         _authorized_htmx_target=auth_target,
     )
     if sec.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
-        ensure_csrf_cookie(response, sec, request=request)
+        _ignored = ensure_csrf_cookie(response, sec, request=request)
     return response

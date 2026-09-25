@@ -1165,7 +1165,7 @@ def verify_gate(gate: str) -> list[str]:
             ]
         )
     if gate == "TYPE-100":
-        return _run([python, "-m", "pyright", "tests/upgrade/phase_1_0/canonical/app.py"])
+        return _run([python, "-m", "basedpyright", "tests/upgrade/phase_1_0/canonical/app.py"])
     if gate == "SECURITY-100":
         return _run([python, "-m", "pytest", "-q", "tests/security"])
     if gate == "A11Y-100":

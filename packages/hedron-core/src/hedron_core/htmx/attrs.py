@@ -10,6 +10,7 @@ from typing import Final, Literal, cast
 from hedron_core.htmx_contract import safe_css_selector, safe_hx_swap
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_core.typing_aliases import HtmlAttrValue
+from hedron_core.typing_support import dynamic_attribute
 
 __all__ = ["HtmxAttrs", "Hx"]
 
@@ -132,8 +133,8 @@ class HtmxAttrs:
         )
         values: dict[str, object] = {}
         for name in fields:
-            left = getattr(self, name)
-            right = getattr(other, name)
+            left = dynamic_attribute(self, name)
+            right = dynamic_attribute(other, name)
             if left not in (None, False) and right not in (None, False) and left != right:
                 raise ValueError(f"conflicting HTMX attribute writer for {name!r}")
             values[name] = left if left not in (None, False) else right

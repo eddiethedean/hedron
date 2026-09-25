@@ -6,7 +6,7 @@ import os
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, cast
+from typing import cast
 from urllib.parse import urlsplit
 
 from hedron_core.compat import tomllib
@@ -233,7 +233,7 @@ def import_mkdocs(path: str | Path) -> DocsBuildConfig:
         class _SafeMigrationLoader(yaml.SafeLoader):
             pass
 
-        def _ignore_unknown(loader: Any, tag_suffix: str, node: Any) -> Any:
+        def _ignore_unknown(loader: object, tag_suffix: str, node: object) -> object:
             if isinstance(node, yaml.ScalarNode):
                 return loader.construct_scalar(node)
             if isinstance(node, yaml.SequenceNode):

@@ -12,7 +12,7 @@ import hashlib
 import secrets
 from collections.abc import Mapping, MutableMapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, TypedDict, cast
+from typing import TypedDict, cast
 from urllib.parse import urljoin, urlparse
 
 from hedron.auth.oauth import require_authlib
@@ -73,7 +73,7 @@ class OidcUserClaimsDict(TypedDict, total=False):
     sub: str
     email: str | None
     name: str | None
-    raw: dict[str, Any]
+    raw: dict[str, object]
 
 
 @dataclass(frozen=True, slots=True)
@@ -121,7 +121,7 @@ class OidcUserClaims:
     sub: str
     email: str | None = None
     name: str | None = None
-    raw: dict[str, Any] = field(default_factory=dict[str, Any])
+    raw: dict[str, object] = field(default_factory=dict[str, object])
 
     def as_dict(self) -> OidcUserClaimsDict:
         return {
@@ -182,7 +182,7 @@ def _validate_post_logout_redirect_uri(uri: str, config: OidcClientConfig) -> No
 
 
 def store_oidc_handshake(
-    session: MutableMapping[str, Any],
+    session: MutableMapping[str, object],
     *,
     state: str,
     nonce: str | None = None,
@@ -208,7 +208,7 @@ def store_oidc_handshake(
     session[_OIDC_HANDSHAKE_KEY] = payload
 
 
-def normalize_claims(claims: Mapping[str, Any]) -> OidcUserClaims:
+def normalize_claims(claims: Mapping[str, object]) -> OidcUserClaims:
     sub = claims.get("sub")
     if not isinstance(sub, str) or not sub.strip():
         raise ValueError("OIDC claims require a non-empty string sub")
@@ -231,15 +231,15 @@ def _mask_email(email: str) -> str:
     return f"{local[0]}***@{domain}"
 
 
-def redact_claims(claims: OidcUserClaims | Mapping[str, Any]) -> dict[str, Any]:
+def redact_claims(claims: OidcUserClaims | Mapping[str, object]) -> dict[str, object]:
     """Explorer-safe claim view: keep sub, mask email, scrub token-like raw keys."""
-    data: Mapping[str, Any]
+    data: Mapping[str, object]
     if isinstance(claims, OidcUserClaims):
         data = claims.as_dict()
     else:
         raw_candidate: object = claims.get("raw", claims)
-        raw: dict[str, Any] = (
-            dict(cast(Mapping[str, Any], raw_candidate))
+        raw: dict[str, object] = (
+            dict(cast(Mapping[str, object], raw_candidate))
             if isinstance(raw_candidate, Mapping)
             else {}
         )
@@ -251,7 +251,7 @@ def redact_claims(claims: OidcUserClaims | Mapping[str, Any]) -> dict[str, Any]:
         }
     email = data.get("email")
     raw_value: object = data.get("raw")
-    raw = cast(dict[str, Any], raw_value) if isinstance(raw_value, dict) else {}
+    raw = cast(dict[str, object], raw_value) if isinstance(raw_value, dict) else {}
     return {
         "sub": data.get("sub"),
         "email": _mask_email(email) if isinstance(email, str) else None,
@@ -274,7 +274,7 @@ def login_url(
     Raises ``HED-AUTH-0001`` when Authlib is not installed
     (``pip install "hedron[auth]"``).
     """
-    require_authlib()
+    _ignored = require_authlib()
     from authlib.common.urls import add_params_to_uri
 
     if not state:
@@ -311,7 +311,7 @@ def logout_url(
     Raises ``HED-AUTH-0001`` when Authlib is not installed
     (``pip install "hedron[auth]"``).
     """
-    require_authlib()
+    _ignored = require_authlib()
     from authlib.common.urls import add_params_to_uri
 
     params: list[tuple[str, str]] = [("client_id", config.client_id)]

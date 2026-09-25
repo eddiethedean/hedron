@@ -60,7 +60,7 @@ def require_supported_method(method: str) -> str:
     if normalized not in DECLARED_HX_METHODS:
         raise UnsupportedSimFeatureError(
             f"hedron-sim does not emulate HTTP method {method!r}; "
-            f"declared subset={sorted(DECLARED_HX_METHODS)}",
+            + f"declared subset={sorted(DECLARED_HX_METHODS)}",
             category="methods",
             feature=normalized,
         )
@@ -77,7 +77,7 @@ def require_supported_swap(swap: str) -> str:
             return style if " " not in token else f"{style}{token[len(key) :]}"
     raise UnsupportedSimFeatureError(
         f"hedron-sim does not emulate hx-swap style {swap!r}; "
-        f"declared subset={sorted(DECLARED_SWAP_STYLES)}",
+        + f"declared subset={sorted(DECLARED_SWAP_STYLES)}",
         category="swaps",
         feature=key,
     )

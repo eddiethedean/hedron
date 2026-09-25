@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Any
 
 from hedron_core.bundles import FeatureBundle, FeatureConflictError, FeatureRequirement
 from hedron_core.catalog import PackageProjection, ProjectionCapability
@@ -22,8 +21,8 @@ class RemoteWorkflow:
 
     adapter: GradioClientAdapter
     endpoint: GradioEndpoint
-    input_model: type[Any]
-    outcomes: Mapping[str, Any]
+    input_model: type[object]
+    outcomes: Mapping[str, object]
     provider: str = "hedron-gradio"
     provider_version: str = "0.2.0"
     name: str | None = None

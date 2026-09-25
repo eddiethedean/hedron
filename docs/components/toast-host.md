@@ -38,7 +38,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```text
-ToastHost(*, placement: "Literal['top-start', 'top-end', 'bottom-start', 'bottom-end', 'center']" = 'top-end', position: "Literal['fixed', 'sticky', 'flow']" = 'fixed', width: "Literal['content', 'field', 'full']" = 'content', max_width: "Literal['sm', 'md', 'lg']" = 'md', gap: "Literal['xs', 'sm', 'md']" = 'sm', **kwargs: 'Any') -> 'None'
+ToastHost(*, placement: "Literal['top-start', 'top-end', 'bottom-start', 'bottom-end', 'center']" = 'top-end', position: "Literal['fixed', 'sticky', 'flow']" = 'fixed', width: "Literal['content', 'field', 'full']" = 'content', max_width: "Literal['sm', 'md', 'lg']" = 'md', gap: "Literal['xs', 'sm', 'md']" = 'sm', **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |

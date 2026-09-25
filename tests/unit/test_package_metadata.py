@@ -7,7 +7,6 @@ import tomllib
 import zipfile
 from importlib import metadata
 from pathlib import Path
-from typing import Any
 
 import pytest
 
@@ -193,7 +192,7 @@ def test_flagship_declares_direct_pydantic_dependency() -> None:
 
 
 def test_audited_dependency_floors_are_declared() -> None:
-    def project(package: str) -> dict[str, Any]:
+    def project(package: str) -> dict[str, object]:
         return tomllib.loads(
             (ROOT / "packages" / package / "pyproject.toml").read_text(encoding="utf-8")
         )["project"]

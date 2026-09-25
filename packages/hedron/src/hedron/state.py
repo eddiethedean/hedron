@@ -3,11 +3,15 @@
 from __future__ import annotations
 
 import copy
+from collections.abc import Callable
 from functools import lru_cache
-from typing import Any, Generic, TypeVar, get_origin
+from typing import Generic, TypeVar
 
-from fastapi import Depends, Request
+from fastapi import Request
+from fastapi.params import Depends as DependsParam
 from pydantic import BaseModel, TypeAdapter
+
+from hedron_core.typing_support import type_origin
 
 T = TypeVar("T")
 
@@ -19,11 +23,12 @@ _STATE_CACHE = "_hedron_session_state"
 class SessionState(Generic[T]):
     """Thin typed facade over the host framework session."""
 
-    __slots__ = ("_request", "_key", "_adapter", "_value", "_snapshot")
+    __slots__ = ("_request", "_key", "_annotation", "_adapter", "_value", "_snapshot")
 
     def __init__(self, request: Request, key: str, annotation: type[T]) -> None:
         self._request = request
         self._key = key
+        self._annotation = annotation
         self._adapter: TypeAdapter[T] = TypeAdapter(annotation)
         raw = request.session.get(key) if self._has_session(request) else None
         if raw is None:
@@ -44,7 +49,7 @@ class SessionState(Generic[T]):
             raw = self._request.session.get(self._key)
             if raw != self._snapshot:
                 if raw is None:
-                    self._value = self._default(self._adapter._type)  # type: ignore[attr-defined]
+                    self._value = self._default(self._annotation)
                 else:
                     self._value = self._adapter.validate_python(raw)
                 self._snapshot = copy.deepcopy(raw)
@@ -57,8 +62,8 @@ class SessionState(Generic[T]):
         if not self._has_session(self._request):
             raise RuntimeError(
                 "SessionState write requires SessionMiddleware "
-                "(no 'session' in request scope); install SessionMiddleware "
-                "or avoid persisting session state on this request."
+                + "(no 'session' in request scope); install SessionMiddleware "
+                + "or avoid persisting session state on this request."
             )
         if isinstance(validated, BaseModel):
             self._request.session[self._key] = validated.model_dump(mode="json")
@@ -67,7 +72,7 @@ class SessionState(Generic[T]):
         self._snapshot = copy.deepcopy(self._request.session.get(self._key))
 
     def clear(self) -> None:
-        self._value = self._default(self._adapter._type)  # type: ignore[attr-defined]
+        self._value = self._default(self._annotation)
         if not self._has_session(self._request):
             raise RuntimeError(
                 "SessionState.clear requires SessionMiddleware (no 'session' in request scope)."
@@ -76,17 +81,17 @@ class SessionState(Generic[T]):
         self._snapshot = None
 
     @staticmethod
-    def _default(annotation: type[Any]) -> Any:
-        origin = get_origin(annotation) or annotation
+    def _default(annotation: type[object]) -> object:
+        origin = type_origin(annotation) or annotation
         if isinstance(origin, type) and issubclass(origin, BaseModel):
             return origin()
         return None
 
 
 @lru_cache(maxsize=256)
-def _session_dependency(key: str, annotation: type[T]) -> Any:
+def _session_dependency(key: str, annotation: type[T]) -> Callable[..., object]:
     async def dependency(request: Request) -> SessionState[T]:
-        cache: dict[tuple[str, type[Any]], SessionState[Any]] | None = getattr(
+        cache: dict[tuple[str, type[object]], SessionState[object]] | None = getattr(
             request.state, _STATE_CACHE, None
         )
         if cache is None:
@@ -102,7 +107,7 @@ def _session_dependency(key: str, annotation: type[T]) -> Any:
     return dependency
 
 
-def session_state(key: str, annotation: type[T]) -> Any:
+def session_state(key: str, annotation: type[T]) -> object:
     dependency = _session_dependency(key, annotation)
 
-    return Depends(dependency)
+    return DependsParam(dependency)

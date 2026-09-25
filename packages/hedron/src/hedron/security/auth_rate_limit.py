@@ -15,10 +15,12 @@ import time
 from collections import deque
 from collections.abc import Callable, Collection
 from heapq import heappop, heappush
-from typing import Any, cast
+from typing import cast
 
 from fastapi import HTTPException, Request, status
 from starlette.responses import JSONResponse, Response
+
+from hedron_core.typing_support import dynamic_attribute
 
 __all__ = [
     "AuthRateLimiter",
@@ -33,8 +35,8 @@ def _trusted_proxy_peers(request: Request) -> set[str]:
     raw_env = os.environ.get("HEDRON_TRUSTED_PROXIES", "")
     peers.update(part.strip() for part in raw_env.split(",") if part.strip())
     app: object | None = request.scope.get("app")
-    state = getattr(app, "state", None) if app is not None else None
-    configured = getattr(state, "hedron_trusted_peers", None) if state is not None else None
+    state = dynamic_attribute(app, "state") if app is not None else None
+    configured = dynamic_attribute(state, "hedron_trusted_peers") if state is not None else None
     if isinstance(configured, (list, tuple, set, frozenset)):
         peers.update(
             str(item).strip() for item in cast(Collection[object], configured) if str(item).strip()
@@ -123,7 +125,7 @@ class AuthRateLimiter:
             if bucket is None:
                 continue
             while bucket and bucket[0] <= cutoff:
-                bucket.popleft()
+                _ignored = bucket.popleft()
             if bucket:
                 heappush(self._expiry, (bucket[0] + self.window_seconds, key))
             else:
@@ -176,7 +178,7 @@ def auth_rate_limit_dependency(
     limiter: AuthRateLimiter,
     *,
     route: str | None = None,
-) -> Callable[..., Any]:
+) -> Callable[..., object]:
     """FastAPI dependency factory that applies ``limiter`` to the request."""
 
     def _dependency(request: Request) -> None:

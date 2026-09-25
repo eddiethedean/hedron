@@ -12,6 +12,9 @@ from typing import Literal, Protocol, TypeVar, cast
 
 from fastapi import FastAPI, Request
 
+from hedron_core.app_state import request_state, state_value
+from hedron_core.typing_support import awaitable_value, call_dynamic
+
 ConnectionKind = Literal["sqlalchemy", "snowflake", "custom"]
 T = TypeVar("T")
 _logger = logging.getLogger("hedron.connections")
@@ -81,10 +84,10 @@ def _dispose_instance(instance: object) -> None:
                 with suppress(Exception):
                     close = getattr(result, "close", None)
                     if callable(close):
-                        close()
+                        _ignored = close()
                 raise RuntimeError(
                     "Connection dispose returned an awaitable from the sync path; "
-                    "use close_all_async() / lifespan async shutdown instead."
+                    + "use close_all_async() / lifespan async shutdown instead."
                 )
             return
 
@@ -156,7 +159,7 @@ class ConnectionRegistry:
         merged: dict[str, object] = dict(config or {})
         if secret_refs:
             # Opaque refs only — values are labels/paths, not live secrets.
-            merged.setdefault("secret_refs", dict(secret_refs))
+            _ignored = merged.setdefault("secret_refs", dict(secret_refs))
         spec = ConnectionSpec(
             name=name,
             kind=kind,
@@ -166,7 +169,7 @@ class ConnectionRegistry:
         # Drop any cached instance from a prior registration of the same name.
         if name in self._instances:
             _dispose_instance(self._instances.pop(name))
-        self._factory_errors.pop(name, None)
+        _ignored = self._factory_errors.pop(name, None)
         self._specs[name] = spec
         self._factories[name] = factory
         self._secret_refs[name] = dict(secret_refs or {})
@@ -174,7 +177,7 @@ class ConnectionRegistry:
             # Heterogeneous registry stores checks as object→bool after registration.
             self._healthchecks[name] = cast(Callable[[object], bool], healthcheck)
         else:
-            self._healthchecks.pop(name, None)
+            _ignored = self._healthchecks.pop(name, None)
         return spec
 
     def spec(self, name: str) -> ConnectionSpec:
@@ -202,7 +205,7 @@ class ConnectionRegistry:
                 creator = False
 
         if not creator:
-            pending.wait()
+            _ignored = pending.wait()
             with self._lock:
                 if name in self._instances:
                     return self._instances[name]
@@ -218,22 +221,22 @@ class ConnectionRegistry:
             if inspect.isawaitable(instance):
                 close = getattr(instance, "close", None)
                 if callable(close):
-                    close()
+                    _ignored = close()
                 raise RuntimeError(
                     f"Connection factory {name!r} returned an awaitable; "
-                    "use the async dependency/lifespan path."
+                    + "use the async dependency/lifespan path."
                 )
         except Exception as exc:
             with self._lock:
-                self._pending.pop(name, None)
+                _ignored = self._pending.pop(name, None)
                 self._factory_errors[name] = exc
             pending.set()
             raise
 
         with self._lock:
-            self._factory_errors.pop(name, None)
-            self._instances.setdefault(name, instance)
-            self._pending.pop(name, None)
+            _ignored = self._factory_errors.pop(name, None)
+            _ignored = self._instances.setdefault(name, instance)
+            _ignored = self._pending.pop(name, None)
             result = self._instances[name]
         pending.set()
         return result
@@ -246,12 +249,13 @@ class ConnectionRegistry:
             if name in self._instances:
                 return self._instances[name]
             factory = self._factories[name]
-        instance = factory()
-        if inspect.isawaitable(instance):
-            instance = await instance
+        instance = call_dynamic(factory)
+        pending = awaitable_value(instance)
+        if pending is not None:
+            instance = await pending
         with self._lock:
             existing = self._instances.setdefault(name, instance)
-            self._factory_errors.pop(name, None)
+            _ignored = self._factory_errors.pop(name, None)
         return existing
 
     def health(self, name: str) -> bool:
@@ -282,7 +286,7 @@ class ConnectionRegistry:
             if name not in self._factories:
                 raise KeyError(f"unknown connection {name!r}")
             instance = self._instances.pop(name, None)
-            self._factory_errors.pop(name, None)
+            _ignored = self._factory_errors.pop(name, None)
         if instance is not None:
             _dispose_instance(instance)
 
@@ -341,7 +345,7 @@ def install_connections(app: FastAPI, registry: ConnectionRegistry) -> Connectio
 
 def get_connection(request: Request, name: str) -> object:
     """Resolve a named connection from the request's app registry."""
-    registry = getattr(request.app.state, "hedron_connections", None)
+    registry = state_value(request_state(request), "hedron_connections")
     if not isinstance(registry, ConnectionRegistry):
         raise RuntimeError(
             "ConnectionRegistry not installed; call install_connections(app, registry) first"
@@ -353,7 +357,7 @@ def connection_dependency(name: str) -> Callable[[Request], object]:
     """FastAPI ``Depends`` factory for a named connection."""
 
     async def _dependency(request: Request) -> object:
-        registry = getattr(request.app.state, "hedron_connections", None)
+        registry = state_value(request_state(request), "hedron_connections")
         if not isinstance(registry, ConnectionRegistry):
             raise RuntimeError(
                 "ConnectionRegistry not installed; call install_connections(app, registry) first"

@@ -7,7 +7,6 @@ import os
 import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any
 from urllib.parse import quote, urlencode, urlsplit
 
 from starlette.requests import Request
@@ -256,7 +255,7 @@ def compose_local_url(
     if not is_local_path(value) or parsed_path.query or parsed_path.fragment:
         raise ValueError(
             "local URL path must be a local absolute path without query/fragment; "
-            "pass query= and fragment= instead"
+            + "pass query= and fragment= instead"
         )
     result = prefix_local_path(value, mount)
     if query:
@@ -306,7 +305,7 @@ def mounted_redirect(
     *,
     mount: str,
     status_code: int = 303,
-    policy: Any | None = None,
+    policy: object | None = None,
     query: Mapping[str, object] | Sequence[tuple[str, object]] | None = None,
     fragment: str | None = None,
 ) -> Response:

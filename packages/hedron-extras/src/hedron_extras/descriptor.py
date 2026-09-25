@@ -8,7 +8,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, cast
+from typing import cast
 
 from hedron_core.plugins import PluginContext
 from hedron_core.plugins.meta import StabilityLabel
@@ -70,7 +70,7 @@ class ExtrasFeature:
             description=self.description or self.name,
         )
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "name": self.name,
             "component_tag": self.component_tag,

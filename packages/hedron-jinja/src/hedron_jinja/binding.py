@@ -9,7 +9,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from importlib import import_module
 from types import MappingProxyType
-from typing import Any, cast
+from typing import cast
 
 from hedron_core import AssetRef, Component
 from hedron_core.catalog import compile_interaction_catalog
@@ -56,7 +56,7 @@ class ApplicationStyleFact:
         }
 
 
-def _freeze_mapping(value: Mapping[str, Any]) -> Mapping[str, Any]:
+def _freeze_mapping(value: Mapping[str, object]) -> Mapping[str, object]:
     return MappingProxyType(dict(value))
 
 
@@ -70,8 +70,8 @@ class JinjaBinding:
     """
 
     app_id: str
-    components: Mapping[str, type[Component[Any]]] = field(
-        default_factory=lambda: cast(Mapping[str, type[Component[Any]]], {})
+    components: Mapping[str, type[Component[object]]] = field(
+        default_factory=lambda: cast(Mapping[str, type[Component[object]]], {})
     )
     assets: Mapping[str, AssetRef] = field(default_factory=lambda: cast(Mapping[str, AssetRef], {}))
     handles: Mapping[str, object] = field(default_factory=lambda: cast(Mapping[str, object], {}))
@@ -110,7 +110,7 @@ class JinjaBinding:
             if manifest.feature_id != feature_id:
                 raise ValueError(
                     f"provider mapping key {feature_id!r} does not match "
-                    f"feature_id {manifest.feature_id!r}"
+                    + f"feature_id {manifest.feature_id!r}"
                 )
         object.__setattr__(self, "components", _freeze_mapping(self.components))
         object.__setattr__(self, "assets", _freeze_mapping(self.assets))
@@ -125,7 +125,7 @@ class JinjaBinding:
         *,
         app_id: str,
         registry: Registry | None = None,
-        components: Mapping[str, type[Component[Any]]] | None = None,
+        components: Mapping[str, type[Component[object]]] | None = None,
         handles: Mapping[str, object] | None = None,
         assets: Mapping[str, AssetRef] | None = None,
         asset_hrefs: Mapping[str, str] | None = None,
@@ -164,7 +164,7 @@ class JinjaBinding:
                         explanation=f"More than one component resolves to alias {alias!r}.",
                         remediation="Pass an explicit component alias mapping for the application.",
                     )
-                component_map[alias] = cast(type[Component[Any]], candidate)
+                component_map[alias] = cast(type[Component[object]], candidate)
 
         asset_map = dict(assets or {})
         public_asset_hrefs = dict(asset_hrefs or {})
@@ -173,7 +173,7 @@ class JinjaBinding:
             registered_asset_ids.add(meta.logical_id)
             public_href = public_asset_hrefs.get(meta.logical_id)
             if public_href is not None:
-                asset_map.setdefault(
+                _ignored = asset_map.setdefault(
                     meta.logical_id,
                     AssetRef(kind=meta.kind, href=public_href, attributes=meta.attributes),
                 )
@@ -241,7 +241,7 @@ class JinjaBinding:
         """Resolve an app-scoped live handle after verifying the catalog descriptor."""
         token = str(logical_id).strip()
         catalog = compile_interaction_catalog(app_id=self.app_id)
-        catalog.require(token)
+        _ignored = catalog.require(token)
         handle = self.handles.get(token)
         if handle is None:
             raise error(
@@ -283,7 +283,7 @@ class JinjaBinding:
 
         return included_bundles(app_id=self.app_id)
 
-    def view(self, target: object, **bind_kwargs: Any) -> object:
+    def view(self, target: object, **bind_kwargs: object) -> object:
         from hedron_jinja.handles import catalog_view
 
         return catalog_view(target, binding=self, **bind_kwargs)
@@ -293,7 +293,7 @@ class JinjaBinding:
         target: object,
         *,
         fields: Sequence[object] | None = None,
-        **form_kwargs: Any,
+        **form_kwargs: object,
     ) -> object:
         from hedron_jinja.handles import catalog_command_form
 

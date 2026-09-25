@@ -38,13 +38,13 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```text
-Video(src: 'SafeUrl | str', *, tracks: 'Sequence[Mapping[str, Any] | NodeLike]' = (), controls: 'bool' = True, autoplay: 'bool' = False, loop: 'bool' = False, muted: 'bool' = False, preload: 'str | None' = None, poster: 'SafeUrl | str | None' = None, allow_external: 'bool' = False, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
+Video(src: 'SafeUrl | str', *, tracks: 'Sequence[Mapping[str, object] | NodeLike]' = (), controls: 'bool' = True, autoplay: 'bool' = False, loop: 'bool' = False, muted: 'bool' = False, preload: 'str | None' = None, poster: 'SafeUrl | str | None' = None, allow_external: 'bool' = False, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
 | `src` | `SafeUrl | str` | Media or document URL (`SafeUrl` preferred for untrusted input). |
-| `tracks` | `Sequence[Mapping[str, Any] | NodeLike]` | Optional track elements or track mappings. Default: `()`. |
+| `tracks` | `Sequence[Mapping[str, object] | NodeLike]` | Optional track elements or track mappings. Default: `()`. |
 | `controls` | `bool` | Whether native media controls are shown. Default: `True`. |
 | `autoplay` | `bool` | Whether media attempts autoplay (browser-gated). Default: `False`. |
 | `loop` | `bool` | Whether media loops. Default: `False`. |

@@ -6,18 +6,22 @@ import argparse
 import json
 from pathlib import Path
 
+from hedron.cli.arguments import boolean_argument, path_argument, string_argument
+
 
 def _cmd_build(args: argparse.Namespace) -> int:
     from hedron.build import run_build
     from hedron.cli.discovery import load_app
     from hedron.config import load_hedron_settings
 
-    base = Path(args.project or Path.cwd()).resolve()
+    base = Path(path_argument(args, "project") or Path.cwd()).resolve()
     settings = load_hedron_settings(base)
-    application = getattr(args, "app", None) or settings.application
+    application = string_argument(args, "app") or settings.application
     if application:
-        load_app(application)
-    result = run_build(project_dir=base, settings=settings, production=not args.dev)
+        _ignored = load_app(application)
+    result = run_build(
+        project_dir=base, settings=settings, production=not boolean_argument(args, "dev")
+    )
     print(
         json.dumps(
             {

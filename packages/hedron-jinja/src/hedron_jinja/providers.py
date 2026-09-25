@@ -133,7 +133,7 @@ def provider_available(feature_id: str) -> bool:
     if module is None:
         return False
     try:
-        import_module(module)
+        _ignored = import_module(module)
     except ImportError:
         return False
     return True

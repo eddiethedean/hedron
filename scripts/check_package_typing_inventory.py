@@ -1,22 +1,45 @@
 #!/usr/bin/env python3
-"""Ensure every workspace Python package is covered by the strict typing gate."""
+"""Enforce the workspace's package checker coverage and explicit Any ban."""
 
 from __future__ import annotations
 
-import re
+import ast
 import sys
 import tomllib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CI_CHECKS = ROOT / "scripts/ci_checks.sh"
-PACKAGE_ROOT_PATTERN = re.compile(
-    r"^\s+(packages/[A-Za-z0-9_.-]+/src/[A-Za-z0-9_]+)\s*\\?\s*$"
-)
+CONFIG = ROOT / "pyproject.toml"
+PYTHON_ROOTS = ("examples", "packages", "scripts", "tests", "typings")
 
 
-def _workspace_package_roots() -> set[str]:
-    workspace = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+def _explicit_any_uses() -> list[str]:
+    failures: list[str] = []
+    for root_name in PYTHON_ROOTS:
+        root = ROOT / root_name
+        if not root.is_dir():
+            continue
+        paths = sorted((*root.rglob("*.py"), *root.rglob("*.pyi")))
+        for path in paths:
+            try:
+                tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+            except (OSError, SyntaxError) as exc:
+                failures.append(f"{path.relative_to(ROOT)}: cannot inspect Python source: {exc}")
+                continue
+            for node in ast.walk(tree):
+                if isinstance(node, ast.Name) and node.id == "Any":
+                    failures.append(f"{path.relative_to(ROOT)}:{node.lineno}: explicit Any name")
+                elif isinstance(node, ast.Attribute) and node.attr == "Any":
+                    failures.append(f"{path.relative_to(ROOT)}:{node.lineno}: qualified Any type")
+                elif isinstance(node, ast.ImportFrom) and any(
+                    alias.name == "Any" for alias in node.names
+                ):
+                    failures.append(f"{path.relative_to(ROOT)}:{node.lineno}: import of Any")
+    return failures
+
+
+def _workspace_package_source_roots() -> set[str]:
+    workspace = tomllib.loads(CONFIG.read_text(encoding="utf-8"))
     members = workspace["tool"]["uv"]["workspace"]["members"]
     roots: set[str] = set()
     errors: list[str] = []
@@ -35,57 +58,50 @@ def _workspace_package_roots() -> set[str]:
         if not (package_path / "__init__.py").is_file():
             errors.append(f"{member}: expected Python package root {relative}")
             continue
-        roots.add(relative)
+        roots.add((Path(member) / "src").as_posix())
 
     if errors:
         raise ValueError("\n".join(errors))
     return roots
 
 
-def _strict_gate_package_roots() -> set[str]:
-    source = CI_CHECKS.read_text(encoding="utf-8")
-    start_marker = "quality_strict_package_types() {"
-    start = source.find(start_marker)
-    if start < 0:
-        raise ValueError(f"{CI_CHECKS.relative_to(ROOT)} has no strict typing function")
-    end = source.find("\n}", start)
-    if end < 0:
-        raise ValueError(
-            f"{CI_CHECKS.relative_to(ROOT)} has an unterminated strict typing function"
-        )
-
-    roots = {
-        match.group(1)
-        for line in source[start:end].splitlines()
-        if (match := PACKAGE_ROOT_PATTERN.match(line))
-    }
-    if not roots:
-        raise ValueError("strict typing function has no package roots")
-    return roots
+def _basedpyright_include_roots() -> set[str]:
+    project = tomllib.loads(CONFIG.read_text(encoding="utf-8"))
+    include = project.get("tool", {}).get("basedpyright", {}).get("include")
+    if not isinstance(include, list) or not all(isinstance(path, str) for path in include):
+        raise ValueError("[tool.basedpyright].include must list package source roots")
+    return {Path(path).as_posix().rstrip("/") for path in include}
 
 
 def main() -> int:
     try:
-        workspace_roots = _workspace_package_roots()
-        strict_gate_roots = _strict_gate_package_roots()
+        workspace_roots = _workspace_package_source_roots()
+        checker_roots = _basedpyright_include_roots()
     except (OSError, KeyError, TypeError, tomllib.TOMLDecodeError, ValueError) as exc:
         print(f"package typing inventory error: {exc}", file=sys.stderr)
         return 1
 
-    missing = sorted(workspace_roots - strict_gate_roots)
-    stale = sorted(strict_gate_roots - workspace_roots)
+    missing = sorted(workspace_roots - checker_roots)
+    stale = sorted(checker_roots - workspace_roots)
     if missing or stale:
         if missing:
-            print("Missing from strict package typing gate:", file=sys.stderr)
+            print("Missing from BasedPyright include:", file=sys.stderr)
             for root in missing:
                 print(f"  {root}", file=sys.stderr)
         if stale:
-            print("Strict package typing gate contains non-workspace roots:", file=sys.stderr)
+            print("BasedPyright include contains non-workspace roots:", file=sys.stderr)
             for root in stale:
                 print(f"  {root}", file=sys.stderr)
         return 1
 
-    print(f"package typing inventory: {len(workspace_roots)} workspace packages covered")
+    any_uses = _explicit_any_uses()
+    if any_uses:
+        print("Explicit Any is disallowed in workspace Python code:", file=sys.stderr)
+        print("\n".join(f"  {failure}" for failure in any_uses), file=sys.stderr)
+        return 1
+
+    print(f"BasedPyright package inventory: {len(workspace_roots)} workspace packages covered")
+    print("Explicit Any ban: package code, examples, scripts, tests, and stubs")
     return 0
 
 

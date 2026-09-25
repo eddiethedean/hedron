@@ -48,7 +48,7 @@ def _scope_matches_path(scope: str, path: str) -> bool:
     if path == scope:
         return True
     try:
-        PurePath(path).relative_to(PurePath(scope))
+        _ignored = PurePath(path).relative_to(PurePath(scope))
         return True
     except ValueError:
         return False
@@ -299,7 +299,7 @@ def diagnostics_to_sarif(
     results: list[JsonObject] = []
     rules: dict[str, JsonObject] = {}
     for diag in diagnostics:
-        rules.setdefault(
+        _ignored = rules.setdefault(
             diag.code,
             {
                 "id": diag.code,

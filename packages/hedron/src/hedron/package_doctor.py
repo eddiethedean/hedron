@@ -12,7 +12,7 @@ from __future__ import annotations
 import hashlib
 import re
 from pathlib import Path
-from typing import Any, cast
+from typing import Protocol, cast
 
 from hedron_core.compat import tomllib
 
@@ -33,6 +33,12 @@ _NAMESPACE_LITERAL_RE = re.compile(r"(?:namespace|NAMESPACE)\s*=\s*[\"']([^\"']+
 _SCHEMA_LITERAL_RE = re.compile(r"[\"'](hedron-authoring-loop-\d+)[\"']")
 _MARKDOWN_LINK_RE = re.compile(r"\[[^\]]*\]\(([^)\s]+)")
 _ENTRY_POINT_RE = re.compile(r"^[\w.]+:[\w.]+$")
+
+
+class _RegexMatch(Protocol):
+    def group(self, index: int = 0) -> str: ...
+
+
 _UPPER_BOUND_OPS = frozenset({"<", "<=", "==", "===", "~="})
 _LOWER_BOUND_OPS = frozenset({">", ">=", "==", "===", "~="})
 
@@ -45,16 +51,16 @@ __all__ = [
 ]
 
 
-def _mapping(value: object) -> dict[str, Any]:
+def _mapping(value: object) -> dict[str, object]:
     """Normalize a validated TOML table to a string-keyed mapping."""
     if not isinstance(value, dict):
         return {}
-    return cast(dict[str, Any], value)
+    return cast(dict[str, object], value)
 
 
-def _sequence(value: object) -> list[Any]:
+def _sequence(value: object) -> list[object]:
     """Normalize a validated TOML array without leaking unknown element types."""
-    return cast(list[Any], value) if isinstance(value, list) else []
+    return cast(list[object], value) if isinstance(value, list) else []
 
 
 def _diagnostic(
@@ -62,8 +68,8 @@ def _diagnostic(
     *,
     check: str,
     severity: str = "error",
-    **details: Any,
-) -> dict[str, Any]:
+    **details: object,
+) -> dict[str, object]:
     return {
         "code": HED_PACKAGE_DOCTOR,
         "message": message,
@@ -102,14 +108,16 @@ def _relative(path: Path, root: Path) -> str:
         return path.name
 
 
-def _hatch_targets(config: dict[str, Any]) -> dict[str, Any]:
+def _hatch_targets(config: dict[str, object]) -> dict[str, object]:
     tool = _mapping(config.get("tool"))
     hatch = _mapping(tool.get("hatch"))
     build = _mapping(hatch.get("build"))
     return _mapping(build.get("targets"))
 
 
-def _package_dirs(root: Path, project: dict[str, Any], config: dict[str, Any]) -> tuple[Path, ...]:
+def _package_dirs(
+    root: Path, project: dict[str, object], config: dict[str, object]
+) -> tuple[Path, ...]:
     """Locate importable package directories without importing anything."""
     wheel = _sequence(_mapping(_hatch_targets(config).get("wheel")).get("packages"))
     found: list[Path] = []
@@ -154,9 +162,9 @@ def _python_sources(files: tuple[Path, ...]) -> dict[Path, str]:
 
 
 def _check_metadata(
-    root: Path, project: dict[str, Any]
-) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-    found: list[dict[str, Any]] = []
+    root: Path, project: dict[str, object]
+) -> tuple[dict[str, object], list[dict[str, object]]]:
+    found: list[dict[str, object]] = []
     for key in ("name", "version"):
         if not str(project.get(key) or "").strip():
             found.append(_diagnostic(f"pyproject [project] is missing {key!r}", check="metadata"))
@@ -195,11 +203,11 @@ def _check_metadata(
 
 def _check_entry_points(
     root: Path,
-    project: dict[str, Any],
+    project: dict[str, object],
     package_dirs: tuple[Path, ...],
     sources: dict[Path, str],
-) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-    found: list[dict[str, Any]] = []
+) -> tuple[dict[str, object], list[dict[str, object]]]:
+    found: list[dict[str, object]] = []
     groups = dict(project.get("entry-points") or {})
     plugins = dict(groups.get("hedron.plugins") or {})
     resolved: list[dict[str, str]] = []
@@ -245,7 +253,7 @@ def _check_entry_points(
             found.append(
                 _diagnostic(
                     f"entry point {name!r} target {attribute!r} is missing from "
-                    f"{row['module_file']}",
+                    + f"{row['module_file']}",
                     check="entry_points",
                     entry_point=name,
                 )
@@ -273,15 +281,16 @@ def _check_entry_points(
 
 def _check_feature_descriptors(
     root: Path, sources: dict[Path, str]
-) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-    found: list[dict[str, Any]] = []
+) -> tuple[dict[str, object], list[dict[str, object]]]:
+    found: list[dict[str, object]] = []
     bundles: list[str] = []
     namespaces: set[str] = set()
     for path, text in sources.items():
         relative = _relative(path, root)
         if "FeatureBundle(" in text:
             bundles.append(relative)
-        for namespace in _NAMESPACE_LITERAL_RE.findall(text):
+        for match in _NAMESPACE_LITERAL_RE.finditer(text):
+            namespace = cast(_RegexMatch, match).group(1)
             namespaces.add(str(namespace))
             if not _NAMESPACE_RE.match(str(namespace)):
                 found.append(
@@ -302,9 +311,9 @@ def _check_feature_descriptors(
 
 
 def _check_assets(
-    root: Path, files: tuple[Path, ...], config: dict[str, Any]
-) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-    found: list[dict[str, Any]] = []
+    root: Path, files: tuple[Path, ...], config: dict[str, object]
+) -> tuple[dict[str, object], list[dict[str, object]]]:
+    found: list[dict[str, object]] = []
     assets = [path for path in files if path.suffix in _ASSET_SUFFIXES]
     by_suffix: dict[str, int] = {}
     for path in assets:
@@ -339,8 +348,8 @@ def _check_assets(
 
 def _check_schema_fingerprints(
     root: Path, sources: dict[Path, str]
-) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-    found: list[dict[str, Any]] = []
+) -> tuple[dict[str, object], list[dict[str, object]]]:
+    found: list[dict[str, object]] = []
     expected, installed = _schema_version()
     consumers: list[str] = []
     literals: set[str] = set()
@@ -348,13 +357,14 @@ def _check_schema_fingerprints(
         relative = _relative(path, root)
         if "hedron_conformance.authoring_loop" in text or "AUTHORING_LOOP_SCHEMA_VERSION" in text:
             consumers.append(relative)
-        for literal in _SCHEMA_LITERAL_RE.findall(text):
+        for match in _SCHEMA_LITERAL_RE.finditer(text):
+            literal = cast(_RegexMatch, match).group(1)
             literals.add(str(literal))
             if str(literal) != expected:
                 found.append(
                     _diagnostic(
                         f"authoring-loop schema literal {literal!r} in {relative} "
-                        f"does not match {expected!r}",
+                        + f"does not match {expected!r}",
                         check="schema_fingerprints",
                         source=relative,
                     )
@@ -372,9 +382,9 @@ def _check_schema_fingerprints(
 
 
 def _check_docs_links(
-    root: Path, project: dict[str, Any]
-) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-    found: list[dict[str, Any]] = []
+    root: Path, project: dict[str, object]
+) -> tuple[dict[str, object], list[dict[str, object]]]:
+    found: list[dict[str, object]] = []
     readme = root / str(project.get("readme") or "README.md")
     if not readme.is_file():
         return {"readme": None, "checked": False}, found
@@ -389,7 +399,8 @@ def _check_docs_links(
             )
         )
     broken: list[str] = []
-    for target in _MARKDOWN_LINK_RE.findall(text):
+    for match in _MARKDOWN_LINK_RE.finditer(text):
+        target = cast(_RegexMatch, match).group(1)
         link = str(target)
         if link.startswith(("http://", "https://", "#", "mailto:")):
             continue
@@ -417,11 +428,13 @@ def _check_docs_links(
     )
 
 
-def _check_version_ranges(project: dict[str, Any]) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+def _check_version_ranges(
+    project: dict[str, object],
+) -> tuple[dict[str, object], list[dict[str, object]]]:
     from packaging.requirements import InvalidRequirement, Requirement
 
-    found: list[dict[str, Any]] = []
-    rows: list[dict[str, Any]] = []
+    found: list[dict[str, object]] = []
+    rows: list[dict[str, object]] = []
     grouped: list[tuple[str, str]] = [
         ("dependencies", str(dep)) for dep in _sequence(project.get("dependencies"))
     ]
@@ -481,10 +494,10 @@ def _check_version_ranges(project: dict[str, Any]) -> tuple[dict[str, Any], list
 
 def _check_publishable(
     root: Path,
-    config: dict[str, Any],
+    config: dict[str, object],
     package_dirs: tuple[Path, ...],
-) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-    found: list[dict[str, Any]] = []
+) -> tuple[dict[str, object], list[dict[str, object]]]:
+    found: list[dict[str, object]] = []
     build_system = dict(config.get("build-system") or {})
     backend = str(build_system.get("build-backend") or "")
     if not backend:
@@ -524,10 +537,10 @@ def _check_publishable(
     )
 
 
-def diagnose_package(path: Path | str) -> dict[str, Any]:
+def diagnose_package(path: Path | str) -> dict[str, object]:
     """Return a read-only ``HED-PACKAGE-DOCTOR`` report for a package source tree."""
     root = Path(path).resolve()
-    report: dict[str, Any] = {
+    report: dict[str, object] = {
         "package_doctor": True,
         "read_only": True,
         "automatic_install": False,
@@ -556,7 +569,7 @@ def diagnose_package(path: Path | str) -> dict[str, Any]:
     files = _scan_files(package_dirs)
     sources = _python_sources(files)
 
-    results: list[tuple[str, tuple[dict[str, Any], list[dict[str, Any]]]]] = [
+    results: list[tuple[str, tuple[dict[str, object], list[dict[str, object]]]]] = [
         ("metadata", _check_metadata(root, project)),
         ("entry_points", _check_entry_points(root, project, package_dirs, sources)),
         ("feature_descriptors", _check_feature_descriptors(root, sources)),
@@ -567,8 +580,8 @@ def diagnose_package(path: Path | str) -> dict[str, Any]:
         ("publishable", _check_publishable(root, config, package_dirs)),
     ]
 
-    diagnostics: list[dict[str, Any]] = []
-    checks: dict[str, Any] = {}
+    diagnostics: list[dict[str, object]] = []
+    checks: dict[str, object] = {}
     for name, (detail, found) in results:
         checks[name] = {
             "ok": not any(item["severity"] == "error" for item in found),

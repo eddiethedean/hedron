@@ -393,10 +393,10 @@ def register_handle_descriptor(descriptor: BaseHandleDescriptor, *, key: str | N
 def unregister_handle_descriptor(logical_id: str, *, app_id: str) -> None:
     """Drop a handle descriptor. Used by FeatureBundle rollback/eject."""
     state = _active_handle_state()
-    state.descriptors.pop((app_id, logical_id), None)
+    _ignored = state.descriptors.pop((app_id, logical_id), None)
     stale = [key for key, owner in state.keys.items() if key[0] == app_id and owner == logical_id]
     for key in stale:
-        state.keys.pop(key, None)
+        _ignored = state.keys.pop(key, None)
 
 
 def list_handle_descriptors(*, app_id: str | None = None) -> tuple[BaseHandleDescriptor, ...]:
@@ -743,7 +743,7 @@ def _owned_region(target: UpdateTarget) -> FragmentRegion:
 
 
 def _compile_refresh(intent: RefreshIntent, expected_app_id: str | None) -> InteractionResult:
-    _target_app(intent.targets)
+    _ignored = _target_app(intent.targets)
     trigger: dict[str, JsonValue] = {}
     for target in intent.targets:
         _ensure_ownership(target, expected_app_id)
@@ -775,7 +775,7 @@ def _compile_refresh(intent: RefreshIntent, expected_app_id: str | None) -> Inte
 
 def _compile_patches(bundle: PatchSet, expected_app_id: str | None) -> InteractionResult:
     all_targets = (bundle.primary.target, *(item.target for item in bundle.secondary))
-    _target_app(all_targets)
+    _ignored = _target_app(all_targets)
     for target in all_targets:
         _ensure_ownership(target, expected_app_id)
     primary = bundle.primary

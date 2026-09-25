@@ -3,15 +3,55 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from collections.abc import Sequence
+from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
-from typing import cast
+from typing import Protocol, cast
 
 from edron.deployment import PROFILE_NAMES, check_deployment
 from edron.diagnostics import DiagnosticReport, finding
 from edron.migrate.cli import build_migrate_parser
 from edron.scaffolds import TEMPLATES, create_scaffold
 from edron.tooling import check_source, doctor, explain_application, load_application
+
+
+class _ParsedArgs(Protocol):
+    application: str | None
+    bind: str | None
+    build_dir: Path | None
+    command: str | None
+    cwd: Path | None
+    external_url: str | None
+    fail_on: str
+    format: str
+    func: Callable[[_ParsedArgs], int] | None
+    host: str
+    job_backend: str | None
+    name: str
+    overwrite: bool
+    path: Path | None
+    port: int
+    profile: str | None
+    register: bool
+    reload: bool
+    root_path: str | None
+    secret_source: str | None
+    state_backend: str | None
+    template: str
+    trust_proxy: list[str] | None
+    workers: int | None
+
+
+def _object_list(value: object) -> list[object] | None:
+    return cast(list[object], value) if isinstance(value, list) else None
+
+
+def _string_mapping(value: object) -> Mapping[str, object] | None:
+    if not isinstance(value, Mapping):
+        return None
+    mapping = cast(Mapping[object, object], value)
+    if not all(isinstance(key, str) for key in mapping):
+        return None
+    return cast(Mapping[str, object], mapping)
 
 
 def _print_report(report: DiagnosticReport, output_format: str) -> None:
@@ -44,30 +84,32 @@ def _app_failure(message: str) -> DiagnosticReport:
 
 
 def _add_deployment_arguments(command: argparse.ArgumentParser) -> None:
-    command.add_argument(
+    _ignored = command.add_argument(
         "--profile",
         metavar="PROFILE",
         default=None,
         help=f"deployment profile ({', '.join(PROFILE_NAMES)})",
     )
-    command.add_argument("--bind", default=None)
-    command.add_argument("--port", type=int, default=None)
-    command.add_argument("--workers", type=int, default=None)
-    command.add_argument("--root-path", default=None)
-    command.add_argument("--build-dir", type=Path, default=None)
-    command.add_argument("--external-url", default=None)
-    command.add_argument("--trust-proxy", action="append", default=None)
-    command.add_argument(
+    _ignored = command.add_argument("--bind", default=None)
+    _ignored = command.add_argument("--port", type=int, default=None)
+    _ignored = command.add_argument("--workers", type=int, default=None)
+    _ignored = command.add_argument("--root-path", default=None)
+    _ignored = command.add_argument("--build-dir", type=Path, default=None)
+    _ignored = command.add_argument("--external-url", default=None)
+    _ignored = command.add_argument("--trust-proxy", action="append", default=None)
+    _ignored = command.add_argument(
         "--state-backend", choices=("process-local", "shared", "unknown"), default=None
     )
-    command.add_argument(
+    _ignored = command.add_argument(
         "--job-backend", choices=("process-local", "shared", "unknown"), default=None
     )
-    command.add_argument("--secret-source", default=None, help="opaque platform secret reference")
+    _ignored = command.add_argument(
+        "--secret-source", default=None, help="opaque platform secret reference"
+    )
 
 
-def _deployment_overrides(args: argparse.Namespace) -> dict[str, object]:
-    values = {
+def _deployment_overrides(args: _ParsedArgs) -> dict[str, object]:
+    values: dict[str, object] = {
         "bind": args.bind,
         "port": args.port,
         "workers": args.workers,
@@ -83,65 +125,80 @@ def _deployment_overrides(args: argparse.Namespace) -> dict[str, object]:
     return {key: value for key, value in values.items() if value is not None}
 
 
+def _required_application(args: _ParsedArgs) -> str:
+    if not isinstance(args.application, str) or not args.application:
+        raise SystemExit("this command requires an application target")
+    return args.application
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="edron")
     sub = parser.add_subparsers(dest="command")
 
     run = sub.add_parser("run", help="run a trusted Edron application")
-    run.add_argument("application", help="app.py or module:attribute")
-    run.add_argument("--host", default="127.0.0.1")
-    run.add_argument("--port", type=int, default=8000)
-    run.add_argument("--reload", action="store_true")
+    _ignored = run.add_argument("application", help="app.py or module:attribute")
+    _ignored = run.add_argument("--host", default="127.0.0.1")
+    _ignored = run.add_argument("--port", type=int, default=8000)
+    _ignored = run.add_argument("--reload", action="store_true")
 
     deploy_check = sub.add_parser(
         "deploy-check", help="validate an explicit deployment profile without importing the app"
     )
     _add_deployment_arguments(deploy_check)
-    deploy_check.add_argument("--format", choices=("text", "json", "sarif"), default="text")
-    deploy_check.add_argument("--cwd", type=Path, default=None)
+    _ignored = deploy_check.add_argument(
+        "--format", choices=("text", "json", "sarif"), default="text"
+    )
+    _ignored = deploy_check.add_argument("--cwd", type=Path, default=None)
 
     check = sub.add_parser("check", help="statically check an Edron source file")
-    check.add_argument("application", help="app.py or module:attribute")
-    check.add_argument("--register", action="store_true", help="also import trusted source")
-    check.add_argument("--format", choices=("text", "json", "sarif"), default="text")
-    check.add_argument("--fail-on", choices=("information", "warning", "error"), default="error")
+    _ignored = check.add_argument("application", help="app.py or module:attribute")
+    _ignored = check.add_argument(
+        "--register", action="store_true", help="also import trusted source"
+    )
+    _ignored = check.add_argument("--format", choices=("text", "json", "sarif"), default="text")
+    _ignored = check.add_argument(
+        "--fail-on", choices=("information", "warning", "error"), default="error"
+    )
 
     explain = sub.add_parser("explain", help="explain registered Edron surfaces")
-    explain.add_argument("application", help="app.py or module:attribute")
-    explain.add_argument("--format", choices=("text", "json"), default="text")
+    _ignored = explain.add_argument("application", help="app.py or module:attribute")
+    _ignored = explain.add_argument("--format", choices=("text", "json"), default="text")
 
     doctor_parser = sub.add_parser("doctor", help="diagnose package capabilities")
-    doctor_parser.add_argument(
+    _ignored = doctor_parser.add_argument(
         "application", nargs="?", help="optional trusted app.py or module:attribute"
     )
-    doctor_parser.add_argument("--format", choices=("text", "json"), default="text")
+    _ignored = doctor_parser.add_argument("--format", choices=("text", "json"), default="text")
     _add_deployment_arguments(doctor_parser)
-    doctor_parser.add_argument("--cwd", type=Path, default=None)
+    _ignored = doctor_parser.add_argument("--cwd", type=Path, default=None)
 
     new = sub.add_parser("new", help="create an Edron teaching scaffold")
-    new.add_argument("name")
-    new.add_argument("--path", type=Path, default=None)
-    new.add_argument("--template", choices=TEMPLATES, default="minimal")
-    new.add_argument("--overwrite", action="store_true")
+    _ignored = new.add_argument("name")
+    _ignored = new.add_argument("--path", type=Path, default=None)
+    _ignored = new.add_argument("--template", choices=TEMPLATES, default="minimal")
+    _ignored = new.add_argument("--overwrite", action="store_true")
 
     build_migrate_parser(sub)
 
-    args = parser.parse_args(argv)
+    args = cast(_ParsedArgs, cast(object, parser.parse_args(argv)))
     try:
-        if hasattr(args, "func"):
+        if callable(args.func):
             return args.func(args)
         if args.command == "run":
             import uvicorn
+            from starlette.types import ASGIApp
+
+            application_target = _required_application(args)
 
             if args.reload:
-                if ":" not in args.application or Path(args.application).is_file():
+                if ":" not in application_target or Path(application_target).is_file():
                     raise ValueError(
                         "--reload requires an import target such as app:app; "
-                        "a loaded application object cannot be re-imported by Uvicorn"
+                        + "a loaded application object cannot be re-imported by Uvicorn"
                     )
-                uvicorn.run(args.application, host=args.host, port=args.port, reload=True)
+                uvicorn.run(application_target, host=args.host, port=args.port, reload=True)
             else:
-                application = load_application(args.application)
+                application = cast(ASGIApp, load_application(application_target))
                 uvicorn.run(application, host=args.host, port=args.port, reload=False)
             return 0
         if args.command == "deploy-check":
@@ -158,30 +215,39 @@ def main(argv: Sequence[str] | None = None) -> int:
                 print(report.to_text())
             return 0 if report.ok else 2
         if args.command == "check":
-            if ":" in args.application and not Path(args.application).is_file():
+            application_target = _required_application(args)
+            if ":" in application_target and not Path(application_target).is_file():
                 if not args.register:
                     report = _app_failure(
                         "static check requires a .py file unless --register is supplied"
                     )
                 else:
-                    load_application(args.application)
+                    _ignored = load_application(application_target)
                     report = DiagnosticReport()
             else:
-                report = check_source(args.application)
+                report = check_source(application_target)
                 if args.register and report.ok:
-                    load_application(args.application)
+                    _ignored = load_application(application_target)
             _print_report(report, args.format)
             return _report_status(report, args.fail_on)
         if args.command == "explain":
-            application = load_application(args.application)
+            application = load_application(_required_application(args))
             payload = explain_application(application)
             if args.format == "json":
                 print(json.dumps(payload, indent=2, sort_keys=True))
             else:
                 print(f"Edron application: {payload.get('title', '<unnamed>')}")
-                for page in payload.get("pages", []):
+                pages = _object_list(payload.get("pages", [])) or []
+                for page_value in pages:
+                    page = _string_mapping(page_value)
+                    if page is None:
+                        continue
                     print(f"- {page.get('name')} {page.get('path')}: {page.get('title')}")
-                    for surface in page.get("surfaces", []):
+                    surfaces = _object_list(page.get("surfaces", [])) or []
+                    for surface_value in surfaces:
+                        surface = _string_mapping(surface_value)
+                        if surface is None:
+                            continue
                         print(
                             f"  - {surface.get('kind')} {surface.get('name')} {surface.get('path')}"
                         )
@@ -199,7 +265,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             else:
                 for group in ("required", "optional"):
                     print(f"{group}:")
-                    for item in payload[group]:
+                    items = _object_list(payload.get(group)) or []
+                    for item_value in items:
+                        item = _string_mapping(item_value)
+                        if item is None:
+                            continue
                         version = f" {item['version']}" if item.get("version") else ""
                         print(f"  {item['name']}: {item['status']}{version}")
             deployment = payload.get("deployment")

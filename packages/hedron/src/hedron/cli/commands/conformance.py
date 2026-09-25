@@ -5,6 +5,8 @@ from __future__ import annotations
 import argparse
 import sys
 
+from hedron.cli.arguments import boolean_argument
+
 
 def _cmd_conformance(args: argparse.Namespace) -> int:
     """Run the published language-neutral conformance kit (phase 0.14)."""
@@ -17,7 +19,7 @@ def _cmd_conformance(args: argparse.Namespace) -> int:
         )
         return 2
     argv = ["run"]
-    if args.json:
+    if boolean_argument(args, "json"):
         argv.append("--json")
     return int(conformance_main(argv))
 

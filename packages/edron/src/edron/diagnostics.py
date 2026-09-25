@@ -11,7 +11,7 @@ import json
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Literal, cast
+from typing import Literal, cast
 
 Severity = Literal["error", "warning", "information"]
 MAX_DIAGNOSTICS = 512
@@ -32,7 +32,7 @@ class SourceLocation:
         if self.start_line < 1 or self.start_column < 1:
             raise ValueError("source positions are one-based")
 
-    def to_mapping(self) -> dict[str, Any]:
+    def to_mapping(self) -> dict[str, object]:
         return {
             "path": self.path,
             "start_line": self.start_line,
@@ -43,7 +43,7 @@ class SourceLocation:
         }
 
 
-def _redact(value: Any, *, depth: int = 0) -> Any:
+def _redact(value: object, *, depth: int = 0) -> object:
     """Return a bounded JSON-compatible diagnostic value."""
     if depth > 3:
         return "<redacted>"
@@ -55,9 +55,9 @@ def _redact(value: Any, *, depth: int = 0) -> Any:
     if value is None or isinstance(value, (bool, int, float)):
         return value
     if isinstance(value, Mapping):
-        result: dict[str, Any] = {}
-        mapping = cast(Mapping[Any, Any], value)
-        mapping_items: list[tuple[Any, Any]] = list(mapping.items())[:32]
+        result: dict[str, object] = {}
+        mapping = cast(Mapping[object, object], value)
+        mapping_items: list[tuple[object, object]] = list(mapping.items())[:32]
         for key, item in mapping_items:
             key_text = str(key)[:80]
             result[key_text] = (
@@ -70,7 +70,7 @@ def _redact(value: Any, *, depth: int = 0) -> Any:
             )
         return result
     if isinstance(value, Sequence) and not isinstance(value, (bytes, bytearray, str)):
-        sequence_items: list[Any] = list(cast(Sequence[Any], value))[:32]
+        sequence_items: list[object] = list(cast(Sequence[object], value))[:32]
         return [_redact(item, depth=depth + 1) for item in sequence_items]
     return f"<{type(value).__name__}>"
 
@@ -85,8 +85,8 @@ class EdronDiagnostic:
     explanation: str
     remediation: str = ""
     source: SourceLocation | None = None
-    native_diagnostic: Any = None
-    context: Mapping[str, Any] = field(default_factory=lambda: dict[str, Any]())
+    native_diagnostic: object = None
+    context: Mapping[str, object] = field(default_factory=lambda: dict[str, object]())
     docs_url: str | None = None
 
     def __post_init__(self) -> None:
@@ -96,8 +96,8 @@ class EdronDiagnostic:
             raise ValueError(f"unknown diagnostic severity: {self.severity!r}")
         object.__setattr__(self, "context", _redact(self.context))
 
-    def to_mapping(self) -> dict[str, Any]:
-        result: dict[str, Any] = {
+    def to_mapping(self) -> dict[str, object]:
+        result: dict[str, object] = {
             "code": self.code,
             "severity": self.severity,
             "title": self.title,
@@ -125,7 +125,7 @@ class EdronDiagnostic:
             parts.append(f"Remediation: {self.remediation}")
         return "\n".join(parts)
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         """Compatibility spelling for JSON-compatible consumers."""
         return self.to_mapping()
 
@@ -149,7 +149,7 @@ class DiagnosticReport:
     def ok(self) -> bool:
         return not any(item.severity == "error" for item in self.diagnostics)
 
-    def to_mapping(self) -> dict[str, Any]:
+    def to_mapping(self) -> dict[str, object]:
         return {
             "schema": self.schema,
             "ok": self.ok,
@@ -160,17 +160,17 @@ class DiagnosticReport:
     def to_json(self, *, indent: int | None = 2) -> str:
         return json.dumps(self.to_mapping(), indent=indent, sort_keys=True) + "\n"
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         return self.to_mapping()
 
     def to_text(self) -> str:
         return "\n\n".join(item.as_text() for item in self.diagnostics) or "No findings."
 
-    def to_sarif(self) -> dict[str, Any]:
-        results: list[dict[str, Any]] = []
-        rules: dict[str, dict[str, Any]] = {}
+    def to_sarif(self) -> dict[str, object]:
+        results: list[dict[str, object]] = []
+        rules: dict[str, dict[str, object]] = {}
         for item in self.diagnostics:
-            rules.setdefault(
+            _ignored = rules.setdefault(
                 item.code,
                 {
                     "id": item.code,
@@ -178,7 +178,7 @@ class DiagnosticReport:
                     "fullDescription": {"text": item.explanation},
                 },
             )
-            result: dict[str, Any] = {
+            result: dict[str, object] = {
                 "ruleId": item.code,
                 "level": {"error": "error", "warning": "warning", "information": "note"}[
                     item.severity
@@ -212,7 +212,7 @@ class DiagnosticReport:
         }
 
 
-def source_location(value: Any, *, qualname: str | None = None) -> SourceLocation | None:
+def source_location(value: object, *, qualname: str | None = None) -> SourceLocation | None:
     """Best-effort source location lookup that never calls ``value``."""
     import inspect
 
@@ -240,7 +240,7 @@ def finding(
     explanation: str,
     remediation: str = "",
     source: SourceLocation | None = None,
-    context: Mapping[str, Any] | None = None,
+    context: Mapping[str, object] | None = None,
 ) -> EdronDiagnostic:
     return EdronDiagnostic(
         code=code,

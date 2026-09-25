@@ -7,7 +7,7 @@ import tempfile
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, cast
+from typing import cast
 
 from hedron.builtins.files import validate_upload_filename, validate_upload_size
 
@@ -86,14 +86,14 @@ async def read_upload_capped(
     """
     import inspect
 
-    raw_maximum_size = cast(Any, maximum_size)
+    raw_maximum_size = cast(object, maximum_size)
     if (
         isinstance(raw_maximum_size, bool)
         or not isinstance(raw_maximum_size, int)
         or raw_maximum_size < 0
     ):
         raise ValueError("Upload size budget must be non-negative")
-    raw_chunk_size = cast(Any, chunk_size)
+    raw_chunk_size = cast(object, chunk_size)
     if (
         isinstance(raw_chunk_size, bool)
         or not isinstance(raw_chunk_size, int)
@@ -130,7 +130,7 @@ def materialize_upload(
     safe = validate_upload_filename(filename)
     if len(safe.encode("utf-8")) > limits.maximum_filename_bytes:
         raise ValueError("Upload filename exceeds budget")
-    validate_upload_size(len(content), maximum_size=limits.maximum_size)
+    _ignored = validate_upload_size(len(content), maximum_size=limits.maximum_size)
     if limits.allowed_extensions:
         allowed = {
             e.lower() if e.startswith(".") else f".{e.lower()}" for e in limits.allowed_extensions
@@ -148,7 +148,7 @@ def materialize_upload(
     path = Path(name)
     try:
         with os.fdopen(fd, "wb") as handle:
-            handle.write(content)
+            _ignored = handle.write(content)
     except Exception:
         path.unlink(missing_ok=True)
         raise

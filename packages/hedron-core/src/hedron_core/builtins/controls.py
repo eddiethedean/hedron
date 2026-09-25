@@ -6,6 +6,8 @@ import re
 from collections.abc import Mapping
 from typing import Literal
 
+from typing_extensions import override
+
 from hedron_core.builtins._base import class_names
 from hedron_core.builtins.appearance import (
     Appearance,
@@ -136,12 +138,12 @@ def _button_emphasis_appearance(
     mapped_emphasis, mapped_appearance = _VARIANT_MAP[variant]
     resolved_emphasis = emphasis or mapped_emphasis
     resolved_appearance = appearance or mapped_appearance
-    require_choice(
+    _ignored = require_choice(
         resolved_emphasis,
         ("primary", "secondary", "danger", "neutral"),
         label="emphasis",
     )
-    require_choice(
+    _ignored = require_choice(
         resolved_appearance,
         ("solid", "outline", "soft", "ghost", "plain", "raised"),
         label="appearance",
@@ -202,6 +204,7 @@ class Button(Component[ButtonProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         children: list[NodeLike] = []
         if self.props.leading_icon:
@@ -282,6 +285,7 @@ class LinkButton(Component[LinkButtonProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         data = appearance_data(
             size=self.props.size,
@@ -344,6 +348,7 @@ class IconButton(Component[IconButtonProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         data = appearance_data(
             size=self.props.size,

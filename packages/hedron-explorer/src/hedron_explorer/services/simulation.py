@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, cast
+from typing import cast
 
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
+from hedron_core.app_state import request_json, request_state, state_value
+from hedron_core.ast_literals import parse_literal
 from hedron_core.registry import RouteMeta, get_registry
 from hedron_core.typing_aliases import JsonObject
 from hedron_explorer.services.runtime import TRACE
@@ -29,7 +31,7 @@ _SIMULATE_KEYS = SIMULATE_KEYS
 ELEMENT_FAILURES = frozenset({"none", "module", "upgrade"})
 
 
-def parse_regions(inference: dict[str, Any]) -> dict[str, str]:
+def parse_regions(inference: dict[str, object]) -> dict[str, str]:
     """Return id → selector map from typed or legacy fragment_regions metadata."""
     regions_raw = inference.get("fragment_regions")
     regions: dict[str, str] = {}
@@ -37,7 +39,7 @@ def parse_regions(inference: dict[str, Any]) -> dict[str, str]:
         for item in cast(list[object], regions_raw):
             if not isinstance(item, dict):
                 continue
-            typed_item = cast(dict[str, Any], item)
+            typed_item = cast(dict[str, object], item)
             rid = typed_item.get("id")
             selector = typed_item.get("selector")
             if isinstance(rid, str) and rid and isinstance(selector, str) and selector:
@@ -46,7 +48,7 @@ def parse_regions(inference: dict[str, Any]) -> dict[str, str]:
     if isinstance(regions_raw, dict):
         for key, value in cast(dict[object, object], regions_raw).items():
             if isinstance(value, dict):
-                selector = cast(dict[str, Any], value).get("selector")
+                selector = cast(dict[str, object], value).get("selector")
                 regions[str(key)] = (
                     str(selector) if selector is not None else str(cast(object, value))
                 )
@@ -54,10 +56,8 @@ def parse_regions(inference: dict[str, Any]) -> dict[str, str]:
                 regions[str(key)] = str(value)
         return regions
     if isinstance(regions_raw, str) and regions_raw.startswith("{"):
-        import ast
-
         try:
-            parsed = ast.literal_eval(regions_raw)
+            parsed = parse_literal(regions_raw)
         except (SyntaxError, ValueError):
             parsed = {}
         if isinstance(parsed, dict):
@@ -66,7 +66,8 @@ def parse_regions(inference: dict[str, Any]) -> dict[str, str]:
 
 
 async def require_csrf(request: Request) -> JSONResponse | None:
-    policy = getattr(request.app.state, "hedron_security", None)
+    state = request_state(request)
+    policy = state_value(state, "hedron_security")
     if policy is None:
         return JSONResponse(
             {"detail": "CSRF policy required for simulate"},
@@ -108,7 +109,7 @@ async def require_csrf(request: Request) -> JSONResponse | None:
         ):
             return JSONResponse({"detail": "CSRF validation failed"}, status_code=403)
         return None
-    validator = getattr(request.app.state, "hedron_csrf_validate", None)
+    validator = state_value(state, "hedron_csrf_validate")
     if callable(validator):
         try:
             result = validator(request, policy)
@@ -125,8 +126,8 @@ async def require_csrf(request: Request) -> JSONResponse | None:
     return None
 
 
-def click_preview_payload(route: RouteMeta, *, target: str | None) -> dict[str, Any]:
-    inference = dict(getattr(route, "htmx_inference", {}) or {})
+def click_preview_payload(route: RouteMeta, *, target: str | None) -> dict[str, object]:
+    inference = dict(route.htmx_inference)
     regions = parse_regions(inference)
     methods = tuple(route.methods or ("GET",))
     csrf_required = inference.get("csrf_required")
@@ -149,15 +150,15 @@ def click_preview_payload(route: RouteMeta, *, target: str | None) -> dict[str, 
     }
 
 
-async def simulate(request: Request) -> Any:
+async def simulate(request: Request) -> object:
     try:
-        payload = await request.json()
+        payload = await request_json(request)
     except Exception as exc:  # noqa: BLE001
         _logger.debug("simulate: invalid JSON body: %s", exc)
         return JSONResponse({"detail": "Invalid JSON body"}, status_code=400)
     if not isinstance(payload, dict):
         return JSONResponse({"detail": "JSON object required"}, status_code=400)
-    payload = cast(dict[str, Any], payload)
+    payload = cast(dict[str, object], payload)
     unknown = set(payload) - SIMULATE_KEYS
     if unknown:
         return JSONResponse(
@@ -246,7 +247,7 @@ async def simulate(request: Request) -> Any:
     )
 
 
-async def click_preview(request: Request) -> Any:
+async def click_preview(request: Request) -> object:
     name = request.query_params.get("route")
     target = request.query_params.get("target")
     if not name:
@@ -257,18 +258,18 @@ async def click_preview(request: Request) -> Any:
     return cast(JsonObject, {"click_preview": click_preview_payload(routes[name], target=target)})
 
 
-async def element_simulate(request: Request) -> Any:
+async def element_simulate(request: Request) -> object:
     csrf_error = await require_csrf(request)
     if csrf_error is not None:
         return csrf_error
     try:
-        payload = await request.json()
+        payload = await request_json(request)
     except Exception as exc:  # noqa: BLE001
         _logger.debug("element_simulate: invalid JSON body: %s", exc)
         return JSONResponse({"detail": "Invalid JSON body"}, status_code=400)
     if not isinstance(payload, dict):
         return JSONResponse({"detail": "JSON object required"}, status_code=400)
-    payload = cast(dict[str, Any], payload)
+    payload = cast(dict[str, object], payload)
     logical_id = payload.get("logical_id")
     failure = payload.get("failure", "none")
     if not isinstance(logical_id, str) or not logical_id:
@@ -292,7 +293,7 @@ async def element_simulate(request: Request) -> Any:
     }
 
 
-def redacted_app_scenario(*, route: str, ok: bool) -> dict[str, Any]:
+def redacted_app_scenario(*, route: str, ok: bool) -> dict[str, object]:
     """Redacted AppScenario snippet for laboratory export. No invented auth."""
     return {
         "kind": "AppScenario",

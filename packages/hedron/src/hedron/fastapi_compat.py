@@ -7,10 +7,12 @@ Keeping these accesses together makes upstream upgrades reviewable and testable.
 
 from __future__ import annotations
 
-from typing import Any, cast
+from typing import cast
 
 from fastapi import FastAPI
 from starlette.middleware import Middleware
+
+from hedron_core.typing_aliases import JsonObject
 
 __all__ = [
     "append_middleware",
@@ -22,11 +24,11 @@ __all__ = [
 ]
 
 
-def cached_openapi(app: FastAPI | None) -> dict[str, Any] | None:
+def cached_openapi(app: FastAPI | None) -> dict[str, object] | None:
     return None if app is None else app.openapi_schema
 
 
-def set_cached_openapi(app: FastAPI, schema: dict[str, Any]) -> None:
+def set_cached_openapi(app: FastAPI, schema: JsonObject) -> None:
     app.openapi_schema = schema
 
 
@@ -43,5 +45,5 @@ def invalidate_middleware_stack(app: FastAPI) -> None:
     app.middleware_stack = None
 
 
-def remove_route(app: FastAPI, index: int) -> Any:
+def remove_route(app: FastAPI, index: int) -> object:
     return app.routes.pop(index)

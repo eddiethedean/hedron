@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import Any, Protocol, cast
+from typing import Protocol, cast
 
 from hedron_core.diagnostics import error
 from hedron_core.models import Model
@@ -30,7 +30,7 @@ def _row_to_mapping(row: object) -> dict[str, JsonValue]:
         return {str(k): _cell(v) for k, v in mapping.items()}
     model_dump = getattr(row, "model_dump", None)
     if callable(model_dump):
-        data = cast(Any, model_dump)()
+        data = cast(object, model_dump)()
         if isinstance(data, Mapping):
             mapping = cast(Mapping[object, object], data)
             return {str(k): _cell(v) for k, v in mapping.items()}

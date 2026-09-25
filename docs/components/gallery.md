@@ -38,12 +38,12 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```text
-Gallery(items: 'Sequence[GalleryItem | Mapping[str, Any]]', *, lightbox: 'bool' = False, mark: 'str | None' = None, class_: 'str | None' = None, **kwargs: 'object') -> 'None'
+Gallery(items: 'Sequence[GalleryItem | Mapping[str, object]]', *, lightbox: 'bool' = False, mark: 'str | None' = None, class_: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `items` | `Sequence[GalleryItem | Mapping[str, Any]]` | Gallery items (`GalleryItem` or mapping records). |
+| `items` | `Sequence[GalleryItem | Mapping[str, object]]` | Gallery items (`GalleryItem` or mapping records). |
 | `lightbox` | `bool` | Whether clicking an item opens a lightbox details UI. Default: `False`. |
 | `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
 | `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |

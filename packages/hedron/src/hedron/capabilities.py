@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Literal, Protocol
+from typing import Literal, Protocol
+
+from hedron_core.typing_support import dynamic_attribute
 
 ReasonCode = Literal[
     "allowed",
@@ -39,7 +41,7 @@ class CapabilityDecision:
     presentation: Literal["show", "hide", "disable", "explain"] = "show"
     explanation: str | None = None
 
-    def redacted(self) -> dict[str, Any]:
+    def redacted(self) -> dict[str, object]:
         return {
             "capability": self.capability,
             "allowed": self.allowed,
@@ -51,13 +53,13 @@ class CapabilityDecision:
 
 
 class CapabilityProvider(Protocol):
-    def decide(self, capability: str, *, request: Any) -> CapabilityDecision: ...
+    def decide(self, capability: str, *, request: object) -> CapabilityDecision: ...
 
 
 class AllowAllCapabilities:
     """Development helper — not a production policy."""
 
-    def decide(self, capability: str, *, request: Any) -> CapabilityDecision:
+    def decide(self, capability: str, *, request: object) -> CapabilityDecision:
         return CapabilityDecision(
             capability=capability,
             allowed=True,
@@ -67,7 +69,7 @@ class AllowAllCapabilities:
 
 
 class DenyAllCapabilities:
-    def decide(self, capability: str, *, request: Any) -> CapabilityDecision:
+    def decide(self, capability: str, *, request: object) -> CapabilityDecision:
         return CapabilityDecision(
             capability=capability,
             allowed=False,
@@ -86,7 +88,7 @@ class MappingCapabilityProvider:
         else:
             self._allowed = set(allowed)
 
-    def decide(self, capability: str, *, request: Any) -> CapabilityDecision:
+    def decide(self, capability: str, *, request: object) -> CapabilityDecision:
         ok = capability in self._allowed
         return CapabilityDecision(
             capability=capability,
@@ -97,14 +99,14 @@ class MappingCapabilityProvider:
         )
 
 
-def resolve_capability_provider(request: Any) -> CapabilityProvider | None:
-    app = getattr(request, "app", None)
-    state = getattr(app, "state", None) if app is not None else None
-    return getattr(state, "hedron_capabilities", None) if state is not None else None
+def resolve_capability_provider(request: object) -> CapabilityProvider | None:
+    app = dynamic_attribute(request, "app")
+    state = dynamic_attribute(app, "state") if app is not None else None
+    return dynamic_attribute(state, "hedron_capabilities") if state is not None else None
 
 
 def evaluate_capability(
-    request: Any,
+    request: object,
     capability: str | Capability | None,
     *,
     require_provider: bool = False,
@@ -136,7 +138,7 @@ def evaluate_capability(
     return provider.decide(name, request=request)
 
 
-def enforce_capability(request: Any, capability: str | Capability | None) -> CapabilityDecision:
+def enforce_capability(request: object, capability: str | Capability | None) -> CapabilityDecision:
     """Server-side enforcement immediately before a protected side effect.
 
     Declaring ``capability=`` on an action fails closed when no provider is installed.

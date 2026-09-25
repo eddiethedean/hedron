@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import Any
 
 __all__ = ["sqlalchemy_connection_factory"]
 
@@ -13,7 +12,7 @@ def sqlalchemy_connection_factory(
     *,
     statement: object | None = None,
     session_factory: Callable[[], object] | None = None,
-    **source_kwargs: Any,  # forwarded host kwargs for SQLAlchemyDataSource
+    **source_kwargs: object,  # forwarded host kwargs for SQLAlchemyDataSource
 ) -> Callable[[], object]:
     """Lazy factory for a SQLAlchemy Engine or :class:`SQLAlchemyDataSource`.
 

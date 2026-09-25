@@ -11,12 +11,13 @@ import math
 import secrets
 import time
 from collections.abc import Callable, Collection, Coroutine, Sequence
-from typing import Any, Protocol, TypeAlias, cast, runtime_checkable
+from typing import Protocol, TypeAlias, cast, runtime_checkable
 
 from fastapi import Request
 from fastapi.routing import APIRoute
 from starlette.datastructures import State
 from starlette.responses import Response as StarletteResponse
+from typing_extensions import override
 
 from hedron.async_utils import await_if_needed, invoke
 from hedron.context import render_context_from_request
@@ -29,6 +30,7 @@ from hedron.responses import (
 from hedron.security.csrf import ensure_csrf_cookie
 from hedron.security.policy import SecurityPolicy
 from hedron_core.alpine import BrowserPlanClosure
+from hedron_core.app_state import request_state, state_value
 from hedron_core.codes import HED_UPDATE_0003
 from hedron_core.component import Component, NodeLike
 from hedron_core.htmx.policy import InteractionPolicy
@@ -42,12 +44,18 @@ from hedron_core.interaction_067 import Outcome, OutcomeKind
 from hedron_core.models import Model
 from hedron_core.rendering import RenderMode
 from hedron_core.typing_aliases import JsonValue
+from hedron_core.typing_support import dynamic_attribute
 from hedron_core.updates import (
     list_handle_descriptors,
     matches_declared_host,
     refresh_event_name,
     safe_dom_id,
 )
+
+
+class _AppStateWithHedronId(Protocol):
+    hedron_app_id: str
+
 
 _logger = logging.getLogger("hedron.routing.route")
 
@@ -56,14 +64,14 @@ __all__ = ["HedronRoute", "HedronEndpointResult"]
 
 @runtime_checkable
 class _SupportsRender(Protocol):
-    def render(self, *args: Any, **kwargs: Any) -> object: ...
+    def render(self, *args: object, **kwargs: object) -> object: ...
 
 
 HedronEndpointResult: TypeAlias = (
     StarletteResponse
     | InteractionResult
     | HTML
-    | Component[Any]
+    | Component[object]
     | Model
     | _SupportsRender
     | Outcome
@@ -84,16 +92,18 @@ class HedronRoute(APIRoute):
     hedron_kind: str | None = None
     hedron_provenance: str = ""
 
-    def __init__(self, path: str, endpoint: Callable[..., Any], *args: Any, **kwargs: Any) -> None:
+    def __init__(
+        self, path: str, endpoint: Callable[..., object], *args: object, **kwargs: object
+    ) -> None:
         # Convert HTML/Component returns before FastAPI serializes them.
         if not getattr(endpoint, "_hedron_plain_wrapped", False):
             endpoint = self._wrap_plain_endpoint(endpoint)
         super().__init__(path, endpoint, *args, **kwargs)
 
     @classmethod
-    def _wrap_plain_endpoint(cls, endpoint: Callable[..., Any]) -> Callable[..., Any]:
+    def _wrap_plain_endpoint(cls, endpoint: Callable[..., object]) -> Callable[..., object]:
         @functools.wraps(endpoint)
-        async def wrapped(*args: Any, **kwargs: Any) -> Any:
+        async def wrapped(*args: object, **kwargs: object) -> object:
             from hedron.routing.router import current_request
 
             result = await invoke(endpoint, *args, **kwargs)
@@ -119,7 +129,10 @@ class HedronRoute(APIRoute):
             wrapped.__signature__ = inspect.signature(endpoint)  # type: ignore[attr-defined]
         return wrapped
 
-    def get_route_handler(self) -> Callable[[Request], Coroutine[Any, Any, StarletteResponse]]:
+    @override
+    def get_route_handler(
+        self,
+    ) -> Callable[[Request], Coroutine[object, object, StarletteResponse]]:
         original = super().get_route_handler()
 
         async def handler(request: Request) -> StarletteResponse:
@@ -139,8 +152,8 @@ class HedronRoute(APIRoute):
                         detail=HED_TYPE_0003,
                     )
 
-            policy: SecurityPolicy = getattr(
-                request.app.state, "hedron_security", SecurityPolicy.from_name("standard")
+            policy = state_value(
+                request_state(request), "hedron_security", SecurityPolicy.from_name("standard")
             )
             token = current_request.set(request)
             eval_token = set_htmx_eval_allowed(policy.allow_htmx_eval)
@@ -151,7 +164,7 @@ class HedronRoute(APIRoute):
                 reset_htmx_eval_allowed(eval_token)
 
             if policy.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
-                ensure_csrf_cookie(response, policy, request=request)
+                _ignored = ensure_csrf_cookie(response, policy, request=request)
             return response
 
         return handler
@@ -167,8 +180,8 @@ class HedronRoute(APIRoute):
         allow_undeclared_targets: bool = False,
         browser_closure: BrowserPlanClosure | None = None,
     ) -> StarletteResponse:
-        policy: SecurityPolicy = getattr(
-            request.app.state, "hedron_security", SecurityPolicy.from_name("standard")
+        policy = state_value(
+            request_state(request), "hedron_security", SecurityPolicy.from_name("standard")
         )
         authenticated = bool(getattr(request.state, "hedron_authenticated", False))
         result = await await_if_needed(result)
@@ -188,9 +201,10 @@ class HedronRoute(APIRoute):
         from hedron_core.updates import compile_to_interaction
 
         # Plain FastAPI + HedronRouter must not skip ownership (#575).
-        state = getattr(request.app, "state", None)
-        app_id = getattr(state, "hedron_app_id", None) if state is not None else None
-        if not app_id and state is not None:
+        state = cast(_AppStateWithHedronId, cast(object, request_state(request)))
+        existing_app_id = state_value(state, "hedron_app_id")
+        app_id = existing_app_id if isinstance(existing_app_id, str) else None
+        if not app_id:
             app_id = secrets.token_hex(8)
             state.hedron_app_id = app_id
         try:
@@ -206,7 +220,7 @@ class HedronRoute(APIRoute):
 
         if isinstance(result, StarletteResponse):
             if policy.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
-                ensure_csrf_cookie(result, policy, request=request)
+                _ignored = ensure_csrf_cookie(result, policy, request=request)
             return result
         if isinstance(result, InteractionResult):
             return await HedronRoute._convert_interaction_result(
@@ -240,7 +254,7 @@ class HedronRoute(APIRoute):
                 browser_closure=browser_closure,
             )
             if policy.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
-                ensure_csrf_cookie(response, policy, request=request)
+                _ignored = ensure_csrf_cookie(response, policy, request=request)
             return response
         if isinstance(result, Model) and not isinstance(result, Component):
             from fastapi.encoders import jsonable_encoder
@@ -272,7 +286,7 @@ class HedronRoute(APIRoute):
                 browser_closure=browser_closure,
             )
             if policy.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
-                ensure_csrf_cookie(response, policy, request=request)
+                _ignored = ensure_csrf_cookie(response, policy, request=request)
             return response
         raise TypeError(f"Unsupported Hedron endpoint return type: {type(result)!r}")
 
@@ -304,7 +318,7 @@ class HedronRoute(APIRoute):
             handles = payload["handles"]
             if not isinstance(handles, list):
                 raise TypeError("refresh outcome handles must be a list")
-            app_id = str(getattr(getattr(request.app, "state", None), "hedron_app_id", "") or "")
+            app_id = str(state_value(request_state(request), "hedron_app_id", "") or "")
             descriptors = list_handle_descriptors(app_id=app_id)
             by_name = {
                 key: descriptor
@@ -430,8 +444,8 @@ def _prepare_deadline_header_trusted(request: Request) -> bool:
     raw_env = os.environ.get("HEDRON_TRUSTED_PROXIES", "")
     peers.update(part.strip() for part in raw_env.split(",") if part.strip())
     app: object | None = request.scope.get("app")
-    state = getattr(app, "state", None) if app is not None else None
-    configured = getattr(state, "hedron_trusted_peers", None) if state is not None else None
+    state = dynamic_attribute(app, "state") if app is not None else None
+    configured = dynamic_attribute(state, "hedron_trusted_peers") if state is not None else None
     if isinstance(configured, (list, tuple, set, frozenset)):
         peers.update(
             str(item).strip() for item in cast(Collection[object], configured) if str(item).strip()
@@ -490,7 +504,7 @@ async def prepare_endpoint_value(value: NodeLike, *, request: Request) -> None:
     try:
         with span("hedron.prepare", route=str(request.url.path)):
             limiter = get_limiter()
-            await prepare_tree(
+            _ignored = await prepare_tree(
                 value,
                 context=ctx,
                 run=limiter.run if cfg.enabled else None,
@@ -498,7 +512,7 @@ async def prepare_endpoint_value(value: NodeLike, *, request: Request) -> None:
             )
     finally:
         disconnect.set()
-        watcher.cancel()
+        _ignored = watcher.cancel()
         with contextlib.suppress(asyncio.CancelledError):
             await watcher
 
@@ -541,7 +555,7 @@ def _authorize_component_fragment(
             )
             if declared_regions:
                 try:
-                    resolve_fragment_region(
+                    _ignored = resolve_fragment_region(
                         InteractionPolicy(declared_regions=declared_regions), target
                     )
                 except FragmentRegionError:
@@ -567,7 +581,7 @@ def _authorize_component_fragment(
     # Empty fragment_regions still fail closed when the client sends HX-Target
     # (same contract as InteractionResult / authorize_htmx_target).
     try:
-        authorize_htmx_target(
+        _ignored = authorize_htmx_target(
             InteractionPolicy(
                 declared_regions=fragment_regions,
                 allow_undeclared_targets=allow_undeclared_targets,

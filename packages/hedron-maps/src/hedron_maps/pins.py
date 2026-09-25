@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import hashlib
 from pathlib import Path
-from typing import Any
 
 from hedron_core.diagnostics import error
 from hedron_core.identifiers import content_digest
@@ -42,7 +41,7 @@ def _looks_like_stub(path: Path) -> bool:
     return "pin stub" in text or "supply offline bundle" in text
 
 
-RUNTIME_PINS: dict[str, dict[str, Any]] = {
+RUNTIME_PINS: dict[str, dict[str, object]] = {
     "maplibre-csp": {
         "version": MAPLIBRE_VERSION,
         "path": "assets/maplibre/maplibre-gl-csp.js",
@@ -98,7 +97,7 @@ def assert_pins_present() -> None:
         RUNTIME_PINS[name] = {**meta, "digest": _digest_file(path)}
 
 
-def pinned_runtime(name: str) -> dict[str, Any]:
+def pinned_runtime(name: str) -> dict[str, object]:
     if name not in RUNTIME_PINS:
         raise KeyError(f"Unknown runtime pin {name!r}")
     return dict(RUNTIME_PINS[name])
@@ -111,7 +110,7 @@ def verify_pin(name: str, content: bytes) -> bool:
     return digest.endswith(expected.split(":")[-1]) or expected == content_digest(content)
 
 
-def pin_facts() -> dict[str, Any]:
+def pin_facts() -> dict[str, object]:
     return {
         "version": MAPLIBRE_VERSION,
         "charts_maplibre_pin": "4.5.0",

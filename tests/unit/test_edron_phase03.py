@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 import pytest
 from pydantic import BaseModel
 from starlette.testclient import TestClient
@@ -228,10 +226,10 @@ def test_edit_intent_and_source_contracts_are_bounded() -> None:
     assert parsed.updates == (ed.CellEdit("1", "name", "Ada"),)
 
     class AwaitableSource:
-        async def fetch(self, query: Any) -> Any:
+        async def fetch(self, query: object) -> object:
             return None
 
-        async def apply(self, changes: Any) -> Any:
+        async def apply(self, changes: object) -> object:
             return None
 
     with pytest.raises(TypeError, match="async sources"):

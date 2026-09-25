@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, ClassVar
+from typing import ClassVar
 
 import pytest
 from jinja2 import DictLoader, Environment
@@ -56,10 +56,10 @@ class Panel(Component[PanelProps]):
         "items": "many",
     }
 
-    def __init__(self, **kwargs: Any) -> None:
+    def __init__(self, **kwargs: object) -> None:
         super().__init__(**kwargs)
 
-    def render(self) -> Any:
+    def render(self) -> object:
         from hedron_core.html import html
 
         parts = [html.h2(self.props.title)]

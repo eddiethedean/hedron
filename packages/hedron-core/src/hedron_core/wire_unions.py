@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Any, Literal
+from typing import Literal
 
 from hedron_core.codes import HED_FP_0004
 from hedron_core.diagnostics import error
@@ -60,7 +60,7 @@ class TaggedWire:
     payload: Mapping[str, JsonValue]
 
 
-def wire_envelope(kind: str, payload: Mapping[str, Any] | None = None) -> JsonObject:
+def wire_envelope(kind: str, payload: Mapping[str, object] | None = None) -> JsonObject:
     data = dict(payload or {})
     existing = data.get(PUBLIC_WIRE_DISCRIMINATOR)
     if existing not in {None, kind}:

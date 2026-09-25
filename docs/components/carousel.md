@@ -38,7 +38,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```text
-Carousel(slides: 'Sequence[tuple[str, NodeLike] | NodeLike]', *, id: 'str | None' = None, label: 'str' = 'Carousel', class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
+Carousel(slides: 'Sequence[tuple[str, NodeLike] | NodeLike]', *, id: 'str | None' = None, label: 'str' = 'Carousel', class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |

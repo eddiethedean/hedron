@@ -8,7 +8,6 @@ import operator
 import re
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any
 
 from hedron_core.diagnostics import error
 from hedron_core.typing_aliases import JsonValue
@@ -76,7 +75,7 @@ def evaluate_formula(
     allowed_names: frozenset[str] | None = None,
 ) -> JsonValue:
     """Evaluate a constrained numeric formula with ``[field]`` column refs."""
-    raw_expr: Any = expr
+    raw_expr: object = expr
     if not isinstance(raw_expr, str) or not raw_expr.strip():
         raise error(
             "HED-DATA-0030",
@@ -87,7 +86,7 @@ def evaluate_formula(
     text = raw_expr.strip()
     if text.startswith("="):
         text = text[1:]
-    refs = _COLUMN_REF.findall(text)
+    refs = [match.group(1) for match in _COLUMN_REF.finditer(text)]
     if allowed_names is not None:
         for name in refs:
             if name not in allowed_names:
@@ -244,7 +243,7 @@ def pivot_rows(
 
     def _typed_key(value: JsonValue) -> tuple[str, JsonValue]:
         try:
-            hash(value)
+            _ignored = hash(value)
         except TypeError as exc:
             raise ValueError("Pivot index and column values must be hashable") from exc
         return (type(value).__name__, value)
@@ -298,7 +297,7 @@ def rows_to_tree(
     id_field: str = "id",
     parent_field: str = "parent_id",
 ) -> list[TreeNode]:
-    nodes: dict[str, dict[str, Any]] = {}
+    nodes: dict[str, dict[str, object]] = {}
     for index, row in enumerate(rows):
         key = str(row.get(id_field))
         if key in nodes:

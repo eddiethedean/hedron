@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import inspect
 import warnings
-from collections.abc import Iterable
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Final
+from typing import Final, Protocol, cast
 
 __all__ = [
     "FutureWarningRegistry",
@@ -19,6 +19,19 @@ __all__ = [
 ]
 
 FUTURE_WARNING_SCHEMA: Final = "hedron.future-warning/1"
+
+
+class _FrameGlobals(Protocol):
+    f_globals: Mapping[str, object]
+
+
+class _StackFrame(Protocol):
+    filename: str
+    frame: _FrameGlobals
+
+
+class _StackReader(Protocol):
+    def __call__(self, *, context: int = 1) -> list[_StackFrame]: ...
 
 
 class HedronFutureWarning(UserWarning):
@@ -42,8 +55,14 @@ class FutureWarningRecord:
     automation_status: str = "manual-review"
 
     def __post_init__(self) -> None:
-        for name in ("code", "old_path", "owner", "replacement"):
-            if not getattr(self, name).strip():
+        required = (
+            ("code", self.code),
+            ("old_path", self.old_path),
+            ("owner", self.owner),
+            ("replacement", self.replacement),
+        )
+        for name, value in required:
+            if not value.strip():
                 raise ValueError(f"{name} is required")
         if self.confidence not in {"complete", "partial", "unknown"}:
             raise ValueError("confidence must be complete, partial, or unknown")
@@ -80,7 +99,7 @@ class FutureWarningRegistry:
     def __init__(self, records: Iterable[FutureWarningRecord] = ()) -> None:
         self._records: dict[str, FutureWarningRecord] = {}
         for record in records:
-            self.register(record)
+            _ignored = self.register(record)
 
     def register(self, record: object) -> FutureWarningRecord:
         candidate = record
@@ -125,8 +144,11 @@ class FutureWarningRegistry:
             if previous is not None and previous != record.code:
                 issues.append(f"{record.old_path}: registered by both {previous} and {record.code}")
             seen_paths[record.old_path] = record.code
-            for field in ("source", "documentation", "fixture"):
-                value = getattr(record, field)
+            for field, value in (
+                ("source", record.source),
+                ("documentation", record.documentation),
+                ("fixture", record.fixture),
+            ):
                 if not value.strip():
                     issues.append(f"{record.code}: missing {field}")
                 elif (
@@ -279,7 +301,8 @@ def warn_legacy_path(path: str, *, stacklevel: int = 2) -> None:
     # them.  ``emit_future_warning`` adds one call frame of its own; account
     # for both helpers so direct application calls point at their source.
     package_roots = ("/packages/hedron/", "/packages/hedron-core/", "/packages/hedron-data/")
-    frames = inspect.stack(context=0)
+    stack = cast(_StackReader, inspect.stack)
+    frames = stack(context=0)
     caller = frames[stacklevel] if len(frames) > stacklevel else None
     if caller is not None:
         filename = caller.filename.replace("\\", "/")

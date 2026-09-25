@@ -5,8 +5,6 @@ Not a multi-process / real-Redis worker proof — see opt-in redis markers for t
 
 from __future__ import annotations
 
-from typing import Any
-
 from hedron_core.jobs import JobState, RedisJobBackend, _legacy_idempotency_scope_key
 
 WatchError = type("WatchError", (Exception,), {})
@@ -121,7 +119,7 @@ class _SharedPipeline:
 
 def test_redis_job_backend_shares_state_via_client_protocol() -> None:
     """Stub client only — not a multi-process worker proof."""
-    shared: Any = _SharedRedis()
+    shared: object = _SharedRedis()
     a = RedisJobBackend(shared)
     b = RedisJobBackend(shared)
     handle = a.submit("demo", {"n": 1}, idempotency_key="k1", tenant_id="t")
@@ -137,7 +135,7 @@ def test_redis_job_backend_shares_state_via_client_protocol() -> None:
 
 
 def test_redis_idempotency_distinguishes_missing_and_empty_scopes() -> None:
-    shared: Any = _SharedRedis()
+    shared: object = _SharedRedis()
     backend = RedisJobBackend(shared)
     unscoped = backend.submit("demo", {}, idempotency_key="same")
     empty_scoped = backend.submit("demo", {}, idempotency_key="same", tenant_id="", auth_subject="")
@@ -151,7 +149,7 @@ def test_redis_idempotency_distinguishes_missing_and_empty_scopes() -> None:
 
 
 def test_redis_idempotency_reads_matching_legacy_scope() -> None:
-    shared: Any = _SharedRedis()
+    shared: object = _SharedRedis()
     backend = RedisJobBackend(shared)
     original = backend.submit("demo", {}, tenant_id="tenant")
     legacy_scope = _legacy_idempotency_scope_key("same", tenant_id="tenant", auth_subject=None)
@@ -163,7 +161,7 @@ def test_redis_idempotency_reads_matching_legacy_scope() -> None:
 
 def test_redis_job_backend_cas_contends_on_watch() -> None:
     """A conflict in the backend transaction is retried without lost updates."""
-    shared: Any = _SharedRedis()
+    shared: object = _SharedRedis()
     backend = RedisJobBackend(shared)
     handle = backend.submit("demo", {"n": 1}, tenant_id="t")
     key = f"h1:job:{handle.job_id}"
@@ -195,7 +193,7 @@ def test_redis_job_backend_cas_contends_on_watch() -> None:
 
 def test_redis_mark_refreshes_idempotency_ttl_skew() -> None:
     """#210: body TTL refresh must also refresh/recreate the idempotency key."""
-    shared: Any = _SharedRedis()
+    shared: object = _SharedRedis()
     backend = RedisJobBackend(shared, ttl_seconds=10)
     handle = backend.submit("demo", {"n": 1}, idempotency_key="k-skew", tenant_id="t")
     idem_keys = [k for k in shared._store if ":idem:" in k]
@@ -229,7 +227,7 @@ def test_cleanup_expired_preserves_idempotency_owned_by_newer_job() -> None:
     """Aged terminal cleanup must not delete an idempotency pointer owned by a newer job (#198)."""
     import json
 
-    shared: Any = _SharedRedis()
+    shared: object = _SharedRedis()
     backend = RedisJobBackend(shared)
     aged = backend.submit("demo", {}, idempotency_key="shared-scope", tenant_id="t1")
     backend.mark(aged.job_id, JobState.SUCCEEDED)
@@ -253,7 +251,7 @@ def test_cleanup_expired_preserves_idempotency_owned_by_newer_job() -> None:
 def test_cleanup_expired_drops_idempotency_when_still_owner() -> None:
     import json
 
-    shared: Any = _SharedRedis()
+    shared: object = _SharedRedis()
     backend = RedisJobBackend(shared)
     handle = backend.submit("demo", {}, idempotency_key="gone", tenant_id="t1")
     backend.mark(handle.job_id, JobState.SUCCEEDED)
@@ -282,7 +280,7 @@ def test_status_store_release_preserves_newer_idempotency_owner() -> None:
                 self._store[key] = "job-b"
             return super().eval(script, numkeys, *args)
 
-    shared: Any = _RacyEval()
+    shared: object = _RacyEval()
     store = RedisStatusStore(shared)  # type: ignore[arg-type]
     handle, created = store.submit("demo", {}, idempotency_key="k1", tenant_id="t")
     assert created is True
@@ -297,7 +295,7 @@ def test_status_store_release_watch_fallback_preserves_newer_owner() -> None:
     """#269: without EVAL, WATCH/MULTI delete must still fail closed on a newer owner."""
     from hedron_core.job_status_store import RedisStatusStore
 
-    shared: Any = _SharedRedis()
+    shared: object = _SharedRedis()
     shared.eval = None  # type: ignore[method-assign]
     store = RedisStatusStore(shared)  # type: ignore[arg-type]
     handle, created = store.submit("demo", {}, idempotency_key="k1", tenant_id="t")

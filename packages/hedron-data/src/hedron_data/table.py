@@ -5,7 +5,9 @@ from __future__ import annotations
 import csv
 import io
 from collections.abc import Mapping, Sequence
-from typing import Any, cast
+from typing import cast
+
+from typing_extensions import override
 
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
@@ -72,7 +74,7 @@ class DataTable(Component[DataTableProps]):
             self._version = None
         built_rows: list[dict[str, JsonValue]] = []
         for r in raw_rows:
-            if isinstance(cast(Any, r), Mapping):
+            if isinstance(cast(object, r), Mapping):
                 built_rows.append(dict(cast(Mapping[str, JsonValue], r)))
             else:
                 built_rows.append(dict(r.model_dump()))  # type: ignore[union-attr]
@@ -104,6 +106,7 @@ class DataTable(Component[DataTableProps]):
             )
         return buf.getvalue()
 
+    @override
     def render(self) -> NodeLike:
         visible = [c for c in self._columns if not c.hidden]
         children: list[NodeLike] = []

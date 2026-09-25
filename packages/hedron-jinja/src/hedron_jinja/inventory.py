@@ -232,14 +232,14 @@ def reconcile_csp(
             if not authorized:
                 mismatches.append(
                     f"{source_name}:{line}: capability {capability!r} conflicts with CSP "
-                    f"(missing explicit inline/nonce/strict-dynamic authorization)"
+                    + "(missing explicit inline/nonce/strict-dynamic authorization)"
                 )
         if capability == "htmx.eval" and (
             not has_script_src or not _has_keyword_source(script_tokens, "'unsafe-eval'")
         ):
             mismatches.append(
                 f"{source_name}:{line}: capability {capability!r} requires explicit "
-                f"unsafe-eval authorization in SecurityPolicy CSP"
+                + "unsafe-eval authorization in SecurityPolicy CSP"
             )
         if capability.startswith("network."):
             origin = _network_capability_origin(capability)

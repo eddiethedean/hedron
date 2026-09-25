@@ -50,10 +50,19 @@ def is_posit_connect_scope(scope: Scope, environ: Mapping[str, str] | None = Non
     env = os.environ if environ is None else environ
     if str(env.get("POSIT_PRODUCT") or "").strip().upper() != "CONNECT":
         return False
-    headers = scope.get("headers") or ()
-    base_headers = [
-        value for name, value in headers if bytes(name).lower() == b"rstudio-connect-app-base-url"
-    ]
+    headers_value = scope.get("headers", ())
+    headers = headers_value if isinstance(headers_value, (list, tuple)) else ()
+    base_headers: list[bytes] = []
+    for header in headers:
+        if not isinstance(header, tuple) or len(header) != 2:
+            continue
+        name, value = header
+        if (
+            isinstance(name, bytes)
+            and isinstance(value, bytes)
+            and name.lower() == b"rstudio-connect-app-base-url"
+        ):
+            base_headers.append(value)
     return len(base_headers) == 1 and bool(str(scope.get("root_path") or "").strip())
 
 

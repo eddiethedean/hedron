@@ -58,7 +58,7 @@ class FileComponentResponse(ComponentResponse):
         hdrs = dict(headers or {})
         if filename:
             safe_name = _safe_content_disposition_filename(filename)
-            hdrs.setdefault("Content-Disposition", f'attachment; filename="{safe_name}"')
+            _ignored = hdrs.setdefault("Content-Disposition", f'attachment; filename="{safe_name}"')
         super().__init__(
             content=content,
             status_code=status_code,

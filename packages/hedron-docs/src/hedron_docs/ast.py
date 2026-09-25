@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import hashlib
 from dataclasses import dataclass, field
-from typing import Any, cast
+from typing import cast
 
 _MAX_NODE_DEPTH = 256
 _MAX_NODES_PER_TREE = 100_000
@@ -91,7 +91,7 @@ class SourceSpan:
         value = f"{source}\0{start_line}:{start_column}-{end_line}:{end_column}"
         return "span-" + hashlib.sha256(value.encode("utf-8")).hexdigest()[:20]
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "source": self.source,
             "start": [self.start_line, self.start_column],
@@ -183,8 +183,8 @@ class DocNode:
     def attr(self, name: str, default: str = "") -> str:
         return dict(self.attrs).get(name, default)
 
-    def to_dict(self) -> dict[str, Any]:
-        result: dict[str, Any] = {"kind": self.kind, "line": self.line}
+    def to_dict(self) -> dict[str, object]:
+        result: dict[str, object] = {"kind": self.kind, "line": self.line}
         if self.text:
             result["text"] = self.text
         if self.attrs:

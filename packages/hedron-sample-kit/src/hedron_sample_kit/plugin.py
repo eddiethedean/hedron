@@ -108,7 +108,7 @@ def _register_bundle(ctx: PluginContext) -> None:
 
 
 def _register_variants(ctx: PluginContext) -> None:
-    register_variants(ctx)
+    _ignored = register_variants(ctx)
 
 
 PLUGIN = PluginDefinition.from_callbacks(

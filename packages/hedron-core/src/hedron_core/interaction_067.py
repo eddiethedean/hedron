@@ -291,7 +291,7 @@ class Interaction:
         if (has_local, has_request) != expected:
             raise ValueError(
                 f"{kind.value} interaction must carry exactly its declared effect lanes; "
-                "cross-lane fields are rejected"
+                + "cross-lane fields are rejected"
             )
         object.__setattr__(self, "kind", kind)
         object.__setattr__(self, "event", event)
@@ -451,7 +451,7 @@ class Interaction:
                 if method != self.request_effect.method:
                     raise ValueError(
                         f"interaction method {self.request_effect.method!r} does not match "
-                        f"registered route method {method!r} for {self.request_effect.handle!r}"
+                        + f"registered route method {method!r} for {self.request_effect.handle!r}"
                     )
                 htmx = HtmxAttrs(
                     method=cast(Literal["get", "post", "put", "patch", "delete"], method.lower()),
@@ -485,7 +485,7 @@ class Interaction:
                 else:
                     raise ValueError(
                         f"native fallback is unsupported for <{normalized_tag}>; "
-                        "use an anchor, form, or button"
+                        + "use an anchor, form, or button"
                     )
         return InteractionLowering(
             attrs,

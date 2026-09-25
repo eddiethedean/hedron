@@ -10,7 +10,6 @@ remains ``from hedron_extras.sandbox import BrowserPythonSandbox``.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
 
 from hedron_core.codes import HED_ASSET_MISSING
 from hedron_core.component import Component
@@ -62,7 +61,7 @@ PLUGIN_META = PluginMeta(
 _LIFECYCLE_REL = "assets/lifecycle/host.js"
 
 # relative path → (browser module logical id, custom element tag, component classes)
-_BROWSER_HOSTS: tuple[tuple[str, str, str, tuple[type[Component[Any]], ...]], ...] = (
+_BROWSER_HOSTS: tuple[tuple[str, str, str, tuple[type[Component[object]], ...]], ...] = (
     (
         _LIFECYCLE_REL,
         "hedron-extras:image-tools",
@@ -103,7 +102,7 @@ _BROWSER_HOSTS: tuple[tuple[str, str, str, tuple[type[Component[Any]], ...]], ..
     ),
 )
 
-_STATIC_COMPONENTS: tuple[type[Component[Any]], ...] = (
+_STATIC_COMPONENTS: tuple[type[Component[object]], ...] = (
     AvatarProfile,
     BadgeLink,
     MetricCard,
@@ -149,11 +148,11 @@ def _register_module_asset(ctx: PluginContext, rel: str) -> tuple[str, Path]:
 
 
 def _register_assets(ctx: PluginContext) -> None:
-    _register_module_asset(ctx, _LIFECYCLE_REL)
+    _ignored = _register_module_asset(ctx, _LIFECYCLE_REL)
 
 
 def _register_components(ctx: PluginContext) -> None:
-    module_by_cls: dict[type[Component[Any]], str] = {}
+    module_by_cls: dict[type[Component[object]], str] = {}
     _, lifecycle_path = _module_asset(_LIFECYCLE_REL)
 
     for _rel, module_id, tag_name, classes in _BROWSER_HOSTS:

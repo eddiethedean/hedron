@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import re
 from collections.abc import Sequence
-from typing import Any
+
+from typing_extensions import override
 
 from hedron_core.builtins._base import ElementProps, class_names, mark_data
 from hedron_core.component import Component, NodeLike
@@ -42,12 +43,12 @@ class LogConsole(Component[LogConsoleProps]):
 
     def __init__(
         self,
-        lines: Sequence[LogLine | dict[str, Any]] | None = None,
+        lines: Sequence[LogLine | dict[str, object]] | None = None,
         *,
         max_lines: int = 500,
         producer: str = "explicit",
         redact: bool = True,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if producer in {"stdout", "stderr", "logging-global"}:
             raise ValueError(
@@ -69,6 +70,7 @@ class LogConsole(Component[LogConsoleProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         rows: list[NodeLike] = []
         for line in self.props.lines:
@@ -110,12 +112,13 @@ class TokenWeightedText(Component[TokenWeightedTextProps]):
     logical_name = "TokenWeightedText"
     distribution = "hedron-extras"
 
-    def __init__(self, tokens: Sequence[TokenSpan | dict[str, Any]], **kwargs: Any) -> None:
+    def __init__(self, tokens: Sequence[TokenSpan | dict[str, object]], **kwargs: object) -> None:
         parsed = [t if isinstance(t, TokenSpan) else TokenSpan.model_validate(t) for t in tokens]
         if len(parsed) > 20_000:
             raise ValueError("TokenWeightedText budget exceeded")
         super().__init__(TokenWeightedTextProps(tokens=parsed, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         spans = [
             html.span(
@@ -149,7 +152,7 @@ class DiagramOutput(Component[DiagramOutputProps]):
         *,
         format: str = "mermaid",
         max_chars: int = 100_000,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if len(source) > max_chars:
             raise ValueError("DiagramOutput source exceeds max_chars")
@@ -159,6 +162,7 @@ class DiagramOutput(Component[DiagramOutputProps]):
             DiagramOutputProps(source=source, format=format, max_chars=max_chars, **kwargs)
         )
 
+    @override
     def render(self) -> NodeLike:
         return html.div(
             html.pre(self.props.source, data={"diagram-format": self.props.format}),

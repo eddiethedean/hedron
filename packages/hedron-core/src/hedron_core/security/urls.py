@@ -8,6 +8,8 @@ import re
 import unicodedata
 from urllib.parse import unquote, urlsplit
 
+from typing_extensions import override
+
 from hedron_core.compat import StrEnum
 from hedron_core.diagnostics import HedronError, error
 
@@ -194,9 +196,9 @@ class SafeUrl:
     """Validated URL for a declared purpose; still subject to final render policy."""
 
     __slots__ = ("_value", "_purpose", "_allow_external")
-    _value: str
-    _purpose: UrlPurpose
-    _allow_external: bool
+    _value: str  # pyright: ignore[reportUninitializedInstanceVariable]  # initialized by parse()
+    _purpose: UrlPurpose  # pyright: ignore[reportUninitializedInstanceVariable]  # initialized by parse()
+    _allow_external: bool  # pyright: ignore[reportUninitializedInstanceVariable]  # initialized by parse()
 
     def __init__(self, *args: object, **kwargs: object) -> None:
         raise TypeError("SafeUrl has no public constructor; use SafeUrl.parse(...)")
@@ -281,7 +283,7 @@ class SafeUrl:
                 if not (ok_root or ok_fragment):
                     raise _url_error(
                         "Relative URLs for navigation/form/redirect must be root-relative "
-                        "(start with /) or a same-document fragment (#…) for navigation",
+                        + "(start with /) or a same-document fragment (#…) for navigation",
                         purpose,
                     )
         else:
@@ -322,17 +324,21 @@ class SafeUrl:
     def purpose(self) -> UrlPurpose:
         return self._purpose
 
+    @override
     def __str__(self) -> str:
         return self.value
 
+    @override
     def __repr__(self) -> str:
         return f"SafeUrl(purpose={self.purpose.value!r})"
 
+    @override
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, SafeUrl):
             return NotImplemented
         return self.value == other.value and self.purpose is other.purpose
 
+    @override
     def __hash__(self) -> int:
         return hash(("SafeUrl", self.value, self.purpose))
 

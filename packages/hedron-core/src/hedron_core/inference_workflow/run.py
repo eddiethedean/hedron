@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from hedron_core.inference_workflow.graph import WorkflowRunResult
 
@@ -18,7 +18,7 @@ def run_workflow(
     *,
     principal: str,
     registry: ActionRegistry,
-    inputs: Mapping[str, Any] | None = None,
+    inputs: Mapping[str, object] | None = None,
     policy: InferencePolicy | None = None,
     request_id: str | None = None,
 ) -> WorkflowRunResult:

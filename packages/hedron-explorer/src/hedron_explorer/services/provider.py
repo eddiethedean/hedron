@@ -68,7 +68,7 @@ def run_isolated(
         result = future.result(timeout=timeout_s)
     except FuturesTimeout:
         if future is not None:
-            future.cancel()
+            _ignored = future.cancel()
         _logger.warning("Explorer provider %s timed out", provider.panel_id)
         return {
             "panel_id": provider.panel_id,

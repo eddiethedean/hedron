@@ -10,7 +10,6 @@ from __future__ import annotations
 
 from collections.abc import Awaitable, Callable, Mapping
 from contextlib import ExitStack
-from typing import Any
 
 from hedron.concurrency import ConcurrencyConfig, ConcurrencyLimiter, use_limiter
 from hedron.tracing import TraceConfig, use_trace_config
@@ -137,18 +136,20 @@ class HedronRuntimeContext:
 class RuntimeContextMiddleware:
     """Pure ASGI middleware that binds the owning app context per request."""
 
-    def __init__(self, app: Callable[..., Awaitable[Any]], runtime: HedronRuntimeContext) -> None:
+    def __init__(
+        self, app: Callable[..., Awaitable[object]], runtime: HedronRuntimeContext
+    ) -> None:
         self.app = app
         self.runtime = runtime
 
     async def __call__(
         self,
-        scope: Mapping[str, Any],
-        receive: Callable[..., Awaitable[Any]],
-        send: Callable[..., Awaitable[Any]],
+        scope: Mapping[str, object],
+        receive: Callable[..., Awaitable[object]],
+        send: Callable[..., Awaitable[object]],
     ) -> None:
         if scope.get("type") not in {"http", "websocket"}:
-            await self.app(scope, receive, send)
+            _ignored = await self.app(scope, receive, send)
             return
         with self.runtime.activate():
-            await self.app(scope, receive, send)
+            _ignored = await self.app(scope, receive, send)

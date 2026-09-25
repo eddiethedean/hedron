@@ -4,12 +4,13 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from typing import cast, get_args, get_origin
+from typing import cast, get_origin
 
 from hedron_core.field import hedron_meta
 from hedron_core.models import Model
 from hedron_core.security import Secret
 from hedron_core.typing_aliases import JsonValue
+from hedron_core.typing_support import type_arguments
 from hedron_data.sources import ColumnSchema
 
 __all__ = [
@@ -105,7 +106,7 @@ def write_policy(column: Column | ColumnSchema) -> bool:
 def _editor_for_annotation(annotation: object) -> str:
     origin = get_origin(annotation) or annotation
     if origin is Secret:
-        args = get_args(annotation)
+        args = type_arguments(annotation)
         return _editor_for_annotation(args[0]) if args else "text"
     name = getattr(origin, "__name__", str(origin))
     if name in {"int", "float", "Decimal"}:

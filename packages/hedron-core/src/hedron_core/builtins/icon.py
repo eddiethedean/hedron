@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing_extensions import override
 
 from hedron_core.builtins._base import ElementProps, class_names, mark_data
 from hedron_core.builtins.appearance import SIZES, Size, require_choice
@@ -41,11 +41,11 @@ class Icon(Component[IconProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
-        require_choice(size, SIZES, label="size")
+        _ignored = require_choice(size, SIZES, label="size")
         # Fail at construction time when the icon was never registered.
-        get_icon(name)
+        _ignored = get_icon(name)
         super().__init__(
             IconProps(
                 name=name,
@@ -59,6 +59,7 @@ class Icon(Component[IconProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         entry = get_icon(self.props.name)
         attrs: dict[str, HtmlAttrValue] = {

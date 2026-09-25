@@ -6,7 +6,6 @@ import json
 import socket
 import threading
 from pathlib import Path
-from typing import Any
 
 import pytest
 
@@ -62,9 +61,9 @@ def test_validate_remote_url_allows_declared_host() -> None:
     validate_remote_url("https://demo.example.invalid/predict", config)
 
 
-def _addrinfo_for(ip: str) -> list[tuple[Any, ...]]:
+def _addrinfo_for(ip: str) -> list[tuple[object, ...]]:
     family = socket.AF_INET6 if ":" in ip else socket.AF_INET
-    sockaddr: tuple[Any, ...] = (ip, 0, 0, 0) if family == socket.AF_INET6 else (ip, 0)
+    sockaddr: tuple[object, ...] = (ip, 0, 0, 0) if family == socket.AF_INET6 else (ip, 0)
     return [(family, socket.SOCK_STREAM, 6, "", sockaddr)]
 
 
@@ -77,7 +76,7 @@ def test_validate_remote_url_blocks_dns_to_private(
 
     def _getaddrinfo(
         host: str, port: object, *args: object, **kwargs: object
-    ) -> list[tuple[Any, ...]]:
+    ) -> list[tuple[object, ...]]:
         del port, args, kwargs
         if str(host).strip().lower().rstrip(".") == "attacker.example":
             return _addrinfo_for("169.254.169.254")
@@ -98,7 +97,7 @@ def test_validate_remote_url_blocks_mixed_public_and_private_answers(
 
     def _getaddrinfo(
         host: str, port: object, *args: object, **kwargs: object
-    ) -> list[tuple[Any, ...]]:
+    ) -> list[tuple[object, ...]]:
         del host, port, args, kwargs
         return _addrinfo_for("8.8.8.8") + _addrinfo_for("127.0.0.1")
 

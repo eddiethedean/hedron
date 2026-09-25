@@ -7,9 +7,18 @@ import json
 import sys
 from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import cast
+from typing import Protocol, cast
 
 from hedron.workflow import WorkflowManifest, build_upgrade_report, load_baseline
+
+
+class _UpgradeReportArgs(Protocol):
+    baseline: str | None
+    manifest: str
+    from_version: str
+    to_version: str
+    out: str | None
+    allow_definite: bool
 
 
 def _load_manifest(path: str | None) -> WorkflowManifest | None:
@@ -49,25 +58,26 @@ def _load_manifest(path: str | None) -> WorkflowManifest | None:
 
 
 def _cmd_upgrade_report(args: argparse.Namespace) -> None:
+    typed_args = cast(_UpgradeReportArgs, cast(object, args))
     try:
-        baseline = load_baseline(Path(args.baseline)) if args.baseline else None
-        manifest = _load_manifest(args.manifest)
+        baseline = load_baseline(Path(typed_args.baseline)) if typed_args.baseline else None
+        manifest = _load_manifest(typed_args.manifest)
     except (OSError, ValueError, json.JSONDecodeError) as exc:
-        sys.stderr.write(f"upgrade-report: {exc}\n")
+        _ignored = sys.stderr.write(f"upgrade-report: {exc}\n")
         raise SystemExit(1) from exc
     report = build_upgrade_report(
-        from_version=args.from_version,
-        to_version=args.to_version,
+        from_version=typed_args.from_version,
+        to_version=typed_args.to_version,
         baseline=baseline,
         manifest=manifest,
     )
     payload = report.to_dict()
     text = json.dumps(payload, indent=2, sort_keys=True)
-    if args.out:
-        Path(args.out).write_text(text + "\n", encoding="utf-8")
+    if typed_args.out:
+        _ignored = Path(typed_args.out).write_text(text + "\n", encoding="utf-8")
     else:
-        sys.stdout.write(text + "\n")
-    raise SystemExit(report.exit_code(fail_on_definite=not args.allow_definite))
+        _ignored = sys.stdout.write(text + "\n")
+    raise SystemExit(report.exit_code(fail_on_definite=not typed_args.allow_definite))
 
 
 cmd_upgrade_report = _cmd_upgrade_report

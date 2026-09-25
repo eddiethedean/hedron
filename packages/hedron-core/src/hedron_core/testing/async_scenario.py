@@ -5,7 +5,7 @@ from __future__ import annotations
 import asyncio
 from collections.abc import Awaitable, Callable, Sequence
 from dataclasses import dataclass, field
-from typing import Any, TypeVar
+from typing import TypeVar
 
 __all__ = [
     "AsyncScenario",
@@ -38,11 +38,11 @@ class ScriptedDependency:
 
     name: str
     outcome: str = "success"  # success | fail | hang_until_cancel
-    value: Any = None
+    value: object = None
     error: Exception | None = None
     events: list[str] = field(default_factory=list[str])
 
-    async def run(self, *, cancel_event: asyncio.Event | None = None) -> Any:
+    async def run(self, *, cancel_event: asyncio.Event | None = None) -> object:
         self.events.append(f"{self.name}:start")
         if self.outcome == "fail":
             self.events.append(f"{self.name}:fail")
@@ -50,7 +50,7 @@ class ScriptedDependency:
         if self.outcome == "hang_until_cancel":
             if cancel_event is None:
                 cancel_event = asyncio.Event()
-            await cancel_event.wait()
+            _ignored = await cancel_event.wait()
             self.events.append(f"{self.name}:cancelled")
             raise asyncio.CancelledError()
         self.events.append(f"{self.name}:success")
@@ -61,7 +61,7 @@ def scripted_outcome(
     name: str,
     *,
     outcome: str = "success",
-    value: Any = None,
+    value: object = None,
     error: Exception | None = None,
 ) -> ScriptedDependency:
     return ScriptedDependency(name=name, outcome=outcome, value=value, error=error)

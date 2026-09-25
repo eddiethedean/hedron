@@ -5,13 +5,14 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+from hedron.cli.arguments import path_argument, string_argument
 from hedron.cli.discovery import load_app as _load_app
 from hedron_core.catalog import compile_interaction_catalog
 from hedron_core.testgen import GENERATOR_VERSION, generate_interaction_tests
 
 
 def _cmd_testgen(args: argparse.Namespace) -> int:
-    app = _load_app(getattr(args, "app", None))
+    app = _load_app(string_argument(args, "app"))
     if app is not None:
         from hedron.interactions import app_interactions
 
@@ -20,14 +21,16 @@ def _cmd_testgen(args: argparse.Namespace) -> int:
         catalog = compile_interaction_catalog()
     source = generate_interaction_tests(
         catalog,
-        profile=str(getattr(args, "profile", None) or "default"),
-        generator_version=str(getattr(args, "generator_version", None) or GENERATOR_VERSION),
+        profile=string_argument(args, "profile", "default") or "default",
+        generator_version=(
+            string_argument(args, "generator_version", GENERATOR_VERSION) or GENERATOR_VERSION
+        ),
     )
-    out = getattr(args, "out", None)
+    out = path_argument(args, "out")
     if out:
         path = Path(out)
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(source, encoding="utf-8")
+        _ignored = path.write_text(source, encoding="utf-8")
         print(f"wrote {path}")
     else:
         print(source, end="")

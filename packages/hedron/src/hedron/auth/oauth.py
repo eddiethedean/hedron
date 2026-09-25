@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 from hedron_core.diagnostics import error
 
 __all__ = [
@@ -13,7 +11,7 @@ __all__ = [
 ]
 
 
-def require_authlib() -> Any:
+def require_authlib() -> object:
     try:
         import authlib
         from authlib.integrations.starlette_client import OAuth
@@ -27,7 +25,7 @@ def require_authlib() -> Any:
     return authlib, OAuth
 
 
-def create_oauth_client(**kwargs: Any) -> Any:
+def create_oauth_client(**kwargs: object) -> object:
     """Create an Authlib OAuth registry for Starlette/FastAPI apps."""
     _, OAuth = require_authlib()
     return OAuth(**kwargs)
@@ -36,9 +34,9 @@ def create_oauth_client(**kwargs: Any) -> Any:
 class OAuthHelper:
     """Thin wrapper documenting Hedron's non-ownership of identity."""
 
-    def __init__(self, oauth: Any | None = None) -> None:
+    def __init__(self, oauth: object | None = None) -> None:
         self.oauth = oauth or create_oauth_client()
 
-    def register(self, name: str, **kwargs: Any) -> Any:
+    def register(self, name: str, **kwargs: object) -> object:
         """Register a provider; applications remain responsible for sessions/claims."""
         return self.oauth.register(name=name, **kwargs)

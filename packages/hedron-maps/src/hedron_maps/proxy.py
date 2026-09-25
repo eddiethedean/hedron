@@ -86,7 +86,7 @@ def assert_ssrf_safe(url: str, policy: MapPolicy, *, resolve_dns: bool = True) -
 def _literal_or_preflight_address(host: str) -> tuple[str, ...]:
     """Preserve the historical no-DNS test seam without weakening literals."""
     try:
-        ipaddress.ip_address(host)
+        _ignored = ipaddress.ip_address(host)
     except ValueError:
         return ("8.8.8.8",)
     return default_resolve(host)

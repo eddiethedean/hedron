@@ -6,7 +6,7 @@ import asyncio
 import contextlib
 import json
 from collections.abc import Awaitable, Callable, Mapping
-from typing import Any, cast
+from typing import cast
 
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
@@ -28,7 +28,7 @@ class _OutboundFrameTooLarge(ValueError):
     """Raised when a serialized WebSocket frame exceeds its channel budget."""
 
 
-def _encode_json_frame(channel: PageSessionChannel, payload: Mapping[str, Any]) -> str:
+def _encode_json_frame(channel: PageSessionChannel, payload: Mapping[str, object]) -> str:
     """Serialize an outbound frame and enforce the channel's byte budget."""
     frame = json.dumps(payload, allow_nan=False)
     if len(frame.encode("utf-8")) > channel.budget.max_message_bytes:
@@ -39,7 +39,7 @@ def _encode_json_frame(channel: PageSessionChannel, payload: Mapping[str, Any]) 
 async def _send_json(
     websocket: WebSocket,
     channel: PageSessionChannel,
-    payload: Mapping[str, Any],
+    payload: Mapping[str, object],
 ) -> bool:
     """Send a bounded frame, closing when even the response is too large."""
     try:
@@ -84,7 +84,7 @@ async def accept_page_session_channel(
     *,
     allowed_origins: frozenset[str] | None = None,
     allow_missing_origin: bool = False,
-    on_client_state: Callable[[str, str], Awaitable[Any]] | None = None,
+    on_client_state: Callable[[str, str], Awaitable[object]] | None = None,
     producer: Callable[[PageSessionChannel, WebSocket], Awaitable[None]] | None = None,
 ) -> None:
     if not origin_allowed(
@@ -117,19 +117,19 @@ async def accept_page_session_channel(
             return_when=asyncio.FIRST_COMPLETED,
         )
         if not done:
-            receive_task.cancel()
+            _ignored = receive_task.cancel()
             with contextlib.suppress(asyncio.CancelledError):
                 await receive_task
             raise TimeoutError
         if producer_task in done:
             if producer_task.cancelled():
-                receive_task.cancel()
+                _ignored = receive_task.cancel()
                 with contextlib.suppress(asyncio.CancelledError):
                     await receive_task
                 raise asyncio.CancelledError
             producer_error = producer_task.exception()
             if producer_error is not None:
-                receive_task.cancel()
+                _ignored = receive_task.cancel()
                 with contextlib.suppress(asyncio.CancelledError):
                     await receive_task
                 raise producer_error
@@ -230,7 +230,7 @@ async def accept_page_session_channel(
     finally:
         if producer_task is not None:
             if not producer_task.done():
-                producer_task.cancel()
+                _ignored = producer_task.cancel()
             with contextlib.suppress(asyncio.CancelledError):
                 await producer_task
         with contextlib.suppress(Exception):
@@ -244,5 +244,5 @@ async def send_region_update(
 ) -> None:
     message: ChannelMessage = channel.prepare_region_update(update)
     frame = _encode_json_frame(channel, {"kind": message.kind, **dict(message.payload)})
-    channel.commit_region_update(message)
+    _ignored = channel.commit_region_update(message)
     await websocket.send_text(frame)

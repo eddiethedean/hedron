@@ -15,10 +15,11 @@ import os
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Literal, cast
+from typing import Literal, cast
 from urllib.parse import urlsplit
 
 from edron.diagnostics import DiagnosticReport, EdronDiagnostic, finding
+from hedron_core.typing_support import dynamic_attribute
 
 DeploymentProfileName = Literal[
     "local",
@@ -170,18 +171,18 @@ class DeploymentProfile:
             self.external_url, root_path=root_path, production=self.production
         )
         raw_bind: object = self.bind
-        if not isinstance(cast(Any, raw_bind), str) or not raw_bind.strip():
+        if not isinstance(cast(object, raw_bind), str) or not raw_bind.strip():
             raise DeploymentError("bind must be a non-empty host")
         raw_port: object = self.port
-        if not isinstance(cast(Any, raw_port), int) or not 1 <= raw_port <= 65_535:
+        if not isinstance(cast(object, raw_port), int) or not 1 <= raw_port <= 65_535:
             raise DeploymentError("port must be between 1 and 65535")
         raw_workers: object = self.workers
-        if not isinstance(cast(Any, raw_workers), int) or not 1 <= raw_workers <= 256:
+        if not isinstance(cast(object, raw_workers), int) or not 1 <= raw_workers <= 256:
             raise DeploymentError("workers must be between 1 and 256")
         if _is_external_bind(self.bind) and not self.allow_external_bind:
             raise DeploymentError(
                 "external bind requires allow_external_bind=True; use the platform "
-                "boundary explicitly"
+                + "boundary explicitly"
             )
         if (
             name in {"local", "single-process", "reverse-proxy", "workbench", "posit-connect"}
@@ -194,7 +195,7 @@ class DeploymentProfile:
         if len(self.trust_proxy) > _MAX_TRUST_PROXIES:
             raise DeploymentError(f"trust_proxy accepts at most {_MAX_TRUST_PROXIES} entries")
         if any(
-            not isinstance(cast(Any, item), str) or not item.strip() for item in self.trust_proxy
+            not isinstance(cast(object, item), str) or not item.strip() for item in self.trust_proxy
         ):
             raise DeploymentError("trust_proxy entries must be non-empty strings")
         object.__setattr__(self, "name", name)
@@ -208,10 +209,10 @@ class DeploymentProfile:
         object.__setattr__(self, "trust_proxy", tuple(item.strip() for item in self.trust_proxy))
 
     @classmethod
-    def for_name(cls, name: str | DeploymentProfileName, **overrides: Any) -> DeploymentProfile:
+    def for_name(cls, name: str | DeploymentProfileName, **overrides: object) -> DeploymentProfile:
         """Create one named profile with explicit overrides."""
         canonical = _normalize_profile_name(str(name))
-        defaults: dict[DeploymentProfileName, dict[str, Any]] = {
+        defaults: dict[DeploymentProfileName, dict[str, object]] = {
             "local": {"production": False},
             "single-process": {"production": True},
             "reverse-proxy": {"production": True, "root_path": "/"},
@@ -265,7 +266,7 @@ class DeploymentProfile:
 
     from_name = for_name
 
-    def to_mapping(self, *, redact_paths: bool = False) -> dict[str, Any]:
+    def to_mapping(self, *, redact_paths: bool = False) -> dict[str, object]:
         build_dir = self.build_dir
         if redact_paths and Path(build_dir).is_absolute():
             build_dir = "<absolute-path>"
@@ -298,7 +299,7 @@ class DeploymentResolution:
     def ok(self) -> bool:
         return self.diagnostics.ok
 
-    def to_mapping(self) -> dict[str, Any]:
+    def to_mapping(self) -> dict[str, object]:
         return {
             "schema": REPORT_SCHEMA,
             "ok": self.ok,
@@ -322,7 +323,7 @@ class DeploymentReport:
     def ok(self) -> bool:
         return self.diagnostics.ok
 
-    def to_mapping(self) -> dict[str, Any]:
+    def to_mapping(self) -> dict[str, object]:
         return {
             "schema": REPORT_SCHEMA,
             "ok": self.ok,
@@ -337,7 +338,7 @@ class DeploymentReport:
         header = f"Edron deployment profile: {self.profile.name}"
         return header + "\n\n" + self.diagnostics.to_text()
 
-    def to_sarif(self) -> dict[str, Any]:
+    def to_sarif(self) -> dict[str, object]:
         return self.diagnostics.to_sarif()
 
 
@@ -348,7 +349,7 @@ def _diagnostic(
     explanation: str,
     remediation: str = "",
     *,
-    context: Mapping[str, Any] | None = None,
+    context: Mapping[str, object] | None = None,
 ) -> EdronDiagnostic:
     return finding(
         code,
@@ -373,7 +374,7 @@ def resolve_deployment_profile(
     profile: str | DeploymentProfileName | None = None,
     environ: Mapping[str, str] | None = None,
     cwd: str | Path | None = None,
-    overrides: Mapping[str, Any] | None = None,
+    overrides: Mapping[str, object] | None = None,
 ) -> DeploymentResolution:
     """Resolve a deployment profile without importing or executing an app.
 
@@ -433,7 +434,7 @@ def resolve_deployment_profile(
         )
         canonical = "local"
 
-    values: dict[str, Any] = {}
+    values: dict[str, object] = {}
     env_fields = {
         "bind": ("EDRON_BIND", "HEDRON_BIND"),
         "port": ("EDRON_PORT", "HEDRON_PORT"),
@@ -567,7 +568,7 @@ def _check_build_manifest(
                 "Production build manifest is empty",
                 "manifest.json must contain a non-empty JSON object.",
                 "Run `hedron build` and verify that the generated manifest is copied into "
-                "the image.",
+                + "the image.",
             )
         ]
     return []
@@ -582,7 +583,7 @@ def _check_profile_claims(profile: DeploymentProfile) -> list[EdronDiagnostic]:
                 "information",
                 "Loopback production bind",
                 "The profile expects a local process supervisor or reverse proxy to expose "
-                "the application.",
+                + "the application.",
                 "Keep the loopback bind only when the platform boundary is explicit.",
             )
         )
@@ -593,7 +594,7 @@ def _check_profile_claims(profile: DeploymentProfile) -> list[EdronDiagnostic]:
                 "error",
                 "Multi-worker state backend is not shared",
                 "Multiple workers cannot safely claim shared session/resource state with this "
-                "profile.",
+                + "profile.",
                 "Declare a verified shared native backend or use one worker.",
                 context={"workers": profile.workers, "state_backend": profile.state_backend},
             )
@@ -626,16 +627,19 @@ def _check_profile_claims(profile: DeploymentProfile) -> list[EdronDiagnostic]:
                 "information",
                 "Host mount will be supplied at launch",
                 "The host profile has no construction-time root path; launch-time handoff must "
-                "set it before app import.",
+                + "set it before app import.",
                 "Use the native host launcher and verify cookie and URL paths with a mounted "
-                "smoke test.",
+                + "smoke test.",
             )
         )
     return findings
 
 
 def _check_secret(
-    profile: DeploymentProfile, *, environ: Mapping[str, str], overrides: Mapping[str, Any] | None
+    profile: DeploymentProfile,
+    *,
+    environ: Mapping[str, str],
+    overrides: Mapping[str, object] | None,
 ) -> list[EdronDiagnostic]:
     if not profile.production:
         return []
@@ -649,7 +653,7 @@ def _check_secret(
             "Production session secret is not declared",
             "No approved secret source was declared for the production profile.",
             "Inject HEDRON_SESSION_SECRET/EDRON_SESSION_SECRET at runtime or declare the "
-            "platform secret reference.",
+            + "platform secret reference.",
         )
     ]
 
@@ -660,8 +664,8 @@ def check_deployment(
     profile: str | DeploymentProfileName | None = None,
     environ: Mapping[str, str] | None = None,
     cwd: str | Path | None = None,
-    overrides: Mapping[str, Any] | None = None,
-    application: Any = None,
+    overrides: Mapping[str, object] | None = None,
+    application: object = None,
 ) -> DeploymentReport:
     """Check a profile, build manifest, trust boundary, and app metadata.
 
@@ -678,8 +682,8 @@ def check_deployment(
     findings.extend(_check_secret(resolution.profile, environ=env, overrides=overrides))
 
     if application is not None:
-        state = getattr(getattr(application, "hedron", None), "state", None)
-        actual_production = getattr(state, "hedron_production", None)
+        state = dynamic_attribute(dynamic_attribute(application, "hedron"), "state")
+        actual_production = dynamic_attribute(state, "hedron_production")
         if (
             actual_production is not None
             and bool(actual_production) != resolution.profile.production
@@ -693,7 +697,7 @@ def check_deployment(
                     "Use the same production setting for the Edron app and deployment profile.",
                 )
             )
-        actual_root = getattr(state, "hedron_root_path", None)
+        actual_root = dynamic_attribute(state, "hedron_root_path")
         if actual_root and str(actual_root).rstrip("/") != resolution.profile.root_path.rstrip("/"):
             findings.append(
                 _diagnostic(
@@ -713,10 +717,10 @@ def check_deployment(
 
 def artifact_records(
     paths: Iterable[str | Path], *, root: str | Path | None = None
-) -> tuple[dict[str, Any], ...]:
+) -> tuple[dict[str, object], ...]:
     """Return bounded SHA-256 records for already-built release artifacts."""
     root_path = Path(root or Path.cwd()).resolve()
-    records: list[dict[str, Any]] = []
+    records: list[dict[str, object]] = []
     for value in paths:
         path = Path(value)
         if not path.is_file():
@@ -746,7 +750,7 @@ def artifact_manifest(
     version: str,
     root: str | Path | None = None,
     project: str = "edron",
-) -> dict[str, Any]:
+) -> dict[str, object]:
     """Build deterministic release metadata without writing or publishing it."""
     if not version.strip():
         raise DeploymentError("artifact manifest version must not be empty")

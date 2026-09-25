@@ -5,6 +5,8 @@ from __future__ import annotations
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field, fields
 
+from hedron_core.typing_support import dynamic_attribute
+
 
 @dataclass(frozen=True, slots=True)
 class ComponentMeta:
@@ -81,13 +83,14 @@ def component_meta_from_class(cls: type[object]) -> ComponentMeta:
         f"{getattr(cls, 'distribution', 'hedron-core')}:"
         f"{cls.__module__}.{getattr(cls, 'logical_name', cls.__name__)}"
     )
-    props_type = getattr(cls, "props_type", None)
+    props_type = dynamic_attribute(cls, "props_type")
+    props_name = dynamic_attribute(props_type, "__name__") if props_type is not None else None
     return ComponentMeta(
         logical_id=logical_id,
         name=getattr(cls, "logical_name", cls.__name__) or cls.__name__,
         module=cls.__module__,
         distribution=getattr(cls, "distribution", "hedron-core"),
-        props_model=props_type.__name__ if props_type else None,
+        props_model=props_name if isinstance(props_name, str) else None,
         slots=dict(getattr(cls, "slots", {}) or {}),
         route=None,
     )

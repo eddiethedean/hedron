@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, Literal, cast
+from typing import Literal, cast
 
 __all__ = [
     "AccessibilityFinding",
@@ -32,7 +32,7 @@ class AccessibilityFinding:
     status: Literal["automatic", "semi-automatic", "manual"] = "automatic"
     nodes: tuple[str, ...] = ()
 
-    def as_dict(self) -> dict[str, Any]:
+    def as_dict(self) -> dict[str, object]:
         return {
             "rule_id": self.rule_id,
             "impact": self.impact,
@@ -58,7 +58,7 @@ class AccessibilityScenario:
     def record_finding(self, finding: AccessibilityFinding) -> None:
         self.findings.append(finding)
 
-    def summarize(self) -> dict[str, Any]:
+    def summarize(self) -> dict[str, object]:
         """Never claim 'accessible' from an empty scan."""
         if not self.findings:
             return {
@@ -221,7 +221,7 @@ def axe_to_sarif(
         rule_id = str(item.get("id") or item.get("rule_id") or "unknown")
         impact = str(item.get("impact") or "moderate").lower()
         message = item.get("description") or item.get("help") or str(item)
-        rules.setdefault(
+        _ignored = rules.setdefault(
             rule_id,
             {
                 "id": rule_id,

@@ -4,17 +4,16 @@ from collections.abc import Generator
 from contextlib import contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass, field
-from typing import Any
 
 from edron.errors import PhaseError
 
 
 @dataclass
 class Buffer:
-    entries: list[Any] = field(default_factory=lambda: list[Any]())
+    entries: list[object] = field(default_factory=lambda: list[object]())
     closed: bool = False
 
-    def append(self, value: Any) -> None:
+    def append(self, value: object) -> None:
         if self.closed:
             raise PhaseError(
                 "output was emitted after the request phase closed", code="EDRON_LATE_OUTPUT"
@@ -24,10 +23,10 @@ class Buffer:
 
 @dataclass
 class Frame:
-    app: Any
-    page: Any
+    app: object
+    page: object
     phase: str
-    request: Any = None
+    request: object = None
     buffer: Buffer = field(default_factory=Buffer)
     parent: Frame | None = None
 
@@ -64,5 +63,5 @@ def frame_context(frame: Frame) -> Generator[Frame, None, None]:
         _current_frame.reset(token)
 
 
-def native_request() -> Any:
+def native_request() -> object:
     return require_frame().request

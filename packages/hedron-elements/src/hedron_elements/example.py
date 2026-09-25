@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing_extensions import override
+
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
@@ -34,6 +36,7 @@ class Example(Component[ExampleProps]):
     ) -> None:
         super().__init__(ExampleProps(status=status, class_=class_, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         return html.tag(TAG_NAME)(
             html.p(self.props.status, **{"data-hedron-server-region": "content"}),

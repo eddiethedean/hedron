@@ -48,7 +48,7 @@ def prune_explorer_rate(now: float) -> None:
         else:
             RATE[key] = kept
     for key in idle:
-        RATE.pop(key, None)
+        _ignored = RATE.pop(key, None)
 
 
 async def explorer_guards(request: Request) -> None:

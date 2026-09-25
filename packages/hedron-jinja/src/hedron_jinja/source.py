@@ -7,10 +7,11 @@ import re
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from html.parser import HTMLParser
-from typing import Any, cast
+from typing import Protocol, cast
 from urllib.parse import urlsplit
 
 from jinja2 import BaseLoader, Environment, TemplateNotFound, nodes
+from typing_extensions import override
 
 from hedron_core import (
     Diagnostic,
@@ -21,11 +22,19 @@ from hedron_core import (
 from hedron_core.compat import tomllib
 from hedron_core.diagnostics import error, make_diagnostic
 from hedron_core.typing_aliases import JsonObject, JsonValue
+from hedron_core.typing_support import dynamic_attribute
 from hedron_jinja.contracts import TemplateDeclaration, TemplateKind, validate_template_name
 
 FORMAT_VERSION = 1
 MAX_PROLOGUE_BYTES = 65_536
 MAX_PROLOGUE_LINES = 256
+
+
+class _ElementMetadata(Protocol):
+    tag_name: str
+    abi_version: int
+    module_asset_id: str
+
 
 INVARIANT_FEATURES = frozenset({"web.html", "jinja.core"})
 PROFILE_FEATURES: dict[str, frozenset[str]] = {
@@ -323,7 +332,7 @@ def parse_hdj_source(name: str, raw: str) -> ParsedHdjSource:
                 name,
                 body_start_line,
                 "Custom tags used by the template are absent from `elements`: "
-                f"{', '.join(sorted(undeclared_used))}.",
+                + f"{', '.join(sorted(undeclared_used))}.",
                 "Add each used custom tag to the `elements` declaration.",
             )
     guard_ending = "\r\n" if lines[closing_index].endswith("\r\n") else "\n"
@@ -440,7 +449,7 @@ def validate_element_declarations(
     definitions = getattr(registry, "element_definitions", None)
     if not callable(definitions):
         raise TypeError("registry must provide element_definitions()")
-    registered = {meta.tag_name: meta for meta in cast(Iterable[Any], definitions())}
+    registered = {meta.tag_name: meta for meta in cast(Iterable[_ElementMetadata], definitions())}
     unknown = set(declaration.elements) - set(registered)
     if unknown:
         raise ValueError(f"unregistered element tags: {', '.join(sorted(unknown))}")
@@ -455,7 +464,7 @@ def validate_element_declarations(
         if meta is not None and meta.module_asset_id != module:
             raise ValueError(
                 f"element module mismatch for {tag}: declared {module!r}, "
-                f"registered {meta.module_asset_id!r}"
+                + f"registered {meta.module_asset_id!r}"
             )
 
 
@@ -513,6 +522,7 @@ class HdjLoader(BaseLoader):
         raw, _filename, _uptodate = self.delegate.get_source(environment, template)
         return parse_hdj_source(template, raw)
 
+    @override
     def get_source(
         self, environment: Environment, template: str
     ) -> tuple[str, str | None, Callable[[], bool] | None]:
@@ -523,6 +533,7 @@ class HdjLoader(BaseLoader):
         parsed = parse_hdj_source(template, raw)
         return parsed.compiled, filename, uptodate
 
+    @override
     def list_templates(self) -> list[str]:
         return sorted(name for name in self.delegate.list_templates() if name.endswith(".hdj"))
 
@@ -550,12 +561,13 @@ def dependency_edges(
 
 def _constant_template_names(expr: nodes.Expr) -> tuple[str, ...] | None:
     if isinstance(expr, nodes.Const):
-        if isinstance(expr.value, str):
-            return (expr.value,)
-        if isinstance(expr.value, (tuple, list)):
+        value = dynamic_attribute(expr, "value")
+        if isinstance(value, str):
+            return (value,)
+        if isinstance(value, (tuple, list)):
             raw_values = cast(
                 tuple[object, ...] | list[object],
-                cast(Any, expr.value),  # pyright: ignore[reportUnknownMemberType]
+                value,
             )
             if all(isinstance(v, str) for v in raw_values):
                 return tuple(cast(tuple[str, ...] | list[str], raw_values))
@@ -563,9 +575,12 @@ def _constant_template_names(expr: nodes.Expr) -> tuple[str, ...] | None:
     if isinstance(expr, (nodes.Tuple, nodes.List)):
         values: list[str] = []
         for item in expr.items:
-            if not isinstance(item, nodes.Const) or not isinstance(item.value, str):
+            if not isinstance(item, nodes.Const):
                 return None
-            values.append(item.value)
+            value = dynamic_attribute(item, "value")
+            if not isinstance(value, str):
+                return None
+            values.append(value)
         return tuple(values)
     return None
 
@@ -702,6 +717,7 @@ class _LiteralCapabilityParser(HTMLParser):
         self.kind = kind
         self.capabilities: set[str] = set()
 
+    @override
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         values = {name.lower(): value for name, value in attrs}
         if tag.lower() == "style" or "style" in values:
@@ -902,7 +918,7 @@ def contextual_diagnostics(parsed: ParsedHdjSource) -> tuple[Diagnostic, ...]:
                     match.start(),
                     "TrustedHtml is valid only in HTML body content",
                     "Use a context-specific value or move the expression outside the "
-                    "attribute/script/style sink.",
+                    + "attribute/script/style sink.",
                 )
             )
         if container in {"script", "style"} and "|tojson" not in expr:

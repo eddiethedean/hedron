@@ -9,7 +9,7 @@ from __future__ import annotations
 import copy
 from collections.abc import Mapping, MutableMapping
 from dataclasses import dataclass, field
-from typing import Any, Literal, cast
+from typing import Literal, cast
 
 from hedron_core.codes import HED_GRAPH_0006, HED_PATCH_0002
 from hedron_core.csrf import redact_secret_like
@@ -47,7 +47,7 @@ class GraphReplayEvent:
     correlation_id: str
     binding_id: str
     kind: GraphReplayKind
-    payload: Mapping[str, Any] = field(default_factory=dict[str, Any])
+    payload: Mapping[str, object] = field(default_factory=dict[str, object])
 
 
 @dataclass(slots=True)
@@ -55,7 +55,7 @@ class GraphRecording:
     """Ordered exchange fixture for deterministic graph replay."""
 
     events: list[GraphReplayEvent] = field(default_factory=list[GraphReplayEvent])
-    initial_regions: dict[str, Any] = field(default_factory=dict[str, Any])
+    initial_regions: dict[str, object] = field(default_factory=dict[str, object])
 
 
 def record_exchange(
@@ -64,7 +64,7 @@ def record_exchange(
     correlation_id: str,
     binding_id: str,
     kind: GraphReplayKind | str,
-    payload: Mapping[str, Any] | None = None,
+    payload: Mapping[str, object] | None = None,
 ) -> GraphReplayEvent:
     """Append a redacted exchange event to ``recording`` and return it."""
     if kind not in _VALID_KINDS:
@@ -87,14 +87,14 @@ def replay(
     recording: GraphRecording,
     *,
     schedule: list[str] | None = None,
-) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+) -> tuple[dict[str, object], list[dict[str, object]]]:
     """Replay ``recording`` against ``graph`` without sleeping.
 
     Returns ``(final_region_snapshot, audit)``. ``schedule`` injects scripted
     stale/duplicate/disconnect/conflict steps after recorded exchanges (or alone).
     """
-    regions: dict[str, Any] = copy.deepcopy(dict(recording.initial_regions))
-    audit: list[dict[str, Any]] = []
+    regions: dict[str, object] = copy.deepcopy(dict(recording.initial_regions))
+    audit: list[dict[str, object]] = []
     seen_correlations: set[str] = set()
 
     queue: list[GraphReplayEvent] = list(recording.events)
@@ -185,7 +185,7 @@ def replay(
     return regions, audit
 
 
-def _redact_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
+def _redact_payload(payload: Mapping[str, object]) -> dict[str, object]:
     return redact_secret_like(dict(payload), keys=_REDACT_KEYS)
 
 
@@ -198,9 +198,9 @@ def _binding(graph: InteractionGraph, binding_id: str) -> DashboardBinding | Non
 
 def _apply_trigger(
     graph: InteractionGraph,
-    regions: MutableMapping[str, Any],
+    regions: MutableMapping[str, object],
     event: GraphReplayEvent,
-    audit: list[dict[str, Any]],
+    audit: list[dict[str, object]],
 ) -> None:
     payload = dict(event.payload)
     region_updates = payload.get("regions")
@@ -225,9 +225,9 @@ def _apply_trigger(
 
 
 def _apply_patch(
-    regions: MutableMapping[str, Any],
+    regions: MutableMapping[str, object],
     event: GraphReplayEvent,
-    audit: list[dict[str, Any]],
+    audit: list[dict[str, object]],
 ) -> None:
     payload = dict(event.payload)
     target_id = str(payload.get("target_id") or "")

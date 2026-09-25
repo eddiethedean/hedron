@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Any
 
 from pydantic import Field
+from typing_extensions import override
 
 from hedron_core.builtins._base import ElementProps, class_names, mark_data
 from hedron_core.builtins.forms import CsrfField
@@ -95,7 +95,7 @@ class TerminalView(Component[TerminalViewProps]):
     logical_name = "TerminalView"
     distribution = "hedron-extras"
 
-    def __init__(self, *, policy: TerminalPolicy | None = None, **kwargs: Any) -> None:
+    def __init__(self, *, policy: TerminalPolicy | None = None, **kwargs: object) -> None:
         if policy is None:
             # Fail closed: render disabled surface.
             super().__init__(TerminalViewProps(enabled=False, allowlist=[], **kwargs))
@@ -111,6 +111,7 @@ class TerminalView(Component[TerminalViewProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         if not self.props.enabled:
             return html.div(
@@ -158,11 +159,12 @@ class Joystick(Component[JoystickProps]):
     logical_name = "Joystick"
     distribution = "hedron-extras"
 
-    def __init__(self, *, name: str = "joystick", max_rate_hz: int = 30, **kwargs: Any) -> None:
+    def __init__(self, *, name: str = "joystick", max_rate_hz: int = 30, **kwargs: object) -> None:
         if max_rate_hz < 1 or max_rate_hz > 60:
             raise ValueError("Joystick max_rate_hz out of bounds")
         super().__init__(JoystickProps(name=name, max_rate_hz=max_rate_hz, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         return html.div(
             html.label(
@@ -214,7 +216,7 @@ class DeviceBridge(Component[DeviceBridgeProps]):
         commands: Sequence[str],
         *,
         name: str = "device",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if not device or ".." in device:
             raise ValueError("Invalid device id")
@@ -225,6 +227,7 @@ class DeviceBridge(Component[DeviceBridgeProps]):
             _reject_unsafe_command(cmd, label="device command")
         super().__init__(DeviceBridgeProps(device=device, commands=cmds, name=name, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         options = [html.option(c, value=c) for c in self.props.commands]
         return html.form(

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import Any, Protocol
+from typing import Protocol
 
 from starlette.middleware.sessions import SessionMiddleware
 
@@ -14,9 +14,11 @@ DEFAULT_SESSION_SECRET = "hedron-dev-secret-change-me"
 
 class SessionHost(Protocol):
     hedron_policy: SecurityPolicy
-    state: Any
+    state: object
 
-    def add_middleware(self, middleware_class: type[Any], *args: Any, **kwargs: Any) -> None: ...
+    def add_middleware(
+        self, middleware_class: type[object], *args: object, **kwargs: object
+    ) -> None: ...
 
 
 def configure_sessions(
@@ -40,12 +42,12 @@ def configure_sessions(
         ):
             raise ValueError(
                 "security='strict' requires an explicit session_secret "
-                "(do not use the development default)."
+                + "(do not use the development default)."
             )
         if session_secret == DEFAULT_SESSION_SECRET and not is_prod:
             warnings.warn(
                 "Hedron is using the default development session_secret; "
-                "set session_secret explicitly before production deployment.",
+                + "set session_secret explicitly before production deployment.",
                 UserWarning,
                 stacklevel=warning_stacklevel,
             )

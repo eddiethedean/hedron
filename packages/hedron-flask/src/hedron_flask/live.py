@@ -44,7 +44,7 @@ def sse_response(
     """
     warnings.warn(
         "hedron_flask.live.sse_response is experimental; import from "
-        "hedron_flask.experimental (prefer polling in production).",
+        + "hedron_flask.experimental (prefer polling in production).",
         DeprecationWarning,
         stacklevel=2,
     )
@@ -54,7 +54,7 @@ def sse_response(
             if not isinstance(item, SseEvent):  # pyright: ignore[reportUnnecessaryIsInstance]
                 raise TypeError(
                     "hedron_flask.live.sse_response accepts only SseEvent values; "
-                    f"got {type(item)!r}"
+                    + f"got {type(item)!r}"
                 )
             yield encode_sse(item)
 
@@ -90,7 +90,7 @@ def stream_text(
     """Focused text streaming helper (experimental; not general HTML streaming)."""
     warnings.warn(
         "hedron_flask.live.stream_text is experimental; import from "
-        "hedron_flask.experimental (prefer polling in production).",
+        + "hedron_flask.experimental (prefer polling in production).",
         DeprecationWarning,
         stacklevel=2,
     )

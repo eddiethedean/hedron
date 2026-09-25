@@ -255,8 +255,8 @@ def export_rows_xlsx(
         zf.writestr(
             "xl/worksheets/sheet1.xml",
             '<?xml version="1.0" encoding="UTF-8"?>'
-            '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
-            f"<sheetData>{''.join(row_xml)}</sheetData></worksheet>",
+            + '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+            + f"<sheetData>{''.join(row_xml)}</sheetData></worksheet>",
         )
     return buf.getvalue()
 

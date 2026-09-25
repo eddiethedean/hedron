@@ -5,6 +5,8 @@ from __future__ import annotations
 from html import escape as html_escape
 from urllib.parse import urlsplit
 
+from typing_extensions import override
+
 from hedron_core.builtins._base import ElementProps, class_names, mark_data
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
@@ -68,6 +70,7 @@ class Math(Component[MathProps]):
             MathProps(latex=latex, display=display, class_=class_, mark=mark, **kwargs)
         )
 
+    @override
     def render(self) -> NodeLike:
         # Serializer escapes text; never treat latex as HTML or execute JS.
         code = html.code(self.props.latex, class_="hedron-math-source")
@@ -121,6 +124,7 @@ class HelpInspector(Component[HelpInspectorProps]):
         )
         self._body = body
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {
             "id": self.props.id,
@@ -205,6 +209,7 @@ class IFrame(Component[IFrameProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         # ``iframe`` is forbidden via html.*; TrustedHtml is the approved sink
         # (same pattern as PdfViewer / object).
@@ -284,6 +289,7 @@ class GeolocationButton(Component[GeolocationButtonProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         return html.fieldset(
             html.legend(self.props.label),
@@ -367,6 +373,7 @@ class GeolocationHint(Component[GeolocationHintProps]):
     ) -> None:
         super().__init__(GeolocationHintProps(text=text, class_=class_, mark=mark, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         return html.p(
             self.props.text,

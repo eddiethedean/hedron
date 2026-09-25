@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from hedron_core.catalog import compile_interaction_catalog
 from hedron_core.codes import HED_PROJECTION_0005, HED_UPDATE_0003
@@ -59,11 +59,11 @@ def resolve_registered_handle(
 
 
 def coerce_interaction_target(
-    target: Any,
+    target: object,
     *,
     app_id: str | None = None,
     binding: JinjaBinding | None = None,
-) -> Any:
+) -> object:
     """Accept a handle, BoundFragment, or catalog logical id. Never execute a manifest dict."""
     if isinstance(target, Mapping):
         raise error(
@@ -76,7 +76,7 @@ def coerce_interaction_target(
         if binding is not None:
             return binding.resolve_handle(target)
         catalog = compile_interaction_catalog(app_id=app_id)
-        catalog.require(target)
+        _ignored = catalog.require(target)
         return resolve_registered_handle(target, app_id=app_id)
     if binding is not None:
         logical_id = getattr(target, "logical_id", None)
@@ -101,12 +101,12 @@ def coerce_interaction_target(
 
 
 def catalog_view(
-    target: Any,
+    target: object,
     *,
     binding: JinjaBinding | None = None,
     app_id: str | None = None,
-    **bind_kwargs: Any,
-) -> Any:
+    **bind_kwargs: object,
+) -> object:
     """Bind a view through FragmentHandle.bind. Does not evaluate annotations."""
     handle = coerce_interaction_target(target, app_id=app_id, binding=binding)
     bind = getattr(handle, "bind", None)
@@ -126,19 +126,19 @@ def catalog_view(
 
 
 def catalog_command_form(
-    target: Any,
+    target: object,
     *,
-    fields: Sequence[Any] | None = None,
+    fields: Sequence[object] | None = None,
     binding: JinjaBinding | None = None,
     app_id: str | None = None,
-    **form_kwargs: Any,
-) -> Any:
+    **form_kwargs: object,
+) -> object:
     """Opt-in ActionHandle.form() or explicit Form(action=handle)."""
     handle = coerce_interaction_target(target, app_id=app_id, binding=binding)
     form_fn = getattr(handle, "form", None)
     if callable(form_fn):
         if fields is not None:
-            form_kwargs.setdefault("controls", {"fields": list(fields)})
+            _ignored = form_kwargs.setdefault("controls", {"fields": list(fields)})
         try:
             return form_fn(**form_kwargs)
         except TypeError:

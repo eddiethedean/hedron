@@ -6,7 +6,7 @@ import json
 import re
 from collections.abc import Mapping
 from html import escape
-from typing import Any, NoReturn, cast
+from typing import NoReturn, cast
 
 from hedron_core._html_meta import FORBIDDEN_ATTRS, URL_ATTRS
 from hedron_core.diagnostics import HedronError, error
@@ -168,7 +168,7 @@ def _depth(value: object, current: int = 0) -> int:
     return current
 
 
-def encode_structured_input(payload: Mapping[str, Any], *, instance_id: str) -> str:
+def encode_structured_input(payload: Mapping[str, object], *, instance_id: str) -> str:
     """Return an inert JSON script tag associated by instance id (never executed)."""
     try:
         raw = json.dumps(payload, separators=(",", ":"), allow_nan=False)
@@ -214,7 +214,7 @@ def render_element_markup(
     attributes: Mapping[str, str] | None = None,
     server_content: str = "",
     instance_id: str | None = None,
-    structured_input: Mapping[str, Any] | None = None,
+    structured_input: Mapping[str, object] | None = None,
 ) -> str:
     """Render frozen ABI markup for a light-DOM first-party element."""
     tag = _require_element_tag(tag_name)

@@ -10,7 +10,7 @@ import json
 import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, cast
+from typing import cast
 
 __all__ = [
     "RecordedExchange",
@@ -65,18 +65,18 @@ def _is_sensitive_key(key: str) -> bool:
     return any(part in lowered for part in ("password", "secret", "token", "credential"))
 
 
-def _redact_value(value: Any) -> Any:
+def _redact_value(value: object) -> object:
     if isinstance(value, Mapping):
-        return _redact_mapping(cast(Mapping[str, Any], value))
+        return _redact_mapping(cast(Mapping[str, object], value))
     if isinstance(value, list):
-        return [_redact_value(item) for item in cast(list[Any], value)]
+        return [_redact_value(item) for item in cast(list[object], value)]
     if isinstance(value, tuple):
-        return tuple(_redact_value(item) for item in cast(tuple[Any, ...], value))
+        return tuple(_redact_value(item) for item in cast(tuple[object, ...], value))
     return value
 
 
-def _redact_mapping(data: Mapping[str, Any]) -> dict[str, Any]:
-    out: dict[str, Any] = {}
+def _redact_mapping(data: Mapping[str, object]) -> dict[str, object]:
+    out: dict[str, object] = {}
     for key, value in data.items():
         if _is_sensitive_key(str(key)):
             out[str(key)] = _REDACTED
@@ -91,7 +91,7 @@ class RecordedExchange:
     path: str
     public: bool
     headers: Mapping[str, str] = field(default_factory=dict[str, str])
-    body: Mapping[str, Any] | None = None
+    body: Mapping[str, object] | None = None
     session_assumptions: tuple[str, ...] = ()
     file_fixtures: tuple[str, ...] = ()
 
@@ -125,7 +125,7 @@ class InteractionRecorder:
         method: str,
         path: str,
         headers: Mapping[str, str] | None = None,
-        body: Mapping[str, Any] | None = None,
+        body: Mapping[str, object] | None = None,
         session_assumptions: Sequence[str] = (),
         file_fixtures: Sequence[str] = (),
         public: bool | None = None,

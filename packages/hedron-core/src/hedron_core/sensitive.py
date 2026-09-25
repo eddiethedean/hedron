@@ -115,7 +115,7 @@ def enforce_sink(
         if not sensitive.label.allows_sink(sink, allow=permitted):
             raise SensitiveSinkError(
                 f"sensitive value denied at sink {sink!r} "
-                f"(class={sensitive.label.classification.value})"
+                + f"(class={sensitive.label.classification.value})"
             )
         if sensitive.label.classification in {
             SensitivityClass.SECRET,

@@ -152,10 +152,10 @@ def write_json_atomic(path: Path, value: JsonValue) -> str:
     tmp_path = Path(tmp_name)
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as handle:
-            handle.write(text)
+            _ignored = handle.write(text)
             handle.flush()
             os.fsync(handle.fileno())
-        tmp_path.replace(path)
+        _ignored = tmp_path.replace(path)
     except Exception:
         with suppress(OSError):
             tmp_path.unlink(missing_ok=True)

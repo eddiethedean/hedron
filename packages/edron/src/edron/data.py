@@ -11,7 +11,7 @@ from __future__ import annotations
 import inspect
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, Generic, Literal, TypeVar, cast
+from typing import Generic, Literal, TypeVar, cast
 
 from edron.errors import BindingError
 from hedron_core.typing_aliases import JsonValue
@@ -121,16 +121,16 @@ class EditIntent:
         )
 
     @classmethod
-    def from_mapping(cls, payload: Mapping[str, Any]) -> EditIntent:
+    def from_mapping(cls, payload: Mapping[str, object]) -> EditIntent:
         """Validate the finite JSON shape emitted by the native editor host."""
 
-        def array(name: str) -> Sequence[Any]:
+        def array(name: str) -> Sequence[object]:
             value = payload.get(name)
             if value is None:
                 return ()
             if not isinstance(value, Sequence) or isinstance(value, (str, bytes)):
                 raise ValueError(f"{name} must be an array")
-            return cast(Sequence[Any], value)
+            return cast(Sequence[object], value)
 
         raw_updates = array("updates")
         raw_inserts = array("inserts")
@@ -139,7 +139,7 @@ class EditIntent:
         for item in raw_updates:
             if not isinstance(item, Mapping):
                 raise ValueError("each update must be an object")
-            update = cast(Mapping[str, Any], item)
+            update = cast(Mapping[str, object], item)
             updates.append(
                 CellEdit(
                     row_key=str(update.get("row_key", "")),
@@ -156,7 +156,7 @@ class EditIntent:
         for item in raw_inserts:
             if not isinstance(item, Mapping):
                 raise ValueError("each insert must be an object")
-            insert = cast(Mapping[str, Any], item)
+            insert = cast(Mapping[str, object], item)
             inserts.append({str(key): cast(JsonValue, value) for key, value in insert.items()})
         return cls(
             updates=tuple(updates),
@@ -262,7 +262,7 @@ class WorkspacePage:
 class DataSource(Generic[T]):
     """Small adapter facade around one explicit native data source."""
 
-    def __init__(self, native: Any, *, adapter: str = "custom") -> None:
+    def __init__(self, native: object, *, adapter: str = "custom") -> None:
         if not callable(getattr(native, "fetch", None)) or not callable(
             getattr(native, "apply", None)
         ):
@@ -271,7 +271,7 @@ class DataSource(Generic[T]):
         self.adapter = adapter
 
     @property
-    def native(self) -> Any:
+    def native(self) -> object:
         return self._native
 
     @classmethod
@@ -304,7 +304,7 @@ class DataSource(Generic[T]):
         return DataSource(native, adapter="memory")
 
     @classmethod
-    def dataframe(cls, frame: object, **kwargs: Any) -> DataSource[Row]:
+    def dataframe(cls, frame: object, **kwargs: object) -> DataSource[Row]:
         """Adapt a bounded pandas, Polars, or PyArrow value via native Narwhals."""
         module = type(frame).__module__.split(".")[0]
         if module not in {"pandas", "polars", "pyarrow", "narwhals"}:
@@ -317,11 +317,11 @@ class DataSource(Generic[T]):
     def sqlalchemy(
         cls,
         *,
-        session_factory: Callable[[], Any],
+        session_factory: Callable[[], object],
         statement: object,
         row_key: str = "id",
         to_row: Callable[[object], T] | None = None,
-        apply_changes: Callable[[Any, DataChanges[T]], DataSaveResult[T]] | None = None,
+        apply_changes: Callable[[object, DataChanges[T]], DataSaveResult[T]] | None = None,
         columns: Sequence[Column] = (),
         search_fields: Sequence[str] = (),
     ) -> DataSource[T]:
@@ -357,7 +357,7 @@ class DataSource(Generic[T]):
         return cast(DataSaveResult[T], result)
 
 
-def _invoke_hook(hook: Callable[..., Any], **values: Any) -> Any:
+def _invoke_hook(hook: Callable[..., object], **values: object) -> object:
     try:
         signature = inspect.signature(hook)
     except (TypeError, ValueError):
@@ -372,7 +372,7 @@ def _invoke_hook(hook: Callable[..., Any], **values: Any) -> Any:
         in {inspect.Parameter.POSITIONAL_OR_KEYWORD, inspect.Parameter.KEYWORD_ONLY}
     }
     try:
-        signature.bind(**accepted)
+        _ignored = signature.bind(**accepted)
     except TypeError:
         return False
     return hook(**accepted)
@@ -385,7 +385,7 @@ class DataWorkspace:
         self,
         name: str,
         *,
-        source: DataSource[Row] | Any,
+        source: DataSource[Row] | object,
         columns: Sequence[Column],
         key_field: str = "id",
         page_size: int = DEFAULT_PAGE_SIZE,
@@ -409,8 +409,8 @@ class DataWorkspace:
         if key_field not in column_names:
             raise ValueError("workspace key_field must be present in columns")
         self.name = name
-        self.source: DataSource[Any] = (
-            source if isinstance(source, DataSource) else DataSource[Any](source)
+        self.source: DataSource[object] = (
+            source if isinstance(source, DataSource) else DataSource[object](source)
         )
         self.columns = tuple(columns)
         self.key_field = key_field
@@ -455,7 +455,7 @@ class DataWorkspace:
             if edit.writable_fields & forbidden:
                 raise ValueError("writable fields must be explicitly writable visible columns")
 
-    def request_from(self, values: Mapping[str, Any]) -> PageRequest:
+    def request_from(self, values: Mapping[str, object]) -> PageRequest:
         """Parse ordinary query parameters using only workspace allowlists."""
         raw_sort = values.get("sort")
         sort: tuple[tuple[str, Literal["asc", "desc"]], ...] = ()
@@ -659,7 +659,7 @@ class DataWorkspace:
             row_count=len(rows),
         )
 
-    def diagnostics(self) -> Mapping[str, Any]:
+    def diagnostics(self) -> Mapping[str, object]:
         return {
             "schema": "edron.data-workspace/1",
             "name": self.name,
@@ -685,17 +685,17 @@ class DataWorkspace:
         }
 
     @staticmethod
-    def principal_from_request(request: Any) -> object | None:
+    def principal_from_request(request: object) -> object | None:
         """Read the host-established principal without creating identity state."""
         scope = getattr(request, "scope", None)
         if isinstance(scope, Mapping):
-            scope = cast(Mapping[str, Any], scope)
+            scope = cast(Mapping[str, object], scope)
             principal = scope.get("user")
             if principal not in (None, False, ""):
                 return principal
             session = scope.get("session")
             if isinstance(session, Mapping):
-                session = cast(Mapping[str, Any], session)
+                session = cast(Mapping[str, object], session)
                 for key in ("user", "username", "principal", "sub", "user_id", "_user_id"):
                     value = session.get(key)
                     if value not in (None, False, ""):
@@ -709,7 +709,7 @@ class DataWorkspace:
         can_read: Callable[..., bool],
         can_create: Callable[..., bool] | None = None,
         can_edit: Callable[..., bool] | None = None,
-    ) -> NativeDataWorkspace[Any]:
+    ) -> NativeDataWorkspace[object]:
         """Compile common CRUD composition through native ``DataWorkspace``."""
         policy = NativeDataWorkspacePolicy(
             can_read=can_read,
@@ -719,7 +719,7 @@ class DataWorkspace:
         )
         return NativeDataWorkspace(
             self.name,
-            model=cast(Any, model),
+            model=cast(object, model),
             source=self.source.native,
             policy=policy,
             key_field=self.key_field,

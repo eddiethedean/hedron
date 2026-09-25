@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from html import escape as html_escape
-from typing import Any, Literal
+from typing import Literal
+
+from typing_extensions import override
 
 from hedron_core.builtins._base import class_names, mark_data
 from hedron_core.component import Component, NodeLike
@@ -38,7 +40,7 @@ def _nav_url(value: SafeUrl | str, *, allow_external: bool = False) -> SafeUrl:
     return SafeUrl.parse(value, purpose=UrlPurpose.NAVIGATION, allow_external=allow_external)
 
 
-def _track_nodes(tracks: Sequence[Mapping[str, Any] | NodeLike]) -> list[NodeLike]:
+def _track_nodes(tracks: Sequence[Mapping[str, object] | NodeLike]) -> list[NodeLike]:
     from hedron_core.a11y.surfaces import MediaTrackContract
 
     nodes: list[NodeLike] = []
@@ -58,7 +60,7 @@ def _track_nodes(tracks: Sequence[Mapping[str, Any] | NodeLike]) -> list[NodeLik
                 raise ValueError("Media track reviewed must be a boolean")
             if not isinstance(default, bool):
                 raise ValueError("Media track default must be a boolean")
-            MediaTrackContract(
+            _ignored = MediaTrackContract(
                 kind=kind,  # type: ignore[arg-type]
                 language=language,
                 src=src_str,
@@ -106,7 +108,7 @@ class Audio(Component[AudioProps]):
         self,
         src: SafeUrl | str,
         *,
-        tracks: Sequence[Mapping[str, Any] | NodeLike] = (),
+        tracks: Sequence[Mapping[str, object] | NodeLike] = (),
         controls: bool = True,
         autoplay: bool = False,
         loop: bool = False,
@@ -132,6 +134,7 @@ class Audio(Component[AudioProps]):
         )
         self._tracks = tuple(tracks)
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {
             "src": self.props.src,
@@ -178,7 +181,7 @@ class Video(Component[VideoProps]):
         self,
         src: SafeUrl | str,
         *,
-        tracks: Sequence[Mapping[str, Any] | NodeLike] = (),
+        tracks: Sequence[Mapping[str, object] | NodeLike] = (),
         controls: bool = True,
         autoplay: bool = False,
         loop: bool = False,
@@ -207,6 +210,7 @@ class Video(Component[VideoProps]):
         )
         self._tracks = tuple(tracks)
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {
             "src": self.props.src,
@@ -271,6 +275,7 @@ class PdfViewer(Component[PdfViewerProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         src = html_escape(str(self.props.src), quote=True)
         title = html_escape(self.props.title, quote=True)
@@ -304,7 +309,7 @@ class GalleryItem(Props):
     caption: str | None = None
 
 
-def _gallery_item(value: GalleryItem | Mapping[str, Any]) -> GalleryItem:
+def _gallery_item(value: GalleryItem | Mapping[str, object]) -> GalleryItem:
     if isinstance(value, GalleryItem):
         return value
     src = _asset_url(value["src"])
@@ -333,7 +338,7 @@ class Gallery(Component[GalleryProps]):
 
     def __init__(
         self,
-        items: Sequence[GalleryItem | Mapping[str, Any]],
+        items: Sequence[GalleryItem | Mapping[str, object]],
         *,
         lightbox: bool = False,
         mark: str | None = None,
@@ -343,6 +348,7 @@ class Gallery(Component[GalleryProps]):
         super().__init__(GalleryProps(lightbox=lightbox, mark=mark, class_=class_, **kwargs))
         self._items = tuple(_gallery_item(item) for item in items)
 
+    @override
     def render(self) -> NodeLike:
         figures: list[NodeLike] = []
         dialogs: list[NodeLike] = []
@@ -430,6 +436,7 @@ class Logo(Component[LogoProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         img = html.img(
             src=self.props.src,
@@ -472,6 +479,7 @@ class PageIcon(Component[PageIconProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         return html.img(
             src=self.props.src,
@@ -522,6 +530,7 @@ class MicrophoneCapture(Component[MicrophoneCaptureProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         return html.label(
             self.props.label,
@@ -577,6 +586,7 @@ class CameraCapture(Component[CameraCaptureProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         return html.label(
             self.props.label,

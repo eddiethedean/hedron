@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-import argparse
 import json
 import re
 from collections.abc import Iterable, Sequence
 from pathlib import Path
+from typing import Protocol
 
 from hedron_core.codes import HED_CSS_APPLICATION_AUTHORED, HED_THEME_MISSING_TOKEN
 from hedron_core.diagnostics import (
@@ -35,6 +35,24 @@ from hedron_core.theme_contract import (
     theme_contract_report,
 )
 from hedron_core.theme_platform import ThemeSpec
+from hedron_core.typing_aliases import is_string_mapping
+
+
+class _ThemeArgs(Protocol):
+    accessibility_mode: list[str]
+    component: list[str]
+    format: str
+    mode: list[str]
+    output: str | None
+    profile: str
+    severity: str
+    spec: str | None
+    stylesheet: str | None
+    theme: list[str] | None
+    theme_name: str | None
+    viewport: list[str]
+    zero_app_css: str | None
+
 
 # Directories that never hold hand-authored application presentation.
 _SKIP_DIRS = frozenset(
@@ -92,9 +110,9 @@ def _token_diagnostics(theme: Theme) -> list[Diagnostic]:
     ]
 
 
-def _cmd_theme_check(args: argparse.Namespace) -> int:
+def _cmd_theme_check(args: _ThemeArgs) -> int:
     """Validate theme tokens, element compatibility, and contrast basics."""
-    themes = _themes_for(getattr(args, "theme", None))
+    themes = _themes_for(args.theme)
     diagnostics: list[Diagnostic] = []
     for theme in themes:
         diagnostics.extend(_token_diagnostics(theme))
@@ -118,15 +136,17 @@ def _cmd_theme_check(args: argparse.Namespace) -> int:
     return 1 if meets_severity_threshold(diagnostics, threshold) else 0
 
 
-def _theme_input(args: argparse.Namespace) -> Theme | ThemeSpec:
-    spec_path = getattr(args, "spec", None)
+def _theme_input(args: _ThemeArgs) -> Theme | ThemeSpec:
+    spec_path = args.spec
     if spec_path:
         try:
             payload = json.loads(Path(spec_path).read_text(encoding="utf-8"))
+            if not is_string_mapping(payload):
+                raise ValueError("theme spec JSON must contain an object")
             return ThemeSpec.from_dict(payload)
         except (OSError, ValueError, json.JSONDecodeError) as exc:
             raise SystemExit(f"hedron theme: invalid spec {spec_path}: {exc}") from exc
-    name = getattr(args, "theme_name", None) or "folio"
+    name = args.theme_name or "folio"
     available = {theme.name: theme for theme in builtin_themes()}
     available["default"] = default_theme()
     if name not in available:
@@ -136,12 +156,12 @@ def _theme_input(args: argparse.Namespace) -> Theme | ThemeSpec:
 
 def _write_or_print(value: str, output: str | None) -> None:
     if output:
-        Path(output).write_text(value, encoding="utf-8")
+        _ignored = Path(output).write_text(value, encoding="utf-8")
     else:
         print(value, end="")
 
 
-def _cmd_theme_export(args: argparse.Namespace) -> int:
+def _cmd_theme_export(args: _ThemeArgs) -> int:
     exported = export_theme(_theme_input(args), profile=args.profile)
     if args.format == "css":
         value = exported.css
@@ -153,19 +173,19 @@ def _cmd_theme_export(args: argparse.Namespace) -> int:
     return 0
 
 
-def _cmd_theme_manifest(args: argparse.Namespace) -> int:
+def _cmd_theme_manifest(args: _ThemeArgs) -> int:
     value = json.dumps(component_contract_manifest(), indent=2, sort_keys=True) + "\n"
     _write_or_print(value, args.output)
     return 0
 
 
-def _cmd_theme_metadata(args: argparse.Namespace) -> int:
+def _cmd_theme_metadata(args: _ThemeArgs) -> int:
     value = json.dumps(element_metadata_manifest(), indent=2, sort_keys=True) + "\n"
     _write_or_print(value, args.output)
     return 0
 
 
-def _cmd_theme_matrix(args: argparse.Namespace) -> int:
+def _cmd_theme_matrix(args: _ThemeArgs) -> int:
     matrix = build_state_matrix(
         components=args.component or None,
         viewports=args.viewport or ("320", "390", "1440"),
@@ -185,7 +205,7 @@ def _cmd_theme_matrix(args: argparse.Namespace) -> int:
     return 0
 
 
-def _cmd_theme_contract(args: argparse.Namespace) -> int:
+def _cmd_theme_contract(args: _ThemeArgs) -> int:
     theme = _theme_input(args)
     stylesheet = Path(args.stylesheet).read_text(encoding="utf-8") if args.stylesheet else None
     value = (
@@ -195,7 +215,9 @@ def _cmd_theme_contract(args: argparse.Namespace) -> int:
     return 0
 
 
-def _cmd_theme_inspect(args: argparse.Namespace) -> int:
+def _cmd_theme_inspect(args: _ThemeArgs) -> int:
+    if args.stylesheet is None:
+        raise SystemExit("hedron theme inspect requires --stylesheet")
     try:
         stylesheet = Path(args.stylesheet).read_text(encoding="utf-8")
     except OSError as exc:
@@ -269,9 +291,9 @@ def application_css_findings(root: Path) -> list[Diagnostic]:
     return findings
 
 
-def _cmd_style_check(args: argparse.Namespace) -> int:
+def _cmd_style_check(args: _ThemeArgs) -> int:
     """Audit a path for application-authored CSS (``--zero-app-css``)."""
-    target = getattr(args, "zero_app_css", None)
+    target = args.zero_app_css
     if not target:
         raise SystemExit("hedron style check requires --zero-app-css PATH")
     root = Path(target).resolve()

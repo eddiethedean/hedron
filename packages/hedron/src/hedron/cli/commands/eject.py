@@ -7,6 +7,7 @@ import json
 import shutil
 import sys
 from pathlib import Path
+from typing import Protocol, cast
 
 from hedron.cli.commands.inspect import accessibility_contract_for
 from hedron.cli.discovery import find_component as _find_component
@@ -14,10 +15,18 @@ from hedron.cli.discovery import load_app as _load_app
 from hedron.cli.discovery import registry_empty_hint as _registry_empty_hint
 
 
+class _EjectArgs(Protocol):
+    component: str
+    app: str | None
+    out: str | None
+    force: bool
+    surface: str | None
+
+
 def _assert_project_write_path(path: Path, *, cwd: Path) -> Path:
     resolved = path.expanduser().resolve()
     try:
-        resolved.relative_to(cwd)
+        _ignored = resolved.relative_to(cwd)
     except ValueError as exc:
         raise ValueError(f"Refusing to eject outside the project root: {resolved}") from exc
     cursor = resolved
@@ -31,34 +40,35 @@ def _assert_project_write_path(path: Path, *, cwd: Path) -> Path:
 
 
 def _cmd_eject(args: argparse.Namespace) -> int:
-    target = str(args.component or "")
+    typed_args = cast(_EjectArgs, cast(object, args))
+    target = str(typed_args.component or "")
     if target == "features" or target.startswith("features:"):
-        return _cmd_eject_feature(args)
-    _load_app(args.app)
+        return _cmd_eject_feature(typed_args)
+    _ignored = _load_app(typed_args.app)
     from hedron.config import load_hedron_settings
     from hedron_core.discovery import apply_discovery_to_registry, discover_component_folders
 
     settings = load_hedron_settings(Path.cwd())
     discovered = discover_component_folders(settings.resolved_roots(base=Path.cwd()))
-    apply_discovery_to_registry(discovered)
+    _ignored = apply_discovery_to_registry(discovered)
 
-    meta = _find_component(args.component)
+    meta = _find_component(typed_args.component)
     if meta is None:
-        _registry_empty_hint(app=args.app, what="components")
-        print(f"Component {args.component!r} not found", file=sys.stderr)
+        _registry_empty_hint(app=typed_args.app, what="components")
+        print(f"Component {typed_args.component!r} not found", file=sys.stderr)
         return 1
     # Never trust registry ``folder_path`` as a write root (same policy as Explorer reads).
     cwd = Path.cwd().resolve()
-    if args.out:
+    if typed_args.out:
         try:
-            out_dir = _assert_project_write_path(Path(args.out), cwd=cwd)
+            out_dir = _assert_project_write_path(Path(typed_args.out), cwd=cwd)
         except ValueError as exc:
             print(str(exc), file=sys.stderr)
             return 1
     else:
         out_dir = cwd / "components" / meta.name
         try:
-            _assert_project_write_path(out_dir, cwd=cwd)
+            _ignored = _assert_project_write_path(out_dir, cwd=cwd)
         except ValueError as exc:
             print(str(exc), file=sys.stderr)
             return 1
@@ -66,25 +76,25 @@ def _cmd_eject(args: argparse.Namespace) -> int:
     written: list[str] = []
     contract = accessibility_contract_for(meta)
     contract_path = out_dir / "accessibility_contract.json"
-    if contract_path.exists() and not args.force:
+    if contract_path.exists() and not typed_args.force:
         print(f"Refusing to overwrite {contract_path} (use --force)", file=sys.stderr)
         return 1
-    contract_path.write_text(
+    _ignored = contract_path.write_text(
         json.dumps(contract.as_dict(), indent=2) + "\n",
         encoding="utf-8",
     )
     written.append(str(contract_path))
     if meta.styles_path and Path(meta.styles_path).is_file():
         dest = out_dir / "styles.css"
-        if dest.exists() and not args.force:
+        if dest.exists() and not typed_args.force:
             print(f"Refusing to overwrite {dest} (use --force)", file=sys.stderr)
             return 1
-        shutil.copy2(meta.styles_path, dest)
+        _ignored = shutil.copy2(meta.styles_path, dest)
         written.append(str(dest))
     elif meta.styles_path is None:
         dest = out_dir / "styles.css"
-        if not dest.exists() or args.force:
-            dest.write_text(
+        if not dest.exists() or typed_args.force:
+            _ignored = dest.write_text(
                 f"/* Ejected styles for {meta.logical_id} */\n.root {{\n  display: block;\n}}\n",
                 encoding="utf-8",
             )
@@ -92,7 +102,7 @@ def _cmd_eject(args: argparse.Namespace) -> int:
     if not written:
         print(
             f"Nothing written for {meta.logical_id!r} "
-            "(sources missing and starter files already present; use --force).",
+            + "(sources missing and starter files already present; use --force).",
             file=sys.stderr,
         )
         return 1
@@ -100,13 +110,13 @@ def _cmd_eject(args: argparse.Namespace) -> int:
     return 0
 
 
-def _cmd_eject_feature(args: argparse.Namespace) -> int:
+def _cmd_eject_feature(args: _EjectArgs) -> int:
     from hedron.features import eject_feature
     from hedron_core.bundles import FeatureConflictError, eject_source, included_bundles
 
     target = str(args.component or "")
     logical_id = target.split(":", 1)[1] if ":" in target else ""
-    app = _load_app(getattr(args, "app", None))
+    app = _load_app(args.app)
     app_id = str(getattr(app, "hedron_app_id", "") or "") if app is not None else ""
     if not logical_id:
         bundles = included_bundles(app_id=app_id or None)
@@ -124,8 +134,8 @@ def _cmd_eject_feature(args: argparse.Namespace) -> int:
     except ValueError as exc:
         print(str(exc), file=sys.stderr)
         return 1
-    surface = getattr(args, "surface", None)
-    overwrite = bool(getattr(args, "force", False))
+    surface = args.surface
+    overwrite = args.force
     if app is not None:
         try:
             source = eject_feature(
@@ -164,7 +174,7 @@ def _cmd_eject_feature(args: argparse.Namespace) -> int:
             f"# Selected surface: {surface!r}\n"
             f"# Remaining surfaces were omitted from this ejection selection.\n"
         )
-    dest.write_text(source, encoding="utf-8")
+    _ignored = dest.write_text(source, encoding="utf-8")
     print(
         json.dumps(
             {"feature": logical_id, "surface": surface or "*", "written": [str(dest)]},

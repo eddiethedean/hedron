@@ -7,12 +7,14 @@ import sys
 import time
 from pathlib import Path
 
+from hedron.cli.arguments import boolean_argument, float_argument, path_argument
+
 
 def _cmd_dev(args: argparse.Namespace) -> int:
     from hedron.build import run_build
     from hedron.config import load_hedron_settings
 
-    base = Path(args.project or Path.cwd()).resolve()
+    base = Path(path_argument(args, "project") or Path.cwd()).resolve()
     settings = load_hedron_settings(base)
     roots = list(settings.resolved_roots(base=base))
     watch_exts = {
@@ -31,7 +33,7 @@ def _cmd_dev(args: argparse.Namespace) -> int:
     print(f"hedron dev watching {roots or [base]} (Ctrl+C to stop)", file=sys.stderr)
     result = run_build(project_dir=base, settings=settings, production=False)
     print(f"initial build → {result.build_dir}", file=sys.stderr)
-    if args.once:
+    if boolean_argument(args, "once"):
         return 0
 
     mtimes: dict[Path, float] = {}
@@ -50,7 +52,7 @@ def _cmd_dev(args: argparse.Namespace) -> int:
     mtimes = snapshot()
     try:
         while True:
-            time.sleep(args.interval)
+            time.sleep(float_argument(args, "interval", 1.0))
             current = snapshot()
             if current != mtimes:
                 mtimes = current

@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Iterable, Mapping, Sequence
-from typing import Any, Generic, Protocol, TypeVar, cast, runtime_checkable
+from typing import Generic, Protocol, TypeVar, cast, runtime_checkable
 
 from hedron_core.diagnostics import error
+from hedron_core.typing_support import dynamic_attribute
 from hedron_data.plans import TransformPlan, plan_from_query
 from hedron_data.sources import (
     ColumnSchema,
@@ -58,6 +59,8 @@ class _HasKeys(Protocol):
 
 @runtime_checkable
 class _SelectableStatement(Protocol):
+    selected_columns: object
+
     def order_by(self, *args: object) -> _SelectableStatement: ...
 
     def where(self, *args: object) -> _SelectableStatement: ...
@@ -79,6 +82,14 @@ class _HasScalarOne(Protocol):
 @runtime_checkable
 class _ColumnElement(Protocol):
     def ilike(self, other: object, escape: str | None = None) -> object: ...
+
+
+class _ColumnCollection(Protocol):
+    def __contains__(self, name: object) -> bool: ...
+
+    def __getitem__(self, name: str) -> object: ...
+
+    def __iter__(self) -> Iterable[object]: ...
 
 
 class _PublicRow(dict[str, object]):
@@ -125,9 +136,9 @@ def _fetch_rows(result: object) -> list[object]:
 
 
 def _column_from_selectable(statement: object, name: str) -> _ColumnElement:
-    columns = getattr(statement, "selected_columns", None)
-    if columns is not None and name in columns:
-        col = columns[name]
+    columns = dynamic_attribute(statement, "selected_columns")
+    if columns is not None and name in cast(_ColumnCollection, columns):
+        col = cast(_ColumnCollection, columns)[name]
         if isinstance(col, _ColumnElement):
             return col
         # Host-selected columns always expose comparison/ilike at runtime.
@@ -184,7 +195,7 @@ class SQLAlchemyDataSource(Generic[T]):
         schema: Sequence[ColumnSchema] = (),
         search_fields: Sequence[str] = (),
     ) -> None:
-        require_sqlalchemy()
+        _ignored = require_sqlalchemy()
         from sqlalchemy.sql import Select
 
         if not isinstance(statement, Select):
@@ -276,13 +287,13 @@ class SQLAlchemyDataSource(Generic[T]):
         if q.sort:
             stmt = stmt.order_by(None)
         for name, direction in q.sort:
-            col: Any = _column_from_selectable(stmt, name)
+            col: object = _column_from_selectable(stmt, name)
             stmt = stmt.order_by(desc(col) if direction == "desc" else asc(col))
         for name, value in q.filters.items():
-            col: Any = _column_from_selectable(stmt, name)
+            col: object = _column_from_selectable(stmt, name)
             stmt = stmt.where(col == value)
         if q.search:
-            clauses: list[Any] = []
+            clauses: list[object] = []
             fields = self._search_fields
             # Escape LIKE metacharacters so user % / _ cannot broaden matches.
             escaped = q.search.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
@@ -301,16 +312,16 @@ class SQLAlchemyDataSource(Generic[T]):
                 remediation="Remove secret fields from projection or use an app-owned bridge.",
             )
         if q.projection and include_projection:
-            cols: list[Any] = [_column_from_selectable(stmt, name) for name in q.projection]
+            cols: list[object] = [_column_from_selectable(stmt, name) for name in q.projection]
             stmt = stmt.with_only_columns(*cols)
         return stmt
 
     def _without_secret_columns(self, statement: _SelectableStatement) -> _SelectableStatement:
-        columns = getattr(statement, "selected_columns", None)
+        columns = dynamic_attribute(statement, "selected_columns")
         public: list[object] = []
         if columns is not None:
-            for column in columns:
-                raw_name = getattr(column, "key", None) or getattr(column, "name", None)
+            for column in cast(_ColumnCollection, columns):
+                raw_name = dynamic_attribute(column, "key") or dynamic_attribute(column, "name")
                 if (
                     raw_name is not None
                     and str(raw_name).casefold() not in self._secret_fields_folded
@@ -404,8 +415,8 @@ class SQLAlchemyDataSource(Generic[T]):
                         for row in mapped
                     ],
                 )
-            # subquery() is a FromClause at runtime; accept via Any for select_from stubs.
-            count_from: Any = (
+            # Keep the SQLAlchemy boundary typed without weakening the query object.
+            count_from: object = (
                 self._apply_query(self._statement, q, include_projection=not project_after_codec)
                 .order_by(None)
                 .subquery()
@@ -427,7 +438,7 @@ class SQLAlchemyDataSource(Generic[T]):
         finally:
             close = getattr(session, "close", None)
             if callable(close):
-                close()
+                _ignored = close()
 
     def apply(self, changes: DataChanges[T]) -> DataSaveResult[T]:
         if self._apply_changes is None:
@@ -448,19 +459,19 @@ class SQLAlchemyDataSource(Generic[T]):
             rollback = getattr(session, "rollback", None)
             if result.ok:
                 if callable(commit):
-                    commit()
+                    _ignored = commit()
             elif callable(rollback):
-                rollback()
+                _ignored = rollback()
             return result
         except Exception:
             rollback = getattr(session, "rollback", None)
             if callable(rollback):
-                rollback()
+                _ignored = rollback()
             raise
         finally:
             close = getattr(session, "close", None)
             if callable(close):
-                close()
+                _ignored = close()
 
     def load(self, query: DataQuery) -> DataPage[T]:
         return self.fetch(query)

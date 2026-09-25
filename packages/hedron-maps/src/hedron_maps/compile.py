@@ -269,7 +269,7 @@ _PLACEHOLDER_RE = re.compile(r"\{[^{}]+\}")
 
 
 def _validate_template(url: str, *, scale: str | None, subdomain: str | None) -> None:
-    _validate_url(url, allow_relative=True)
+    _ignored = _validate_url(url, allow_relative=True)
     for required in REQUIRED_PLACEHOLDERS:
         if required not in url:
             raise _map_error(
@@ -638,7 +638,7 @@ def _basemap_facts(
             )
             warnings.append(
                 "OSM-compatible local tile_url has no remote origin; "
-                "standard OSM CDN origin was not inferred."
+                + "standard OSM CDN origin was not inferred."
             )
             return basemap.kind, OSM_STANDARD_ID, resources, origins, attribution, style, warnings
         if origin != OSM_STANDARD_ORIGIN or (
@@ -687,7 +687,7 @@ def _basemap_facts(
                 tile_values = cast(Sequence[object], tiles)
                 for tile in tile_values:
                     if isinstance(tile, str):
-                        _validate_url(tile)
+                        _ignored = _validate_url(tile)
                         origin = _origin_of(tile)
                         _policy_allows(origin, policy, local=origin is None)
                         if origin and origin not in origins:

@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import json
 from collections.abc import Sequence
-from typing import Any, Literal, cast
+from typing import Literal, cast
 
 from pydantic import Field
+from typing_extensions import override
 
 from hedron_core.builtins._base import ElementProps, class_names, mark_data
 from hedron_core.component import Component, NodeLike
@@ -53,7 +54,7 @@ class ImageCompare(Component[ImageCompareProps]):
         after_label: str = "After",
         orientation: Literal["horizontal", "vertical"] = "horizontal",
         position: float = 0.5,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         pos = max(0.0, min(1.0, position))
         super().__init__(
@@ -68,6 +69,7 @@ class ImageCompare(Component[ImageCompareProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         return extras_host(
             "hedron-extras-image-tools",
@@ -127,7 +129,7 @@ class ImageCrop(Component[ImageCropProps]):
         source_width: int = 0,
         source_height: int = 0,
         revision: str = "0",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         for label, value in (("x", x), ("y", y), ("width", width), ("height", height)):
             if value < 0.0 or value > 1.0:
@@ -152,6 +154,7 @@ class ImageCrop(Component[ImageCropProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         fields = [
             html.img(src=self.props.src, alt="Crop source"),
@@ -266,10 +269,10 @@ class ImageRegionSelect(Component[ImageRegionSelectProps]):
         self,
         src: str | SafeUrl,
         *,
-        regions: Sequence[RegionProps | dict[str, Any]] | None = None,
+        regions: Sequence[RegionProps | dict[str, object]] | None = None,
         name: str = "region",
         mode: Literal["box", "lasso"] = "box",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         parsed: list[RegionProps] = [
             r if isinstance(r, RegionProps) else RegionProps.model_validate(r)
@@ -289,6 +292,7 @@ class ImageRegionSelect(Component[ImageRegionSelectProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         payload = json.dumps(
             [{"kind": r.kind, "points": r.points} for r in self.props.regions],
@@ -345,10 +349,10 @@ class ImageAnnotations(Component[ImageAnnotationsProps]):
     def __init__(
         self,
         src: str | SafeUrl,
-        annotations: Sequence[AnnotationProps | dict[str, Any]] | None = None,
+        annotations: Sequence[AnnotationProps | dict[str, object]] | None = None,
         *,
         name: str = "annotations",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         parsed = [
             a if isinstance(a, AnnotationProps) else AnnotationProps.model_validate(a)
@@ -374,6 +378,7 @@ class ImageAnnotations(Component[ImageAnnotationsProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         items = [
             html.li(f"{a.label} @ ({a.x:.2f},{a.y:.2f})", data={"ann-label": a.label})

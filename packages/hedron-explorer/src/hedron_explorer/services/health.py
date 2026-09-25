@@ -3,12 +3,11 @@
 from __future__ import annotations
 
 from importlib.metadata import distributions
-from typing import Any
 
 from hedron_core.plugins import get_explorer_panels
 
 
-def package_health() -> dict[str, Any]:
+def package_health() -> dict[str, object]:
     entries: list[dict[str, str]] = []
     versions: dict[str, str] = {}
     for dist in distributions():

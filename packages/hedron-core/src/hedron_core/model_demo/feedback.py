@@ -199,7 +199,7 @@ class PredictionFeedback:
             return
         for record in self._records_for_tenant():
             if clock - record.created_at > retention:
-                self.sink.delete(record.record_id, tenant_id=self.policy.tenant_id)
+                _ignored = self.sink.delete(record.record_id, tenant_id=self.policy.tenant_id)
 
     def _records_for_tenant(self) -> tuple[FeedbackRecord, ...]:
         return tuple(self.sink.export(tenant_id=self.policy.tenant_id))

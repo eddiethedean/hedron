@@ -5,10 +5,11 @@ from __future__ import annotations
 import json
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, Protocol, runtime_checkable
+from typing import Protocol, runtime_checkable
 
 from hedron_core.component import NodeLike
 from hedron_core.diagnostics import error
+from hedron_core.typing_support import dynamic_attribute
 
 __all__ = [
     "DEFAULT_MAX_CHART_ROWS",
@@ -52,7 +53,7 @@ class VisualizationLimits:
 
     def __post_init__(self) -> None:
         for name in ("max_rows", "max_payload_bytes"):
-            value = getattr(self, name)
+            value = dynamic_attribute(self, name)
             if isinstance(value, bool) or not isinstance(value, int) or value < 1:
                 raise ValueError(f"VisualizationLimits.{name} must be a positive integer")
 
@@ -65,7 +66,7 @@ class ChartAccessibility:
     description: str | None = None
     alt: str | None = None
     waiver: str | None = None
-    tabular_fallback: Sequence[Mapping[str, Any]] | None = None
+    tabular_fallback: Sequence[Mapping[str, object]] | None = None
 
     def validated(self) -> ChartAccessibility:
         if not self.title.strip():
@@ -86,7 +87,7 @@ class ChartOutput:
     accessibility: ChartAccessibility
     media_type: str = "application/json"
     assets: tuple[str, ...] = ()
-    metadata: Mapping[str, Any] = field(default_factory=dict[str, Any])
+    metadata: Mapping[str, object] = field(default_factory=dict[str, object])
     payload_bytes: int = 0
 
 
@@ -95,8 +96,8 @@ class ChartEvent:
     kind: str
     trace_id: str
     point_index: int | None = None
-    payload: Mapping[str, Any] = field(default_factory=dict[str, Any])
-    auth_context: Mapping[str, Any] = field(default_factory=dict[str, Any])
+    payload: Mapping[str, object] = field(default_factory=dict[str, object])
+    auth_context: Mapping[str, object] = field(default_factory=dict[str, object])
     debounce_ms: int = 0
     coalesce_key: str | None = None
     accessible_fallback: str | None = None
@@ -106,7 +107,7 @@ class ChartEvent:
 class ChartAnnotation:
     kind: str
     label: str
-    payload: Mapping[str, Any] = field(default_factory=dict[str, Any])
+    payload: Mapping[str, object] = field(default_factory=dict[str, object])
     trace_id: str | None = None
     description: str | None = None
 
@@ -180,11 +181,11 @@ class VisualizationAdapter(Protocol):
     name: str
     optional_package: str | None
 
-    def supports(self, value: Any) -> bool: ...
+    def supports(self, value: object) -> bool: ...
 
     def compile(
         self,
-        value: Any,
+        value: object,
         *,
         accessibility: ChartAccessibility,
         limits: VisualizationLimits | None = None,

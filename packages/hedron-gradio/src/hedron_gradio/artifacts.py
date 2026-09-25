@@ -8,7 +8,7 @@ import threading
 import time
 import uuid
 from dataclasses import dataclass, field
-from typing import Any, cast
+from typing import cast
 
 from hedron_gradio.errors import GradioRemoteError
 
@@ -36,14 +36,14 @@ class ArtifactStore:
         retention_seconds: float,
         allowed_extensions: frozenset[str] | None = None,
     ) -> None:
-        raw_max_bytes = cast(Any, max_bytes)
+        raw_max_bytes = cast(object, max_bytes)
         if (
             isinstance(raw_max_bytes, bool)
             or not isinstance(raw_max_bytes, int)
             or raw_max_bytes <= 0
         ):
             raise ValueError("max_bytes must be > 0")
-        raw_retention = cast(Any, retention_seconds)
+        raw_retention = cast(object, retention_seconds)
         if (
             isinstance(raw_retention, bool)
             or not isinstance(raw_retention, (int, float))

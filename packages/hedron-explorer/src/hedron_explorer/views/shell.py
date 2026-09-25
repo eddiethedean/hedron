@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import html as html_lib
-from typing import Any, cast
+from typing import cast
 
 from fastapi import Request
 
+from hedron_core.app_state import request_state, state_value
 from hedron_explorer.services.fs import safe_read_text
 from hedron_explorer.services.runtime import TRACE, redact
 
@@ -35,7 +36,7 @@ NAV = (
 def mount_path(request: Request) -> str:
     from hedron_core.mount import normalize_mount_path
 
-    configured = getattr(request.app.state, "hedron_mount_path", None)
+    configured = state_value(request_state(request), "hedron_mount_path")
     if isinstance(configured, str) and configured:
         return normalize_mount_path(configured)
     return normalize_mount_path(str(request.scope.get("root_path") or ""))
@@ -147,17 +148,17 @@ def component_detail_body(meta: object, request: Request) -> str:
 def handle_graph_html(request: Request) -> str:
     from hedron_core.updates import handle_graph_payload
 
-    app_id = str(getattr(getattr(request.app, "state", None), "hedron_app_id", "") or "")
+    app_id = str(state_value(request_state(request), "hedron_app_id", "") or "")
     payload = handle_graph_payload(app_id=app_id or None)
     nodes_raw = payload.get("nodes")
     if not isinstance(nodes_raw, list) or not nodes_raw:
         return "<p>No refreshable views or commands registered.</p>"
-    nodes = cast(list[Any], nodes_raw)
+    nodes = cast(list[object], nodes_raw)
     rows: list[str] = []
     for node in nodes:
         if not isinstance(node, dict):
             continue
-        typed_node = cast(dict[str, Any], node)
+        typed_node = cast(dict[str, object], node)
         kind = html_lib.escape(str(typed_node.get("kind", "")))
         effect = html_lib.escape(str(typed_node.get("effect", "dynamic")))
         ident = html_lib.escape(str(typed_node.get("id", "")))

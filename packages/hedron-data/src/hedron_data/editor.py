@@ -5,7 +5,9 @@ from __future__ import annotations
 import inspect
 import json
 from collections.abc import Callable, Mapping, Sequence
-from typing import Any, Literal, cast
+from typing import Literal, cast
+
+from typing_extensions import override
 
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
@@ -13,6 +15,7 @@ from hedron_core.html import html
 from hedron_core.models import Model, Props
 from hedron_core.security import Secret
 from hedron_core.typing_aliases import JsonValue
+from hedron_core.typing_support import awaitable_value
 from hedron_data.columns import Column, resolve_columns
 from hedron_data.normalize import normalize_rows
 from hedron_data.sources import (
@@ -83,7 +86,7 @@ def filter_writable_changes(
         updates.append(upd)
     inserts: list[dict[str, JsonValue]] = []
     for row in changes.inserts:
-        row_value: Any = row
+        row_value: object = row
         if not isinstance(row_value, Mapping):
             errors.append(
                 FieldError(
@@ -297,7 +300,7 @@ class DataEditor(Component[DataEditorProps]):
                     remediation="Await DataEditor.apply_changes_async(...) for async sources.",
                 )
             result_value: object = result
-            if isinstance(cast(Any, result_value), DataSaveResult):
+            if isinstance(cast(object, result_value), DataSaveResult):
                 return result_value
             raise error(
                 "HED-DATA-0005",
@@ -315,15 +318,24 @@ class DataEditor(Component[DataEditorProps]):
             return DataSaveResult(ok=False, errors=policy_errors, version=self._version)
         if self._on_save is not None:
             result = self._on_save(cleaned)
-            if inspect.isawaitable(result):
-                return await result  # type: ignore[no-any-return]
+            pending = awaitable_value(result)
+            if pending is not None:
+                resolved = await pending
+                if isinstance(resolved, DataSaveResult):
+                    return resolved
+                raise error(
+                    "HED-DATA-0005",
+                    title="Invalid apply result",
+                    explanation="Async on_save must return DataSaveResult.",
+                    remediation="Return a DataSaveResult from on_save().",
+                )
             return result
         if self._source is not None and hasattr(self._source, "apply"):
             result = self._source.apply(cleaned)  # type: ignore[union-attr]
             if inspect.isawaitable(result):
                 result = await result
             result_value: object = result
-            if isinstance(cast(Any, result_value), DataSaveResult):
+            if isinstance(cast(object, result_value), DataSaveResult):
                 return result_value
             raise error(
                 "HED-DATA-0005",
@@ -333,6 +345,7 @@ class DataEditor(Component[DataEditorProps]):
             )
         return DataSaveResult(ok=True, accepted=cleaned, version=self._version)
 
+    @override
     def render(self) -> NodeLike:
         from hedron_data.columns import write_policy
 

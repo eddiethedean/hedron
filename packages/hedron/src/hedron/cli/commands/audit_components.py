@@ -5,18 +5,35 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import cast
+from typing import Protocol, cast
 
 from hedron.cli.discovery import apply_project_discovery as _apply_project_discovery
 from hedron.cli.discovery import load_app as _load_app
 from hedron_core.registry import get_registry
 from hedron_core.typing_aliases import JsonObject, PluginMetaDict
+from hedron_core.typing_support import dynamic_attribute
+
+
+class _AuditArgs(Protocol):
+    app: str | None
+    project: str | None
+
+
+class _EntryPoint(Protocol):
+    name: str
+
+    def load(self) -> object: ...
+
+
+class _PluginMetadata(Protocol):
+    def to_dict(self) -> PluginMetaDict: ...
 
 
 def _cmd_audit_components(args: argparse.Namespace) -> int:
-    _load_app(args.app)
-    base = Path(getattr(args, "project", None) or Path.cwd()).resolve()
-    _apply_project_discovery(base)
+    typed_args = cast(_AuditArgs, args)
+    _ignored = _load_app(typed_args.app)
+    base = Path(typed_args.project or Path.cwd()).resolve()
+    _ignored = _apply_project_discovery(base)
     from hedron_core.plugins import get_diagnostic_owners, get_explorer_panels
 
     registry = get_registry()
@@ -49,10 +66,10 @@ def _cmd_audit_components(args: argparse.Namespace) -> int:
         )
         for ep in discovered:
             try:
-                target = ep.load()
-                meta = getattr(target, "PLUGIN_META", None)
+                target: object = cast(_EntryPoint, ep).load()
+                meta = dynamic_attribute(target, "PLUGIN_META")
                 if meta is not None:
-                    plugin_rows.append(cast(JsonObject, cast(PluginMetaDict, meta.to_dict())))
+                    plugin_rows.append(cast(JsonObject, cast(_PluginMetadata, meta).to_dict()))
                 else:
                     plugin_rows.append({"name": ep.name, "version": "unknown"})
             except Exception as exc:  # noqa: BLE001

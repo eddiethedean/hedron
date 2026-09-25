@@ -11,6 +11,7 @@ from fastapi.responses import Response
 from fastapi.staticfiles import StaticFiles
 
 from hedron.fastapi_compat import remove_route
+from hedron_core.typing_support import dynamic_attribute
 
 __all__ = ["mount_build_assets", "mount_hedron_static"]
 
@@ -66,14 +67,14 @@ def mount_build_assets(
     assets = root / "assets"
     if not assets.is_dir():
         return None
-    existing_dir = getattr(app.state, "hedron_assets_dir", None)
+    existing_dir = dynamic_attribute(dynamic_attribute(app, "state"), "hedron_assets_dir")
     for idx, route in enumerate(list(app.routes)):
         if getattr(route, "path", None) != path:
             continue
         if existing_dir is not None and Path(existing_dir).resolve() == assets.resolve():
             return assets
         # Different build tree already mounted — replace the mount.
-        remove_route(app, idx)
+        _ignored = remove_route(app, idx)
         break
     app.mount(path, StaticFiles(directory=str(assets)), name="hedron-assets")
     app.state.hedron_assets_path = path.rstrip("/") or path

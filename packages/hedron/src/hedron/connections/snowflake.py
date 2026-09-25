@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Mapping
 from importlib import import_module
-from typing import Any, Protocol, cast
+from typing import Protocol, cast
 
 __all__ = ["snowflake_connection_factory"]
 
@@ -18,7 +18,7 @@ def snowflake_connection_factory(
     connection_factory: Callable[[], object] | None = None,
     statement: str | None = None,
     connect_kwargs: Mapping[str, object] | None = None,
-    **source_kwargs: Any,  # forwarded host kwargs for SnowflakeDataSource
+    **source_kwargs: object,  # forwarded host kwargs for SnowflakeDataSource
 ) -> Callable[[], object]:
     """Lazy factory for a Snowflake connection or :class:`SnowflakeDataSource`.
 

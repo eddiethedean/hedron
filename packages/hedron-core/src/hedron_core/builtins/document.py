@@ -6,6 +6,8 @@ import html as html_lib
 from collections.abc import Sequence
 from typing import ClassVar
 
+from typing_extensions import override
+
 from hedron_core.builtins._base import collect_children
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import HedronError, error
@@ -140,6 +142,7 @@ class Page(Component[PageProps]):
     def htmx_extensions(self) -> object:
         return self._htmx_extensions
 
+    @override
     def render(self) -> NodeLike:
         from hedron_core.htmx_extensions import declare_page_extensions
 
@@ -193,6 +196,7 @@ class Fragment(Component[FragmentProps]):
         super().__init__(FragmentProps(**kwargs))
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         return list(self._children)
 
@@ -208,6 +212,7 @@ class Head(Component[HeadProps]):
         super().__init__(HeadProps(**kwargs))
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         return html.head(*self._children)
 
@@ -229,5 +234,6 @@ class Title(Component[TitleProps]):
         value = text if text is not None else (children or "")
         super().__init__(TitleProps(text=value, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         return html.title(self.props.text)

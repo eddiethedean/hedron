@@ -26,10 +26,10 @@ def write_build_manifest(
     asset_manifest: AssetManifest,
     css_symbols: Sequence[CssSymbolManifest],
 ) -> None:
-    write_json_atomic(tmp_root / "manifest.json", manifest.to_dict())
-    write_json_atomic(tmp_root / "assets.json", asset_manifest.to_dict())
+    _ignored = write_json_atomic(tmp_root / "manifest.json", manifest.to_dict())
+    _ignored = write_json_atomic(tmp_root / "assets.json", asset_manifest.to_dict())
     for sym in css_symbols:
-        write_json_atomic(
+        _ignored = write_json_atomic(
             tmp_root / "css-symbols" / f"{_artifact_stem(sym.component_id)}.json",
             sym.to_dict(),
         )

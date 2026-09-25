@@ -12,7 +12,7 @@ from __future__ import annotations
 import math
 import time
 from collections.abc import MutableMapping
-from typing import Any, Literal
+from typing import Literal
 
 __all__ = [
     "SESSION_CREATED_KEY",
@@ -50,7 +50,7 @@ def _finite_float(value: object, *, name: str) -> float:
 
 
 def stamp_session_created(
-    session: MutableMapping[str, Any],
+    session: MutableMapping[str, object],
     *,
     now: float | None = None,
     key: str = SESSION_CREATED_KEY,
@@ -70,7 +70,7 @@ def stamp_session_created(
 
 
 def stamp_session_last_seen(
-    session: MutableMapping[str, Any],
+    session: MutableMapping[str, object],
     *,
     now: float | None = None,
     key: str = SESSION_LAST_SEEN_KEY,
@@ -81,23 +81,23 @@ def stamp_session_last_seen(
 
 
 def touch_session(
-    session: MutableMapping[str, Any],
+    session: MutableMapping[str, object],
     *,
     now: float | None = None,
 ) -> None:
     """Ensure ``created`` exists and refresh ``last_seen``."""
     ts = _finite_float(time.time() if now is None else now, name="now")
-    stamp_session_created(session, now=ts)
-    stamp_session_last_seen(session, now=ts)
+    _ignored = stamp_session_created(session, now=ts)
+    _ignored = stamp_session_last_seen(session, now=ts)
 
 
-def clear_session_timeout_stamps(session: MutableMapping[str, Any]) -> None:
-    session.pop(SESSION_CREATED_KEY, None)
-    session.pop(SESSION_LAST_SEEN_KEY, None)
+def clear_session_timeout_stamps(session: MutableMapping[str, object]) -> None:
+    _ignored = session.pop(SESSION_CREATED_KEY, None)
+    _ignored = session.pop(SESSION_LAST_SEEN_KEY, None)
 
 
 def check_session_timeout(
-    session: MutableMapping[str, Any],
+    session: MutableMapping[str, object],
     *,
     idle_seconds: float | None,
     absolute_seconds: float | None,

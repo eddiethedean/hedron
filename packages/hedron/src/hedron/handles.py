@@ -5,7 +5,7 @@ from __future__ import annotations
 import functools
 import inspect
 import json
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import Awaitable, Callable, Mapping, Sequence
 from dataclasses import dataclass, field, replace
 from typing import Generic, Literal, TypeVar, cast, overload
 from urllib.parse import urlencode
@@ -13,7 +13,7 @@ from urllib.parse import urlencode
 from fastapi.params import Depends as DependsParam
 from pydantic import BaseModel, ValidationError
 from starlette.requests import Request
-from typing_extensions import TypeIs
+from typing_extensions import TypeIs, override
 
 from hedron.routing.reverse import ComponentRef
 from hedron.type_authoring.markers import Control
@@ -38,6 +38,11 @@ from hedron_core.models import Props
 from hedron_core.rendering import active_render_context
 from hedron_core.security import SafeUrl
 from hedron_core.typing_aliases import HtmlAttrMap, HtmlAttrValue, JsonValue
+from hedron_core.typing_support import (
+    parameter_annotation,
+    parameter_default,
+    signature_return_annotation,
+)
 from hedron_core.updates import (
     MAX_REFRESH_TARGETS,
     BaseHandleDescriptor,
@@ -93,7 +98,7 @@ def _require_local_fallback(fallback: str) -> None:
 def _is_injected(parameter: inspect.Parameter) -> bool:
     if parameter.name in _REQUEST_NAMES:
         return True
-    annotation: object = parameter.annotation
+    annotation = parameter_annotation(parameter)
     if annotation is Request:
         return True
     if isinstance(annotation, type):
@@ -104,7 +109,7 @@ def _is_injected(parameter: inspect.Parameter) -> bool:
             # Parameterized aliases (for example ``list[UploadFile]``) report
             # as types on Python 3.10 but cannot participate in issubclass.
             pass
-    default = parameter.default
+    default = parameter_default(parameter)
     if isinstance(default, DependsParam):
         return True
     origin: object = getattr(annotation, "__origin__", None)
@@ -129,7 +134,7 @@ def binding_plan_for(fn: Callable[..., object]) -> BindingPlan:
             continue
         if parameter.kind in {inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD}:
             continue
-        if parameter.default is inspect.Parameter.empty:
+        if parameter_default(parameter) is inspect.Parameter.empty:
             path_params.append(name)
             required.append(name)
         else:
@@ -272,7 +277,7 @@ def _try_initial_render(
             continue
         if _is_injected(parameter):
             return None
-        if parameter.default is inspect.Parameter.empty:
+        if parameter_default(parameter) is inspect.Parameter.empty:
             return None
     try:
         result = fn(**kwargs) if kwargs else fn()
@@ -616,6 +621,7 @@ class _CommandButton(Component[_CommandButtonProps]):
         self._swap = swap
         self._extra = dict(extra or {})
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, object] = dict(self._extra)
         attrs.update(
@@ -624,7 +630,7 @@ class _CommandButton(Component[_CommandButtonProps]):
                 "data-hedron-command": self._logical_id,
             }
         )
-        attrs.setdefault("id", self._logical_id)
+        _ignored = attrs.setdefault("id", self._logical_id)
         method = self._method.upper()
         htmx_attrs: dict[str, HtmlAttrValue] = HtmxAttrs(
             method=cast(Literal["get", "post", "put", "patch", "delete"], method.lower()),
@@ -726,13 +732,13 @@ class ActionHandle(Generic[InputT, ResultT]):
             )
         if self._effect is not None:
             for name, value in HtmxAttrs(swap="none").as_html_attrs().items():
-                safe_form_attrs.setdefault(name, value)
+                _ignored = safe_form_attrs.setdefault(name, value)
         trigger = _compile_after_trigger("submit", self._after_when, self._after_delay_ms)
         if trigger:
             for name, value in HtmxAttrs(trigger=trigger).as_html_attrs().items():
-                safe_form_attrs.setdefault(name, value)
+                _ignored = safe_form_attrs.setdefault(name, value)
         if self._after_load:
-            safe_form_attrs.setdefault("data-hedron-after-load", self._after_load)
+            _ignored = safe_form_attrs.setdefault("data-hedron-after-load", self._after_load)
         enhance_mode: Literal["native", "elements"]
         if enhance == "native" or enhance == "elements":
             enhance_mode = enhance
@@ -799,7 +805,7 @@ class ActionHandle(Generic[InputT, ResultT]):
         if trigger and "hx-trigger" not in extra and "hx_trigger" not in extra:
             extra.update(HtmxAttrs(trigger=trigger).as_html_attrs())
         if self._after_load:
-            extra.setdefault("data-hedron-after-load", self._after_load)
+            _ignored = extra.setdefault("data-hedron-after-load", self._after_load)
         method = self.method.upper()
         if method in {"GET", "HEAD", "OPTIONS", "TRACE"}:
             raise error(
@@ -1205,7 +1211,7 @@ def build_command_handle(
         name=name or fn.__name__,
         path=route_path,
         method=verb,
-        result_type=inspect.signature(fn).return_annotation,
+        result_type=signature_return_annotation(inspect.signature(fn)),
         handler=fn,
         handler_signature=inspect.signature(fn),
         app_id=app_id,
@@ -1227,10 +1233,10 @@ def wrap_endpoint_result(handle: FragmentHandle[BindT, ContentT]) -> Callable[..
         if meta is not None and meta.modeled:
             render_kwargs = reconstruct_kwargs(meta, render_kwargs)
         result = handle.renderer(*args, **render_kwargs)
-        if inspect.iscoroutine(result):
+        if isinstance(result, Awaitable):
 
             async def _async() -> object:
-                return wrap_refreshable_result(resolved, await result)
+                return wrap_refreshable_result(resolved, await cast(Awaitable[object], result))
 
             return _async()
         return wrap_refreshable_result(resolved, result)

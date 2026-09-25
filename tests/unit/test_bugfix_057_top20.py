@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import threading
 from types import SimpleNamespace
-from typing import Any
 
 import pytest
 from pydantic import BaseModel
@@ -235,7 +234,7 @@ def test_complete_replay_aborts_streaming_response() -> None:
     assert claim.state is ReplayState.FIRST
     guard = _ReplayGuard(claim=claim, store=store, key="k", fingerprint="fp", scope_key="s")
 
-    def _gen() -> Any:
+    def _gen() -> object:
         yield b"chunk"
 
     response = StreamingResponse(_gen(), media_type="text/plain")

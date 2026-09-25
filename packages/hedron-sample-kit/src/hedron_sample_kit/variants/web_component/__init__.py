@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+
+from typing_extensions import override
 
 from hedron_core.component import Component
 from hedron_core.html import html
@@ -52,11 +53,12 @@ class WebCallout(Component[WebCalloutProps]):
         self,
         message: str = SSR_FALLBACK_TEXT,
         status: str = "info",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(WebCalloutProps(message=message, status=status, **kwargs))
 
-    def render(self) -> Any:
+    @override
+    def render(self) -> object:
         return html.tag(TAG_NAME)(
             html.span(self.props.message, class_="fallback"),
             status=self.props.status,

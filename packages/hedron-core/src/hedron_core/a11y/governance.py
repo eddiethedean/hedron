@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import date, datetime, timezone
-from typing import Any, Literal, cast
+from typing import Literal, cast
 
 from hedron_core.a11y.profile import ACCESSIBILITY_PROFILE
 from hedron_core.diagnostics import error
@@ -89,7 +89,7 @@ class Waiver:
             )
         return self
 
-    def as_dict(self) -> dict[str, Any]:
+    def as_dict(self) -> dict[str, object]:
         return {
             "id": self.id,
             "owner": self.owner,
@@ -184,7 +184,7 @@ class HumanAtRecord:
         return self
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> HumanAtRecord:
+    def from_dict(cls, data: dict[str, object]) -> HumanAtRecord:
         os_raw = data.get("os")
         browser_raw = data.get("browser")
         at_raw = data.get("at")
@@ -231,8 +231,8 @@ class HumanAtRecord:
             notes=str(data.get("notes") or ""),
         ).validated()
 
-    def as_dict(self) -> dict[str, Any]:
-        payload: dict[str, Any] = {
+    def as_dict(self) -> dict[str, object]:
+        payload: dict[str, object] = {
             "record_id": self.record_id,
             "gate_ids": list(self.gate_ids),
             "combo_id": self.combo_id,
@@ -270,7 +270,7 @@ class EvidenceInventory:
 
     profile_id: str = ACCESSIBILITY_PROFILE.profile_id
     contracts: list[str] = field(default_factory=list[str])
-    automation_results: list[dict[str, Any]] = field(default_factory=list[dict[str, Any]])
+    automation_results: list[dict[str, object]] = field(default_factory=list[dict[str, object]])
     human_at_results: list[HumanAtRecord] = field(default_factory=list[HumanAtRecord])
     waivers: list[Waiver] = field(default_factory=list[Waiver])
     known_limitations: list[str] = field(default_factory=list[str])
@@ -286,7 +286,7 @@ class EvidenceInventory:
     def add_human_at(self, record: HumanAtRecord) -> None:
         self.human_at_results.append(record.validated())
 
-    def as_dict(self) -> dict[str, Any]:
+    def as_dict(self) -> dict[str, object]:
         return {
             "profile_id": self.profile_id,
             "contracts": list(self.contracts),
@@ -317,7 +317,7 @@ class AccessibilityStatement:
     )
     approved_by: str | None = None
 
-    def export(self) -> dict[str, Any]:
+    def export(self) -> dict[str, object]:
         if not self.approved_by:
             raise error(
                 "HED-A11Y-0012",

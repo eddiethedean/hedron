@@ -8,7 +8,7 @@ from collections.abc import Callable, Mapping, Sized
 from datetime import date, datetime
 from decimal import Decimal
 from enum import Enum
-from typing import Annotated, Any, ClassVar, Literal, Union, cast, get_args, get_origin
+from typing import Annotated, ClassVar, Literal, Protocol, Union, cast, get_origin
 
 from pydantic import BaseModel, ConfigDict, model_serializer, model_validator
 from pydantic.fields import FieldInfo
@@ -16,17 +16,26 @@ from pydantic.fields import FieldInfo
 from hedron_core.diagnostics import HedronError, error
 from hedron_core.field import hedron_meta
 from hedron_core.security import SafeUrl, Secret, TrustedHtml, redact_value
+from hedron_core.typing_support import type_arguments
 
 _PRIMITIVES = {str, int, float, bool, bytes, Decimal, date, datetime, type(None)}
 
 
-def _is_supported_annotation(annotation: Any, *, depth: int = 0) -> bool:
+class _ClassAnnotations(Protocol):
+    __annotations__: Mapping[str, object]
+
+
+class _ModelStorage(Protocol):
+    __dict__: Mapping[str, object]
+
+
+def _is_supported_annotation(annotation: object, *, depth: int = 0) -> bool:
     if depth > 8:
         return False
     if isinstance(annotation, str):
         return True
     origin = get_origin(annotation)
-    args = get_args(annotation)
+    args = type_arguments(annotation)
 
     if origin is None:
         if annotation in _PRIMITIVES:
@@ -141,18 +150,15 @@ class Model(BaseModel):
 
     _hedron_role: ClassVar[str] = "model"
 
-    def __init_subclass__(cls, **kwargs: Any) -> None:
+    def __init_subclass__(cls, **kwargs: object) -> None:
         super().__init_subclass__(**kwargs)
         try:
             from typing import get_type_hints
 
-            hints = get_type_hints(cls)
+            hints = cast(dict[str, object], get_type_hints(cls))
         except Exception:  # noqa: BLE001
-            hints = {
-                k: v
-                for k, v in getattr(cls, "__annotations__", {}).items()
-                if not isinstance(v, str)
-            }
+            annotations = cast(_ClassAnnotations, cast(object, cls)).__annotations__
+            hints = {k: v for k, v in annotations.items() if not isinstance(v, str)}
         for name, hint in hints.items():
             if name.startswith("_"):
                 continue
@@ -173,7 +179,7 @@ class Model(BaseModel):
             meta = hedron_meta(field_info)
             if not meta:
                 continue
-            value = getattr(self, name)
+            value = cast(_ModelStorage, cast(object, self)).__dict__.get(name)
             try:
                 _apply_hedron_constraints(name, value, meta)
             except HedronError:

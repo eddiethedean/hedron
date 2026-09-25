@@ -5,7 +5,6 @@ from __future__ import annotations
 import hashlib
 from importlib import resources
 from pathlib import Path
-from typing import Any
 from urllib.parse import quote, unquote, urlencode, urlsplit
 from xml.sax.saxutils import escape as xml_escape
 
@@ -28,6 +27,7 @@ from hedron import (
     read_color_mode_preference,
     resolved_theme_from_request,
 )
+from hedron_core.app_state import request_state, state_value
 from hedron_core.builtins.landmarks import Nav
 from hedron_core.builtins.layout import Container, Stack
 from hedron_core.html import html
@@ -116,7 +116,7 @@ def create_docs_app(
     async def theme_preference(request: Request) -> Response:  # pyright: ignore[reportUnusedFunction]
         """Persist the shell's color-mode choice through an ordinary HTML form."""
 
-        policy = getattr(request.app.state, "hedron_security", None)
+        policy = state_value(request_state(request), "hedron_security")
         if policy is not None and getattr(policy, "csrf_enabled", False):
             from hedron.security.csrf import prepare_csrf_from_request, validate_csrf
 
@@ -170,7 +170,7 @@ def create_docs_app(
                 )
                 for result in results
             ]
-            body: list[Any] = [
+            body: list[object] = [
                 html.h1("Search", id="search-title"),
                 html.form(
                     html.label("Search", for_="docs-search-query"),
@@ -212,8 +212,8 @@ def create_docs_app(
         )
         return Response(
             '<?xml version="1.0" encoding="UTF-8"?>'
-            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
-            f"{links}</urlset>",
+            + '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+            + f"{links}</urlset>",
             media_type="application/xml",
         )
 
@@ -255,22 +255,22 @@ def _register_asset(app: Hedron, asset: AssetRecord) -> None:
 
     asset_response.__name__ = route_name
     asset_response.__qualname__ = route_name
-    app.get(asset.path, name=route_name, include_in_schema=False)(asset_response)
+    _ignored = app.get(asset.path, name=route_name, include_in_schema=False)(asset_response)
 
 
 def _shell(
     site: SiteManifest,
     page: PageRecord | None,
-    *content: Any,
+    *content: object,
     request: Request,
     title_override: str | None = None,
 ) -> Page:
     nav_pages = sorted(site.pages, key=lambda item: (item.nav_order or (10**9,), item.path))
     visible_pages = [item for item in nav_pages if item.publication_state == "published"]
 
-    def nav_link(item: PageRecord) -> Any:
+    def nav_link(item: PageRecord) -> object:
         current = bool(page and item.path == page.path)
-        attrs: dict[str, Any] = {}
+        attrs: dict[str, object] = {}
         if current:
             attrs["aria"] = {"current": "page"}
             attrs["data"] = {"hedron-nav-current": "true"}
@@ -289,15 +289,15 @@ def _shell(
         else:
             nav_root.add_page(item)
 
-    def nav_list(group: _NavGroup, class_: str) -> Any:
-        children: list[Any] = []
+    def nav_list(group: _NavGroup, class_: str) -> object:
+        children: list[object] = []
         for kind, value in group.entries:
             if kind == "page":
                 assert isinstance(value, PageRecord)
                 children.append(nav_link(value))
             else:
                 assert isinstance(value, _NavGroup)
-                section_attrs: dict[str, Any] = {}
+                section_attrs: dict[str, object] = {}
                 section_current = bool(
                     page
                     and (
@@ -344,10 +344,10 @@ def _shell(
         header_tools,
         class_="hedron-docs-brand-row",
     )
-    before_content: list[Any] = []
-    after_content: list[Any] = []
+    before_content: list[object] = []
+    after_content: list[object] = []
     if page and page.breadcrumbs:
-        breadcrumb_nodes: list[Any] = []
+        breadcrumb_nodes: list[object] = []
         for label, path in page.breadcrumbs:
             if path and path != page.path:
                 breadcrumb_nodes.append(
@@ -462,7 +462,7 @@ def _shell(
     footer = Container(Text(f"{site.title} · Built with Hedron"), max_width="xl")
     banner = None
     if site.release_label:
-        banner_content: Any = site.release_label
+        banner_content: object = site.release_label
         if site.release_url:
             banner_content = html.a(
                 site.release_label,
@@ -560,7 +560,7 @@ def _safe_return_path(value: str) -> str:
 
 
 def _csrf_token(request: Request) -> str | None:
-    policy = getattr(request.app.state, "hedron_security", None)
+    policy = state_value(request_state(request), "hedron_security")
     if policy is None or not getattr(policy, "csrf_enabled", False):
         return None
     return csrf_token_for_request(request, policy)

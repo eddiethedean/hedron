@@ -12,7 +12,6 @@ import os
 from collections.abc import Callable, Iterable, Sequence
 from contextlib import suppress
 from dataclasses import dataclass, field
-from typing import Any
 
 from packaging.specifiers import InvalidSpecifier, SpecifierSet
 from packaging.version import InvalidVersion, Version
@@ -105,7 +104,7 @@ def load_plugins(
     *,
     enabled: Sequence[str] | None = None,
     hedron_version: str | None = None,
-    entry_points: Iterable[Any] | None = None,
+    entry_points: Iterable[object] | None = None,
 ) -> PluginLoader:
     """Discover and activate plugins into a temporary contribution pass.
 
@@ -147,7 +146,7 @@ def _env_flag(name: str) -> bool:
 
 
 def _snapshot_rollback(
-    snapshot_bundles: Callable[[], tuple[Any, ...]],
+    snapshot_bundles: Callable[[], tuple[object, ...]],
     restore_bundles: Callable[..., None],
 ) -> Callable[[], None]:
     """Capture process-global plugin contribution state for fail-closed restore."""
@@ -179,7 +178,7 @@ def _should_load_name(
     return sandbox_env or not str(name).endswith("_sandbox")
 
 
-def _import_entry_point(ep: Any, name: str) -> Any:
+def _import_entry_point(ep: object, name: str) -> object:
     try:
         return ep.load() if hasattr(ep, "load") else ep
     except Exception as exc:
@@ -192,7 +191,7 @@ def _import_entry_point(ep: Any, name: str) -> Any:
         ) from exc
 
 
-def _require_plugin_meta(target: Any, name: str) -> PluginMeta:
+def _require_plugin_meta(target: object, name: str) -> PluginMeta:
     meta = getattr(target, "PLUGIN_META", None)
     if not isinstance(meta, PluginMeta):
         raise error(
@@ -214,8 +213,8 @@ def _require_compatible(meta: PluginMeta, version: str) -> None:
     if compatible_hedron_version(meta.hedron_version, version):
         return
     try:
-        SpecifierSet(meta.hedron_version)
-        Version(version)
+        _ignored = SpecifierSet(meta.hedron_version)
+        _ignored = Version(version)
     except (InvalidSpecifier, InvalidVersion) as exc:
         raise error(
             HED_PLUGIN_FAILED,
@@ -237,15 +236,15 @@ def _require_compatible(meta: PluginMeta, version: str) -> None:
 
 
 def _collect_plugin_metas(
-    discovered: Sequence[Any],
+    discovered: Sequence[object],
     *,
     enabled: Sequence[str] | None,
     version: str,
-) -> tuple[dict[str, tuple[Any, PluginMeta]], list[str]]:
+) -> tuple[dict[str, tuple[object, PluginMeta]], list[str]]:
     experimental_env = _env_flag("HEDRON_EXPERIMENTAL_UI")
     sandbox_env = _env_flag("HEDRON_EXTRAS_SANDBOX")
     discovered_names: list[str] = []
-    metas: dict[str, tuple[Any, PluginMeta]] = {}
+    metas: dict[str, tuple[object, PluginMeta]] = {}
     for ep in discovered:
         name = getattr(ep, "name", None) or str(ep)
         discovered_names.append(name)
@@ -290,7 +289,7 @@ def _require_enabled_present(
 
 def _activate_plugins(
     order: Sequence[str],
-    metas: dict[str, tuple[Any, PluginMeta]],
+    metas: dict[str, tuple[object, PluginMeta]],
     loader: PluginLoader,
 ) -> None:
     for name in order:
@@ -304,11 +303,11 @@ def _activate_plugins(
                 explanation=f"Plugin {name!r} has no register callable.",
                 remediation="Provide register(ctx: PluginContext).",
             )
-        register(ctx)
+        _ignored = register(ctx)
         loader.loaded.append(LoadedPlugin(meta=meta, context=ctx, entry_point=name))
 
 
-def _discover_entry_points() -> list[Any]:
+def _discover_entry_points() -> list[object]:
     try:
         from importlib.metadata import entry_points
     except ImportError:  # pragma: no cover

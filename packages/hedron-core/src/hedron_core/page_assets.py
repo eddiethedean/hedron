@@ -287,7 +287,7 @@ def inject_alpine_plan(
         )
         scripts.append(
             f'<script type="module" src="{html_lib.escape(href, quote=True)}"'
-            f"{integrity_attrs}></script>"
+            + f"{integrity_attrs}></script>"
         )
     if (
         runtime not in html_text
@@ -329,7 +329,7 @@ def _render_asset_tag(spec: ApplicationAssetSpec, *, defer_js: bool) -> str:
     attrs: dict[str, str] = {}
     if spec.integrity:
         attrs["integrity"] = spec.integrity
-        attrs.setdefault("crossorigin", "anonymous")
+        _ignored = attrs.setdefault("crossorigin", "anonymous")
     extra = _attr_suffix(attrs)
     if spec.kind == "css":
         return f'<link rel="stylesheet" href="{href}"{extra}>'

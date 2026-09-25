@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import ipaddress
 from collections.abc import Callable
-from typing import Any
 
 __all__ = [
     "HED_NOTEBOOK_TOKEN",
@@ -68,8 +67,8 @@ def require_loopback_host(host: str, *, surface: str = "preview") -> str:
     if not is_loopback_host(host):
         raise NotebookTopologyError(
             f"hedron-notebook {surface} refuses non-loopback host {host!r}. "
-            "Supported preview binds only to loopback (localhost / 127.0.0.1 / ::1). "
-            "Remote or public serving is not part of the Supported API.",
+            + "Supported preview binds only to loopback (localhost / 127.0.0.1 / ::1). "
+            + "Remote or public serving is not part of the Supported API.",
             host=host,
         )
     return host
@@ -105,7 +104,7 @@ def handoff_disposition(
 
 
 def start_server_handoff(
-    app: Any,
+    app: object,
     *,
     host: str = "127.0.0.1",
     port: int = 0,
@@ -123,16 +122,16 @@ def start_server_handoff(
     if allow_public:
         raise NotebookTopologyError(
             "hedron-notebook refuses allow_public=True; public hosting is not part of "
-            "the Supported API. Deploy with a real server outside the notebook instead.",
+            + "the Supported API. Deploy with a real server outside the notebook instead.",
             host=host,
         )
     if not token_gated:
         raise NotebookTokenError(
             "hedron-notebook refuses an untokenized handoff; the preview token gate "
-            "must stay enabled.",
+            + "must stay enabled.",
             source="handoff",
         )
-    require_loopback_host(host, surface="handoff")
+    _ignored = require_loopback_host(host, surface="handoff")
     disposition = handoff_disposition(
         host=host,
         port=port,

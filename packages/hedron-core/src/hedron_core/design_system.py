@@ -9,7 +9,7 @@ import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from dataclasses import replace as dc_replace
-from typing import Any, Final, Literal, TypeGuard, TypeVar
+from typing import Final, Literal, TypeGuard, TypeVar
 
 from hedron_core.builtins.appearance import (
     APPEARANCES,
@@ -94,7 +94,7 @@ ElevationPreset = Literal["flat", "subtle", "layered"]
 MotionPreset = Literal["standard", "calm", "none"]
 NavigationPreset = Literal["compact", "default", "wide"]
 
-ComponentT = TypeVar("ComponentT", bound=Component[Any])
+ComponentT = TypeVar("ComponentT", bound=Component[object])
 
 PLAN_SCHEMA_ID: Final = "hedron.design-system-plan/1"
 BRAND_ALGORITHM: Final = "hedron.brand-palette/2"
@@ -253,7 +253,7 @@ def _is_style_recipe(value: object) -> TypeGuard[StyleRecipe]:
     return isinstance(value, StyleRecipe)
 
 
-def _is_component(value: object) -> TypeGuard[Component[Any]]:
+def _is_component(value: object) -> TypeGuard[Component[object]]:
     return isinstance(value, Component)
 
 
@@ -473,7 +473,7 @@ class StyleRecipe:
                     ),
                     remediation="Declare a finite field vocabulary on RecipeFamily.",
                 )
-            require_choice(value, vocab, label=key)
+            _ignored = require_choice(value, vocab, label=key)
             cleaned[key] = value
         object.__setattr__(self, "values", dict(sorted(cleaned.items())))
         normalized_responsive: dict[str, dict[str, str]] = {}
@@ -503,7 +503,9 @@ class StyleRecipe:
                         explanation=f"Breakpoint {breakpoint!r} is not supported.",
                         remediation=f"Use one of: {', '.join(BREAKPOINTS)}.",
                     )
-                require_choice(value, _RESPONSIVE_RECIPE_FIELDS[field_name], label=field_name)
+                _ignored = require_choice(
+                    value, _RESPONSIVE_RECIPE_FIELDS[field_name], label=field_name
+                )
                 normalized_conditions[breakpoint] = value
             normalized_responsive[field_name] = {
                 key: normalized_conditions[key]
@@ -856,7 +858,7 @@ class DesignSystem:
                 ),
                 remediation="Pass a safe absolute color such as '#2f6fed' or Color.oklch(...).",
             ) from exc
-        require_choice(density, DENSITIES, label="density")
+        _ignored = require_choice(density, DENSITIES, label="density")
         if content_width not in ("narrow", "default", "wide", "full"):
             raise error(
                 HED_DESIGN_0001,

@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Any
+
+from typing_extensions import override
 
 from hedron_core.builtins._base import ElementProps, class_names, mark_data
 from hedron_core.component import Component, NodeLike
@@ -30,10 +31,11 @@ class Calendar(Component[CalendarProps]):
         value: str | None = None,
         min: str | None = None,
         max: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(CalendarProps(name=name, value=value, min=min, max=max, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         return extras_host(
             "hedron-extras-calendar",
@@ -67,11 +69,14 @@ class SignaturePad(Component[SignaturePadProps]):
     logical_name = "SignaturePad"
     distribution = "hedron-extras"
 
-    def __init__(self, *, name: str = "signature", max_bytes: int = 200_000, **kwargs: Any) -> None:
+    def __init__(
+        self, *, name: str = "signature", max_bytes: int = 200_000, **kwargs: object
+    ) -> None:
         if max_bytes < 1 or max_bytes > 2_000_000:
             raise ValueError("SignaturePad max_bytes out of bounds")
         super().__init__(SignaturePadProps(name=name, max_bytes=max_bytes, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         return extras_host(
             "hedron-extras-signature",
@@ -122,7 +127,7 @@ class Typeahead(Component[TypeaheadProps]):
         page_size: int = 50,
         empty_message: str = "No matches",
         error_message: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if len(options) > 5_000:
             raise ValueError("Typeahead options exceed budget")
@@ -143,6 +148,7 @@ class Typeahead(Component[TypeaheadProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         list_id = f"{self.props.name}-list"
         paged = self.props.options[: self.props.page_size]

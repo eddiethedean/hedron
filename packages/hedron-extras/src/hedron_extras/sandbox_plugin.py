@@ -8,7 +8,6 @@ or the entry point is explicitly enabled. Import remains
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
 
 from hedron_core.codes import HED_ASSET_MISSING
 from hedron_core.diagnostics import error
@@ -68,7 +67,7 @@ def _register_module_asset(ctx: PluginContext, rel: str) -> tuple[str, Path]:
 
 
 def _register_asset(ctx: PluginContext) -> None:
-    _register_module_asset(ctx, _SANDBOX_REL)
+    _ignored = _register_module_asset(ctx, _SANDBOX_REL)
 
 
 def _register_component(ctx: PluginContext) -> None:
@@ -119,4 +118,4 @@ def register(ctx: PluginContext) -> None:
 register.PLUGIN_META = PLUGIN_META  # type: ignore[attr-defined]
 
 # Satisfy type checkers; registration uses PLUGIN_META.
-_: Any = PLUGIN_META
+_: object = PLUGIN_META

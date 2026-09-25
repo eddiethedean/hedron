@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import math
-from typing import Any, Protocol, runtime_checkable
+from typing import Protocol, runtime_checkable
 
 # Redis PX uses a signed 64-bit millisecond duration. Leave one second of
 # floating-point headroom so every accepted value converts safely in all backends.
@@ -37,18 +37,18 @@ class CacheBackend(Protocol):
     ``lookup`` must distinguish a stored ``None`` from a miss.
     """
 
-    def get(self, key: str) -> Any | None:
+    def get(self, key: str) -> object | None:
         """Return the cached value, or ``None`` on miss."""
         ...
 
-    def lookup(self, key: str) -> tuple[bool, Any]:
+    def lookup(self, key: str) -> tuple[bool, object]:
         """Return ``(hit, value)`` so stored ``None`` is distinguishable from a miss."""
         ...
 
     def set(
         self,
         key: str,
-        value: Any,
+        value: object,
         *,
         ttl: float | None = None,
         tags: tuple[str, ...] = (),

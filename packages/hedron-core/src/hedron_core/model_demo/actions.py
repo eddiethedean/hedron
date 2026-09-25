@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
-from typing import Any
 
 from hedron_core.diagnostics import HedronError
 
@@ -29,8 +28,8 @@ class RegisteredAction:
     """Explicitly registered typed action available for demo composition."""
 
     action_id: str
-    input_schema: Mapping[str, Any]
-    output_schema: Mapping[str, Any]
+    input_schema: Mapping[str, object]
+    output_schema: Mapping[str, object]
     side_effects: tuple[str, ...] = ()
     authorization_required: bool = True
     resource_policy: str | None = None
@@ -40,7 +39,7 @@ class RegisteredAction:
     preprocessing_version: str = "1"
     code_version: str = "1"
     model_version: str = "1"
-    handler: Callable[..., Any] | None = None
+    handler: Callable[..., object] | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -48,9 +47,9 @@ class RegisteredCallableAdapter:
     """Callable adapter with explicit schemas and policies (never auto-published)."""
 
     adapter_id: str
-    callable_ref: Callable[..., Any]
-    input_schema: Mapping[str, Any]
-    output_schema: Mapping[str, Any]
+    callable_ref: Callable[..., object]
+    input_schema: Mapping[str, object]
+    output_schema: Mapping[str, object]
     side_effects: tuple[str, ...] = ()
     authorization_required: bool = True
     resource_policy: str | None = None

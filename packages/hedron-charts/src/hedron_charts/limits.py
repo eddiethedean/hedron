@@ -6,7 +6,7 @@ import json
 from collections.abc import Mapping, Sequence
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, cast
+from typing import cast
 
 from hedron_core.diagnostics import HedronError, error
 from hedron_core.security import contains_dangerous_scheme
@@ -40,7 +40,7 @@ def _pypi_pin_bounds() -> tuple[str, str]:
     if not path.is_file():
         return "0.52.0", "0.53"
     data = tomllib.loads(path.read_text(encoding="utf-8"))
-    release = cast(Mapping[str, Any], data.get("release") or {})
+    release = cast(Mapping[str, object], data.get("release") or {})
     floor = str(release.get("pypi_pin_floor") or release.get("pin_floor") or "0.52.0").strip()
     ceiling = str(release.get("pypi_pin_ceiling") or release.get("pin_ceiling") or "0.53").strip()
     return floor, ceiling

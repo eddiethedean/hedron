@@ -18,6 +18,7 @@ from types import MappingProxyType
 from typing import Final, Literal, cast
 
 from hedron_core.theme import Theme, folio_theme
+from hedron_core.typing_support import dynamic_attribute
 
 __all__ = [
     "PRESENTATION_SCHEMA",
@@ -458,8 +459,8 @@ class ScopedStyleRecipe:
     layer: Literal["components", "utilities", "overrides"] = "components"
 
     def __post_init__(self) -> None:
-        _identifier(self.component, "component")
-        _part_identifier(self.part)
+        _ignored = _identifier(self.component, "component")
+        _ignored = _part_identifier(self.part)
         public_parts = _APPLICATION_STYLE_HOOKS.get(self.component)
         if public_parts is None or self.part not in public_parts:
             raise PresentationError(
@@ -471,9 +472,9 @@ class ScopedStyleRecipe:
         conditions = tuple(self.conditions)
         self._validate_conditions(conditions)
         if self.motion is not None:
-            motion_recipe(self.motion)
+            _ignored = motion_recipe(self.motion)
         for state in states:
-            _identifier(state, "state")
+            _ignored = _identifier(state, "state")
             if state not in public_parts[self.part]:
                 raise PresentationError(
                     f"unknown public state for {self.component}.{self.part}: {state!r}"
@@ -600,11 +601,11 @@ def compile_scoped_styles(recipes: Sequence[ScopedStyleRecipe]) -> ScopedStyleBu
         declarations = dict(recipe.declarations)
         if recipe.motion is not None:
             preset = motion_recipe(recipe.motion)
-            declarations.setdefault(
+            _ignored = declarations.setdefault(
                 "transition-duration",
                 f"var(--hedron-{preset.duration_token.replace('.', '-')})",
             )
-            declarations.setdefault(
+            _ignored = declarations.setdefault(
                 "transition-timing-function",
                 f"var(--hedron-{preset.easing_token.replace('.', '-')})",
             )
@@ -632,7 +633,9 @@ class PresentationContract:
 
     def __post_init__(self) -> None:
         for field_name in ("tokens", "breakpoints", "container_sizes", "motion"):
-            object.__setattr__(self, field_name, _freeze_public(getattr(self, field_name)))
+            object.__setattr__(
+                self, field_name, _freeze_public(dynamic_attribute(self, field_name))
+            )
         object.__setattr__(self, "native_controls", tuple(self.native_controls))
         object.__setattr__(self, "data_chrome", tuple(self.data_chrome))
 

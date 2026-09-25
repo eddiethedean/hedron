@@ -129,17 +129,17 @@ class PrepareContext:
                     # exception observed so owner-only failures do not emit
                     # "Future exception was never retrieved" at GC time.
                     with suppress(BaseException):
-                        fut.exception()
+                        _ignored = fut.exception()
                 raise
             finally:
                 if self._inflight.get(key) is fut:
-                    self._inflight.pop(key, None)
+                    _ignored = self._inflight.pop(key, None)
 
         return _resolve()
 
 
 def reset_prepare_for_tests() -> None:
-    _active_prepare.set(None)
+    _ignored = _active_prepare.set(None)
 
 
 def collect_prepare_targets(
@@ -247,7 +247,7 @@ async def prepare_tree(
                         await _body()
 
                 if run is not None:
-                    await run(_with_deadline())
+                    _ignored = await run(_with_deadline())
                 elif semaphore is not None:
                     async with semaphore:
                         await _with_deadline()
@@ -286,12 +286,12 @@ async def prepare_tree(
 
         tasks = [asyncio.create_task(_run_one(component)) for component in targets]
         try:
-            await asyncio.gather(*tasks)
+            _ignored = await asyncio.gather(*tasks)
         except BaseException:
             for task in tasks:
                 if not task.done():
-                    task.cancel()
-            await asyncio.gather(*tasks, return_exceptions=True)
+                    _ignored = task.cancel()
+            _ignored = await asyncio.gather(*tasks, return_exceptions=True)
             raise
         return ctx
     finally:

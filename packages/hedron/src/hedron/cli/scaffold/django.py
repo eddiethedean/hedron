@@ -6,13 +6,14 @@ import argparse
 import json
 from pathlib import Path
 
+from hedron.cli.arguments import string_argument
 from hedron.cli.discovery import scaffold_dep as _scaffold_dep
 
 
 def scaffold_django(args: argparse.Namespace, dest: Path) -> int:
-    (dest / "pyproject.toml").write_text(
+    _ignored = (dest / "pyproject.toml").write_text(
         f'''[project]
-name = "{args.name}"
+name = "{string_argument(args, "name", "")}"
 version = "0.1.0"
 requires-python = ">=3.10"
 dependencies = [
@@ -29,8 +30,8 @@ component_roots = ["components"]
     )
     project = dest / "project"
     project.mkdir(exist_ok=True)
-    (project / "__init__.py").write_text("", encoding="utf-8")
-    (project / "settings.py").write_text(
+    _ignored = (project / "__init__.py").write_text("", encoding="utf-8")
+    _ignored = (project / "settings.py").write_text(
         """import os
 from pathlib import Path
 
@@ -66,7 +67,7 @@ CSRF_HEADER_NAME = "HTTP_X_CSRF_TOKEN"
 """,
         encoding="utf-8",
     )
-    (project / "urls.py").write_text(
+    _ignored = (project / "urls.py").write_text(
         """from datetime import datetime, timezone
 
 from django.urls import path
@@ -118,7 +119,7 @@ urlpatterns = [
 """,
         encoding="utf-8",
     )
-    (dest / "manage.py").write_text(
+    _ignored = (dest / "manage.py").write_text(
         """#!/usr/bin/env python
 import os
 import sys
@@ -136,7 +137,7 @@ if __name__ == "__main__":
 """,
         encoding="utf-8",
     )
-    (dest / "wsgi.py").write_text(
+    _ignored = (dest / "wsgi.py").write_text(
         """import os
 from django.core.wsgi import get_wsgi_application
 
@@ -145,12 +146,12 @@ application = get_wsgi_application()
 """,
         encoding="utf-8",
     )
-    (dest / "README.md").write_text(
+    _ignored = (dest / "README.md").write_text(
         "# Hedron Django app\n\n"
-        "Set `HEDRON_SESSION_SECRET` before production. "
-        "Placeholder secrets are refused under `HEDRON_ENV=production` "
-        "unless accepted via `HEDRON_SECURITY_RISK_ACCEPTANCE`.\n\n"
-        "```bash\nuv sync && uv run waitress-serve --port=8000 wsgi:application\n```\n",
+        + "Set `HEDRON_SESSION_SECRET` before production. "
+        + "Placeholder secrets are refused under `HEDRON_ENV=production` "
+        + "unless accepted via `HEDRON_SECURITY_RISK_ACCEPTANCE`.\n\n"
+        + "```bash\nuv sync && uv run waitress-serve --port=8000 wsgi:application\n```\n",
         encoding="utf-8",
     )
     print(

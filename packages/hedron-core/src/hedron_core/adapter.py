@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass, field
-from typing import Any, Protocol, runtime_checkable
+from typing import Protocol, runtime_checkable
 
 from hedron_core.compat import StrEnum
 from hedron_core.typing_aliases import JsonObject, JsonValue
@@ -75,7 +75,7 @@ class AuthSignal:
 @dataclass(frozen=True, slots=True)
 class UrlReverseRequest:
     name: str
-    args: tuple[Any, ...] = ()
+    args: tuple[object, ...] = ()
     kwargs: Mapping[str, JsonValue] = field(default_factory=dict[str, JsonValue])
     root_path: str = ""
     script_name: str = ""

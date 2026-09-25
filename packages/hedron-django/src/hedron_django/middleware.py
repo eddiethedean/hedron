@@ -4,12 +4,13 @@ from __future__ import annotations
 
 from collections.abc import Callable, Mapping
 from dataclasses import replace
-from typing import Any, cast
+from typing import cast
 
 from django.http import HttpRequest, HttpResponse
 
 from hedron_core.request_plane import bind_request_security, unbind_request_security
 from hedron_core.security_policy import SecurityHeadersPolicy, SecurityPolicy
+from hedron_core.typing_support import dynamic_attribute
 
 __all__ = ["HedronSecurityHeadersMiddleware", "security_policy_from_settings"]
 
@@ -18,7 +19,7 @@ _SETTINGS_POLICY = "HEDRON_SECURITY_POLICY"
 _SETTINGS_HEADERS = "HEDRON_SECURITY_HEADERS"
 
 
-def _headers_policy_from_mapping(raw: Mapping[str, Any]) -> SecurityHeadersPolicy:
+def _headers_policy_from_mapping(raw: Mapping[str, object]) -> SecurityHeadersPolicy:
     allowed = {
         "content_security_policy",
         "frame_options",
@@ -30,7 +31,7 @@ def _headers_policy_from_mapping(raw: Mapping[str, Any]) -> SecurityHeadersPolic
     return SecurityHeadersPolicy(**kwargs)
 
 
-def security_policy_from_settings(settings: Any | None = None) -> SecurityPolicy:
+def security_policy_from_settings(settings: object | None = None) -> SecurityPolicy:
     """Resolve ``SecurityPolicy`` from Django settings (default ``standard``).
 
     Precedence:
@@ -57,7 +58,7 @@ def security_policy_from_settings(settings: Any | None = None) -> SecurityPolicy
     if isinstance(headers, Mapping):
         return replace(
             policy,
-            security_headers=_headers_policy_from_mapping(cast(Mapping[str, Any], headers)),
+            security_headers=_headers_policy_from_mapping(cast(Mapping[str, object], headers)),
         )
     return policy
 
@@ -78,9 +79,9 @@ class HedronSecurityHeadersMiddleware:
         try:
             response = self.get_response(request)
             authenticated = False
-            user = getattr(request, "user", None)
+            user = dynamic_attribute(request, "user")
             if user is not None:
-                authenticated = bool(getattr(user, "is_authenticated", False))
+                authenticated = bool(dynamic_attribute(user, "is_authenticated", False))
             for key, value in self.policy.response_headers(authenticated=authenticated).items():
                 existing = response.get(key)
                 if (authenticated and key in {"Cache-Control", "Pragma"}) or (key not in response):

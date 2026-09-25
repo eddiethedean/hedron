@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import json
 from collections.abc import Mapping, Sequence
-from typing import Any, ClassVar, Literal
+from typing import ClassVar, Literal
 
 from pydantic import Field
+from typing_extensions import override
 
 from hedron_core.builtins._base import ElementProps, class_names, mark_data
 from hedron_core.component import Component, NodeLike
@@ -41,12 +42,12 @@ class DataExplorer(Component[DataExplorerProps]):
 
     def __init__(
         self,
-        facets: Sequence[DataExplorerFacet | Mapping[str, Any]],
+        facets: Sequence[DataExplorerFacet | Mapping[str, object]],
         *,
         name: str = "explorer",
         max_rows: int = 1000,
         revision: str = "0",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         parsed = [
             f if isinstance(f, DataExplorerFacet) else DataExplorerFacet.model_validate(f)
@@ -60,6 +61,7 @@ class DataExplorer(Component[DataExplorerProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         groups: list[NodeLike] = []
         for facet in self.props.facets:
@@ -148,14 +150,14 @@ class JSONEditor(Component[JSONEditorProps]):
 
     def __init__(
         self,
-        value: Any,
+        value: object,
         *,
-        schema: Mapping[str, Any] | None = None,
+        schema: Mapping[str, object] | None = None,
         name: str = "json",
         max_chars: int = 200_000,
         read_only: bool = False,
         revision: str = "0",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if max_chars < 1 or max_chars > 200_000:
             raise ValueError("JSONEditor max_chars must be between 1 and 200000")
@@ -183,6 +185,7 @@ class JSONEditor(Component[JSONEditorProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         return html.form(
             html.textarea(
@@ -248,13 +251,13 @@ class CodeEditor(Component[CodeEditorProps]):
         max_chars: int = 200_000,
         read_only: bool = False,
         submit_mode: Literal["full", "patch"] = "full",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         lang = language.lower().strip()
         if lang not in _ALLOWED_CODE_LANGUAGES:
             raise ValueError(
                 f"CodeEditor language {language!r} not in allowlist: "
-                f"{sorted(_ALLOWED_CODE_LANGUAGES)}"
+                + f"{sorted(_ALLOWED_CODE_LANGUAGES)}"
             )
         if max_chars < 1 or max_chars > 200_000:
             raise ValueError("CodeEditor max_chars must be between 1 and 200000")
@@ -272,6 +275,7 @@ class CodeEditor(Component[CodeEditorProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         return html.div(
             html.textarea(
@@ -331,7 +335,7 @@ class ChartWorkbench(Component[ChartWorkbenchProps]):
         chart: NodeLike = None,
         table: NodeLike = None,
         explorer: NodeLike = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             ChartWorkbenchProps(title=title, export_name=export_name, revision=revision, **kwargs)
@@ -340,6 +344,7 @@ class ChartWorkbench(Component[ChartWorkbenchProps]):
         self._table = table
         self._explorer = explorer
 
+    @override
     def render(self) -> NodeLike:
         tabs = [
             html.section(html.h3("Chart"), self._chart, data={"tab": "chart"}),
@@ -398,11 +403,11 @@ class CallableActionForm(Component[CallableActionFormProps]):
     def __init__(
         self,
         action: str,
-        params: Sequence[CallableParam | Mapping[str, Any]],
+        params: Sequence[CallableParam | Mapping[str, object]],
         *,
         title: str = "Run",
         form_action: str | SafeUrl | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if not action or "/" in action or action.startswith("_"):
             raise ValueError("CallableActionForm action must be an explicit allowlisted action id")
@@ -428,6 +433,7 @@ class CallableActionForm(Component[CallableActionFormProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         fields: list[NodeLike] = [html.legend(self.props.title)]
         for p in self.props.params:

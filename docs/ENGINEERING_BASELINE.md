@@ -10,9 +10,8 @@ evidence maps live on GitHub under
 - `uv` manages the development workspace, lockfile, environments, and release test installs.
 - Hatchling builds wheels and source distributions.
 - Ruff provides formatting and linting.
-- Pyright runs strict type checking on public packages. `hedron-core` and `hedron` block on type
-  errors; warning-level diagnostics remain a tracked migration until the existing warning budget
-  is retired.
+- BasedPyright runs every diagnostic in `all` mode on shipped package code. All diagnostics,
+  including diagnostics for explicit and inferred `Any`, block CI.
 - pytest, pytest-xdist, httpx, and optional Playwright browser tooling implement the test layers.
 - Relative documentation links and `mkdocs build --strict` run in CI.
 - Root `STATUS.md` must match `docs/STATUS.md` (`scripts/sync_status_roadmap.py --check`). The roadmap is only `docs/ROADMAP.md`.
@@ -31,7 +30,7 @@ the PR is classified **docs-only** by the allowlist in `.github/workflows/ci.yml
 
 | Job | Coverage |
 |---|---|
-| `quality` | ruff format + check, workspace pyright, strict Pyright error gate for `hedron-core` + `hedron`, tip+2 `verify_pkg_*` (older packets on evidence), satellite import + symbol-tier gates, stable release contract, wheel build + clean-install smoke, STATUS/ROADMAP mirror check, docs train SSOT / recipe / sim checks, relative markdown link check, `mkdocs build --strict` |
+| `quality` | ruff format + check, workspace BasedPyright, package inventory, tip+2 `verify_pkg_*` (older packets on evidence), satellite import + symbol-tier gates, stable release contract, wheel build + clean-install smoke, STATUS/ROADMAP mirror check, docs train SSOT / recipe / sim checks, relative markdown link check, `mkdocs build --strict` |
 | `quality` (docs-only) | `docs` suite: train SSOT / recipe / sim checks, relative links, `mkdocs build --strict` — **no** Rust toolchain, **no** `uv build --all-packages` |
 | `test` | `pytest` with pytest-xdist (`-n auto`) on Ubuntu for Python **3.10, 3.11, 3.12, 3.13, 3.14** (skipped when docs-only) |
 | `browser` | Playwright HTMX suite — **Chromium on PRs**; Chromium + Firefox + WebKit on `main` / workflow_dispatch (skipped when docs-only) |
@@ -57,34 +56,40 @@ CI. Free-threaded CPython and PyPy are informational until separately promoted.
 
 ## Typing policy
 
-Pyright runs in `strict` mode on publishable package `src` trees. Shared aliases live in
+BasedPyright runs in `all` mode on publishable package `src` trees. The configuration enables
+analysis of unannotated functions, strict `None` handling, and strict generic narrowing. It makes
+all built-in diagnostics fatal and explicitly sets `reportAny` and `reportExplicitAny` to errors.
+Shared aliases live in
 `hedron_core.typing_aliases` and are re-exported from `hedron_core` when they appear in
 public signatures (`JsonValue`, `HtmlAttrValue`, HTMX/job/plugin TypedDicts, and related
 shapes).
 
-All shipped Python packages have zero Pyright errors and warnings. The shared quality suite
+All shipped Python packages must have zero BasedPyright diagnostics. The shared quality suite
 preserves that release gate with:
 
 ```bash
 bash scripts/ci_checks.sh typing --python 3.12
 ```
 
-The command runs Pyright in strict mode over every publishable package tree. Framework adapter
-modules may locally identify third-party dynamic boundaries where upstream stubs are incomplete;
-the workspace-level strict policy remains warning-enabled everywhere else. Commit CI and release
-CI call the same quality suite.
+The command runs BasedPyright over every publishable package tree. The workspace rejects `Any`
+whether it is written explicitly or inferred through a dynamic API. Use `object` for values that
+must be narrowed, and use `Protocol`, `TypedDict`, precise callable types, or validated boundary
+models for structured values. Third-party dynamic boundaries must be wrapped or narrowed without
+introducing `Any`. Package code may not suppress `reportAny` or `reportExplicitAny`. Commit CI and
+release CI call the same quality suite.
 
-- Prefer `JsonValue` / `JsonObject` / TypedDict / Protocol over `Any` for structured data.
+For third-party dependencies without inline typing, prefer a maintained stub distribution. If none
+exists, add a narrow local stub under `typings/` for the public symbols Hedron uses; local stubs may
+not introduce `Any`.
+
+- Prefer `JsonValue` / `JsonObject` / TypedDict / Protocol for structured data.
 - Prefer `HtmlAttrValue` / `HtmlAttrMap` for HTML and HTMX attribute maps end-to-end.
 - Use `object` for truly unknown values that are immediately narrowed (for example `Auto`
   inspection and job `result` payloads).
-- Keep `Any` only for host-framework passthrough (`**fastapi_kwargs`, Flask route
-  `options`) and intentionally dynamic cores (plugin entry callables, open decorator
-  wrappers). Remaining sites should be obviously boundary-shaped, not lazy bags.
 - Every `# type: ignore[...]` is coded and justified at the call site.
-- `reportUnknown*` stays at warning severity at the workspace level; dynamic adapter boundaries
-  must be explicit and local.
-- The warning-fatal package gate must not be weakened or bypassed.
+- `reportUnknown*` diagnostics are fatal under `all` mode; dynamic adapter boundaries must be
+  explicit, locally validated, and free of `Any`.
+- The all-diagnostics gate and complete `Any` ban must not be weakened or bypassed.
 
 ## Licensing policy
 

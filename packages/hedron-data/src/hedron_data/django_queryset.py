@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Iterable, Mapping, Sequence
-from typing import Any, Protocol, cast
+from typing import Protocol, cast
 
 from hedron_core.diagnostics import error
 from hedron_core.typing_aliases import JsonValue
+from hedron_core.typing_support import dynamic_attribute
 from hedron_data.sources import (
     ColumnSchema,
     DataChanges,
@@ -41,6 +42,10 @@ class QueryDiagnostics:
 
 class _DjangoQuery(Protocol):
     order_by: object
+
+
+class _ModelToDict(Protocol):
+    def __call__(self, instance: object) -> Mapping[object, object]: ...
 
 
 class _DjangoQuerySet(Protocol):
@@ -86,7 +91,7 @@ class DjangoQuerySetDataSource:
         if not type_name.endswith("QuerySet"):
             raise TypeError(
                 "DjangoQuerySetDataSource requires an application-supplied QuerySet; "
-                f"got {type_name!r}"
+                + f"got {type_name!r}"
             )
         # Runtime name check; Protocol describes the methods we call below.
         self._base = cast(_DjangoQuerySet, base_queryset)
@@ -128,17 +133,20 @@ class DjangoQuerySetDataSource:
             # Prefer model_to_dict when available without importing django at module import
             # for non-Django environments that only construct the class.
             try:
-                from django.forms import models as django_models
+                from django.forms.models import model_to_dict
 
-                model_to_dict_fn: Any = vars(django_models)["model_to_dict"]
-                dumped = cast(Mapping[object, object], model_to_dict_fn(obj))
+                model_to_dict_fn: object = model_to_dict
+                dumped = cast(_ModelToDict, model_to_dict_fn)(obj)
                 data.update({str(key): cast(JsonValue, value) for key, value in dumped.items()})
             except Exception:  # noqa: BLE001
-                meta = getattr(obj, "_meta", None)
-                fields = getattr(meta, "fields", ()) if meta is not None else ()
-                for field in fields:
-                    data[field.name] = cast(JsonValue, getattr(obj, field.name, None))
-        data.setdefault(
+                meta = dynamic_attribute(obj, "_meta")
+                fields = dynamic_attribute(meta, "fields", ()) if meta is not None else ()
+                if isinstance(fields, Sequence):
+                    for field in fields:
+                        name = dynamic_attribute(field, "name")
+                        if isinstance(name, str):
+                            data[name] = cast(JsonValue, dynamic_attribute(obj, name))
+        _ignored = data.setdefault(
             self._key_field,
             cast(JsonValue, getattr(obj, "pk", data.get(self._key_field))),
         )
@@ -200,10 +208,12 @@ class DjangoQuerySetDataSource:
             from django.db.models import Q
 
             # Build OR of icontains lookups without relying on django-stubs Q| typing.
-            q_factory: Any = Q
+            q_factory: object = Q
             search_q: object = q_factory()
             for field_name in self._search_fields:
-                search_q = cast(Any, search_q) | q_factory(**{f"{field_name}__icontains": q.search})
+                search_q = cast(object, search_q) | q_factory(
+                    **{f"{field_name}__icontains": q.search}
+                )
             qs = qs.filter(search_q)
             diag.record()
 

@@ -91,7 +91,7 @@ class CookieRegistry:
         self._specs[spec.name] = spec
         refresh = getattr(self._app, "_refresh_owned_cookie_middleware", None)
         if callable(refresh):
-            refresh()
+            _ignored = refresh()
 
     def names(self) -> tuple[str, ...]:
         return tuple(sorted(self._specs))

@@ -2,14 +2,16 @@
 
 from __future__ import annotations
 
-from typing import Any, TypeVar, cast
+from typing import TypeVar, cast
 
 from fastapi import Request
 
 from hedron_core.a11y import AccessibilityContract
+from hedron_core.app_state import request_app, request_state, state_value
 from hedron_core.catalog import InteractionCatalog, compile_interaction_catalog, get_sealed_catalog
 from hedron_core.dashboard import InteractionGraph, dashboard_graph_payload
 from hedron_core.registry import ComponentMeta, RouteMeta, get_registry
+from hedron_core.typing_support import dynamic_attribute
 from hedron_explorer.services.query import (
     A11Y_LIMIT,
     AUDIT_LIMIT,
@@ -101,7 +103,7 @@ def page_routes(request: Request | None = None) -> Page[RouteMeta]:
     return _page_or_all(items, request, default=DEFAULT_LIMIT, cap=COMPONENTS_LIMIT)
 
 
-def component_payload(c: ComponentMeta) -> dict[str, Any]:
+def component_payload(c: ComponentMeta) -> dict[str, object]:
     return {
         "name": c.name,
         "logical_id": c.logical_id,
@@ -111,7 +113,7 @@ def component_payload(c: ComponentMeta) -> dict[str, Any]:
     }
 
 
-def route_payload(r: RouteMeta) -> dict[str, Any]:
+def route_payload(r: RouteMeta) -> dict[str, object]:
     return {
         "kind": r.kind,
         "name": r.name,
@@ -126,7 +128,7 @@ def route_payload(r: RouteMeta) -> dict[str, Any]:
     }
 
 
-def components_json(request: Request | None = None) -> Any:
+def components_json(request: Request | None = None) -> object:
     page = page_components(request)
     items = [component_payload(c) for c in page.items]
     if wants_envelope(request, page):
@@ -136,7 +138,7 @@ def components_json(request: Request | None = None) -> Any:
     return items
 
 
-def routes_json(request: Request | None = None) -> Any:
+def routes_json(request: Request | None = None) -> object:
     page = page_routes(request)
     items = [route_payload(r) for r in page.items]
     if wants_envelope(request, page):
@@ -146,14 +148,14 @@ def routes_json(request: Request | None = None) -> Any:
     return items
 
 
-def graph_json(request: Request | None = None) -> dict[str, Any]:
+def graph_json(request: Request | None = None) -> dict[str, object]:
     """Explorer asset graph. CLI adds inverse_consumers; this payload does not."""
     nodes = [{"id": c.logical_id, "name": c.name} for c in get_registry().components()]
     query = None if request is None else request.query_params.get("q")
     nodes = search_filter(nodes, query, key=lambda n: f"{n['id']} {n['name']}")
     page = _page_or_all(nodes, request, default=COMPONENTS_LIMIT, cap=COMPONENTS_LIMIT)
     kept = {str(item["id"]) for item in page.items}
-    edges: list[dict[str, Any]] = []
+    edges: list[dict[str, object]] = []
     for c in get_registry().components():
         if c.logical_id not in kept:
             continue
@@ -189,7 +191,7 @@ def graph_json(request: Request | None = None) -> dict[str, Any]:
     }
 
 
-def page_interactions(request: Request, catalog: InteractionCatalog) -> Page[Any]:
+def page_interactions(request: Request, catalog: InteractionCatalog) -> Page[object]:
     items = list(catalog.entries.values())
     query = request.query_params.get("q")
     filtered = search_filter(items, query, key=lambda entry: f"{entry.logical_id} {entry.kind}")
@@ -200,41 +202,42 @@ def page_interactions(request: Request, catalog: InteractionCatalog) -> Page[Any
     )
 
 
-def handle_graph_json(request: Request) -> dict[str, Any]:
+def handle_graph_json(request: Request) -> dict[str, object]:
     from hedron_core.updates import handle_graph_payload, redacted_descriptor_view
 
-    app_id = str(getattr(getattr(request.app, "state", None), "hedron_app_id", "") or "")
+    state = request_state(request)
+    app_id = str(state_value(state, "hedron_app_id", "") or "")
     payload = handle_graph_payload(app_id=app_id or None)
-    handles = cast(object, getattr(getattr(request.app, "state", None), "hedron_handles", {}))
-    redacted: list[Any] = []
+    handles = state_value(state, "hedron_handles", {})
+    redacted: list[object] = []
     typed_handles = cast(dict[object, object], handles) if isinstance(handles, dict) else {}
     for handle in typed_handles.values():
-        descriptor = getattr(handle, "descriptor", None)
+        descriptor = dynamic_attribute(handle, "descriptor")
         if descriptor is not None:
             redacted.append(redacted_descriptor_view(descriptor))
     return {**payload, "handles": redacted}
 
 
-def interactions_json(request: Request) -> dict[str, Any]:
-    catalog = app_catalog(request.app)
+def interactions_json(request: Request) -> dict[str, object]:
+    catalog = app_catalog(request_app(request))
     return catalog.to_manifest(profile="development").as_mapping()
 
 
-def dashboard_graph_json(request: Request) -> dict[str, Any]:
-    graph = getattr(getattr(request.app, "state", None), "hedron_dashboard_graph", None)
+def dashboard_graph_json(request: Request) -> dict[str, object]:
+    graph = state_value(request_state(request), "hedron_dashboard_graph")
     if not isinstance(graph, InteractionGraph):
         graph = InteractionGraph()
     payload = dashboard_graph_payload(graph)
     return {**payload, "stability": "experimental"}
 
 
-def security_json(request: Request | None = None) -> dict[str, Any]:
+def security_json(request: Request | None = None) -> dict[str, object]:
     page = paginate(
         list(AUDIT),
         offset=parse_cursor(request),
         limit=parse_limit(request, default=AUDIT_LIMIT, cap=AUDIT_LIMIT),
     )
-    payload: dict[str, Any] = {
+    payload: dict[str, object] = {
         "findings": [
             "Explorer routes absent in production by default",
             "CSRF required for unsafe cookie-authenticated actions",

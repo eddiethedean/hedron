@@ -8,7 +8,9 @@ import time
 import uuid
 from collections import OrderedDict
 from dataclasses import dataclass, field
-from typing import Any, cast
+from typing import cast
+
+from hedron_core.typing_support import dynamic_attribute
 
 
 class BoundsError(PermissionError):
@@ -48,8 +50,8 @@ class McpBounds:
         init=False,
         repr=False,
     )
-    _sessions: OrderedDict[str, dict[str, Any]] = field(
-        default_factory=lambda: cast(OrderedDict[str, dict[str, Any]], OrderedDict()),
+    _sessions: OrderedDict[str, dict[str, object]] = field(
+        default_factory=lambda: cast(OrderedDict[str, dict[str, object]], OrderedDict()),
         init=False,
         repr=False,
     )
@@ -60,14 +62,14 @@ class McpBounds:
             "max_concurrency",
             "rate_limit_per_minute",
         ):
-            value = getattr(self, name)
+            value = dynamic_attribute(self, name)
             if isinstance(value, bool) or not isinstance(value, int) or value < 1:
                 raise ValueError(f"{name} must be a positive integer")
         for name in ("max_cancelled", "max_sessions"):
-            value = getattr(self, name)
+            value = dynamic_attribute(self, name)
             if isinstance(value, bool) or not isinstance(value, int) or value < 0:
                 raise ValueError(f"{name} must be a non-negative integer")
-        raw_max_rate_principals = cast(Any, self.max_rate_principals)
+        raw_max_rate_principals = cast(object, self.max_rate_principals)
         if isinstance(raw_max_rate_principals, bool) or not isinstance(
             raw_max_rate_principals, int
         ):
@@ -80,7 +82,7 @@ class McpBounds:
             "session_ttl_seconds",
             "rate_window_seconds",
         ):
-            value = getattr(self, name)
+            value = dynamic_attribute(self, name)
             if (
                 isinstance(value, bool)
                 or not isinstance(value, (int, float))
@@ -104,7 +106,7 @@ class McpBounds:
             bucket = self._rate_buckets.get(principal)
             if bucket is None:
                 while len(self._rate_buckets) >= self.max_rate_principals:
-                    self._rate_buckets.popitem(last=False)
+                    _ignored = self._rate_buckets.popitem(last=False)
                 bucket = []
                 self._rate_buckets[principal] = bucket
             else:
@@ -140,7 +142,7 @@ class McpBounds:
             self._cancelled[key] = now
             self._cancelled.move_to_end(key)
             while len(self._cancelled) > self.max_cancelled:
-                self._cancelled.popitem(last=False)
+                _ignored = self._cancelled.popitem(last=False)
 
     def is_cancelled(self, request_id: str, *, owner: str) -> bool:
         key = self.scoped_cancel_key(request_id, owner=owner)
@@ -158,7 +160,7 @@ class McpBounds:
         """Drop a cancel mark once the matching request has finished."""
         key = self.scoped_cancel_key(request_id, owner=owner)
         with self._lock:
-            self._cancelled.pop(key, None)
+            _ignored = self._cancelled.pop(key, None)
 
     def open_session(self, session_id: str, *, principal: str, origin: str | None) -> None:
         now = time.monotonic()
@@ -172,13 +174,13 @@ class McpBounds:
             }
             self._sessions.move_to_end(session_id)
             while len(self._sessions) > self.max_sessions:
-                self._sessions.popitem(last=False)
+                _ignored = self._sessions.popitem(last=False)
 
     def close_session(self, session_id: str) -> None:
         with self._lock:
-            self._sessions.pop(session_id, None)
+            _ignored = self._sessions.pop(session_id, None)
 
-    def session(self, session_id: str) -> dict[str, Any] | None:
+    def session(self, session_id: str) -> dict[str, object] | None:
         now = time.monotonic()
         with self._lock:
             self._prune_sessions(now)

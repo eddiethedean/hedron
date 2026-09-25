@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import Any
+
+from typing_extensions import override
 
 from hedron_core.builtins._base import class_names, mark_data
 from hedron_core.component import Component, NodeLike
@@ -44,7 +45,7 @@ class PredictionLabel(Component[PredictionLabelProps]):
 
     def __init__(
         self,
-        scores: Sequence[PredictionScore | Mapping[str, Any]],
+        scores: Sequence[PredictionScore | Mapping[str, object]],
         *,
         title: str = "Predictions",
         threshold: float | None = None,
@@ -81,6 +82,7 @@ class PredictionLabel(Component[PredictionLabelProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         rows: list[NodeLike] = [
             html.tr(
@@ -135,7 +137,7 @@ class ParameterViewer(Component[ParameterViewerProps]):
 
     def __init__(
         self,
-        parameters: Mapping[str, Any],
+        parameters: Mapping[str, object],
         *,
         title: str = "Parameters",
         secret_keys: Sequence[str] = (),
@@ -161,6 +163,7 @@ class ParameterViewer(Component[ParameterViewerProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         items: list[NodeLike] = [
             html.div(
@@ -205,7 +208,7 @@ class Dialogue(Component[DialogueProps]):
 
     def __init__(
         self,
-        turns: Sequence[DialogueTurn | Mapping[str, Any]],
+        turns: Sequence[DialogueTurn | Mapping[str, object]],
         *,
         title: str = "Dialogue",
         class_: str | None = None,
@@ -236,6 +239,7 @@ class Dialogue(Component[DialogueProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         articles: list[NodeLike] = []
         for turn in self.props.turns:

@@ -4,9 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any
 
-from fastapi import Depends
 from fastapi.params import Depends as DependsParam
 
 from hedron_core.lifetime import (
@@ -15,6 +13,7 @@ from hedron_core.lifetime import (
     compile_fastapi_scope,
     forbid_background_capture,
 )
+from hedron_core.typing_support import fastapi_depends
 
 __all__ = ["DependsOn", "as_fastapi_depends", "plan_for"]
 
@@ -33,7 +32,7 @@ class DependsOn:
     def plan(self) -> DependencyPlan:
         return plan_for(self)
 
-    def __call__(self, dependency: Callable[..., Any] | None = None) -> DependsParam:
+    def __call__(self, dependency: Callable[..., object] | None = None) -> DependsParam:
         return as_fastapi_depends(self, dependency)
 
 
@@ -47,7 +46,7 @@ def plan_for(marker: DependsOn) -> DependencyPlan:
 
 def as_fastapi_depends(
     marker: DependsOn,
-    dependency: Callable[..., Any] | None = None,
+    dependency: Callable[..., object] | None = None,
     *,
     background: bool = False,
 ) -> DependsParam:
@@ -56,7 +55,7 @@ def as_fastapi_depends(
     plan = plan_for(marker)
     scope = compile_fastapi_scope(plan.lifetime)
     provider = dependency if dependency is not None else _missing_provider(marker.resource_id)
-    return Depends(provider, scope=scope)
+    return fastapi_depends(provider, scope=scope)
 
 
 def _missing_provider(resource_id: str) -> Callable[..., None]:

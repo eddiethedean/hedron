@@ -5,7 +5,7 @@ from __future__ import annotations
 import inspect
 from collections.abc import Awaitable, Callable, Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, Generic, Literal, Protocol, TypeVar, cast
+from typing import Generic, Literal, Protocol, TypeVar, cast
 
 from pydantic import BaseModel
 
@@ -16,6 +16,7 @@ from hedron_core.codes import HED_DASH_0001, HED_DASH_0002, HED_DASH_0003
 from hedron_core.component import NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.htmx.policy import CacheHint
+from hedron_core.typing_support import dump_model, dynamic_attribute, model_fields
 
 __all__ = [
     "CachePolicy",
@@ -45,7 +46,7 @@ class _DashboardApp(Protocol):
         *,
         name: str | None = None,
         cache: CacheHint | None = None,
-    ) -> Callable[[Callable[..., object]], FragmentHandle[Any, Any]]: ...
+    ) -> Callable[[Callable[..., object]], FragmentHandle[object, object]]: ...
 
     def action(
         self,
@@ -55,7 +56,7 @@ class _DashboardApp(Protocol):
         fallback: str | None = None,
         dependencies: Sequence[object] | None = None,
         outcomes: object | None = None,
-    ) -> Callable[[Callable[..., object]], ActionHandle[Any, Any]]: ...
+    ) -> Callable[[Callable[..., object]], ActionHandle[object, object]]: ...
 
 
 @dataclass(frozen=True, slots=True)
@@ -91,7 +92,7 @@ _SENSITIVE_FILTER_MARKERS = frozenset(
 
 
 def _reject_sensitive_filters(model: type[BaseModel]) -> None:
-    fields = getattr(model, "model_fields", {}) or {}
+    fields = model_fields(model)
     for name, info in fields.items():
         lowered = name.lower()
         if any(marker in lowered for marker in _SENSITIVE_FILTER_MARKERS):
@@ -103,7 +104,7 @@ def _reject_sensitive_filters(model: type[BaseModel]) -> None:
                 ),
                 remediation="Rename the field or use an explicit non-URL filter strategy.",
             )
-        extra = getattr(info, "json_schema_extra", None)
+        extra = dynamic_attribute(info, "json_schema_extra")
         if isinstance(extra, Mapping) and cast(Mapping[str, object], extra).get("sensitive"):
             raise error(
                 HED_DASH_0003,
@@ -185,7 +186,7 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
         self.provider_version = provider_version
         self.screen: object | None = None
         self.filter_form: object | None = None
-        self.panel_views: dict[str, FragmentHandle[Any, Any]] = {}
+        self.panel_views: dict[str, FragmentHandle[object, object]] = {}
 
     async def _load_data(self, filters: FiltersT) -> DataT:
         result = self.load(filters)
@@ -197,7 +198,7 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
         workspace = self
 
         def screen_factory(app: _DashboardApp) -> object:
-            panel_handles: dict[str, FragmentHandle[Any, Any]] = {}
+            panel_handles: dict[str, FragmentHandle[object, object]] = {}
 
             for panel_name, render in workspace.panels.items():
                 panel_path = f"{workspace.path}/panels/{panel_name}"
@@ -206,7 +207,7 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
                     pname: str = panel_name,
                     renderer: Callable[[DataT], NodeLike] = render,
                     ppath: str = panel_path,
-                ) -> FragmentHandle[Any, Any]:
+                ) -> FragmentHandle[object, object]:
                     from typing import Annotated
 
                     from hedron import ViewParams
@@ -302,7 +303,7 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
                     PageHeader(workspace.title),
                     filter_handle.form(value=params, submit_label="Apply filters"),
                 ]
-                bound_values = params.model_dump(mode="json", exclude_none=True)
+                bound_values = dump_model(params, mode="json", exclude_none=True)
                 for pname, handle in panel_handles.items():
                     if callable(handle):
                         try:
@@ -319,7 +320,7 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
                 "params": Annotated[filters_model, Query()],
                 "return": object,
             }
-            app.page(workspace.path, name=workspace.name)(dashboard_screen)
+            _ignored = app.page(workspace.path, name=workspace.name)(dashboard_screen)
 
             workspace.screen = dashboard_screen
             return dashboard_screen
@@ -328,15 +329,15 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
         def filter_factory(app: _DashboardApp) -> object:
             # Ensure screen_factory ran first via include order: views then commands.
             if workspace.filter_form is None:
-                screen_factory(app)
+                _ignored = screen_factory(app)
             assert workspace.filter_form is not None
             return workspace.filter_form
 
         def panels_factory(app: _DashboardApp) -> object:
             if not workspace.panel_views:
-                screen_factory(app)
+                _ignored = screen_factory(app)
             # Return a sentinel handle listing panel logical ids.
-            tagged: Any = lambda: None  # noqa: E731
+            tagged: object = lambda: None  # noqa: E731
             tagged.logical_id = f"{workspace.name}-panels"
             tagged.path = f"{workspace.path}/panels"
             return tagged

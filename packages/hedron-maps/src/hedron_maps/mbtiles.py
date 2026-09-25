@@ -7,7 +7,7 @@ from collections.abc import Callable
 from contextlib import closing
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, cast
+from typing import Protocol, cast
 
 from hedron_core.bundles import FeatureBundle, FeatureRequirement
 from hedron_core.catalog import PackageProjection, ProjectionCapability
@@ -19,8 +19,20 @@ from hedron_maps.spec import MBTiles
 __all__ = ["MBTilesArchive", "read_tile"]
 
 
+class _TileCursor(Protocol):
+    def fetchone(self) -> tuple[object, ...] | None: ...
+
+
+class _TileConnection(Protocol):
+    def execute(
+        self,
+        sql: str,
+        parameters: tuple[int, ...] = (),
+    ) -> _TileCursor: ...
+
+
 def _xyz_to_tms(z: int, y: int) -> int:
-    return (2**z - 1) - y
+    return ((1 << z) - 1) - y
 
 
 def read_tile(path: Path, *, z: int, x: int, y: int) -> bytes | None:
@@ -43,15 +55,16 @@ def read_tile(path: Path, *, z: int, x: int, y: int) -> bytes | None:
         )
     query = "SELECT tile_data FROM tiles WHERE zoom_level=? AND tile_column=? AND tile_row=?"
     with closing(sqlite3.connect(str(resolved))) as con, con:
-        con.execute("PRAGMA query_only=ON")
-        row = con.execute(query, (z, x, _xyz_to_tms(z, y))).fetchone()
+        connection = cast(_TileConnection, cast(object, con))
+        _ignored = connection.execute("PRAGMA query_only=ON")
+        row = connection.execute(query, (z, x, _xyz_to_tms(z, y))).fetchone()
     if row is None:
         return None
     data = row[0]
     if isinstance(data, bytes):
         return data
     if isinstance(data, memoryview):
-        return bytes(cast(memoryview[Any], data))
+        return bytes(cast(memoryview[object], data))
     return None
 
 
@@ -107,7 +120,7 @@ class MBTilesArchive:
                 def missing() -> None:
                     return None
 
-                tagged: Any = missing
+                tagged: object = missing
                 tagged.logical_id = ident
                 return tagged
 
@@ -119,11 +132,11 @@ class MBTilesArchive:
                     return Response(status_code=404)
                 return Response(content=blob, media_type="image/png")
 
-            decorator = cast(Callable[..., Any], getter)(
+            decorator = cast(Callable[..., object], getter)(
                 route, name=f"hedron-maps-mbtiles-{archive_id}"
             )
             registered = decorator(get_tile)
-            target: Any = registered if registered is not None else get_tile
+            target: object = registered if registered is not None else get_tile
             target.logical_id = ident
             return target
 

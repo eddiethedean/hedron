@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Literal
+
+from typing_extensions import override
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.component import Component, NodeLike
@@ -36,7 +38,7 @@ class ScrollRegion(Component[ScrollRegionProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if axis not in ("block", "inline", "both"):
             raise ValueError("ScrollRegion axis must be block, inline, or both")
@@ -60,6 +62,7 @@ class ScrollRegion(Component[ScrollRegionProps]):
         )
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {
             "id": self.props.id,

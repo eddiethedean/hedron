@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Any
-
 from edron._internal import require_frame
 from hedron import Outcome, OutcomeKind
 
@@ -13,7 +11,7 @@ def success(message: str | None = None, *, status_code: int = 200) -> Outcome:
     return Outcome.success(**({"message": message} if message is not None else {}))
 
 
-def refresh(*targets: Any) -> Outcome:
+def refresh(*targets: object) -> Outcome:
     """Return a native refresh outcome for registered Edron views."""
     frame = require_frame("action")
     resolved: list[str] = []

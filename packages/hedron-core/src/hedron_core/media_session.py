@@ -5,9 +5,10 @@ from __future__ import annotations
 import math
 import time
 from dataclasses import dataclass, field
-from typing import Any, Literal, cast
+from typing import Literal, cast
 
 from hedron_core.compat import StrEnum
+from hedron_core.typing_support import dynamic_attribute
 
 __all__ = [
     "MediaChunk",
@@ -34,7 +35,7 @@ class MediaSessionBudget:
     max_bandwidth_bytes_per_second: int = 1_000_000
 
     def __post_init__(self) -> None:
-        raw_duration = cast(Any, self.max_duration_seconds)
+        raw_duration = cast(object, self.max_duration_seconds)
         if (
             isinstance(raw_duration, bool)
             or not isinstance(raw_duration, (int, float))
@@ -48,7 +49,7 @@ class MediaSessionBudget:
             "max_chunks",
             "max_bandwidth_bytes_per_second",
         ):
-            value = getattr(self, name)
+            value = dynamic_attribute(self, name)
             minimum = 0 if name == "cadence_ms" else 1
             if isinstance(value, bool) or not isinstance(value, int) or value < minimum:
                 qualifier = "non-negative" if minimum == 0 else "positive"
@@ -98,15 +99,15 @@ class MediaSession:
             raise PermissionError("media permission not granted")
         if self.state is not MediaSessionState.ACTIVE:
             raise RuntimeError(f"session not active: {self.state}")
-        raw_sequence = cast(Any, chunk.sequence)
+        raw_sequence = cast(object, chunk.sequence)
         if isinstance(raw_sequence, bool) or not isinstance(raw_sequence, int) or raw_sequence < 0:
             raise ValueError("chunk sequence must be a non-negative integer")
-        raw_timestamp = cast(Any, chunk.timestamp_ms)
+        raw_timestamp = cast(object, chunk.timestamp_ms)
         if isinstance(raw_timestamp, bool) or not isinstance(raw_timestamp, int):
             raise ValueError("chunk timestamp_ms must be an integer")
         if chunk.timestamp_ms < 0:
             raise ValueError("chunk timestamp_ms must be non-negative")
-        raw_content_type = cast(Any, chunk.content_type)
+        raw_content_type = cast(object, chunk.content_type)
         if not isinstance(raw_content_type, str) or not raw_content_type.strip():
             raise ValueError("chunk content_type is required")
         media_kind = (

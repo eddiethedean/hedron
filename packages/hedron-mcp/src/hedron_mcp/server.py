@@ -5,12 +5,13 @@ from __future__ import annotations
 import inspect
 import json
 import unicodedata
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass, field
-from typing import Any, cast
+from typing import Protocol, cast
 from urllib.parse import unquote, urlparse
 
 from hedron_core.typing_aliases import JsonObject, JsonValue
+from hedron_core.typing_support import dynamic_attribute
 from hedron_mcp.audit import McpAuditLog
 from hedron_mcp.bounds import BoundsError, McpBounds
 from hedron_mcp.compat import SDK_PIN, sdk_version
@@ -40,6 +41,16 @@ PrincipalResolver = Callable[[object], str | None]
 AuthzHook = Callable[..., None]
 TenantHook = Callable[..., None]
 ResourceReader = Callable[[str, str | None], Mapping[str, JsonValue] | str]
+
+
+class _JsonSchemaError(Protocol):
+    path: Iterable[object]
+    message: str
+
+
+class _JsonSchemaValidator(Protocol):
+    def iter_errors(self, instance: object) -> Iterable[_JsonSchemaError]: ...
+
 
 # Deny-by-default: only the documented Hedron resource URI scheme is Supported.
 _ALLOWED_RESOURCE_URI_SCHEMES = frozenset({"hedron"})
@@ -154,7 +165,7 @@ class McpProjection:
         if resource.uri in self._resources:
             raise ValueError(f"MCP resource already registered: {resource.uri!r}")
         self._resources[resource.uri] = resource
-        self.audit.emit(
+        _ignored = self.audit.emit(
             code="HED-MCP-REGISTER-RESOURCE",
             kind="registration",
             principal=None,
@@ -165,7 +176,7 @@ class McpProjection:
         if tool.name in self._tools:
             raise ValueError(f"MCP tool already registered: {tool.name!r}")
         self._tools[tool.name] = tool
-        self.audit.emit(
+        _ignored = self.audit.emit(
             code="HED-MCP-REGISTER-TOOL",
             kind="registration",
             principal=None,
@@ -173,16 +184,20 @@ class McpProjection:
         )
 
     def unregister_resource(self, uri: str) -> None:
-        self._resources.pop(uri, None)
+        _ignored = self._resources.pop(uri, None)
 
     def unregister_tool(self, name: str) -> None:
-        self._tools.pop(name, None)
+        _ignored = self._tools.pop(name, None)
 
     def consume_catalog(self, catalog: object) -> tuple[str, ...]:
         """Read catalog logical ids. Does not enable MCP or register tools."""
-        entries = getattr(catalog, "entries", {}) or {}
-        ids = tuple(sorted(str(key) for key in entries))
-        self.audit.emit(
+        entries = dynamic_attribute(catalog, "entries", {})
+        ids = (
+            tuple(sorted(str(key) for key in cast(Mapping[object, object], entries)))
+            if isinstance(entries, Mapping)
+            else ()
+        )
+        _ignored = self.audit.emit(
             code="HED-MCP-CATALOG-CONSUME",
             kind="registration",
             principal=None,
@@ -288,7 +303,7 @@ class McpProjection:
                 resource=resource,
                 tenant_id=tenant_id,
             )
-        self.audit.emit(
+        _ignored = self.audit.emit(
             code="HED-MCP-AUTHZ-OK",
             kind="authorization",
             principal=principal,
@@ -366,7 +381,7 @@ class McpProjection:
         if tool.mutate and not self.allow_mutations:
             raise AuthorizationError(
                 "Mutating MCP tools require explicit allow_mutations=True "
-                "(Experimental; excluded from Supported inventory)."
+                + "(Experimental; excluded from Supported inventory)."
             )
         validated = self._validate_tool_arguments(tool, arguments)
         try:
@@ -393,7 +408,10 @@ class McpProjection:
             raise RuntimeError("jsonschema is required to validate MCP tool arguments") from exc
         try:
             validator = Draft202012Validator(dict(schema))
-            errors = sorted(cast(Any, validator).iter_errors(payload), key=lambda e: list(e.path))
+            errors = sorted(
+                cast(_JsonSchemaValidator, cast(object, validator)).iter_errors(payload),
+                key=lambda error: tuple(str(part) for part in error.path),
+            )
         except SchemaError as exc:
             raise InvalidParamsError(
                 f"Tool {tool.name!r} has an invalid inputSchema: {exc.message}"
@@ -421,7 +439,7 @@ class McpProjection:
         if scheme not in _ALLOWED_RESOURCE_URI_SCHEMES:
             raise AuthorizationError(
                 f"MCP resource URI scheme {scheme!r} is excluded "
-                "(no arbitrary filesystem/URL projection)."
+                + "(no arbitrary filesystem/URL projection)."
             )
 
 
@@ -449,7 +467,7 @@ def mount_mcp(app: object, projection: McpProjection, *, path: str = "/mcp") -> 
     else:
         # Non-ASGI hosts / unit fixtures may attach the projection marker only.
         projection.mark_mounted(False)
-    projection.audit.emit(
+    _ignored = projection.audit.emit(
         code="HED-MCP-MOUNT",
         kind="registration",
         principal=None,

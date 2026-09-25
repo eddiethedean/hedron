@@ -49,7 +49,7 @@ Chart(spec=None, *, class_=None, **kwargs)
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `spec` | `ChartSpec | Mapping[str, Any] | None` | Schema-versioned chart specification; rendering without one raises `ValueError`. |
+| `spec` | `ChartSpec | Mapping[str, object] | None` | Schema-versioned chart specification; rendering without one raises `ValueError`. |
 | `class_` | `str | None` | Optional class on the `hedron-chart` host. |
 | `kwargs` | `object` | Forwarded to `ChartProps`; unknown keys are rejected. |
 

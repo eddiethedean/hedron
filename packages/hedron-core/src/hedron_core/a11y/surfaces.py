@@ -87,8 +87,7 @@ _TITLE = re.compile(r"<title>([^<]*)</title>", re.I)
 _LANG = re.compile(r"<html[^>]*\blang=(['\"])(.*?)\1", re.I)
 _DIR = re.compile(r"<html[^>]*\bdir=(['\"])(.*?)\1", re.I)
 _LANDMARK = re.compile(
-    r"<(header|main|nav|aside|footer)(\s|>)|"
-    r"<section\b([^>]*)>",
+    r"<(header|main|nav|aside|footer)(\s|>)|" + r"<section\b([^>]*)>",
     re.I,
 )
 _SECTION_NAMED = re.compile(
@@ -98,12 +97,12 @@ _SECTION_NAMED = re.compile(
 _HEADING = re.compile(r"<h([1-6])\b", re.I)
 _SKIP = re.compile(
     r"(?:"
-    r'href=["\']#[^"\']*["\'][^>]*>\s*skip(?:\s+to\b|\s+navigation\b|\s+main\b|\s+content\b)'
-    r"|"
-    r'aria-label=["\'][^"\']*skip(?:\s+to\b|\s+navigation\b|\s+main\b|\s+content\b)[^"\']*["\']'
-    r"|"
-    r'class=["\'][^"\']*\bskip-?link\b[^"\']*["\']'
-    r")",
+    + r'href=["\']#[^"\']*["\'][^>]*>\s*skip(?:\s+to\b|\s+navigation\b|\s+main\b|\s+content\b)'
+    + r"|"
+    + r'aria-label=["\'][^"\']*skip(?:\s+to\b|\s+navigation\b|\s+main\b|\s+content\b)[^"\']*["\']'
+    + r"|"
+    + r'class=["\'][^"\']*\bskip-?link\b[^"\']*["\']'
+    + r")",
     re.I,
 )
 

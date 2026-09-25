@@ -16,7 +16,7 @@ def _cmd_accel_status(args: argparse.Namespace) -> int:
     if native_disabled_by_env():
         print(
             f"hedron-native {native_version}: disabled "
-            "(HEDRON_NATIVE_DISABLE; pure-Python serializer active)"
+            + "(HEDRON_NATIVE_DISABLE; pure-Python serializer active)"
         )
         return 0
     status = "loaded" if native_available() else "installed (fallback pure-Python)"

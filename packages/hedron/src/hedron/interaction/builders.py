@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Any
 
 from hedron.interaction._core import FragmentRegion, InteractionResult, OobUpdate
 from hedron_core.component import NodeLike
@@ -22,7 +21,7 @@ def swap(
     *,
     toast: str | NodeLike | OobUpdate | None = None,
     oob: Sequence[OobUpdate | NodeLike] = (),
-    **kwargs: Any,
+    **kwargs: object,
 ) -> InteractionResult:
     """Build a primary-fragment :class:`InteractionResult` (optional toast / OOB)."""
     updates = [_coerce_oob(item) for item in oob]
@@ -43,7 +42,7 @@ def swap(
 def swap_oob(
     content: NodeLike | None,
     *oob: OobUpdate | NodeLike,
-    **kwargs: Any,
+    **kwargs: object,
 ) -> InteractionResult:
     """Primary fragment plus one or more out-of-band updates."""
     existing = list(kwargs.pop("oob", ()) or ())
@@ -54,13 +53,13 @@ def swap_oob(
 def retarget(
     content: NodeLike | None,
     region: FragmentRegion | str,
-    **kwargs: Any,
+    **kwargs: object,
 ) -> InteractionResult:
     """Return content with an approved ``HX-Retarget`` selector."""
     if isinstance(region, FragmentRegion):
         selector = region.selector
         # Prefer the CSS selector for HX-Target agreement when id differs from selector.
-        kwargs.setdefault("region_id", selector)
+        _ignored = kwargs.setdefault("region_id", selector)
     else:
         selector = str(region)
     return InteractionResult(content=content, retarget=selector, **kwargs)

@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 import math
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping, MutableMapping, Sequence
 from dataclasses import dataclass
-from typing import Any, Generic, Literal, Protocol, TypeVar
+from typing import Generic, Literal, Protocol, TypeVar, cast
 
-from fastapi import Depends, Request
+from fastapi import Request
+from fastapi.params import Depends as DependsParam
 from pydantic import BaseModel
 
 from hedron.app.form_commands import SafeLocalPath
@@ -16,11 +17,13 @@ from hedron.handles import ActionHandle
 from hedron.security.auth_rate_limit import AuthRateLimiter, auth_rate_limit_dependency
 from hedron.security.login_csrf import LOGIN_CSRF_KEY, validate_login_csrf
 from hedron.security.redirects import redirect_local
+from hedron_core.app_state import request_form
 from hedron_core.bundles import FeatureBundle, FeatureRequirement
 from hedron_core.catalog import PackageProjection, ProjectionCapability
 from hedron_core.codes import HED_AUTHFLOW_0001, HED_AUTHFLOW_0002, HED_AUTHFLOW_0003
 from hedron_core.diagnostics import error
 from hedron_core.htmx_contract import is_local_path
+from hedron_core.typing_support import dynamic_attribute
 
 __all__ = [
     "AuthDenied",
@@ -36,6 +39,22 @@ PrincipalT = TypeVar("PrincipalT")
 SessionT = TypeVar("SessionT")
 
 SessionRotationPolicy = Literal["on_login", "never"]
+
+
+class _RequestWithSession(Protocol):
+    session: MutableMapping[str, object]
+
+
+class _FormHandle(Protocol):
+    def form(self, *, submit_label: str) -> object: ...
+
+
+class _SessionClear(Protocol):
+    def __call__(self) -> None: ...
+
+
+def _request_session(request: object) -> MutableMapping[str, object]:
+    return cast(_RequestWithSession, request).session
 
 
 class _AuthFlowApp(Protocol):
@@ -56,7 +75,7 @@ class _AuthFlowApp(Protocol):
         fallback: str | None = None,
         dependencies: Sequence[object] | None = None,
         outcomes: object | None = None,
-    ) -> Callable[[Callable[..., object]], ActionHandle[Any, Any]]: ...
+    ) -> Callable[[Callable[..., object]], ActionHandle[object, object]]: ...
 
 
 @dataclass(frozen=True, slots=True)
@@ -167,17 +186,12 @@ class SessionAuthFlow(Generic[CredentialsT, PrincipalT, SessionT]):
         flow = self
 
         def _dependency(request: Request) -> PrincipalT | None:
-            session = getattr(request, "session", None)
-            if session is None:
-                return None
-            get = getattr(session, "get", None)
-            if not callable(get):
-                return None
-            stored = get(flow.session_key)
+            session = _request_session(request)
+            stored = session.get(flow.session_key)
             if stored is None:
                 return None
             try:
-                return flow.load_principal(stored)  # type: ignore[arg-type]
+                return flow.load_principal(cast(SessionT, stored))
             except Exception:  # noqa: BLE001
                 return None
 
@@ -186,35 +200,26 @@ class SessionAuthFlow(Generic[CredentialsT, PrincipalT, SessionT]):
     def _rotate_session(self, request: object) -> None:
         if self.rotation != "on_login":
             return
-        session = getattr(request, "session", None)
-        if session is None:
-            raise error(
-                HED_AUTHFLOW_0003,
-                title="Session rotation unavailable",
-                explanation="rotation='on_login' requires a mutable request session.",
-                remediation="Enable Hedron sessions or set rotation='never'.",
-            )
-        clear = getattr(session, "clear", None)
-        if not callable(clear):
+        session = _request_session(request)
+        clear_candidate = dynamic_attribute(session, "clear")
+        if not callable(clear_candidate):
             raise error(
                 HED_AUTHFLOW_0003,
                 title="Session rotation unavailable",
                 explanation="rotation='on_login' requires session.clear().",
                 remediation="Use a session backend that supports clear(), or set rotation='never'.",
             )
-        csrf = None
-        get = getattr(session, "get", None)
-        if callable(get):
-            csrf = get(LOGIN_CSRF_KEY)
-        clear()
-        if csrf is not None and hasattr(session, "__setitem__"):
+        csrf = session.get(LOGIN_CSRF_KEY)
+        clear: object = clear_candidate
+        cast(_SessionClear, clear)()
+        if csrf is not None:
             session[LOGIN_CSRF_KEY] = csrf
 
     def to_bundle(self) -> FeatureBundle:
         flow = self
-        rate_dep = Depends(auth_rate_limit_dependency(flow._limiter))
+        rate_dep = DependsParam(auth_rate_limit_dependency(flow._limiter))
 
-        def _ensure_login_command(app: _AuthFlowApp) -> ActionHandle[Any, Any]:
+        def _ensure_login_command(app: _AuthFlowApp) -> ActionHandle[object, object]:
             if flow.login_command is not None:
                 return flow.login_command  # type: ignore[return-value]
 
@@ -223,8 +228,8 @@ class SessionAuthFlow(Generic[CredentialsT, PrincipalT, SessionT]):
             credentials_model = flow.credentials
 
             async def login_command(data: CredentialsT, request: Request) -> object:
-                session = request.session
-                form = await request.form()
+                session = _request_session(request)
+                form = await request_form(request)
                 raw = form.get(LOGIN_CSRF_KEY)
                 token = str(raw) if isinstance(raw, str) else None
                 # Fail closed: login CSRF is required (router CSRF is separate).
@@ -283,16 +288,26 @@ class SessionAuthFlow(Generic[CredentialsT, PrincipalT, SessionT]):
 
             @app.page(flow.login_path, name=f"{flow.provider}-login")
             def login_screen(request: Request) -> object:
-                generated = login_handle.form(submit_label="Sign in")
-                children = list(getattr(generated, "_children", ()) or ())
-                html_attrs = dict(getattr(generated, "_html_attrs", {}) or {})
+                generated = cast(_FormHandle, login_handle).form(submit_label="Sign in")
+                children_value = dynamic_attribute(generated, "_children", ())
+                children = (
+                    list(cast(Sequence[object], children_value))
+                    if isinstance(children_value, Sequence)
+                    else []
+                )
+                attrs_value = dynamic_attribute(generated, "_html_attrs", {})
+                html_attrs = (
+                    {str(key): value for key, value in attrs_value.items()}
+                    if isinstance(attrs_value, Mapping)
+                    else {}
+                )
                 from hedron import Page
 
                 return Page(
                     Stack(
                         Text("Sign in"),
                         Form(
-                            LoginCsrfField(session=request.session),
+                            LoginCsrfField(session=_request_session(request)),
                             *children,
                             action=login_handle,
                             method="post",
@@ -311,10 +326,7 @@ class SessionAuthFlow(Generic[CredentialsT, PrincipalT, SessionT]):
         def logout_command_factory(app: _AuthFlowApp) -> object:
             @app.action(flow.logout_path, name=f"{flow.provider}-logout", fallback="/")
             def logout_command(request: Request) -> object:
-                session = request.session
-                clear = getattr(session, "clear", None)
-                if callable(clear):
-                    clear()
+                _request_session(request).clear()
                 mark_authenticated(request, value=False)
                 return redirect_local("/")
 

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
@@ -100,7 +99,7 @@ class _FakeRedis:
         del pattern
         return list(self._data)
 
-    def scan_iter(self, *, match: str | None = None, count: int | None = None) -> Any:
+    def scan_iter(self, *, match: str | None = None, count: int | None = None) -> object:
         del count
         prefix = (match or "*").rstrip("*")
         for key in list(self._data):

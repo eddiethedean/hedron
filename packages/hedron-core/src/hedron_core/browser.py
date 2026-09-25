@@ -16,7 +16,6 @@ import time
 from collections.abc import Mapping, MutableMapping
 from copy import deepcopy
 from dataclasses import dataclass, field
-from typing import Any
 
 from hedron_core.typing_aliases import JsonValue
 
@@ -254,8 +253,8 @@ class BrowserStorage:
     ) -> None:
         if not isinstance(namespace, str) or not namespace:
             raise ValueError("BrowserStorage namespace must be a non-empty string")
-        raw_max_entries: Any = max_entries
-        raw_max_bytes: Any = max_bytes
+        raw_max_entries: object = max_entries
+        raw_max_bytes: object = max_bytes
         if (
             isinstance(raw_max_entries, bool)
             or not isinstance(raw_max_entries, int)
@@ -285,7 +284,7 @@ class BrowserStorage:
                 self._data.clear()
                 raise StorageQuotaExceeded(
                     f"BrowserStorage namespace {self.namespace!r} "
-                    f"exceeds max_bytes={self.max_bytes}"
+                    + f"exceeds max_bytes={self.max_bytes}"
                 )
 
     def forbid_auth_use(self) -> None:
@@ -327,7 +326,7 @@ class BrowserStorage:
             if not isinstance(value, schema):
                 raise TypeError(
                     "BrowserStorage value type "
-                    f"{type(value).__name__} does not match schema {schema!r}"
+                    + f"{type(value).__name__} does not match schema {schema!r}"
                 )
             return
         if not isinstance(value, Mapping):
@@ -397,7 +396,7 @@ class BrowserStorage:
             )
 
     def delete(self, key: str) -> None:
-        self._data.pop(key, None)
+        _ignored = self._data.pop(key, None)
 
     def clear(self) -> None:
         self._data.clear()

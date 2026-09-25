@@ -5,6 +5,8 @@ from __future__ import annotations
 import re
 from typing import ClassVar
 
+from typing_extensions import override
+
 from hedron_core.builtins._base import collect_children
 from hedron_core.codes import HED_EXT_0010
 from hedron_core.component import Component, NodeLike
@@ -87,6 +89,7 @@ class SseRegion(Component[SseRegionProps]):
         self._id = id
         self._class = class_
 
+    @override
     def render(self) -> NodeLike:
         require_htmx_extension("sse")
         attrs: dict[str, HtmlAttrValue] = {
@@ -156,6 +159,7 @@ class SseTrigger(Component[SseTriggerProps]):
         )
         self._children = collect_children(*children)
 
+    @override
     def render(self) -> NodeLike:
         require_htmx_extension("sse")
         attrs: dict[str, HtmlAttrValue] = HtmxAttrs(

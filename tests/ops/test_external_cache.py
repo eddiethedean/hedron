@@ -10,7 +10,6 @@ from __future__ import annotations
 import math
 import os
 import time
-from typing import Any
 from uuid import uuid4
 
 import pytest
@@ -21,7 +20,7 @@ from hedron_core.redis_cache import RedisCacheBackend
 class _StubPipeline:
     def __init__(self, client: _StubRedis) -> None:
         self._client = client
-        self._ops: list[tuple[str, tuple[Any, ...], dict[str, Any]]] = []
+        self._ops: list[tuple[str, tuple[object, ...], dict[str, object]]] = []
 
     def set(
         self, key: str, value: str, ex: int | None = None, px: int | None = None
@@ -49,8 +48,8 @@ class _StubPipeline:
         self._ops.append(("expire", (key, seconds), {}))
         return self
 
-    def execute(self) -> list[Any]:
-        results: list[Any] = []
+    def execute(self) -> list[object]:
+        results: list[object] = []
         for name, args, kwargs in self._ops:
             results.append(getattr(self._client, name)(*args, **kwargs))
         self._ops.clear()
@@ -131,7 +130,7 @@ class _StubRedis:
         return True
 
 
-def _client() -> Any:
+def _client() -> object:
     try:
         import fakeredis
 

@@ -33,7 +33,7 @@ The repository supports CPython 3.10–3.14 and `uv`. After `uv sync`, the stand
 ```bash
 uv run ruff format --check packages tests examples
 uv run ruff check packages tests examples
-uv run pyright
+uv run basedpyright
 uv run pytest -q
 ```
 
@@ -43,7 +43,7 @@ For a docs-only change, sync the docs group and run `uv run --group docs mkdocs 
 
 ## Shared suites and their boundaries
 
-`scripts/ci_checks.sh` is the single command source for the repository's test, coverage, workbench, docs, typing, quality, browser, evidence, packaging, and local OpenWiki suites. The test suite runs strict pytest configuration and markers; coverage runs branch-aware tests and checks independent floors of 73% for `hedron` and 83% for `hedron-core`; quality runs Ruff formatting/linting, workspace and package Pyright, release-contract checks, docs checks, package verification, and optionally wheel smoke; the docs suite runs generated-content and documentation checks before strict MkDocs. GitHub Actions calls the workflow suites but does not call the local OpenWiki suite.
+`scripts/ci_checks.sh` is the single command source for the repository's test, coverage, workbench, docs, typing, quality, browser, evidence, packaging, and local OpenWiki suites. The test suite runs strict pytest configuration and markers; coverage runs branch-aware tests and checks independent floors of 73% for `hedron` and 83% for `hedron-core`; quality runs Ruff formatting/linting, BasedPyright in `all` mode with a complete `Any` ban, release-contract checks, docs checks, package verification, and optionally wheel smoke; the docs suite runs generated-content and documentation checks before strict MkDocs. GitHub Actions calls the workflow suites but does not call the local OpenWiki suite.
 
 The OpenWiki suite is a deterministic, read-only documentation gate. It compares
 the current model-visible source fingerprint with the generated page manifest,
@@ -74,7 +74,7 @@ For a runtime-package change, the smallest high-signal sequence is the relevant 
 bash scripts/ci_checks.sh typing --python 3.12
 ```
 
-The root Pyright configuration analyzes the workspace at the Python 3.10 floor in strict mode. It includes each shipped package and treats a broad set of unknown-type, unused, deprecated, and incompatible-override findings as warnings; the quality script additionally runs package typing inventory checks and a warning-enabled package pass.
+The root BasedPyright configuration analyzes every shipped package at the Python 3.10 floor in `all` mode. Every diagnostic is fatal. `reportAny` rejects inferred `Any`, while `reportExplicitAny` rejects direct use of the `Any` type; the package inventory check keeps its include list aligned with the workspace.
 
 ## Public API and release metadata
 

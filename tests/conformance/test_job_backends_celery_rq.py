@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 from hedron_core.jobs import JobBackend, JobState
 from hedron_core.jobs_celery import CeleryJobBackend
 from hedron_core.jobs_rq import RQJobBackend
@@ -96,25 +94,25 @@ class _SharedRedis:
 
 
 class _FakeCelery:
-    def send_task(self, *args: Any, **kwargs: Any) -> None:
+    def send_task(self, *args: object, **kwargs: object) -> None:
         return None
 
     class control:
         @staticmethod
-        def revoke(*args: Any, **kwargs: Any) -> None:
+        def revoke(*args: object, **kwargs: object) -> None:
             return None
 
 
 class _FakeQueue:
     def __init__(self) -> None:
-        self.enqueued: list[tuple[Any, ...]] = []
+        self.enqueued: list[tuple[object, ...]] = []
 
-    def enqueue(self, *args: Any, **kwargs: Any) -> Any:
+    def enqueue(self, *args: object, **kwargs: object) -> object:
         self.enqueued.append(args)
         return type("Job", (), {"cancel": lambda self: None})()
 
 
-def _redis() -> Any:
+def _redis() -> object:
     return _SharedRedis()
 
 
@@ -161,7 +159,7 @@ def test_celery_idempotency_key() -> None:
 
 
 def test_rq_backend_submit_get_cancel_with_registry() -> None:
-    def demo_task(payload: dict[str, Any]) -> None:
+    def demo_task(payload: dict[str, object]) -> None:
         del payload
 
     queue = _FakeQueue()

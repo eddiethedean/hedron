@@ -6,17 +6,18 @@ import functools
 import inspect
 import secrets
 from collections.abc import Awaitable, Callable, Sequence
-from contextlib import contextmanager
+from contextlib import AbstractContextManager, contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Literal, ParamSpec, TypedDict, TypeVar, cast
+from typing import Literal, ParamSpec, Protocol, TypedDict, TypeVar, cast
 
 from fastapi import FastAPI, params
 from fastapi.routing import APIRouter
 from starlette.datastructures import State
 from starlette.requests import Request
 from starlette.responses import Response
+from typing_extensions import override
 
 from hedron.async_utils import invoke
 from hedron.fastapi_compat import cached_openapi
@@ -27,16 +28,44 @@ from hedron.security.csrf import prepare_csrf_from_request, validate_csrf
 from hedron.security.policy import SecurityPolicy
 from hedron_core.addressable import AddressableDescriptor
 from hedron_core.alpine import BrowserPlanClosure
+from hedron_core.app_state import (
+    request_context_state,
+    request_state,
+    state_value,
+)
 from hedron_core.identifiers import component_type_id
 from hedron_core.interaction import FragmentRegion
 from hedron_core.registry import register_route
+from hedron_core.registry.builder import RegistryBuilder
 from hedron_core.rendering import RenderMode
 from hedron_core.request_context import current_request as _portable_current_request
+from hedron_core.typing_support import dynamic_attribute, signature_return_annotation
 
 P = ParamSpec("P")
 R = TypeVar("R")
 
 IdempotencyMode = Literal["off", "optional", "required"]
+
+
+class _RuntimeWithRegistry(Protocol):
+    registry: RegistryBuilder
+
+    def activate(self) -> AbstractContextManager[object]: ...
+
+
+class _SecurityPolicyWithStrategy(Protocol):
+    def resolve_csrf_strategy(self) -> object: ...
+
+
+class _ReplayableResponse(Protocol):
+    body: bytes | None
+    content: object
+    media_type: str | None
+    raw_headers: Sequence[tuple[object, object]]
+    status_code: int
+
+    def render(self, content: object) -> bytes: ...
+
 
 __all__ = ["HedronRouter", "current_request"]
 
@@ -57,7 +86,7 @@ def _replay_user_identity(user: object | None) -> str:
         return "anonymous"
     for name in ("identity", "username", "user_id", "id", "display_name"):
         try:
-            value = getattr(user, name, None)
+            value = dynamic_attribute(user, name)
         except (AttributeError, NotImplementedError, TypeError, ValueError):
             value = None
         text = str(value).strip() if value is not None else ""
@@ -76,22 +105,22 @@ def _anonymous_replay_binding(request: Request[State]) -> str:
     use a request-local nonce rather than the process-wide ``anon:none``
     sentinel, which would let unrelated callers share cached responses.
     """
-    app = request.scope.get("app")
-    app_state = getattr(app, "state", None) if app is not None else None
-    policy = getattr(app_state, "hedron_security", None)
-    cookie_name = getattr(policy, "csrf_cookie_name", "hedron_csrf")
-    strategy = policy.resolve_csrf_strategy() if policy is not None else None
-    candidate = getattr(strategy, "cookie_name", None)
+    policy = state_value(request_state(request), "hedron_security")
+    cookie_name = dynamic_attribute(policy, "csrf_cookie_name", "hedron_csrf")
+    strategy: object | None = None
+    if policy is not None:
+        strategy = cast(_SecurityPolicyWithStrategy, policy).resolve_csrf_strategy()
+    candidate = dynamic_attribute(strategy, "cookie_name")
     if isinstance(candidate, str) and candidate:
         cookie_name = candidate
-    cookies = getattr(request, "cookies", {}) or {}
+    cookies = request.cookies
     binding = cookies.get(cookie_name) if isinstance(cookie_name, str) else None
     if isinstance(binding, str) and binding:
         return binding
     if strategy is not None and request.method.upper() not in _SAFE_METHODS:
-        header_name = getattr(strategy, "header_name", "")
+        header_name = dynamic_attribute(strategy, "header_name", "")
         header_binding = request.headers.get(header_name) if isinstance(header_name, str) else None
-        form_binding = getattr(request.state, "hedron_csrf_form_token", None)
+        form_binding = state_value(request_context_state(request), "hedron_csrf_form_token")
         binding = form_binding or header_binding
         if isinstance(binding, str) and binding:
             # _wrap_endpoint runs CSRF validation before replay claiming, so this
@@ -192,7 +221,7 @@ def _annotate_callable(
         _set_hedron_attr(target, "_hedron_view_logical_id", view_logical_id)
 
 
-def _resolve_request(args: tuple[Any, ...], kwargs: dict[str, Any]) -> Request[State] | None:
+def _resolve_request(args: tuple[object, ...], kwargs: dict[str, object]) -> Request[State] | None:
     request = current_request.get()
     if request is not None:
         return request
@@ -208,8 +237,8 @@ def _resolve_request(args: tuple[Any, ...], kwargs: dict[str, Any]) -> Request[S
 async def _enforce_csrf(request: Request[State], *, require_csrf: bool) -> None:
     if not require_csrf or request.method.upper() in _SAFE_METHODS:
         return
-    policy: SecurityPolicy = getattr(
-        request.app.state, "hedron_security", SecurityPolicy.from_name("standard")
+    policy = state_value(
+        request_state(request), "hedron_security", SecurityPolicy.from_name("standard")
     )
     await prepare_csrf_from_request(request, policy)
     validate_csrf(request, policy)
@@ -425,11 +454,12 @@ def _complete_replay(guard: _ReplayGuard | None, response: Response) -> None:
     if isinstance(response, StreamingResponse):
         _abort_replay(guard)
         return
-    body = getattr(response, "body", None)
-    if body is None and hasattr(response, "render"):
+    typed_response = cast(_ReplayableResponse, cast(object, response))
+    body = typed_response.body
+    if body is None:
         # Materialize Starlette Response body when not yet sent.
         try:
-            body = response.render(getattr(response, "content", b""))
+            body = typed_response.render(typed_response.content)
         except (AttributeError, TypeError, ValueError, RuntimeError):
             body = b""
     if body is None:
@@ -438,8 +468,8 @@ def _complete_replay(guard: _ReplayGuard | None, response: Response) -> None:
         body = body.tobytes()
     if isinstance(body, str):
         body = body.encode("utf-8")
-    media_type = getattr(response, "media_type", None) or "text/html"
-    raw_headers = getattr(response, "raw_headers", ())
+    media_type = typed_response.media_type or "text/html"
+    raw_headers = typed_response.raw_headers
     headers = tuple(
         (name.decode("latin-1"), value.decode("latin-1"))
         for name, value in raw_headers
@@ -447,9 +477,9 @@ def _complete_replay(guard: _ReplayGuard | None, response: Response) -> None:
         and isinstance(value, bytes)
         and name.lower() not in {b"set-cookie", b"clear-site-data"}
     )
-    status = int(getattr(response, "status_code", 200) or 200)
+    status = typed_response.status_code or 200
     if _replay_store_accepts_headers(guard.store):
-        guard.store.complete(
+        _ignored = guard.store.complete(
             key=guard.key,
             scope=guard.scope_key,
             fingerprint=guard.fingerprint,
@@ -459,7 +489,7 @@ def _complete_replay(guard: _ReplayGuard | None, response: Response) -> None:
             headers=headers,
         )
     else:
-        guard.store.complete(
+        _ignored = guard.store.complete(
             key=guard.key,
             scope=guard.scope_key,
             fingerprint=guard.fingerprint,
@@ -470,7 +500,7 @@ def _complete_replay(guard: _ReplayGuard | None, response: Response) -> None:
 
 
 def _apply_fastapi_signature(
-    endpoint: Callable[..., Any],
+    endpoint: Callable[..., object],
     fn: Callable[..., object],
 ) -> None:
     """Preserve FastAPI-visible annotations/signature after wrapping."""
@@ -478,7 +508,7 @@ def _apply_fastapi_signature(
 
     # Resolve annotations in the original function's globals so Depends survives wrapping.
     try:
-        hints = typing.get_type_hints(fn, include_extras=True)
+        hints = cast(dict[str, object], typing.get_type_hints(fn, include_extras=True))
     except (NameError, TypeError, AttributeError, RecursionError):
         # Nested locals / unresolved forward refs — FastAPI still gets a usable signature.
         hints = {}
@@ -489,17 +519,18 @@ def _apply_fastapi_signature(
         # replacing them with the original type hints silently turns native
         # query models back into request bodies.
         param.replace(annotation=hints[name])
-        if isinstance(param.annotation, str) and name in hints
+        if isinstance(dynamic_attribute(param, "annotation"), str) and name in hints
         else param
         for name, param in sig.parameters.items()
     ]
     # FastAPI reads __signature__ from wrapped callables; not on Callable typing.
+    return_annotation = signature_return_annotation(sig)
     endpoint.__signature__ = sig.replace(  # type: ignore[attr-defined]
         parameters=params,
         return_annotation=(
-            hints.get("return", sig.return_annotation)
-            if isinstance(sig.return_annotation, str)
-            else sig.return_annotation
+            hints.get("return", return_annotation)
+            if isinstance(return_annotation, str)
+            else return_annotation
         ),
     )
 
@@ -517,7 +548,7 @@ def _wrap_endpoint(
     browser_closure: BrowserPlanClosure | None = None,
 ) -> Callable[..., Response | Awaitable[Response]]:
     @functools.wraps(fn)
-    async def endpoint(*args: Any, **kwargs: Any) -> Response:
+    async def endpoint(*args: object, **kwargs: object) -> Response:
         request = _resolve_request(args, kwargs)
         if request is None:
             raise RuntimeError("Hedron endpoints require an active Request")
@@ -526,7 +557,7 @@ def _wrap_endpoint(
         if capability:
             from hedron.capabilities import enforce_capability
 
-            enforce_capability(request, capability)
+            _ignored = enforce_capability(request, capability)
         replay_guard: _ReplayGuard | None = None
         if idempotency and idempotency != "off":
             begun = await _begin_replay(request, fn, idempotency=idempotency)
@@ -566,8 +597,8 @@ def _wrap_endpoint(
 class HedronRouter(APIRouter):
     """APIRouter with Hedron page/component/action decorators."""
 
-    def __init__(self, *args: Any, provenance: str = "", **kwargs: Any) -> None:
-        kwargs.setdefault("route_class", HedronRoute)
+    def __init__(self, *args: object, provenance: str = "", **kwargs: object) -> None:
+        _ignored = kwargs.setdefault("route_class", HedronRoute)
         super().__init__(*args, **kwargs)
         self.hedron_provenance = provenance or str(self.prefix or "")
         self._hedron_host_app: object | None = None
@@ -579,11 +610,11 @@ class HedronRouter(APIRouter):
     @contextmanager
     def _runtime_scope(self):
         host = self._hedron_host_app
-        runtime = getattr(host, "_hedron_runtime", None)
+        runtime = dynamic_attribute(host, "_hedron_runtime")
         if runtime is None:
             yield
             return
-        with runtime.activate():
+        with cast(_RuntimeWithRegistry, runtime).activate():
             yield
 
     def _fail_closed_late_scoped(self) -> None:
@@ -601,13 +632,14 @@ class HedronRouter(APIRouter):
     def attach_host_app(self, app: object) -> None:
         """Associate this router with the application that owns registration state."""
         self._hedron_host_app = app
-        runtime = getattr(app, "_hedron_runtime", None)
+        runtime = dynamic_attribute(app, "_hedron_runtime")
         if runtime is not None:
             from hedron_core.registry.builder import bind_compatibility_builder
 
-            bind_compatibility_builder(runtime.registry)
+            bind_compatibility_builder(cast(_RuntimeWithRegistry, runtime).registry)
 
-    def add_api_route(self, *args: Any, **kwargs: Any) -> None:  # type: ignore[override]  # FastAPI parent kwargs are version-sensitive; keep *args/**kwargs.
+    @override
+    def add_api_route(self, *args: object, **kwargs: object) -> None:  # type: ignore[override]  # FastAPI parent kwargs are version-sensitive; keep *args/**kwargs.
         self._fail_closed_late()
         super().add_api_route(*args, **kwargs)
         if self.routes:
@@ -618,19 +650,20 @@ class HedronRouter(APIRouter):
                 self.hedron_provenance or self.prefix,
             )
 
-    def include_router(self, router: Any, *args: Any, **kwargs: Any) -> None:  # type: ignore[override]  # FastAPI parent kwargs are version-sensitive; keep *args/**kwargs.
+    @override
+    def include_router(self, router: object, *args: object, **kwargs: object) -> None:  # type: ignore[override]  # FastAPI parent kwargs are version-sensitive; keep *args/**kwargs.
         self._fail_closed_late()
         if isinstance(router, HedronRouter) and self._hedron_host_app is not None:
             router.attach_host_app(self._hedron_host_app)
         super().include_router(router, *args, **kwargs)
 
-    def _register_route_or_rollback(self, **kwargs: Any) -> None:
+    def _register_route_or_rollback(self, **kwargs: object) -> None:
         try:
             with self._runtime_scope():
                 register_route(**kwargs)
         except Exception:
             if self.routes:
-                self.routes.pop()
+                _ignored = self.routes.pop()
             raise
 
     def page(
@@ -645,7 +678,7 @@ class HedronRouter(APIRouter):
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         allow_undeclared_targets: bool = False,
         browser_closure: BrowserPlanClosure | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> Callable[[Callable[P, R]], Callable[P, R]]:
         def decorator(fn: Callable[P, R]) -> Callable[P, R]:
             from hedron.responses import PageResponse
@@ -714,7 +747,7 @@ class HedronRouter(APIRouter):
         allow_undeclared_targets: bool = False,
         _route_kind: str = "component",
         browser_closure: BrowserPlanClosure | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> Callable[[Callable[P, R]], Callable[P, R]]:
         def decorator(fn: Callable[P, R]) -> Callable[P, R]:
             from hedron.responses import FragmentResponse
@@ -785,7 +818,7 @@ class HedronRouter(APIRouter):
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         allow_undeclared_targets: bool = False,
         browser_closure: BrowserPlanClosure | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> Callable[[Callable[P, R]], Callable[P, R]]:
         """Canonical view spelling over the existing safe fragment transport."""
         return self._view_route(
@@ -816,7 +849,7 @@ class HedronRouter(APIRouter):
         allow_undeclared_targets: bool = False,
         capability: str | None = None,
         idempotency: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> Callable[[Callable[P, R]], Callable[P, R]]:
         verb_list = list(methods or [method])
 
@@ -900,7 +933,7 @@ class HedronRouter(APIRouter):
         tags: list[str | Enum] | None = None,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         allow_undeclared_targets: bool = False,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         from hedron.responses import FragmentResponse
 

@@ -7,7 +7,9 @@ import math
 import random
 import secrets
 from dataclasses import dataclass, field
-from typing import Any, Literal, cast
+from typing import Literal, cast
+
+from hedron_core.typing_support import dynamic_attribute, set_dynamic_attribute
 
 __all__ = [
     "CspReporting",
@@ -59,19 +61,19 @@ def new_nonce() -> NonceContext:
     return NonceContext()
 
 
-def bind_nonce(request: Any, nonce: NonceContext | None = None) -> NonceContext:
+def bind_nonce(request: object, nonce: NonceContext | None = None) -> NonceContext:
     ctx = nonce or new_nonce()
-    scope = getattr(request, "state", None)
+    scope = dynamic_attribute(request, "state")
     if scope is not None:
-        scope.hedron_csp_nonce = ctx.value
+        set_dynamic_attribute(scope, "hedron_csp_nonce", ctx.value)
     return ctx
 
 
-def nonce_for_request(request: Any) -> str | None:
-    scope = getattr(request, "state", None)
+def nonce_for_request(request: object) -> str | None:
+    scope = dynamic_attribute(request, "state")
     if scope is None:
         return None
-    value = getattr(scope, "hedron_csp_nonce", None)
+    value = dynamic_attribute(scope, "hedron_csp_nonce")
     return str(value) if value else None
 
 
@@ -132,7 +134,7 @@ def ingest_csp_report(
     *,
     content_type: str | None,
     reporting: CspReporting | None = None,
-) -> dict[str, Any] | list[dict[str, Any]] | None:
+) -> dict[str, object] | list[dict[str, object]] | None:
     """Parse and redact a CSP violation report. Never mutates policy."""
     reporting = reporting or CspReporting()
     if reporting.sample_rate < 1.0:
@@ -155,7 +157,7 @@ def ingest_csp_report(
     if ctype == "application/reports+json":
         if not isinstance(payload, list):
             return None
-        reports: list[dict[str, Any]] = []
+        reports: list[dict[str, object]] = []
         for item_value in cast(list[object], payload):
             if not isinstance(item_value, dict):
                 continue
@@ -164,16 +166,16 @@ def ingest_csp_report(
                 continue
             report = item.get("body")
             if isinstance(report, dict):
-                reports.append(_normalize_csp_report(cast(dict[str, Any], report)))
+                reports.append(_normalize_csp_report(cast(dict[str, object], report)))
         return reports
     payload_mapping = cast(dict[str, object], payload) if isinstance(payload, dict) else {}
     report = payload_mapping.get("csp-report")
     if not isinstance(report, dict):
         report = payload_mapping
-    return _normalize_csp_report(cast(dict[str, Any], report))
+    return _normalize_csp_report(cast(dict[str, object], report))
 
 
-def _normalize_csp_report(report: dict[str, Any]) -> dict[str, Any]:
+def _normalize_csp_report(report: dict[str, object]) -> dict[str, object]:
     status_raw = report.get("status-code", report.get("statusCode"))
     status_code: int | None
     try:

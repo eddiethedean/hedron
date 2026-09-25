@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, cast
+from typing import cast
+
+from typing_extensions import override
 
 from hedron_core.auto.factories import is_tabular
 from hedron_core.auto.inspect import inspect_data
@@ -24,7 +26,7 @@ class Auto(Component[AutoProps]):
     props_type = AutoProps
     logical_name = "Auto"
 
-    def __init__(self, value: object = None, *, as_: str | None = None, **kwargs: Any) -> None:
+    def __init__(self, value: object = None, *, as_: str | None = None, **kwargs: object) -> None:
         super().__init__(AutoProps(as_=as_, **kwargs))
         self._value = value
         self._resolved: NodeLike | None = None
@@ -110,6 +112,7 @@ class Auto(Component[AutoProps]):
         self._resolved = selected_spec.factory(cast(object, value))
         return self._resolved
 
+    @override
     def render(self) -> NodeLike:
         # Return the resolved Component/NodeLike so the renderer owns identity,
         # cycle detection, and diagnostics (do not call child .render() here).

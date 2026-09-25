@@ -173,7 +173,7 @@ def authorize_htmx_target(
     if is_htmx and target and not regions and not allow_open:
         raise FragmentRegionError(
             "HX-Target requires declared fragment_regions on this route "
-            "(set InteractionPolicy.allow_undeclared_targets=True to opt out)",
+            + "(set InteractionPolicy.allow_undeclared_targets=True to opt out)",
             requested=target,
             declared=(),
         )
@@ -247,7 +247,7 @@ def authorize_response_selector(
     if not regions:
         return
     try:
-        resolve_fragment_region(policy, selector)
+        _ignored = resolve_fragment_region(policy, selector)
     except FragmentRegionError as exc:
         declared = _declared_region_labels(regions)
         raise FragmentRegionError(
@@ -270,13 +270,13 @@ def authorize_oob_update(
     if not regions and not reserved:
         raise ValueError(
             "OOB updates require declared fragment regions (or a reserved element id "
-            f"such as {sorted(RESERVED_OOB_ELEMENT_IDS)})"
+            + f"such as {sorted(RESERVED_OOB_ELEMENT_IDS)})"
         )
     if update.select is not None:
         if not safe_css_selector(update.select):
             raise ValueError("Unsafe OOB select selector")
         if regions and not reserved:
-            resolve_fragment_region(
+            _ignored = resolve_fragment_region(
                 InteractionPolicy(declared_regions=regions),
                 update.select,
             )
@@ -290,7 +290,7 @@ def authorize_oob_update(
         if not update.element_id.replace("-", "").replace("_", "").isalnum():
             raise ValueError("Unsafe OOB element id")
         if regions and not reserved:
-            resolve_fragment_region(
+            _ignored = resolve_fragment_region(
                 InteractionPolicy(declared_regions=regions),
                 f"#{update.element_id}",
             )

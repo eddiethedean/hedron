@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.2] — 2026-09-25
+
+### Changed
+
+- Enforce BasedPyright all-mode checking and remove inferred or explicit `Any` at dynamic boundaries.
+
 ## [1.1.1] — 2026-09-18
 
 ### Fixed

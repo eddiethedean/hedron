@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import Any
 
 from hedron_core.theme import (
     FOLIO_ACCENTS,
@@ -21,9 +20,9 @@ from hedron_core.theme_platform import (
 )
 
 
-def _theme_specs(accent: str) -> dict[str, Any]:
+def _theme_specs(accent: str) -> dict[str, object]:
     """Resolve only registered built-ins; package code is never imported here."""
-    ensure_builtin_themes_registered()
+    _ignored = ensure_builtin_themes_registered()
     return {
         theme.name: ThemeBuilder.from_theme(
             folio_theme(accent=accent) if theme.name == "folio" else theme
@@ -32,7 +31,7 @@ def _theme_specs(accent: str) -> dict[str, Any]:
     }
 
 
-def _selected_names(names: Iterable[str] | None, available: dict[str, Any]) -> list[str]:
+def _selected_names(names: Iterable[str] | None, available: dict[str, object]) -> list[str]:
     requested = tuple(
         dict.fromkeys(
             "classic" if name == "default" else str(name) for name in (names or ("folio", "aurora"))
@@ -44,7 +43,7 @@ def _selected_names(names: Iterable[str] | None, available: dict[str, Any]) -> l
 
 def theme_lab_report(
     *, left: str = "folio", right: str = "aurora", profile: str = "core", accent: str = "green"
-) -> dict[str, Any]:
+) -> dict[str, object]:
     """Return an exportable, deterministic report for the Explorer Theme Lab.
 
     The report contains no request-specific mutation and is safe to render as
@@ -56,7 +55,7 @@ def theme_lab_report(
     left = "classic" if left == "default" else left if left in available else "folio"
     right = "classic" if right == "default" else right if right in available else "aurora"
     names = _selected_names((left, right), available)
-    themes: list[dict[str, Any]] = []
+    themes: list[dict[str, object]] = []
     for name in names:
         spec = available[name]
         validation = validate_theme_spec(spec, profile=profile, strict=False)

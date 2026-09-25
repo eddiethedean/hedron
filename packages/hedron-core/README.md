@@ -3,7 +3,7 @@
 [![PyPI](https://img.shields.io/pypi/v/hedron-core.svg)](https://pypi.org/project/hedron-core/)
 [![Python](https://img.shields.io/pypi/pyversions/hedron-core.svg)](https://pypi.org/project/hedron-core/)
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
-[![Pyright: strict](https://img.shields.io/badge/Pyright-strict-3178c6.svg)](https://microsoft.github.io/pyright/)
+[![BasedPyright: all, no Any](https://img.shields.io/badge/BasedPyright-all%20%7C%20no%20Any-3178c6.svg)](https://docs.basedpyright.com/latest/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 
 `hedron-core` is the framework-neutral HTML renderer. It has no FastAPI, Flask, or Django
@@ -19,7 +19,8 @@ framework.
 **Package maturity:** Stable · **Package line:** `1.0.x` · **Application pin:**
 `hedron-core>=1.0.0,<2.0`
 
-**Typing:** Pyright strict. Commit and release CI fail on type errors or warnings over the
+**Typing:** BasedPyright `all` mode. Commit and release CI fail on type errors and reject explicit
+or inferred `Any` in shipped source trees.
 complete `hedron_core` source tree.
 
 ## Install

@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any
 
 from hedron_core.inference_workflow.graph import WorkflowEditorView, WorkflowNode
 
@@ -14,7 +13,7 @@ def editor_view(
     *,
     mode: str = "table",
 ) -> WorkflowEditorView:
-    rows: list[Mapping[str, Any]] = []
+    rows: list[Mapping[str, object]] = []
     for node in nodes.values():
         rows.append(
             {

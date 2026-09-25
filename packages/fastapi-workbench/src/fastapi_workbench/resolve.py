@@ -354,7 +354,7 @@ def _validate_forwarded_allow_ips(raw: str | None) -> str:
                 if network.prefixlen == 0:
                     raise ValueError("unbounded network")
             else:
-                ipaddress.ip_address(entry)
+                _ignored = ipaddress.ip_address(entry)
         except ValueError as exc:
             raise _error(
                 title="Invalid forwarded proxy allowlist",

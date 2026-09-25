@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, Literal
+from typing import Literal
 
 from hedron_core.typing_aliases import JsonValue
 from hedron_core.visualization import (
@@ -37,7 +37,7 @@ CaseKind = Literal["valid", "adversarial"]
 class AdversarialCase:
     name: str
     kind: CaseKind
-    payload: Mapping[str, Any]
+    payload: Mapping[str, object]
     expected_error: str | None = None
 
 
@@ -49,7 +49,7 @@ def data_query_fixture(
     filters: Mapping[str, JsonValue] | None = None,
     allowlisted_sort_fields: frozenset[str] | None = frozenset({"name", "value"}),
     allowlisted_filter_fields: frozenset[str] | None = frozenset({"name", "value"}),
-) -> Any:
+) -> object:
     from hedron_data.sources import DataQuery
 
     return DataQuery(
@@ -68,7 +68,7 @@ def data_changes_fixture(
     field: str = "value",
     value: JsonValue = 1,
     dataset_version: str | None = "v1",
-) -> Any:
+) -> object:
     from hedron_data.sources import CellUpdate, DataChanges
 
     return DataChanges(
@@ -77,7 +77,7 @@ def data_changes_fixture(
     )
 
 
-def transform_plan_fixture(*, field: str = "value", limit: int = 10) -> Any:
+def transform_plan_fixture(*, field: str = "value", limit: int = 10) -> object:
     from hedron_data.plans import TransformPlan, TransformStep
 
     return TransformPlan(
@@ -96,7 +96,7 @@ def grid_event_fixture(
     kind: str = "edit",
     row_key: str = "row-1",
     field: str = "value",
-) -> Any:
+) -> object:
     from hedron_data.events import (
         GridEditEvent,
         GridPaginationEvent,
@@ -166,7 +166,7 @@ def labeled_adversarial_cases() -> list[AdversarialCase]:
     ]
 
 
-def assert_stable_row_identity(rows: Sequence[Mapping[str, Any]], *, key: str = "id") -> None:
+def assert_stable_row_identity(rows: Sequence[Mapping[str, object]], *, key: str = "id") -> None:
     keys = [str(row.get(key)) for row in rows]
     assert all(keys), "row identity missing"
     assert len(keys) == len(set(keys)), "row identity not stable/unique"
@@ -177,7 +177,7 @@ def assert_stable_trace_identity(events: Sequence[ChartEvent]) -> None:
 
 
 def assert_budget(
-    payload: Mapping[str, Any] | Sequence[Any] | str | bytes, *, max_bytes: int
+    payload: Mapping[str, object] | Sequence[object] | str | bytes, *, max_bytes: int
 ) -> None:
     if isinstance(payload, (str, bytes)):
         size = len(payload.encode("utf-8") if isinstance(payload, str) else payload)
@@ -191,7 +191,7 @@ def assert_accessible_fallback(
     description: str | None = None,
     alt: str | None = None,
     waiver: str | None = None,
-    tabular_fallback: Sequence[Mapping[str, Any]] | None = None,
+    tabular_fallback: Sequence[Mapping[str, object]] | None = None,
 ) -> None:
     ok = description or alt or waiver or tabular_fallback
     assert ok, "accessible fallback metadata required"

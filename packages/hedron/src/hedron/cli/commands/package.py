@@ -4,24 +4,26 @@ from __future__ import annotations
 
 import argparse
 import json
-from typing import Any, cast
+from typing import cast
+
+from hedron.cli.arguments import path_argument, string_argument
 
 
-def _mapping(value: object) -> dict[str, Any]:
-    return cast(dict[str, Any], value) if isinstance(value, dict) else {}
+def _mapping(value: object) -> dict[str, object]:
+    return cast(dict[str, object], value) if isinstance(value, dict) else {}
 
 
 def _cmd_package_doctor(args: argparse.Namespace) -> int:
     from hedron.package_doctor import diagnose_package
 
-    report = diagnose_package(args.path)
-    if args.format == "json":
+    report = diagnose_package(path_argument(args, "path") or "")
+    if string_argument(args, "format", "human") == "json":
         print(json.dumps(report, indent=2, sort_keys=True, default=str))
     else:
         package = _mapping(report.get("package"))
         print(
             f"package_doctor={report.get('package_doctor')} ok={report.get('ok')} "
-            f"read_only={report.get('read_only')}"
+            + f"read_only={report.get('read_only')}"
         )
         print(f"{package.get('name')} {package.get('version')} ({report.get('root')})")
         for name, check_value in sorted(_mapping(report.get("checks")).items()):
@@ -34,7 +36,7 @@ def _cmd_package_doctor(args: argparse.Namespace) -> int:
             diagnostic = _mapping(diagnostic_value)
             print(
                 f"{diagnostic.get('code')} [{diagnostic.get('severity')}] "
-                f"{diagnostic.get('message')}"
+                + f"{diagnostic.get('message')}"
             )
     return 0 if report.get("ok") else 1
 

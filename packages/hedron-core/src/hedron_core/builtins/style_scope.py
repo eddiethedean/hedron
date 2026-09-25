@@ -5,9 +5,10 @@ from __future__ import annotations
 import re
 from collections.abc import Sequence
 from contextvars import ContextVar, Token
-from typing import Any, Literal, cast
+from typing import Literal, cast
 
 from pydantic import Field
+from typing_extensions import override
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.builtins.appearance import DENSITIES, Density, require_choice
@@ -94,10 +95,10 @@ def presentation_data(slot: str) -> dict[str, str]:
 
 
 def _resolved_recipe_values(
-    name: str, catalog: dict[str, Any]
+    name: str, catalog: dict[str, object]
 ) -> tuple[str | None, dict[str, str]]:
     """Resolve one finite recipe inheritance chain without retaining a design object."""
-    chain: list[Any] = []
+    chain: list[object] = []
     current = catalog.get(name)
     seen: set[str] = set()
     while current is not None:
@@ -148,11 +149,11 @@ class StyleScope(Component[StyleScopeProps]):
         design: str | None = None,
         recipe_defaults: dict[str, str] | None = None,
         presentation: dict[str, str] | None = None,
-        recipes: Sequence[Any] = (),
+        recipes: Sequence[object] = (),
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         rejected = sorted(key for key in kwargs if key in _RECIPE_DEFAULT_KEYS)
         if rejected:
@@ -213,7 +214,7 @@ class StyleScope(Component[StyleScopeProps]):
                 remediation="Pass color_mode='light' or color_mode='dark'.",
             )
         if density is not None:
-            require_choice(density, DENSITIES, label="density")
+            _ignored = require_choice(density, DENSITIES, label="density")
         raw_variant = cast(object, variant)
         if raw_variant is not None:
             if not isinstance(raw_variant, str) or not raw_variant.strip():
@@ -334,6 +335,7 @@ class StyleScope(Component[StyleScopeProps]):
     def style_context(self) -> StyleContext:
         return self._style_context
 
+    @override
     def render(self) -> NodeLike:
         data: dict[str, str | bool | int | float | None] = {
             "hedron-style-scope": "true",

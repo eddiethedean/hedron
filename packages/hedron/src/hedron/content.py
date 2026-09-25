@@ -6,7 +6,9 @@ import logging
 from collections.abc import Callable
 from importlib import import_module
 from pathlib import Path
-from typing import Any, cast
+from typing import cast
+
+from typing_extensions import override
 
 from hedron_core.auto import RendererSpec, register_renderer
 from hedron_core.component import Component
@@ -36,10 +38,11 @@ class Markdown(Component[MarkdownProps]):
     logical_name = "Markdown"
     distribution = "hedron"
 
-    def __init__(self, source: str, **kwargs: Any) -> None:
+    def __init__(self, source: str, **kwargs: object) -> None:
         super().__init__(MarkdownProps(source=source, **kwargs))
 
-    def render(self) -> Any:
+    @override
+    def render(self) -> object:
         try:
             import markdown as md
         except ImportError as exc:
@@ -129,7 +132,7 @@ def process_image(
         root_resolved = Path(root).resolve()
         file_path = Path(path_or_bytes).resolve()
         try:
-            file_path.relative_to(root_resolved)
+            _ignored = file_path.relative_to(root_resolved)
         except ValueError as exc:
             raise error(
                 "HED-CONTENT-0007",

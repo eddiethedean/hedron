@@ -14,7 +14,7 @@ import re
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
 from importlib.metadata import PackageNotFoundError, version
-from typing import Any
+from typing import Protocol, cast
 
 from hedron_core.registry import get_registry
 from hedron_core.theme import (
@@ -73,7 +73,7 @@ class ComputedStyleAssertion:
 @dataclass(frozen=True, slots=True)
 class ComputedStyleResult:
     assertions: tuple[ComputedStyleAssertion, ...]
-    provenance: Mapping[str, Any] = field(default_factory=lambda: {})
+    provenance: Mapping[str, object] = field(default_factory=lambda: {})
 
     @property
     def passed(self) -> bool:
@@ -92,7 +92,7 @@ class ComputedStyleResult:
 def evaluate_computed_style_assertions(
     assertions: Iterable[ComputedStyleAssertion],
     *,
-    provenance: Mapping[str, Any] | None = None,
+    provenance: Mapping[str, object] | None = None,
 ) -> ComputedStyleResult:
     """Evaluate declared relationships without inferring accessibility claims.
 
@@ -130,6 +130,12 @@ def _as_theme(value: Theme | ThemeSpec) -> Theme:
     return value.to_theme() if isinstance(value, ThemeSpec) else value
 
 
+class _ThemeMetadata(Protocol):
+    aliases: Mapping[str, str]
+    groups: Mapping[str, str]
+    recipes: Mapping[str, Mapping[str, str]]
+
+
 @dataclass(frozen=True, slots=True)
 class ThemeResolution:
     """One deterministic, serializable view of a resolved theme."""
@@ -150,15 +156,15 @@ class ThemeResolution:
     typography_role_features: Mapping[str, Mapping[str, int]] = field(
         default_factory=dict[str, Mapping[str, int]]
     )
-    provenance: tuple[Mapping[str, Any], ...] = ()
+    provenance: tuple[Mapping[str, object], ...] = ()
     source_schema: str = "hedron.theme/1"
 
     @property
     def fingerprint(self) -> str:
         return _digest(self.to_dict(include_fingerprint=False))
 
-    def to_dict(self, *, include_fingerprint: bool = True) -> dict[str, Any]:
-        result: dict[str, Any] = {
+    def to_dict(self, *, include_fingerprint: bool = True) -> dict[str, object]:
+        result: dict[str, object] = {
             "schema": THEME_RESOLUTION_SCHEMA,
             "name": self.name,
             "tokens": dict(sorted(self.tokens.items())),
@@ -198,7 +204,7 @@ def resolve_theme(theme: Theme | ThemeSpec) -> ThemeResolution:
     source = theme
     resolved = _as_theme(theme)
     compatibility = compatibility_theme_vars(resolved)
-    provenance: tuple[Mapping[str, Any], ...]
+    provenance: tuple[Mapping[str, object], ...]
     if isinstance(source, ThemeSpec):
         provenance = tuple(source.provenance) + (
             {"source": "ThemeSpec", "fingerprint": source.fingerprint},
@@ -207,6 +213,7 @@ def resolve_theme(theme: Theme | ThemeSpec) -> ThemeResolution:
     else:
         provenance = ({"source": "Theme", "name": resolved.name, "parent": resolved.parent},)
         source_schema = "hedron.theme/1"
+    source_metadata = cast(_ThemeMetadata, cast(object, source))
     return ThemeResolution(
         name=resolved.name,
         tokens={**derived_theme_tokens(resolved), **dict(resolved.tokens)},
@@ -216,9 +223,9 @@ def resolve_theme(theme: Theme | ThemeSpec) -> ThemeResolution:
         accessibility_modes={
             key: dict(value) for key, value in resolved.accessibility_modes.items()
         },
-        aliases=dict(getattr(source, "aliases", {})),
-        groups=dict(getattr(source, "groups", {})),
-        recipes={key: dict(value) for key, value in getattr(source, "recipes", {}).items()},
+        aliases=dict(source_metadata.aliases),
+        groups=dict(source_metadata.groups),
+        recipes={key: dict(value) for key, value in source_metadata.recipes.items()},
         content_width=resolved.content_width,
         typography_features=dict(resolved.typography_features),
         typography_role_features={
@@ -229,8 +236,8 @@ def resolve_theme(theme: Theme | ThemeSpec) -> ThemeResolution:
     )
 
 
-def _contract_dict(contract: Any) -> dict[str, Any]:
-    entry: dict[str, Any] = {
+def _contract_dict(contract: object) -> dict[str, object]:
+    entry: dict[str, object] = {
         "logical_id": contract.logical_id,
         "kind": "component",
         "parts": list(contract.parts),
@@ -254,7 +261,7 @@ def _contract_dict(contract: Any) -> dict[str, Any]:
     return entry
 
 
-def component_contract_manifest() -> dict[str, Any]:
+def component_contract_manifest() -> dict[str, object]:
     """Project theme contracts and element ABI metadata into one stable manifest."""
 
     entries = [_contract_dict(item) for item in registered_component_theme_contracts()]
@@ -308,7 +315,7 @@ def component_contract_manifest() -> dict[str, Any]:
     }
 
 
-def element_metadata_manifest() -> dict[str, Any]:
+def element_metadata_manifest() -> dict[str, object]:
     """Return the element-only projection used by custom-element consumers."""
 
     elements = [
@@ -324,7 +331,7 @@ def element_metadata_manifest() -> dict[str, Any]:
     }
 
 
-def package_identity_manifest() -> dict[str, Any]:
+def package_identity_manifest() -> dict[str, object]:
     """Return registry/package identity facts without importing satellite packages."""
 
     component_manifest = component_contract_manifest()
@@ -348,7 +355,7 @@ def package_identity_manifest() -> dict[str, Any]:
         }
         for item in component_manifest["components"]
     ]
-    payload: dict[str, Any] = {
+    payload: dict[str, object] = {
         "schema": "hedron.package-identity/1",
         "runtime": "python-no-node",
         "distributions": distributions,
@@ -392,7 +399,7 @@ class ComponentStateMatrix:
     def digest(self) -> str:
         return _digest([entry.to_dict() for entry in self.entries])
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "schema": STATE_MATRIX_SCHEMA,
             "version": 1,
@@ -454,9 +461,9 @@ class ThemeExport:
     resolution: ThemeResolution
     css: str
     json: str
-    conformance: Mapping[str, Any]
+    conformance: Mapping[str, object]
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "schema": THEME_EXPORT_SCHEMA,
             "theme": self.resolution.to_dict(),
@@ -501,7 +508,7 @@ def export_theme(theme: Theme | ThemeSpec, *, profile: str = "core") -> ThemeExp
     )
 
 
-def inspect_theme_css(css: str) -> dict[str, Any]:
+def inspect_theme_css(css: str) -> dict[str, object]:
     """Report legacy stylesheet consumers and whether the bridge covers them."""
 
     consumers = sorted(set(_DEFAULT_CONSUMER.findall(css)))
@@ -516,11 +523,11 @@ def inspect_theme_css(css: str) -> dict[str, Any]:
     }
 
 
-def theme_contract_report(theme: Theme | ThemeSpec, *, css: str | None = None) -> dict[str, Any]:
+def theme_contract_report(theme: Theme | ThemeSpec, *, css: str | None = None) -> dict[str, object]:
     """Return the machine-readable Required theme-contract evidence packet."""
 
     exported = export_theme(theme)
-    report: dict[str, Any] = {
+    report: dict[str, object] = {
         "schema": "hedron.theme-contract/1",
         "theme": exported.resolution.to_dict(),
         "component_manifest": component_contract_manifest(),

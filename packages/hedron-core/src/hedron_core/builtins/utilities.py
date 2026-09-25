@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import json
 from collections.abc import Mapping, Sequence
-from typing import Any, ClassVar, Literal, cast
+from typing import ClassVar, Literal, cast
+
+from typing_extensions import override
 
 from hedron_core.alpine import AlpineAttrs, AlpineDirective, AlpineExpression
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
@@ -34,7 +36,7 @@ class Metric(Component[MetricProps]):
         *,
         delta: object = None,
         delta_tone: Literal["up", "down", "neutral"] = "neutral",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             MetricProps(
@@ -46,6 +48,7 @@ class Metric(Component[MetricProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         parts: list[NodeLike] = [
             html.dt(self.props.label),
@@ -78,13 +81,14 @@ class CodeViewer(Component[CodeViewerProps]):
         *,
         language: str | None = None,
         max_chars: int = 100_000,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         clipped = code if len(code) <= max_chars else code[:max_chars] + "\n… [truncated]"
         super().__init__(
             CodeViewerProps(code=clipped, language=language, max_chars=max_chars, **kwargs)
         )
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {}
         if self.props.language:
@@ -123,13 +127,14 @@ class JSONViewer(Component[JSONViewerProps]):
     props_type = JSONViewerProps
     logical_name = "JSONViewer"
 
-    def __init__(self, value: object, *, max_chars: int = 100_000, **kwargs: Any) -> None:
+    def __init__(self, value: object, *, max_chars: int = 100_000, **kwargs: object) -> None:
         redacted = _redact_json(value)
         text = json.dumps(redacted, indent=2, default=str)
         if len(text) > max_chars:
             text = text[:max_chars] + "\n… [truncated]"
         super().__init__(JSONViewerProps(text=text, max_chars=max_chars, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         return html.pre(
             html.code(self.props.text, class_="language-json"),
@@ -153,10 +158,11 @@ class Progress(Component[ProgressProps]):
         *,
         maximum: float = 100,
         label: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(ProgressProps(value=value, maximum=maximum, label=label, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {
             "value": str(self.props.value),
@@ -190,7 +196,7 @@ class CircularProgress(Component[CircularProgressProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if not indeterminate and value is None:
             raise ValueError("CircularProgress requires value= unless indeterminate=True")
@@ -207,6 +213,7 @@ class CircularProgress(Component[CircularProgressProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         if self.props.indeterminate or self.props.value is None:
             status_text = self.props.label or "Loading"
@@ -275,11 +282,11 @@ class Status(Component[StatusProps]):
         appearance: str | None = None,
         variant: Literal["default", "compact", "activity"] = "default",
         class_: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         from hedron_core.builtins.appearance import require_choice
 
-        require_choice(variant, ("default", "compact", "activity"), label="variant")
+        _ignored = require_choice(variant, ("default", "compact", "activity"), label="variant")
         super().__init__(
             StatusProps(
                 message=message,
@@ -293,6 +300,7 @@ class Status(Component[StatusProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         from hedron_core.builtins.appearance import appearance_data
 
@@ -336,15 +344,16 @@ class Toast(Component[ToastProps]):
         *,
         tone: Literal["info", "success", "warning", "danger"] = "info",
         ttl_ms: int | None = -1,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         resolved = ttl_ms
         if ttl_ms == -1:
             resolved = None if tone == "danger" else 4000
         super().__init__(ToastProps(message=message, tone=tone, ttl_ms=resolved, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
-        attrs: dict[str, Any] = {
+        attrs: dict[str, object] = {
             "class_": f"hedron-toast hedron-toast-{self.props.tone}",
             "role": "status",
             "aria": {"live": "polite"},
@@ -389,7 +398,7 @@ class ToastHost(Component[ToastHostProps]):
         width: Literal["content", "field", "full"] = "content",
         max_width: Literal["sm", "md", "lg"] = "md",
         gap: Literal["xs", "sm", "md"] = "sm",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         for label, value, allowed in (
             (
@@ -415,6 +424,7 @@ class ToastHost(Component[ToastHostProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         return html.div(
             id="hedron-toast",
@@ -452,7 +462,7 @@ class Expander(Component[ExpanderProps]):
         enhance: Literal["legacy", "native", "alpine"] = "legacy",
         id: str | None = None,
         class_: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             ExpanderProps(
@@ -466,6 +476,7 @@ class Expander(Component[ExpanderProps]):
         )
         self._body = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {
             "id": self.props.id,
@@ -541,11 +552,13 @@ class Tabs(Component[TabsProps]):
         responsive: Literal["scroll", "stretch", "compact"] | None = None,
         id: str | None = None,
         class_: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
-        require_choice(appearance, ("contained", "underline", "pills"), label="appearance")
-        require_choice(density, DENSITIES, label="density")
-        require_choice(responsive, ("scroll", "stretch", "compact"), label="responsive")
+        _ignored = require_choice(
+            appearance, ("contained", "underline", "pills"), label="appearance"
+        )
+        _ignored = require_choice(density, DENSITIES, label="density")
+        _ignored = require_choice(responsive, ("scroll", "stretch", "compact"), label="responsive")
         super().__init__(
             TabsProps(
                 active=active,
@@ -573,6 +586,7 @@ class Tabs(Component[TabsProps]):
         if active is not None and active not in names:
             raise ValueError(f"Unknown active tab {active!r}; expected one of {names!r}")
 
+    @override
     def render(self) -> NodeLike:
         if not self._panels:
             return html.div(
@@ -638,11 +652,12 @@ class Sidebar(Component[SidebarProps]):
         label: str = "Sidebar",
         id: str | None = None,
         class_: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(SidebarProps(label=label, id=id, class_=class_, **kwargs))
         self._body = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         body = self._slot_values.get("body", self._body)
         if not isinstance(body, tuple):

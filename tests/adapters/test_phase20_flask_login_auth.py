@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import sys
 import types
-from typing import Any
 
 from flask import session
 
@@ -14,7 +13,7 @@ from hedron_flask import HedronFlask
 from hedron_flask.responses import interaction_response
 
 
-def _install_fake_flask_login(monkeypatch: Any, *, authenticated: bool, user_id: str) -> None:
+def _install_fake_flask_login(monkeypatch: object, *, authenticated: bool, user_id: str) -> None:
     class _User:
         is_authenticated = authenticated
 
@@ -27,7 +26,7 @@ def _install_fake_flask_login(monkeypatch: Any, *, authenticated: bool, user_id:
 
 
 def test_auth_signal_without_flask_login_uses_session_user_id(
-    monkeypatch: Any,
+    monkeypatch: object,
 ) -> None:
     """Session fallback when flask_login is not installed."""
     monkeypatch.setitem(sys.modules, "flask_login", None)
@@ -42,7 +41,7 @@ def test_auth_signal_without_flask_login_uses_session_user_id(
     assert signal.subject_id == "session-user"
 
 
-def test_auth_signal_without_flask_login_uses_underscore_user_id(monkeypatch: Any) -> None:
+def test_auth_signal_without_flask_login_uses_underscore_user_id(monkeypatch: object) -> None:
     monkeypatch.setitem(sys.modules, "flask_login", None)
     hedron = HedronFlask(__name__)
     app = hedron.flask
@@ -55,7 +54,7 @@ def test_auth_signal_without_flask_login_uses_underscore_user_id(monkeypatch: An
     assert signal.subject_id == "legacy-user"
 
 
-def test_auth_signal_prefers_flask_login_current_user(monkeypatch: Any) -> None:
+def test_auth_signal_prefers_flask_login_current_user(monkeypatch: object) -> None:
     _install_fake_flask_login(monkeypatch, authenticated=True, user_id="fl-user")
     hedron = HedronFlask(__name__)
     app = hedron.flask
@@ -68,7 +67,7 @@ def test_auth_signal_prefers_flask_login_current_user(monkeypatch: Any) -> None:
     assert signal.subject_id == "fl-user"
 
 
-def test_auth_signal_falls_back_when_flask_login_anonymous(monkeypatch: Any) -> None:
+def test_auth_signal_falls_back_when_flask_login_anonymous(monkeypatch: object) -> None:
     _install_fake_flask_login(monkeypatch, authenticated=False, user_id="ignored")
     hedron = HedronFlask(__name__)
     app = hedron.flask
@@ -81,7 +80,7 @@ def test_auth_signal_falls_back_when_flask_login_anonymous(monkeypatch: Any) -> 
     assert signal.subject_id is None
 
 
-def test_authenticated_signal_sets_private_cache(monkeypatch: Any) -> None:
+def test_authenticated_signal_sets_private_cache(monkeypatch: object) -> None:
     _install_fake_flask_login(monkeypatch, authenticated=True, user_id="fl-user")
     hedron = HedronFlask(__name__)
     app = hedron.flask

@@ -6,7 +6,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import TYPE_CHECKING, Protocol
+from typing import TYPE_CHECKING, Protocol, cast
 
 if TYPE_CHECKING:
     from hedron.migrate.api import ApiMigrationReport
@@ -26,6 +26,29 @@ class Subparsers(Protocol):
         ...
 
 
+class _ApiArgs(Protocol):
+    apply: bool
+    diff: bool
+    format: str
+    out: str | None
+    source: str
+
+
+class _ReactArgs(Protocol):
+    format: str
+    source: str
+
+
+class _StreamlitArgs(Protocol):
+    analyze_only: bool
+    fail_on: str
+    format: str
+    out: str | None
+    project_root: str | None
+    python_version: str
+    source: str
+
+
 def build_streamlit_parser(
     subparsers: Subparsers,
 ) -> argparse.ArgumentParser:
@@ -33,35 +56,35 @@ def build_streamlit_parser(
         "streamlit",
         help="Statically migrate a Streamlit app to a Hedron scaffold (RFC-0061)",
     )
-    parser.add_argument("source", help="Streamlit entrypoint (.py) or project directory")
-    parser.add_argument(
+    _ignored = parser.add_argument("source", help="Streamlit entrypoint (.py) or project directory")
+    _ignored = parser.add_argument(
         "--out",
         default=None,
         help="New output directory (required unless --analyze-only)",
     )
-    parser.add_argument(
+    _ignored = parser.add_argument(
         "--project-root",
         default=None,
         help="Boundary for local-module discovery (default: nearest pyproject.toml)",
     )
-    parser.add_argument(
+    _ignored = parser.add_argument(
         "--analyze-only",
         action="store_true",
         help="Produce the migration report without generating a project",
     )
-    parser.add_argument(
+    _ignored = parser.add_argument(
         "--format",
         choices=("text", "json", "sarif"),
         default="text",
         help="Report format",
     )
-    parser.add_argument(
+    _ignored = parser.add_argument(
         "--python-version",
         choices=("3.10", "3.11", "3.12", "3.13", "3.14"),
         default="3.12",
         help="Parser grammar for the input source",
     )
-    parser.add_argument(
+    _ignored = parser.add_argument(
         "--fail-on",
         choices=("information", "warning", "error"),
         default="error",
@@ -79,8 +102,8 @@ def build_react_parser(
         "react",
         help="Statically report React migration dispositions (phase 0.63)",
     )
-    parser.add_argument("source", help="React/TypeScript source file or directory")
-    parser.add_argument("--format", choices=("text", "json"), default="text")
+    _ignored = parser.add_argument("source", help="React/TypeScript source file or directory")
+    _ignored = parser.add_argument("--format", choices=("text", "json"), default="text")
     parser.set_defaults(func=run_migrate_react_args)
     return parser
 
@@ -93,34 +116,34 @@ def build_api_parser(
         "api",
         help="Statically migrate transitional Hedron API paths to the 1.0 surface",
     )
-    parser.add_argument(
+    _ignored = parser.add_argument(
         "source",
         nargs="?",
         default=".",
         help="Python file or project directory (default: current directory)",
     )
-    parser.add_argument("--target", choices=("1.0",), required=True)
-    parser.add_argument(
+    _ignored = parser.add_argument("--target", choices=("1.0",), required=True)
+    _ignored = parser.add_argument(
         "--out",
         default=None,
         help="Write transformed files to a new directory/file (never overwrites)",
     )
-    parser.add_argument(
+    _ignored = parser.add_argument(
         "--apply",
         action="store_true",
         help="Apply proven replacements in place; manual findings remain untouched",
     )
-    parser.add_argument(
+    _ignored = parser.add_argument(
         "--diff",
         action="store_true",
         help="Print a unified diff for proven replacements",
     )
-    parser.add_argument("--format", choices=("text", "json", "sarif"), default="text")
+    _ignored = parser.add_argument("--format", choices=("text", "json", "sarif"), default="text")
     parser.set_defaults(func=run_migrate_api_args)
     return parser
 
 
-def run_migrate_api_args(args: argparse.Namespace) -> int:
+def run_migrate_api_args(args: _ApiArgs) -> int:
     try:
         report = run_migrate_api(
             source=Path(args.source),
@@ -162,8 +185,8 @@ def run_migrate_api(
         for finding in report.findings:
             print(
                 f"- {finding.code} {finding.old_path} -> {finding.replacement} "
-                f"({finding.path}:{finding.line}:{finding.column}; "
-                f"confidence={finding.confidence}, automation={finding.automation_status})"
+                + f"({finding.path}:{finding.line}:{finding.column}; "
+                + f"confidence={finding.confidence}, automation={finding.automation_status})"
             )
         if report.changes:
             print("Changed files:")
@@ -176,7 +199,7 @@ def run_migrate_api(
     return report
 
 
-def run_migrate_react_args(args: argparse.Namespace) -> int:
+def run_migrate_react_args(args: _ReactArgs) -> int:
     return run_migrate_react(source=Path(args.source), fmt=str(args.format))
 
 
@@ -196,16 +219,21 @@ def run_migrate_react(*, source: Path, fmt: str = "text") -> int:
         print(f"Files: {payload['files_seen']}  Bytes: {payload['bytes_seen']}")
         for disposition, count in payload["disposition_counts"].items():
             print(f"{disposition}: {count}")
-        for finding in payload["findings"]:
-            span = finding.get("span", {})
+        raw_findings = payload["findings"]
+        findings = (
+            cast(list[dict[str, object]], raw_findings) if isinstance(raw_findings, list) else []
+        )
+        for finding in findings:
+            raw_span = finding.get("span", {})
+            span = cast(dict[str, object], raw_span) if isinstance(raw_span, dict) else {}
             print(
                 f"- {finding['disposition']} {finding['kind']} "
-                f"({span.get('path')}:{span.get('start_line')}:{span.get('start_column')})"
+                + f"({span.get('path')}:{span.get('start_line')}:{span.get('start_column')})"
             )
     return 0
 
 
-def run_migrate_streamlit_args(args: argparse.Namespace) -> int:
+def run_migrate_streamlit_args(args: _StreamlitArgs) -> int:
     return run_migrate_streamlit(
         source=Path(args.source),
         out=Path(args.out) if args.out else None,
@@ -241,7 +269,7 @@ def run_migrate_streamlit(
     generated: dict[str, str] = {}
 
     if plan.tool_errors:
-        sys.stdout.write(format_report(plan, diagnostics, fmt=fmt))
+        _ignored = sys.stdout.write(format_report(plan, diagnostics, fmt=fmt))
         return 1
 
     if not analyze_only:
@@ -258,7 +286,7 @@ def run_migrate_streamlit(
                 ),
                 *diagnostics,
             ]
-            sys.stdout.write(format_report(plan, diagnostics, fmt=fmt))
+            _ignored = sys.stdout.write(format_report(plan, diagnostics, fmt=fmt))
             return 1
         except (OSError, RuntimeError, ValueError) as exc:
             diagnostics = [
@@ -269,10 +297,12 @@ def run_migrate_streamlit(
                 ),
                 *diagnostics,
             ]
-            sys.stdout.write(format_report(plan, diagnostics, fmt=fmt))
+            _ignored = sys.stdout.write(format_report(plan, diagnostics, fmt=fmt))
             return 1
 
-    sys.stdout.write(format_report(plan, diagnostics, fmt=fmt, generated_files=generated or None))
+    _ignored = sys.stdout.write(
+        format_report(plan, diagnostics, fmt=fmt, generated_files=generated or None)
+    )
 
     threshold = DiagnosticSeverity(fail_on)
     if meets_severity_threshold(diagnostics, threshold):

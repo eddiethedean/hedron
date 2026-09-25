@@ -11,7 +11,7 @@ import re
 import unicodedata
 from dataclasses import dataclass, replace
 from pathlib import Path
-from typing import Any, cast
+from typing import cast
 from urllib.parse import quote, unquote, urlsplit, urlunsplit
 
 from hedron_core.diagnostics import HedronError
@@ -68,7 +68,7 @@ class AssetRecord:
             raise ValueError(f"asset hash does not match manifest for {self.path}")
         return content
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "source": self.source,
             "path": self.path,
@@ -114,7 +114,7 @@ class AssetRecord:
             raise ValueError(f"asset size must not be negative for {asset.path}")
         if not re.fullmatch(r"[0-9a-f]{64}", asset.source_hash):
             raise ValueError(f"invalid asset hash for {asset.path}")
-        asset.decoded()
+        _ignored = asset.decoded()
         return asset
 
 
@@ -147,7 +147,7 @@ class PageRecord:
     keywords: tuple[str, ...] = ()
     rank_class: str = "default"
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "source": self.source,
             "path": self.path,
@@ -269,7 +269,9 @@ class SiteManifest:
         _validate_base_url(self.base_url)
         if self.release_url:
             try:
-                SafeUrl.parse(self.release_url, purpose=UrlPurpose.NAVIGATION, allow_external=True)
+                _ignored = SafeUrl.parse(
+                    self.release_url, purpose=UrlPurpose.NAVIGATION, allow_external=True
+                )
             except HedronError as exc:
                 raise ValueError("manifest release_url is unsafe") from exc
         for name, value in (
@@ -297,7 +299,7 @@ class SiteManifest:
                         candidate_url = external
                         if candidate_url.startswith("/") and candidate_url != "/":
                             candidate_url = candidate_url.rstrip("/")
-                        SafeUrl.parse(
+                        _ignored = SafeUrl.parse(
                             candidate_url,
                             purpose=UrlPurpose.NAVIGATION,
                             allow_external=True,
@@ -334,7 +336,7 @@ class SiteManifest:
 
         return hashlib.sha256(self.dumps().encode("utf-8")).hexdigest()[:16]
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "schema_version": self.schema_version,
             "compiler_version": self.compiler_version,
@@ -371,7 +373,7 @@ class SiteManifest:
     def write(self, path: str | Path) -> Path:
         target = Path(path)
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(self.dumps(), encoding="utf-8")
+        _ignored = target.write_text(self.dumps(), encoding="utf-8")
         return target
 
     @classmethod
@@ -434,7 +436,7 @@ def _validate_base_url(value: str) -> None:
     ):
         raise ValueError("manifest base_url must be an absolute http(s) URL without query/fragment")
     try:
-        SafeUrl.parse(value, purpose=UrlPurpose.NAVIGATION, allow_external=True)
+        _ignored = SafeUrl.parse(value, purpose=UrlPurpose.NAVIGATION, allow_external=True)
     except HedronError as exc:
         raise ValueError("manifest base_url is unsafe or invalid") from exc
 
@@ -616,7 +618,7 @@ def _validate_nodes(nodes: tuple[DocNode, ...], *, expected_source: str) -> None
                     runtime_href = (path.rstrip("/") or "/") + "#" + fragment
                 else:
                     runtime_href = href.rstrip("/") or "/"
-                SafeUrl.parse(
+                _ignored = SafeUrl.parse(
                     runtime_href,
                     purpose=UrlPurpose.NAVIGATION,
                     allow_external=bool(
@@ -629,7 +631,7 @@ def _validate_nodes(nodes: tuple[DocNode, ...], *, expected_source: str) -> None
                     raise ValueError("manifest image is missing src")
                 if not (src.startswith("/") or urlsplit(src).scheme or urlsplit(src).netloc):
                     raise ValueError("manifest image src must be root-relative or absolute")
-                SafeUrl.parse(
+                _ignored = SafeUrl.parse(
                     src,
                     purpose=UrlPurpose.ASSET,
                     allow_external=bool(urlsplit(src).scheme or urlsplit(src).netloc),
@@ -644,7 +646,7 @@ def _validate_nodes(nodes: tuple[DocNode, ...], *, expected_source: str) -> None
                         raise ValueError(
                             f"manifest heading has an invalid anchor id: {anchor_id!r}"
                         )
-                    SafeUrl.parse(f"#{anchor_id}", purpose=UrlPurpose.NAVIGATION)
+                    _ignored = SafeUrl.parse(f"#{anchor_id}", purpose=UrlPurpose.NAVIGATION)
                     folded = anchor_id.casefold()
                     if folded in heading_ids:
                         raise ValueError(f"manifest contains duplicate heading id: {anchor_id}")
@@ -716,7 +718,7 @@ def compile_site(config: DocsBuildConfig) -> SiteManifest:
         ):
             continue
         try:
-            source_path.resolve(strict=True).relative_to(docs_root)
+            _ignored = source_path.resolve(strict=True).relative_to(docs_root)
         except (OSError, ValueError) as exc:
             raise source_error(
                 "HED-DOCS-0206", "document source escapes the documentation root", source_path
@@ -885,19 +887,19 @@ def _public_path(relative: Path) -> str:
     if parts == ["index"]:
         return "/"
     if parts and parts[-1] == "index":
-        parts.pop()
+        _ignored = parts.pop()
     encoded = [quote(part, safe="-._~") for part in parts]
     return "/" + "/".join(encoded) + "/"
 
 
 def _flatten_navigation(
-    items: tuple[Any, ...], docs_dir: Path, pages: dict[str, PageRecord]
+    items: tuple[object, ...], docs_dir: Path, pages: dict[str, PageRecord]
 ) -> list[tuple[tuple[str, ...], str, tuple[tuple[str, str], ...], tuple[int, ...]]]:
     result: list[tuple[tuple[str, ...], str, tuple[tuple[str, str], ...], tuple[int, ...]]] = []
     seen_routes: set[str] = set()
 
     def visit(
-        children: tuple[Any, ...],
+        children: tuple[object, ...],
         labels: tuple[str, ...],
         crumbs: tuple[tuple[str, str], ...],
         order: tuple[int, ...],
@@ -972,14 +974,14 @@ def _template_url(template: str, source: str) -> str:
     except (KeyError, ValueError) as exc:
         raise ValueError(f"invalid documentation URL template: {template!r}") from exc
     try:
-        SafeUrl.parse(value, purpose=UrlPurpose.NAVIGATION, allow_external=True)
+        _ignored = SafeUrl.parse(value, purpose=UrlPurpose.NAVIGATION, allow_external=True)
     except HedronError as exc:
         raise ValueError(f"documentation URL template is unsafe: {value!r}") from exc
     return value
 
 
-def _config_fingerprint(cfg: DocsBuildConfig) -> dict[str, Any]:
-    def nav(item: Any) -> dict[str, Any]:
+def _config_fingerprint(cfg: DocsBuildConfig) -> dict[str, object]:
+    def nav(item: object) -> dict[str, object]:
         return {
             "title": item.title,
             "path": item.path,
@@ -1132,13 +1134,13 @@ def _normalize_url(
             raise ValueError(f"external documentation URL is disabled: {value!r}")
         purpose = UrlPurpose.NAVIGATION if document else UrlPurpose.ASSET
         try:
-            SafeUrl.parse(value, purpose=purpose, allow_external=True)
+            _ignored = SafeUrl.parse(value, purpose=purpose, allow_external=True)
         except HedronError as exc:
             raise ValueError(f"unsafe or invalid documentation URL: {value!r}") from exc
         return value
     if document and value.startswith("#"):
         try:
-            SafeUrl.parse(value, purpose=UrlPurpose.NAVIGATION)
+            _ignored = SafeUrl.parse(value, purpose=UrlPurpose.NAVIGATION)
         except HedronError as exc:
             raise ValueError(f"unsafe or invalid documentation URL: {value!r}") from exc
         return value
@@ -1172,7 +1174,7 @@ def _normalize_url(
         else:
             runtime_url = runtime_url.rstrip("/") or "/"
         try:
-            SafeUrl.parse(runtime_url, purpose=UrlPurpose.NAVIGATION)
+            _ignored = SafeUrl.parse(runtime_url, purpose=UrlPurpose.NAVIGATION)
         except HedronError as exc:
             raise ValueError(f"unsafe or invalid documentation URL: {value!r}") from exc
     return normalized

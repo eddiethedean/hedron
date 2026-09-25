@@ -6,13 +6,14 @@ import argparse
 import json
 import sys
 from collections.abc import Sequence
-from typing import Any, cast
+from typing import cast
 
+from hedron.cli.arguments import string_argument
 from hedron.cli.discovery import load_app as _load_app
 
 
 def _cmd_explain(args: argparse.Namespace) -> int:
-    target = str(getattr(args, "target", "") or "")
+    target = string_argument(args, "target", "") or ""
     if not target.startswith("features:"):
         print(
             f"hedron explain currently supports features:ID targets only (got {target!r})",
@@ -23,7 +24,7 @@ def _cmd_explain(args: argparse.Namespace) -> int:
     if not logical_id:
         print("hedron explain features:ID requires a non-empty feature id", file=sys.stderr)
         return 2
-    app_path = getattr(args, "app", None)
+    app_path = string_argument(args, "app")
     if not app_path:
         print("hedron explain requires --app module:attr", file=sys.stderr)
         return 2
@@ -39,7 +40,7 @@ def _cmd_explain(args: argparse.Namespace) -> int:
     except FeatureConflictError as exc:
         print(str(exc), file=sys.stderr)
         return 1
-    fmt = str(getattr(args, "format", "human") or "human")
+    fmt = string_argument(args, "format", "human") or "human"
     if fmt == "json":
         print(json.dumps(payload, indent=2, sort_keys=True, default=str))
     else:
@@ -47,7 +48,7 @@ def _cmd_explain(args: argparse.Namespace) -> int:
     return 0
 
 
-def _format_human(payload: dict[str, Any]) -> str:
+def _format_human(payload: dict[str, object]) -> str:
     lines: list[str] = []
     schema = payload.get("schema", "")
     logical_id = payload.get("logical_id", "")

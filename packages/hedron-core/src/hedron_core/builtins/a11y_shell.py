@@ -6,7 +6,7 @@ stylesheet so applications never author CSS for keyboard or busy affordances.
 
 from __future__ import annotations
 
-from typing import Any
+from typing_extensions import override
 
 from hedron_core.builtins._base import ElementProps, class_names, mark_data
 from hedron_core.builtins.appearance import require_choice
@@ -41,7 +41,7 @@ class SkipLink(Component[SkipLinkProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if isinstance(target, str):
             if not target.startswith("#"):
@@ -79,6 +79,7 @@ class SkipLink(Component[SkipLinkProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         return html.a(
             self.props.label,
@@ -115,9 +116,9 @@ class RequestIndicator(Component[RequestIndicatorProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
-        require_choice(placement, INDICATOR_PLACEMENTS, label="placement")
+        _ignored = require_choice(placement, INDICATOR_PLACEMENTS, label="placement")
         if not label.strip():
             raise error(
                 HED_HTML_0006,
@@ -139,6 +140,7 @@ class RequestIndicator(Component[RequestIndicatorProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         label_class = "hedron-request-indicator-label"
         if not self.props.visible_label:

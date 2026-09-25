@@ -104,7 +104,7 @@ def assert_optimism_allowed(risk_class: str) -> None:
     if risk_class in DENY_BY_DEFAULT_RISKS:
         raise ValueError(
             f"OptimisticMutation deny-by-default for risk class {risk_class!r}; "
-            "use server-confirmed mutation instead."
+            + "use server-confirmed mutation instead."
         )
 
 
@@ -114,7 +114,7 @@ def assert_phase062_optimism_allowed(risk_class: str) -> None:
     if risk_class not in APPROVED_PHASE062_RISKS:
         raise ValueError(
             f"HED-OPTIMISTIC-0001: risk class {risk_class!r} is not approved for phase 0.62; "
-            "use a server-confirmed mutation or an explicit Progressive disposition."
+            + "use a server-confirmed mutation or an explicit Progressive disposition."
         )
 
 
@@ -159,7 +159,7 @@ class OptimisticMutation:
     @property
     def phase062_ready(self) -> bool:
         try:
-            self.validate_phase062()
+            _ignored = self.validate_phase062()
         except ValueError:
             return False
         return True

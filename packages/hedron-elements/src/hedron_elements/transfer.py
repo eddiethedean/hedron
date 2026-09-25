@@ -15,7 +15,7 @@ import time
 from collections.abc import Mapping
 from dataclasses import dataclass
 from hashlib import sha256
-from typing import Any, cast
+from typing import cast
 from urllib.parse import quote
 
 FORBIDDEN_FIELD_TOKENS = frozenset(
@@ -61,7 +61,7 @@ class DraftTransferEnvelope:
     element_contract: str
     schema_version: str
     subject: str
-    fields: Mapping[str, Any]
+    fields: Mapping[str, object]
     created_at: int
     expires_at: int
     operation_id: str
@@ -75,7 +75,7 @@ class DraftTransferEnvelope:
         element_contract: str,
         schema_version: str,
         subject: str,
-        fields: Mapping[str, Any],
+        fields: Mapping[str, object],
         operation_id: str,
         ttl_seconds: int = 300,
         now: int | None = None,
@@ -107,13 +107,13 @@ class DraftTransferEnvelope:
             raise ValueError("invalid draft transfer JSON") from exc
         if not isinstance(data, dict):
             raise ValueError("unsupported draft transfer version")
-        typed_data = cast(dict[str, Any], data)
+        typed_data = cast(dict[str, object], data)
         if typed_data.get("version") != 1:
             raise ValueError("unsupported draft transfer version")
         fields = typed_data.get("fields")
         if not isinstance(fields, dict):
             raise ValueError("draft transfer fields must be an object")
-        typed_fields = cast(dict[str, Any], fields)
+        typed_fields = cast(dict[str, object], fields)
         try:
             envelope = cls(
                 app=str(typed_data["app"]),

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Mapping, Sequence
 from contextlib import AbstractContextManager, nullcontext
-from typing import TYPE_CHECKING, Any, ParamSpec, Protocol, TypeVar, cast, overload
+from typing import TYPE_CHECKING, ParamSpec, Protocol, TypeVar, cast, overload
 
 from fastapi import FastAPI, params
 from fastapi.routing import APIRouter
@@ -21,6 +21,7 @@ from hedron_core.hosts import FragmentHost
 from hedron_core.htmx.policy import CacheHint
 from hedron_core.identifiers import component_type_id
 from hedron_core.interaction import FragmentRegion, InteractionResult
+from hedron_core.typing_support import dynamic_attribute
 from hedron_core.updates import Patch, PatchSet, RefreshIntent
 
 if TYPE_CHECKING:
@@ -32,6 +33,14 @@ R = TypeVar("R")
 
 class _HandleState(Protocol):
     hedron_handles: dict[str, object]
+
+
+class _RuntimeContext(Protocol):
+    def activate(self) -> AbstractContextManager[None]: ...
+
+
+class _OutcomeMap(Protocol):
+    def map_result(self, value: object) -> tuple[object, int, object]: ...
 
 
 def _route_dependencies(
@@ -108,13 +117,13 @@ def _apply_mapped_outcome(
 class HedronPagesMixin:
     """Mixin that binds HedronRouter decorators onto the FastAPI application."""
 
-    _root_router: HedronRouter
-    _hedron_runtime: HedronRuntimeContext
-    router: APIRouter
+    _root_router: HedronRouter  # pyright: ignore[reportUninitializedInstanceVariable]  # host init supplies mixin state
+    _hedron_runtime: HedronRuntimeContext  # pyright: ignore[reportUninitializedInstanceVariable]  # host init supplies mixin state
+    router: APIRouter  # pyright: ignore[reportUninitializedInstanceVariable]  # host init supplies mixin state
 
     def _runtime_scope(self) -> AbstractContextManager[None]:
-        runtime = getattr(self, "_hedron_runtime", None)
-        return runtime.activate() if runtime is not None else nullcontext()
+        runtime = dynamic_attribute(self, "_hedron_runtime")
+        return cast(_RuntimeContext, runtime).activate() if runtime is not None else nullcontext()
 
     def _sync_root_route(self) -> None:
         if self._root_router.routes:
@@ -127,7 +136,7 @@ class HedronPagesMixin:
         path: str,
         *,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> Callable[[Callable[P, R]], Callable[P, R]]:
         """Register a navigable PAGE route.
 
@@ -142,7 +151,7 @@ class HedronPagesMixin:
         decorator = self._root_router.page(path, fragment_regions=fragment_regions, **kwargs)
 
         def wrap(fn: Callable[P, R]) -> Callable[P, R]:
-            decorator(fn)
+            _ignored = decorator(fn)
             # FeatureBundle materialization needs a stable identity for page
             # factories, while ordinary page authoring remains function-only.
             _stamp(
@@ -162,11 +171,11 @@ class HedronPagesMixin:
     @overload
     def view(
         self,
-        path: Callable[..., Any] | type[RefreshableView[Any, Any]],
+        path: Callable[..., object] | type[RefreshableView[object, object]],
         *,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
-        **kwargs: Any,
-    ) -> FragmentHandle[Any, Any]: ...
+        **kwargs: object,
+    ) -> FragmentHandle[object, object]: ...
 
     @overload
     def view(
@@ -174,16 +183,19 @@ class HedronPagesMixin:
         path: str | None = None,
         *,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
-        **kwargs: Any,
-    ) -> Callable[[Callable[..., Any]], FragmentHandle[Any, Any]]: ...
+        **kwargs: object,
+    ) -> Callable[[Callable[..., object]], FragmentHandle[object, object]]: ...
 
     def view(
         self,
-        path: str | Callable[P, R] | type[RefreshableView[Any, Any]] | None = None,
+        path: str | Callable[P, R] | type[RefreshableView[object, object]] | None = None,
         *,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
-        **kwargs: Any,
-    ) -> FragmentHandle[Any, Any] | Callable[[Callable[..., Any]], FragmentHandle[Any, Any]]:
+        **kwargs: object,
+    ) -> (
+        FragmentHandle[object, object]
+        | Callable[[Callable[..., object]], FragmentHandle[object, object]]
+    ):
         """Register the canonical safe replaceable view and return its handle.
 
         The 1.0 view surface owns the route, target, binding, and lifecycle
@@ -198,7 +210,7 @@ class HedronPagesMixin:
                 return self._view(path, **kwargs)
         decorator = self._view(path, **kwargs)
 
-        def scoped(fn: Callable[..., Any]) -> FragmentHandle[Any, Any]:
+        def scoped(fn: Callable[..., object]) -> FragmentHandle[object, object]:
             with self._runtime_scope():
                 return decorator(fn)
 
@@ -226,13 +238,13 @@ class HedronPagesMixin:
     @overload
     def action(
         self,
-        path: Callable[..., Any] | type[CommandHandler[Any, Any]],
+        path: Callable[..., object] | type[CommandHandler[object, object]],
         *,
         method: str = "POST",
         fallback: str | None = None,
         include_in_schema: bool = True,
-        **kwargs: Any,
-    ) -> ActionHandle[Any, Any]: ...
+        **kwargs: object,
+    ) -> ActionHandle[object, object]: ...
 
     @overload
     def action(
@@ -242,18 +254,20 @@ class HedronPagesMixin:
         method: str = "POST",
         fallback: str | None = None,
         include_in_schema: bool = True,
-        **kwargs: Any,
-    ) -> Callable[[Callable[P, object]], ActionHandle[Any, Any]]: ...
+        **kwargs: object,
+    ) -> Callable[[Callable[P, object]], ActionHandle[object, object]]: ...
 
     def action(
         self,
-        path: str | Callable[..., Any] | type[CommandHandler[Any, Any]],
+        path: str | Callable[..., object] | type[CommandHandler[object, object]],
         *,
         method: str = "POST",
         fallback: str | None = None,
         include_in_schema: bool = True,
-        **kwargs: Any,
-    ) -> ActionHandle[Any, Any] | Callable[[Callable[P, object]], ActionHandle[Any, Any]]:
+        **kwargs: object,
+    ) -> (
+        ActionHandle[object, object] | Callable[[Callable[P, object]], ActionHandle[object, object]]
+    ):
         """Register the canonical typed mutation and return an ``ActionHandle``.
 
         Args:
@@ -282,7 +296,7 @@ class HedronPagesMixin:
             names = ", ".join(sorted(simulator_options.intersection(kwargs)))
             raise TypeError(
                 f"Hedron.action does not accept simulator-only options ({names}); "
-                "use hedron_sim.SimApp.action for offline demo routes."
+                + "use hedron_sim.SimApp.action for offline demo routes."
             )
         if callable(path):
             with self._runtime_scope():
@@ -301,7 +315,7 @@ class HedronPagesMixin:
             **kwargs,
         )
 
-        def scoped(fn: Callable[P, object]) -> ActionHandle[Any, Any]:
+        def scoped(fn: Callable[P, object]) -> ActionHandle[object, object]:
             with self._runtime_scope():
                 return decorator(fn)
 
@@ -312,7 +326,7 @@ class HedronPagesMixin:
         descriptor: AddressableDescriptor[P, R] | Callable[P, R],
         *,
         path: str,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         from hedron.registration import fail_closed_late_registration
         from hedron_core.catalog import get_sealed_catalog
@@ -343,7 +357,7 @@ class HedronPagesMixin:
     @overload
     def _view(
         self,
-        path: Callable[..., Any] | type[RefreshableView[Any, Any]],
+        path: Callable[..., object] | type[RefreshableView[object, object]],
         *,
         key: str | None = None,
         name: str | None = None,
@@ -355,8 +369,8 @@ class HedronPagesMixin:
         fallback: str | None = None,
         include_in_schema: bool = False,
         dependencies: Sequence[params.Depends] | Sequence[object] | None = None,
-        **kwargs: Any,
-    ) -> FragmentHandle[Any, Any]: ...
+        **kwargs: object,
+    ) -> FragmentHandle[object, object]: ...
 
     @overload
     def _view(
@@ -373,12 +387,12 @@ class HedronPagesMixin:
         fallback: str | None = None,
         include_in_schema: bool = False,
         dependencies: Sequence[params.Depends] | Sequence[object] | None = None,
-        **kwargs: Any,
-    ) -> Callable[[Callable[..., Any]], FragmentHandle[Any, Any]]: ...
+        **kwargs: object,
+    ) -> Callable[[Callable[..., object]], FragmentHandle[object, object]]: ...
 
     def _view(
         self,
-        path: str | Callable[P, R] | type[RefreshableView[Any, Any]] | None = None,
+        path: str | Callable[P, R] | type[RefreshableView[object, object]] | None = None,
         *,
         key: str | None = None,
         name: str | None = None,
@@ -390,8 +404,11 @@ class HedronPagesMixin:
         fallback: str | None = None,
         include_in_schema: bool = False,
         dependencies: Sequence[params.Depends] | Sequence[object] | None = None,
-        **kwargs: Any,
-    ) -> FragmentHandle[Any, Any] | Callable[[Callable[..., Any]], FragmentHandle[Any, Any]]:
+        **kwargs: object,
+    ) -> (
+        FragmentHandle[object, object]
+        | Callable[[Callable[..., object]], FragmentHandle[object, object]]
+    ):
         """Register a GET renderer and return a ``FragmentHandle``."""
         import inspect
 
@@ -442,7 +459,7 @@ class HedronPagesMixin:
             )
             return register(path)
 
-        def decorator(fn: Callable[..., Any]) -> FragmentHandle[Any, Any]:
+        def decorator(fn: Callable[..., object]) -> FragmentHandle[object, object]:
             import inspect
 
             from hedron.handles import build_view_handle, wrap_endpoint_result
@@ -454,7 +471,7 @@ class HedronPagesMixin:
             resolved_empty = empty
             resolved_cache = cache
             resolved_fallback = fallback
-            handler: Callable[..., Any] = fn
+            handler: Callable[..., object] = fn
             if inspect.isclass(fn):
                 class_config_conflict(fn, decorator_fallback=fallback, decorator_path=path)
                 resolved_host = host or getattr(fn, "host", None)
@@ -493,7 +510,7 @@ class HedronPagesMixin:
             from hedron.routing.router import normalize_fragment_regions
 
             regions = (handle.region, *normalize_fragment_regions(extra_regions))
-            self._root_router.view(
+            _ignored = self._root_router.view(
                 handle.path,
                 fragment_regions=regions,
                 name=handle.name,
@@ -511,7 +528,7 @@ class HedronPagesMixin:
     @overload
     def _action(
         self,
-        path: Callable[..., Any] | type[CommandHandler[Any, Any]],
+        path: Callable[..., object] | type[CommandHandler[object, object]],
         *,
         method: str = "POST",
         name: str | None = None,
@@ -519,8 +536,8 @@ class HedronPagesMixin:
         include_in_schema: bool = False,
         dependencies: Sequence[params.Depends] | Sequence[object] | None = None,
         outcomes: object | None = None,
-        **kwargs: Any,
-    ) -> ActionHandle[Any, Any]: ...
+        **kwargs: object,
+    ) -> ActionHandle[object, object]: ...
 
     @overload
     def _action(
@@ -533,12 +550,12 @@ class HedronPagesMixin:
         include_in_schema: bool = False,
         dependencies: Sequence[params.Depends] | Sequence[object] | None = None,
         outcomes: object | None = None,
-        **kwargs: Any,
-    ) -> Callable[[Callable[..., Any]], ActionHandle[Any, Any]]: ...
+        **kwargs: object,
+    ) -> Callable[[Callable[..., object]], ActionHandle[object, object]]: ...
 
     def _action(
         self,
-        path: str | Callable[P, R] | type[CommandHandler[Any, Any]] | None = None,
+        path: str | Callable[P, R] | type[CommandHandler[object, object]] | None = None,
         *,
         method: str = "POST",
         name: str | None = None,
@@ -546,8 +563,11 @@ class HedronPagesMixin:
         include_in_schema: bool = False,
         dependencies: Sequence[params.Depends] | Sequence[object] | None = None,
         outcomes: object | None = None,
-        **kwargs: Any,
-    ) -> ActionHandle[Any, Any] | Callable[[Callable[..., Any]], ActionHandle[Any, Any]]:
+        **kwargs: object,
+    ) -> (
+        ActionHandle[object, object]
+        | Callable[[Callable[..., object]], ActionHandle[object, object]]
+    ):
         """Register a mutation and return an ``ActionHandle``."""
         import inspect
 
@@ -593,7 +613,7 @@ class HedronPagesMixin:
             )
             return register(path)
 
-        def decorator(fn: Callable[..., Any]) -> ActionHandle[Any, Any]:
+        def decorator(fn: Callable[..., object]) -> ActionHandle[object, object]:
             import contextlib
             import functools
             import inspect
@@ -617,7 +637,7 @@ class HedronPagesMixin:
             from hedron_core.updates import Patch, PatchSet, RefreshIntent
 
             resolved_fallback = fallback
-            handler: Callable[..., Any] = fn
+            handler: Callable[..., object] = fn
             if inspect.isclass(fn):
                 class_config_conflict(fn, decorator_fallback=fallback, decorator_path=path)
                 compiled_fn = compile_command_class(fn)  # type: ignore[arg-type]
@@ -645,16 +665,18 @@ class HedronPagesMixin:
             )
 
             @functools.wraps(handler)
-            async def endpoint(*args: Any, **kw: Any) -> Any:
+            async def endpoint(*args: object, **kw: object) -> object:
                 call_kw = dict(kw)
                 meta = handle.type_meta
                 if meta is not None and getattr(meta, "modeled", False):
                     reject_json_formbody(meta, current_request.get())
                     call_kw = reconstruct_kwargs(meta, call_kw)
                 result = await await_if_needed(handler(*args, **call_kw))
-                outcomes_map = getattr(meta, "outcomes", None) if meta is not None else None
+                outcomes_map = dynamic_attribute(meta, "outcomes") if meta is not None else None
                 if outcomes_map is not None:
-                    mapped, status, case_effects = outcomes_map.map_result(result)
+                    mapped, status, case_effects = cast(_OutcomeMap, outcomes_map).map_result(
+                        result
+                    )
                     result = _apply_mapped_outcome(
                         mapped, status, case_effects, meta=meta, app_id=app_id
                     )
@@ -701,7 +723,7 @@ class HedronPagesMixin:
 
             extra_regions = kwargs.pop("fragment_regions", None)
             regions = (handle.region, *normalize_fragment_regions(extra_regions))
-            self._root_router.action(
+            _ignored = self._root_router.action(
                 handle.path,
                 method=handle.method,
                 name=handle.name,

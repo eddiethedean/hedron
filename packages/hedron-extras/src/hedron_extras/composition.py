@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import Any, ClassVar, Literal, cast
+from typing import ClassVar, Literal, cast
 
 from pydantic import Field, field_validator
+from typing_extensions import override
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.component import Component, NodeLike
@@ -14,7 +15,7 @@ from hedron_core.models import Props
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_extras.host import extras_host, reject_client_fetch_url
 
-MappingLike = Mapping[str, Any]
+MappingLike = Mapping[str, object]
 
 
 class ChoiceOption(Props):
@@ -45,12 +46,12 @@ class ChoiceCards(Component[ChoiceCardsProps]):
         selected: Sequence[str] | None = None,
         multiple: bool = False,
         required: bool = False,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if multiple and required:
             raise ValueError(
                 "ChoiceCards cannot enforce required multiple selections without JavaScript; "
-                "validate the collection in the form model instead"
+                + "validate the collection in the form model instead"
             )
         parsed = [
             opt if isinstance(opt, ChoiceOption) else ChoiceOption.model_validate(opt)
@@ -67,6 +68,7 @@ class ChoiceCards(Component[ChoiceCardsProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         input_type = "checkbox" if self.props.multiple else "radio"
         cards: list[NodeLike] = []
@@ -143,7 +145,7 @@ class TreeView(Component[TreeViewProps]):
         source: str | None = None,
         empty_message: str = "No items",
         error_message: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         parsed = [
             n if isinstance(n, TreeNodeProps) else TreeNodeProps.model_validate(n) for n in nodes
@@ -194,6 +196,7 @@ class TreeView(Component[TreeViewProps]):
             data={"tree-id": node.id},
         )
 
+    @override
     def render(self) -> NodeLike:
         if self.props.error_message:
             body: NodeLike = html.div(
@@ -248,7 +251,7 @@ class Steps(Component[StepsProps]):
         current: int = 0,
         orientation: Literal["horizontal", "vertical"] = "horizontal",
         name: str = "step",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if not steps:
             raise ValueError("Steps requires at least one step label")
@@ -263,6 +266,7 @@ class Steps(Component[StepsProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         items: list[NodeLike] = []
         for i, label in enumerate(self.props.steps):
@@ -326,7 +330,7 @@ class SplitPane(Component[SplitPaneProps]):
         persist_key: str | None = None,
         primary: NodeLike = None,
         secondary: NodeLike = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         ratio = max(min_ratio, min(max_ratio, primary_ratio))
         if min_ratio > max_ratio:
@@ -354,6 +358,7 @@ class SplitPane(Component[SplitPaneProps]):
         else:
             self._slot_primary = self._slot_secondary = None
 
+    @override
     def render(self) -> NodeLike:
         return extras_host(
             "hedron-extras-composition",
@@ -416,7 +421,7 @@ class FloatingAction(Component[FloatingActionProps]):
         href: str | None = None,
         action: str | None = None,
         placement: Literal["bottom-right", "bottom-left", "top-right", "top-left"] = "bottom-right",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if href is None and action is None:
             raise ValueError("FloatingAction requires href or action")
@@ -430,6 +435,7 @@ class FloatingAction(Component[FloatingActionProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         if self.props.href:
             control: NodeLike = html.a(
@@ -474,7 +480,7 @@ class ShortcutBinding(Props):
 
     @field_validator("href", mode="before")
     @classmethod
-    def _coerce_href(cls, value: Any) -> Any:
+    def _coerce_href(cls, value: object) -> object:
         if value is None or isinstance(value, SafeUrl):
             return value
         return SafeUrl.parse(str(value), purpose=UrlPurpose.NAVIGATION)
@@ -495,7 +501,7 @@ class KeyboardShortcuts(Component[KeyboardShortcutsProps]):
         bindings: Sequence[ShortcutBinding | MappingLike],
         *,
         enabled: bool = True,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         parsed: list[ShortcutBinding] = []
         for raw in bindings:
@@ -522,6 +528,7 @@ class KeyboardShortcuts(Component[KeyboardShortcutsProps]):
             seen.add(key)
         super().__init__(KeyboardShortcutsProps(bindings=parsed, enabled=enabled, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         items = [
             html.li(
@@ -571,7 +578,7 @@ class FocusScrollRequest(Component[FocusScrollRequestProps]):
         target_id: str,
         *,
         behavior: Literal["focus", "scroll", "focus-scroll"] = "focus-scroll",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if not target_id or target_id.startswith(".") or target_id.startswith("#"):
             raise ValueError(
@@ -579,6 +586,7 @@ class FocusScrollRequest(Component[FocusScrollRequestProps]):
             )
         super().__init__(FocusScrollRequestProps(target_id=target_id, behavior=behavior, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         return extras_host(
             "hedron-extras-composition",

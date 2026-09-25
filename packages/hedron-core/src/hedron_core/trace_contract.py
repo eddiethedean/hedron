@@ -53,7 +53,7 @@ def encode_interaction_trace(
         raise ValueError("interaction trace events must be a list")
     events = list(cast(list[object], events_value))
     while events and len(encoded) > max_bytes:
-        events.pop(0)
+        _ignored = events.pop(0)
         candidate = {**payload, "events": events, "truncated": True}
         encoded = _encode(candidate)
         payload = candidate

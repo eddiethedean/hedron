@@ -5,7 +5,6 @@ from __future__ import annotations
 import importlib
 import importlib.metadata
 from dataclasses import dataclass
-from typing import Any
 
 from packaging.specifiers import InvalidSpecifier, SpecifierSet
 from packaging.version import InvalidVersion, Version
@@ -28,7 +27,7 @@ class CapabilityPromotion:
     native: str
     status: str = "promoted"
 
-    def inspect(self) -> dict[str, Any]:
+    def inspect(self) -> dict[str, object]:
         """Check installed metadata without importing the promoted module."""
         try:
             version = importlib.metadata.version(self.distribution)
@@ -65,7 +64,7 @@ class CapabilityPromotion:
             "train": self.train,
         }
 
-    def load(self) -> Any:
+    def load(self) -> object:
         """Import the native module after metadata compatibility succeeds."""
         facts = self.inspect()
         if facts["status"] == "missing":
@@ -93,7 +92,7 @@ class CapabilityPromotion:
     def ejection(self) -> str:
         return f"Use the native {self.native} API directly; no Edron registry is required."
 
-    def as_mapping(self) -> dict[str, Any]:
+    def as_mapping(self) -> dict[str, object]:
         return {
             "name": self.name,
             "distribution": self.distribution,

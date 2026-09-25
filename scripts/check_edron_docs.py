@@ -17,7 +17,7 @@ from collections import Counter
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, cast
+from typing import cast
 
 from hedron_core.compat import tomllib
 
@@ -903,18 +903,18 @@ def check_optional_dependencies(texts: Mapping[Path, str], findings: list[str]) 
 
 
 def _machine_table(
-    document: Mapping[str, Any], key: str, path: Path, findings: list[str]
-) -> dict[str, Any]:
+    document: Mapping[str, object], key: str, path: Path, findings: list[str]
+) -> dict[str, object]:
     value = document.get(key)
     if isinstance(value, dict):
-        return cast(dict[str, Any], value)
+        return cast(dict[str, object], value)
     findings.append(f"{display(path)}: {key} must be a TOML table")
     return {}
 
 
 def _machine_rows(
-    document: Mapping[str, Any], key: str, path: Path, findings: list[str]
-) -> list[dict[str, Any]]:
+    document: Mapping[str, object], key: str, path: Path, findings: list[str]
+) -> list[dict[str, object]]:
     value = document.get(key)
     if not isinstance(value, list):
         findings.append(f"{display(path)}: {key} must be an array of TOML tables")
@@ -923,7 +923,7 @@ def _machine_rows(
     if not all(isinstance(row, dict) for row in rows):
         findings.append(f"{display(path)}: {key} must be an array of TOML tables")
         return []
-    return [cast(dict[str, Any], row) for row in rows]
+    return [cast(dict[str, object], row) for row in rows]
 
 
 def _string_list(value: object) -> list[str] | None:
@@ -935,12 +935,12 @@ def _string_list(value: object) -> list[str] | None:
     return cast(list[str], values)
 
 
-def _row_ids(rows: Iterable[Mapping[str, Any]]) -> list[Any]:
+def _row_ids(rows: Iterable[Mapping[str, object]]) -> list[object]:
     return [row.get("id") for row in rows]
 
 
 def check_machine_drafts(texts: Mapping[Path, str], findings: list[str]) -> int:
-    drafts: dict[Path, dict[str, Any]] = {}
+    drafts: dict[Path, dict[str, object]] = {}
     for path in MACHINE_DRAFTS.values():
         try:
             drafts[path] = tomllib.loads(path.read_text(encoding="utf-8"))
@@ -1189,7 +1189,7 @@ def check_machine_drafts(texts: Mapping[Path, str], findings: list[str]) -> int:
     try:
         release = tomllib.loads(RELEASE_GATE.read_text(encoding="utf-8"))
         artifact_rows = _machine_rows(release, "artifact", RELEASE_GATE, findings)
-        artifacts: dict[str, dict[str, Any]] = {}
+        artifacts: dict[str, dict[str, object]] = {}
         for row in artifact_rows:
             artifact_id = row.get("id")
             if isinstance(artifact_id, str):

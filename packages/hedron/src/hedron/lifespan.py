@@ -4,24 +4,51 @@ from __future__ import annotations
 
 import os
 from collections.abc import AsyncGenerator, Callable
-from contextlib import AbstractAsyncContextManager, asynccontextmanager, nullcontext
+from contextlib import (
+    AbstractAsyncContextManager,
+    AbstractContextManager,
+    asynccontextmanager,
+    nullcontext,
+)
 from pathlib import Path
+from typing import Protocol, cast
 
 from fastapi import FastAPI
 
+from hedron_core.app_state import state_value
 from hedron_core.compile_gate import deny_runtime_compile, is_production_env
 from hedron_core.registry import seal_registry
 from hedron_core.theme import ensure_default_theme_registered
+from hedron_core.typing_support import dynamic_attribute
 
 __all__ = ["compose_lifespan"]
 
 Lifespan = Callable[[FastAPI], AbstractAsyncContextManager[None]]
 
 
+class _RegistrySealState(Protocol):
+    is_sealed: bool
+
+
+class _CompilePolicy(Protocol):
+    allowed: bool
+
+
+class _HedronRuntime(Protocol):
+    registry: _RegistrySealState
+    compile_policy: _CompilePolicy
+
+    def activate(self) -> AbstractContextManager[object]: ...
+
+
+class _PluginLoader(Protocol):
+    def shutdown(self) -> None: ...
+
+
 def _settings_root(app: FastAPI, resolved_build: Path) -> Path:
     """Prefer an explicit project root, then build parent, then cwd."""
-    explicit = getattr(app.state, "hedron_project_root", None)
-    if explicit:
+    explicit = state_value(app.state, "hedron_project_root")
+    if isinstance(explicit, (str, Path)) and explicit:
         return Path(explicit).resolve()
     build_parent = resolved_build.resolve().parent
     # `.hedron/build` → project root is parent of `.hedron`
@@ -43,8 +70,8 @@ def _configure_startup(
     theme: str | None,
 ) -> bool:
     """Configure registry, plugins, and build manifests (sync; called from lifespan)."""
-    ensure_default_theme_registered()
-    app.state.hedron_theme = theme or getattr(app.state, "hedron_theme", "folio")
+    _ignored = ensure_default_theme_registered()
+    app.state.hedron_theme = theme or state_value(app.state, "hedron_theme", "folio")
 
     is_production = is_production_env(production=production)
     app.state.hedron_production = is_production
@@ -52,14 +79,16 @@ def _configure_startup(
     # application lifespan more than once.  Plugin registration and registry
     # sealing are one-time operations for an application runtime; replaying
     # them would try to mutate a sealed builder and run plugin hooks twice.
-    runtime = getattr(app, "_hedron_runtime", None)
+    runtime_value = dynamic_attribute(app, "_hedron_runtime")
+    runtime = cast(_HedronRuntime, runtime_value) if runtime_value is not None else None
     if runtime is not None and runtime.registry.is_sealed:
         return is_production
 
+    configured_build = state_value(app.state, "hedron_build_dir")
+    if not isinstance(configured_build, (str, Path)):
+        configured_build = None
     resolved_build = Path(
-        build_dir
-        or getattr(app.state, "hedron_build_dir", None)
-        or os.environ.get("HEDRON_BUILD_DIR", ".hedron/build")
+        build_dir or configured_build or os.environ.get("HEDRON_BUILD_DIR", ".hedron/build")
     )
     manifest_path = resolved_build / "manifest.json"
     from hedron.static_mount import mount_build_assets
@@ -96,14 +125,14 @@ def _configure_startup(
             ) from exc
         app.state.hedron_build_manifest = manifest
         app.state.hedron_build_dir = str(resolved_build.resolve())
-        mount_build_assets(app, resolved_build)
+        _ignored = mount_build_assets(app, resolved_build)
     elif manifest_path.is_file():
         from hedron.build import load_build_manifest
 
         try:
             app.state.hedron_build_manifest = load_build_manifest(resolved_build)
             app.state.hedron_build_dir = str(resolved_build.resolve())
-            mount_build_assets(app, resolved_build)
+            _ignored = mount_build_assets(app, resolved_build)
         except FileNotFoundError:
             # Race: manifest disappeared between exists check and load.
             pass
@@ -139,14 +168,14 @@ def _configure_startup(
         # Keep loader on app.state so finally still runs shutdown hooks.
         raise
 
-    seal_registry()
+    _ignored = seal_registry()
     from hedron.interactions import seal_app_catalog, validate_production_interactions
 
     catalog = seal_app_catalog(app)
     if runtime is not None:
         runtime.catalog = catalog
     if is_production:
-        validate_production_interactions(resolved_build, catalog)
+        _ignored = validate_production_interactions(resolved_build, catalog)
         from hedron_core.production_gate import assert_durable_backends
 
         assert_durable_backends(production=True)
@@ -180,7 +209,8 @@ def compose_lifespan(
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         is_production = is_production_env(production=production)
-        runtime = getattr(app, "_hedron_runtime", None)
+        runtime_value = dynamic_attribute(app, "_hedron_runtime")
+        runtime = cast(_HedronRuntime, runtime_value) if runtime_value is not None else None
         scope = runtime.activate() if runtime is not None else nullcontext()
         previous_compile_allowed = runtime.compile_policy.allowed if runtime is not None else True
         if runtime is not None:
@@ -202,12 +232,12 @@ def compose_lifespan(
                 else:
                     yield
             finally:
-                loader = getattr(app.state, "hedron_plugin_loader", None)
+                loader = state_value(app.state, "hedron_plugin_loader")
                 if loader is not None:
                     from contextlib import suppress
 
                     with suppress(Exception):
-                        loader.shutdown()
+                        cast(_PluginLoader, loader).shutdown()
                     app.state.hedron_plugin_loader = None
                 if runtime is not None:
                     runtime.compile_policy.allowed = previous_compile_allowed

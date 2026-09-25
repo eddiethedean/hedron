@@ -9,13 +9,29 @@ import re
 import sys
 from collections.abc import Sequence
 from pathlib import Path
-from typing import cast
+from typing import Protocol, cast
 
 from hedron.cli.discovery import apply_project_discovery as _apply_project_discovery
 from hedron.cli.discovery import load_app as _load_app
+from hedron_core.ast_literals import parse_literal
 from hedron_core.diagnostics import Diagnostic
 from hedron_core.registry import get_registry
 from hedron_core.typing_aliases import JsonObject, is_object_list, is_string_mapping
+
+
+class _CheckArgs(Protocol):
+    target: str | None
+    app: str | None
+    project: str | None
+    phase063: bool
+    all_compat: bool
+    version: str | None
+    severity: str
+    format: str
+
+
+class _ConstantNodeValue(Protocol):
+    value: object
 
 
 def _declared_selectors_for_routes() -> dict[str, set[str]]:
@@ -51,10 +67,8 @@ def _declared_selectors_for_routes() -> dict[str, set[str]]:
                     if selector:
                         selectors.add(selector)
         elif isinstance(raw, str) and raw.startswith("{"):
-            import ast
-
             try:
-                parsed: object = ast.literal_eval(raw)
+                parsed = parse_literal(raw)
             except (SyntaxError, ValueError):
                 parsed = {}
             if is_string_mapping(parsed):
@@ -150,13 +164,10 @@ def _check_htmx_region_mismatches(base: Path) -> list[Diagnostic]:
 
 
 def _ast_str_kw(node: ast.Call, name: str) -> str | None:
-    for kw in getattr(node, "keywords", ()):
-        if (
-            kw.arg == name
-            and isinstance(kw.value, ast.Constant)
-            and isinstance(kw.value.value, str)
-        ):
-            return kw.value.value
+    for kw in node.keywords:
+        if kw.arg == name and isinstance(kw.value, ast.Constant):
+            value = cast(_ConstantNodeValue, cast(object, kw.value)).value
+            return value if isinstance(value, str) else None
     return None
 
 
@@ -453,7 +464,7 @@ def _check_044_type_authoring(base: Path) -> list[Diagnostic]:
     for path in _iter_project_py_files(base):
         try:
             source = path.read_text(encoding="utf-8")
-            ast.parse(source, filename=str(path))
+            _ignored = ast.parse(source, filename=str(path))
         except (OSError, SyntaxError, UnicodeDecodeError):
             continue
     for descriptor in list_handle_descriptors():
@@ -561,7 +572,7 @@ def _app_source_paths(app_path: str | None) -> list[Path]:
     module = sys.modules.get(module_name)
     if module is None:
         return []
-    file_name = getattr(module, "__file__", None)
+    file_name = module.__file__
     if not file_name:
         return []
     path = Path(file_name).resolve()
@@ -720,9 +731,10 @@ def _cmd_check(args: argparse.Namespace) -> int:
     # import an application's module (or execute its decorators) merely to
     # report transitional spellings. The ordinary check retains its runtime
     # registry checks.
-    static_target_100 = getattr(args, "target", None) == "1.0"
-    app = None if static_target_100 else _load_app(args.app)
-    base = Path(args.project or Path.cwd()).resolve()
+    typed_args = cast(_CheckArgs, cast(object, args))
+    static_target_100 = typed_args.target == "1.0"
+    app = None if static_target_100 else _load_app(typed_args.app)
+    base = Path(typed_args.project or Path.cwd()).resolve()
     settings = _apply_project_discovery(base)
     diags: list[Diagnostic] = []
     explorer_diff: JsonObject | None = None
@@ -731,7 +743,7 @@ def _cmd_check(args: argparse.Namespace) -> int:
         from hedron_explorer.services.health import package_health
 
         if app is not None:
-            package_health()
+            _ignored = package_health()
             explorer_diff = cast(JsonObject, explorer_diff_report(app))
     except ImportError:
         print("hedron-explorer: skipped (not installed)", file=sys.stderr)
@@ -755,7 +767,7 @@ def _cmd_check(args: argparse.Namespace) -> int:
         for item in discover_component_folders(settings.resolved_roots(base=base)):
             if item.styles_css and item.styles_css.is_file():
                 try:
-                    compile_css(
+                    _ignored = compile_css(
                         item.styles_css.read_text(encoding="utf-8"),
                         component_id=f"check:{item.name}",
                         registered_roots=[item.folder],
@@ -768,10 +780,10 @@ def _cmd_check(args: argparse.Namespace) -> int:
     diags.extend(_check_select_oob_conflicts(base))
     diags.extend(_check_043_handles(base, target_100=static_target_100))
     diags.extend(_check_044_type_authoring(base))
-    if getattr(args, "target", None) == "1.0":
+    if typed_args.target == "1.0":
         diags.extend(_check_target_100(base))
 
-    if bool(getattr(args, "phase063", False)):
+    if typed_args.phase063:
         from hedron.phase063_checks import analyze_project
 
         for finding in analyze_project(base)["findings"]:
@@ -801,8 +813,8 @@ def _cmd_check(args: argparse.Namespace) -> int:
     # Adapter/extra COMPAT notices are scoped to the project under check unless --all-compat (#54).
     info_diags = _compat_info_diagnostics(
         base=base,
-        app=getattr(args, "app", None),
-        all_compat=bool(getattr(args, "all_compat", False)),
+        app=typed_args.app,
+        all_compat=typed_args.all_compat,
     )
 
     inventory_summary: JsonObject | None = None
@@ -901,13 +913,13 @@ def _cmd_check(args: argparse.Namespace) -> int:
             },
         )
 
-    check_version = getattr(args, "version", None) or hedron_version
+    check_version = typed_args.version or hedron_version
     diags = list(filter_by_applicability(diags, check_version))
     info_diags = list(filter_by_applicability(info_diags, check_version))
     all_diags = [*diags, *info_diags]
 
-    threshold = normalize_severity_alias(args.severity)
-    fmt = args.format
+    threshold = normalize_severity_alias(typed_args.severity)
+    fmt = typed_args.format
     if fmt == "json":
         # Machine-readable output is one document whenever auxiliary HDJ or
         # Explorer reports are present.  Keep the long-standing bare

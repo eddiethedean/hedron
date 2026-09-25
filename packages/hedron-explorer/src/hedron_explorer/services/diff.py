@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, cast
+from typing import cast
 
 from hedron_core.catalog import compile_interaction_catalog, get_sealed_catalog
 from hedron_core.registry import get_registry
+from hedron_core.typing_support import dynamic_attribute, set_dynamic_attribute
 
 
 def _catalog_fingerprint() -> str:
@@ -29,7 +30,7 @@ def _schema_fingerprint() -> tuple[str, ...]:
     )
 
 
-def current_baseline() -> dict[str, Any]:
+def current_baseline() -> dict[str, object]:
     catalog = get_sealed_catalog() or compile_interaction_catalog()
     manifest = catalog.to_manifest(profile="development")
     registry = get_registry()
@@ -54,10 +55,10 @@ def current_baseline() -> dict[str, Any]:
 
 
 def diff_baselines(
-    before: Mapping[str, Any], after: Mapping[str, Any] | None = None
-) -> dict[str, Any]:
+    before: Mapping[str, object], after: Mapping[str, object] | None = None
+) -> dict[str, object]:
     current = after or current_baseline()
-    changes: dict[str, Any] = {}
+    changes: dict[str, object] = {}
     keys = (
         "catalog",
         "manifest",
@@ -74,8 +75,8 @@ def diff_baselines(
             changes[key] = {"added": [], "removed": [], "changed": False}
             continue
         if isinstance(old, list) and isinstance(new, list):
-            old_set = set(cast(list[Any], old))
-            new_set = set(cast(list[Any], new))
+            old_set = set(cast(list[object], old))
+            new_set = set(cast(list[object], new))
             changes[key] = {
                 "added": sorted(new_set - old_set),
                 "removed": sorted(old_set - new_set),
@@ -95,29 +96,29 @@ def diff_baselines(
 _STATE_ATTR = "hedron_diff_baseline"
 
 
-def snapshot_diff_baseline(holder: object | None = None) -> dict[str, Any]:
+def snapshot_diff_baseline(holder: object | None = None) -> dict[str, object]:
     """Persist the current fingerprint baseline on ``app.state`` (or a holder)."""
     baseline = current_baseline()
-    state = getattr(holder, "state", None)
+    state = dynamic_attribute(holder, "state")
     if state is not None:
-        setattr(state, _STATE_ATTR, baseline)
+        set_dynamic_attribute(state, _STATE_ATTR, baseline)
     return baseline
 
 
-def stored_baseline(holder: object | None = None) -> dict[str, Any]:
-    state = getattr(holder, "state", None)
-    existing = getattr(state, _STATE_ATTR, None) if state is not None else None
+def stored_baseline(holder: object | None = None) -> dict[str, object]:
+    state = dynamic_attribute(holder, "state")
+    existing = dynamic_attribute(state, _STATE_ATTR) if state is not None else None
     if isinstance(existing, dict):
-        return cast(dict[str, Any], existing)
+        return cast(dict[str, object], existing)
     return snapshot_diff_baseline(holder)
 
 
-def explorer_diff_report(holder: object | None = None) -> dict[str, Any]:
+def explorer_diff_report(holder: object | None = None) -> dict[str, object]:
     """Compare the snapshotted baseline against the live fingerprints."""
     return diff_baselines(stored_baseline(holder), current_baseline())
 
 
-def format_diff_html(report: Mapping[str, Any]) -> str:
+def format_diff_html(report: Mapping[str, object]) -> str:
     import html as html_lib
 
     changes = report.get("changes")
@@ -127,20 +128,20 @@ def format_diff_html(report: Mapping[str, Any]) -> str:
     for key, change in cast(dict[object, object], changes).items():
         if not isinstance(change, dict):
             continue
-        typed_change = cast(dict[str, Any], change)
+        typed_change = cast(dict[str, object], change)
         added_raw = typed_change.get("added")
         removed_raw = typed_change.get("removed")
-        added_values = cast(list[Any], added_raw) if isinstance(added_raw, list) else []
-        removed_values = cast(list[Any], removed_raw) if isinstance(removed_raw, list) else []
+        added_values = cast(list[object], added_raw) if isinstance(added_raw, list) else []
+        removed_values = cast(list[object], removed_raw) if isinstance(removed_raw, list) else []
         added = ", ".join(str(item) for item in added_values) or "—"
         removed = ", ".join(str(item) for item in removed_values) or "—"
         rows.append(
             "<tr>"
-            f"<td>{html_lib.escape(str(key))}</td>"
-            f"<td>{html_lib.escape(str(typed_change.get('changed')))}</td>"
-            f"<td>{html_lib.escape(added)}</td>"
-            f"<td>{html_lib.escape(removed)}</td>"
-            "</tr>"
+            + f"<td>{html_lib.escape(str(key))}</td>"
+            + f"<td>{html_lib.escape(str(typed_change.get('changed')))}</td>"
+            + f"<td>{html_lib.escape(added)}</td>"
+            + f"<td>{html_lib.escape(removed)}</td>"
+            + "</tr>"
         )
     body = "".join(rows) or "<tr><td colspan='4'>No subjects</td></tr>"
     authority = html_lib.escape(str(report.get("authority") or ""))

@@ -6,7 +6,6 @@ import json
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 from types import MappingProxyType
-from typing import Any
 
 from hedron_core.diagnostics import error
 
@@ -48,7 +47,7 @@ class StateTransferPolicy:
 @dataclass(frozen=True, slots=True)
 class StateTransfer:
     identity: IdentityTarget
-    fields: Mapping[str, Any]
+    fields: Mapping[str, object]
     revision: str | int | None = None
 
     def __post_init__(self) -> None:

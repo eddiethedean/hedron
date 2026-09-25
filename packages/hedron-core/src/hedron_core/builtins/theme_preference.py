@@ -5,7 +5,9 @@ from __future__ import annotations
 import json
 import re
 from dataclasses import dataclass
-from typing import Any, Literal
+from typing import Literal
+
+from typing_extensions import override
 
 from hedron_core.builtins._base import class_names, mark_data
 from hedron_core.component import Component, NodeLike
@@ -114,7 +116,7 @@ class ThemePickerProps(Props):
     mark: str | None = None
 
 
-class ThemePicker(Component[Any]):
+class ThemePicker(Component[object]):
     """Accessible no-JavaScript theme form with optional HTMX enhancement."""
 
     logical_name = "ThemePicker"
@@ -132,7 +134,7 @@ class ThemePicker(Component[Any]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if not themes or any(not _THEME.fullmatch(name) for name in themes):
             raise ValueError("ThemePicker themes must be non-empty safe names")
@@ -165,6 +167,7 @@ class ThemePicker(Component[Any]):
         self._class = class_
         self._mark = mark
 
+    @override
     def render(self) -> NodeLike:
         theme_options = [
             html.option(name.title(), value=name, selected=name == self._selected.theme)

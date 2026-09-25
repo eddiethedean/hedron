@@ -249,7 +249,7 @@ def include_bundle(
             remediation="Call include_feature in the same window as include_component.",
         )
     caps = dict(capabilities or {})
-    caps.setdefault(bundle.provider, True)
+    _ignored = caps.setdefault(bundle.provider, True)
     with _LOCK:
         state = _active_state()
         bundles = state.bundles
@@ -399,7 +399,7 @@ def include_bundle(
                 registered.append(namespace)
             projection_namespaces[slot] = tuple(registered)
         except Exception as exc:
-            bundles.pop(slot, None)
+            _ignored = bundles.pop(slot, None)
             for namespace in projection_namespaces.pop(slot, ()):
                 unregister_projection_provider(namespace)
             extra = str(exc)
@@ -410,7 +410,7 @@ def include_bundle(
                 remediation="Fix the conflict and include again; no partial artifacts remain.",
             ) from exc
         if sum(1 for registered_app, _ in bundles if registered_app == app_id) > MAX_BUNDLES:
-            eject_bundle(bundle.logical_id, app_id=app_id)
+            _ignored = eject_bundle(bundle.logical_id, app_id=app_id)
             raise _bundle_error(
                 HED_BUNDLE_0005,
                 title="FeatureBundle count bound exceeded",

@@ -7,7 +7,7 @@ import json
 from collections.abc import Iterable, Mapping
 from contextvars import ContextVar
 from dataclasses import dataclass, field
-from typing import Any, cast
+from typing import cast
 
 from hedron_core.diagnostics import (
     Diagnostic,
@@ -74,7 +74,7 @@ def register_htmx_catalog(registry: ExtensionRegistry | None = None) -> Extensio
     for row in catalog_evidence_rows():
         if target.get(row.public_id) is not None:
             continue
-        target.register(
+        _ignored = target.register(
             ExtensionEvidence(
                 extension_id=row.public_id,
                 version=row.version,
@@ -127,10 +127,10 @@ class ExtensionRegistry:
 class _InstrumentationSession:
     def __init__(self, budget: LoopMacroBudget) -> None:
         self.budget = budget
-        self._tok_loop_used: Any = None
-        self._tok_macro_used: Any = None
-        self._tok_loop_limit: Any = None
-        self._tok_macro_limit: Any = None
+        self._tok_loop_used: object = None
+        self._tok_macro_used: object = None
+        self._tok_loop_limit: object = None
+        self._tok_macro_limit: object = None
 
     def __enter__(self) -> LoopMacroCounters:
         self._tok_loop_used = _loop_used.set(0)
@@ -157,7 +157,7 @@ def instrumentation_session(budget: LoopMacroBudget | None = None) -> _Instrumen
 def record_loop_iteration(count: int = 1) -> int:
     limit = _loop_limit.get()
     used = _loop_used.get() + count
-    _loop_used.set(used)
+    _ignored = _loop_used.set(used)
     if limit is not None and used > limit:
         raise error(
             "HED-JINJA-0031",
@@ -171,7 +171,7 @@ def record_loop_iteration(count: int = 1) -> int:
 def record_macro_call(count: int = 1) -> int:
     limit = _macro_limit.get()
     used = _macro_used.get() + count
-    _macro_used.set(used)
+    _ignored = _macro_used.set(used)
     if limit is not None and used > limit:
         raise error(
             "HED-JINJA-0032",
@@ -191,9 +191,9 @@ def checker_fixture_from_diagnostics(
     fixture_id: str,
     diagnostics: Iterable[Diagnostic],
     contract_version: str = "hedron-portable-1",
-) -> dict[str, Any]:
+) -> dict[str, object]:
     """Emit a portable SARIF-shaped checker fixture payload."""
-    results: list[dict[str, Any]] = []
+    results: list[dict[str, object]] = []
     for diag in diagnostics:
         results.append(
             {
@@ -309,7 +309,7 @@ def a11y_static_diagnostics(*, template_name: str, body: str) -> list[Diagnostic
                 )
             )
     # duplicate id attributes (static literal ids only)
-    ids = re.findall(r'\bid\s*=\s*["\']([^"\']+)["\']', body, re.I)
+    ids = [match.group(1) for match in re.finditer(r'\bid\s*=\s*["\']([^"\']+)["\']', body, re.I)]
     seen: set[str] = set()
     for element_id in ids:
         if element_id in seen:

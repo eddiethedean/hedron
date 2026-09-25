@@ -4,11 +4,12 @@ from __future__ import annotations
 
 import json
 from collections.abc import Mapping, Sequence
-from typing import Any, cast
+from typing import cast
 
 from hedron_core.builtins.content import Text
 from hedron_core.component import NodeLike
 from hedron_core.html import html
+from hedron_core.typing_support import dynamic_attribute
 from hedron_core.visualization import ChartOutput
 
 
@@ -20,12 +21,14 @@ def render_host_figure(
 ) -> NodeLike:
     """Render a figure with a custom element carrying non-executable JSON payload."""
     acc = output.accessibility
-    payload: Mapping[str, Any]
+    payload: Mapping[str, object]
     if isinstance(output.body, str):
         try:
             parsed = json.loads(output.body)
             payload = (
-                cast(Mapping[str, Any], parsed) if isinstance(parsed, Mapping) else {"body": parsed}
+                cast(Mapping[str, object], parsed)
+                if isinstance(parsed, Mapping)
+                else {"body": parsed}
             )
         except json.JSONDecodeError:
             payload = {"body": output.body}
@@ -68,8 +71,8 @@ def _tabular(rows: object) -> NodeLike:
         return Text("")
     if isinstance(rows, Sequence) and not isinstance(rows, (str, bytes)):
         typed_rows = cast(Sequence[object], rows)
-        cleaned: list[Mapping[str, Any]] = [
-            cast(Mapping[str, Any], row) for row in typed_rows if isinstance(row, Mapping)
+        cleaned: list[Mapping[str, object]] = [
+            cast(Mapping[str, object], row) for row in typed_rows if isinstance(row, Mapping)
         ]
         return _fallback_table(cleaned)
     return Text("")
@@ -90,10 +93,10 @@ def _coerce_zoom(raw: object, *, default: int = 2) -> int:
     return zoom
 
 
-def extract_folium_payload(value: object) -> dict[str, Any]:
+def extract_folium_payload(value: object) -> dict[str, object]:
     """Extract CSP-safe map center/zoom/markers from a Folium map or mapping."""
     if isinstance(value, Mapping):
-        mapping = cast(Mapping[str, Any], value)
+        mapping = cast(Mapping[str, object], value)
         if mapping.get("type") == "folium" or "center" in mapping or "location" in mapping:
             center = mapping.get("center") or mapping.get("location") or [0.0, 0.0]
             zoom_raw = mapping.get("zoom")
@@ -107,29 +110,33 @@ def extract_folium_payload(value: object) -> dict[str, Any]:
             }
         raise TypeError("Folium mapping requires center/location or type=folium")
 
-    location = getattr(value, "location", None)
-    zoom_raw = getattr(value, "zoom_start", None)
+    location = dynamic_attribute(value, "location")
+    zoom_raw = dynamic_attribute(value, "zoom_start")
     if zoom_raw is None:
-        zoom_raw = getattr(value, "zoom", None)
-    markers: list[dict[str, Any]] = []
+        zoom_raw = dynamic_attribute(value, "zoom")
+    markers: list[dict[str, object]] = []
     geojson: object | None = None
-    children = getattr(value, "_children", None)
+    children = dynamic_attribute(value, "_children")
     if isinstance(children, Mapping):
-        child_mapping = cast(Mapping[object, Any], children)
+        child_mapping = cast(Mapping[object, object], children)
         for child in child_mapping.values():
             mod = type(child).__module__
             name = type(child).__name__.lower()
             if "marker" in name:
-                loc = getattr(child, "location", None)
-                popup = getattr(child, "popup", None)
+                loc = dynamic_attribute(child, "location")
+                popup = dynamic_attribute(child, "popup")
                 markers.append(
                     {
-                        "location": list(loc) if loc is not None else None,
-                        "popup": str(getattr(popup, "html", popup) or ""),
+                        "location": (
+                            list(cast(Sequence[object], loc))
+                            if isinstance(loc, Sequence) and not isinstance(loc, (str, bytes))
+                            else None
+                        ),
+                        "popup": str(dynamic_attribute(popup, "html", popup) or ""),
                     }
                 )
             if "geojson" in name or "geojson" in mod:
-                data = getattr(child, "data", None)
+                data = dynamic_attribute(child, "data")
                 if data is not None:
                     geojson = data
     if location is None:
@@ -144,7 +151,7 @@ def extract_folium_payload(value: object) -> dict[str, Any]:
     }
 
 
-def extract_pydeck_payload(value: Mapping[str, Any]) -> dict[str, Any]:
+def extract_pydeck_payload(value: Mapping[str, object]) -> dict[str, object]:
     """Normalize PyDeck / deck.gl JSON to the Folium-shaped MapLibre host contract (#84)."""
     if "center" in value and "zoom" in value and "initial_view_state" not in value:
         # Already MapLibre/Folium-shaped.
@@ -161,7 +168,7 @@ def extract_pydeck_payload(value: Mapping[str, Any]) -> dict[str, Any]:
     view_value: object = value.get("initial_view_state") or value.get("view_state") or {}
     if not isinstance(view_value, Mapping):
         raise TypeError("PyDeck payload requires initial_view_state mapping")
-    view = cast(Mapping[str, Any], view_value)
+    view = cast(Mapping[str, object], view_value)
 
     lat = view.get("latitude")
     lng = view.get("longitude")
@@ -172,16 +179,16 @@ def extract_pydeck_payload(value: Mapping[str, Any]) -> dict[str, Any]:
 
     layers_value: object = value.get("layers")
     if layers_value is None:
-        layers: Sequence[Any] = ()
+        layers: Sequence[object] = ()
     elif isinstance(layers_value, Sequence) and not isinstance(
         layers_value, (str, bytes, bytearray)
     ):
-        layers = cast(Sequence[Any], layers_value)
+        layers = cast(Sequence[object], layers_value)
     else:
         raise TypeError("PyDeck layers must be a sequence of layer mappings")
     markers_value: object = value.get("markers") or []
-    markers: list[dict[str, Any]] = (
-        list(cast(Sequence[dict[str, Any]], markers_value))
+    markers: list[dict[str, object]] = (
+        list(cast(Sequence[dict[str, object]], markers_value))
         if isinstance(markers_value, Sequence) and not isinstance(markers_value, (str, bytes))
         else []
     )
@@ -192,21 +199,21 @@ def extract_pydeck_payload(value: Mapping[str, Any]) -> dict[str, Any]:
             if not isinstance(layer, Mapping):
                 raise TypeError(
                     "PyDeck layers cannot be rendered by the MapLibre host; "
-                    "pass Folium-shaped center/zoom/markers/geojson instead."
+                    + "pass Folium-shaped center/zoom/markers/geojson instead."
                 )
-            layer_mapping = cast(Mapping[str, Any], layer)
+            layer_mapping = cast(Mapping[str, object], layer)
             data = layer_mapping.get("data")
             # Accept simple point lists as markers; anything else is unsupported.
-            data_points = cast(list[Any], data) if isinstance(data, list) else []
+            data_points = cast(list[object], data) if isinstance(data, list) else []
             if data_points and all(
                 isinstance(pt, (list, tuple)) and len(cast(Sequence[object], pt)) >= 2
                 for pt in data_points
             ):
                 for pt in data_points:
-                    point = cast(Sequence[Any], pt)
+                    point = cast(Sequence[object], pt)
                     markers.append({"location": [float(point[1]), float(point[0])]})
                 converted = True
-            elif isinstance(data, Mapping) and cast(Mapping[str, Any], data).get("type") in {
+            elif isinstance(data, Mapping) and cast(Mapping[str, object], data).get("type") in {
                 "FeatureCollection",
                 "Feature",
                 "GeometryCollection",
@@ -218,7 +225,7 @@ def extract_pydeck_payload(value: Mapping[str, Any]) -> dict[str, Any]:
             else:
                 raise TypeError(
                     "Unsupported PyDeck layer for MapLibre host; "
-                    "convert to markers/geojson or omit layers."
+                    + "convert to markers/geojson or omit layers."
                 )
         if not converted and layers:
             raise TypeError("Unsupported PyDeck layers for MapLibre host")
@@ -233,7 +240,7 @@ def extract_pydeck_payload(value: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
-def downsample_plotly_body(body: Mapping[str, Any], *, max_points: int) -> dict[str, Any]:
+def downsample_plotly_body(body: Mapping[str, object], *, max_points: int) -> dict[str, object]:
     """Downsample Plotly-like data arrays to ``max_points`` (stride sample).
 
     ``max_points`` must be a positive integer (#83); non-positive values fail closed.
@@ -251,7 +258,7 @@ def downsample_plotly_body(body: Mapping[str, Any], *, max_points: int) -> dict[
         for key in ("x", "y"):
             seq_value = out.get(key)
             if isinstance(seq_value, list):
-                seq = cast(list[Any], seq_value)
+                seq = cast(list[object], seq_value)
                 if len(seq) <= max_points:
                     continue
                 step = max(1, len(seq) // max_points)
@@ -259,17 +266,17 @@ def downsample_plotly_body(body: Mapping[str, Any], *, max_points: int) -> dict[
         out["max_points"] = max_points
         out["resampled"] = True
         return out
-    traces = cast(list[Any], data)
-    new_data: list[Any] = []
+    traces = cast(list[object], data)
+    new_data: list[object] = []
     for trace in traces:
         if not isinstance(trace, Mapping):
             new_data.append(trace)
             continue
-        t = dict(cast(Mapping[str, Any], trace))
+        t = dict(cast(Mapping[str, object], trace))
         for key in ("x", "y", "z", "lat", "lon"):
             seq_value = t.get(key)
             if isinstance(seq_value, list):
-                seq = cast(list[Any], seq_value)
+                seq = cast(list[object], seq_value)
                 if len(seq) <= max_points:
                     continue
                 step = max(1, len(seq) // max_points)

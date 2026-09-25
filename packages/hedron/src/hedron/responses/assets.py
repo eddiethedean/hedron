@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+from typing import Protocol, cast
+
 from starlette.requests import Request
 
 from hedron.security.policy import SecurityPolicy
+from hedron_core.manifests import BuildManifest
 from hedron_core.rendering import RenderMode, RenderResult
 
 __all__ = [
@@ -17,11 +20,38 @@ __all__ = [
 ]
 
 
+class _HedronState(Protocol):
+    hedron_build_manifest: BuildManifest | None
+    hedron_assets_path: str
+    hedron_mount_path: str | None
+    hedron_mount_was_configured: bool
+    hedron_security: SecurityPolicy | None
+    hedron_demand_driven_assets: bool
+    hedron_default_styles: bool
+
+
+class _AppWithHedronState(Protocol):
+    state: _HedronState
+
+
+class _RequestWithHedronState(Protocol):
+    app: _AppWithHedronState
+
+
+def _hedron_state(request: Request) -> _HedronState:
+    typed_request = cast(_RequestWithHedronState, cast(object, request))
+    return typed_request.app.state
+
+
 def _attach_manifest_assets(result: RenderResult, request: Request) -> RenderResult:
     """Populate ``result.assets`` from the active build manifest when empty."""
     if result.assets:
         return result
-    manifest = getattr(request.app.state, "hedron_build_manifest", None)
+    state = _hedron_state(request)
+    try:
+        manifest = state.hedron_build_manifest
+    except AttributeError:
+        manifest = None
     if manifest is None:
         return result
     from dataclasses import replace
@@ -29,7 +59,7 @@ def _attach_manifest_assets(result: RenderResult, request: Request) -> RenderRes
 
     from hedron_core.rendering import AssetRef
 
-    assets_prefix = getattr(request.app.state, "hedron_assets_path", "/hedron-assets")
+    assets_prefix = getattr(state, "hedron_assets_path", "/hedron-assets")
     attached: list[AssetRef] = []
     for entry in manifest.assets.assets:
         href = f"{assets_prefix.rstrip('/')}/{entry.path}"
@@ -52,8 +82,9 @@ def _mounted_static_href(path: str, request: Request | None) -> str:
         return href
     from hedron.mount import mount_from_request, prefix_local_path
 
-    mount = getattr(request.app.state, "hedron_mount_path", None)
-    configured = bool(getattr(request.app.state, "hedron_mount_was_configured", False))
+    state = _hedron_state(request)
+    mount = getattr(state, "hedron_mount_path", None)
+    configured = getattr(state, "hedron_mount_was_configured", False)
     if not isinstance(mount, str) or (not mount and not configured):
         mount = mount_from_request(request).path
     return prefix_local_path(href, mount)
@@ -74,13 +105,14 @@ def _inject_build_assets(
         inject_page_theme,
     )
 
-    policy = getattr(request.app.state, "hedron_security", None)
+    state = _hedron_state(request)
+    policy = getattr(state, "hedron_security", None)
     if not isinstance(policy, SecurityPolicy):
         policy = SecurityPolicy.from_name("standard")
     trace_theme = result.trace.get("theme") if result.trace is not None else None
     theme = trace_theme if isinstance(trace_theme, str) else None
     html_text = inject_page_theme(html_text, mode, theme)
-    demand_driven = bool(getattr(request.app.state, "hedron_demand_driven_assets", False))
+    demand_driven = getattr(state, "hedron_demand_driven_assets", False)
     requires_htmx = bool(getattr(result, "requires_htmx", False))
     html_text = _ensure_htmx_asset(
         html_text,
@@ -115,7 +147,7 @@ def _inject_build_assets(
         seen.add(tag)
         tags.append(tag)
 
-    if getattr(request.app.state, "hedron_default_styles", True):
+    if getattr(state, "hedron_default_styles", True):
         css = _mounted_static_href("/hedron-static/hedron-default.css", request)
         add(f'<link rel="stylesheet" href="{css}">')
         accent_css_path = folio_accent_asset_path(html_text, theme)

@@ -10,7 +10,7 @@ import math
 import time
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field, replace
-from typing import Any, cast
+from typing import cast
 
 _current_security_context: contextvars.ContextVar[SecurityContext | None] = contextvars.ContextVar(
     "hedron_security_context", default=None
@@ -141,7 +141,7 @@ class SecurityContext:
             next_tenant = tenant_id
         return replace(self, subject_id=next_subject, tenant_id=next_tenant, fingerprint="")
 
-    def to_serializable(self) -> dict[str, Any]:
+    def to_serializable(self) -> dict[str, object]:
         """Return the local canonical payload used inside a signed envelope.
 
         This method is retained for local compatibility and for
@@ -172,7 +172,7 @@ class SecurityContext:
         audience: str = "hedron",
         ttl_seconds: int = 300,
         now: float | None = None,
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         """Serialize this context in an authenticated, short-lived envelope.
 
         ``to_serializable`` remains as a local compatibility representation. Any
@@ -188,13 +188,13 @@ class SecurityContext:
             raise SecurityContextError("invalid security context audience")
         if type(ttl_seconds) is not int or not 1 <= ttl_seconds <= 86_400:
             raise SecurityContextError("ttl_seconds must be between 1 and 86400")
-        timestamp: Any = time.time() if now is None else now
+        timestamp: object = time.time() if now is None else now
         if isinstance(timestamp, bool) or not isinstance(timestamp, (int, float)):
             raise SecurityContextError("security context clock must be a finite number")
         if not math.isfinite(float(timestamp)):
             raise SecurityContextError("security context clock must be a finite number")
         issued_at = int(timestamp)
-        envelope: dict[str, Any] = {
+        envelope: dict[str, object] = {
             "schema_version": 1,
             "key_id": key_id,
             "audience": audience,
@@ -208,7 +208,7 @@ class SecurityContext:
     @classmethod
     def from_serializable(
         cls,
-        payload: Mapping[str, Any],
+        payload: Mapping[str, object],
         *,
         expected_application_id: str | None = None,
     ) -> SecurityContext:
@@ -238,7 +238,7 @@ class SecurityContext:
         if scopes_raw is None:
             scopes: frozenset[str] = frozenset[str]()
         elif isinstance(scopes_raw, Sequence):
-            if len(cast(Sequence[Any], scopes_raw)) > _MAX_SCOPES:
+            if len(cast(Sequence[object], scopes_raw)) > _MAX_SCOPES:
                 raise SecurityContextError("too many security context scopes")
             values: list[str] = []
             for item in cast(Sequence[object], scopes_raw):
@@ -267,7 +267,7 @@ class SecurityContext:
     @classmethod
     def from_authenticated(
         cls,
-        payload: Mapping[str, Any],
+        payload: Mapping[str, object],
         *,
         secret: str | bytes,
         expected_application_id: str | None = None,
@@ -276,7 +276,7 @@ class SecurityContext:
         clock_skew_seconds: int = 30,
     ) -> SecurityContext:
         """Restore a context only after verifying its signed envelope and expiry."""
-        raw_clock_skew: Any = clock_skew_seconds
+        raw_clock_skew: object = clock_skew_seconds
         if (
             isinstance(raw_clock_skew, bool)
             or not isinstance(raw_clock_skew, int)
@@ -312,7 +312,7 @@ class SecurityContext:
             raise SecurityContextError("oversized security context envelope field")
         if expires_at <= issued_at or expires_at - issued_at > 86_400:
             raise SecurityContextError("invalid security context lifetime")
-        timestamp: Any = time.time() if now is None else now
+        timestamp: object = time.time() if now is None else now
         if isinstance(timestamp, bool) or not isinstance(timestamp, (int, float)):
             raise SecurityContextError("security context clock must be a finite number")
         if not math.isfinite(float(timestamp)):
@@ -325,7 +325,7 @@ class SecurityContext:
         if not hmac.compare_digest(signature, expected_signature):
             raise SecurityContextError("invalid security context signature")
         return cls.from_serializable(
-            cast(Mapping[str, Any], context),
+            cast(Mapping[str, object], context),
             expected_application_id=expected_application_id,
         )
 
@@ -356,7 +356,7 @@ def _bounded_int(
     return value
 
 
-def _validate_payload_size(payload: Mapping[str, Any]) -> None:
+def _validate_payload_size(payload: Mapping[str, object]) -> None:
     if not hasattr(payload, "items"):
         raise SecurityContextError("security context payload must be an object")
     try:
@@ -367,7 +367,7 @@ def _validate_payload_size(payload: Mapping[str, Any]) -> None:
         raise SecurityContextError("security context payload is too large")
 
 
-def _sign_envelope(payload: Mapping[str, Any], secret: bytes) -> str:
+def _sign_envelope(payload: Mapping[str, object], secret: bytes) -> str:
     try:
         encoded = json.dumps(
             payload,

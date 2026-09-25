@@ -38,7 +38,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```text
-ActionDock(*nodes: 'NodeLike', children: 'NodeLike' = None, label: 'str' = 'Actions', placement: "Literal['bottom', 'aside']" = 'bottom', id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
+ActionDock(*nodes: 'NodeLike', children: 'NodeLike' = None, label: 'str' = 'Actions', placement: "Literal['bottom', 'aside']" = 'bottom', id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |

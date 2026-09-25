@@ -5,13 +5,14 @@ from __future__ import annotations
 import inspect
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
-from typing import Annotated, Any, Generic, TypeVar, get_args, get_origin
+from typing import Annotated, Generic, TypeVar
 
 from pydantic import BaseModel
 
 from hedron.type_authoring.markers import Refreshes, Updates
 from hedron_core.codes import HED_TYPE_0007
 from hedron_core.diagnostics import error
+from hedron_core.typing_support import dynamic_attribute, type_arguments, type_origin
 
 ResultT = TypeVar("ResultT")
 
@@ -26,17 +27,17 @@ def _runtime_object(value: object) -> object:
 
 @dataclass(frozen=True, slots=True)
 class OutcomeCase:
-    variant: type[Any]
-    render: Callable[..., Any]
+    variant: type[object]
+    render: Callable[..., object]
     status: int = 200
     effects: Refreshes | Updates | None = None
     fallback: str | None = None
 
 
 def case(
-    variant: type[Any],
+    variant: type[object],
     *,
-    render: Callable[..., Any],
+    render: Callable[..., object],
     status: int = 200,
     effects: Refreshes | Updates | None = None,
     fallback: str | None = None,
@@ -69,7 +70,7 @@ class OutcomeMap(Generic[ResultT]):
                 explanation="OutcomeMap requires at least one case(...).",
                 remediation="Map every discriminator variant explicitly.",
             )
-        seen: dict[type[Any], OutcomeCase] = {}
+        seen: dict[type[object], OutcomeCase] = {}
         for case_value in cases:
             item = _runtime_object(case_value)
             if not isinstance(item, OutcomeCase):
@@ -128,30 +129,35 @@ class OutcomeMap(Generic[ResultT]):
         return value, 200, None
 
 
-def _names(types: Sequence[type[Any]]) -> list[str]:
-    return [getattr(item, "__name__", str(item)) for item in types]
+def _names(types: Sequence[type[object]]) -> list[str]:
+    names: list[str] = []
+    for item in types:
+        name = dynamic_attribute(item, "__name__")
+        names.append(name if isinstance(name, str) else str(item))
+    return names
 
 
-def _union_variants(annotation: object) -> tuple[type[Any], ...]:
+def _union_variants(annotation: object) -> tuple[type[object], ...]:
     if annotation is inspect.Parameter.empty:
         return ()
-    origin = get_origin(annotation)
+    origin = type_origin(annotation)
     if origin is Annotated:
-        args = get_args(annotation)
+        args = type_arguments(annotation)
         return _union_variants(args[0]) if args else ()
-    alias_value = getattr(annotation, "__value__", None)
-    if type(annotation).__name__ == "TypeAliasType" and alias_value is not None:
+    alias_value = dynamic_attribute(annotation, "__value__")
+    annotation_type_name = dynamic_attribute(type(annotation), "__name__")
+    if annotation_type_name == "TypeAliasType" and alias_value is not None:
         return _union_variants(alias_value)
-    args = get_args(annotation)
+    args = type_arguments(annotation)
     if origin is None and not args:
         if isinstance(annotation, type):
             return (annotation,)
-        name = type(annotation).__name__
+        name = annotation_type_name
         if name in {"UnionType", "Union"}:
-            args = getattr(annotation, "__args__", ())
+            args = type_arguments(annotation)
         else:
             return ()
-    variants: list[type[Any]] = []
+    variants: list[type[object]] = []
     for arg in args:
         if arg is type(None):
             continue

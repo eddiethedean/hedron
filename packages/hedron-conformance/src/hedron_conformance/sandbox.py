@@ -19,7 +19,7 @@ NO_NETWORK_MARKER = "HEDRON_CONFORMANCE_NO_NETWORK"
 
 _SECRET_ENV_RE = re.compile(
     r"(secret|password|passwd|token|api[_-]?key|access[_-]?key|private[_-]?key|"
-    r"credential|auth[_-]?token|session[_-]?key)",
+    + r"credential|auth[_-]?token|session[_-]?key)",
     re.IGNORECASE,
 )
 
@@ -64,7 +64,7 @@ def validate_suite_path(path: Path | str, *, root: Path | str) -> Path:
         raise SuitePathError(f"path traversal rejected: {path!s}")
     resolved = candidate.resolve() if candidate.is_absolute() else (root_path / candidate).resolve()
     try:
-        resolved.relative_to(root_path)
+        _ignored = resolved.relative_to(root_path)
     except ValueError as exc:
         raise SuitePathError(f"suite path {path!s} escapes root {root_path}") from exc
     return resolved

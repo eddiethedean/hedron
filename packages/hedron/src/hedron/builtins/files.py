@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
-from typing import Any
 
 from starlette.responses import FileResponse, Response
+from typing_extensions import override
 
 from hedron_core.alpine import AlpineAttrs, AlpineDirective, AlpineExpression
 from hedron_core.builtins.appearance import Appearance, Density, Size, appearance_data
@@ -61,7 +61,7 @@ def safe_download_response(
     root_resolved = Path(root).resolve()
     file_path = Path(path).resolve()
     try:
-        file_path.relative_to(root_resolved)
+        _ignored = file_path.relative_to(root_resolved)
     except ValueError as exc:
         raise PermissionError("Download path escapes authorized root") from exc
     if not file_path.is_file():
@@ -114,7 +114,7 @@ class FileUpload(Component[FileUploadProps]):
         size: Size | None = None,
         appearance: Appearance | None = None,
         density: Density | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             FileUploadProps(
@@ -132,7 +132,8 @@ class FileUpload(Component[FileUploadProps]):
             )
         )
 
-    def render(self) -> Any:
+    @override
+    def render(self) -> object:
         limit_text = f"Maximum size {_format_size(self.props.maximum_size)}"
         hint = self.props.hint or limit_text
         hint_id = f"hedron-file-upload-hint-{self.props.name}"
@@ -140,7 +141,7 @@ class FileUpload(Component[FileUploadProps]):
         described_by = [hint_id]
         if self.props.status:
             described_by.append(status_id)
-        input_attrs: dict[str, Any] = {
+        input_attrs: dict[str, object] = {
             "type": "file",
             "name": self.props.name,
             "aria": {"label": self.props.label, "describedby": " ".join(described_by)},
@@ -160,7 +161,7 @@ class FileUpload(Component[FileUploadProps]):
             input_attrs["accept"] = self.props.accept
         if self.props.multiple:
             input_attrs["multiple"] = True
-        parts: list[Any] = [
+        parts: list[object] = [
             html.span(self.props.label, class_="hedron-file-upload-label"),
             html.input(**input_attrs),
             html.span(hint, id=hint_id, class_="hedron-file-upload-hint"),
@@ -231,9 +232,9 @@ class DownloadButton(Component[DownloadButtonProps]):
         filename: str,
         label: str = "Download",
         source: SafeUrl | str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
-        validate_upload_filename(filename)
+        _ignored = validate_upload_filename(filename)
         target = href if href is not None else source
         if target is None:
             raise ValueError("DownloadButton requires href= or source=")
@@ -244,7 +245,8 @@ class DownloadButton(Component[DownloadButtonProps]):
         )
         super().__init__(DownloadButtonProps(href=url, filename=filename, label=label, **kwargs))
 
-    def render(self) -> Any:
+    @override
+    def render(self) -> object:
         return html.a(
             self.props.label,
             href=self.props.href,

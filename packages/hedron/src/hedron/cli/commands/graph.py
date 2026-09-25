@@ -6,8 +6,9 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Any, cast
+from typing import cast
 
+from hedron.cli.arguments import path_argument, string_argument
 from hedron.cli.discovery import apply_project_discovery as _apply_project_discovery
 from hedron.cli.discovery import load_app as _load_app
 from hedron_core.registry import get_registry
@@ -15,13 +16,13 @@ from hedron_core.typing_aliases import JsonObject
 
 
 def _cmd_graph(args: argparse.Namespace) -> int:
-    _load_app(args.app)
-    base = Path(getattr(args, "project", None) or Path.cwd()).resolve()
-    _apply_project_discovery(base)
+    _ignored = _load_app(string_argument(args, "app", "") or "")
+    base = Path(path_argument(args, "project") or Path.cwd()).resolve()
+    _ignored = _apply_project_discovery(base)
     try:
         from hedron_explorer.services.catalog import graph_json
 
-        explorer_payload: dict[str, Any] = graph_json()
+        explorer_payload: dict[str, object] = graph_json()
         inverse: dict[str, list[str]] = {}
         raw_edges = explorer_payload.get("edges")
         edges_list = cast(list[object], raw_edges) if isinstance(raw_edges, list) else []

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import importlib
 import importlib.metadata
-from typing import Any
 
 from edron.errors import EdronError
 
@@ -25,7 +24,7 @@ class BrokenCapabilityError(CapabilityError):
 
 def require_capability(
     distribution: str, module: str | None = None, *, minimum: str | None = None
-) -> Any:
+) -> object:
     try:
         version = importlib.metadata.version(distribution)
     except importlib.metadata.PackageNotFoundError as exc:

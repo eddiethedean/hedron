@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
 
 from hedron.build.rewrite import rewrite_module_imports
 from hedron_core.assets import fingerprint_bytes
@@ -11,10 +10,10 @@ from hedron_core.assets import fingerprint_bytes
 
 def relink_fingerprinted_modules(
     assets_dir: Path,
-    entries: list[Any],
+    entries: list[object],
     *,
     basename_by_path: dict[str, str],
-) -> list[Any]:
+) -> list[object]:
     """After copy-fingerprint, rewrite relative imports and re-emit changed modules."""
     from hedron_core.manifests import AssetEntry
 
@@ -50,7 +49,7 @@ def relink_fingerprinted_modules(
                 attributes=dict(entry.attributes),
             )
             entries[index] = new_entry
-            basename_by_path.pop(old_path, None)
+            _ignored = basename_by_path.pop(old_path, None)
             basename_by_path[new_entry.path] = original_basename
             changed = True
         if not changed:

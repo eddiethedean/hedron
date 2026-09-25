@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import re
 from collections.abc import Mapping
-from typing import Any, cast
+from typing import cast
 from urllib.parse import unquote_plus, urlsplit, urlunsplit
 
 _SENSITIVE_QUERY_KEYS = frozenset(
@@ -25,12 +25,12 @@ _LICENSE_SHAPE = re.compile(r"\b[A-Z0-9]{4}(?:-[A-Z0-9]{4}){5,}\b", re.IGNORECAS
 _URL_CREDENTIALS = re.compile(r"(?i)(https?://)([^/\s@]+)@")
 _SENSITIVE_ASSIGNMENT = re.compile(
     r"(?i)\b(token|code|session|password|secret|access_token|refresh_token|api_key|license|authorization|credential|cookie)"
-    r"\s*=\s*([^&\s]+)"
+    + r"\s*=\s*([^&\s]+)"
 )
 _SENSITIVE_HEADER = re.compile(
     r"(?im)(\b(?:authorization|proxy-authorization|cookie|set-cookie|"
-    r"rstudio-connect-credentials|rstudio-connect-user-session|"
-    r"x-(?:csrf|xsrf)-token)\s*:\s*)[^\r\n]*"
+    + r"rstudio-connect-credentials|rstudio-connect-user-session|"
+    + r"x-(?:csrf|xsrf)-token)\s*:\s*)[^\r\n]*"
 )
 _SENSITIVE_KEY = re.compile(
     r"(?i)(token|secret|password|passwd|credential|authorization|cookie(?![_-]?(mount|path|name))|license|api[_-]?key|private[_-]?key)"
@@ -105,7 +105,7 @@ def redact_text(value: str) -> str:
     return _LICENSE_SHAPE.sub(_REDACTED, redact_path(redacted))
 
 
-def redact_scope_for_log(scope: Mapping[str, Any]) -> dict[str, Any]:
+def redact_scope_for_log(scope: Mapping[str, object]) -> dict[str, object]:
     path = redact_path(str(scope.get("path") or ""))
     raw = scope.get("raw_path")
     raw_display: str | bytes

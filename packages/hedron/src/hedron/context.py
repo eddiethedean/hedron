@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from starlette.requests import Request
 
 from hedron.security.csrf import csrf_token_for_request
+from hedron_core.app_state import request_state, state_value
 from hedron_core.rendering import RenderContext
 from hedron_core.security_policy import SecurityPolicy
 
@@ -26,12 +27,12 @@ def render_context_from_request(request: Request) -> RenderContext:
     locale = request.headers.get("Accept-Language", "en").split(",")[0].strip() or "en"
     theme = request.headers.get("X-Hedron-Theme")
     if not theme:
-        theme = getattr(request.app.state, "hedron_theme", None)
+        theme = state_value(request_state(request), "hedron_theme")
     csrf_token: str | None = None
     csrf_form_field = "csrf_token"
     csrf_cookie_name = "hedron_csrf"
     csrf_header_name = "X-CSRF-Token"
-    policy = getattr(request.app.state, "hedron_security", None)
+    policy = state_value(request_state(request), "hedron_security")
     if isinstance(policy, SecurityPolicy) and policy.csrf_enabled:
         strategy = policy.resolve_csrf_strategy()
         if strategy is not None:
@@ -53,6 +54,7 @@ def render_context_from_request(request: Request) -> RenderContext:
 def _mount_path_from_request(request: Request) -> str:
     from hedron.mount import mount_from_request
 
-    state_mount = str(getattr(request.app.state, "hedron_mount_path", "") or "")
-    configured = bool(getattr(request.app.state, "hedron_mount_was_configured", False))
+    state = request_state(request)
+    state_mount = str(state_value(state, "hedron_mount_path", "") or "")
+    configured = bool(state_value(state, "hedron_mount_was_configured", False))
     return state_mount if state_mount or configured else mount_from_request(request).path

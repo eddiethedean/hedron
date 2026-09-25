@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, ClassVar, Literal
+from typing import ClassVar, Literal
+
+from typing_extensions import override
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.builtins.appearance import CONTENT_WIDTHS, require_choice
@@ -25,6 +27,7 @@ from hedron_core.models import Props
 from hedron_core.presentation_064 import application_style_hook_data
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_core.typing_aliases import HtmlAttrValue
+from hedron_core.typing_support import dynamic_attribute
 
 
 def _kids(*children: NodeLike) -> tuple[NodeLike, ...]:
@@ -65,7 +68,7 @@ class NavGroup(Component[NavGroupProps]):
         class_: str | None = None,
         mark: str | None = None,
         action: NodeLike = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         normalized_label = None if label is None or not str(label).strip() else str(label).strip()
         super().__init__(
@@ -80,6 +83,7 @@ class NavGroup(Component[NavGroupProps]):
         self._items = collect_children(*items, children=children)
         self._action = action
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {
             "id": self.props.id,
@@ -156,18 +160,18 @@ _OOB_HOST_SAFE_KEYS = frozenset(
 )
 
 
-def _filter_oob_host_kwargs(kwargs: dict[str, Any]) -> dict[str, Any]:
+def _filter_oob_host_kwargs(kwargs: dict[str, object]) -> dict[str, object]:
     unknown = set(kwargs) - _OOB_HOST_SAFE_KEYS
     if unknown:
         raise TypeError(
             f"Unsupported OobHost attribute(s): {sorted(unknown)}. "
-            f"Allowlisted: {sorted(k for k in _OOB_HOST_SAFE_KEYS if k != 'role')}."
+            + f"Allowlisted: {sorted(k for k in _OOB_HOST_SAFE_KEYS if k != 'role')}."
         )
     role = kwargs.get("role")
     if isinstance(role, str) and role.strip():
         raise TypeError(
             f"role={role!r} is not allowed on OobHost "
-            "(prefer native landmark tags via tag=; do not set role=)."
+            + "(prefer native landmark tags via tag=; do not set role=)."
         )
     return {k: v for k, v in kwargs.items() if k in _OOB_HOST_SAFE_KEYS and k != "role"}
 
@@ -295,6 +299,7 @@ class HtmxLink(Component[HtmxLinkProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {"href": self.props.href}
         attrs.update(self.props.attrs or {})
@@ -405,6 +410,7 @@ class OobHost(Component[OobHostProps]):
         super().__init__(OobHostProps(**filtered))
         self._kids = _kids(*children)
 
+    @override
     def render(self) -> NodeLike:
         host_id = self.props.id
         if host_id is None:
@@ -428,7 +434,7 @@ class OobHost(Component[OobHostProps]):
             attrs["aria"] = self.props.aria
         if self.props.hidden:
             attrs["hidden"] = True
-        return getattr(html, self.props.tag)(*self._kids, **attrs)
+        return html.tag(self.props.tag)(*self._kids, **attrs)
 
 
 class AttrHostProps(ElementProps):
@@ -461,12 +467,12 @@ _ATTR_HOST_SAFE_KEYS = frozenset(
 )
 
 
-def _filter_attr_host_kwargs(kwargs: dict[str, Any]) -> dict[str, Any]:
+def _filter_attr_host_kwargs(kwargs: dict[str, object]) -> dict[str, object]:
     unknown = set(kwargs) - _ATTR_HOST_SAFE_KEYS
     if unknown:
         raise TypeError(
             f"Unsupported AttrHost attribute(s): {sorted(unknown)}. "
-            f"Allowlisted: {sorted(_ATTR_HOST_SAFE_KEYS)}."
+            + f"Allowlisted: {sorted(_ATTR_HOST_SAFE_KEYS)}."
         )
     return {k: v for k, v in kwargs.items() if k in _ATTR_HOST_SAFE_KEYS}
 
@@ -516,6 +522,7 @@ class AttrHost(Component[AttrHostProps]):
         super().__init__(AttrHostProps(**filtered))
         self._kids = _kids(*children)
 
+    @override
     def render(self) -> NodeLike:
         host_id = self.props.id
         if host_id is None:
@@ -534,7 +541,7 @@ class AttrHost(Component[AttrHostProps]):
             extra["aria"] = self.props.aria
         if self.props.hidden:
             extra["hidden"] = True
-        return getattr(html, self.props.tag)(
+        return html.tag(self.props.tag)(
             *self._kids,
             id=host_id,
             class_=class_names("hedron-attr-host", self.props.class_),
@@ -587,6 +594,7 @@ class MainPanel(Component[MainPanelProps]):
         super().__init__(MainPanelProps(**filtered))
         self._kids = _kids(*children)
 
+    @override
     def render(self) -> NodeLike:
         attrs = landmark_attrs(self.props)
         attrs["class_"] = class_names("hedron-main-panel", self.props.class_)
@@ -637,7 +645,9 @@ class AppShellChrome:
             "nav_footer_collapsed": ("hide", "compact", "show"),
         }
         for name, allowed in choices.items():
-            require_choice(getattr(self, name), allowed, label=f"chrome.{name}")
+            _ignored = require_choice(
+                dynamic_attribute(self, name), allowed, label=f"chrome.{name}"
+            )
         if self.preset == "compact" and (
             self.header_density == "spacious" or self.footer_density == "spacious"
         ):
@@ -716,8 +726,8 @@ class AppShell(Component[AppShellProps]):
         id: str | None = None,
         **kwargs: object,
     ) -> None:
-        require_choice(content_width, CONTENT_WIDTHS, label="content_width")
-        require_choice(nav_collapse, ("never", "user", "always"), label="nav_collapse")
+        _ignored = require_choice(content_width, CONTENT_WIDTHS, label="content_width")
+        _ignored = require_choice(nav_collapse, ("never", "user", "always"), label="nav_collapse")
         if (
             not nav_preference_key
             or not nav_preference_key.replace("-", "").replace("_", "").isalnum()
@@ -820,6 +830,7 @@ class AppShell(Component[AppShellProps]):
             data={"hedron-app-shell-header": "true"},
         )
 
+    @override
     def render(self) -> NodeLike:
         panel = MainPanel(*self._body, id=self.props.panel_id)
         chrome = AppShellChrome(
@@ -972,17 +983,17 @@ class Brand(Component[BrandProps]):
                 explanation="Brand chrome needs a discernible product name.",
                 remediation="Pass a non-empty name.",
             )
-        require_choice(
+        _ignored = require_choice(
             subtitle_overflow,
             ("wrap", "break", "truncate", "clip"),
             label="subtitle_overflow",
         )
-        require_choice(mark_size, ("sm", "md", "lg"), label="mark_size")
-        require_choice(mark_shape, ("square", "rounded", "circle"), label="mark_shape")
-        require_choice(mark_tone, ("accent", "neutral", "muted"), label="mark_tone")
-        require_choice(mark_appearance, ("solid", "plain"), label="mark_appearance")
-        require_choice(name_role, ("body", "display"), label="name_role")
-        require_choice(subtitle_role, ("body", "muted"), label="subtitle_role")
+        _ignored = require_choice(mark_size, ("sm", "md", "lg"), label="mark_size")
+        _ignored = require_choice(mark_shape, ("square", "rounded", "circle"), label="mark_shape")
+        _ignored = require_choice(mark_tone, ("accent", "neutral", "muted"), label="mark_tone")
+        _ignored = require_choice(mark_appearance, ("solid", "plain"), label="mark_appearance")
+        _ignored = require_choice(name_role, ("body", "display"), label="name_role")
+        _ignored = require_choice(subtitle_role, ("body", "muted"), label="subtitle_role")
         url = None
         if href is not None:
             url = href if isinstance(href, SafeUrl) else _coerce_nav_url(href)
@@ -1010,6 +1021,7 @@ class Brand(Component[BrandProps]):
         )
         self._mark_content = mark_content
 
+    @override
     def render(self) -> NodeLike:
         label_parts: list[NodeLike] = [
             html.strong(
@@ -1115,9 +1127,9 @@ class AccountSummary(Component[AccountSummaryProps]):
                 explanation="Account chrome needs a discernible display name.",
                 remediation="Pass a non-empty name.",
             )
-        require_choice(mark_size, ("sm", "md", "lg"), label="mark_size")
-        require_choice(mark_shape, ("square", "rounded", "circle"), label="mark_shape")
-        require_choice(mark_tone, ("accent", "neutral", "muted"), label="mark_tone")
+        _ignored = require_choice(mark_size, ("sm", "md", "lg"), label="mark_size")
+        _ignored = require_choice(mark_shape, ("square", "rounded", "circle"), label="mark_shape")
+        _ignored = require_choice(mark_tone, ("accent", "neutral", "muted"), label="mark_tone")
         url = None
         if href is not None:
             url = href if isinstance(href, SafeUrl) else _coerce_nav_url(href)
@@ -1142,6 +1154,7 @@ class AccountSummary(Component[AccountSummaryProps]):
         self._mark_content = mark_content
         self._actions = collect_children(*nodes, children=action)
 
+    @override
     def render(self) -> NodeLike:
         account_copy: list[NodeLike] = [html.span(self.props.name, class_="hedron-account-name")]
         if self.props.detail:
@@ -1215,6 +1228,7 @@ class EnvironmentBanner(Component[EnvironmentBannerProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         return html.div(
             self.props.label,
@@ -1254,6 +1268,7 @@ class NavStatus(Component[NavStatusProps]):
             NavStatusProps(message=message, tone=tone, id=id, class_=class_, mark=mark, **kwargs)
         )
 
+    @override
     def render(self) -> NodeLike:
         return html.p(
             self.props.message,
@@ -1292,6 +1307,7 @@ class AppFooter(Component[AppFooterProps]):
         super().__init__(AppFooterProps(text=text, id=id, class_=class_, mark=mark, **kwargs))
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         parts: list[NodeLike] = [html.span(self.props.text, class_="hedron-app-footer-text")]
         if self._children:

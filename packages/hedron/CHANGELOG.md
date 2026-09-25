@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.2] — 2026-09-25
+
+### Changed
+
+- Enforce BasedPyright `all` mode and reject explicit or inferred `Any` in shipped Python source.
+
 ## [1.1.1] — 2026-09-18
 
 ### Fixed

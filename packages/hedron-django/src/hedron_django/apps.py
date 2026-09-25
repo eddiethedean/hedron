@@ -4,6 +4,9 @@ from __future__ import annotations
 
 from django.apps import AppConfig
 from django.core.checks import CheckMessage, Error, Warning, register
+from typing_extensions import override
+
+from hedron_core.typing_support import dynamic_attribute
 
 __all__ = ["HedronDjangoConfig", "register_checks", "run_django_production_gates"]
 
@@ -18,6 +21,7 @@ class HedronDjangoConfig(AppConfig):
     verbose_name = "Hedron Django"
     default_auto_field = "django.db.models.AutoField"  # pyright: ignore[reportIncompatibleVariableOverride]
 
+    @override
     def ready(self) -> None:
         register_checks()
         run_django_production_gates()
@@ -38,7 +42,7 @@ def run_django_production_gates() -> None:
     try:
         from django.conf import settings
 
-        secret = getattr(settings, "SECRET_KEY", None)
+        secret = dynamic_attribute(settings, "SECRET_KEY")
     except ImproperlyConfigured:
         return
     is_prod = is_production_env()
@@ -113,9 +117,9 @@ def register_checks() -> None:
             messages.append(
                 Warning(
                     "HedronSecurityHeadersMiddleware is not installed; "
-                    "CSP / X-Frame-Options from HEDRON_SECURITY_PROFILE will not apply.",
+                    + "CSP / X-Frame-Options from HEDRON_SECURITY_PROFILE will not apply.",
                     hint=f"Add {security_mw!r} to MIDDLEWARE "
-                    f"(and optionally set HEDRON_SECURITY_PROFILE).",
+                    + "(and optionally set HEDRON_SECURITY_PROFILE).",
                     id="hedron.W003",
                 )
             )

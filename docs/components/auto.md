@@ -43,7 +43,7 @@ Auto(value=None, *, as_=None)
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `value` | `Any` | Value to inspect and render. |
+| `value` | `object` | Value to inspect and render. |
 | `as_` | `str | None` | Explicit renderer override. |
 
 ## Composition and backend behavior

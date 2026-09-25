@@ -5,7 +5,7 @@ from __future__ import annotations
 import inspect
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Any, cast
+from typing import cast
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -149,7 +149,7 @@ class MapInteraction:
 
     map: object
     event: str
-    payload: type[Any]
+    payload: type[object]
     command: object
     refreshes: Sequence[object] = ()
     max_items: int = 100
@@ -164,7 +164,7 @@ class MapInteraction:
                 "Unknown MapInteraction event",
                 f"Event {self.event!r} is outside the locked 0.47 set.",
                 "Use feature-selected, feature-activated, viewport-changed, "
-                "layer-visibility-changed, map-loaded, or map-failed.",
+                + "layer-visibility-changed, map-loaded, or map-failed.",
             )
         expected = EVENT_PAYLOADS[self.event]
         if self.payload is not expected and not issubclass(self.payload, expected):
@@ -212,7 +212,7 @@ class MapInteraction:
         path = f"/maps/{ident}/{event}"
         register_interaction = getattr(map_ref, "register_interaction", None)
         if callable(register_interaction):
-            register_interaction(event, path)
+            _ignored = register_interaction(event, path)
         else:
             commands = getattr(map_ref, "_interaction_commands", None)
             if isinstance(commands, dict):
@@ -278,7 +278,7 @@ class MapInteraction:
             },
             limitations=(
                 "Supported events: feature-selected, feature-activated, viewport-changed, "
-                "layer-visibility-changed, map-loaded, map-failed",
+                + "layer-visibility-changed, map-loaded, map-failed",
                 "viewport-changed is debounced onto map.viewport",
             ),
         )

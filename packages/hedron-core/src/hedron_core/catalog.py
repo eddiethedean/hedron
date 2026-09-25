@@ -461,7 +461,7 @@ class CatalogEntry:
         provenance = dict(self.provenance)
         if profile == "production":
             for key in ("source_path", "source", "file_path", "filename"):
-                provenance.pop(key, None)
+                _ignored = provenance.pop(key, None)
         if profile == "conformance":
             provenance = {k: v for k, v in provenance.items() if k in {"app_id", "unknown"}}
         if provenance:
@@ -631,7 +631,7 @@ class InteractionCatalog:
         provenance = dict(self.provenance)
         if profile == "production":
             for key in ("source_path", "source", "file_path"):
-                provenance.pop(key, None)
+                _ignored = provenance.pop(key, None)
         body = cast(
             JsonObject,
             {
@@ -710,7 +710,7 @@ class InteractionManifest:
         return body
 
     def write_json(self, path: Path) -> None:
-        write_json_atomic(Path(path), self.as_mapping())
+        _ignored = write_json_atomic(Path(path), self.as_mapping())
 
     @classmethod
     def read_json(cls, path: Path) -> InteractionManifest:
@@ -1010,7 +1010,7 @@ def unregister_projection_provider(namespace: str) -> None:
                 explanation=f"Namespace {namespace!r} is sealed with the catalog.",
                 remediation="Disable the plugin before startup seal.",
             )
-        _active_providers().pop(namespace, None)
+        _ignored = _active_providers().pop(namespace, None)
 
 
 def list_projection_providers() -> tuple[ProjectionProvider, ...]:
@@ -1170,7 +1170,7 @@ def seal_interaction_catalog(
     if _catalog_scope_active.get():
         if scoped is None:
             scoped = compile_interaction_catalog(app_id=app_id, profile=profile, sealed=True)
-            _scoped_catalog.set(scoped)
+            _ignored = _scoped_catalog.set(scoped)
             return scoped
         if app_id and scoped.app_id and scoped.app_id != app_id:
             raise _catalog_error(

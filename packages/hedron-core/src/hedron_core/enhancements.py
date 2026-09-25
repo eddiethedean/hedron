@@ -6,11 +6,12 @@ authorization, persistence, and secret storage remain owned by the application.
 
 from __future__ import annotations
 
-import inspect
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Generic, Protocol, TypeVar, cast
+from typing import Generic, Protocol, TypeVar, cast
+
+from hedron_core.typing_support import awaitable_value
 
 T = TypeVar("T")
 
@@ -48,15 +49,15 @@ class AuthorizationUIProvider(Protocol):
 
     def can(
         self,
-        request: Any,
+        request: object,
         action: str,
         resource: ResourceRef | None = None,
-    ) -> bool | Any: ...
+    ) -> bool | object: ...
 
 
 async def presentation_allowed(
     provider: AuthorizationUIProvider | None,
-    request: Any,
+    request: object,
     action: str,
     resource: ResourceRef | None = None,
 ) -> bool:
@@ -70,8 +71,9 @@ async def presentation_allowed(
         return False
     try:
         result = provider.can(request, action, resource)
-        if inspect.isawaitable(result):
-            result = await result
+        pending = awaitable_value(result)
+        if pending is not None:
+            result = await pending
         return bool(result)
     except Exception:  # noqa: BLE001 - provider failures must fail closed
         return False
@@ -90,7 +92,7 @@ class SortSpec:
 @dataclass(frozen=True, slots=True)
 class FilterSpec:
     field: str
-    value: Any
+    value: object
     operator: str = "eq"
 
     def __post_init__(self) -> None:
@@ -156,13 +158,13 @@ async def fetch_page(
     return cast(PageState[T], normalize_page(result))
 
 
-def normalize_page(value: Any) -> PageState[Any]:
+def normalize_page(value: object) -> PageState[object]:
     """Normalize common page/cursor response objects without importing adapters."""
 
     if isinstance(value, PageState):
-        return cast(PageState[Any], value)
+        return cast(PageState[object], value)
     if isinstance(value, Mapping):
-        data = cast(Mapping[str, Any], value)
+        data = cast(Mapping[str, object], value)
         items = data.get("items", data.get("data", ()))
         return PageState(
             items=tuple(items or ()),
@@ -173,7 +175,7 @@ def normalize_page(value: Any) -> PageState[Any]:
             next_cursor=data.get("next_cursor", data.get("next")),
             previous_cursor=data.get("previous_cursor", data.get("previous")),
         )
-    attrs: dict[str, Any] = {
+    attrs: dict[str, object] = {
         name: getattr(value, name, None)
         for name in ("items", "total", "page", "size", "pages", "next_cursor", "previous_cursor")
     }
@@ -203,7 +205,7 @@ class SecretUpdate:
             raise ValueError("keep and clear cannot carry a replacement value")
 
 
-def resolve_secret_update(form: Mapping[str, Any], name: str) -> SecretUpdate:
+def resolve_secret_update(form: Mapping[str, object], name: str) -> SecretUpdate:
     """Resolve a write-only secret field from a submitted form mapping."""
 
     def values(key: str) -> tuple[str, ...]:
@@ -211,7 +213,7 @@ def resolve_secret_update(form: Mapping[str, Any], name: str) -> SecretUpdate:
         if raw is None:
             return ()
         if isinstance(raw, (list, tuple)):
-            return tuple(str(item) for item in cast(list[Any] | tuple[Any, ...], raw))
+            return tuple(str(item) for item in cast(list[object] | tuple[object, ...], raw))
         return (str(raw),)
 
     if any(value in {"1", SecretOperation.CLEAR.value} for value in values(f"{name}__clear")):

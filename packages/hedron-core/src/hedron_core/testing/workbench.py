@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, cast
+from typing import cast
 
 __all__ = [
     "SandboxBudgetFixture",
@@ -30,8 +30,8 @@ class SandboxBudgetFixture:
 
 def tree_document_fixture(
     *,
-    nodes: Sequence[Mapping[str, Any]] | None = None,
-) -> list[dict[str, Any]]:
+    nodes: Sequence[Mapping[str, object]] | None = None,
+) -> list[dict[str, object]]:
     """Deterministic tree document for TreeView / workbench scenarios."""
     if nodes is not None:
         return [dict(n) for n in nodes]
@@ -53,15 +53,15 @@ def tree_document_fixture(
 
 def json_document_fixture(
     *,
-    payload: Mapping[str, Any] | None = None,
-    schema: Mapping[str, Any] | None = None,
-) -> dict[str, Any]:
+    payload: Mapping[str, object] | None = None,
+    schema: Mapping[str, object] | None = None,
+) -> dict[str, object]:
     doc = dict(payload or {"name": "demo", "count": 1})
     # Ensure serializable — fixtures never eval code.
-    json.dumps(doc)
-    result: dict[str, Any] = {"document": doc}
+    _ignored = json.dumps(doc)
+    result: dict[str, object] = {"document": doc}
     if schema is not None:
-        json.dumps(schema)
+        _ignored = json.dumps(schema)
         result["schema"] = dict(schema)
     return result
 
@@ -70,7 +70,7 @@ def image_region_fixture(
     *,
     kind: str = "box",
     points: Sequence[Sequence[float]] | None = None,
-) -> dict[str, Any]:
+) -> dict[str, object]:
     pts = [list(p) for p in (points or ((0.1, 0.1), (0.5, 0.5)))]
     for pt in pts:
         if len(pt) != 2 or any(c < 0.0 or c > 1.0 for c in pt):
@@ -97,8 +97,8 @@ def workbench_action_fixture(
     *,
     action: str = "export",
     authorized: bool = True,
-    payload: Mapping[str, Any] | None = None,
-) -> dict[str, Any]:
+    payload: Mapping[str, object] | None = None,
+) -> dict[str, object]:
     return {
         "action": action,
         "authorized": authorized,
@@ -106,7 +106,7 @@ def workbench_action_fixture(
     }
 
 
-def assert_transform_plan_bounded(plan: Any, *, max_rows: int) -> None:
+def assert_transform_plan_bounded(plan: object, *, max_rows: int) -> None:
     """Assert a TransformPlan (or plan-like mapping) respects row bounds."""
     if hasattr(plan, "max_rows"):
         rows = int(plan.max_rows)
@@ -121,7 +121,7 @@ def assert_transform_plan_bounded(plan: Any, *, max_rows: int) -> None:
         raise AssertionError(f"Transform plan max_rows={rows} exceeds bound {max_rows}")
 
 
-def assert_action_authorized(action: Mapping[str, Any], *, expect: bool = True) -> None:
+def assert_action_authorized(action: Mapping[str, object], *, expect: bool = True) -> None:
     """Assert a *fixture* action mapping's ``authorized`` boolean.
 
     This helper only checks the synthetic ``workbench_action_fixture`` field. It is

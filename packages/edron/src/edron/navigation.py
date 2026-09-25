@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, Literal, cast
+from typing import Literal, cast
 
 import hedron
 
@@ -31,7 +31,7 @@ class NavigationTarget:
     def logical_id(self) -> str:
         return f"navigation:{self.name}"
 
-    def link(self, label: str | None = None, **kwargs: Any) -> Any:
+    def link(self, label: str | None = None, **kwargs: object) -> object:
         """Lower to the native ``NavLink`` with all safety checks intact."""
         return hedron.NavLink(label or self.title, self.path, **kwargs)
 
@@ -60,12 +60,12 @@ class LayoutSpec:
         if self.kind not in LAYOUT_KINDS:
             raise NavigationError(f"layout kind must be one of {LAYOUT_KINDS}")
         raw_gap: object = self.gap
-        if not isinstance(cast(Any, raw_gap), str) or not raw_gap.strip() or len(raw_gap) > 32:
+        if not isinstance(cast(object, raw_gap), str) or not raw_gap.strip() or len(raw_gap) > 32:
             raise NavigationError("layout gap must be a bounded non-empty token")
         raw_columns: object = self.columns
-        if not isinstance(cast(Any, raw_columns), (int, Mapping)):
+        if not isinstance(cast(object, raw_columns), (int, Mapping)):
             raise NavigationError("layout columns must be an integer or responsive mapping")
-        columns_value: Any = raw_columns
+        columns_value: object = raw_columns
         if isinstance(columns_value, bool):
             raise NavigationError("layout columns must not be boolean")
         if isinstance(columns_value, int) and not 1 <= columns_value <= 6:
@@ -84,10 +84,10 @@ class LayoutSpec:
             ("align", self.align),
             ("padding", self.padding),
         ):
-            if value is not None and (not isinstance(cast(Any, value), str) or len(value) > 32):
+            if value is not None and (not isinstance(cast(object, value), str) or len(value) > 32):
                 raise NavigationError(f"layout {label} must be a bounded token")
 
-    def compose(self, nodes: Sequence[Any]) -> Any:
+    def compose(self, nodes: Sequence[object]) -> object:
         """Create the corresponding native layout component."""
         if len(nodes) > MAX_LAYOUT_CHILDREN:
             raise NavigationError(f"layout accepts at most {MAX_LAYOUT_CHILDREN} children")
@@ -98,13 +98,13 @@ class LayoutSpec:
         if self.kind == "container":
             return hedron.Container(
                 *nodes,
-                max_width=cast(Any, self.max_width),
-                align=cast(Any, self.align),
+                max_width=cast(object, self.max_width),
+                align=cast(object, self.align),
                 padding=self.padding,
             )
         return hedron.Stack(*nodes, gap=self.gap)
 
-    def as_mapping(self) -> dict[str, Any]:
+    def as_mapping(self) -> dict[str, object]:
         return {
             "kind": self.kind,
             "gap": self.gap,
@@ -115,7 +115,7 @@ class LayoutSpec:
         }
 
 
-def layout(kind: LayoutKind = "stack", **kwargs: Any) -> LayoutSpec:
+def layout(kind: LayoutKind = "stack", **kwargs: object) -> LayoutSpec:
     """Return a validated shared layout declaration."""
     return LayoutSpec(kind=kind, **kwargs)
 

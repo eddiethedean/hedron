@@ -174,7 +174,7 @@ async def _run_declared(
                 ),
                 remediation="Raise AsyncIoBudget.max_operations or reduce declared async calls.",
             )
-        _ops_used.set(used + 1)
+        _ignored = _ops_used.set(used + 1)
     elif budget.max_operations <= 0:
         raise error(
             "HED-PREPARE-0003",
