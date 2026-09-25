@@ -6,18 +6,19 @@
 > product readiness use [What’s ready](docs/guides/whats-ready.md); for the public roadmap use
 > [What’s next](docs/guides/whats-next.md). Do not treat gate tables as the getting-started guide.
 
-**Roadmap position:** `v1.1.1` is Verified, tagged, and published on PyPI, including Edron.
-**Current workspace:** `1.1.1` is the coordinated published package train implementing the open
-enhancement completion phase and its complementary application features.
+**Roadmap position:** `v1.1.2` is Verified, tagged, and published on PyPI, including Edron.
+**Current workspace:** `1.1.2` is the coordinated published package train. It includes the open
+enhancement completion phase and its complementary application features, with BasedPyright `all`
+mode enforcing errors for explicit and inferred `Any` in first-party Python code.
 `v1.0.17` remains the immutable migration baseline for compatibility evidence.
-**Date:** 2026-09-18
+**Date:** 2026-09-25
 **Implementation:** Stable platform — `hedron`, `hedron-core`, `edron`, `hedron-data`,
-`hedron-charts`, and `hedron-maps` `1.1.1`. Beta satellites — `hedron-explorer`,
+`hedron-charts`, and `hedron-maps` `1.1.2`. Beta satellites — `hedron-explorer`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
-and `hedron-elements` `1.1.1`; `hedron-posit` `1.0.10`; `fastapi-workbench` `1.0.11`;
-`hedron-native` `0.1.3`; `hedron-sample-kit` `0.2.3`; `hedron-notebook` and
-`hedron-gradio` `0.2.4`; `hedron-sim` `0.2.5`; `hedron-mcp` `0.2.5`; and `edron-sim`
-`0.1.0` (MIT, D-033).
+and `hedron-elements` `1.1.2`; `hedron-posit` `1.0.11`; `fastapi-workbench` `1.0.12`;
+`hedron-native` `0.1.3`; `hedron-sample-kit` `0.2.4`; `hedron-notebook` and
+`hedron-gradio` `0.2.5`; `hedron-sim` `0.2.6`; `hedron-mcp` `0.2.6`; and `edron-sim`
+`0.1.1` (MIT, D-033).
 **Package maturity:** Stable — `hedron`, `hedron-core`, `edron`, `hedron-data`,
 `hedron-charts`, and `hedron-maps`. Beta — `hedron-explorer`, `hedron-flask`,
 `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`, `hedron-posit`,

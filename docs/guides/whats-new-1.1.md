@@ -33,9 +33,9 @@ documented independent versions and Beta maturity.
 Install the published release from PyPI:
 
 ```bash
-python -m pip install "hedron>=1.1.1,<1.2" "uvicorn[standard]"
+python -m pip install "hedron>=1.1.2,<1.2" "uvicorn[standard]"
 ```
 
 For the full release identity and verification record, see the
 [release notes](release-notes.md), [current release and support](current-release.md), and
-[1.1.1 evidence bundle](evidence-bundle.md).
+[1.1.2 evidence bundle](evidence-bundle.md).

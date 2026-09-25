@@ -9,7 +9,7 @@ upload, smoke-test, and documentation sequence without moving an existing tag.
 Hedron is a Python monorepo with independently publishable distributions. The Stable 1.0 package
 boundary is `hedron-core`, `hedron`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps`.
 Every other distribution is a Beta satellite even when it shares the `1.0.0` version number;
-`fastapi-workbench` is currently `1.0.11`. The removed `hedron-workbench` package is not part of
+`fastapi-workbench` is currently `1.0.12`. The removed `hedron-workbench` package is not part of
 the release inventory.
 
 Release tags use the `release-` namespace and carry no package-version semantics; the
@@ -18,9 +18,8 @@ except for an explicitly authorized corrective retag after a failed publication.
 
 ## Preconditions
 
-1. The release commit is on the `v1.0` branch with a clean working tree and green CI. Fast-forward
-   `main` to that exact commit and verify the Read the Docs `latest` build before publishing, so
-   immutable package links never land on an older documentation train.
+1. Merge the release pull request into `main` after its checks pass. Wait for the merge commit's CI
+   to pass, then verify the Read the Docs `latest` build before tagging and publishing.
 2. `docs/release.toml`, package metadata, `__version__`, dependency pins, lockfile,
    changelog headings, security support window, and release notes agree.
 3. Run `uv run python scripts/check_100.py --check-plan`; all 1.0-owned rows must be
@@ -67,17 +66,19 @@ wheel with its immutable PyPI version. If a version already exists with differen
 fails and requires a version bump. Run the quick-start check first against local artifacts. After
 upload, rerun it against the registry and record the result before changing public documentation.
 
-The current coordinated release is **1.1.1**, published after the package, documentation, and
-acceptance checks passed. The coordinated 1.1.1 changelog sections record the cut; independently
-versioned satellites retain their own versions. Edron 1.1.1 requires `hedron>=1.1.1,<2.0` for the
-shared closure-safe cache identity helper, so publish Hedron before Edron using
-`release/publish-order.toml`.
+The current coordinated release is **1.1.2**, published from immutable tag
+[`release-20260925-01`](https://github.com/eddiethedean/hedron/releases/tag/release-20260925-01)
+after merge CI, the coordinated release workflow, and published-artifact checks passed. The 1.1.2
+changelog sections record the BasedPyright `all`-mode and no-`Any` policy. Independently versioned
+satellites retain their own versions. Edron 1.1.2 requires `hedron>=1.1.2,<2.0`; publish Hedron
+before Edron using `release/publish-order.toml`.
 
 ## Tag and publish
 
 Use this exact sequence; create one unique release tag per publication:
 
-1. Fast-forward `main` to the green `v1.0` release commit and verify Read the Docs.
+1. Merge the release PR into `main`. Confirm merge CI passes on the resulting commit, then verify
+   Read the Docs `latest` build.
 2. Create and push a unique release tag (for example, `release-20260902-01`). The coordinated workflow
    publishes every workspace distribution, including Edron and `edron-sim`, except the separately
    owned native artifacts.

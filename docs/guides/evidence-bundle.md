@@ -1,8 +1,8 @@
 ---
-description: Locate the release, provenance, compatibility, security, and acceptance evidence for 1.0.
+description: Locate the release, provenance, compatibility, security, and acceptance evidence for 1.1.2.
 ---
 
-# 1.1.1 evidence bundle
+# 1.1.2 evidence bundle
 
 Use this page to establish what was published, how it was built, what was verified, and which
 responsibilities remain with the adopting organization.
@@ -11,9 +11,11 @@ responsibilities remain with the adopting organization.
 
 | Evidence | Source |
 |---|---|
-| Hedron package and files | Published `1.1.1` |
-| Edron package and files | Published `1.1.1` |
-| Source tag, wheels, checksums, and attached evidence | Published from immutable `release-20260918-03` tag |
+| Hedron package and files | [Published `1.1.2` on PyPI](https://pypi.org/project/hedron/1.1.2/) |
+| Edron package and files | [Published `1.1.2` on PyPI](https://pypi.org/project/edron/1.1.2/) |
+| Source tag, wheels, checksums, and attached evidence | Published from immutable [`release-20260925-01`](https://github.com/eddiethedean/hedron/releases/tag/release-20260925-01) tag |
+| Main merge CI | [Run `36183189826`](https://github.com/eddiethedean/hedron/actions/runs/36183189826) |
+| Coordinated publication | [Run `36184225081`](https://github.com/eddiethedean/hedron/actions/runs/36184225081) |
 | Current install and support facts | [Current release](current-release.md) |
 
 The GitHub release attaches `release-manifest.json`, built distributions, generated evidence,

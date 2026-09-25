@@ -3,6 +3,20 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 1.1.2 — 2026-09-25
+
+Coordinated release for the Stable 1.1 package train. The [main merge CI run](https://github.com/eddiethedean/hedron/actions/runs/36183189826)
+passed, and the [release workflow](https://github.com/eddiethedean/hedron/actions/runs/36184225081)
+published Hedron, Edron, and the coordinated workspace from the immutable
+[`release-20260925-01`](https://github.com/eddiethedean/hedron/releases/tag/release-20260925-01)
+tag.
+
+### Changed
+
+- Enforced BasedPyright `all`-mode type checking across the Python workspace.
+- Rejected explicit `Any` annotations and expressions inferred as `Any` in first-party Python
+  code; use type stubs where a third-party dependency lacks the typing needed at a strict boundary.
+
 ## 1.1.1 — 2026-09-18
 
 Coordinated maintenance release for the Stable 1.1 package train. The release passed the full
@@ -15,7 +29,7 @@ tag.
 - Failed closed for unimplemented chart operators instead of silently accepting unsupported work.
 - Prevented replay-scope delimiter collisions and added regression coverage for replay headers and
   scoped replay behavior.
-- Synchronized current release documentation and install facts with the published 1.1.1 train.
+- Synchronized adopter documentation and install facts with the 1.1.1 publication.
 
 ## 1.1.0 — 2026-09-18
 
