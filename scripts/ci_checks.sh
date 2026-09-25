@@ -528,8 +528,11 @@ import tomllib
 from pathlib import Path
 
 workspace_version = tomllib.loads(Path("pyproject.toml").read_text())["project"]["version"]
+edron_sim_version = tomllib.loads(
+    Path("packages/edron-sim/pyproject.toml").read_text()
+)["project"]["version"]
 assert metadata.version("edron") == workspace_version
-assert metadata.version("edron-sim") == "0.1.0"
+assert metadata.version("edron-sim") == edron_sim_version
 assert metadata.version("hedron") == workspace_version
 assert metadata.version("hedron-data") == workspace_version
 print(f"ok: Edron {workspace_version} installs against the Hedron train")

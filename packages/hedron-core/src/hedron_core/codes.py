@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from hedron_core.typing_support import module_globals
+from typing import Protocol, cast
 
 # Config
 HED_CONFIG_UNKNOWN_KEY = "HED-CONFIG-0001"
@@ -582,11 +582,16 @@ HED_MIGRATE_0680 = "HED-MIGRATE-0680"  # blueprint.component -> blueprint.view
 HED_MIGRATE_0681 = "HED-MIGRATE-0681"  # blueprint.include_feature -> blueprint.include
 
 
+class _ModuleGlobals(Protocol):
+    def __call__(self) -> dict[str, object]: ...
+
+
 def registered_codes() -> frozenset[str]:
     """Return every ``HED-*`` code constant defined in this module."""
+    current_globals = cast(_ModuleGlobals, globals)
     return frozenset(
         value
-        for name, value in module_globals().items()
+        for name, value in current_globals().items()
         if isinstance(value, str) and value.startswith("HED-") and name.isupper()
     )
 

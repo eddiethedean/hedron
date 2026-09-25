@@ -109,10 +109,6 @@ class _DataclassDictConverter(Protocol):
     def __call__(self, instance: object, /) -> dict[str, object]: ...
 
 
-class _ModuleGlobals(Protocol):
-    def __call__(self) -> Mapping[str, object]: ...
-
-
 class _SocketNameReader(Protocol):
     def getsockname(self) -> tuple[object, ...]: ...
 
@@ -289,12 +285,6 @@ def dataclass_values(instance: object) -> dict[str, object]:
 
     converter = cast(_DataclassDictConverter, asdict)
     return converter(instance)
-
-
-def module_globals() -> Mapping[str, object]:
-    """Expose the current module globals through an object-valued mapping."""
-    values = cast(_ModuleGlobals, globals)
-    return values()
 
 
 def bound_socket_port(sock: object) -> int:
