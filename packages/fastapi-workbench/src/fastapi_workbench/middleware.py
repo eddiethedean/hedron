@@ -13,6 +13,7 @@ from urllib.parse import quote, unquote, urlsplit, urlunsplit
 from starlette.responses import PlainTextResponse
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
+from fastapi_workbench._typing import dynamic_attribute
 from fastapi_workbench.codes import FWB_0006
 from fastapi_workbench.config import WorkbenchConfig, WorkbenchMode
 from fastapi_workbench.detect import (
@@ -572,16 +573,16 @@ def workbenchify(
     if workbenchified_for_asgi_app(app):
         existing = _workbench_middleware_for_asgi_app(app)
         requested = WorkbenchMode.parse(mode)
-        deployment = getattr(app, "fastapi_workbench", None)
+        deployment = dynamic_attribute(app, "fastapi_workbench")
         if (
             requested is WorkbenchMode.ON
             and deployment is not None
-            and not bool(getattr(deployment, "active", False))
+            and not bool(dynamic_attribute(deployment, "active", False))
         ):
             raise ValueError(
                 "cannot activate an already-constructed inactive Workbench wrapper; "
-                "construct it with workbench_mode='on'/workbench_mount=..., or use "
-                "fastapi-workbench run so cookie and asset paths are configured before import"
+                + "construct it with workbench_mode='on'/workbench_mount=..., or use "
+                + "fastapi-workbench run so cookie and asset paths are configured before import"
             )
         if existing is not None:
             resolved_mode = mode

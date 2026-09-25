@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, Generic, Protocol, TypeVar, cast, runtime_checkable
+from typing import Generic, Protocol, TypeVar, cast, runtime_checkable
 
 from hedron_core.typing_aliases import JsonValue
 
@@ -39,17 +39,17 @@ class DataQuery:
     allowlisted_projection_fields: frozenset[str] | None = None
 
     def validated(self, *, max_page_size: int = DEFAULT_MAX_PAGE_SIZE) -> DataQuery:
-        offset: Any = self.offset
+        offset: object = self.offset
         if not isinstance(offset, int) or isinstance(offset, bool) or offset < 0:
             raise ValueError("DataQuery.offset must be an integer >= 0")
         if (
-            not isinstance(cast(Any, max_page_size), int)
+            not isinstance(cast(object, max_page_size), int)
             or isinstance(max_page_size, bool)
             or max_page_size < 1
         ):
             raise ValueError("max_page_size must be an integer >= 1")
         limit = self.limit
-        if not isinstance(cast(Any, limit), int) or isinstance(limit, bool) or limit < 1:
+        if not isinstance(cast(object, limit), int) or isinstance(limit, bool) or limit < 1:
             raise ValueError("DataQuery.limit must be an integer >= 1")
         raw_cursor = cast(object, self.cursor)
         if raw_cursor is not None and not isinstance(raw_cursor, str):
@@ -58,7 +58,7 @@ class DataQuery:
         capped = min(limit, max_page_size, HARD_MAX_PAGE_SIZE)
         if capped < 1:
             raise ValueError("DataQuery.limit must be >= 1 after capping")
-        raw_sort = cast(Any, self.sort)
+        raw_sort = cast(object, self.sort)
         if (
             raw_sort is None
             or not isinstance(raw_sort, Sequence)
@@ -87,7 +87,7 @@ class DataQuery:
             if allow is not None and name not in allow:
                 raise ValueError(f"Sort field {name!r} is not allowlisted")
             sort_entries.append((name, direction))
-        raw_filters = cast(Any, self.filters)
+        raw_filters = cast(object, self.filters)
         if not isinstance(raw_filters, Mapping):
             raise ValueError("DataQuery.filters must be a mapping")
         untyped_filters = cast(Mapping[object, JsonValue], raw_filters)
@@ -98,7 +98,7 @@ class DataQuery:
             for name in filters:
                 if name not in self.allowlisted_filter_fields:
                     raise ValueError(f"Filter field {name!r} is not allowlisted")
-        projection = cast(Any, self.projection)
+        projection = cast(object, self.projection)
         if projection is not None:
             if not isinstance(projection, Sequence) or isinstance(
                 projection, (str, bytes, bytearray)

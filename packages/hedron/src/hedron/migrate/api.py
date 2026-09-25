@@ -566,7 +566,7 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
     # clean AST result cannot be mistaken for a complete migration proof.
     reflected = re.compile(
         r"\bgetattr\s*\([^,]+,\s*['\"](component|fragment|include_feature|screen|"
-        r"refreshable|command|form_command)['\"]"
+        + r"refreshable|command|form_command)['\"]"
     )
     for match in reflected.finditer(source):
         old_path = f"app.{match.group(1)}"
@@ -594,7 +594,7 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
     # rewritten because the surrounding authority cannot be inferred.
     string_paths = re.compile(
         r"\b(app|router|flask|blueprint)\.(component|fragment|include_feature|screen|"
-        r"refreshable|command|form_command)\b"
+        + r"refreshable|command|form_command)\b"
     )
     for node in ast.walk(tree):
         if not isinstance(node, ast.Constant) or not isinstance(node.value, str):
@@ -629,7 +629,7 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
 
 _TEXT_PATTERN = re.compile(
     r"\b(app|router|flask|blueprint)\.(component|fragment|include_feature|screen|"
-    r"refreshable|command|form_command)\b"
+    + r"refreshable|command|form_command)\b"
 )
 
 
@@ -835,9 +835,9 @@ def transform_api(
                 # ``--out`` is a complete, reviewable project tree rather than a
                 # sparse patch directory.  Preserve files that have no proven
                 # replacement so reviewers can run the generated tree directly.
-                target.write_text(transformed, encoding="utf-8")
+                _ignored = target.write_text(transformed, encoding="utf-8")
             elif changed:
-                target.write_text(transformed, encoding="utf-8")
+                _ignored = target.write_text(transformed, encoding="utf-8")
         else:
             try:
                 raw = original.read_bytes()
@@ -847,7 +847,7 @@ def transform_api(
                 target.parent.mkdir(parents=True, exist_ok=True)
                 if target.exists():
                     raise FileExistsError(f"refusing to overwrite {target}")
-                target.write_bytes(raw)
+                _ignored = target.write_bytes(raw)
         if changed:
             changes.append(ApiMigrationChange(display, count))
     return ApiMigrationReport(

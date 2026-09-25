@@ -8,6 +8,7 @@ from contextvars import ContextVar, Token
 from typing import ClassVar, Generic, Protocol, TypeAlias, TypeVar, cast, runtime_checkable
 
 from pydantic import ValidationError
+from pydantic.fields import FieldInfo
 from typing_extensions import Self
 
 from hedron_core.diagnostics import error
@@ -15,6 +16,7 @@ from hedron_core.field import hedron_meta
 from hedron_core.identifiers import component_type_id, instance_id
 from hedron_core.models import Props
 from hedron_core.security import Secret
+from hedron_core.typing_support import dynamic_attribute, model_fields, type_arguments
 
 PropsT = TypeVar("PropsT", bound=Props)
 
@@ -53,23 +55,27 @@ class Component(Generic[PropsT]):
         if not hasattr(cls, "props_type") or cls.props_type is Component.__dict__.get(
             "props_type", None
         ):
-            for base in getattr(cls, "__orig_bases__", ()):
-                args = getattr(base, "__args__", ())
+            original_bases = dynamic_attribute(cls, "__orig_bases__", ())
+            if not isinstance(original_bases, Sequence):
+                original_bases = ()
+            for base in cast(Sequence[object], original_bases):
+                args = type_arguments(base)
                 if args and isinstance(args[0], type) and issubclass(args[0], Props):
-                    cls.props_type = args[0]
+                    cls.props_type = cast(type[Props], args[0])
                     break
         if getattr(cls, "logical_name", None) is None:
             cls.logical_name = cls.__name__
 
     def __init__(self, props: PropsT | None = None, /, **kwargs: object) -> None:
-        props_cls = getattr(self.__class__, "props_type", None)
-        if props_cls is None:
+        props_type = dynamic_attribute(self.__class__, "props_type")
+        if not isinstance(props_type, type) or not issubclass(props_type, Props):
             raise error(
                 "HED-RENDER-0002",
                 title="Missing props type",
                 explanation=f"{self.__class__.__name__} did not declare a Props type.",
                 remediation="Subclass Component[YourProps] with a Props model.",
             )
+        props_cls = cast(type[Props], props_type)
         try:
             if props is not None and kwargs:
                 raise error(
@@ -176,13 +182,13 @@ class Component(Generic[PropsT]):
 
     def identity_fields(self) -> dict[str, object]:
         result: dict[str, object] = {}
-        for fname, finfo in self.props.__class__.model_fields.items():
-            meta = hedron_meta(finfo)
+        for fname, finfo in model_fields(type(self.props)).items():
+            meta = hedron_meta(cast(FieldInfo, finfo))
             if not meta.get("identity"):
                 continue
             if meta.get("secret"):
                 continue
-            value = getattr(self.props, fname)
+            value = dynamic_attribute(self.props, fname)
             if isinstance(value, Secret):
                 continue
             result[fname] = value

@@ -89,7 +89,7 @@ build-backend = "hatchling.build"
         if existing:
             raise FileExistsError(f"refusing to overwrite {existing[0]}")
     for path, content in files.items():
-        path.write_text(content, encoding="utf-8")
+        _ignored = path.write_text(content, encoding="utf-8")
     return tuple(files)
 
 

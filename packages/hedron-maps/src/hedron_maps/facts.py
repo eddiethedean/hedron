@@ -2,14 +2,12 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 from hedron_maps.spec import MapPlan
 
 __all__ = ["plan_facts"]
 
 
-def plan_facts(plan: MapPlan) -> dict[str, Any]:
+def plan_facts(plan: MapPlan) -> dict[str, object]:
     return {
         "schema_id": plan.schema_id,
         "source_kind": plan.source_kind,

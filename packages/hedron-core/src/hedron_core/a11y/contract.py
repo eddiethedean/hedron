@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
 
 from hedron_core.a11y.governance import Waiver
 from hedron_core.registry import ComponentMeta, get_registry
@@ -81,7 +80,7 @@ class AccessibilityContract:
     def implies_application_conformance(self) -> bool:
         return False
 
-    def as_dict(self) -> dict[str, Any]:
+    def as_dict(self) -> dict[str, object]:
         return {
             "component": self.component,
             "package": self.package,

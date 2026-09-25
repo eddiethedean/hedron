@@ -5,7 +5,7 @@ from __future__ import annotations
 import importlib
 import re
 from collections.abc import Callable, Mapping, Sequence
-from typing import Any, Generic, TypeVar, cast
+from typing import Generic, TypeVar, cast
 
 from hedron_core.diagnostics import error
 from hedron_data.plans import TransformPlan, plan_from_query
@@ -176,7 +176,7 @@ _INTO_TOKEN = re.compile(r"\binto\b", re.IGNORECASE)
 # After comment strip, `)/**/DELETE` becomes `)DELETE` — do not require a space (#572).
 _MUTATING_AFTER_PAREN = re.compile(
     r"\)\s*(?:insert|update|delete|merge|drop|alter|create|truncate|call|grant|"
-    r"revoke|copy|put|remove|undrop)\b",
+    + r"revoke|copy|put|remove|undrop)\b",
     re.IGNORECASE,
 )
 _MUTATING_STATEMENT_PREFIXES = (
@@ -252,7 +252,7 @@ def assert_select_only(statement: str) -> str:
     return cleaned
 
 
-def require_snowflake() -> Any:
+def require_snowflake() -> object:
     try:
         return importlib.import_module("snowflake.connector")
     except ImportError as exc:
@@ -270,17 +270,17 @@ class SnowflakeDataSource(Generic[T]):
     def __init__(
         self,
         *,
-        connection_factory: Callable[[], Any],
+        connection_factory: Callable[[], object],
         statement: str,
         schema: Sequence[ColumnSchema] = (),
-        to_row: Callable[[dict[str, Any]], T] | None = None,
+        to_row: Callable[[dict[str, object]], T] | None = None,
         max_page_size: int = 100,
-        params: Sequence[Any] | None = None,
+        params: Sequence[object] | None = None,
     ) -> None:
         self._statement = assert_select_only(statement)
         self._connection_factory = connection_factory
         self._schema = tuple(schema)
-        self._to_row: Callable[[dict[str, Any]], T] = to_row or (lambda r: cast(T, r))
+        self._to_row: Callable[[dict[str, object]], T] = to_row or (lambda r: cast(T, r))
         self._secret_fields = frozenset(
             column.name.casefold() for column in self._schema if column.secret
         )
@@ -311,9 +311,9 @@ class SnowflakeDataSource(Generic[T]):
             cur = conn.cursor()
             try:
                 cur.execute(sql, (*self._params, q.limit, q.offset))
-                descriptions = cast(Sequence[Sequence[Any]], cur.description or ())
+                descriptions = cast(Sequence[Sequence[object]], cur.description or ())
                 colnames: list[str] = [str(col[0]) for col in descriptions]
-                raw_rows = cast(Sequence[Sequence[Any]], cur.fetchmany(q.limit))
+                raw_rows = cast(Sequence[Sequence[object]], cur.fetchmany(q.limit))
                 rows: list[T] = []
                 for row in raw_rows:
                     raw = {
@@ -324,7 +324,7 @@ class SnowflakeDataSource(Generic[T]):
                     converted = self._to_row(raw)
                     if isinstance(converted, Mapping):
                         mapping = cast(Mapping[object, object], converted)
-                        cleaned: dict[str, Any] = {
+                        cleaned: dict[str, object] = {
                             str(key): value
                             for key, value in mapping.items()
                             if str(key).casefold() not in self._secret_fields
@@ -336,14 +336,14 @@ class SnowflakeDataSource(Generic[T]):
                     rows.append(converted)
                 count_sql = f"SELECT COUNT(*) FROM ({self._statement}) AS hedron_src"
                 cur.execute(count_sql, self._params)
-                count_row = cast(Sequence[Any], cur.fetchone() or (0,))
+                count_row = cast(Sequence[object], cur.fetchone() or (0,))
                 total = int(count_row[0])
             finally:
                 cur.close()
         finally:
             close = getattr(conn, "close", None)
             if callable(close):
-                close()
+                _ignored = close()
         return DataPage(
             rows=rows,
             schema=self._schema,

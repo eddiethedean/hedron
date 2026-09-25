@@ -8,7 +8,7 @@ import json
 import xml.etree.ElementTree as ET
 from collections.abc import Mapping, Sequence
 from datetime import datetime, timezone
-from typing import Any, cast
+from typing import cast
 
 from hedron_conformance.runner import KitReport
 from hedron_conformance.schema import CONTRACT_VERSION
@@ -16,7 +16,7 @@ from hedron_conformance.schema import CONTRACT_VERSION
 ENVELOPE_VERSION = "1.0.0"
 
 
-def _kit_report_dict(report: KitReport) -> dict[str, Any]:
+def _kit_report_dict(report: KitReport) -> dict[str, object]:
     return {
         "ok": report.ok,
         "contract_version": CONTRACT_VERSION,
@@ -33,7 +33,7 @@ def _kit_report_dict(report: KitReport) -> dict[str, Any]:
     }
 
 
-def _canonical_json(payload: Mapping[str, Any]) -> bytes:
+def _canonical_json(payload: Mapping[str, object]) -> bytes:
     return json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode(
         "utf-8"
     )
@@ -45,7 +45,7 @@ def build_result_envelope(
     manifest_digest: str,
     key: bytes | str | None = None,
     kit_id: str = "hedron-conformance",
-) -> dict[str, Any]:
+) -> dict[str, object]:
     """Build a deterministic offline-capable result envelope.
 
     Provenance is HMAC-SHA256 when ``key`` is provided; otherwise SHA-256 over
@@ -100,9 +100,9 @@ def to_junit(report: KitReport, *, suite_name: str = "hedron-conformance") -> st
     return ET.tostring(testsuite, encoding="unicode")
 
 
-def to_sarif(report: KitReport, *, tool_name: str = "hedron-conformance") -> dict[str, Any]:
+def to_sarif(report: KitReport, *, tool_name: str = "hedron-conformance") -> dict[str, object]:
     """Convert a kit report to a minimal SARIF 2.1.0 document."""
-    results: list[dict[str, Any]] = []
+    results: list[dict[str, object]] = []
     for item in report.results:
         if item.passed:
             continue
@@ -142,11 +142,11 @@ def to_sarif(report: KitReport, *, tool_name: str = "hedron-conformance") -> dic
 
 def offline_bundle_manifest(
     *,
-    envelope: Mapping[str, Any],
+    envelope: Mapping[str, object],
     junit_xml: str,
-    sarif: Mapping[str, Any],
+    sarif: Mapping[str, object],
     extra_files: Sequence[str] | None = None,
-) -> dict[str, Any]:
+) -> dict[str, object]:
     """Deterministic offline bundle inventory (paths + digests)."""
     files = {
         "result-envelope.json": hashlib.sha256(_canonical_json(dict(envelope))).hexdigest(),
@@ -165,7 +165,7 @@ def offline_bundle_manifest(
 
 
 def verify_envelope_digest(
-    envelope: Mapping[str, Any],
+    envelope: Mapping[str, object],
     *,
     key: bytes | str | None = None,
 ) -> bool:
@@ -173,8 +173,8 @@ def verify_envelope_digest(
     body = envelope.get("report")
     if not isinstance(body, dict):
         return False
-    canonical = _canonical_json(cast(dict[str, Any], body))
-    provenance = cast(dict[str, Any], envelope.get("provenance") or {})
+    canonical = _canonical_json(cast(dict[str, object], body))
+    provenance = cast(dict[str, object], envelope.get("provenance") or {})
     expected = str(provenance.get("digest", ""))
     algorithm = str(provenance.get("algorithm", ""))
     if algorithm == "hmac-sha256":

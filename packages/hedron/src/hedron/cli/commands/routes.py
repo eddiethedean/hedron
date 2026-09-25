@@ -5,13 +5,19 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from typing import cast
+from typing import Protocol, cast
 
 from hedron.cli.discovery import load_app as _load_app
 from hedron.cli.discovery import registry_empty_hint as _registry_empty_hint
 from hedron_core.registry import get_registry
 from hedron_core.route_document import export_routes_document
 from hedron_core.typing_aliases import JsonObject
+
+
+class _RouteArgs(Protocol):
+    app: str | None
+    document: bool
+    logical_id: str
 
 
 def _registry_route_rows() -> list[dict[str, object]]:
@@ -35,8 +41,9 @@ def _registry_route_rows() -> list[dict[str, object]]:
 
 
 def _cmd_routes(args: argparse.Namespace) -> int:
-    _load_app(args.app)
-    document = bool(getattr(args, "document", False))
+    typed_args = cast(_RouteArgs, cast(object, args))
+    _ignored = _load_app(typed_args.app)
+    document = typed_args.document
     if document:
         rows = _registry_route_rows()
         if not rows:
@@ -61,7 +68,7 @@ def _cmd_routes(args: argparse.Namespace) -> int:
             except ImportError:
                 pass
         if not rows:
-            _registry_empty_hint(app=args.app, what="routes")
+            _registry_empty_hint(app=typed_args.app, what="routes")
         print(json.dumps(export_routes_document(rows), indent=2, sort_keys=True))
         return 0
     try:
@@ -69,7 +76,7 @@ def _cmd_routes(args: argparse.Namespace) -> int:
 
         payload = routes_json()
         if not payload:
-            _registry_empty_hint(app=args.app, what="routes")
+            _registry_empty_hint(app=typed_args.app, what="routes")
         print(json.dumps(payload, indent=2))
         return 0
     except ImportError:
@@ -87,13 +94,14 @@ def _cmd_routes(args: argparse.Namespace) -> int:
         for r in get_registry().routes()
     ]
     if not rows:
-        _registry_empty_hint(app=args.app, what="routes")
+        _registry_empty_hint(app=typed_args.app, what="routes")
     print(json.dumps(rows, indent=2))
     return 0
 
 
 def _cmd_components(args: argparse.Namespace) -> int:
-    _load_app(args.app)
+    typed_args = cast(_RouteArgs, cast(object, args))
+    _ignored = _load_app(typed_args.app)
     registry = get_registry()
     rows: list[JsonObject] = [
         {
@@ -120,15 +128,16 @@ def _cmd_components(args: argparse.Namespace) -> int:
         for a in registry.addressables()
     )
     if not rows:
-        _registry_empty_hint(app=args.app, what="components")
+        _registry_empty_hint(app=typed_args.app, what="components")
     print(json.dumps(rows, indent=2))
     return 0
 
 
 def _cmd_preview(args: argparse.Namespace) -> int:
-    _load_app(args.app)
+    typed_args = cast(_RouteArgs, cast(object, args))
+    _ignored = _load_app(typed_args.app)
     registry = get_registry()
-    logical_id = args.logical_id
+    logical_id = typed_args.logical_id
     route = None
     for r in registry.routes():
         if r.logical_id == logical_id or r.name == logical_id:

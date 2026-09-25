@@ -33,7 +33,7 @@ def sse_response(
     """
     warnings.warn(
         "hedron_django.live.sse_response is experimental; import from "
-        "hedron_django.experimental (prefer polling in production).",
+        + "hedron_django.experimental (prefer polling in production).",
         DeprecationWarning,
         stacklevel=2,
     )
@@ -43,7 +43,7 @@ def sse_response(
             if not isinstance(item, SseEvent):
                 raise TypeError(
                     "hedron_django.live.sse_response accepts only SseEvent values; "
-                    f"got {type(item)!r}"
+                    + f"got {type(item)!r}"
                 )
             yield encode_sse(item).encode("utf-8")
 
@@ -67,7 +67,7 @@ def stream_text(
     """
     warnings.warn(
         "hedron_django.live.stream_text is experimental; import from "
-        "hedron_django.experimental (prefer polling in production).",
+        + "hedron_django.experimental (prefer polling in production).",
         DeprecationWarning,
         stacklevel=2,
     )

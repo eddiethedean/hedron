@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import json
 from collections.abc import Mapping, Sequence
-from typing import Any, cast
+from typing import cast
+
+from typing_extensions import override
 
 from hedron_charts.compile import beginner_to_spec, compile_chart
 from hedron_charts.export import export_csv, export_svg
@@ -82,7 +84,7 @@ class Chart(Component[ChartProps]):
 
     def __init__(
         self,
-        spec: ChartSpec | Mapping[str, Any] | None = None,
+        spec: ChartSpec | Mapping[str, object] | None = None,
         *,
         class_: str | None = None,
         **kwargs: object,
@@ -96,8 +98,8 @@ class Chart(Component[ChartProps]):
         else:
             payload = dict(spec)
             raw_acc = payload.get("accessibility")
-            acc: Mapping[str, Any] = (
-                cast(Mapping[str, Any], raw_acc) if isinstance(raw_acc, dict) else {}
+            acc: Mapping[str, object] = (
+                cast(Mapping[str, object], raw_acc) if isinstance(raw_acc, dict) else {}
             )
             title = str(acc.get("title") or "Chart")
         super().__init__(ChartProps(title=title, class_=class_, **kwargs))
@@ -108,6 +110,7 @@ class Chart(Component[ChartProps]):
             raise ValueError("Chart requires a spec")
         return compile_chart(self._spec)
 
+    @override
     def render(self) -> NodeLike:
         plan = self.compile_plan()
         payload = plan_payload_json(plan)

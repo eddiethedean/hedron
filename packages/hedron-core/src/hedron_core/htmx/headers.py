@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any
 
 from hedron_core.htmx.attrs import HtmxAttrs
 from hedron_core.htmx.authorize import authorize_location_selectors, authorize_response_selector
@@ -26,7 +25,7 @@ def validated_extra_headers(extra: Mapping[str, str]) -> dict[str, str]:
 def _validated_extra_headers(extra: Mapping[str, str]) -> dict[str, str]:
     if not extra:
         return {}
-    kwargs: dict[str, Any] = {}
+    kwargs: dict[str, object] = {}
     other: dict[str, str] = {}
     for key, value in extra.items():
         if key == "HX-Refresh":

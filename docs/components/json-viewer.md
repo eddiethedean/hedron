@@ -47,7 +47,7 @@ JSONViewer(value, *, max_chars=100_000)
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `value` | `Any` | JSON-like value. |
+| `value` | `object` | JSON-like value. |
 | `max_chars` | `int` | Hard text bound. |
 
 ## Composition and backend behavior

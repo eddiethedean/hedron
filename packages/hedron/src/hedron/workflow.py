@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Literal, cast
+from typing import Literal, cast
 
 SCHEMA_VERSION = "hedron-workflow-manifest-1"
 UPGRADE_SCHEMA_VERSION = "hedron-upgrade-report-1"
@@ -60,7 +60,7 @@ class WorkflowManifest:
     budgets: WorkflowBudget = field(default_factory=WorkflowBudget)
     reason_codes: tuple[ReasonCode, ...] = REASON_CODES
 
-    def redacted_dict(self) -> dict[str, Any]:
+    def redacted_dict(self) -> dict[str, object]:
         return {
             "schema_version": self.schema_version,
             "app_id": self.app_id,
@@ -93,7 +93,7 @@ class UpgradeReport:
     findings: tuple[UpgradeFinding, ...] = ()
     offline: bool = True
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "schema_version": self.schema_version,
             "from_version": self.from_version,
@@ -113,7 +113,7 @@ def build_upgrade_report(
     from_version: str,
     to_version: str,
     manifest: WorkflowManifest | None = None,
-    baseline: dict[str, Any] | None = None,
+    baseline: dict[str, object] | None = None,
 ) -> UpgradeReport:
     """Offline contract diff — never contacts external services."""
     findings: list[UpgradeFinding] = []
@@ -163,11 +163,11 @@ def build_upgrade_report(
     )
 
 
-def load_baseline(path: Path) -> dict[str, Any]:
+def load_baseline(path: Path) -> dict[str, object]:
     data: object = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(data, dict):
         raise ValueError("Baseline must be a JSON object")
-    return cast(dict[str, Any], data)
+    return cast(dict[str, object], data)
 
 
 upgrade_report_schema = {

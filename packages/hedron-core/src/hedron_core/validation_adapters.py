@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from collections.abc import Mapping
 from functools import lru_cache
-from typing import Any, TypeVar, cast
+from typing import TypeVar, cast
 
 from pydantic import TypeAdapter, ValidationError
 
@@ -34,7 +34,7 @@ T = TypeVar("T")
 
 
 @lru_cache(maxsize=256)
-def cached_type_adapter(type_: type[T] | str) -> TypeAdapter[Any]:
+def cached_type_adapter(type_: type[T] | str) -> TypeAdapter[object]:
     """Reuse one TypeAdapter per type/version boundary."""
     if isinstance(type_, str):
         raise error(

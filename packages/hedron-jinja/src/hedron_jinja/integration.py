@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import math
 import re
-from collections.abc import Callable, Iterable, Iterator, Mapping
+from collections.abc import Callable, Iterable, Iterator, Mapping, MutableMapping
 from contextvars import ContextVar
 from dataclasses import dataclass, field
 from types import MappingProxyType
-from typing import Any, ClassVar, NoReturn, Protocol, cast
+from typing import ClassVar, NoReturn, Protocol, cast
 from urllib.parse import urlsplit
 from weakref import ReferenceType, WeakKeyDictionary, ref
 
@@ -18,6 +18,7 @@ from jinja2.nativetypes import NativeEnvironment
 from jinja2.parser import Parser
 from jinja2.runtime import Context
 from markupsafe import Markup
+from typing_extensions import override
 
 from hedron_core import (
     AssetRef,
@@ -42,6 +43,7 @@ from hedron_core import (
 from hedron_core.diagnostics import error, make_diagnostic
 from hedron_core.html import html
 from hedron_core.typing_aliases import JsonValue, RenderTrace
+from hedron_core.typing_support import dynamic_attribute
 from hedron_jinja._document_shape import (
     document_tokens as _document_tokens,
 )
@@ -93,10 +95,20 @@ class _JinjaCaller(Protocol):
     def __call__(self) -> object: ...
 
 
+class _ExpressionParser(Protocol):
+    def parse_expression(self, with_condexpr: bool = True) -> object: ...
+
+
+class _EnvironmentTypeSurfaces(Protocol):
+    filters: MutableMapping[str, object]
+    policies: MutableMapping[str, object]
+
+
 def _hdj_template_class(base: type[Template]) -> type[Template]:
     """Buffer ordinary stream(); expose explicit two-phase streaming for 0.10."""
 
     class HdjTemplate(base):  # type: ignore[valid-type,misc]
+        @override
         def stream(self, *args: object, **kwargs: object) -> NoReturn:
             raise error(
                 "HED-JINJA-0014",
@@ -226,6 +238,7 @@ class HedronJinjaExtension(Extension):
         "hedron_asset",
     }
 
+    @override
     def parse(self, parser: Parser) -> nodes.Node:
         token = next(parser.stream)
         if token.value == "hdj_guard":
@@ -238,28 +251,29 @@ class HedronJinjaExtension(Extension):
         return self._parse_component(parser, token.lineno)
 
     def _parse_component(self, parser: Parser, lineno: int) -> nodes.Node:
-        alias = parser.parse_expression()
-        if not isinstance(alias, nodes.Const) or not isinstance(alias.value, str):
+        alias = cast(_ExpressionParser, parser).parse_expression()
+        alias_value = dynamic_attribute(alias, "value")
+        if not isinstance(alias, nodes.Const) or not isinstance(alias_value, str):
             parser.fail("Hedron component aliases must be string literals", lineno)
         kwargs: list[nodes.Keyword] = []
         prop_names: list[str] = []
         with_body = False
         while parser.stream.current.type != "block_end":
             if parser.stream.current.test("name:with"):
-                next(parser.stream)
-                parser.stream.expect("name:body")
+                _ignored = next(parser.stream)
+                _ignored = parser.stream.expect("name:body")
                 with_body = True
                 break
             name = parser.stream.expect("name").value
-            parser.stream.expect("assign")
-            kwargs.append(nodes.Keyword(name, parser.parse_expression()))
+            _ignored = parser.stream.expect("assign")
+            kwargs.append(nodes.Keyword(name, cast(_ExpressionParser, parser).parse_expression()))
             prop_names.append(name)
         if parser.stream.current.type != "block_end":
             parser.fail("`with body` must be the final part of a Hedron tag", lineno)
         binding = _environment_binding(self.environment)
         if binding is not None:
             binding._validate_component_call(  # pyright: ignore[reportPrivateUsage]
-                alias.value, prop_names, lineno
+                alias_value, prop_names, lineno
             )
         call = self.call_method("_render_component", [nodes.ContextReference(), alias], kwargs)
         if not with_body:
@@ -268,22 +282,24 @@ class HedronJinjaExtension(Extension):
         return nodes.CallBlock(call, [], [], body).set_lineno(lineno)
 
     def _parse_slot(self, parser: Parser, lineno: int) -> nodes.Node:
-        name = parser.parse_expression()
-        if not isinstance(name, nodes.Const) or not isinstance(name.value, str):
+        name = cast(_ExpressionParser, parser).parse_expression()
+        name_value = dynamic_attribute(name, "value")
+        if not isinstance(name, nodes.Const) or not isinstance(name_value, str):
             parser.fail("Hedron slot names must be string literals", lineno)
         body = parser.parse_statements(("name:endslot",), drop_needle=True)
         call = self.call_method("_render_slot", [nodes.ContextReference(), name])
         return nodes.CallBlock(call, [], [], body).set_lineno(lineno)
 
     def _parse_asset(self, parser: Parser, lineno: int) -> nodes.Node:
-        logical_id = parser.parse_expression()
-        if not isinstance(logical_id, nodes.Const) or not isinstance(logical_id.value, str):
+        logical_id = cast(_ExpressionParser, parser).parse_expression()
+        logical_id_value = dynamic_attribute(logical_id, "value")
+        if not isinstance(logical_id, nodes.Const) or not isinstance(logical_id_value, str):
             parser.fail("Hedron asset IDs must be string literals", lineno)
         call = self.call_method("_require_asset", [nodes.ContextReference(), logical_id])
         return nodes.Output([call]).set_lineno(lineno)
 
     def _guard(self, context: Context) -> Markup:
-        _runtime_binding(context)
+        _ignored = _runtime_binding(context)
         return Markup("")
 
     def _render_component(
@@ -327,7 +343,7 @@ class HedronJinja:
         self,
         environment: Environment,
         *,
-        components: Mapping[str, type[Component[Any]]] | None = None,
+        components: Mapping[str, type[Component[object]]] | None = None,
         assets: Mapping[str, AssetRef] | None = None,
         binding: JinjaBinding | None = None,
         app_id: str | None = None,
@@ -341,7 +357,7 @@ class HedronJinja:
         max_macro_calls: int = 10_000,
         url_builder: Callable[..., SafeUrl] | None = None,
         csrf_builder: Callable[[], TrustedHtml] | None = None,
-        async_io_registry: Any | None = None,
+        async_io_registry: object | None = None,
         extension_registry: ExtensionRegistry | None = None,
     ) -> None:
         if binding is not None and app_id is not None and binding.app_id != app_id:
@@ -421,13 +437,13 @@ class HedronJinja:
         self.async_io_registry = async_io_registry
         self.extension_registry = extension_registry or ExtensionRegistry()
         self.app_binding = binding or (JinjaBinding(app_id=app_id) if app_id is not None else None)
-        self._components: dict[str, type[Component[Any]]] = {}
+        self._components: dict[str, type[Component[object]]] = {}
         self._assets: dict[str, AssetRef] = {}
         self._frozen = False
 
         # Optional Jinja globals for exact loop/macro instrumentation (pure-Python).
         # Jinja's typed globals mapping is narrow; application callables are valid at runtime.
-        jinja_globals = cast(dict[str, Any], environment.globals)
+        jinja_globals = cast(dict[str, object], environment.globals)
         if "hedron_record_loop" not in jinja_globals:
             jinja_globals["hedron_record_loop"] = lambda n=1: record_loop_iteration(int(n))
         if "hedron_record_macro" not in jinja_globals:
@@ -435,14 +451,18 @@ class HedronJinja:
         from hedron_jinja.handles import catalog_command_form, catalog_view
 
         if self.app_binding is not None:
-            jinja_globals.setdefault("h_view", self._render_registered_view)
-            jinja_globals.setdefault("h_command_form", self._render_registered_command_form)
-            jinja_globals.setdefault("h_catalog_facts", self.app_binding.catalog_facts)
-            jinja_globals.setdefault("h_type_schema", self.app_binding.type_schema)
-            jinja_globals.setdefault("h_feature_bundles", self.app_binding.feature_bundles)
+            _ignored = jinja_globals.setdefault("h_view", self._render_registered_view)
+            _ignored = jinja_globals.setdefault(
+                "h_command_form", self._render_registered_command_form
+            )
+            _ignored = jinja_globals.setdefault("h_catalog_facts", self.app_binding.catalog_facts)
+            _ignored = jinja_globals.setdefault("h_type_schema", self.app_binding.type_schema)
+            _ignored = jinja_globals.setdefault(
+                "h_feature_bundles", self.app_binding.feature_bundles
+            )
         else:
-            jinja_globals.setdefault("h_view", catalog_view)
-            jinja_globals.setdefault("h_command_form", catalog_command_form)
+            _ignored = jinja_globals.setdefault("h_view", catalog_view)
+            _ignored = jinja_globals.setdefault("h_command_form", catalog_command_form)
 
         environment.loader = HdjLoader(environment.loader)
         environment.template_class = _hdj_template_class(environment.template_class)
@@ -452,7 +472,7 @@ class HedronJinja:
         if async_io_registry is not None:
             bind = getattr(async_io_registry, "bind_filters", None)
             if callable(bind):
-                bind(environment)
+                _ignored = bind(environment)
         if strict:
             environment.undefined = StrictUndefined
         previous_finalize = environment.finalize
@@ -482,14 +502,20 @@ class HedronJinja:
             return previous_finalize(value) if previous_finalize is not None else value
 
         environment.finalize = finalize
-        environment.filters["safe"] = self._generic_safe_filter
-        environment.filters["hedron_trusted"] = self._trusted_filter
-        environment.filters["hedron_nav_url"] = self._navigation_url_filter
-        environment.filters["hedron_form_url"] = self._form_url_filter
-        environment.filters["hedron_asset_url"] = self._asset_url_filter
-        json_kwargs = dict(environment.policies.get("json.dumps_kwargs", {}))
+        environment_surfaces = cast(_EnvironmentTypeSurfaces, environment)
+        environment_surfaces.filters["safe"] = self._generic_safe_filter
+        environment_surfaces.filters["hedron_trusted"] = self._trusted_filter
+        environment_surfaces.filters["hedron_nav_url"] = self._navigation_url_filter
+        environment_surfaces.filters["hedron_form_url"] = self._form_url_filter
+        environment_surfaces.filters["hedron_asset_url"] = self._asset_url_filter
+        json_kwargs_value = environment_surfaces.policies.get("json.dumps_kwargs", {})
+        json_kwargs = (
+            {str(key): value for key, value in json_kwargs_value.items()}
+            if isinstance(json_kwargs_value, Mapping)
+            else {}
+        )
         json_kwargs["allow_nan"] = False
-        environment.policies["json.dumps_kwargs"] = json_kwargs
+        environment_surfaces.policies["json.dumps_kwargs"] = json_kwargs
         _BINDINGS[environment] = ref(self)
 
         for alias, factory in (
@@ -507,14 +533,14 @@ class HedronJinja:
         self._environment_fingerprint = self._fingerprint_environment()
 
     @property
-    def components(self) -> Mapping[str, type[Component[Any]]]:
+    def components(self) -> Mapping[str, type[Component[object]]]:
         return MappingProxyType(self._components)
 
     @property
     def assets(self) -> Mapping[str, AssetRef]:
         return MappingProxyType(self._assets)
 
-    def register_component(self, alias: str, factory: type[Component[Any]]) -> None:
+    def register_component(self, alias: str, factory: type[Component[object]]) -> None:
         self._require_mutable("component", alias)
         if not _ALIAS_RE.fullmatch(alias):
             raise error(
@@ -577,7 +603,7 @@ class HedronJinja:
                 remediation="Use a registered local path or an explicit HTTPS origin.",
             )
         try:
-            SafeUrl.parse(
+            _ignored = SafeUrl.parse(
                 asset.href,
                 purpose=UrlPurpose.ASSET,
                 allow_external=parts.scheme.lower() == "https",
@@ -1334,18 +1360,18 @@ class HedronJinja:
             try:
                 body = str(caller())
             finally:
-                session.slot_stack.pop()
+                _ignored = session.slot_stack.pop()
         component = factory(**props)  # type: ignore[arg-type]
         if key is not None:
-            component.key(str(key))
+            _ignored = component.key(str(key))
         if body.strip():
             body_node = html.raw(
                 TrustedHtml.reviewed(body, source=f"hedron-jinja:{session.template_name}:body")
             )
             if component.slots.get("body") is not None:
-                component.slot("body", body_node)
+                _ignored = component.slot("body", body_node)
             else:
-                component.children(body_node)
+                _ignored = component.children(body_node)
         for slot_name, values in collector.values.items():
             cardinality = component.slots.get(slot_name)
             if cardinality is None:
@@ -1363,7 +1389,7 @@ class HedronJinja:
                     remediation="Provide it once or declare cardinality `many`.",
                 )
             for value in values:
-                component.slot(
+                _ignored = component.slot(
                     slot_name,
                     html.raw(
                         TrustedHtml.reviewed(
@@ -1639,7 +1665,9 @@ class HedronJinja:
             tuple(
                 sorted(
                     (name, _fingerprint_policy(value))
-                    for name, value in self.environment.policies.items()
+                    for name, value in cast(
+                        _EnvironmentTypeSurfaces, self.environment
+                    ).policies.items()
                 )
             ),
             id(self.environment.bytecode_cache),

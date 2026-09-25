@@ -1,6 +1,6 @@
 [project]
 name = "hedron-workspace"
-version = "1.1.1"
+version = "1.1.2"
 description = "Hedron monorepo workspace"
 requires-python = ">=3.10,<3.15"
 readme = "README.md"
@@ -63,14 +63,14 @@ dev = [
     "pytest>=8.3",
     "pytest-xdist>=3.6",
     "pytest-cov>=7.0",
-    # Pyright analyzes the declared Python 3.10 floor even when CI runs on a
+    # BasedPyright analyzes the declared Python 3.10 floor even when CI runs on a
     # newer interpreter, so its environment must resolve the 3.10 TOML branch.
     "tomli>=2.0.1",
     "httpx>=0.28",
     "anyio>=4.8",
     "syrupy>=4.8",
     "ruff>=0.11",
-    "pyright>=1.1.400",
+    "basedpyright>=1.39.9",
     "matplotlib>=3.8,<4",
     "nh3>=0.2",
     "markdown>=3.5",
@@ -177,7 +177,7 @@ extra-standard-library = ["tomllib"]
 "tests/upgrade/phase_1_0/negative/*.py" = ["B009", "F821"]
 "tests/upgrade/phase_1_0/transitional/*.py" = ["F821"]
 
-[tool.pyright]
+[tool.basedpyright]
 include = [
     "packages/hedron-core/src",
     "packages/hedron/src",
@@ -206,6 +206,7 @@ include = [
 pythonVersion = "3.10"
 venvPath = "."
 venv = ".venv"
+stubPath = "typings"
 extraPaths = [
     "packages/hedron-core/src",
     "packages/hedron/src",
@@ -231,16 +232,22 @@ extraPaths = [
     "packages/edron-sim/src",
     "packages/fastapi-workbench/src",
 ]
-typeCheckingMode = "strict"
-reportMissingTypeStubs = "none"
-reportPrivateUsage = "warning"
-reportUnknownVariableType = "warning"
-reportUnknownArgumentType = "warning"
-reportUnknownMemberType = "warning"
-reportUnknownParameterType = "warning"
-reportUnnecessaryIsInstance = "warning"
-reportUnnecessaryComparison = "warning"
-reportUnusedFunction = "warning"
-reportDeprecated = "warning"
-reportInvalidTypeVarUse = "warning"
-reportIncompatibleVariableOverride = "warning"
+typeCheckingMode = "all"
+
+# Analyze function bodies even when they lack type annotations.
+analyzeUnannotatedFunctions = true
+strictParameterNoneValue = true
+strictGenericNarrowing = true
+
+# Ban Any both at annotations and when it enters through inference or an API.
+reportAny = "error"
+reportExplicitAny = "error"
+# Local json signatures refine the stdlib's dynamic decode result to object.
+reportMissingModuleSource = "warning"
+
+# Keep call results and source hygiene checks fatal.
+reportUnusedCallResult = "error"
+reportImplicitStringConcatenation = "error"
+reportMissingSuperCall = "error"
+reportUninitializedInstanceVariable = "error"
+reportIgnoreCommentWithoutRule = "error"

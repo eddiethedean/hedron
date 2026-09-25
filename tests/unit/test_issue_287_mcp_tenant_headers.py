@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 from starlette.applications import Starlette
 from starlette.testclient import TestClient
 
@@ -11,7 +9,7 @@ from hedron_mcp import McpProjection, McpTool, mount_mcp
 
 
 def test_client_tenant_and_scope_headers_are_ignored() -> None:
-    seen: dict[str, Any] = {}
+    seen: dict[str, object] = {}
 
     def authz_hook(
         *,

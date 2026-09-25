@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing_extensions import override
+
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.htmx_contract import safe_css_selector
@@ -55,6 +57,7 @@ class ActionAsync(Component[ActionAsyncProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         btn_attrs: HtmlAttrMap = {"type": "button", "data-hedron-server-region": "control"}
         tag_attrs: HtmlAttrMap = {

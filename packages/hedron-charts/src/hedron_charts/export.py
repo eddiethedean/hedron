@@ -6,7 +6,7 @@ import csv
 import io
 import json
 from collections.abc import Mapping
-from typing import Any, cast
+from typing import cast
 
 from hedron_charts.spec import ChartPlan
 from hedron_core.diagnostics import error
@@ -77,8 +77,8 @@ def _render_svg(plan: ChartPlan, *, width: int | None = None) -> str:
     y_values: list[float] = []
     for mark in plan.marks:
         raw_vals = mark.get("values")
-        vals: Mapping[str, Any] = (
-            cast(Mapping[str, Any], raw_vals) if isinstance(raw_vals, Mapping) else {}
+        vals: Mapping[str, object] = (
+            cast(Mapping[str, object], raw_vals) if isinstance(raw_vals, Mapping) else {}
         )
         y = vals.get("y")
         try:
@@ -93,8 +93,8 @@ def _render_svg(plan: ChartPlan, *, width: int | None = None) -> str:
     plot_h = max(1, h - 2 * margin)
     for i, mark in enumerate(plan.marks):
         raw_vals = mark.get("values")
-        vals: Mapping[str, Any] = (
-            cast(Mapping[str, Any], raw_vals) if isinstance(raw_vals, Mapping) else {}
+        vals: Mapping[str, object] = (
+            cast(Mapping[str, object], raw_vals) if isinstance(raw_vals, Mapping) else {}
         )
         try:
             y = float(vals.get("y"))  # type: ignore[arg-type]
@@ -145,9 +145,9 @@ def export_print_html(plan: ChartPlan, *, authorized: bool = True) -> str:
     )
 
 
-def plan_export_bundle(plan: ChartPlan, *, authorized: bool = True) -> dict[str, Any]:
+def plan_export_bundle(plan: ChartPlan, *, authorized: bool = True) -> dict[str, object]:
     """Return all enabled exports with fingerprints (no remote fetches)."""
-    bundle: dict[str, Any] = {
+    bundle: dict[str, object] = {
         "spec_fingerprint": plan.spec_fingerprint,
         "data_fingerprint": plan.data_fingerprint,
         "theme": plan.theme.mode,
@@ -165,7 +165,7 @@ def plan_export_bundle(plan: ChartPlan, *, authorized: bool = True) -> dict[str,
     return bundle
 
 
-def assert_no_remote_urls(payload: Mapping[str, Any] | str) -> None:
+def assert_no_remote_urls(payload: Mapping[str, object] | str) -> None:
     import re
 
     text = payload if isinstance(payload, str) else json.dumps(payload)

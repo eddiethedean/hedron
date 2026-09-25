@@ -127,7 +127,7 @@ class ThemeStep:
 
     def apply(self, app: FastAPI, context: HedronBootstrapContext) -> None:
         config = context.config
-        ensure_default_theme_registered()
+        _ignored = ensure_default_theme_registered()
         app.hedron_theme = config.theme  # type: ignore[attr-defined]
         app.hedron_design_system = config.design_system  # type: ignore[attr-defined]
         app.hedron_default_styles = config.default_styles  # type: ignore[attr-defined]
@@ -240,7 +240,7 @@ class AssetMountStep:
 
     def apply(self, app: FastAPI, context: HedronBootstrapContext) -> None:
         mount_hedron_static(app)
-        mount_build_assets(app, context.config.build_dir)
+        _ignored = mount_build_assets(app, context.config.build_dir)
 
 
 class RoutingStep:

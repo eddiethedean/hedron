@@ -6,7 +6,7 @@ import inspect
 import secrets
 from collections.abc import Callable, Sequence
 from functools import wraps
-from typing import Any, TypeVar, cast, overload
+from typing import TypeVar, cast, overload
 
 from asgiref.sync import markcoroutinefunction
 from django.http import HttpRequest, HttpResponse
@@ -18,6 +18,7 @@ from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.interaction_067 import Outcome
 from hedron_core.mount import prefix_local_path
 from hedron_core.rendering import RenderResult
+from hedron_core.typing_support import awaitable_value, call_dynamic
 from hedron_django.csrf import DjangoCsrfError, seed_csrf_cookie, validate_csrf
 from hedron_django.responses import (
     _outcome_response,  # pyright: ignore[reportPrivateUsage]
@@ -34,7 +35,7 @@ __all__ = [
     "view",
 ]
 
-F = TypeVar("F", bound=Callable[..., Any])
+F = TypeVar("F", bound=Callable[..., object])
 
 HEDRON_APP_ID = secrets.token_hex(8)
 
@@ -51,9 +52,9 @@ class DjangoUrlReverser:
         return path
 
 
-def _as_node_like(value: object) -> NodeLike | Component[Any]:
+def _as_node_like(value: object) -> NodeLike | Component[object]:
     if isinstance(value, Component):
-        return cast(Component[Any], value)
+        return cast(Component[object], value)
     if isinstance(value, ComponentNode):
         return value
     if isinstance(value, (str, int, float, bool)) or value is None:
@@ -72,7 +73,7 @@ def _convert(
 ) -> HttpResponse:
     method = (request.method or "GET").upper()
     if method in {"GET", "HEAD"}:
-        seed_csrf_cookie(request)
+        _ignored = seed_csrf_cookie(request)
     else:
         try:
             validate_csrf(request)
@@ -133,7 +134,7 @@ def _csrf_gate(request: HttpRequest) -> HttpResponse | None:
     """Reject unsafe methods before the view runs (Flask/FastAPI parity, #392)."""
     method = (request.method or "GET").upper()
     if method in {"GET", "HEAD"}:
-        seed_csrf_cookie(request)
+        _ignored = seed_csrf_cookie(request)
         return None
     try:
         validate_csrf(request)
@@ -162,13 +163,13 @@ async def _convert_async(
         return HttpResponse(str(exc).encode("utf-8"), status=status, content_type="text/plain")
     if isinstance(value, InteractionResult):
         if value.content is not None:
-            await prepare_tree(value.content)
+            _ignored = await prepare_tree(value.content)
         for update in value.oob:
-            await prepare_tree(update.content)
+            _ignored = await prepare_tree(update.content)
     elif (
         isinstance(value, (Component, str, ComponentNode)) or hasattr(value, "__hedron_component__")
     ) and not isinstance(value, RenderResult):
-        await prepare_tree(_as_node_like(cast(object, value)))
+        _ignored = await prepare_tree(_as_node_like(cast(object, value)))
     return _convert(
         cast(object, value),
         request,
@@ -214,7 +215,11 @@ def hedron_view(
                 denied = _csrf_gate(request)
                 if denied is not None:
                     return denied
-                value = await fn(request, *args, **kwargs)
+                raw_value = call_dynamic(fn, request, *args, **kwargs)
+                pending = awaitable_value(raw_value)
+                if pending is None:
+                    raise TypeError("async Django view did not return an awaitable")
+                value = await pending
                 return await _convert_async(
                     value,
                     request,
@@ -222,7 +227,7 @@ def hedron_view(
                     allow_undeclared_targets=allow_undeclared_targets,
                 )
 
-            markcoroutinefunction(async_wrapped)
+            _ignored = markcoroutinefunction(async_wrapped)
             return cast(F, async_wrapped)
 
         @wraps(fn)
@@ -230,7 +235,7 @@ def hedron_view(
             denied = _csrf_gate(request)
             if denied is not None:
                 return denied
-            value = fn(request, *args, **kwargs)
+            value = call_dynamic(fn, request, *args, **kwargs)
             return _convert(
                 value,
                 request,
@@ -346,16 +351,16 @@ def action(
         if inspect.iscoroutinefunction(fn):
 
             @wraps(wrapped)
-            async def async_action(request: HttpRequest, *args: object, **kwargs: object) -> Any:
+            async def async_action(request: HttpRequest, *args: object, **kwargs: object) -> object:
                 if (request.method or "").upper() not in {"POST", "PUT", "PATCH", "DELETE"}:
                     return HttpResponse(status=405)
                 return await wrapped(request, *args, **kwargs)
 
-            markcoroutinefunction(async_action)
+            _ignored = markcoroutinefunction(async_action)
             return cast(F, async_action)
 
         @wraps(wrapped)
-        def sync_action(request: HttpRequest, *args: object, **kwargs: object) -> Any:
+        def sync_action(request: HttpRequest, *args: object, **kwargs: object) -> object:
             if (request.method or "").upper() not in {"POST", "PUT", "PATCH", "DELETE"}:
                 return HttpResponse(status=405)
             return wrapped(request, *args, **kwargs)

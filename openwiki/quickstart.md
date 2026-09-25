@@ -53,7 +53,7 @@ uv sync
 uv run pytest tests/integration -q       # narrow FastAPI behavior
 uv run ruff format --check packages tests examples
 uv run ruff check packages tests examples
-uv run pyright
+uv run basedpyright
 ```
 
 Choose `tests/unit`, `tests/adapters`, `tests/security`, `tests/conformance`, or `examples` when those are the affected surfaces. For documentation-only work, use `uv sync --group docs` and `uv run --group docs mkdocs build --strict`; the full contributor guide lists the companion generated-content and ownership checks. Browser evidence is opt-in and uses `HEDRON_BROWSER=1` with `-n 0`.

@@ -11,7 +11,7 @@ import threading
 import time
 from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Any, Protocol, cast
+from typing import Protocol, cast
 
 from hedron_core.compat import StrEnum
 
@@ -155,7 +155,7 @@ class SignedIntent:
     expires_at: float
     signature: str
 
-    def canonical_payload(self) -> dict[str, Any]:
+    def canonical_payload(self) -> dict[str, object]:
         return {
             "version": self.version,
             "intent_id": self.intent_id,
@@ -172,12 +172,12 @@ class SignedIntent:
         }
 
 
-def fingerprint_payload(payload: Mapping[str, Any] | None) -> str:
+def fingerprint_payload(payload: Mapping[str, object] | None) -> str:
     body = json.dumps(payload or {}, sort_keys=True, separators=(",", ":"), default=str)
     return hashlib.sha256(body.encode("utf-8")).hexdigest()[:32]
 
 
-def _sign(secret: bytes, canonical: Mapping[str, Any]) -> str:
+def _sign(secret: bytes, canonical: Mapping[str, object]) -> str:
     message = json.dumps(canonical, sort_keys=True, separators=(",", ":")).encode("utf-8")
     return hmac.new(secret, message, hashlib.sha256).hexdigest()
 
@@ -192,7 +192,7 @@ def mint_intent(
     resource: str,
     revision: str,
     target: str,
-    payload: Mapping[str, Any] | None = None,
+    payload: Mapping[str, object] | None = None,
     ttl_seconds: object = 300.0,
     now: object | None = None,
     store: IntentStore | None = None,
@@ -260,7 +260,7 @@ def verify_intent(
     resource: str,
     revision: str,
     target: str,
-    payload: Mapping[str, Any] | None = None,
+    payload: Mapping[str, object] | None = None,
     now: object | None = None,
 ) -> None:
     ts = time.time() if now is None else now
@@ -308,7 +308,7 @@ def verify_and_consume(
     resource: str,
     revision: str,
     target: str,
-    payload: Mapping[str, Any] | None = None,
+    payload: Mapping[str, object] | None = None,
     now: float | None = None,
 ) -> None:
     """Verify bindings then atomically consume the intent (single-use)."""
@@ -325,7 +325,7 @@ def verify_and_consume(
         payload=payload,
         now=now,
     )
-    store.consume(intent.intent_id)
+    _ignored = store.consume(intent.intent_id)
 
 
 class IntentStore(Protocol):

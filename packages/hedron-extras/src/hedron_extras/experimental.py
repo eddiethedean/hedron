@@ -8,7 +8,6 @@ surfaces as product UI under ``hedron[extras]``.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
 
 from hedron_core.codes import HED_ASSET_MISSING
 from hedron_core.diagnostics import error
@@ -36,7 +35,7 @@ _ROOT = Path(__file__).resolve().parent
 
 PLUGIN_META = PluginMeta(
     name="hedron_extras_experimental",
-    version="1.1.1",
+    version="1.1.2",
     distribution="hedron-extras",
     hedron_version=">=1.0,<2.0",
     depends_on=("hedron_extras",),
@@ -49,7 +48,7 @@ PLUGIN_META = PluginMeta(
     ),
 )
 
-_BROWSER_HOSTS: tuple[tuple[str, str, str, tuple[type[Any], ...]], ...] = (
+_BROWSER_HOSTS: tuple[tuple[str, str, str, tuple[type[object], ...]], ...] = (
     (
         "assets/code_editor/editor.js",
         "hedron-extras:code-editor",
@@ -64,7 +63,7 @@ _BROWSER_HOSTS: tuple[tuple[str, str, str, tuple[type[Any], ...]], ...] = (
     ),
 )
 
-_STATIC_COMPONENTS: tuple[type[Any], ...] = (
+_STATIC_COMPONENTS: tuple[type[object], ...] = (
     Joystick,
     DeviceBridge,
 )
@@ -102,12 +101,12 @@ def _register_module_asset(ctx: PluginContext, rel: str) -> tuple[str, Path]:
 
 def _register_assets(ctx: PluginContext) -> None:
     for rel, _module_id, _tag_name, _classes in _BROWSER_HOSTS:
-        _register_module_asset(ctx, rel)
+        _ignored = _register_module_asset(ctx, rel)
 
 
 def _register_components(ctx: PluginContext) -> None:
     """Register EXTRAS-025 landmines (CodeEditor / TerminalView / joystick / device)."""
-    module_by_cls: dict[type[Any], str] = {}
+    module_by_cls: dict[type[object], str] = {}
 
     for rel, module_id, tag_name, classes in _BROWSER_HOSTS:
         _, path = _module_asset(rel)
@@ -140,7 +139,7 @@ def _register_components(ctx: PluginContext) -> None:
 
 
 def _register_features(ctx: PluginContext) -> None:
-    feature_specs: tuple[dict[str, Any], ...] = (
+    feature_specs: tuple[dict[str, object], ...] = (
         {
             "name": "code_editor",
             "stability": "experimental",

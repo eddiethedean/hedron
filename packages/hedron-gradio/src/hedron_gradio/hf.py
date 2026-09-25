@@ -6,7 +6,7 @@ import json
 from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Literal
+from typing import Literal
 
 from hedron_gradio.errors import GradioRemoteError
 from hedron_gradio.policy import GradioRemoteConfig, normalize_host, redact_sensitive_text
@@ -27,7 +27,7 @@ class HuggingFaceVendorNode:
     kind: HuggingFaceKind
     ref: str
 
-    def to_workflow_node(self) -> dict[str, Any]:
+    def to_workflow_node(self) -> dict[str, object]:
         """Emit InferenceWorkflow-compatible node JSON (node_id/label/ports)."""
         workflow_kind = "dataset" if self.kind == "dataset" else "remote"
         action_id = f"hf:{self.kind}:{self.ref}"
@@ -90,7 +90,7 @@ def hf_remote_config_for_space(
     )
 
 
-def translate_hf_vendor_status(raw: Mapping[str, Any]) -> dict[str, Any]:
+def translate_hf_vendor_status(raw: Mapping[str, object]) -> dict[str, object]:
     """Map recorded HF queue/cold-start/quota fixtures to adapter-friendly status."""
     status = str(raw.get("status") or "unknown").lower()
     if status in {"queued", "queue", "starting", "cold_start"}:
@@ -106,7 +106,7 @@ def translate_hf_vendor_status(raw: Mapping[str, Any]) -> dict[str, Any]:
     return {"status": status, "detail": redact_sensitive_text(json.dumps(raw, default=str))}
 
 
-def load_hf_fixture(name: str) -> dict[str, Any]:
+def load_hf_fixture(name: str) -> dict[str, object]:
     root = Path(__file__).resolve().parents[4] / "tests" / "fixtures" / "gradio"
     path = root / name
     if not path.is_file():

@@ -12,7 +12,7 @@ Under ``HEDRON_ENV=production``, calling these helpers fails closed unless
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import Any, TypeVar, cast
+from typing import TypeVar, cast
 
 from hedron.preload import (
     HX_PRELOADED,
@@ -35,11 +35,11 @@ from hedron.websocket_channel import (
 )
 from hedron_core.production_gate import assert_experimental_live_allowed
 
-_F = TypeVar("_F", bound=Callable[..., Any])
+_F = TypeVar("_F", bound=Callable[..., object])
 
 
 def _guard_live(fn: _F) -> _F:
-    def wrapped(*args: Any, **kwargs: Any) -> Any:
+    def wrapped(*args: object, **kwargs: object) -> object:
         assert_experimental_live_allowed()
         return fn(*args, **kwargs)
 

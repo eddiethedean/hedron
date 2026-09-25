@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import hashlib
 from pathlib import Path
-from typing import Any
 
 from hedron_core.diagnostics import error
 from hedron_core.identifiers import content_digest
@@ -45,7 +44,7 @@ def _looks_like_stub(path: Path) -> bool:
     return "pin stub" in text or "supply offline bundle" in text
 
 
-RUNTIME_PINS: dict[str, dict[str, Any]] = {
+RUNTIME_PINS: dict[str, dict[str, object]] = {
     "plotly-host": {
         "version": "0.12.0-host",
         "path": "assets/plotly/host.js",
@@ -146,7 +145,7 @@ def ensure_pin_stubs() -> None:
     assert_pins_present()
 
 
-def pinned_runtime(name: str) -> dict[str, Any]:
+def pinned_runtime(name: str) -> dict[str, object]:
     if name not in RUNTIME_PINS:
         raise KeyError(f"Unknown runtime pin {name!r}")
     return dict(RUNTIME_PINS[name])

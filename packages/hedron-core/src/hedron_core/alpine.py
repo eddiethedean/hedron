@@ -91,7 +91,7 @@ _KEY_MODIFIERS = frozenset(
 )
 _FORBIDDEN_GLOBALS = re.compile(
     r"(?:^|[^A-Za-z0-9_$])(window|document|globalThis|fetch|XMLHttpRequest|location|history|"
-    r"eval|Function|constructor|prototype|__proto__)(?:$|[^A-Za-z0-9_$])"
+    + r"eval|Function|constructor|prototype|__proto__)(?:$|[^A-Za-z0-9_$])"
 )
 _UNSAFE_BIND_TARGETS = frozenset(
     {"class", "style", "href", "src", "action", "formaction", "poster", "ping"}
@@ -354,7 +354,7 @@ class BrowserFeaturePlan:
         missing_assets = sorted(set(self.assets) - set(installed.assets))
         raise BrowserPlanError(
             "browser feature plan is not a subset of the PAGE plan: "
-            f"missing_features={missing_features!r}, missing_assets={missing_assets!r}",
+            + f"missing_features={missing_features!r}, missing_assets={missing_assets!r}",
             missing_features=missing_features,
             missing_assets=missing_assets,
         )
@@ -587,7 +587,7 @@ class AlpineDirective:
             if target in _UNSAFE_BIND_TARGETS:
                 raise ValueError(
                     f"dynamic x-bind:{target} is not a typed safe sink; "
-                    "use a Hedron URL/style binding"
+                    + "use a Hedron URL/style binding"
                 )
         if name.startswith("x-on:"):
             event = name[5:].split(".", 1)[0]
@@ -610,7 +610,7 @@ class AlpineDirective:
                             "string Alpine expressions must use the reviewed CSP-safe grammar"
                         ) from None
                 else:
-                    _json_value(parsed, path=f"directive {name}")
+                    _ignored = _json_value(parsed, path=f"directive {name}")
         else:
             raise TypeError("directive value must be a string or typed expression")
         if any(token in value for token in ("<script", "javascript:", "data:text/html")):

@@ -4,16 +4,16 @@ from __future__ import annotations
 
 import asyncio
 import copy
-import inspect
 import json
 import threading
 import time
 from collections.abc import Callable
 from contextlib import suppress
 from dataclasses import dataclass, field
-from typing import Any, TypeVar, cast
+from typing import TypeVar, cast
 
 from hedron_core.cache.backend import validate_cache_ttl
+from hedron_core.typing_support import awaitable_value
 
 R = TypeVar("R")
 
@@ -24,7 +24,7 @@ class _AsyncSingleFlightRetry(Exception):
 
 @dataclass
 class _Entry:
-    value: Any
+    value: object
     expires_at: float | None
     tags: tuple[str, ...]
     stored_at: float = field(default_factory=time.monotonic)
@@ -55,13 +55,13 @@ class InMemoryCacheBackend:
         self._lock = threading.RLock()
         self._flights: dict[str, _SyncFlight] = {}
         # Keyed by (cache key, event-loop id) so Futures are never shared across loops.
-        self._async_flights: dict[tuple[str, int], asyncio.Future[Any]] = {}
+        self._async_flights: dict[tuple[str, int], asyncio.Future[object]] = {}
 
-    def get(self, key: str) -> Any | None:
+    def get(self, key: str) -> object | None:
         hit, value = self.lookup(key)
         return value if hit else None
 
-    def lookup(self, key: str) -> tuple[bool, Any]:
+    def lookup(self, key: str) -> tuple[bool, object]:
         with self._lock:
             entry = self._store.get(key)
             if entry is None:
@@ -82,7 +82,7 @@ class InMemoryCacheBackend:
     def set(
         self,
         key: str,
-        value: Any,
+        value: object,
         *,
         ttl: float | None = None,
         tags: tuple[str, ...] = (),
@@ -145,7 +145,7 @@ class InMemoryCacheBackend:
                 waiter = False
         if waiter:
             try:
-                flight.event.wait()
+                _ignored = flight.event.wait()
                 if flight.error is not None:
                     raise flight.error
                 if not flight.has_result:
@@ -167,9 +167,9 @@ class InMemoryCacheBackend:
                 flight.event.set()
                 # Drop the map entry so a new generation gets its own _SyncFlight.
                 if self._flights.get(key) is flight:
-                    self._flights.pop(key, None)
+                    _ignored = self._flights.pop(key, None)
 
-    async def single_flight_async(self, key: str, loader: Callable[[], Any]) -> Any:
+    async def single_flight_async(self, key: str, loader: Callable[[], object]) -> object:
         while True:
             hit, cached = self.lookup(key)
             if hit:
@@ -193,8 +193,9 @@ class InMemoryCacheBackend:
                     continue
             try:
                 result = loader()
-                if inspect.isawaitable(result):
-                    result = await result
+                pending = awaitable_value(result)
+                if pending is not None:
+                    result = await pending
                 if not fut.done():
                     fut.set_result(result)
                 return result
@@ -203,12 +204,12 @@ class InMemoryCacheBackend:
                 # would cancel sibling waiters that were not themselves cancelled.
                 with self._lock:
                     if self._async_flights.get(flight_key) is fut:
-                        self._async_flights.pop(flight_key, None)
+                        _ignored = self._async_flights.pop(flight_key, None)
                 if not fut.done():
                     fut.set_exception(_AsyncSingleFlightRetry())
                     # The owner does not await this retry sentinel. Mark the
                     # exception retrieved so a waiter-less flight is silent.
-                    fut.exception()
+                    _ignored = fut.exception()
                 raise
             except BaseException as exc:
                 if not fut.done():
@@ -216,9 +217,9 @@ class InMemoryCacheBackend:
                     # Waiters can still await the Future after this; calling
                     # exception() only marks it observed for asyncio logging.
                     with suppress(BaseException):
-                        fut.exception()
+                        _ignored = fut.exception()
                 raise
             finally:
                 with self._lock:
                     if self._async_flights.get(flight_key) is fut:
-                        self._async_flights.pop(flight_key, None)
+                        _ignored = self._async_flights.pop(flight_key, None)

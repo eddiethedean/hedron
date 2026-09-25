@@ -38,7 +38,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```text
-Tooltip(text: 'str', *nodes: 'NodeLike', children: 'NodeLike' = None, id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
+Tooltip(text: 'str', *nodes: 'NodeLike', children: 'NodeLike' = None, id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |

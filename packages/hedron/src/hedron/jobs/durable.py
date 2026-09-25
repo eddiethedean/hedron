@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Mapping
-from typing import Any
 
 from fastapi import BackgroundTasks, HTTPException
 from starlette.responses import HTMLResponse
@@ -19,7 +18,9 @@ __all__ = [
 ]
 
 
-def schedule_post_response(tasks: BackgroundTasks, fn: Callable[..., Any], *args: Any) -> None:
+def schedule_post_response(
+    tasks: BackgroundTasks, fn: Callable[..., object], *args: object
+) -> None:
     """Schedule small non-durable post-response work (NOT a JobBackend)."""
     tasks.add_task(fn, *args)
 
@@ -31,7 +32,7 @@ def enqueue_durable(
     idempotency_key: str | None = None,
     tenant_id: str | None = None,
     auth_subject: str | None = None,
-    backend: Any | None = None,
+    backend: object | None = None,
 ) -> str:
     handle = (backend or get_job_backend()).submit(
         job_type,

@@ -38,7 +38,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```text
-CircularProgress(value: 'float | None' = None, *, maximum: 'float' = 100, label: 'str | None' = None, indeterminate: 'bool' = False, id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
+CircularProgress(value: 'float | None' = None, *, maximum: 'float' = 100, label: 'str | None' = None, indeterminate: 'bool' = False, id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |

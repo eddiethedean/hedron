@@ -4,22 +4,23 @@ from __future__ import annotations
 
 import html as html_lib
 import json
-from collections.abc import Callable, Mapping
-from typing import Any
+from collections.abc import Callable, Mapping, Sequence
+from typing import cast
 
 from hedron_core.builtins import Fragment
 from hedron_core.builtins.document import Page
 from hedron_core.interaction import InteractionResult, materialize_interaction_nodes
-from hedron_core.rendering import RenderMode, render
+from hedron_core.rendering import NodeLike, RenderMode, render
+from hedron_core.typing_support import dynamic_attribute
 from hedron_sim.app import SimApp, SimRoute
 
 __all__ = ["embed_demo", "render_handler_html", "route_table", "wrap_browser_chrome"]
 
 
-def _page_body(page: Page) -> Any:
+def _page_body(page: Page) -> object:
     """Return the page body tree without the document chrome."""
-    raw = getattr(page, "_children", ())
-    children: tuple[Any, ...] = tuple(raw) if raw else ()
+    raw = dynamic_attribute(page, "_children", ())
+    children = tuple(cast(Sequence[NodeLike], raw)) if isinstance(raw, (list, tuple)) else ()
     if not children:
         return Fragment()
     if len(children) == 1:
@@ -27,7 +28,7 @@ def _page_body(page: Page) -> Any:
     return Fragment(*children)
 
 
-def render_handler_html(value: Any, *, mode: RenderMode = RenderMode.FRAGMENT) -> str:
+def render_handler_html(value: object, *, mode: RenderMode = RenderMode.FRAGMENT) -> str:
     """Render a page/component/``InteractionResult`` to an HTML string."""
     if isinstance(value, InteractionResult):
         node = materialize_interaction_nodes(value)
@@ -43,7 +44,7 @@ def render_handler_html(value: Any, *, mode: RenderMode = RenderMode.FRAGMENT) -
     return render(value, mode=mode).html  # type: ignore[arg-type]
 
 
-def _render_call(handler: Callable[..., Any]) -> dict[str, Any]:
+def _render_call(handler: Callable[..., object]) -> dict[str, object]:
     body = handler()
     status = 200
     if isinstance(body, InteractionResult):
@@ -58,12 +59,12 @@ def _region_payload(route: SimRoute) -> list[dict[str, str]]:
     ]
 
 
-def route_table(app: SimApp) -> dict[str, Any]:
+def route_table(app: SimApp) -> dict[str, object]:
     """Build the JSON payload consumed by ``hedron-sim.js``."""
-    routes: dict[str, Any] = {}
+    routes: dict[str, object] = {}
     for key, route in app.routes.items():
         primary = _render_call(route.handler)
-        entry: dict[str, Any] = {
+        entry: dict[str, object] = {
             **primary,
             "regions": _region_payload(route),
             "explanation": route.explanation,

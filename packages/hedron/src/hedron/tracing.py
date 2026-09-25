@@ -103,7 +103,7 @@ class _RecordingSpan:
             self._otel_entered = entered
             for key, value in self.attributes.items():
                 try:
-                    entered.set_attribute(key, value)
+                    _ignored = entered.set_attribute(key, value)
                 except Exception:
                     logger.debug("trace attribute failed", exc_info=True)
         except Exception:
@@ -120,7 +120,7 @@ class _RecordingSpan:
     def __exit__(self, *args: object) -> None:
         if self._otel_span is not None:
             try:
-                self._otel_span.__exit__(*args)
+                _ignored = self._otel_span.__exit__(*args)
             except Exception:
                 logger.debug("span end failed", exc_info=True)
         return
@@ -132,7 +132,7 @@ class _RecordingSpan:
         if target is not None:
             try:
                 for name, safe_value in safe.items():
-                    target.set_attribute(name, safe_value)
+                    _ignored = target.set_attribute(name, safe_value)
             except Exception:
                 logger.debug("set_attribute failed", exc_info=True)
 
@@ -169,7 +169,7 @@ def configure_tracing(
 def reset_tracing_for_tests() -> None:
     global _global_config
     _global_config = None
-    _config.set(None)
+    _ignored = _config.set(None)
 
 
 def _should_sample(cfg: TraceConfig) -> bool:

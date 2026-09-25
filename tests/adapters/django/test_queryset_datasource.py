@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
 
 import pytest
 
@@ -25,7 +24,7 @@ class FakeQuerySet:
         self._rows = list(rows)
         self.query = type("Q", (), {"order_by": ()})()
 
-    def filter(self, **kwargs: Any) -> FakeQuerySet:
+    def filter(self, **kwargs: object) -> FakeQuerySet:
         items = self._rows
         for key, value in kwargs.items():
             if key.endswith("__icontains"):

@@ -19,7 +19,7 @@ _MARK = _COMPONENT / "mark.txt"
 
 PLUGIN_META = PluginMeta(
     name="sample_kit",
-    version="0.2.3",
+    version="0.2.4",
     distribution="hedron-sample-kit",
     hedron_version=">=1.0,<2.0",
     capabilities=PluginCapabilities(
@@ -108,7 +108,7 @@ def _register_bundle(ctx: PluginContext) -> None:
 
 
 def _register_variants(ctx: PluginContext) -> None:
-    register_variants(ctx)
+    _ignored = register_variants(ctx)
 
 
 PLUGIN = PluginDefinition.from_callbacks(

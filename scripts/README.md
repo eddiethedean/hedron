@@ -7,7 +7,7 @@ scripts here when you add them.
 
 | Script | When to run |
 |---|---|
-| `ci_checks.sh` | **Shared CI suites** used by `.github/workflows/ci.yml` and `release.yml`. Local: `bash scripts/ci_checks.sh test\|workbench\|docs\|typing\|quality\|browser\|evidence\|packaging\|openwiki\|all` — `typing` is the warning-fatal Pyright gate for every one of the 22 uv workspace packages; `openwiki` verifies the local OpenWiki Claims/source checkpoint; `all` runs that local-only freshness gate before the full workflow mirror. Docs-only CI calls `docs` (no wheels). Independent checks inside a suite overlap. `--jobs N` or `HEDRON_CHECK_JOBS` caps concurrency (see `ci_checks.sh --help`) |
+| `ci_checks.sh` | **Shared CI suites** used by `.github/workflows/ci.yml` and `release.yml`. Local: `bash scripts/ci_checks.sh test\|workbench\|docs\|typing\|quality\|browser\|evidence\|packaging\|openwiki\|all` — `typing` runs BasedPyright in `all` mode for every uv workspace package and rejects both explicit and inferred `Any`; `openwiki` verifies the local OpenWiki Claims/source checkpoint; `all` runs that local-only freshness gate before the full workflow mirror. Docs-only CI calls `docs` (no wheels). Independent checks inside a suite overlap. `--jobs N` or `HEDRON_CHECK_JOBS` caps concurrency (see `ci_checks.sh --help`) |
 | `ci_install_playwright.sh` | CI-only Playwright browser + OS deps install with apt-lock wait and timed retries (WebKit `install-deps` can hang on GitHub Ubuntu mirrors) |
 | `mkdocs.sh` | Docs preview / build wrapper (`./scripts/mkdocs.sh serve`) |
 | `smoke_workbench_adapter_docker.sh` | License-independent Linux smoke for mounted Workbench adapter behavior |
@@ -23,7 +23,7 @@ scripts here when you add them.
 | `check_docs_train_ssot.py` | Fail on stale tip claims vs `docs/release.toml`, contradictory 1.0 candidate/PyPI status, missing historical-release banners, unsafe pins, or charts/sample-kit installs missing the compatibility floors. CI: `docs` / `quality` |
 | `check_docs_adoption_contract.py` | Keep the quickstart and Docker examples synchronized with the generated scaffold; enforce safe proxy guidance, release-pin terminology, maturity claims, and primary adoption navigation. CI: docs / quality job |
 | `check_package_docs_inventory.py` | Keep the package catalog, README maturity labels, PyPI classifiers, and package pages aligned with the living fleet inventory. CI: quality job |
-| `check_package_typing_inventory.py` | Require every uv workspace package to appear in the explicit strict Pyright path list. CI: strict package typing job |
+| `check_package_typing_inventory.py` | Require every uv workspace package source root to appear in `[tool.basedpyright].include`. CI: package typing inventory job |
 | `check_documentation_ownership.py` | Require an owner and review cadence for every published Markdown page. CI: quality job |
 | `check_api_docs_coverage.py` | Require every `hedron.__all__` export in the coverage table's export column, every `hedron_charts.__all__` export in reference, and parameters/returns/errors on flagship contract pages. CI: quality job |
 | `generate_edron_api_index.py` | Generate the complete Edron public-export inventory from `edron.__all__`; commit the result. |

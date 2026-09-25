@@ -8,15 +8,21 @@ It exposes the already-registered Edron callbacks to tooling such as
 from __future__ import annotations
 
 import inspect
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Protocol, cast
 from urllib.parse import urlencode
 
 from starlette.requests import Request
 
 from edron.dependencies import Dependency
 from edron.errors import EdronError
+from hedron_core.typing_support import (
+    awaitable_value,
+    class_namespace,
+    dynamic_attribute,
+    parameter_default,
+)
 
 __all__ = [
     "AppSimulation",
@@ -48,7 +54,7 @@ class SimulationRequest:
 
     method: str = "GET"
     path: str = "/"
-    values: Mapping[str, Any] = field(default_factory=dict[str, Any])
+    values: Mapping[str, object] = field(default_factory=dict[str, object])
     headers: Mapping[str, str] = field(default_factory=dict[str, str])
 
     def __post_init__(self) -> None:
@@ -89,11 +95,18 @@ class SimulationResponse:
     """The raw value returned by a real Edron callback."""
 
     route: SimulationRoute
-    value: Any
+    value: object
 
 
 class SimulationError(EdronError):
     """Raised when a simulation cannot dispatch a registered route."""
+
+
+class _SimulationApp(Protocol):
+    native: object
+    _pages: Mapping[str, object]
+    _fragments: Mapping[int, object]
+    _actions: Mapping[int, object]
 
 
 class AppSimulation:
@@ -104,10 +117,12 @@ class AppSimulation:
     a replacement for the native ASGI application.
     """
 
-    def __init__(self, app: Any, *, fixtures: Mapping[str, Any] | None = None) -> None:
-        self._app = app
+    def __init__(self, app: object, *, fixtures: Mapping[str, object] | None = None) -> None:
+        self._app = cast(_SimulationApp, app)
         self._fixtures = dict(fixtures or {})
-        self._entries: dict[str, tuple[SimulationRoute, Callable[..., Any], tuple[str, ...]]] = {}
+        self._entries: dict[
+            str, tuple[SimulationRoute, Callable[..., object], tuple[str, ...]]
+        ] = {}
         self._collect_routes()
 
     @property
@@ -145,7 +160,7 @@ class AppSimulation:
         if request.method != selected.method or request.path != selected.path:
             raise SimulationError(
                 f"simulation request {request.method} {request.path} does not match "
-                f"route {selected.key}"
+                + f"route {selected.key}"
             )
         _metadata, callback, dependency_names = self._entries[selected.key]
         kwargs = self._callback_kwargs(callback, request.values, dependency_names)
@@ -169,7 +184,7 @@ class AppSimulation:
             "app": self._app.native,
         }
 
-        async def receive() -> dict[str, Any]:
+        async def receive() -> dict[str, object]:
             return {"type": "http.request", "body": b"", "more_body": False}
 
         native_request = Request(scope, receive)
@@ -178,8 +193,9 @@ class AppSimulation:
         token = current_request.set(native_request)
         try:
             value = callback(**kwargs)
-            if inspect.isawaitable(value):
-                value = await value
+            pending = awaitable_value(value)
+            if pending is not None:
+                value = await pending
         except Exception as exc:
             if isinstance(exc, EdronError):
                 raise
@@ -202,10 +218,10 @@ class AppSimulation:
 
     def _callback_kwargs(
         self,
-        callback: Callable[..., Any],
-        values: Mapping[str, Any],
+        callback: Callable[..., object],
+        values: Mapping[str, object],
         dependency_names: tuple[str, ...],
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         try:
             parameters = inspect.signature(callback).parameters
         except (TypeError, ValueError) as exc:
@@ -220,7 +236,7 @@ class AppSimulation:
         missing = [
             name
             for name, parameter in parameters.items()
-            if parameter.default is inspect.Parameter.empty
+            if parameter_default(parameter) is inspect.Parameter.empty
             and parameter.kind
             in (
                 inspect.Parameter.POSITIONAL_ONLY,
@@ -237,51 +253,74 @@ class AppSimulation:
 
     def _collect_routes(self) -> None:
         for record in self._app._pages.values():
+            page = cast(Mapping[str, object], record)
             route = SimulationRoute(
                 method="GET",
-                path=str(record["path"]),
-                name=str(record["name"]),
+                path=str(page.get("path", "/")),
+                name=str(page.get("name", "page")),
                 kind="page",
-                logical_id=str(record["name"]),
+                logical_id=str(page.get("name", "page")),
             )
-            self._add(route, record["native"], record.get("dependencies", ()))
+            callback = page.get("native")
+            if callable(callback):
+                self._add(
+                    route,
+                    cast(Callable[..., object], cast(object, callback)),
+                    page.get("dependencies", ()),
+                )
 
         for kind, registry in (("fragment", self._app._fragments), ("action", self._app._actions)):
             for handle in registry.values():
-                callback = getattr(handle, "renderer", None) or getattr(handle, "handler", None)
-                if not callable(callback):
+                callback_value = dynamic_attribute(handle, "renderer") or dynamic_attribute(
+                    handle, "handler"
+                )
+                if not callable(callback_value):
                     continue
-                region = getattr(handle, "region", None)
+                callback_object: object = callback_value
+                callback = cast(Callable[..., object], callback_object)
+                region = dynamic_attribute(handle, "region")
                 regions = ()
                 if region is not None:
                     regions = (
                         SimulationRegion(
-                            id=str(region.id),
-                            selector=str(region.selector),
-                            description=str(region.description),
+                            id=str(dynamic_attribute(region, "id", "")),
+                            selector=str(dynamic_attribute(region, "selector", "")),
+                            description=str(dynamic_attribute(region, "description", "")),
                         ),
                     )
                 route = SimulationRoute(
-                    method=str(getattr(handle, "method", "GET")).upper(),
-                    path=str(getattr(handle, "path", "/")),
-                    name=str(getattr(handle, "name", kind)),
+                    method=str(dynamic_attribute(handle, "method", "GET")).upper(),
+                    path=str(dynamic_attribute(handle, "path", "/")),
+                    name=str(dynamic_attribute(handle, "name", kind)),
                     kind=kind,
-                    logical_id=str(getattr(handle, "logical_id", getattr(handle, "name", kind))),
+                    logical_id=str(
+                        dynamic_attribute(
+                            handle,
+                            "logical_id",
+                            dynamic_attribute(handle, "name", kind),
+                        )
+                    ),
                     regions=regions,
                 )
                 dependency_names = self._dependencies_for_handle(handle)
                 self._add(route, callback, dependency_names)
 
-    def _dependencies_for_handle(self, handle: Any) -> tuple[str, ...]:
+    def _dependencies_for_handle(self, handle: object) -> tuple[str, ...]:
         for record in self._app._pages.values():
-            page_type = record["type"]
-            for member in page_type.__dict__.values():
-                if getattr(member, "_native", None) is not handle:
+            page = cast(Mapping[str, object], record)
+            page_type = page.get("type")
+            if page_type is None:
+                continue
+            for member in class_namespace(page_type).values():
+                if dynamic_attribute(member, "_native") is not handle:
                     continue
-                dependencies = [
-                    *record.get("dependencies", ()),
-                    *getattr(member, "dependencies", ()),
-                ]
+                page_dependencies = page.get("dependencies", ())
+                member_dependencies = dynamic_attribute(member, "dependencies", ())
+                dependencies: list[object] = []
+                if isinstance(page_dependencies, Sequence):
+                    dependencies.extend(page_dependencies)
+                if isinstance(member_dependencies, Sequence):
+                    dependencies.extend(member_dependencies)
                 return tuple(
                     dependency.name or f"__edron_dep_{index}"
                     for index, dependency in enumerate(dependencies)
@@ -292,8 +331,8 @@ class AppSimulation:
     def _add(
         self,
         route: SimulationRoute,
-        callback: Callable[..., Any],
-        dependencies: Any,
+        callback: Callable[..., object],
+        dependencies: object,
     ) -> None:
         if route.key in self._entries:
             raise SimulationError(f"duplicate Edron simulation route {route.key}")

@@ -8,6 +8,9 @@ from typing import cast
 
 from fastapi import Request
 
+from hedron_core.app_state import request_state, state_value
+from hedron_core.typing_support import call_dynamic, dynamic_attribute
+
 _logger = logging.getLogger("hedron.explorer")
 
 
@@ -16,23 +19,26 @@ def project_component_roots(request: Request | None) -> list[Path]:
     roots: list[Path] = []
     if request is None:
         return roots
-    configured = getattr(request.app.state, "hedron_component_roots", None)
+    state = request_state(request)
+    configured = state_value(state, "hedron_component_roots")
     if configured:
         roots.extend(Path(str(p)).resolve() for p in cast(list[object], configured))
-    project_root = getattr(request.app.state, "hedron_project_root", None)
+    project_root = state_value(state, "hedron_project_root")
     if project_root:
         try:
-            loader = getattr(request.app.state, "hedron_settings_loader", None)
+            loader = state_value(state, "hedron_settings_loader")
             if callable(loader):
                 settings = loader(Path(project_root))
             else:
                 from importlib import import_module
 
                 mod = import_module("hedron.config")
-                settings = mod.load_hedron_settings(Path(project_root))
-            resolved = getattr(settings, "resolved_roots", None)
+                settings = call_dynamic(
+                    dynamic_attribute(mod, "load_hedron_settings"), Path(project_root)
+                )
+            resolved = dynamic_attribute(settings, "resolved_roots")
             if callable(resolved):
-                extra = resolved(base=Path(project_root))
+                extra = call_dynamic(resolved, base=Path(project_root))
                 if isinstance(extra, (list, tuple)):
                     roots.extend(
                         Path(str(p)) for p in cast(list[object] | tuple[object, ...], extra)
@@ -51,7 +57,7 @@ def hdj_text_under_root(path: Path, root: Path) -> str | None:
     """Read ``*.hdj`` only when the resolved target stays under ``root`` (#275)."""
     try:
         resolved = path.resolve()
-        resolved.relative_to(root)
+        _ignored = resolved.relative_to(root)
     except (OSError, ValueError):
         return None
     if not resolved.is_file():
@@ -76,7 +82,7 @@ def safe_read_text(
         return None
     for root_path in allowed_roots(meta, request):
         try:
-            candidate.relative_to(root_path)
+            _ignored = candidate.relative_to(root_path)
         except ValueError:
             continue
         try:

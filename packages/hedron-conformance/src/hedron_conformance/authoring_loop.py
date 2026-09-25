@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from typing import Any, Literal, cast
+from typing import Literal, cast
 
 AUTHORING_LOOP_SCHEMA_VERSION = "hedron-authoring-loop-1"
 
@@ -32,7 +32,7 @@ Boundary = Literal[
 ]
 
 
-def _empty_details() -> dict[str, Any]:
+def _empty_details() -> dict[str, object]:
     return {}
 
 
@@ -44,9 +44,9 @@ class AuthoringLoopDiagnostic:
     message: str
     boundary: Boundary
     severity: Literal["error", "warning", "information"] = "error"
-    details: dict[str, Any] = field(default_factory=_empty_details)
+    details: dict[str, object] = field(default_factory=_empty_details)
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         return asdict(self)
 
 
@@ -56,11 +56,11 @@ class AuthoringLoopFixture:
 
     fixture_id: str
     kind: str
-    payload: dict[str, Any]
+    payload: dict[str, object]
     schema_version: str = AUTHORING_LOOP_SCHEMA_VERSION
     diagnostics: tuple[AuthoringLoopDiagnostic, ...] = ()
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "schema_version": self.schema_version,
             "fixture_id": self.fixture_id,
@@ -70,9 +70,9 @@ class AuthoringLoopFixture:
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> AuthoringLoopFixture:
+    def from_dict(cls, data: dict[str, object]) -> AuthoringLoopFixture:
         version = str(data.get("schema_version") or AUTHORING_LOOP_SCHEMA_VERSION)
-        raw_diagnostics = cast(list[dict[str, Any]], data.get("diagnostics") or [])
+        raw_diagnostics = cast(list[dict[str, object]], data.get("diagnostics") or [])
         diagnostics = tuple(
             AuthoringLoopDiagnostic(
                 code=str(row["code"]),
@@ -92,7 +92,7 @@ class AuthoringLoopFixture:
         )
 
 
-def validate_fixture_schema(data: dict[str, Any]) -> list[AuthoringLoopDiagnostic]:
+def validate_fixture_schema(data: dict[str, object]) -> list[AuthoringLoopDiagnostic]:
     """Return diagnostics when a fixture envelope is incomplete or version-skewed."""
     found: list[AuthoringLoopDiagnostic] = []
     version = str(data.get("schema_version") or "")

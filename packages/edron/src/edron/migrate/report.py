@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-from typing import Any
 
 from hedron.migrate.findings import plan_to_diagnostics
 from hedron.migrate.ir import StreamlitMigrationPlan
@@ -12,10 +11,10 @@ from hedron_core.diagnostics import diagnostics_to_sarif, diagnostics_to_text
 
 def report_payload(
     plan: StreamlitMigrationPlan,
-    diagnostics: list[Any] | None = None,
+    diagnostics: list[object] | None = None,
     *,
     generated_files: dict[str, str] | None = None,
-) -> dict[str, Any]:
+) -> dict[str, object]:
     diagnostics = plan_to_diagnostics(plan) if diagnostics is None else diagnostics
     counts = {"error": 0, "warning": 0, "information": 0}
     for diagnostic in diagnostics:
@@ -54,7 +53,7 @@ def report_payload(
 
 def format_report(
     plan: StreamlitMigrationPlan,
-    diagnostics: list[Any] | None = None,
+    diagnostics: list[object] | None = None,
     *,
     fmt: str = "text",
     generated_files: dict[str, str] | None = None,
@@ -87,7 +86,7 @@ def format_report(
     return "\n".join(lines) + "\n"
 
 
-def review_markdown(plan: StreamlitMigrationPlan, diagnostics: list[Any] | None = None) -> str:
+def review_markdown(plan: StreamlitMigrationPlan, diagnostics: list[object] | None = None) -> str:
     diagnostics = plan_to_diagnostics(plan) if diagnostics is None else diagnostics
     lines = [
         "# Edron migration review",

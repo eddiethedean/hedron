@@ -7,7 +7,7 @@ extra, so the import stays inside the function and the failure is explicit.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from hedron_sample_kit.variants import VARIANT_MODULES, list_variants
 
@@ -20,7 +20,7 @@ FIXTURE_KIND = "authoring_loop_fixture"
 __all__ = ["FIXTURE_ID", "FIXTURE_KIND", "authoring_fixture", "fixture_payload"]
 
 
-def fixture_payload() -> dict[str, Any]:
+def fixture_payload() -> dict[str, object]:
     """Return the public facts the authoring loop carries across boundaries."""
     from hedron_sample_kit import __version__
 

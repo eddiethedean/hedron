@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
-from typing import Any, ClassVar
+from typing import ClassVar
+
+from typing_extensions import override
 
 from hedron.htmx import safe_css_selector
 from hedron.routing.reverse import ComponentRef
@@ -42,7 +44,7 @@ class ChatInput(Component[ChatInputProps]):
         csrf_token: str | None = None,
         csrf_form_field: str = "csrf_token",
         csrf_header_name: str = "X-CSRF-Token",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             ChatInputProps(placeholder=placeholder, submit_label=submit_label, **kwargs)
@@ -59,8 +61,9 @@ class ChatInput(Component[ChatInputProps]):
         self.csrf_form_field = csrf_form_field
         self.csrf_header_name = csrf_header_name
 
+    @override
     def render(self) -> NodeLike:
-        attrs: dict[str, Any] = {
+        attrs: dict[str, object] = {
             "class_": "hedron-chat-input",
             "method": "post",
         }
@@ -83,7 +86,7 @@ class ChatInput(Component[ChatInputProps]):
                     swap=None,
                 ).as_html_attrs()
             )
-        kids: list[Any] = []
+        kids: list[object] = []
         if self.csrf_token:
             kids.append(
                 html.input(

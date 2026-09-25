@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import difflib
 import re
-from typing import Any
 
 from hedron_sim.tokens import SIM_LOCAL_TIME, SIM_UTC
 
@@ -50,7 +49,7 @@ def normalize_parity_html(html: str, *, placeholders: bool = True) -> str:
 
 
 def _chunks(html: str) -> list[str]:
-    return [chunk for chunk in (part.strip() for part in _CHUNK.findall(html)) if chunk]
+    return [match.group(0).strip() for match in _CHUNK.finditer(html) if match.group(0).strip()]
 
 
 def compare_parity(
@@ -59,7 +58,7 @@ def compare_parity(
     *,
     fixture: str | None = None,
     placeholders: bool = True,
-) -> dict[str, Any]:
+) -> dict[str, object]:
     """Compare simulated and real-server HTML.
 
     Both documents are split into tag and text chunks with each chunk's own
@@ -70,7 +69,7 @@ def compare_parity(
     """
     sim_chunks = _chunks(normalize_parity_html(sim_html, placeholders=placeholders))
     server_chunks = _chunks(normalize_parity_html(server_html, placeholders=placeholders))
-    differences: list[dict[str, Any]] = []
+    differences: list[dict[str, object]] = []
     if sim_chunks != server_chunks:
         matcher = difflib.SequenceMatcher(a=sim_chunks, b=server_chunks, autojunk=False)
         for op, i1, i2, j1, j2 in matcher.get_opcodes():

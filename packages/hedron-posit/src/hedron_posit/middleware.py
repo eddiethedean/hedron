@@ -101,8 +101,8 @@ def workbenchify(
         if activation_requested and deployment is not None and not deployment_active:
             raise ValueError(
                 "cannot activate an already-constructed inactive HedronPosit; "
-                "construct it with workbench_mode='on'/workbench_mount=..., or use "
-                "hedron-posit run so cookie and asset paths are configured before import"
+                + "construct it with workbench_mode='on'/workbench_mount=..., or use "
+                + "hedron-posit run so cookie and asset paths are configured before import"
             )
         # Trust metadata and an explicit AUTO/OFF mode are not activation
         # evidence.  Leaving an inactive HedronPosit facade untouched keeps its

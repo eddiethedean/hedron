@@ -5,6 +5,8 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import ClassVar, Literal, cast
 
+from typing_extensions import override
+
 from hedron_core.alpine import AlpineAttrs, AlpineDirective, AlpineExpression
 from hedron_core.builtins._base import class_names, collect_children, dom_id_part
 from hedron_core.builtins.style_scope import presentation_data
@@ -20,6 +22,7 @@ from hedron_core.presentation_064 import application_style_hook_data
 from hedron_core.rendering import active_render_context
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_core.typing_aliases import HtmlAttrValue
+from hedron_core.typing_support import dynamic_attribute
 
 _HX_SELECTOR_ATTRS = frozenset(
     {"hx-target", "hx-select", "hx-select-oob", "hx-indicator", "hx-disabled-elt"}
@@ -64,14 +67,16 @@ class Form(Component[FormProps]):
         command_verb: str | None = None
         extras: dict[str, HtmlAttrValue] = {}
         if action is not None and not isinstance(action, (SafeUrl, str)):
-            path = getattr(action, "path", None)
-            command_method = getattr(action, "method", None)
+            path = dynamic_attribute(action, "path")
+            command_method = dynamic_attribute(action, "method")
             if isinstance(path, str) and command_method:
                 url = SafeUrl.parse(path, purpose=UrlPurpose.FORM_ACTION)
                 command_verb = str(command_method).upper()
                 resolved_method = "post"
-                extras["data-hedron-command"] = str(getattr(action, "logical_id", "") or "")
-                fallback = getattr(action, "fallback", None)
+                extras["data-hedron-command"] = str(
+                    dynamic_attribute(action, "logical_id", "") or ""
+                )
+                fallback = dynamic_attribute(action, "fallback")
                 if fallback:
                     extras["data-hedron-fallback"] = str(fallback)
                 action = None
@@ -95,13 +100,14 @@ class Form(Component[FormProps]):
                 swap="none",
             ).as_html_attrs()
             for key, value in command_attrs.items():
-                extras.setdefault(key, value)
+                _ignored = extras.setdefault(key, value)
         _validate_hx_attr_map(extras)
         props_kwargs = {k: v for k, v in kwargs.items() if k in FormProps.model_fields}
         super().__init__(FormProps(action=url, method=resolved_method, **props_kwargs))
         self._children = collect_children(*nodes, children=children)
         self._html_attrs = extras
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {"method": self.props.method, **self._html_attrs}
         if self.props.action is not None:
@@ -131,6 +137,7 @@ class CsrfField(Component[CsrfFieldProps]):
         super().__init__(CsrfFieldProps(name=name, token=token, **kwargs))
         self._provider = provider
 
+    @override
     def render(self) -> NodeLike:
         token, name = resolve_csrf_field_values(
             token=self.props.token,
@@ -151,6 +158,7 @@ class Label(Component[LabelProps]):
     def __init__(self, text: str, *, for_: str | None = None, **kwargs: object) -> None:
         super().__init__(LabelProps(text=text, for_=for_, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {}
         if self.props.for_:
@@ -249,6 +257,7 @@ class FormField(Component[FormFieldProps]):
             return bound
         return self._apply_aria(control, aria, element_id=field_id)
 
+    @override
     def render(self) -> NodeLike:
         field_id = self.props.id or (
             f"field-{dom_id_part(self.props.name)}-{self.render_instance_id()[2:10]}"
@@ -389,6 +398,7 @@ class TextInput(Component[TextInputProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {
             "type": self.props.type,
@@ -494,6 +504,7 @@ class TextArea(Component[TextAreaProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {
             "name": self.props.name,
@@ -570,6 +581,7 @@ class Select(Component[SelectProps]):
         self._depends_on = depends_on
         self._source = source
 
+    @override
     def render(self) -> NodeLike:
         opts: list[NodeLike] = []
         for val, label in self._options:
@@ -661,6 +673,7 @@ class Checkbox(Component[CheckboxProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {
             "type": "checkbox",
@@ -733,6 +746,7 @@ class RadioGroup(Component[RadioGroupProps]):
         self._options = tuple(options)
         self._value = value
 
+    @override
     def render(self) -> NodeLike:
         inputs: list[NodeLike] = []
         group_id = self.props.id or (
@@ -796,6 +810,7 @@ class SubmitButton(Component[SubmitButtonProps]):
     ) -> None:
         super().__init__(SubmitButtonProps(label=label, disabled=disabled, class_=class_, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         return html.button(
             self.props.label,
@@ -827,6 +842,7 @@ class FormErrors(Component[FormErrorsProps]):
         super().__init__(FormErrorsProps(errors=strings, **kwargs))
         self._issues = issues
 
+    @override
     def render(self) -> NodeLike:
         if not self.props.errors and not self._issues:
             return None
@@ -872,6 +888,7 @@ class SwapReveal(Component[SwapRevealProps]):
         super().__init__(SwapRevealProps(reduced_motion=reduced_motion, **kwargs))
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         return html.div(
             *self._children,
@@ -905,6 +922,7 @@ class BusyRegion(Component[BusyRegionProps]):
         super().__init__(BusyRegionProps(scope=scope, indicator=indicator, **kwargs))
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {
             "class_": "hedron-busy-region",

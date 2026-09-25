@@ -5,7 +5,9 @@ from __future__ import annotations
 from collections.abc import Callable, Mapping, Sequence
 from enum import Enum
 from types import UnionType
-from typing import Literal, Union, cast, get_args, get_origin
+from typing import Literal, Protocol, Union, cast
+
+from typing_extensions import override
 
 from hedron.type_authoring.markers import CONTROL_KINDS, Control
 from hedron.type_authoring.normalize import CompiledTypeHandler, FieldRecord
@@ -29,10 +31,16 @@ from hedron_core.models import Props
 from hedron_core.rendering import active_render_context
 from hedron_core.security import SafeUrl
 from hedron_core.typing_aliases import HtmlAttrValue
+from hedron_core.typing_support import type_arguments, type_origin
 
 __all__ = ["generate_form"]
 
 _PENDING_CSRF_TOKEN = "hedron-pending-csrf"
+
+
+class _EnumMember(Protocol):
+    name: str
+    value: object
 
 
 def _form_attr_map(attrs: Mapping[str, object]) -> dict[str, HtmlAttrValue]:
@@ -66,6 +74,7 @@ class _RenderTimeCsrfField(Component[_RenderTimeCsrfProps]):
     def __init__(self) -> None:
         super().__init__(_RenderTimeCsrfProps())
 
+    @override
     def render(self) -> NodeLike:
         ctx = active_render_context()
         if ctx is not None and ctx.csrf_token:
@@ -167,9 +176,9 @@ def generate_form(
         if key.isidentifier() and key not in reserved_form_args
     }
     if compiled.form_encoding == "multipart":
-        attrs.setdefault("enctype", "multipart/form-data")
+        _ignored = attrs.setdefault("enctype", "multipart/form-data")
     if fallback:
-        attrs.setdefault("data-hedron-fallback", fallback)
+        _ignored = attrs.setdefault("data-hedron-fallback", fallback)
     form_factory = cast(Callable[..., Form], Form)
     return form_factory(*nodes, action=action, **_form_attr_map(attrs))
 
@@ -330,8 +339,8 @@ def _default_kind(record: FieldRecord) -> str:
     if record.sensitive:
         return "password"
     annotation = record.annotation
-    origin = get_origin(annotation)
-    args = get_args(annotation)
+    origin = type_origin(annotation)
+    args = type_arguments(annotation)
     if origin in {Union, UnionType}:
         non_none = [item for item in args if item is not type(None)]
         annotation = non_none[0] if len(non_none) == 1 else annotation
@@ -353,13 +362,17 @@ def _default_kind(record: FieldRecord) -> str:
 
 
 def _enum_options(annotation: object) -> list[tuple[str, str]]:
-    origin = get_origin(annotation)
-    args = get_args(annotation)
+    origin = type_origin(annotation)
+    args = type_arguments(annotation)
     if origin is Literal:
         return [(str(item), str(item)) for item in args]
     if isinstance(annotation, type) and issubclass(annotation, Enum):
         return [
-            (item.value if isinstance(item.value, str) else item.name, item.name)
+            (
+                member.value if isinstance(member.value, str) else member.name,
+                member.name,
+            )
             for item in annotation
+            for member in (cast(_EnumMember, item),)
         ]
     return []

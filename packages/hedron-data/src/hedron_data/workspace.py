@@ -6,9 +6,9 @@ import contextlib
 import inspect
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Generic, Literal, Protocol, TypeVar, cast
+from typing import TYPE_CHECKING, Generic, Literal, Protocol, TypeVar, cast
 
-from pydantic import BaseModel, Field, TypeAdapter, create_model
+from pydantic import BaseModel, Field, create_model
 from typing_extensions import Self
 
 from hedron_core.bundles import (
@@ -24,6 +24,16 @@ from hedron_core.models import Model
 from hedron_core.request_context import current_request
 from hedron_core.type_markers import FormBody, ViewParams
 from hedron_core.typing_aliases import JsonValue
+from hedron_core.typing_support import (
+    annotated_type,
+    dynamic_attribute,
+    field_annotation,
+    set_dynamic_attribute,
+    validate_value,
+)
+from hedron_core.typing_support import (
+    model_fields as pydantic_model_fields,
+)
 from hedron_core.updates import RefreshIntent, UpdateTarget
 from hedron_data._version import DATA_VERSION
 from hedron_data.columns import Column
@@ -37,8 +47,8 @@ from hedron_data.sources import (
 from hedron_data.table import DataTable
 
 if TYPE_CHECKING:
-    ActionHandle = Any
-    FragmentHandle = Any
+    ActionHandle = object
+    FragmentHandle = object
 
 ModelT = TypeVar("ModelT", bound=BaseModel)
 AuthzHook = Callable[..., bool]
@@ -69,7 +79,7 @@ class _WorkspaceApp(Protocol):
         path: str,
         *,
         name: str | None = None,
-    ) -> Callable[[Callable[..., object]], FragmentHandle[Any, Any]]: ...
+    ) -> Callable[[Callable[..., object]], FragmentHandle[object, object]]: ...
 
     def action(
         self,
@@ -77,7 +87,7 @@ class _WorkspaceApp(Protocol):
         *,
         name: str | None = None,
         fallback: str | None = None,
-    ) -> Callable[[Callable[..., object]], ActionHandle[Any, Any]]: ...
+    ) -> Callable[[Callable[..., object]], ActionHandle[object, object]]: ...
 
     def page(
         self,
@@ -139,7 +149,7 @@ class DataWorkspace(Generic[ModelT]):
         create_override: Callable[..., object] | None = None,
         edit_override: Callable[..., object] | None = None,
     ) -> None:
-        fields = getattr(model, "model_fields", {}) or {}
+        fields = pydantic_model_fields(model)
         if len(fields) > MAX_WORKSPACE_FIELDS:
             raise _error(
                 HED_BUNDLE_0005,
@@ -171,10 +181,10 @@ class DataWorkspace(Generic[ModelT]):
         self.detail_override = detail_override
         self.create_override = create_override
         self.edit_override = edit_override
-        self.list_view: FragmentHandle[Any, Any] | None = None
-        self.detail_view: FragmentHandle[Any, Any] | None = None
-        self.create_command: ActionHandle[Any, Any] | None = None
-        self.edit_command: ActionHandle[Any, Any] | None = None
+        self.list_view: FragmentHandle[object, object] | None = None
+        self.detail_view: FragmentHandle[object, object] | None = None
+        self.create_command: ActionHandle[object, object] | None = None
+        self.edit_command: ActionHandle[object, object] | None = None
         self.screen: object | None = None
         self._screen_meta: dict[str, str] | None = None
         # Empty search_fields is deny-by-default on InMemoryDataSource; do not
@@ -194,7 +204,7 @@ class DataWorkspace(Generic[ModelT]):
         if not isinstance(source, InMemoryDataSource):
             return
         names = frozenset(self._column_names())
-        cast(Any, source)._configure_allowlists(names)
+        cast(object, source)._configure_allowlists(names)
 
     def with_screen(
         self,
@@ -303,7 +313,7 @@ class DataWorkspace(Generic[ModelT]):
             }:
                 accepted[name] = merged[name]
         try:
-            signature.bind(**accepted)
+            _ignored = signature.bind(**accepted)
         except TypeError:
             return False
         return bool(hook(**accepted))
@@ -322,7 +332,7 @@ class DataWorkspace(Generic[ModelT]):
     def _column_names(self) -> tuple[str, ...]:
         columns = self._column_objects()
         if columns is None:
-            return tuple(getattr(self.model, "model_fields", {}) or {})
+            return tuple(pydantic_model_fields(self.model))
         names = [item.name for item in columns]
         if self.key_field not in names:
             names.insert(0, self.key_field)
@@ -338,15 +348,15 @@ class DataWorkspace(Generic[ModelT]):
             merged = {**overrides, **dict(controls or {})}
             return original(controls=merged, **kwargs)
 
-        target = cast(Any, handle)
+        target = cast(object, handle)
         target.form = form
 
     def _identity_model(self) -> type[BaseModel]:
-        fields: dict[str, Any] = {self.key_field: (str, ...)}
+        fields: dict[str, object] = {self.key_field: (str, ...)}
         return create_model(f"{self.name.title()}Identity", **fields)
 
     def _list_query_model(self) -> type[BaseModel]:
-        fields: dict[str, Any] = {
+        fields: dict[str, object] = {
             "offset": (int, Field(default=0, ge=0)),
             "limit": (int, Field(default=25, ge=1, le=HARD_MAX_PAGE_SIZE)),
             "sort": (str | None, None),
@@ -360,23 +370,23 @@ class DataWorkspace(Generic[ModelT]):
     def _data_query_from_list_params(self, params: BaseModel | None) -> DataQuery:
         from hedron_data.sources import DEFAULT_MAX_PAGE_SIZE
 
-        model_fields = getattr(self.model, "model_fields", {}) or {}
+        model_fields = pydantic_model_fields(self.model)
         names = self._column_names()
         allow = frozenset(names)
-        offset = int(getattr(params, "offset", 0) or 0) if params is not None else 0
-        limit = int(getattr(params, "limit", 25) or 25) if params is not None else 25
-        search = getattr(params, "q", None) if params is not None else None
+        offset = int(dynamic_attribute(params, "offset", 0) or 0) if params is not None else 0
+        limit = int(dynamic_attribute(params, "limit", 25) or 25) if params is not None else 25
+        search = dynamic_attribute(params, "q") if params is not None else None
         if search == "":
             search = None
         sort: tuple[tuple[str, str], ...] = ()
-        raw_sort = getattr(params, "sort", None) if params is not None else None
+        raw_sort = dynamic_attribute(params, "sort") if params is not None else None
         if raw_sort:
             name, _sep, direction = str(raw_sort).partition(":")
             direction = direction or "asc"
             if direction not in {"asc", "desc"} or name not in allow:
                 raise ValueError("invalid_sort")
             sort = ((name, direction),)
-        filters: dict[str, Any] = {}
+        filters: dict[str, object] = {}
         if params is not None:
             for name in names:
                 if name in _LIST_RESERVED:
@@ -384,11 +394,11 @@ class DataWorkspace(Generic[ModelT]):
                 finfo = model_fields.get(name)
                 if finfo is None:
                     continue
-                raw = getattr(params, name, None)
+                raw = dynamic_attribute(params, name)
                 if raw is None or raw == "":
                     continue
                 try:
-                    filters[name] = TypeAdapter(finfo.annotation).validate_python(raw)
+                    filters[name] = validate_value(field_annotation(finfo), raw)
                 except (TypeError, ValueError):
                     raise ValueError(f"invalid_filter:{name}") from None
         return DataQuery(
@@ -406,7 +416,7 @@ class DataWorkspace(Generic[ModelT]):
     def to_bundle(self) -> FeatureBundle:
         workspace = self
 
-        def list_factory(app: _WorkspaceApp) -> FragmentHandle[Any, Any]:
+        def list_factory(app: _WorkspaceApp) -> FragmentHandle[object, object]:
             from typing import Annotated
 
             from starlette.exceptions import HTTPException
@@ -444,12 +454,10 @@ class DataWorkspace(Generic[ModelT]):
             workspace.list_view = list_view
             return list_view
 
-        def detail_factory(app: _WorkspaceApp) -> FragmentHandle[Any, Any]:
-            from typing import Annotated
-
+        def detail_factory(app: _WorkspaceApp) -> FragmentHandle[object, object]:
             from starlette.exceptions import HTTPException
 
-            identity = workspace._identity_model()
+            identity = cast(type[BaseModel], workspace._identity_model())
             if workspace.detail_override is not None:
                 handle = app.view(
                     f"/{workspace.name}/{{{workspace.key_field}}}",
@@ -458,15 +466,8 @@ class DataWorkspace(Generic[ModelT]):
                 workspace.detail_view = handle
                 return handle
 
-            @app.view(
-                f"/{workspace.name}/{{{workspace.key_field}}}",
-                name=f"{workspace.name}-detail",
-            )
-            def detail_view(
-                # Runtime pydantic model from create_model; not a static type expression.
-                params: Annotated[identity, ViewParams()],  # type: ignore[valid-type]
-            ) -> object:
-                key = str(getattr(cast(BaseModel, params), workspace.key_field))
+            def detail_view(params: BaseModel) -> object:
+                key = str(dynamic_attribute(params, workspace.key_field))
                 page = workspace.source.fetch(
                     DataQuery(filters={workspace.key_field: key}, limit=1)
                 )
@@ -479,10 +480,22 @@ class DataWorkspace(Generic[ModelT]):
 
                 return Text(str(row.get(workspace.key_field, key)))
 
-            workspace.detail_view = detail_view
-            return detail_view
+            set_dynamic_attribute(
+                detail_view,
+                "__annotations__",
+                {
+                    "params": annotated_type(identity, ViewParams()),
+                    "return": object,
+                },
+            )
+            handle = app.view(
+                f"/{workspace.name}/{{{workspace.key_field}}}",
+                name=f"{workspace.name}-detail",
+            )(detail_view)
+            workspace.detail_view = handle
+            return handle
 
-        def create_factory(app: _WorkspaceApp) -> ActionHandle[Any, Any]:
+        def create_factory(app: _WorkspaceApp) -> ActionHandle[object, object]:
             from typing import Annotated
 
             from starlette.exceptions import HTTPException
@@ -524,7 +537,7 @@ class DataWorkspace(Generic[ModelT]):
             workspace._attach_form_overrides(create_command)
             return create_command
 
-        def edit_factory(app: _WorkspaceApp) -> ActionHandle[Any, Any]:
+        def edit_factory(app: _WorkspaceApp) -> ActionHandle[object, object]:
             from typing import Annotated
 
             from starlette.exceptions import HTTPException
@@ -539,8 +552,8 @@ class DataWorkspace(Generic[ModelT]):
                 workspace._attach_form_overrides(handle)
                 return handle
 
-            if workspace.key_field not in getattr(workspace.edit_model, "model_fields", {}):
-                edit_fields: dict[str, Any] = {workspace.key_field: (str, ...)}
+            if workspace.key_field not in pydantic_model_fields(workspace.edit_model):
+                edit_fields: dict[str, object] = {workspace.key_field: (str, ...)}
                 EditModel = create_model(
                     f"{workspace.name.title()}Edit",
                     __base__=workspace.edit_model,
@@ -616,7 +629,7 @@ class DataWorkspace(Generic[ModelT]):
         def screen_factory(app: _WorkspaceApp) -> object:
             meta = workspace._screen_meta
             if meta is None:
-                tagged: Any = lambda: None  # noqa: E731
+                tagged: object = lambda: None  # noqa: E731
                 tagged.logical_id = f"{workspace.name}-screen-unset"
                 return tagged
 

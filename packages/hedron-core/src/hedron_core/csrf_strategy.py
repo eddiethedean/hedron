@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Protocol, runtime_checkable
+from typing import Protocol, cast, runtime_checkable
 
 from hedron_core.csrf import generate_csrf_token, tokens_match, validate_double_submit
+from hedron_core.typing_support import dynamic_attribute, set_dynamic_attribute
 
 __all__ = [
     "DEFAULT_CSRF_COOKIE_NAME",
@@ -65,7 +66,7 @@ def resolve_csrf_field_values(
     if not resolved_token:
         raise ValueError(
             "CsrfField requires token= or a RenderContext with csrf_token "
-            "(FastAPI pages populate this automatically when CSRF is enabled)"
+            + "(FastAPI pages populate this automatically when CSRF is enabled)"
         )
     return resolved_token, resolved_name
 
@@ -103,26 +104,30 @@ class CsrfStrategy(Protocol):
         ...
 
 
+class _CookieLookup(Protocol):
+    def get(self, name: str, default: object = None) -> object: ...
+
+
 def _cookie_get(request: object, name: str) -> str | None:
-    cookies = getattr(request, "cookies", None)
+    cookies = dynamic_attribute(request, "cookies")
     if cookies is None:
         return None
-    value = cookies.get(name)
+    value = cast(_CookieLookup, cookies).get(name)
     return value if isinstance(value, str) and value else None
 
 
 def _state_get(request: object, attr: str) -> str | None:
-    state = getattr(request, "state", None)
+    state = dynamic_attribute(request, "state")
     if state is None:
         return None
-    value = getattr(state, attr, None)
+    value = dynamic_attribute(state, attr)
     return value if isinstance(value, str) and value else None
 
 
 def _state_set(request: object, attr: str, value: str) -> None:
-    state = getattr(request, "state", None)
+    state = dynamic_attribute(request, "state")
     if state is not None:
-        setattr(state, attr, value)
+        set_dynamic_attribute(state, attr, value)
 
 
 @dataclass(frozen=True, slots=True)

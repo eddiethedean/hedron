@@ -9,7 +9,7 @@ _URL_RE = re.compile(r"url\(\s*(['\"]?)([^)'\"]+)\1\s*\)", re.IGNORECASE)
 # Static/dynamic import and re-export specifiers with relative paths only.
 _MODULE_SPEC_RE = re.compile(
     r"""(?P<head>\b(?:import|export)\b[^'"\n]*?\bfrom\s+|import\s*\(\s*)"""
-    r"""(?P<quote>['"])(?P<spec>\.\.?/[^'"]+)(?P=quote)"""
+    + r"""(?P<quote>['"])(?P<spec>\.\.?/[^'"]+)(?P=quote)"""
 )
 
 

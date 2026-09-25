@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, cast
+from typing import cast
 from urllib.parse import urljoin
 
 from hedron_core.mount import cookie_path_for_mount, normalize_mount_path
@@ -109,7 +109,7 @@ def external_base_url(
     return urljoin(base + "/", normalized.lstrip("/") + "/") if normalized else base
 
 
-def mount_from_request(request: Any, *, trusted_peers: Sequence[str] | None = None) -> MountPath:
+def mount_from_request(request: object, *, trusted_peers: Sequence[str] | None = None) -> MountPath:
     """Resolve mount path from a Starlette/FastAPI request."""
     scope_value: object = getattr(request, "scope", {}) or {}
     scope: Mapping[str, object] = (

@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field, fields
-from typing import Any, Literal
+from typing import Literal
+
+from typing_extensions import override
 
 from hedron_core.compat import StrEnum
 from hedron_core.csrf_strategy import (
@@ -14,11 +16,12 @@ from hedron_core.csrf_strategy import (
     DoubleSubmitCookieCsrf,
 )
 from hedron_core.request_budget import RequestBudgetLimits
+from hedron_core.typing_support import dynamic_attribute
 
-# Avoid circular import of EgressPolicy at type-check time by using Any for optional policy.
+# Avoid a circular import of EgressPolicy; the optional policy stays object-typed here.
 
 
-def _policy_field_values_without_csrf(policy: SecurityPolicy) -> tuple[Any, ...]:
+def _policy_field_values_without_csrf(policy: SecurityPolicy) -> tuple[object, ...]:
     """Field values for equality/hash excluding the ``csrf`` strategy object."""
     return tuple(
         (f.name, getattr(policy, f.name)) for f in fields(policy) if f.name != "csrf" and f.compare
@@ -91,10 +94,10 @@ class SecurityPolicy:
         """Stable identity so distinct strategies never compare equal."""
         if strategy is None:
             return ("none",)
-        form_field = getattr(strategy, "form_field", "")
-        header_name = getattr(strategy, "header_name", "")
-        cookie_name = getattr(strategy, "cookie_name", None)
-        get_expected = getattr(strategy, "get_expected", None)
+        form_field = dynamic_attribute(strategy, "form_field", "")
+        header_name = dynamic_attribute(strategy, "header_name", "")
+        cookie_name = dynamic_attribute(strategy, "cookie_name")
+        get_expected = dynamic_attribute(strategy, "get_expected")
         return (
             type(strategy).__name__,
             form_field,
@@ -103,6 +106,7 @@ class SecurityPolicy:
             id(get_expected) if get_expected is not None else None,
         )
 
+    @override
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, SecurityPolicy):
             return NotImplemented
@@ -110,6 +114,7 @@ class SecurityPolicy:
             return False
         return self._csrf_identity(self.csrf) == self._csrf_identity(other.csrf)
 
+    @override
     def __hash__(self) -> int:
         return hash((_policy_field_values_without_csrf(self), self._csrf_identity(self.csrf)))
 
@@ -184,7 +189,7 @@ class SecurityPolicy:
             request_budget_limits=RequestBudgetLimits(),
             findings=(
                 "standard profile: CSRF, private authenticated caching, and HTMX browser "
-                "hardening enabled",
+                + "hardening enabled",
             ),
         )
 

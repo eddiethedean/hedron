@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import Any, ClassVar, Literal, cast
+from typing import ClassVar, Literal, cast
+
+from typing_extensions import override
 
 from hedron.builtins.hx import safe_target
 from hedron_core.component import Component, NodeLike
@@ -12,6 +14,12 @@ from hedron_core.htmx.attrs import HtmxAttrs
 from hedron_core.models import FormModel, Props
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_core.typing_aliases import HtmlAttrMap, JsonValue
+from hedron_core.typing_support import (
+    field_is_required,
+    field_title,
+    model_field_value,
+    model_fields,
+)
 
 __all__ = ["AutoForm", "LoginCsrfField"]
 
@@ -48,6 +56,7 @@ class LoginCsrfField(Component[Props]):
         self._token = token
         self._name = name or LOGIN_CSRF_KEY
 
+    @override
     def render(self) -> NodeLike:
         return html.input(type="hidden", name=self._name, value=self._token)
 
@@ -81,6 +90,7 @@ class AutoForm(Component[Props]):
         self.submit_label = submit_label
         self.target = safe_target(target)
 
+    @override
     def render(self) -> NodeLike:
         from hedron_core.builtins.forms import FormErrors, FormField, SubmitButton, TextInput
 
@@ -105,15 +115,15 @@ class AutoForm(Component[Props]):
             if ctx is not None and ctx.csrf_token:
                 field_name = self.csrf_form_field or ctx.csrf_form_field or "csrf_token"
                 fields.append(CsrfField(name=field_name))
-        model_fields = getattr(self.model_type, "model_fields", {})
-        for name, field_info in model_fields.items():
+        typed_model_fields = model_fields(self.model_type)
+        for name, field_info in typed_model_fields.items():
             if name.startswith("_"):
                 continue
-            title = getattr(field_info, "title", None) or name.replace("_", " ").title()
+            title = field_title(field_info) or name.replace("_", " ").title()
             current = self.values.get(name, "")
             if self.instance is not None:
-                current = getattr(self.instance, name, current)
-            required = bool(getattr(field_info, "is_required", lambda: False)())
+                current = model_field_value(self.instance, name, current)
+            required = field_is_required(field_info)
             fields.append(
                 FormField(
                     name=name,
@@ -145,5 +155,5 @@ class AutoForm(Component[Props]):
             *fields,
             action=action_url,
             method=method,
-            **cast(Any, htmx_attrs),
+            **cast(object, htmx_attrs),
         )

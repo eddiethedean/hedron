@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import Iterator
-from typing import Any
 
 import pytest
 from fastapi.testclient import TestClient
@@ -141,7 +140,7 @@ def test_session_auth_requires_nonempty_string(monkeypatch: pytest.MonkeyPatch) 
     install_authenticated_from_session(app, session_key="user")
 
     @app.get("/who")
-    def who(req: Request) -> dict[str, Any]:
+    def who(req: Request) -> dict[str, object]:
         return {"auth": bool(getattr(req.state, "hedron_authenticated", False))}
 
     @app.post("/login")

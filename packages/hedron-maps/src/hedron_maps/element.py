@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import json
 from collections.abc import Mapping, Sequence
-from typing import Any
 from urllib.parse import unquote, urlsplit
+
+from typing_extensions import override
 
 from hedron_core.builtins.map_geo import DEFAULT_MAX_FEATURES, MarkerSpec, sanitize_geojson
 from hedron_core.component import Component, NodeLike
@@ -170,7 +171,7 @@ class Map(Component[MapProps]):
 
     def __init__(
         self,
-        spec: MapSpec | Mapping[str, Any] | None = None,
+        spec: MapSpec | Mapping[str, object] | None = None,
         *,
         center: tuple[float, float] = (0.0, 0.0),
         zoom: float = 2.0,
@@ -182,8 +183,8 @@ class Map(Component[MapProps]):
         tiles: str | None = None,
         tile_allowlist: Sequence[str] = (),
         attribution: str = "",
-        markers: Sequence[MarkerSpec | Mapping[str, Any]] = (),
-        geojson: Mapping[str, Any] | None = None,
+        markers: Sequence[MarkerSpec | Mapping[str, object]] = (),
+        geojson: Mapping[str, object] | None = None,
         max_features: int = DEFAULT_MAX_FEATURES,
         class_: str | None = None,
         **kwargs: object,
@@ -197,7 +198,7 @@ class Map(Component[MapProps]):
 
         overlay: list[object] = list(layers)
         if markers:
-            dumped: list[dict[str, Any]] = []
+            dumped: list[dict[str, object]] = []
             for item in markers:
                 if isinstance(item, MarkerSpec):
                     dumped.append(item.model_dump(mode="json"))
@@ -213,7 +214,7 @@ class Map(Component[MapProps]):
         resolved_basemap: object
         resolved_policy = policy
         if tiles is not None:
-            _ensure_tile_allowed(tiles, tile_allowlist)
+            _ignored = _ensure_tile_allowed(tiles, tile_allowlist)
             resolved_basemap = RasterTiles(url=tiles, attribution=attribution or "Tiles")
             origin = None
             if tiles.startswith("https://"):
@@ -248,6 +249,7 @@ class Map(Component[MapProps]):
         """Register a generated event endpoint for the map host."""
         self._interaction_commands[event] = path
 
+    @override
     def render(self) -> NodeLike:
         plan = self.compile_plan()
         payload = plan_payload_json(plan)

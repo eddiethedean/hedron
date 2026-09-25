@@ -6,7 +6,7 @@ import re
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from types import MappingProxyType
-from typing import Any, Generic, TypeVar, cast
+from typing import Generic, TypeVar, cast
 
 from hedron_core import Model, RenderMode, SafeUrl, TrustedHtml
 from hedron_core.compat import StrEnum
@@ -19,10 +19,10 @@ _REGION_ID_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_.:-]*$")
 
 def _deep_freeze(value: object) -> object:
     if isinstance(value, Mapping):
-        mapping = cast(Mapping[Any, Any], value)
+        mapping = cast(Mapping[object, object], value)
         return MappingProxyType({str(key): _deep_freeze(item) for key, item in mapping.items()})
     if isinstance(value, (list, tuple)):
-        sequence = cast(tuple[Any, ...] | list[Any], value)
+        sequence = cast(tuple[object, ...] | list[object], value)
         return tuple(_deep_freeze(item) for item in sequence)
     return value
 

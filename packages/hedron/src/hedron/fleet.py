@@ -12,15 +12,16 @@ import re
 from collections.abc import Mapping
 from importlib.metadata import PackageNotFoundError, distributions, entry_points, version
 from pathlib import Path
-from typing import Any, cast
+from typing import cast
 
 from hedron_core.compat import tomllib
+from hedron_core.typing_support import dynamic_attribute
 
 _LOG = logging.getLogger("hedron.fleet")
 
 _SECRET_ENV_RE = re.compile(
     r"(secret|password|passwd|token|api[_-]?key|access[_-]?key|private[_-]?key|"
-    r"credential|auth[_-]?token|session[_-]?key|cookie|authorization)",
+    + r"credential|auth[_-]?token|session[_-]?key|cookie|authorization)",
     re.IGNORECASE,
 )
 
@@ -56,8 +57,8 @@ _EXTRA_DISTS = (
 )
 
 
-def _mapping(value: object) -> dict[str, Any]:
-    return cast(dict[str, Any], value) if isinstance(value, dict) else {}
+def _mapping(value: object) -> dict[str, object]:
+    return cast(dict[str, object], value) if isinstance(value, dict) else {}
 
 
 def looks_like_secret_env(name: str) -> bool:
@@ -90,7 +91,7 @@ def _find_release_toml() -> Path | None:
     return cwd if cwd.is_file() else None
 
 
-def _train_skew_note(dist_versions: dict[str, str]) -> dict[str, Any] | None:
+def _train_skew_note(dist_versions: dict[str, str]) -> dict[str, object] | None:
     path = _find_release_toml()
     if path is None:
         return None
@@ -133,8 +134,8 @@ def _selected_extras() -> list[dict[str, str]]:
     return found
 
 
-def _plugins_snapshot() -> list[dict[str, Any]]:
-    rows: list[dict[str, Any]] = []
+def _plugins_snapshot() -> list[dict[str, object]]:
+    rows: list[dict[str, object]] = []
     try:
         from hedron_core.plugins import get_explorer_panels, get_feature_manifests
 
@@ -168,13 +169,13 @@ def _plugins_snapshot() -> list[dict[str, Any]]:
     return rows
 
 
-def _assets_snapshot() -> list[dict[str, Any]]:
+def _assets_snapshot() -> list[dict[str, object]]:
     try:
         from hedron_core.registry import get_registry
 
-        rows: list[dict[str, Any]] = []
+        rows: list[dict[str, object]] = []
         for asset in get_registry().assets():
-            row: dict[str, Any] = {
+            row: dict[str, object] = {
                 "logical_id": asset.logical_id,
                 "kind": asset.kind,
                 "path": asset.path,
@@ -182,9 +183,10 @@ def _assets_snapshot() -> list[dict[str, Any]]:
             placement = getattr(asset, "placement", None)
             if placement:
                 row["placement"] = placement
-            depends_on = getattr(asset, "depends_on", None) or ()
-            if depends_on:
-                row["depends_on"] = list(depends_on)
+            depends_on = dynamic_attribute(asset, "depends_on", ())
+            if isinstance(depends_on, (list, tuple)) and depends_on:
+                typed_dependencies = cast(list[object] | tuple[object, ...], depends_on)
+                row["depends_on"] = [str(dependency) for dependency in typed_dependencies]
             rows.append(row)
         return rows
     except Exception:  # noqa: BLE001 — best-effort
@@ -195,7 +197,7 @@ def _assets_snapshot() -> list[dict[str, Any]]:
 def _recommendations(
     *,
     dist_versions: dict[str, str],
-    train_skew: dict[str, Any] | None,
+    train_skew: dict[str, object] | None,
 ) -> list[dict[str, str]]:
     recs: list[dict[str, str]] = []
     if "hedron" not in dist_versions:
@@ -237,7 +239,7 @@ def _recommendations(
     return recs
 
 
-def diagnose_installed_fleet() -> dict[str, Any]:
+def diagnose_installed_fleet() -> dict[str, object]:
     """Return a read-only diagnosis of the installed application fleet.
 
     Collects distribution versions, train skew against ``docs/release.toml``

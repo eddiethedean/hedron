@@ -6,7 +6,7 @@ import asyncio
 import json
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, cast
+from typing import cast
 
 from edron import App, Outcome, OutcomeKind
 from edron.simulation import SimulationRequest, SimulationResponse, SimulationRoute
@@ -56,7 +56,7 @@ class SimulationArtifact:
     """A self-contained static embed plus the route manifest that produced it."""
 
     html: str
-    manifest: Mapping[str, Any]
+    manifest: Mapping[str, object]
     responses: Mapping[str, SimulationResponse] = field(
         default_factory=dict[str, SimulationResponse]
     )
@@ -85,8 +85,8 @@ class Simulation:
         app: App,
         *,
         config: SimulationConfig | None = None,
-        fixtures: Mapping[str, Any] | None = None,
-        route_values: Mapping[str, Mapping[str, Any]] | None = None,
+        fixtures: Mapping[str, object] | None = None,
+        route_values: Mapping[str, Mapping[str, object]] | None = None,
     ) -> None:
         if not isinstance(app, App):  # pyright: ignore[reportUnnecessaryIsInstance]
             raise TypeError("Simulation expects an edron.App")
@@ -96,7 +96,7 @@ class Simulation:
         self.route_values = {str(key): dict(value) for key, value in (route_values or {}).items()}
 
     @classmethod
-    def from_app(cls, app: App, **kwargs: Any) -> Simulation:
+    def from_app(cls, app: App, **kwargs: object) -> Simulation:
         """Construct a simulation using the app's real registration graph."""
         return cls(app, **kwargs)
 
@@ -106,7 +106,7 @@ class Simulation:
         Use :meth:`build_async` when called from an already-running event loop.
         """
         try:
-            asyncio.get_running_loop()
+            _ignored = asyncio.get_running_loop()
         except RuntimeError:
             return asyncio.run(self.build_async())
         raise RuntimeError("Simulation.build() cannot run inside an event loop; use build_async()")
@@ -150,10 +150,10 @@ class Simulation:
         )
         page_response = responses[entrypoint.key]
 
-        def initial_page() -> Any:
+        def initial_page() -> object:
             return page_response.value
 
-        sim_app.page(self.config.entrypoint)(initial_page)
+        _ignored = sim_app.page(self.config.entrypoint)(initial_page)
 
         for route in routes:
             response = responses[route.key]
@@ -198,14 +198,14 @@ class Simulation:
         return SimulationArtifact(html=html, manifest=manifest, responses=responses)
 
     @staticmethod
-    def _constant_handler(value: Any) -> Any:
-        def handler() -> Any:
+    def _constant_handler(value: object) -> object:
+        def handler() -> object:
             return value
 
         return handler
 
     @staticmethod
-    def _renderable(value: Any) -> Any:
+    def _renderable(value: object) -> object:
         if isinstance(value, Outcome):
             # Outcome headers are transport mechanics. Keep the static primary
             # response empty; refresh outcomes are represented as explicit
@@ -224,14 +224,14 @@ class Simulation:
         response: SimulationResponse,
         routes: Sequence[SimulationRoute],
         fragment_html: Mapping[str, str],
-    ) -> tuple[Mapping[str, Any], ...]:
+    ) -> tuple[Mapping[str, object], ...]:
         value = response.value
         if not isinstance(value, Outcome):
             return ()
         if value.role is not OutcomeKind.REFRESH:
             return ()
         by_id = {route.logical_id: route for route in routes if route.kind == "fragment"}
-        effects: list[Mapping[str, Any]] = []
+        effects: list[Mapping[str, object]] = []
         raw_handles = value.payload.get("handles", [])
         handles = cast(list[object], raw_handles) if isinstance(raw_handles, list) else []
         for handle in handles:
@@ -248,7 +248,7 @@ class Simulation:
         return tuple(effects)
 
     @staticmethod
-    def _route_manifest(route: SimulationRoute) -> Mapping[str, Any]:
+    def _route_manifest(route: SimulationRoute) -> Mapping[str, object]:
         return {
             "method": route.method,
             "path": route.path,

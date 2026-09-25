@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
 
 from hedron_core.active_markup import has_active_markup
 from hedron_core.compat import StrEnum
@@ -48,7 +47,7 @@ _PURPOSE_TO_URL: dict[TrustPurpose, UrlPurpose] = {
 
 
 def compile_trust(
-    value: Any,
+    value: object,
     purpose: TrustPurpose | str,
     *,
     source: str = "application",

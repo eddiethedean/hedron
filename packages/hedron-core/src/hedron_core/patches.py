@@ -470,7 +470,7 @@ def _op_delete(
                 title="Patch delete missed",
                 remediation="Refresh the fragment; do not assume a missing key was deleted.",
             )
-        parent.pop(str(key))
+        _ignored = parent.pop(str(key))
         return
     raise _patch_error(
         HED_PATCH_0004,

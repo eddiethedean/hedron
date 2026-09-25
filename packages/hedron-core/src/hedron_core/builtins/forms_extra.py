@@ -5,6 +5,8 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from typing import Literal, cast
 
+from typing_extensions import override
+
 from hedron_core.alpine import AlpineAttrs, AlpineDirective, AlpineExpression
 from hedron_core.builtins._base import (
     ElementProps,
@@ -128,6 +130,7 @@ class NumberInput(Component[NumberInputProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         extra: dict[str, HtmlAttrValue] = {
             "type": "number",
@@ -194,6 +197,7 @@ class RangeInput(Component[RangeInputProps]):
         )
         self._markers = tuple(markers) if markers is not None else ()
 
+    @override
     def render(self) -> NodeLike:
         field_id = self.props.id or f"field-{dom_id_part(self.props.name)}"
         list_id = f"{field_id}-markers" if self._markers else None
@@ -277,6 +281,7 @@ class DateInput(Component[DateInputProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         extra: dict[str, HtmlAttrValue] = {
             "type": "date",
@@ -336,6 +341,7 @@ class TimeInput(Component[TimeInputProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         extra: dict[str, HtmlAttrValue] = {
             "type": "time",
@@ -397,6 +403,7 @@ class DateTimeInput(Component[DateTimeInputProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         extra: dict[str, HtmlAttrValue] = {
             "type": "datetime-local",
@@ -451,6 +458,7 @@ class MultiSelect(Component[MultiSelectProps]):
         self._options = tuple(options)
         self._values = frozenset(values or ())
 
+    @override
     def render(self) -> NodeLike:
         opts: list[NodeLike] = []
         for val, label in self._options:
@@ -528,6 +536,7 @@ class ToggleSwitch(Component[ToggleSwitchProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {
             "type": "checkbox",
@@ -632,6 +641,7 @@ class SegmentedControl(Component[SegmentedControlProps]):
         self._options = tuple(options)
         self._value = value
 
+    @override
     def render(self) -> NodeLike:
         group_id = self.props.id or (
             f"field-{dom_id_part(self.props.name)}-{self.render_instance_id()[2:10]}"
@@ -736,6 +746,7 @@ class ColorInput(Component[ColorInputProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         extra: dict[str, HtmlAttrValue] = {
             "type": "color",
@@ -785,6 +796,7 @@ class RatingInput(Component[RatingInputProps]):
         )
         self._value = value
 
+    @override
     def render(self) -> NodeLike:
         group_id = self.props.id or (
             f"field-{dom_id_part(self.props.name)}-{self.render_instance_id()[2:10]}"
@@ -857,6 +869,7 @@ class ChipInput(Component[ChipInputProps]):
         )
         self._values = tuple(values or ())
 
+    @override
     def render(self) -> NodeLike:
         chips: list[NodeLike] = []
         for index, value in enumerate(self._values):
@@ -918,6 +931,7 @@ class MenuButton(Component[MenuButtonProps]):
         super().__init__(MenuButtonProps(label=label, id=id, class_=class_, mark=mark, **kwargs))
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         menu_id = self.props.id or f"menu-{self.render_instance_id()[2:10]}"
         panel_id = f"{menu_id}-panel"
@@ -996,6 +1010,7 @@ class SelectSlider(Component[SelectSliderProps]):
         self._options = tuple(normalized)
         self._value = value
 
+    @override
     def render(self) -> NodeLike:
         values = [v for v, _ in self._options]
         index = 0
@@ -1080,6 +1095,7 @@ class DirectoryUpload(Component[DirectoryUploadProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {
             "type": "file",

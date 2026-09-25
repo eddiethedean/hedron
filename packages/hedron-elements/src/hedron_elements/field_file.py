@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing_extensions import override
+
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
@@ -52,6 +54,7 @@ class FieldFile(Component[FieldFileProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         attrs: HtmlAttrMap = {
             "type": "file",

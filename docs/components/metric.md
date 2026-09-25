@@ -44,8 +44,8 @@ Metric(label, value, *, delta=None, delta_tone='neutral')
 | Parameter | Type | Meaning |
 |---|---|---|
 | `label` | `str` | Metric name. |
-| `value` | `Any` | Current value converted to text. |
-| `delta` | `Any | None` | Optional change. |
+| `value` | `object` | Current value converted to text. |
+| `delta` | `object | None` | Optional change. |
 | `delta_tone` | `up | down | neutral` | Domain-aware direction token. |
 
 ## Composition and backend behavior

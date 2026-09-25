@@ -98,7 +98,7 @@ def test_canonical_fixture_type_checks_without_errors() -> None:
         ),
     }
     result = subprocess.run(
-        [sys.executable, "-m", "pyright", str(ROOT / "canonical/app.py")],
+        [sys.executable, "-m", "basedpyright", str(ROOT / "canonical/app.py")],
         cwd=ROOT.parent.parent.parent,
         env=env,
         text=True,

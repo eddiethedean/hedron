@@ -72,5 +72,5 @@ def codemod_file(source: Path, out: Path | None = None, *, preview: bool = False
         if out.exists():
             raise FileExistsError(f"Refusing to overwrite {out}")
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(result.source, encoding="utf-8")
+        _ignored = out.write_text(result.source, encoding="utf-8")
     return result

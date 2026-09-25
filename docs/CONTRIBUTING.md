@@ -24,7 +24,7 @@ guide.
 | Suite | Typical time |
 |---|---|
 | `ruff` format + check | < 1 min |
-| `pyright` | 1–3 min |
+| `basedpyright` | 1–3 min |
 | `pytest -q` (default, xdist `-n auto`, no browser) | 2–5 min |
 | `mkdocs build --strict` | 1–2 min |
 | Playwright Chromium (`HEDRON_BROWSER=1`) | 5–15+ min |
@@ -43,7 +43,7 @@ bash scripts/ci_checks.sh quality --python 3.12
 # Or the individual tools:
 uv run ruff format --check packages tests examples
 uv run ruff check packages tests examples
-uv run pyright
+uv run basedpyright
 uv run pytest -q
 ```
 
@@ -178,7 +178,7 @@ Both commit CI and release CI call the same suites after checkout / sync / tool 
 |---|---|---|
 | `test` | `test` — `pytest -n auto` on Python 3.10–3.14 | Yes, unless **docs-only** |
 | `workbench-dependencies` | `workbench` — Workbench contract tests at minimum/latest Starlette/Uvicorn bounds | Yes, unless **docs-only** |
-| `quality` | `quality` — ruff, warning-reporting workspace Pyright, warning-fatal strict Pyright for `hedron-core` + `hedron`, `verify_pkg_*`, wheel build + smoke, docs train SSOT, recipe/sim checks, `mkdocs build --strict` | Yes, unless **docs-only** (then the same job runs `docs` instead) |
+| `quality` | `quality` — Ruff, workspace BasedPyright in `all` mode with a complete `Any` ban, package inventory, `verify_pkg_*`, wheel build + smoke, docs train SSOT, recipe/sim checks, `mkdocs build --strict` | Yes, unless **docs-only** (then the same job runs `docs` instead) |
 | `quality` (docs-only) | `docs` — mkdocs, train SSOT, recipe/sim checks; **no** Rust toolchain and **no** `uv build --all-packages` | Docs-only PRs |
 | `browser` | `browser` — Playwright HTMX suite (`HEDRON_BROWSER=1`) — **Chromium only on PRs**; Chromium+Firefox+WebKit on `main` / `workflow_dispatch` / release | Yes, unless **docs-only** |
 | `realwb` | `realwb` — REALWB-030 Docker smoke (skips when `PWB_LICENSE` unset) | Yes, unless **docs-only** or fork PR |
@@ -217,7 +217,7 @@ Local Playwright is still optional for docs-only work. On docs-only PRs, CI skip
 
 - [ ] Focused diff; no unrelated refactors
 - [ ] Tests added/updated for behavior changes
-- [ ] `ruff` + `pyright` clean on touched packages
+- [ ] `ruff` + `basedpyright` clean on touched packages
 - [ ] Docs/examples updated when public behavior changes
 - [ ] No coordinated version bumps unless this is a release cut
 - [ ] Follow the [Code of Conduct](https://github.com/eddiethedean/hedron/blob/main/CODE_OF_CONDUCT.md)

@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Literal
+
+from typing_extensions import override
 
 from hedron_core.builtins._base import ElementProps, class_names, mark_data
 from hedron_core.builtins.appearance import Appearance, Size, appearance_data
@@ -50,7 +52,7 @@ class Avatar(Component[AvatarProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if not name.strip():
             raise error(
@@ -76,6 +78,7 @@ class Avatar(Component[AvatarProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         data = {
             "hedron-avatar": "true",
@@ -136,7 +139,7 @@ class Identity(Component[IdentityProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if not name.strip():
             raise error(
@@ -167,6 +170,7 @@ class Identity(Component[IdentityProps]):
         )
         self._avatar = avatar if avatar is not None else Avatar(name, src=image_src, size=size)
 
+    @override
     def render(self) -> NodeLike:
         name_node: NodeLike
         if self.props.href is not None:

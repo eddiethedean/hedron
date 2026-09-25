@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Any, cast
+from typing import cast
 
 from hedron_core.codes import HED_CSS_UNKNOWN_SYMBOL
 from hedron_core.diagnostics import error
@@ -49,7 +49,7 @@ class StyleSymbols:
     def as_dict(self) -> dict[str, str]:
         return dict(self._symbols)
 
-    def __iter__(self) -> Any:
+    def __iter__(self) -> object:
         return iter(self._symbols)
 
 

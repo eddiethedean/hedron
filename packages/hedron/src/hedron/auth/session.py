@@ -7,6 +7,7 @@ from starlette.middleware import Middleware
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.responses import Response
 from starlette.types import ASGIApp
+from typing_extensions import override
 
 from hedron.fastapi_compat import append_middleware
 
@@ -30,6 +31,7 @@ class _AuthenticatedFromSessionMiddleware(BaseHTTPMiddleware):
         super().__init__(app)
         self.session_key = session_key
 
+    @override
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         # Starlette's Request.session asserts when SessionMiddleware is absent;
         # getattr still invokes the property, so gate on scope first (#170).

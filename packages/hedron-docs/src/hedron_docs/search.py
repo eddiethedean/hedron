@@ -28,7 +28,9 @@ def search(
         return ()
     if len(query) > max_length:
         raise ValueError(f"search query exceeds {max_length} characters")
-    terms = tuple(term for term in re.findall(r"[\w-]+", query.casefold()) if term)
+    terms = tuple(
+        match.group(0) for match in re.finditer(r"[\w-]+", query.casefold()) if match.group(0)
+    )
     if not terms:
         return ()
     results: list[SearchResult] = []

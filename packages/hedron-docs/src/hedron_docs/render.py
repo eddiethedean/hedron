@@ -149,9 +149,7 @@ def _render_heading(node: DocNode) -> NodeLike:
     anchors.extend(_anchor(alias, canonical=False) for alias in aliases)
     level = cast(Literal[1, 2, 3, 4, 5, 6], max(1, min(6, int(node.attr("level", "2")))))
     if node.children and not all(child.kind == "text" for child in node.children):
-        heading: NodeLike = getattr(html, f"h{level}")(
-            *_children_or_text(node), class_="hedron-heading"
-        )
+        heading: NodeLike = html.tag(f"h{level}")(*_children_or_text(node), class_="hedron-heading")
     else:
         heading = Heading(node.text, level=level)
     return html.div(
@@ -177,7 +175,7 @@ def _anchor(value: str, *, canonical: bool) -> NodeLike:
 
 
 def _render_content_element(tag: str, node: DocNode) -> NodeLike:
-    return getattr(html, tag)(*_children_or_text(node))
+    return html.tag(tag)(*_children_or_text(node))
 
 
 def _render_code(node: DocNode) -> NodeLike:

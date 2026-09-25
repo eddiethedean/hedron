@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
 
 from hedron_core.compat import StrEnum
 
@@ -29,7 +28,7 @@ class SourceSpan:
     end_line: int | None = None
     end_column: int | None = None
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "path": self.path,
             "start_line": self.start_line,
@@ -55,7 +54,7 @@ class StreamlitCall:
     span: SourceSpan
     disposition: Disposition
     confidence: Confidence
-    args_summary: dict[str, Any] = field(default_factory=dict[str, Any])
+    args_summary: dict[str, object] = field(default_factory=dict[str, object])
     assigned_to: str | None = None
     in_sidebar: bool = False
     findings: list[str] = field(default_factory=list[str])
@@ -73,7 +72,7 @@ class StreamlitMigrationPlan:
     extras: list[str] = field(default_factory=list[str])
     tool_errors: list[str] = field(default_factory=list[str])
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "schema_version": self.schema_version,
             "mapping_catalog_version": self.mapping_catalog_version,

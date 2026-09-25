@@ -7,10 +7,11 @@ import math
 import re
 import socket
 from dataclasses import dataclass, field
-from typing import Any, cast
+from typing import cast
 from urllib.parse import urlparse
 
 from hedron_core.egress import EgressError, EgressPolicy
+from hedron_core.typing_support import dynamic_attribute
 from hedron_gradio.errors import GradioRemoteError
 
 __all__ = [
@@ -103,14 +104,14 @@ class GradioRemoteConfig:
     artifact_retention_seconds: float = 300.0
 
     def __post_init__(self) -> None:
-        raw_redirects = cast(Any, self.max_redirect_hops)
+        raw_redirects = cast(object, self.max_redirect_hops)
         if (
             isinstance(raw_redirects, bool)
             or not isinstance(raw_redirects, int)
             or raw_redirects < 0
         ):
             raise ValueError("max_redirect_hops must be >= 0")
-        raw_timeout = cast(Any, self.request_timeout_seconds)
+        raw_timeout = cast(object, self.request_timeout_seconds)
         if (
             isinstance(raw_timeout, bool)
             or not isinstance(raw_timeout, (int, float))
@@ -119,10 +120,10 @@ class GradioRemoteConfig:
         ):
             raise ValueError("request_timeout_seconds must be > 0")
         for name in ("max_upload_bytes", "max_download_bytes"):
-            value = getattr(self, name)
+            value = dynamic_attribute(self, name)
             if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
                 raise ValueError(f"{name} must be a positive integer")
-        raw_retention = cast(Any, self.artifact_retention_seconds)
+        raw_retention = cast(object, self.artifact_retention_seconds)
         if (
             isinstance(raw_retention, bool)
             or not isinstance(raw_retention, (int, float))
@@ -191,7 +192,7 @@ def validate_remote_url(
         decompressed_budget_bytes=config.max_download_bytes,
     )
     try:
-        shared.require(url.strip(), resolver=_resolved_addresses_for_validation)
+        _ignored = shared.require(url.strip(), resolver=_resolved_addresses_for_validation)
     except EgressError as exc:
         reason = str(exc).rsplit(": ", 1)[-1]
         if reason == "scheme_denied" or (

@@ -4,10 +4,11 @@ from __future__ import annotations
 
 from collections.abc import Callable, Mapping
 from dataclasses import asdict, dataclass, field, is_dataclass
-from typing import Any, TypeGuard, TypeVar, cast
+from typing import TypeGuard, TypeVar, cast
 
 from hedron_core.csrf import redact_secret_like
 from hedron_core.typing_aliases import is_string_mapping
+from hedron_core.typing_support import dynamic_attribute
 
 FixtureT = TypeVar("FixtureT")
 
@@ -68,12 +69,12 @@ class AuthPrincipal:
     session_id: str | None = None
 
     def __post_init__(self) -> None:
-        _require_nonempty_str("subject", self.subject)
+        _ignored = _require_nonempty_str("subject", self.subject)
         if not _is_string_tuple(self.roles):
             raise ValueError("roles must be a tuple[str, ...]")
-        _require_mapping("claims", self.claims)
+        _ignored = _require_mapping("claims", self.claims)
         if self.session_id is not None:
-            _require_nonempty_str("session_id", self.session_id)
+            _ignored = _require_nonempty_str("session_id", self.session_id)
 
 
 @dataclass(frozen=True, slots=True)
@@ -88,9 +89,9 @@ class BrowserHintFixture:
 
     def __post_init__(self) -> None:
         for name in ("locale", "timezone", "theme", "user_agent"):
-            value = getattr(self, name)
+            value = dynamic_attribute(self, name)
             if value is not None:
-                _require_nonempty_str(name, value)
+                _ignored = _require_nonempty_str(name, value)
         if not _is_bool(self.embed):
             raise ValueError("embed must be a bool")
 
@@ -104,8 +105,8 @@ class StoragePayload:
     ttl_seconds: int | None = None
 
     def __post_init__(self) -> None:
-        _require_nonempty_str("namespace", self.namespace)
-        _require_mapping("data", self.data)
+        _ignored = _require_nonempty_str("namespace", self.namespace)
+        _ignored = _require_mapping("data", self.data)
         if self.ttl_seconds is not None and (
             not _is_int(self.ttl_seconds)
             or isinstance(self.ttl_seconds, bool)
@@ -124,9 +125,9 @@ class UploadFixture:
     field_name: str = "file"
 
     def __post_init__(self) -> None:
-        _require_nonempty_str("filename", self.filename)
-        _require_nonempty_str("content_type", self.content_type)
-        _require_nonempty_str("field_name", self.field_name)
+        _ignored = _require_nonempty_str("filename", self.filename)
+        _ignored = _require_nonempty_str("content_type", self.content_type)
+        _ignored = _require_nonempty_str("field_name", self.field_name)
         if not _is_bytes(self.content):
             raise ValueError("content must be bytes")
 
@@ -142,13 +143,13 @@ class OidcCallbackStub:
     error_description: str | None = None
 
     def __post_init__(self) -> None:
-        _require_nonempty_str("state", self.state)
+        _ignored = _require_nonempty_str("state", self.state)
         if self.error is None:
-            _require_nonempty_str("code", self.code)
+            _ignored = _require_nonempty_str("code", self.code)
         elif not _is_string(self.error) or not self.error.strip():
             raise ValueError("error must be a non-empty string when set")
         if self.nonce is not None:
-            _require_nonempty_str("nonce", self.nonce)
+            _ignored = _require_nonempty_str("nonce", self.nonce)
 
 
 @dataclass(frozen=True, slots=True)
@@ -166,11 +167,11 @@ class NamedConnectionFixture:
     options: Mapping[str, object] = field(default_factory=dict[str, object])
 
     def __post_init__(self) -> None:
-        _require_nonempty_str("name", self.name)
-        _require_nonempty_str("provider", self.provider)
+        _ignored = _require_nonempty_str("name", self.name)
+        _ignored = _require_nonempty_str("provider", self.provider)
         if self.dsn is not None:
-            _require_nonempty_str("dsn", self.dsn)
-        _require_mapping("options", self.options)
+            _ignored = _require_nonempty_str("dsn", self.dsn)
+        _ignored = _require_mapping("options", self.options)
 
 
 def validate_fixture(obj: FixtureT) -> FixtureT:
@@ -179,7 +180,7 @@ def validate_fixture(obj: FixtureT) -> FixtureT:
         raise TypeError(f"expected a fixture dataclass, got {type(obj)!r}")
     # Frozen dataclasses validate in __post_init__; reconstruct to re-check.
     constructor = cast(Callable[..., object], type(obj))
-    constructor(**asdict(cast(Any, obj)))
+    _ignored = constructor(**asdict(cast(object, obj)))
     return obj
 
 
@@ -202,5 +203,5 @@ def redact_secrets_for_failure(obj: object) -> object:
         }
     )
     if is_dataclass(obj) and not isinstance(obj, type):
-        return redact_secret_like(asdict(cast(Any, obj)), keys=keys)
+        return redact_secret_like(asdict(cast(object, obj)), keys=keys)
     return redact_secret_like(obj, keys=keys)

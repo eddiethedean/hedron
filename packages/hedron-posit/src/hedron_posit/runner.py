@@ -6,7 +6,6 @@ import os
 import socket
 import sys
 from collections.abc import Mapping
-from typing import Any
 
 from fastapi_workbench.config import ResolvedDeployment, WorkbenchConfig
 from fastapi_workbench.diagnostics import WorkbenchError
@@ -16,6 +15,7 @@ from fastapi_workbench.runner import load_app as _load_app
 from fastapi_workbench.runner import serve as _serve
 from hedron_core.codes import HED_WB_0009
 from hedron_core.diagnostics import DiagnosticSeverity, HedronError, make_diagnostic
+from hedron_core.typing_support import bound_socket_port
 from hedron_posit.detect import RESOLVED_ACTIVE_ENV, is_workbench_job, rs_server_url
 from hedron_posit.middleware import workbenchify
 from hedron_posit.resolve import (
@@ -56,7 +56,7 @@ def bind_loopback(host: str, port: int) -> socket.socket:
         raise _translate_error(exc) from exc
 
 
-def serve(app: Any, resolved: ResolvedDeployment, *, sock: socket.socket | None = None) -> None:
+def serve(app: object, resolved: ResolvedDeployment, *, sock: socket.socket | None = None) -> None:
     try:
         _serve(app, resolved, sock=sock)
     except WorkbenchError as exc:
@@ -70,7 +70,7 @@ def discover_rserver_url(*, binary: str, port: int) -> str:
         raise _translate_error(exc) from exc
 
 
-def load_app(target: str, *, factory: bool = False) -> Any:
+def load_app(target: str, *, factory: bool = False) -> object:
     try:
         return _load_app(target, factory=factory)
     except WorkbenchError as exc:
@@ -98,7 +98,7 @@ def export_hedron_state(
         "FASTAPI_WORKBENCH_RESOLVED_SOURCE",
         "FASTAPI_WORKBENCH_TRUSTED_PROXIES",
     ):
-        env.pop(name, None)
+        _ignored = env.pop(name, None)
     if resolved.browser_mount:
         env[HEDRON_ROOT_PATH] = resolved.browser_mount
         env[RESOLVED_MOUNT_ENV] = resolved.browser_mount
@@ -129,7 +129,7 @@ def prepare_app(
     discovered_raw: str | None = None,
     wrap: bool = True,
     apply_environ: bool = True,
-) -> tuple[Any, ResolvedDeployment]:
+) -> tuple[object, ResolvedDeployment]:
     cfg = config or WorkbenchConfig(app_target=target)
     merged = _merge_environ(environ)
     resolved = resolve_deployment(
@@ -209,7 +209,7 @@ def _exec_supervised(
     export_hedron_state(resolved)
     # Never pass a full Workbench URL as Uvicorn's root_path during reload or
     # worker supervision; the resolved public base is handed off separately.
-    os.environ.pop("UVICORN_ROOT_PATH", None)
+    _ignored = os.environ.pop("UVICORN_ROOT_PATH", None)
     os.environ[_SUPERVISED_TARGET_ENV] = target
     os.environ[_SUPERVISED_FACTORY_ENV] = "1" if factory else "0"
     sock.set_inheritable(True)
@@ -229,7 +229,7 @@ def run_target(
     initial = resolve_deployment(cfg, environ=env)
     sock = bind_loopback(initial.host, initial.port)
     try:
-        bound_port = int(sock.getsockname()[1])
+        bound_port = bound_socket_port(sock)
         discovered: str | None = None
         if (
             (discover or rs_server_url(env))
@@ -270,7 +270,7 @@ def run_target(
         sock.close()
 
 
-def app_from_environ() -> Any:
+def app_from_environ() -> object:
     target = os.environ.get(_SUPERVISED_TARGET_ENV, "").strip()
     if not target:
         raise RuntimeError(f"{_SUPERVISED_TARGET_ENV} is missing")

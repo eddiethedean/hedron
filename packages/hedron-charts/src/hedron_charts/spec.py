@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Literal, cast
+from typing import Literal, cast
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -28,8 +28,8 @@ class FieldDef(ChartModel):
 
 class DataRef(ChartModel):
     name: str | None = None
-    # Any: hedron JsonValue is recursive and breaks pydantic schema generation.
-    rows: tuple[dict[str, Any], ...] = ()
+    # object: Hedron's recursive JsonValue breaks Pydantic schema generation here.
+    rows: tuple[dict[str, object], ...] = ()
     fields: tuple[FieldDef, ...] = ()
 
 
@@ -40,9 +40,9 @@ class Encoding(ChartModel):
     title: str | None = None
     aggregate: str | None = None
     stack: str | None = None
-    bin: bool | dict[str, Any] | None = None
+    bin: bool | dict[str, object] | None = None
     sort: str | list[str] | None = None
-    value: Any = None
+    value: object = None
 
 
 class MarkDef(ChartModel):
@@ -58,8 +58,8 @@ class MarkDef(ChartModel):
 class ScaleDef(ChartModel):
     name: str
     type: str = "linear"
-    domain: list[Any] | None = None
-    range: list[Any] | None = None
+    domain: list[object] | None = None
+    range: list[object] | None = None
     nice: bool = True
     zero: bool | None = None
     clamp: bool = False
@@ -79,7 +79,7 @@ class TransformDef(ChartModel):
     op: str
     field: str | None = None
     as_: str | None = Field(default=None, alias="as")
-    params: dict[str, Any] = Field(default_factory=dict)
+    params: dict[str, object] = Field(default_factory=dict)
 
     model_config = ConfigDict(extra="forbid", frozen=True, populate_by_name=True)
 
@@ -87,10 +87,10 @@ class TransformDef(ChartModel):
 class AnnotationDef(ChartModel):
     kind: Literal["text", "reference_line", "reference_band"] = "text"
     text: str | None = None
-    x: Any = None
-    y: Any = None
-    x2: Any = None
-    y2: Any = None
+    x: object = None
+    y: object = None
+    x2: object = None
+    y2: object = None
 
 
 class InteractionDef(ChartModel):
@@ -139,7 +139,7 @@ class ChartSpec(ChartModel):
     scales: tuple[ScaleDef, ...] = ()
     guides: tuple[GuideDef, ...] = ()
     transforms: tuple[TransformDef, ...] = ()
-    composition: dict[str, Any] = Field(default_factory=dict)
+    composition: dict[str, object] = Field(default_factory=dict)
     annotations: tuple[AnnotationDef, ...] = ()
     interaction: InteractionDef = Field(default_factory=InteractionDef)
     theme: ThemeDef = Field(default_factory=ThemeDef)
@@ -164,7 +164,7 @@ class AccessibilityPlan(ChartModel):
     encoding_explanation: str
     summary: str
     interaction_help: str
-    table_rows: tuple[dict[str, Any], ...] = ()
+    table_rows: tuple[dict[str, object], ...] = ()
     include_table: bool = True
 
 
@@ -175,10 +175,10 @@ class ChartPlan(ChartModel):
     schema_version: int = SCHEMA_VERSION
     spec_fingerprint: str
     data_fingerprint: str
-    domains: dict[str, list[Any]] = Field(default_factory=dict)
+    domains: dict[str, list[object]] = Field(default_factory=dict)
     scales: tuple[ScaleDef, ...] = ()
     guides: tuple[GuideDef, ...] = ()
-    marks: tuple[dict[str, Any], ...] = ()
+    marks: tuple[dict[str, object], ...] = ()
     mark_count: int = 0
     renderer: RendererDecision
     accessibility: AccessibilityPlan
@@ -188,8 +188,8 @@ class ChartPlan(ChartModel):
     limits: dict[str, int] = Field(default_factory=dict)
     theme: ThemeDef = Field(default_factory=ThemeDef)
     interaction: InteractionDef = Field(default_factory=InteractionDef)
-    layout: dict[str, Any] = Field(default_factory=dict)
-    transformed_rows: tuple[dict[str, Any], ...] = ()
+    layout: dict[str, object] = Field(default_factory=dict)
+    transformed_rows: tuple[dict[str, object], ...] = ()
 
     def to_json_dict(self) -> JsonObject:
         return cast(JsonObject, self.model_dump(mode="json"))

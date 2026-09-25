@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Any
+from fastapi import Request
 
-from fastapi import Depends, Request
-
+from hedron._fastapi_depends import fastapi_depends
 from hedron_core.browser import BrowserContext, ViewportHint
 
 __all__ = [
@@ -50,7 +49,7 @@ def browser_context(
     locale: str | None = None,
     timezone: str | None = None,
     color_mode: str | None = None,
-) -> Any:
+) -> object:
     """FastAPI dependency that injects :class:`~hedron_core.browser.BrowserContext`."""
 
     async def dependency(request: Request) -> BrowserContext:
@@ -61,4 +60,4 @@ def browser_context(
             color_mode=color_mode,
         )
 
-    return Depends(dependency)
+    return fastapi_depends(dependency)

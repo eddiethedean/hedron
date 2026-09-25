@@ -4,12 +4,14 @@ from __future__ import annotations
 
 import inspect
 from collections.abc import Callable
-from typing import Annotated, Any
+from typing import Annotated
 
 from fastapi import Cookie, Header, Query
 
+from hedron._fastapi_depends import fastapi_parameter
 from hedron.type_authoring.normalize import CompiledTypeHandler
 from hedron_core.binding_plan import BoundaryBindingPlan, compile_boundary_binding
+from hedron_core.typing_support import parameter_default
 from hedron_core.updates import BindingPlan
 
 __all__ = ["boundary_plan_for", "apply_native_or_expanded"]
@@ -52,7 +54,7 @@ def boundary_plan_for(
 
 
 def apply_native_or_expanded(
-    fn: Callable[..., Any],
+    fn: Callable[..., object],
     compiled: CompiledTypeHandler,
     plan: BoundaryBindingPlan,
 ) -> inspect.Signature:
@@ -76,7 +78,7 @@ def apply_native_or_expanded(
                 inspect.Parameter(
                     name,
                     param.kind,
-                    default=param.default,
+                    default=parameter_default(param),
                     annotation=Annotated[compiled.model_type, marker],
                 )
             )
@@ -91,9 +93,9 @@ def apply_native_or_expanded(
 def _native_marker(plan: BoundaryBindingPlan) -> object | None:
     locations = set(plan.field_locations)
     if locations == {"query"}:
-        return Query()
+        return fastapi_parameter(Query)
     if locations == {"header"}:
-        return Header()
+        return fastapi_parameter(Header)
     if locations == {"cookie"}:
-        return Cookie()
+        return fastapi_parameter(Cookie)
     return None

@@ -5,7 +5,7 @@ from __future__ import annotations
 import inspect
 from collections.abc import Callable
 from types import UnionType
-from typing import Annotated, Any, Union, get_args, get_origin
+from typing import Annotated, Protocol, Union, cast, get_origin
 
 from fastapi import Cookie, File, Form, Header, HTTPException, Path, Query, status
 
@@ -13,6 +13,7 @@ from hedron.type_authoring.markers import FormBody
 from hedron.type_authoring.normalize import CompiledTypeHandler, FieldRecord
 from hedron_core.binding_plan import compile_boundary_binding
 from hedron_core.codes import HED_TYPE_0003
+from hedron_core.typing_support import parameter_annotation, parameter_default, type_arguments
 
 __all__ = [
     "apply_modeled_signature",
@@ -28,15 +29,38 @@ _FORM_MEDIA = {
 }
 
 
+class _Headers(Protocol):
+    def get(self, name: str, default: object = None) -> object: ...
+
+
+class _RequestWithHeaders(Protocol):
+    headers: _Headers
+
+
+class _ParameterFactory(Protocol):
+    def __call__(self) -> object: ...
+
+
+def _headers_for(request: object) -> _Headers | None:
+    try:
+        return cast(_RequestWithHeaders, request).headers
+    except AttributeError:
+        return None
+
+
+def _parameter_marker(factory: object) -> object:
+    return cast(_ParameterFactory, factory)()
+
+
 def _is_bool_annotation(annotation: object) -> bool:
     if annotation is bool:
         return True
     origin = get_origin(annotation)
     if origin is Annotated:
-        args = get_args(annotation)
+        args = type_arguments(annotation)
         return bool(args) and _is_bool_annotation(args[0])
     if origin in {Union, UnionType}:
-        return any(item is bool for item in get_args(annotation))
+        return any(item is bool for item in type_arguments(annotation))
     return False
 
 
@@ -59,7 +83,7 @@ def reject_json_formbody(
     """Refuse non-form bodies as a silent empty FormBody (RFC-0071 / D-076 / #329)."""
     if request is None or not compiled.modeled or not isinstance(compiled.source, FormBody):
         if strict_json and request is not None:
-            headers = getattr(request, "headers", None)
+            headers = _headers_for(request)
             raw = str(headers.get("content-type") or "") if headers is not None else ""
             media = raw.split(";", 1)[0].strip().lower()
             if media and media not in {"application/json", "application/problem+json"}:
@@ -68,7 +92,7 @@ def reject_json_formbody(
                     detail=HED_TYPE_0003,
                 )
         return
-    headers = getattr(request, "headers", None)
+    headers = _headers_for(request)
     raw = ""
     if headers is not None:
         raw = str(headers.get("content-type") or "")
@@ -82,13 +106,15 @@ def reject_json_formbody(
     )
 
 
-def reconstruct_kwargs(compiled: CompiledTypeHandler, kwargs: dict[str, Any]) -> dict[str, Any]:
+def reconstruct_kwargs(
+    compiled: CompiledTypeHandler, kwargs: dict[str, object]
+) -> dict[str, object]:
     if not compiled.modeled or compiled.param_name is None or compiled.adapter is None:
         return kwargs
     existing = kwargs.get(compiled.param_name)
     if compiled.model_type is not None and isinstance(existing, compiled.model_type):
         return kwargs
-    raw: dict[str, Any] = {}
+    raw: dict[str, object] = {}
     for field in compiled.fields:
         if field.http_name in kwargs:
             value = kwargs.pop(field.http_name)
@@ -98,7 +124,11 @@ def reconstruct_kwargs(compiled: CompiledTypeHandler, kwargs: dict[str, Any]) ->
             continue
         # FastAPI represents omitted non-nullable fields with ``None`` while
         # explicit null is meaningful for annotations that accept None.
-        if value is None and not field.required and type(None) not in get_args(field.annotation):
+        if (
+            value is None
+            and not field.required
+            and type(None) not in type_arguments(field.annotation)
+        ):
             continue
         raw[field.name] = value
     kwargs[compiled.param_name] = compiled.adapter.validate(raw)
@@ -112,15 +142,15 @@ def compile_injected_depends(signature: inspect.Signature) -> inspect.Signature:
     rewritten: list[inspect.Parameter] = []
     changed = False
     for param in signature.parameters.values():
-        marker = param.default
+        marker = parameter_default(param)
         if isinstance(marker, DependsOn):
             rewritten.append(param.replace(default=as_fastapi_depends(marker)))
             changed = True
             continue
-        annotation = param.annotation
+        annotation = parameter_annotation(param)
         metadata: tuple[object, ...] = ()
         origin = get_origin(annotation)
-        args = get_args(annotation)
+        args = type_arguments(annotation)
         if origin is Annotated and args:
             metadata = tuple(args[1:])
         depends_meta = next((item for item in metadata if isinstance(item, DependsOn)), None)
@@ -135,7 +165,7 @@ def compile_injected_depends(signature: inspect.Signature) -> inspect.Signature:
 
 
 def apply_modeled_signature(
-    fn: Callable[..., Any],
+    fn: Callable[..., object],
     compiled: CompiledTypeHandler,
 ) -> inspect.Signature:
     original = compile_injected_depends(inspect.signature(fn))
@@ -170,7 +200,7 @@ def apply_modeled_signature(
                         inspect.Parameter(
                             name,
                             param.kind,
-                            default=param.default,
+                            default=parameter_default(param),
                             annotation=Annotated[compiled.model_type, marker],
                         )
                     )
@@ -204,35 +234,35 @@ def apply_modeled_signature(
 def _native_marker(locations: tuple[str, ...]) -> object | None:
     unique = set(locations)
     if unique == {"query"}:
-        return Query()
+        return _parameter_marker(Query)
     if unique == {"header"}:
-        return Header()
+        return _parameter_marker(Header)
     if unique == {"cookie"}:
-        return Cookie()
+        return _parameter_marker(Cookie)
     return None
 
 
 def _fastapi_parameter(field: FieldRecord) -> inspect.Parameter:
     annotation: object = (
-        field.annotation if field.annotation is not inspect.Parameter.empty else Any
+        field.annotation if field.annotation is not inspect.Parameter.empty else object
     )
     param_name = field.http_name
     if field.location == "path":
         return inspect.Parameter(
             param_name,
             inspect.Parameter.POSITIONAL_OR_KEYWORD,
-            annotation=Annotated[annotation, Path()],  # type: ignore[valid-type]
+            annotation=Annotated[annotation, _parameter_marker(Path)],  # type: ignore[valid-type]
         )
     if field.is_file:
-        marker: object = File()
+        marker: object = _parameter_marker(File)
     elif field.location == "query":
-        marker = Query()
+        marker = _parameter_marker(Query)
     elif field.location == "header":
-        marker = Header()
+        marker = _parameter_marker(Header)
     elif field.location == "cookie":
-        marker = Cookie()
+        marker = _parameter_marker(Cookie)
     else:
-        marker = Form()
+        marker = _parameter_marker(Form)
     if field.required:
         return inspect.Parameter(
             param_name,

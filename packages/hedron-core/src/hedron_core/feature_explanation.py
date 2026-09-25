@@ -21,6 +21,7 @@ from hedron_core.bundles import (
 from hedron_core.codes import HED_FEATURE_0001
 from hedron_core.diagnostics import DiagnosticSeverity, make_diagnostic
 from hedron_core.typing_aliases import JsonValue
+from hedron_core.typing_support import dynamic_attribute
 
 __all__ = [
     "EXPLANATION_SCHEMA",
@@ -134,8 +135,8 @@ def _surfaces_from_bundle(bundle: FeatureBundle) -> list[dict[str, JsonValue]]:
         return declared
     out: list[dict[str, JsonValue]] = []
     for item in bundle.views:
-        ident = getattr(item, "logical_id", None) or getattr(item, "__name__", None)
-        path = getattr(item, "path", None)
+        ident = dynamic_attribute(item, "logical_id") or dynamic_attribute(item, "__name__")
+        path = dynamic_attribute(item, "path")
         out.append(
             _surface_entry(
                 str(ident) if ident is not None else "view",
@@ -145,8 +146,8 @@ def _surfaces_from_bundle(bundle: FeatureBundle) -> list[dict[str, JsonValue]]:
             )
         )
     for item in bundle.commands:
-        ident = getattr(item, "logical_id", None) or getattr(item, "__name__", None)
-        path = getattr(item, "path", None)
+        ident = dynamic_attribute(item, "logical_id") or dynamic_attribute(item, "__name__")
+        path = dynamic_attribute(item, "path")
         out.append(
             _surface_entry(
                 str(ident) if ident is not None else "command",
@@ -161,8 +162,8 @@ def _surfaces_from_bundle(bundle: FeatureBundle) -> list[dict[str, JsonValue]]:
 def _routes_from_bundle(bundle: FeatureBundle) -> list[dict[str, JsonValue]]:
     routes: list[dict[str, JsonValue]] = []
     for item in (*bundle.views, *bundle.commands):
-        path = getattr(item, "path", None)
-        ident = getattr(item, "logical_id", None) or getattr(item, "__name__", None)
+        path = dynamic_attribute(item, "path")
+        ident = dynamic_attribute(item, "logical_id") or dynamic_attribute(item, "__name__")
         if path is None and ident is None:
             continue
         routes.append(
@@ -198,13 +199,14 @@ def _source_from_bundle(bundle: FeatureBundle) -> dict[str, JsonValue]:
 def _effects_from_bundle(bundle: FeatureBundle) -> list[dict[str, JsonValue]]:
     effects: list[dict[str, JsonValue]] = []
     for item in (*bundle.views, *bundle.commands):
-        declared = getattr(item, "__hedron_effects__", None)
+        declared = dynamic_attribute(item, "__hedron_effects__")
         if declared is None:
             continue
         effects.append(
             {
                 "handle": str(
-                    getattr(item, "logical_id", None) or getattr(item, "__name__", "handle")
+                    dynamic_attribute(item, "logical_id")
+                    or dynamic_attribute(item, "__name__", "handle")
                 ),
                 "effects": str(type(declared).__name__),
             }

@@ -44,12 +44,12 @@ def set_cache_backend(backend: CacheBackend) -> None:
         )
         raise RuntimeError(
             "InMemoryCacheBackend is not allowed under HEDRON_ENV=production. "
-            "Call set_cache_backend(...) with an external store, or unset production "
-            "for local demos."
+            + "Call set_cache_backend(...) with an external store, or unset production "
+            + "for local demos."
         )
     scoped = _scoped_backend.get()
     if scoped is not None:
-        _scoped_backend.set(backend)
+        _ignored = _scoped_backend.set(backend)
     else:
         _backend = backend
     if is_production_env():

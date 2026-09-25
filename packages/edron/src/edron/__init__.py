@@ -1,6 +1,6 @@
 """Edron: a class-oriented authoring facade for Hedron."""
 
-__version__ = "1.1.1"
+__version__ = "1.1.2"
 
 from edron.app import App
 from edron.browser import (

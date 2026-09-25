@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import ast
 from dataclasses import dataclass, field
-from typing import Any
+
+from typing_extensions import override
+
+from hedron_core.typing_support import ast_literal_value
 
 
 @dataclass
@@ -15,14 +18,14 @@ class ResolvedCall:
     decorator: bool = False
     assigned_to: str | None = None
     in_sidebar: bool = False
-    args_summary: dict[str, Any] = field(default_factory=dict[str, Any])
+    args_summary: dict[str, object] = field(default_factory=dict[str, object])
 
 
-def _literal(node: ast.AST | None) -> Any:
+def _literal(node: ast.AST | None) -> object:
     if node is None:
         return None
     try:
-        return ast.literal_eval(node)
+        return ast_literal_value(node)
     except (ValueError, TypeError):
         if isinstance(node, ast.Name):
             return f"<name:{node.id}>"
@@ -31,8 +34,8 @@ def _literal(node: ast.AST | None) -> Any:
         return f"<expr:{type(node).__name__}>"
 
 
-def _summarize_call(call: ast.Call) -> dict[str, Any]:
-    summary: dict[str, Any] = {}
+def _summarize_call(call: ast.Call) -> dict[str, object]:
+    summary: dict[str, object] = {}
     for index, arg in enumerate(call.args):
         summary[f"arg{index}"] = _literal(arg)
     for kw in call.keywords:
@@ -64,12 +67,14 @@ class StreamlitResolver(ast.NodeVisitor):
         self._assign_target: str | None = None
         self._sidebar_depth = 0
 
+    @override
     def visit_Import(self, node: ast.Import) -> None:
         for alias in node.names:
             if alias.name == "streamlit":
                 self.module_aliases[alias.asname or "streamlit"] = "streamlit"
         self.generic_visit(node)
 
+    @override
     def visit_ImportFrom(self, node: ast.ImportFrom) -> None:
         if node.module == "streamlit":
             for alias in node.names:
@@ -77,6 +82,7 @@ class StreamlitResolver(ast.NodeVisitor):
                 self.from_imports[local] = f"st.{alias.name}"
         self.generic_visit(node)
 
+    @override
     def visit_Assign(self, node: ast.Assign) -> None:
         # Track simple aliasing: st = streamlit / ui = st
         if len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):
@@ -93,6 +99,7 @@ class StreamlitResolver(ast.NodeVisitor):
             return
         self.generic_visit(node)
 
+    @override
     def visit_AnnAssign(self, node: ast.AnnAssign) -> None:
         if isinstance(node.target, ast.Name) and node.value is not None:
             prev = self._assign_target
@@ -102,10 +109,12 @@ class StreamlitResolver(ast.NodeVisitor):
             return
         self.generic_visit(node)
 
+    @override
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
         self._visit_decorators(node.decorator_list)
         self.generic_visit(node)
 
+    @override
     def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
         self._visit_decorators(node.decorator_list)
         self.generic_visit(node)
@@ -126,6 +135,7 @@ class StreamlitResolver(ast.NodeVisitor):
                 )
             )
 
+    @override
     def visit_Call(self, node: ast.Call) -> None:
         symbol = self._symbol_from_expr(node.func)
         in_sidebar = self._sidebar_depth > 0
@@ -166,6 +176,7 @@ class StreamlitResolver(ast.NodeVisitor):
                 )
         self.generic_visit(node)
 
+    @override
     def visit_With(self, node: ast.With) -> None:
         entered = 0
         for item in node.items:

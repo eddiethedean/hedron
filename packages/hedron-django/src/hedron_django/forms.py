@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable, Mapping
-from typing import Literal, cast
+from typing import Literal, Protocol, cast
 
 from django.forms import BaseForm, BaseFormSet, BoundField
 from django.http import HttpRequest
@@ -25,6 +25,7 @@ from hedron_core import (
 from hedron_core.component import NodeLike
 from hedron_core.interaction import InteractionResult
 from hedron_core.security import TrustedHtml
+from hedron_core.typing_support import dynamic_attribute
 
 __all__ = [
     "csrf_hidden_input",
@@ -36,6 +37,21 @@ __all__ = [
 ]
 
 _TextType = Literal["text", "email", "password", "search", "tel", "url"]
+
+
+class _FieldWithWidget(Protocol):
+    widget: object
+
+
+class _BoundFieldWithTypedWidget(Protocol):
+    field: _FieldWithWidget
+
+
+class _BoundFieldWithTypedValues(Protocol):
+    label: object
+    name: str
+
+    def value(self) -> object: ...
 
 
 def csrf_hidden_input(request: HttpRequest) -> TrustedHtml:
@@ -53,8 +69,8 @@ def csrf_hidden_input(request: HttpRequest) -> TrustedHtml:
 
 
 def _widget_kind(bound: BoundField) -> str:
-    widget = bound.field.widget
-    input_type = getattr(widget, "input_type", None)
+    widget = cast(_BoundFieldWithTypedWidget, bound).field.widget
+    input_type = dynamic_attribute(widget, "input_type")
     name = type(widget).__name__.lower()
     if "radioselect" in name or "radio" in name:
         return "radio"
@@ -111,8 +127,10 @@ def form_fields(form: BaseForm) -> list[NodeLike]:
             nodes.append(html.raw(TrustedHtml.reviewed(str(bound), source="django.forms.hidden")))
             continue
         name = bound.html_name
-        label = str(bound.label) if bound.label else bound.name
-        value = bound.value()
+        typed_bound = cast(_BoundFieldWithTypedValues, bound)
+        label_value = typed_bound.label
+        label = str(label_value) if label_value else typed_bound.name
+        value = typed_bound.value()
         str_value = "" if value is None else str(value)
         error = "; ".join(str(e) for e in bound.errors) or None
         kind = _widget_kind(bound)

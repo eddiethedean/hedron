@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import importlib
 from collections.abc import Callable, Mapping, Sequence
-from typing import Any, Generic, Protocol, TypeVar, cast
+from typing import Generic, Protocol, TypeVar, cast
 
 from typing_extensions import TypeIs
 
@@ -34,12 +34,12 @@ class _DaskFrame(Protocol):
     def __getitem__(self, key: object) -> _DaskFrame: ...
 
     @property
-    def shape(self) -> tuple[Any, ...]: ...
+    def shape(self) -> tuple[object, ...]: ...
 
-    def head(self, n: int | float, npartitions: int = ...) -> Any: ...
+    def head(self, n: int | float, npartitions: int = ...) -> object: ...
 
 
-def require_dask() -> Any:
+def require_dask() -> object:
     try:
         return importlib.import_module("dask.dataframe")
     except ImportError as exc:
@@ -87,7 +87,7 @@ class DaskDataSource(Generic[T]):
         allowlisted_projection_fields: frozenset[str] | None = None,
         search_fields: Sequence[str] = (),
     ) -> None:
-        require_dask()
+        _ignored = require_dask()
         self._frame = cast(_DaskFrame, frame)
         self._schema = tuple(schema)
         self._secret_fields = frozenset(column.name for column in self._schema if column.secret)
@@ -180,12 +180,12 @@ class DaskDataSource(Generic[T]):
             ascending = [direction == "asc" for _, direction in q.sort]
             frame = frame.sort_values(by=by, ascending=ascending)
         for name, value in q.filters.items():
-            column: Any = frame[name]
+            column: object = frame[name]
             frame = frame[column == value]
         if q.search:
-            mask: Any = None
+            mask: object = None
             for name in self._search_fields:
-                column: Any = frame[name]
+                column: object = frame[name]
                 candidate = column.astype(str).str.contains(
                     q.search, case=False, na=False, regex=False
                 )
@@ -194,7 +194,7 @@ class DaskDataSource(Generic[T]):
                 frame = frame[mask]
         if q.projection:
             frame = frame[list(q.projection)]
-        shape0: Any = frame.shape[0]
+        shape0: object = frame.shape[0]
         total = int(shape0.compute() if hasattr(shape0, "compute") else shape0)
         # Dask DataFrame.iloc does not support positional row slices; take a bounded
         # head window then slice in pandas (still capped by max_compute_rows).
@@ -202,7 +202,7 @@ class DaskDataSource(Generic[T]):
         if window <= 0:
             records: list[dict[str, object]] = []
         else:
-            head: Any = frame.head(window, npartitions=-1)
+            head: object = frame.head(window, npartitions=-1)
             if hasattr(head, "compute"):
                 head = head.compute()
             raw_records = head.iloc[q.offset : q.offset + q.limit].to_dict(orient="records")

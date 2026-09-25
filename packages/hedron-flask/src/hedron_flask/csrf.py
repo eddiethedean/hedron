@@ -3,17 +3,30 @@
 from __future__ import annotations
 
 import secrets
-from collections.abc import Sequence
-from typing import TYPE_CHECKING, cast
+from collections.abc import Mapping, Sequence
+from typing import TYPE_CHECKING, Protocol, cast
 
+from flask import current_app
 from werkzeug.exceptions import Forbidden
 
 from hedron_core.csrf import tokens_match
 from hedron_core.csrf_strategy import DoubleSubmitCookieCsrf
 from hedron_core.security_policy import SecurityPolicy, SecurityProfile
+from hedron_core.typing_support import dynamic_attribute
 
 if TYPE_CHECKING:
     from flask import Request, Response
+
+
+class _FlaskAppLike(Protocol):
+    config: Mapping[str, object]
+    extensions: Mapping[str, object]
+
+
+class _FlaskRequestLike(Protocol):
+    environ: Mapping[str, object]
+    remote_addr: str | None
+
 
 __all__ = [
     "assert_flask_csrf_strategy",
@@ -42,7 +55,7 @@ def assert_flask_csrf_strategy(policy: SecurityPolicy) -> None:
     if strategy is None:
         raise ValueError(
             "Flask CSRF is enabled but no CSRF strategy is configured; "
-            "use DoubleSubmitCookieCsrf or set csrf_enabled=False."
+            + "use DoubleSubmitCookieCsrf or set csrf_enabled=False."
         )
     if isinstance(strategy, DoubleSubmitCookieCsrf):
         return
@@ -51,7 +64,7 @@ def assert_flask_csrf_strategy(policy: SecurityPolicy) -> None:
         return
     raise ValueError(
         "Flask CSRF only supports DoubleSubmitCookieCsrf (or csrf_enabled=False); "
-        f"got {type(strategy).__name__}. Use the FastAPI host for SessionTokenCsrf."
+        + f"got {type(strategy).__name__}. Use the FastAPI host for SessionTokenCsrf."
     )
 
 
@@ -68,7 +81,7 @@ def csrf_token_for_request(
         if strategy is None:
             raise ValueError(
                 "Flask CSRF is enabled but no CSRF strategy is configured; "
-                "use DoubleSubmitCookieCsrf or set csrf_enabled=False."
+                + "use DoubleSubmitCookieCsrf or set csrf_enabled=False."
             )
         assert_flask_csrf_strategy(policy)
         cookie_name = getattr(strategy, "cookie_name", cookie_name) or cookie_name
@@ -89,26 +102,25 @@ def _forwarded_proto_https(request: Request) -> bool:
     return first == "https"
 
 
-def _trusted_proxy_peers(request: Request) -> set[str]:
+def _trusted_proxy_peers() -> set[str]:
     """Peers allowed to supply ``X-Forwarded-*`` (same allowlist model as FastAPI)."""
     import os
 
     peers: set[str] = set()
     raw_env = os.environ.get("HEDRON_TRUSTED_PROXIES", "")
     peers.update(part.strip() for part in raw_env.split(",") if part.strip())
-    app = getattr(request, "app", None)
-    if app is not None:
-        configured = app.config.get("HEDRON_TRUSTED_PROXIES") if hasattr(app, "config") else None
-        if isinstance(configured, str):
-            peers.update(part.strip() for part in configured.split(",") if part.strip())
-        elif isinstance(configured, (list, tuple, set, frozenset)):
-            configured_values = cast(Sequence[object], configured)
-            peers.update(str(item).strip() for item in configured_values if str(item).strip())
-        extension = app.extensions.get("hedron") if hasattr(app, "extensions") else None
-        ext_peers = getattr(extension, "trusted_peers", None) if extension is not None else None
-        if isinstance(ext_peers, (list, tuple, set, frozenset)):
-            extension_values = cast(Sequence[object], ext_peers)
-            peers.update(str(item).strip() for item in extension_values if str(item).strip())
+    app = cast(_FlaskAppLike, cast(object, current_app))
+    configured = app.config.get("HEDRON_TRUSTED_PROXIES")
+    if isinstance(configured, str):
+        peers.update(part.strip() for part in configured.split(",") if part.strip())
+    elif isinstance(configured, (list, tuple, set, frozenset)):
+        configured_values = cast(Sequence[object], configured)
+        peers.update(str(item).strip() for item in configured_values if str(item).strip())
+    extension = app.extensions.get("hedron")
+    ext_peers = dynamic_attribute(extension, "trusted_peers") if extension is not None else None
+    if isinstance(ext_peers, (list, tuple, set, frozenset)):
+        extension_values = cast(Sequence[object], ext_peers)
+        peers.update(str(item).strip() for item in extension_values if str(item).strip())
     return peers
 
 
@@ -116,11 +128,12 @@ def _forwarded_proto_https_trusted(request: Request) -> bool:
     """Honor ``X-Forwarded-Proto: https`` only from allowlisted proxy peers."""
     if not _forwarded_proto_https(request):
         return False
-    peers = _trusted_proxy_peers(request)
+    peers = _trusted_proxy_peers()
     if not peers:
         return False
     # Werkzeug exposes remote_addr; environ REMOTE_ADDR is the TCP peer.
-    peer = getattr(request, "remote_addr", None) or request.environ.get("REMOTE_ADDR")
+    request_view = cast(_FlaskRequestLike, request)
+    peer = request_view.remote_addr or request_view.environ.get("REMOTE_ADDR")
     return peer is not None and peer in peers
 
 

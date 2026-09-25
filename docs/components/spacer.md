@@ -38,7 +38,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```text
-Spacer(*, size: 'str' = '1rem', axis: "Literal['block', 'inline', 'both']" = 'block', id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
+Spacer(*, size: 'str' = '1rem', axis: "Literal['block', 'inline', 'both']" = 'block', id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |

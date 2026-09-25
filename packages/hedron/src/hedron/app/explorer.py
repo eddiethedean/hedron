@@ -6,11 +6,13 @@ import logging
 import warnings
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Literal, cast
+from typing import Literal, cast
 
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status
 from fastapi.params import Depends as DependsParam
 from starlette.requests import Request
+
+from hedron._fastapi_depends import fastapi_depends
 
 ExplorerMode = Literal["off", "development", "secured"]
 logger = logging.getLogger("hedron")
@@ -27,7 +29,7 @@ def _settings_explorer_hint() -> str | None:
             return None
         data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
         tool_value = data.get("tool")
-        tool = cast(dict[str, Any], tool_value) if isinstance(tool_value, dict) else {}
+        tool = cast(dict[str, object], tool_value) if isinstance(tool_value, dict) else {}
         hedron = tool.get("hedron")
         if not isinstance(hedron, dict) or "explorer" not in hedron:
             return None
@@ -59,7 +61,7 @@ def resolve_explorer_mode(
     if is_prod and mode == "development":
         warnings.warn(
             "Explorer development mode is disabled in production; "
-            "use explorer='secured' with explorer_dependencies, or explorer='off'.",
+            + "use explorer='secured' with explorer_dependencies, or explorer='off'.",
             UserWarning,
             stacklevel=warning_stacklevel,
         )
@@ -89,7 +91,7 @@ def _maybe_mount_explorer(
                     detail="Explorer requires authentication",
                 )
 
-        deps.append(Depends(_require_authenticated))
+        deps.append(fastapi_depends(_require_authenticated))
     app.include_router(
         explorer_router(),
         prefix="/hedron-explorer",
@@ -98,7 +100,7 @@ def _maybe_mount_explorer(
     try:
         from hedron_explorer.services.diff import snapshot_diff_baseline
 
-        snapshot_diff_baseline(app)
+        _ignored = snapshot_diff_baseline(app)
     except ImportError:
         logger.debug("hedron-explorer diff snapshot unavailable")
 

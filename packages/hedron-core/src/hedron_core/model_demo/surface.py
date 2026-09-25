@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any
 
 from hedron_core.codes import HED_DEMO_0001, HED_DEMO_0002, HED_DEMO_0003
 from hedron_core.diagnostics import error
@@ -30,8 +29,8 @@ class InferenceInterface:
     allow_clear: bool = True
     allow_stop: bool = True
     component_overrides: Mapping[str, str] = field(default_factory=dict[str, str])
-    input_schema: Mapping[str, Any] = field(default_factory=dict[str, Any])
-    output_schema: Mapping[str, Any] = field(default_factory=dict[str, Any])
+    input_schema: Mapping[str, object] = field(default_factory=dict[str, object])
+    output_schema: Mapping[str, object] = field(default_factory=dict[str, object])
     http_exposed: bool = False
     mcp_exposed: bool = False
     resource_policy: str | None = None
@@ -132,7 +131,7 @@ class ModelDemo:
             component_overrides=component_overrides,
         )
 
-    def build_from_callable(self, fn: Callable[..., Any], **_: Any) -> InferenceInterface:
+    def build_from_callable(self, fn: Callable[..., object], **_: object) -> InferenceInterface:
         """Fail closed — bare callables are never auto-published."""
         raise ModelDemoError(
             "Cannot build InferenceInterface from an unregistered callable",
@@ -154,8 +153,8 @@ class ModelDemo:
         source_id: str,
         source_kind: str,
         interface_id: str,
-        input_schema: Mapping[str, Any],
-        output_schema: Mapping[str, Any],
+        input_schema: Mapping[str, object],
+        output_schema: Mapping[str, object],
         side_effects: tuple[str, ...],
         authorization_required: bool,
         resource_policy: str | None,

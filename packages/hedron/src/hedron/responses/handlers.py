@@ -10,6 +10,7 @@ from starlette.responses import Response
 
 from hedron.htmx import approved_headers, is_htmx_request
 from hedron.responses.render import render_component_response
+from hedron_core.app_state import request_state, state_value, validation_errors
 from hedron_core.builtins.content import Text
 from hedron_core.builtins.surfaces import Alert
 from hedron_core.component import NodeLike
@@ -26,7 +27,7 @@ __all__ = [
 
 def validation_error_fragment(exc: RequestValidationError) -> NodeLike:
     items: list[NodeLike] = []
-    for err in exc.errors():
+    for err in validation_errors(exc):
         loc = ".".join(str(p) for p in err.get("loc", ()) if p != "body")
         msg = err.get("msg", "Invalid value")
         items.append(html.li(f"{loc}: {msg}" if loc else str(msg)))
@@ -88,7 +89,7 @@ def install_interaction_handlers(app: FastAPI) -> None:
             status_code=422,
             extra_headers=_policy_headers(policy),
             authenticated=bool(getattr(request.state, "hedron_authenticated", False)),
-            policy=getattr(request.app.state, "hedron_security", None),
+            policy=state_value(request_state(request), "hedron_security"),
             fragment_regions=chrome or None,
             allow_undeclared_targets=False,
             _authorized_htmx_target=authorized,
@@ -107,11 +108,11 @@ def install_interaction_handlers(app: FastAPI) -> None:
             status_code=exc.status_code,
             extra_headers=_policy_headers(policy),
             authenticated=bool(getattr(request.state, "hedron_authenticated", False)),
-            policy=getattr(request.app.state, "hedron_security", None),
+            policy=state_value(request_state(request), "hedron_security"),
             fragment_regions=chrome or None,
             allow_undeclared_targets=False,
             _authorized_htmx_target=authorized,
         )
 
-    app.exception_handler(RequestValidationError)(validation_handler)
-    app.exception_handler(StarletteHTTPException)(http_handler)
+    _ignored = app.exception_handler(RequestValidationError)(validation_handler)
+    _ignored = app.exception_handler(StarletteHTTPException)(http_handler)

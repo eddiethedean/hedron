@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing_extensions import override
+
 from hedron_core.diagnostics import error
 
 
@@ -9,8 +11,8 @@ class TrustedHtml:
     """Immutable raw-markup value created only at an explicit trust boundary."""
 
     __slots__ = ("_value", "_source")
-    _value: str
-    _source: str
+    _value: str  # pyright: ignore[reportUninitializedInstanceVariable]  # initialized by reviewed()
+    _source: str  # pyright: ignore[reportUninitializedInstanceVariable]  # initialized by reviewed()
 
     def __init__(self, *args: object, **kwargs: object) -> None:
         raise TypeError("TrustedHtml has no public constructor; use TrustedHtml.reviewed(...)")
@@ -56,16 +58,20 @@ class TrustedHtml:
     def source(self) -> str:
         return self._source
 
+    @override
     def __str__(self) -> str:
         return f"TrustedHtml(source={self.source!r})"
 
+    @override
     def __repr__(self) -> str:
         return f"TrustedHtml.reviewed(..., source={self.source!r})"
 
+    @override
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, TrustedHtml):
             return NotImplemented
         return self.value == other.value and self.source == other.source
 
+    @override
     def __hash__(self) -> int:
         return hash(("TrustedHtml", self.value, self.source))

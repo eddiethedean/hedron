@@ -95,7 +95,7 @@ def _resolve_jailed_file(path: str | Path, *, root: Path) -> Path:
     root_resolved = Path(root).resolve()
     file_path = Path(path).resolve()
     try:
-        file_path.relative_to(root_resolved)
+        _ignored = file_path.relative_to(root_resolved)
     except ValueError as exc:
         raise PermissionError("Download path escapes authorized root") from exc
     if not file_path.is_file():
@@ -125,7 +125,7 @@ def _content_disposition(disposition: Literal["inline", "attachment"], filename:
 def _iter_file_range(path: Path, start: int, length: int) -> Iterator[bytes]:
     remaining = length
     with path.open("rb") as handle:
-        handle.seek(start)
+        _ignored = handle.seek(start)
         while remaining > 0:
             chunk = handle.read(min(_RANGE_CHUNK_SIZE, remaining))
             if not chunk:

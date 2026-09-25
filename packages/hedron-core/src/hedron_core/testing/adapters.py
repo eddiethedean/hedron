@@ -6,9 +6,12 @@ clients and assertions remain available beside these helpers.
 
 from __future__ import annotations
 
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import Callable, Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, Protocol, cast, runtime_checkable
+from importlib import import_module
+from typing import Protocol, cast, runtime_checkable
+
+from hedron_core.typing_support import dynamic_attribute
 
 __all__ = [
     "AdapterAppFixture",
@@ -63,6 +66,94 @@ class AdapterAppFixture(Protocol):
         headers: Mapping[str, str] | None = None,
         cookies: Mapping[str, str] | None = None,
     ) -> AdapterResponse: ...
+
+
+class _DjangoCookie(Protocol):
+    value: str
+
+
+class _DjangoCookieJar(Protocol):
+    def __iter__(self) -> Iterator[str]: ...
+
+    def get(self, key: str) -> _DjangoCookie | str | None: ...
+
+    def __setitem__(self, key: str, value: str) -> None: ...
+
+
+class _DjangoResponse(Protocol):
+    status_code: int
+    content: bytes
+    headers: Mapping[str, str]
+
+    def get_data(self, *, as_text: bool = ...) -> str: ...
+
+
+class _DjangoClient(Protocol):
+    cookies: _DjangoCookieJar
+
+    def get(self, path: str, *, headers: Mapping[str, str]) -> _DjangoResponse: ...
+
+    def post(
+        self,
+        path: str,
+        *,
+        data: Mapping[str, str],
+        headers: Mapping[str, str],
+        **extra: str,
+    ) -> _DjangoResponse: ...
+
+
+class _FastAPIApp(Protocol):
+    interactions: object
+    hedron_app_id: str
+
+
+class _FastAPIResponse(Protocol):
+    status_code: int
+    text: str
+    cookies: Mapping[str, str]
+    headers: Mapping[str, str]
+
+
+class _FastAPITestClient(Protocol):
+    def get(self, path: str, *, headers: Mapping[str, str]) -> _FastAPIResponse: ...
+
+    def post(
+        self,
+        path: str,
+        *,
+        data: Mapping[str, str],
+        headers: Mapping[str, str],
+    ) -> _FastAPIResponse: ...
+
+
+class _FastAPITestClientFactory(Protocol):
+    def __call__(self, app: object) -> _FastAPITestClient: ...
+
+
+class _FlaskResponse(Protocol):
+    status_code: int
+    headers: Mapping[str, str]
+
+    def get_data(self, *, as_text: bool = ...) -> str: ...
+
+
+class _FlaskTestClient(Protocol):
+    def set_cookie(self, key: str, value: str) -> None: ...
+
+    def get(self, path: str, *, headers: Mapping[str, str]) -> _FlaskResponse: ...
+
+    def post(
+        self,
+        path: str,
+        *,
+        data: Mapping[str, str],
+        headers: Mapping[str, str],
+    ) -> _FlaskResponse: ...
+
+
+class _FlaskApp(Protocol):
+    def test_client(self) -> _FlaskTestClient: ...
 
 
 def assert_html_contains(response: AdapterResponse, needle: str) -> None:
@@ -225,12 +316,11 @@ class _ClientFixture:
         return self._post(path, data=data or {}, headers=headers or {}, cookies=cookies or {})
 
 
-def fastapi_fixture(app: Any) -> AdapterAppFixture:
-    # importlib keeps hedron-core free of static FastAPI imports (env isolation).
-    import importlib
-
-    testclient = importlib.import_module("fastapi.testclient")
-    client = testclient.TestClient(app)
+def fastapi_fixture(app: _FastAPIApp) -> AdapterAppFixture:
+    # Keep this optional dependency inside the adapter entry point.
+    testclient_module: object = import_module("fastapi.testclient")
+    factory = cast(_FastAPITestClientFactory, dynamic_attribute(testclient_module, "TestClient"))
+    client = factory(app)
 
     def _headers(headers: Mapping[str, str], cookies: Mapping[str, str]) -> dict[str, str]:
         merged = dict(headers)
@@ -266,7 +356,7 @@ def fastapi_fixture(app: Any) -> AdapterAppFixture:
     return _ClientFixture("fastapi", get, post, catalog)
 
 
-def flask_fixture(app: Any) -> AdapterAppFixture:
+def flask_fixture(app: _FlaskApp) -> AdapterAppFixture:
     client = app.test_client()
 
     def get(path: str, headers: Mapping[str, str], cookies: Mapping[str, str]) -> AdapterResponse:
@@ -301,17 +391,19 @@ def flask_fixture(app: Any) -> AdapterAppFixture:
     return _ClientFixture("flask", get, post)
 
 
-def django_fixture(client: Any) -> AdapterAppFixture:
+def django_fixture(client: _DjangoClient) -> AdapterAppFixture:
     """Wrap a Django test client."""
 
     def _django_cookies() -> dict[str, str]:
-        jar = getattr(client, "cookies", None)
-        if jar is None:
-            return {}
         out: dict[str, str] = {}
-        for key in jar:
-            morsel = jar.get(key)
-            value = getattr(morsel, "value", morsel)
+        for key in client.cookies:
+            morsel = client.cookies.get(key)
+            if isinstance(morsel, str):
+                value = morsel
+            elif morsel is None:
+                value = ""
+            else:
+                value = morsel.value
             out[str(key)] = str(value)
         return out
 

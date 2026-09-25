@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from importlib import resources
 from pathlib import Path
-from typing import Any, cast
+from typing import cast
 
 from pydantic import BaseModel, ConfigDict
 
@@ -32,11 +32,11 @@ class FixtureInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     kind: str
-    tree: dict[str, Any] | None = None
+    tree: dict[str, object] | None = None
     text: str | None = None
     attr: str | None = None
     logical_id: str | None = None
-    artifact: dict[str, Any] | None = None
+    artifact: dict[str, object] | None = None
     expect_error: bool = False
 
 
@@ -79,13 +79,13 @@ def load_bundled_fixtures() -> list[ConformanceFixture]:
         data = json.loads(path.read_text(encoding="utf-8"))
         if isinstance(data, list):
             fixtures.extend(
-                ConformanceFixture.model_validate(item) for item in cast(list[Any], data)
+                ConformanceFixture.model_validate(item) for item in cast(list[object], data)
             )
         else:
             fixtures.append(ConformanceFixture.model_validate(data))
     return fixtures
 
 
-def fixture_schema_dict() -> dict[str, Any]:
+def fixture_schema_dict() -> dict[str, object]:
     """JSON Schema for ConformanceFixture (draft-friendly export)."""
     return ConformanceFixture.model_json_schema()

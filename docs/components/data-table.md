@@ -49,7 +49,7 @@ DataTable(rows=None, *, row_model=None, columns=None, page=None, query=None, cap
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `rows` | `Any` | Materialized mappings or model rows. |
+| `rows` | `object` | Materialized mappings or model rows. |
 | `row_model` | `type[Model] | None` | Typed column source. |
 | `columns` | `Sequence[Column] | None` | Explicit column configuration. |
 | `page` | `DataPage | None` | Pre-fetched bounded page with total and version metadata. |

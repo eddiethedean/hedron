@@ -38,7 +38,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```text
-ClipboardCopy(text: 'str', *, label: 'str' = 'Copy', mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
+ClipboardCopy(text: 'str', *, label: 'str' = 'Copy', mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |

@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-import argparse
 import difflib
 import json
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Protocol
 
 from edron.migrate.analyze import analyze_source
 from edron.migrate.codemod import codemod_file
@@ -17,31 +16,60 @@ from hedron.migrate.findings import plan_to_diagnostics
 from hedron_core.diagnostics import DiagnosticSeverity, meets_severity_threshold
 
 
-def build_migrate_parser(subparsers: Any) -> None:
+class _Parser(Protocol):
+    def add_argument(self, *args: str, **kwargs: object) -> object: ...
+
+    def add_subparsers(self, *, dest: str) -> _Subparsers: ...
+
+    def set_defaults(self, **kwargs: object) -> None: ...
+
+
+class _Subparsers(Protocol):
+    def add_parser(self, name: str, *, help: str) -> _Parser: ...
+
+
+class _StreamlitArgs(Protocol):
+    analyze_only: bool
+    fail_on: str
+    format: str
+    out: str | None
+    project_root: str | None
+    python_version: str
+    source: str
+
+
+class _CodemodArgs(Protocol):
+    format: str
+    out: str | None
+    preview: bool
+    source: str
+
+
+def build_migrate_parser(subparsers: _Subparsers) -> None:
     migrate = subparsers.add_parser("migrate", help="migrate a Streamlit app to Edron")
     commands = migrate.add_subparsers(dest="migrate_command")
     streamlit = commands.add_parser("streamlit", help="analyze and generate an Edron project")
-    streamlit.add_argument("source")
-    streamlit.add_argument("--out", default=None)
-    streamlit.add_argument("--project-root", default=None)
-    streamlit.add_argument("--analyze-only", action="store_true")
-    streamlit.add_argument("--format", choices=("text", "json", "sarif"), default="text")
-    streamlit.add_argument(
+    _ignored = streamlit.add_argument("source")
+    _ignored = streamlit.add_argument("--out", default=None)
+    _ignored = streamlit.add_argument("--project-root", default=None)
+    _ignored = streamlit.add_argument("--analyze-only", action="store_true")
+    _ignored = streamlit.add_argument("--format", choices=("text", "json", "sarif"), default="text")
+    _ignored = streamlit.add_argument(
         "--python-version", choices=("3.10", "3.11", "3.12", "3.13", "3.14"), default="3.12"
     )
-    streamlit.add_argument(
+    _ignored = streamlit.add_argument(
         "--fail-on", choices=("information", "warning", "error"), default="error"
     )
     streamlit.set_defaults(func=run_migrate_streamlit_args)
     codemod = commands.add_parser("codemod", help="preview or write safe Edron syntax codemods")
-    codemod.add_argument("source")
-    codemod.add_argument("--out", default=None)
-    codemod.add_argument("--preview", action="store_true")
-    codemod.add_argument("--format", choices=("text", "json"), default="text")
+    _ignored = codemod.add_argument("source")
+    _ignored = codemod.add_argument("--out", default=None)
+    _ignored = codemod.add_argument("--preview", action="store_true")
+    _ignored = codemod.add_argument("--format", choices=("text", "json"), default="text")
     codemod.set_defaults(func=run_codemod_args)
 
 
-def run_migrate_streamlit_args(args: argparse.Namespace) -> int:
+def run_migrate_streamlit_args(args: _StreamlitArgs) -> int:
     return run_migrate_streamlit(
         source=Path(args.source),
         out=Path(args.out) if args.out else None,
@@ -69,7 +97,7 @@ def run_migrate_streamlit(
     plan = analyze_source(source, project_root=project_root, python_version=python_version)
     diagnostics = plan_to_diagnostics(plan)
     if plan.tool_errors:
-        sys.stdout.write(format_report(plan, fmt=fmt))
+        _ignored = sys.stdout.write(format_report(plan, fmt=fmt))
         return 1
     generated: dict[str, str] = {}
     if not analyze_only:
@@ -78,14 +106,14 @@ def run_migrate_streamlit(
         except (OSError, RuntimeError, ValueError) as exc:
             print(str(exc), file=sys.stderr)
             return 1
-    sys.stdout.write(format_report(plan, fmt=fmt, generated_files=generated or None))
+    _ignored = sys.stdout.write(format_report(plan, fmt=fmt, generated_files=generated or None))
     if meets_severity_threshold(diagnostics, DiagnosticSeverity(fail_on)):
         print("REVIEW REQUIRED", file=sys.stderr)
         return 2
     return 0
 
 
-def run_codemod_args(args: argparse.Namespace) -> int:
+def run_codemod_args(args: _CodemodArgs) -> int:
     source = Path(args.source)
     result = codemod_file(
         source, Path(args.out) if args.out and not args.preview else None, preview=args.preview
@@ -111,7 +139,7 @@ def run_codemod_args(args: argparse.Namespace) -> int:
         for replacement in result.replacements:
             print(
                 f"- {replacement.old} -> {replacement.new} "
-                f"({replacement.line}:{replacement.column})"
+                + f"({replacement.line}:{replacement.column})"
             )
         if args.preview and result.changed:
             original = source.read_text(encoding="utf-8")

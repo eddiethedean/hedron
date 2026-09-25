@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing_extensions import override
+
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
@@ -51,6 +53,7 @@ class FieldText(Component[FieldTextProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         attrs = {
             "data-hedron-abi": str(ABI_VERSION),

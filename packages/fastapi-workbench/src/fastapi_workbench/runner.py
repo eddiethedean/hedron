@@ -12,8 +12,9 @@ import threading
 import webbrowser
 from collections.abc import Mapping, MutableMapping
 from pathlib import Path
-from typing import IO, Any
+from typing import IO
 
+from fastapi_workbench._typing import bound_socket_port, dynamic_attribute
 from fastapi_workbench.codes import FWB_0002, FWB_0003, FWB_0004, FWB_0005, FWB_0009
 from fastapi_workbench.config import ResolvedDeployment, WorkbenchConfig
 from fastapi_workbench.detect import is_workbench_job, rs_server_url
@@ -154,10 +155,10 @@ def discover_rserver_url(*, binary: str, port: int) -> str:
     for reader in readers:
         reader.start()
     try:
-        proc.wait(timeout=10)
+        _ignored = proc.wait(timeout=10)
     except subprocess.TimeoutExpired as exc:
         proc.kill()
-        proc.wait()
+        _ignored = proc.wait()
         for reader in readers:
             reader.join(timeout=1)
         raise WorkbenchError(
@@ -218,7 +219,7 @@ def export_workbench_state(
         RESOLVED_SOURCE_ENV,
         "FASTAPI_WORKBENCH_TRUSTED_PROXIES",
     ):
-        env.pop(name, None)
+        _ignored = env.pop(name, None)
     if resolved.browser_mount:
         env[ROOT_PATH_ENV] = resolved.browser_mount
         env[RESOLVED_MOUNT_ENV] = resolved.browser_mount
@@ -231,7 +232,7 @@ def export_workbench_state(
     env["FASTAPI_WORKBENCH_TRUSTED_PROXIES"] = resolved.forwarded_allow_ips
 
 
-def load_app(target: str, *, factory: bool = False) -> Any:
+def load_app(target: str, *, factory: bool = False) -> object:
     if ":" not in target:
         raise WorkbenchError(
             make_diagnostic(
@@ -252,9 +253,9 @@ def load_app(target: str, *, factory: bool = False) -> Any:
         sys.path.insert(0, cwd)
     try:
         module = importlib.import_module(module_name)
-        obj: Any = module
+        obj: object = module
         for part in attr.split("."):
-            obj = getattr(obj, part)
+            obj = dynamic_attribute(obj, part)
     except (ModuleNotFoundError, AttributeError) as exc:
         raise WorkbenchError(
             make_diagnostic(
@@ -298,7 +299,7 @@ def prepare_app(
     wrap: bool = True,
     apply_environ: bool = True,
     owned_cookie_names: tuple[str, ...] = (),
-) -> tuple[Any, ResolvedDeployment]:
+) -> tuple[object, ResolvedDeployment]:
     cfg = config or WorkbenchConfig(app_target=target)
     resolved = resolve_deployment(
         cfg,
@@ -328,7 +329,7 @@ def prepare_app(
 
 
 def serve(
-    app: Any,
+    app: object,
     resolved: ResolvedDeployment,
     *,
     sock: socket.socket | None = None,
@@ -344,8 +345,8 @@ def serve(
             else f"{resolved.external_origin}/docs"
         )
         with contextlib.suppress(OSError):
-            webbrowser.open(docs)
-    kwargs: dict[str, Any] = {
+            _ignored = webbrowser.open(docs)
+    kwargs: dict[str, object] = {
         "host": resolved.host,
         "proxy_headers": True,
         "forwarded_allow_ips": resolved.forwarded_allow_ips,
@@ -373,7 +374,7 @@ def _assert_supported_topology(resolved: ResolvedDeployment) -> None:
         )
 
 
-def app_from_environ() -> Any:
+def app_from_environ() -> object:
     """Uvicorn worker factory used after parent-side bind/discovery/export."""
     target = os.environ.get(_SUPERVISED_TARGET_ENV, "").strip()
     if not target:
@@ -444,7 +445,7 @@ def _exec_supervised(
     export_workbench_state(resolved)
     # A Workbench runtime may provide a full public URL here. The resolved
     # public base is handed off separately; Uvicorn expects only a path.
-    os.environ.pop("UVICORN_ROOT_PATH", None)
+    _ignored = os.environ.pop("UVICORN_ROOT_PATH", None)
     os.environ[_SUPERVISED_TARGET_ENV] = target
     os.environ[_SUPERVISED_FACTORY_ENV] = "1" if factory else "0"
     sock.set_inheritable(True)
@@ -464,7 +465,7 @@ def run_target(
     initial = resolve_deployment(cfg, environ=env)
     sock = bind_loopback(initial.host, initial.port)
     try:
-        bound_port = int(sock.getsockname()[1])
+        bound_port = bound_socket_port(sock)
         discovered: str | None = None
         if (
             (discover or rs_server_url(env))

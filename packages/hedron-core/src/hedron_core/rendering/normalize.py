@@ -21,6 +21,8 @@ from hedron_core.html import NativeElement, TrustedRawNode
 from hedron_core.models import Props
 from hedron_core.rendering.state import RenderState
 from hedron_core.security import Secret
+from hedron_core.theme_platform import StyleContext
+from hedron_core.typing_support import dynamic_attribute
 
 Normalizer = Callable[[NodeLike, int], tuple[Node, ...]]
 
@@ -155,8 +157,9 @@ class ComponentLifecycleRenderer:
             token = push_render_identity(instance, render_key)
             style_token = None
             try:
-                style_context = getattr(component, "style_context", None)
-                if style_context is not None:
+                style_context_value = dynamic_attribute(component, "style_context")
+                if style_context_value is not None:
+                    style_context = cast(StyleContext, style_context_value)
                     from hedron_core.builtins.style_scope import (
                         current_style_context,
                         push_style_context,
@@ -182,8 +185,8 @@ class ComponentLifecycleRenderer:
                 ),
             )
         finally:
-            state.stack.pop()
-            state.stack_labels.pop()
+            _ignored = state.stack.pop()
+            _ignored = state.stack_labels.pop()
 
 
 class NodeNormalizer:

@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.2] — 2026-09-25
+
+### Changed
+
+- Add narrow stubs for Flask-Login and Flask’s extension registry, and remove inferred `Any` from the adapter.
+
 ## [1.1.1] — 2026-09-18
 
 ### Fixed

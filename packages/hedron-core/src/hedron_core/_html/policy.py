@@ -88,7 +88,7 @@ class HtmlAttributePolicy:
             url_token = tokens[0]
             rest = " ".join(tokens[1:])
             # All candidates go through SafeUrl (fail closed on dangerous schemes).
-            SafeUrl.parse(url_token, purpose=UrlPurpose.ASSET)
+            _ignored = SafeUrl.parse(url_token, purpose=UrlPurpose.ASSET)
             parts.append(f"{url_token} {rest}".strip())
         return ", ".join(parts)
 
@@ -169,7 +169,7 @@ class HtmlAttributePolicy:
                     out[f"aria-{safe_key}"] = av
                 continue
             name = ATTR_ALIASES.get(key, key)
-            self.require_safe_attr_name(str(name))
+            _ignored = self.require_safe_attr_name(str(name))
             lower = name.lower()
             if lower.startswith("x-"):
                 raise error(

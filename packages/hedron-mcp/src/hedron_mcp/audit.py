@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from collections.abc import Mapping, MutableSequence
 from dataclasses import dataclass, field
-from typing import Any, cast
+from typing import cast
 
 _SECRET_KEYS = frozenset(
     {
@@ -22,15 +22,15 @@ _SECRET_KEYS = frozenset(
 _SECRET_RE = re.compile(r"(?i)(password|secret|token|api[_-]?key|bearer)\s*[:=]\s*\S+")
 
 
-def redact_value(value: Any) -> Any:
+def redact_value(value: object) -> object:
     if isinstance(value, Mapping):
-        mapping = cast(Mapping[object, Any], value)
+        mapping = cast(Mapping[object, object], value)
         return {
             str(k): ("[REDACTED]" if str(k).lower() in _SECRET_KEYS else redact_value(v))
             for k, v in mapping.items()
         }
     if isinstance(value, list):
-        items = cast(list[Any], value)
+        items = cast(list[object], value)
         return [redact_value(item) for item in items]
     if isinstance(value, str):
         return _SECRET_RE.sub(r"\1=[REDACTED]", value)
@@ -44,9 +44,9 @@ class McpAuditEvent:
     code: str
     kind: str
     principal: str | None
-    detail: Mapping[str, Any] = field(default_factory=lambda: cast(Mapping[str, Any], {}))
+    detail: Mapping[str, object] = field(default_factory=lambda: cast(Mapping[str, object], {}))
 
-    def as_dict(self) -> dict[str, Any]:
+    def as_dict(self) -> dict[str, object]:
         return {
             "code": self.code,
             "kind": self.kind,
@@ -62,7 +62,7 @@ class McpAuditLog:
     events: MutableSequence[McpAuditEvent] = field(
         default_factory=lambda: cast(MutableSequence[McpAuditEvent], [])
     )
-    sink: Any | None = None
+    sink: object | None = None
 
     def emit(
         self,
@@ -70,7 +70,7 @@ class McpAuditLog:
         code: str,
         kind: str,
         principal: str | None,
-        detail: Mapping[str, Any] | None = None,
+        detail: Mapping[str, object] | None = None,
     ) -> McpAuditEvent:
         event = McpAuditEvent(
             code=code,

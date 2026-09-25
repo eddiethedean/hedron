@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any
 
 from hedron_core.diagnostics import error
 
@@ -61,7 +60,7 @@ def validate_form_contract(contract: Mapping[str, object] | None, *, tag_name: s
             )
 
 
-def form_contract_dict(**kwargs: Any) -> dict[str, object]:
+def form_contract_dict(**kwargs: object) -> dict[str, object]:
     """Build a validated form_contract mapping for registration."""
     contract = dict(kwargs)
     validate_form_contract(contract, tag_name=str(kwargs.get("fallback_tag", "unknown")))

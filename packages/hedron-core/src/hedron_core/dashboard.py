@@ -150,7 +150,7 @@ class InteractionGraph:
                         "that writes the trigger as a target."
                     ),
                 )
-        self._topo_sort(bindings)  # raises on cycles
+        _ignored = self._topo_sort(bindings)  # raises on cycles
 
     def _writers(self, bindings: Mapping[str, DashboardBinding]) -> dict[str, tuple[str, ...]]:
         owners: dict[str, list[str]] = {}

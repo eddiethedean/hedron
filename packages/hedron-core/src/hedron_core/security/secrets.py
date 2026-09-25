@@ -4,12 +4,14 @@ from __future__ import annotations
 
 import re
 from collections.abc import Mapping
-from typing import Any, Generic, TypeVar, cast, get_args, get_origin, overload
+from typing import Generic, TypeVar, cast, overload
 
 from pydantic import GetCoreSchemaHandler, TypeAdapter, ValidationError
 from pydantic_core import core_schema
+from typing_extensions import override
 
 from hedron_core.diagnostics import error
+from hedron_core.typing_support import type_arguments, type_origin
 
 T = TypeVar("T")
 
@@ -22,12 +24,12 @@ def _validate_secret_inner(source_type: object, value: object) -> object:
     Raises:
         HedronError: When pydantic rejects the value for the annotated inner type.
     """
-    args = get_args(source_type)
+    args = type_arguments(source_type)
     if not args:
         return value
     inner = args[0]
-    origin = get_origin(inner) or inner
-    if origin is Any:
+    origin = type_origin(inner) or inner
+    if origin is object:
         return value
     try:
         return TypeAdapter(inner).validate_python(value)
@@ -44,7 +46,7 @@ class Secret(Generic[T]):
     """Typed sensitive value that never appears in public representations."""
 
     __slots__ = ("_value",)
-    _value: T
+    _value: T  # pyright: ignore[reportUninitializedInstanceVariable]  # private constructor is disabled
 
     def __init__(self, value: T) -> None:
         object.__setattr__(self, "_value", value)
@@ -52,18 +54,22 @@ class Secret(Generic[T]):
     def reveal(self) -> T:
         return self._value
 
+    @override
     def __str__(self) -> str:
         return _REDACTED
 
+    @override
     def __repr__(self) -> str:
         return "Secret(***)"
 
+    @override
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Secret):
             return NotImplemented
         other_secret = cast(Secret[object], other)
         return self.reveal() == other_secret.reveal()
 
+    @override
     def __hash__(self) -> int:
         try:
             return hash(("Secret", self.reveal()))
@@ -74,6 +80,7 @@ class Secret(Generic[T]):
     def __getstate__(self) -> dict[str, object]:
         return {"value": _REDACTED}
 
+    @override
     def __setattr__(self, name: str, value: object) -> None:
         raise AttributeError("Secret is immutable")
 
@@ -93,10 +100,13 @@ class Secret(Generic[T]):
             inner = _validate_secret_inner(source_type, value)
             return Secret(inner)
 
+        def serialize(_value: object) -> str:
+            return _REDACTED
+
         return core_schema.no_info_plain_validator_function(
             validate,
             serialization=core_schema.plain_serializer_function_ser_schema(
-                lambda _v: _REDACTED,
+                serialize,
                 info_arg=False,
                 return_schema=core_schema.str_schema(),
             ),

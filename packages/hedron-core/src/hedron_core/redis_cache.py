@@ -6,7 +6,9 @@ import json
 import logging
 import math
 from collections.abc import Iterable
-from typing import Any, Protocol, cast, runtime_checkable
+from typing import Protocol, cast, runtime_checkable
+
+from typing_extensions import override
 
 from hedron_core.cache.backend import CacheBackend, validate_cache_ttl
 
@@ -141,8 +143,8 @@ class RedisCacheBackend(CacheBackend):
         if _keyspace_overlaps(prefix, REDIS_JOB_PREFIX):
             raise ValueError(
                 "RedisCacheBackend prefix must not overlap the Redis job keyspace "
-                f"{REDIS_JOB_PREFIX!r}; got {prefix!r}. Use a dedicated cache prefix "
-                f"(default {REDIS_CACHE_PREFIX!r}) when sharing a Redis client."
+                + f"{REDIS_JOB_PREFIX!r}; got {prefix!r}. Use a dedicated cache prefix "
+                + f"(default {REDIS_CACHE_PREFIX!r}) when sharing a Redis client."
             )
         self._client = client
         self._prefix = prefix
@@ -164,11 +166,13 @@ class RedisCacheBackend(CacheBackend):
             return raw.decode("utf-8")
         return str(raw)
 
-    def get(self, key: str) -> Any | None:
+    @override
+    def get(self, key: str) -> object | None:
         hit, value = self.lookup(key)
         return value if hit else None
 
-    def lookup(self, key: str) -> tuple[bool, Any]:
+    @override
+    def lookup(self, key: str) -> tuple[bool, object]:
         _reject_reserved_cache_key(key)
         raw = self._client.get(self._key(key))
         if raw is None:
@@ -184,6 +188,7 @@ class RedisCacheBackend(CacheBackend):
         except (json.JSONDecodeError, ValueError) as exc:
             raise ValueError(f"Corrupt cache value for {key}") from exc
 
+    @override
     def set(
         self,
         key: str,
@@ -212,13 +217,13 @@ class RedisCacheBackend(CacheBackend):
         if not callable(pipe_factory):
             raise ValueError(
                 "RedisCacheBackend requires a client.pipeline(transaction=True) "
-                "so value SET and tag indexes commit atomically"
+                + "so value SET and tag indexes commit atomically"
             )
         pipe: RedisCachePipelineLike = cast(RedisCachePipelineLike, pipe_factory(transaction=True))
         self._queue_overwrite(
             pipe, key, redis_key, ktags_key, payload, tags=tags, stale=stale, px_ms=px_ms
         )
-        pipe.execute()
+        _ignored = pipe.execute()
 
     def _prior_tags(self, key: str) -> set[str]:
         smembers = getattr(self._client, "smembers", None)
@@ -237,12 +242,12 @@ class RedisCacheBackend(CacheBackend):
     def _queue_srem(self, target: _RedisMutatorLike, tag_key: str, member: str) -> None:
         srem = getattr(target, "srem", None)
         if callable(srem):
-            srem(tag_key, member)
+            _ignored = srem(tag_key, member)
 
     def _queue_delete(self, target: _RedisMutatorLike, redis_key: str) -> None:
         delete = getattr(target, "delete", None)
         if callable(delete):
-            delete(redis_key)
+            _ignored = delete(redis_key)
 
     def _drop_membership(self, key: str, prior: set[str]) -> None:
         redis_key = self._key(key)
@@ -253,7 +258,7 @@ class RedisCacheBackend(CacheBackend):
                 RedisCachePipelineLike, pipe_factory(transaction=True)
             )
             self._queue_drop(pipe, key, redis_key, ktags_key, prior)
-            pipe.execute()
+            _ignored = pipe.execute()
             return
         self._queue_drop(self._client, key, redis_key, ktags_key, prior)
 
@@ -289,8 +294,8 @@ class RedisCacheBackend(CacheBackend):
         for tag in tags:
             tag_key = self._tag_key(tag)
             current = self._tag_pttl(tag_key) if px_ms is not None else None
-            target.sadd(tag_key, key)
-            target.sadd(ktags_key, tag)
+            _ignored = target.sadd(tag_key, key)
+            _ignored = target.sadd(ktags_key, tag)
             if px_ms is not None:
                 self._queue_tag_expire(target, tag_key, px_ms, current=current)
         if tags and px_ms is not None:
@@ -301,9 +306,9 @@ class RedisCacheBackend(CacheBackend):
         target: _RedisMutatorLike, redis_key: str, payload: str, *, px_ms: int | None
     ) -> None:
         if px_ms is None:
-            target.set(redis_key, payload)
+            _ignored = target.set(redis_key, payload)
             return
-        target.set(redis_key, payload, px=px_ms)
+        _ignored = target.set(redis_key, payload, px=px_ms)
 
     def _tag_pttl(self, tag_key: str) -> int | None:
         pttl = getattr(self._client, "pttl", None)
@@ -336,12 +341,13 @@ class RedisCacheBackend(CacheBackend):
             return
         pexpire = getattr(target, "pexpire", None)
         if callable(pexpire):
-            pexpire(tag_key, px_ms)
+            _ignored = pexpire(tag_key, px_ms)
             return
         expire = getattr(target, "expire", None)
         if callable(expire):
-            expire(tag_key, max(1, (px_ms + 999) // 1000))
+            _ignored = expire(tag_key, max(1, (px_ms + 999) // 1000))
 
+    @override
     def invalidate(self, *, tags: tuple[str, ...] = (), keys: tuple[str, ...] = ()) -> int:
         removed = 0
         to_delete: set[str] = set()
@@ -362,7 +368,7 @@ class RedisCacheBackend(CacheBackend):
                 removed += 1
         for tag in tags:
             # Drop empty tag indexes after membership cleanup.
-            self._client.delete(self._tag_key(tag))
+            _ignored = self._client.delete(self._tag_key(tag))
         return removed
 
     def ping(self) -> bool:

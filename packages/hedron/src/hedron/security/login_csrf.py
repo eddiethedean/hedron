@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import secrets
 from collections.abc import Mapping, MutableMapping
-from typing import Any
+from typing import Protocol, cast
 
 from fastapi import HTTPException, status
 from itsdangerous import BadSignature, BadTimeSignature, URLSafeTimedSerializer
@@ -28,12 +28,17 @@ __all__ = [
     "validate_login_csrf",
 ]
 
+
+class _TimedSerializer(Protocol):
+    def loads(self, signed: str, *, max_age: int | None = None) -> object: ...
+
+
 LOGIN_CSRF_KEY = "hedron_login_csrf"
 _SALT = "hedron-login-csrf-v1"
 
 
 def issue_login_csrf(
-    session: MutableMapping[str, Any] | None = None,
+    session: MutableMapping[str, object] | None = None,
     *,
     nbytes: int = 32,
 ) -> str:
@@ -60,7 +65,8 @@ def unsign_login_csrf(
     """Decode a signed login CSRF cookie; raises ``ValueError`` when invalid/expired."""
     serializer = URLSafeTimedSerializer(secret, salt=_SALT)
     try:
-        value = serializer.loads(signed, max_age=max_age)
+        typed_serializer = cast(_TimedSerializer, cast(object, serializer))
+        value = typed_serializer.loads(signed, max_age=max_age)
     except (BadSignature, BadTimeSignature) as exc:
         raise ValueError("invalid or expired login CSRF cookie") from exc
     if not isinstance(value, str) or not value:
@@ -71,7 +77,7 @@ def unsign_login_csrf(
 def validate_login_csrf(
     token: str | None,
     *,
-    session: Mapping[str, Any] | None = None,
+    session: Mapping[str, object] | None = None,
     cookie: str | None = None,
     secret: str | None = None,
     max_age: int = 600,

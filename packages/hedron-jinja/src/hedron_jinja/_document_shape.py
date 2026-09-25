@@ -5,7 +5,9 @@ from __future__ import annotations
 import re
 from collections.abc import Mapping, Sequence
 from html.parser import HTMLParser
-from typing import Any, cast
+from typing import cast
+
+from typing_extensions import override
 
 _PAGE_DOCTYPE_RE = re.compile(r"^\s*<!doctype\s+html\b", re.IGNORECASE)
 
@@ -27,17 +29,20 @@ class _DocumentShapeParser(HTMLParser):
         super().__init__(convert_charrefs=False)
         self.tokens: list[str] = []
 
+    @override
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         del attrs
         lowered = tag.lower()
         if lowered in {"html", "head", "body"}:
             self.tokens.append(lowered)
 
+    @override
     def handle_endtag(self, tag: str) -> None:
         lowered = tag.lower()
         if lowered in {"html", "head", "body"}:
             self.tokens.append(f"/{lowered}")
 
+    @override
     def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         self.handle_starttag(tag, attrs)
         self.handle_endtag(tag)
@@ -54,13 +59,13 @@ def document_tokens(rendered: str) -> tuple[str, ...]:
 def fingerprint_policy(value: object) -> object:
     """Build a hashable fingerprint of a policy/config value for cache keys."""
     if isinstance(value, Mapping):
-        mapping = cast(Mapping[Any, Any], value)
+        mapping = cast(Mapping[object, object], value)
         return tuple(sorted((str(key), fingerprint_policy(item)) for key, item in mapping.items()))
     if isinstance(value, (list, tuple)):
-        sequence = cast(Sequence[Any], value)
+        sequence = cast(Sequence[object], value)
         return tuple(fingerprint_policy(item) for item in sequence)
     if isinstance(value, (set, frozenset)):
-        items = cast(Sequence[Any], list(cast(set[Any] | frozenset[Any], value)))
+        items = cast(Sequence[object], list(cast(set[object] | frozenset[object], value)))
         return tuple(sorted(repr(fingerprint_policy(item)) for item in items))
     if isinstance(value, (str, int, float, bool, type(None))):
         return value

@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
-from typing import Any, Generic, Literal, TypeVar, cast
+from typing import Generic, Literal, TypeVar, cast
 
-from fastapi import Depends
+from hedron._fastapi_depends import fastapi_depends
+from hedron_core.typing_support import object_namespace
 
 T = TypeVar("T")
 ResourceScope = Literal["request", "application"]
@@ -18,19 +19,20 @@ class Dependency(Generic[T]):
     name: str | None = None
     scope: Literal["function", "request"] | None = None
 
-    def __set_name__(self, owner: type[Any], name: str) -> None:
+    def __set_name__(self, owner: type[object], name: str) -> None:
         if self.name is None:
             self.name = name
 
-    def __get__(self, instance: Any, owner: type[Any] | None = None) -> Any:
+    def __get__(self, instance: object, owner: type[object] | None = None) -> object:
         if instance is None:
             return self
-        if self.name in instance.__dict__:
-            return instance.__dict__[self.name]
+        namespace = object_namespace(instance)
+        if self.name in namespace:
+            return namespace[self.name]
         return self
 
-    def native(self) -> Any:
-        return Depends(self.provider, use_cache=self.use_cache, scope=self.scope)
+    def native(self) -> object:
+        return fastapi_depends(self.provider, use_cache=self.use_cache, scope=self.scope)
 
 
 def dependency(
@@ -52,17 +54,17 @@ class Resource:
     """
 
     name: str
-    factory: Callable[[], Any]
+    factory: Callable[[], object]
     scope: ResourceScope = "application"
     kind: ResourceKind = "custom"
     secret_refs: Mapping[str, str] = field(default_factory=lambda: dict[str, str]())
     config: Mapping[str, object] = field(default_factory=lambda: dict[str, object]())
-    healthcheck: Callable[[Any], bool] | None = None
+    healthcheck: Callable[[object], bool] | None = None
     healthcheck_name: str | None = None
 
     def __post_init__(self) -> None:
         raw_name: object = self.name
-        if not isinstance(cast(Any, raw_name), str) or not raw_name.strip():
+        if not isinstance(cast(object, raw_name), str) or not raw_name.strip():
             raise ValueError("resource name must be a non-empty string")
         if not callable(self.factory):
             raise TypeError("resource factory must be callable")
@@ -71,7 +73,7 @@ class Resource:
         if self.kind not in {"sqlalchemy", "snowflake", "custom"}:
             raise ValueError("resource kind must be 'sqlalchemy', 'snowflake', or 'custom'")
 
-    def register(self, registry: Any) -> Any:
+    def register(self, registry: object) -> object:
         """Register this resource in a native ``ConnectionRegistry``."""
         return registry.register(
             self.name,
@@ -86,18 +88,18 @@ class Resource:
 
 def resource(
     name: str,
-    factory: Callable[[], Any] | None = None,
+    factory: Callable[[], object] | None = None,
     *,
     kind: ResourceKind = "custom",
     scope: ResourceScope = "application",
     secret_refs: Mapping[str, str] | None = None,
     config: Mapping[str, object] | None = None,
-    healthcheck: Callable[[Any], bool] | None = None,
+    healthcheck: Callable[[object], bool] | None = None,
     healthcheck_name: str | None = None,
-) -> Resource | Callable[[Callable[[], Any]], Resource]:
+) -> Resource | Callable[[Callable[[], object]], Resource]:
     """Declare a reusable resource specification for ``App.resource``."""
 
-    def build(provider: Callable[[], Any]) -> Resource:
+    def build(provider: Callable[[], object]) -> Resource:
         return Resource(
             name=name,
             factory=provider,

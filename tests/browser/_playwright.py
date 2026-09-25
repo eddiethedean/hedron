@@ -10,37 +10,36 @@ from __future__ import annotations
 
 from collections.abc import Iterator
 from contextlib import contextmanager, suppress
-from typing import Any
 
-_pw: Any = None
-_browsers: dict[str, Any] = {}
-_original_sync_playwright: Any = None
-_original_launch: Any = None
+_pw: object = None
+_browsers: dict[str, object] = {}
+_original_sync_playwright: object = None
+_original_launch: object = None
 _patched = False
 
 
 class IsolatedBrowser:
     """Shared engine process whose ``new_page`` uses a fresh context."""
 
-    def __init__(self, inner: Any) -> None:
+    def __init__(self, inner: object) -> None:
         self._inner = inner
 
-    def new_page(self, **kwargs: Any) -> Any:
+    def new_page(self, **kwargs: object) -> object:
         context = self._inner.new_context()
         return context.new_page(**kwargs)
 
-    def new_context(self, **kwargs: Any) -> Any:
+    def new_context(self, **kwargs: object) -> object:
         return self._inner.new_context(**kwargs)
 
     def close(self) -> None:
         for context in list(self._inner.contexts):
             context.close()
 
-    def __getattr__(self, name: str) -> Any:
+    def __getattr__(self, name: str) -> object:
         return getattr(self._inner, name)
 
 
-def start() -> Any:
+def start() -> object:
     global _pw
     if _pw is None:
         from playwright.sync_api import sync_playwright
@@ -81,11 +80,11 @@ def browser_for(engine: str) -> IsolatedBrowser:
 
 
 @contextmanager
-def reused_sync_playwright() -> Iterator[Any]:
+def reused_sync_playwright() -> Iterator[object]:
     yield start()
 
 
-def _patched_launch(self: Any, *args: Any, **kwargs: Any) -> IsolatedBrowser:
+def _patched_launch(self: object, *args: object, **kwargs: object) -> IsolatedBrowser:
     del args, kwargs
     return browser_for(str(self.name))
 

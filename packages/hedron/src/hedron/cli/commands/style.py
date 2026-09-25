@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import argparse
 import hashlib
 import html as html_lib
 import json
@@ -12,7 +11,7 @@ import sys
 import tempfile
 from collections.abc import Mapping
 from pathlib import Path
-from typing import TypedDict
+from typing import Protocol, TypedDict, cast
 
 from hedron.cli.discovery import load_app as _load_app
 from hedron_core.codes import HED_STYLE_EJECT_0002
@@ -43,6 +42,41 @@ _SHA256_DIGEST = re.compile(r"^sha256-[0-9a-f]{64}$")
 class _ApplicationStyleEntry(TypedDict):
     logical_id: str
     digest: str
+
+
+class _LoadedAppState(Protocol):
+    hedron_design_system: object
+    hedron_theme: str | None
+
+
+class _LoadedApp(Protocol):
+    state: _LoadedAppState
+    hedron_design_system: object
+    hedron_theme: str | None
+
+
+class _StyleArgs(Protocol):
+    app: str | None
+    base: str | None
+    cached_app: _LoadedApp | None
+    candidate: str | None
+    component: str | None
+    custom_css: str
+    design: str | None
+    ejected_path: str | None
+    format: str
+    group: str | None
+    license: list[str] | None
+    manifest: str | None
+    mode: str
+    name: str | None
+    output: str
+    overwrite: bool
+    profile: str
+    property: str | None
+    recipe: str | None
+    spec: str
+    surface: str | None
 
 
 class _ApplicationStyleBlock(TypedDict):
@@ -103,18 +137,18 @@ class _DesignDiff(TypedDict):
     emitted_output: _EmittedOutputDiff
 
 
-def _require_app(args: argparse.Namespace) -> object:
-    app_path = getattr(args, "app", None)
+def _require_app(args: _StyleArgs) -> _LoadedApp:
+    app_path = args.app
     if not app_path:
         raise SystemExit("hedron style commands require --app module:attr")
     app = _load_app(app_path)
     if app is None:
         raise SystemExit(f"Could not load --app {app_path!r}")
-    return app
+    return cast(_LoadedApp, app)
 
 
 def _theme_from_meta(name: str) -> Theme:
-    ensure_builtin_themes_registered()
+    _ignored = ensure_builtin_themes_registered()
     for theme in builtin_themes():
         if theme.name == name:
             return theme
@@ -130,27 +164,25 @@ def _theme_from_meta(name: str) -> Theme:
     )
 
 
-def _resolve_design(args: argparse.Namespace, *, name: str | None = None) -> DesignSystem:
+def _resolve_design(args: _StyleArgs, *, name: str | None = None) -> DesignSystem:
     """Resolve a DesignSystem from --design, app theme, or an explicit name."""
-    app = getattr(args, "_hedron_app", None)
-    if app is None and getattr(args, "app", None):
+    app = getattr(args, "cached_app", None)
+    if app is None and args.app:
         app = _require_app(args)
-        args._hedron_app = app
+        args.cached_app = app
     stored = None
     if app is not None:
-        state = getattr(app, "state", None)
-        stored = getattr(state, "hedron_design_system", None)
+        state = app.state
+        stored = state.hedron_design_system
         if stored is None:
-            stored = getattr(app, "hedron_design_system", None)
+            stored = app.hedron_design_system
     design_name = name
     if design_name is None:
-        design_name = getattr(args, "design", None)
+        design_name = args.design
     if design_name is None and isinstance(stored, DesignSystem):
         return stored
     if design_name is None and app is not None:
-        design_name = getattr(app, "hedron_theme", None) or getattr(
-            getattr(app, "state", None), "hedron_theme", None
-        )
+        design_name = app.hedron_theme or app.state.hedron_theme
     if not design_name:
         design_name = "folio"
     if isinstance(stored, DesignSystem) and stored.name == design_name:
@@ -171,7 +203,7 @@ def _assert_project_write_path(path: Path, *, cwd: Path) -> Path:
     cwd = _normalized_absolute(cwd)
     resolved = _normalized_absolute(path)
     try:
-        resolved.relative_to(cwd)
+        _ignored = resolved.relative_to(cwd)
     except ValueError as exc:
         raise ValueError(
             f"Refusing to write outside the project root: {_redacted_path(resolved, root=cwd)}"
@@ -206,8 +238,8 @@ def _safe_write_text(path: Path, content: str, *, cwd: Path) -> None:
     temporary = Path(temporary_name)
     try:
         with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
-            stream.write(content)
-        temporary.replace(target)
+            _ignored = stream.write(content)
+        _ignored = temporary.replace(target)
     finally:
         if temporary.exists():
             temporary.unlink()
@@ -229,11 +261,11 @@ def _plan_human(plan: DesignSystemPlan) -> str:
     return "\n".join(lines)
 
 
-def _cmd_style_explain(args: argparse.Namespace) -> int:
-    surface = getattr(args, "surface", None)
+def _cmd_style_explain(args: _StyleArgs) -> int:
+    surface = args.surface
     if surface:
-        if getattr(args, "app", None):
-            _require_app(args)
+        if args.app:
+            _ignored = _require_app(args)
         parts = surface.split(".", 1)
         hooks = application_style_hook_manifest()
         component = parts[0]
@@ -267,10 +299,10 @@ def _cmd_style_explain(args: argparse.Namespace) -> int:
     return 0
 
 
-def _cmd_style_inspect(args: argparse.Namespace) -> int:
+def _cmd_style_inspect(args: _StyleArgs) -> int:
     """Emit the resolved application-style catalog and public hook contract."""
     if getattr(args, "app", None):
-        _require_app(args)
+        _ignored = _require_app(args)
     registry = get_registry()
     styles = [style.to_dict() for style in registry.application_styles()]
     payload = {
@@ -292,7 +324,7 @@ def _cmd_style_inspect(args: argparse.Namespace) -> int:
     return 0
 
 
-def _cmd_style_custom_css_check(args: argparse.Namespace) -> int:
+def _cmd_style_custom_css_check(args: _StyleArgs) -> int:
     """Validate explicitly registered-style CSS without rejecting CSS outright."""
     target = Path(args.custom_css).resolve()
     if not target.exists():
@@ -301,7 +333,7 @@ def _cmd_style_custom_css_check(args: argparse.Namespace) -> int:
     findings: list[dict[str, str]] = []
     for path in paths:
         try:
-            compile_css(
+            _ignored = compile_css(
                 path.read_text(encoding="utf-8"),
                 component_id=f"application:{path.stem}",
                 layer="application",
@@ -331,9 +363,9 @@ def _cmd_style_custom_css_check(args: argparse.Namespace) -> int:
     return 1 if findings else 0
 
 
-def _cmd_style_eject_application(args: argparse.Namespace) -> int:
+def _cmd_style_eject_application(args: _StyleArgs) -> int:
     """Eject registered application CSS with a provenance sidecar."""
-    _require_app(args)
+    _ignored = _require_app(args)
     styles = get_registry().application_styles()
     if not styles:
         print("No registered application styles.", file=sys.stderr)
@@ -350,7 +382,7 @@ def _cmd_style_eject_application(args: argparse.Namespace) -> int:
     if not args.overwrite and (css_path.exists() or map_path.exists()):
         print(
             f"Refusing to overwrite files under {_redacted_path(out_dir, root=cwd)} "
-            "(use --overwrite)",
+            + "(use --overwrite)",
             file=sys.stderr,
         )
         return 1
@@ -361,7 +393,7 @@ def _cmd_style_eject_application(args: argparse.Namespace) -> int:
         style_data = style.to_dict(source_root=cwd)
         chunks.append(
             f"/* hedron: {style.logical_id} source={style_data['source']} "
-            f"digest={style_data['digest']} */\n"
+            + f"digest={style_data['digest']} */\n"
             + source.read_text(encoding="utf-8").rstrip()
             + "\n"
         )
@@ -391,8 +423,8 @@ def _cmd_style_eject_application(args: argparse.Namespace) -> int:
         + "\n"
     )
     try:
-        _assert_project_write_path(css_path, cwd=cwd)
-        _assert_project_write_path(map_path, cwd=cwd)
+        _ignored = _assert_project_write_path(css_path, cwd=cwd)
+        _ignored = _assert_project_write_path(map_path, cwd=cwd)
         _safe_write_text(css_path, css_text, cwd=cwd)
         _safe_write_text(map_path, manifest_text, cwd=cwd)
     except (OSError, ValueError) as exc:
@@ -530,9 +562,9 @@ def _application_style_drift(manifest_path: Path) -> _ApplicationStyleDrift:
     }
 
 
-def _cmd_style_update_check(args: argparse.Namespace) -> int:
+def _cmd_style_update_check(args: _StyleArgs) -> int:
     """Check an ejected application stylesheet for source drift without overwriting it."""
-    _require_app(args)
+    _ignored = _require_app(args)
     try:
         payload = _application_style_drift(_application_style_manifest_path(args.manifest))
     except (OSError, json.JSONDecodeError, TypeError, ValueError) as exc:
@@ -563,9 +595,9 @@ def _token_swatches(theme: Theme, *, mode: str) -> str:
         safe_bg = value if value.startswith("#") else "#888888"
         parts.append(
             '<div class="swatch">'
-            f'<span style="background:{html_lib.escape(safe_bg, quote=True)}"></span>'
-            f"<code>{html_lib.escape(key)}</code> "
-            f"<code>{html_lib.escape(str(value))}</code></div>"
+            + f'<span style="background:{html_lib.escape(safe_bg, quote=True)}"></span>'
+            + f"<code>{html_lib.escape(key)}</code> "
+            + f"<code>{html_lib.escape(str(value))}</code></div>"
         )
     return "\n".join(parts)
 
@@ -578,9 +610,9 @@ def _gallery_page(design: DesignSystem, *, modes: list[str]) -> str:
     for mode in modes:
         sections.append(
             f'<section data-mode="{html_lib.escape(mode)}">'
-            f"<h2>{html_lib.escape(mode.title())} mode</h2>"
-            f"{_token_swatches(theme, mode=mode)}"
-            f"</section>"
+            + f"<h2>{html_lib.escape(mode.title())} mode</h2>"
+            + f"{_token_swatches(theme, mode=mode)}"
+            + "</section>"
         )
     safe_name = html_lib.escape(design.name)
     safe_theme = html_lib.escape(theme.name)
@@ -606,7 +638,7 @@ def _gallery_page(design: DesignSystem, *, modes: list[str]) -> str:
 """
 
 
-def _cmd_style_preview(args: argparse.Namespace) -> int:
+def _cmd_style_preview(args: _StyleArgs) -> int:
     design = _resolve_design(args)
     cwd = Path.cwd().resolve()
     try:
@@ -621,21 +653,21 @@ def _cmd_style_preview(args: argparse.Namespace) -> int:
     if out_resolved.suffix.lower() in {".html", ".htm"}:
         dest = out_resolved
         try:
-            _assert_project_write_path(dest, cwd=cwd)
+            _ignored = _assert_project_write_path(dest, cwd=cwd)
         except ValueError as exc:
             print(str(exc), file=sys.stderr)
             return 1
-        dest.write_text(page, encoding="utf-8")
+        _ignored = dest.write_text(page, encoding="utf-8")
         pages = [str(dest.relative_to(cwd))]
     else:
         out_resolved.mkdir(parents=True, exist_ok=True)
         dest = out_resolved / "index.html"
         try:
-            _assert_project_write_path(dest, cwd=cwd)
+            _ignored = _assert_project_write_path(dest, cwd=cwd)
         except ValueError as exc:
             print(str(exc), file=sys.stderr)
             return 1
-        dest.write_text(page, encoding="utf-8")
+        _ignored = dest.write_text(page, encoding="utf-8")
         pages = [str(dest.relative_to(cwd))]
     plan = design.explain()
     meta = {
@@ -728,14 +760,14 @@ def _diff_human(payload: _DesignDiff) -> str:
     recipes = payload["recipes"]
     lines.append(
         f"recipes: equal={recipes['equal']} "
-        f"({recipes['base_count']} → {recipes['candidate_count']})"
+        + f"({recipes['base_count']} → {recipes['candidate_count']})"
     )
     return "\n".join(lines)
 
 
-def _cmd_style_diff(args: argparse.Namespace) -> int:
+def _cmd_style_diff(args: _StyleArgs) -> int:
     if getattr(args, "ejected_path", None):
-        _require_app(args)
+        _ignored = _require_app(args)
         payload = _application_style_drift(
             _application_style_manifest_path(args.manifest or args.ejected_path)
         )
@@ -749,8 +781,8 @@ def _cmd_style_diff(args: argparse.Namespace) -> int:
         return 0 if payload["clean"] else 1
     # Ensure app/themes are loaded when --app is provided.
     if getattr(args, "app", None):
-        _require_app(args)
-    ensure_builtin_themes_registered()
+        _ignored = _require_app(args)
+    _ignored = ensure_builtin_themes_registered()
     base = _resolve_design(args, name=args.base)
     candidate = _resolve_design(args, name=args.candidate)
     payload = _design_diff(base, candidate)
@@ -761,7 +793,7 @@ def _cmd_style_diff(args: argparse.Namespace) -> int:
     return 0
 
 
-def _selection_label(args: argparse.Namespace) -> str:
+def _selection_label(args: _StyleArgs) -> str:
     if getattr(args, "group", None):
         return f"group:{args.group}"
     if getattr(args, "recipe", None):
@@ -820,7 +852,7 @@ def _eject_theme_source(design: DesignSystem, *, selection: str) -> str:
     return "\n".join(lines)
 
 
-def _cmd_style_eject(args: argparse.Namespace) -> int:
+def _cmd_style_eject(args: _StyleArgs) -> int:
     selected = [
         flag
         for flag in (
@@ -834,8 +866,8 @@ def _cmd_style_eject(args: argparse.Namespace) -> int:
         print("Choose at most one of --group / --recipe / --component", file=sys.stderr)
         return 2
     if getattr(args, "app", None):
-        _require_app(args)
-    ensure_builtin_themes_registered()
+        _ignored = _require_app(args)
+    _ignored = ensure_builtin_themes_registered()
     design = _resolve_design(args, name=args.name)
 
     cwd = Path.cwd().resolve()
@@ -876,11 +908,11 @@ def _cmd_style_eject(args: argparse.Namespace) -> int:
             )
             return 1
         try:
-            _assert_project_write_path(path, cwd=cwd)
+            _ignored = _assert_project_write_path(path, cwd=cwd)
         except ValueError as exc:
             print(str(exc), file=sys.stderr)
             return 1
-    dest.write_text(source, encoding="utf-8")
+    _ignored = dest.write_text(source, encoding="utf-8")
     plan = design.explain()
     theme_css = emit_theme_css(design.to_theme())
     source_map = {
@@ -895,7 +927,9 @@ def _cmd_style_eject(args: argparse.Namespace) -> int:
         "css_digest": hashlib.sha256(theme_css.encode("utf-8")).hexdigest(),
         "parity_digest": plan.digest,
     }
-    map_path.write_text(json.dumps(source_map, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    _ignored = map_path.write_text(
+        json.dumps(source_map, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     print(
         json.dumps(
             {
@@ -919,7 +953,9 @@ def _read_theme_spec(path: Path) -> ThemeSpec:
     return ThemeSpec.from_dict(payload)
 
 
-def _cmd_style_init(args: argparse.Namespace) -> int:
+def _cmd_style_init(args: _StyleArgs) -> int:
+    if args.name is None:
+        raise SystemExit("hedron style init requires a theme name")
     cwd = Path.cwd().resolve()
     try:
         dest = _assert_project_write_path(Path(args.output), cwd=cwd)
@@ -946,7 +982,7 @@ def _cmd_style_init(args: argparse.Namespace) -> int:
         },
         metadata={"starter": True},
     )
-    dest.write_text(
+    _ignored = dest.write_text(
         json.dumps(starter.to_dict(), indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
@@ -954,7 +990,7 @@ def _cmd_style_init(args: argparse.Namespace) -> int:
     return 0
 
 
-def _cmd_style_package(args: argparse.Namespace) -> int:
+def _cmd_style_package(args: _StyleArgs) -> int:
     try:
         spec = _read_theme_spec(Path(args.spec))
         packaged = package_theme(spec, profile=args.profile, licenses=tuple(args.license or ()))
@@ -966,12 +1002,12 @@ def _cmd_style_package(args: argparse.Namespace) -> int:
         print(f"Refusing to overwrite {dest} (use --overwrite)", file=sys.stderr)
         return 1
     dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_bytes(packaged.archive)
+    _ignored = dest.write_bytes(packaged.archive)
     print(json.dumps({"written": str(dest), "manifest": dict(packaged.manifest)}, indent=2))
     return 0
 
 
-def _cmd_style_conform(args: argparse.Namespace) -> int:
+def _cmd_style_conform(args: _StyleArgs) -> int:
     try:
         spec = _read_theme_spec(Path(args.spec))
         report = conformance_report(spec, profile=args.profile)

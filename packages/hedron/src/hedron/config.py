@@ -292,7 +292,7 @@ def load_hedron_settings(
             )
         from hedron_core.theme import folio_theme
 
-        folio_theme(accent=accent)
+        _ignored = folio_theme(accent=accent)
     application = raw.get("application")
     if application is not None and (not isinstance(application, str) or ":" not in application):
         raise _invalid_type("application", "a module:attribute string", application)

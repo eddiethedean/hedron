@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Mapping
-from typing import Any
 
 from hedron import PollPolicy, TaskFlow
 from hedron.jobs.scope import JobScope
@@ -18,15 +17,15 @@ class JobFlow:
         self,
         *,
         name: str,
-        input_model: type[Any],
+        input_model: type[object],
         job_type: str,
-        payload: Callable[[Any], Mapping[str, Any]],
-        idempotency_key: Callable[[Any], str | None] | None = None,
-        backend: Any = None,
-        scope: Any,
-        result: Callable[..., Any],
-        authorize_submit: Any = None,
-        authorize_cancel: Any = None,
+        payload: Callable[[object], Mapping[str, object]],
+        idempotency_key: Callable[[object], str | None] | None = None,
+        backend: object = None,
+        scope: object,
+        result: Callable[..., object],
+        authorize_submit: object = None,
+        authorize_cancel: object = None,
         poll_interval_ms: int = 2000,
         retry_attempts: int = 0,
         result_ttl_seconds: int = 86400,
@@ -51,18 +50,18 @@ class JobFlow:
         # Materialization is registration, not rendering.  Keep the native
         # flow and bundle so repeated page renders never register duplicate
         # routes or lose the generated handles.
-        self._native: Any | None = None
-        self._bundle: Any | None = None
-        self.submit_command: Any | None = None
-        self.status_view: Any | None = None
-        self.cancel_command: Any | None = None
-        self.result_view: Any | None = None
+        self._native: object | None = None
+        self._bundle: object | None = None
+        self.submit_command: object | None = None
+        self.status_view: object | None = None
+        self.cancel_command: object | None = None
+        self.result_view: object | None = None
 
-    def to_bundle(self) -> Any:
+    def to_bundle(self) -> object:
         if self._bundle is not None:
             return self._bundle
 
-        def native_dependency(value: Any) -> Any:
+        def native_dependency(value: object) -> object:
             converter = getattr(value, "native", None)
             return converter() if callable(converter) else value
 

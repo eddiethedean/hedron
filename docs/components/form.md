@@ -151,7 +151,7 @@ Form(*nodes, children=None, action=None, method='post', hx=None, **native_or_hx_
 | `action` | `SafeUrl | str | None` | Validated form endpoint. |
 | `method` | `'get' | 'post'` | Native submission method. |
 | `hx` | `Hx | None` | Validated first-class HTMX options (FORM-022). |
-| `**attrs` | `Any` | Validated native or HTMX form attributes. |
+| `**attrs` | `object` | Validated native or HTMX form attributes. |
 
 ## Composition and backend behavior
 

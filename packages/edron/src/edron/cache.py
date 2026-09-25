@@ -12,11 +12,12 @@ from collections import OrderedDict
 from collections.abc import Callable
 from functools import wraps
 from threading import RLock
-from typing import Any, Generic, ParamSpec, TypeVar, cast
+from typing import Generic, ParamSpec, TypeVar, cast
 
 from edron.errors import BindingError
 from hedron.cache.decorators import cache_callable_identity
 from hedron_core.cache.backend import CacheBackend, validate_cache_ttl
+from hedron_core.typing_support import awaitable_value
 
 P = ParamSpec("P")
 R = TypeVar("R")
@@ -45,7 +46,7 @@ class CachedFunction(Generic[P, R]):
         if max_entries < 1:
             raise BindingError("cache max_entries must be positive", code="EDRON_CACHE_BOUNDS")
         raw_version: object = version
-        if not isinstance(cast(Any, raw_version), str) or not raw_version.strip():
+        if not isinstance(cast(object, raw_version), str) or not raw_version.strip():
             raise BindingError("cache version must be non-empty", code="EDRON_CACHE_VERSION")
         self.fn: Callable[P, R] = fn
         self.ttl = ttl
@@ -71,12 +72,12 @@ class CachedFunction(Generic[P, R]):
             vary_on=self.vary_on,
         )(fn)
         self._native: Callable[P, R] = native
-        wraps(fn)(self)
+        _ignored = wraps(fn)(self)
 
-    def _key(self, args: tuple[Any, ...], kwargs: dict[str, Any]) -> str:
+    def _key(self, args: tuple[object, ...], kwargs: dict[str, object]) -> str:
         from hedron_core.cache import build_cache_key
 
-        bound: dict[str, Any] = {}
+        bound: dict[str, object] = {}
         try:
             signature = inspect.signature(self.fn)
             bound_arguments = signature.bind_partial(*args, **kwargs)
@@ -118,17 +119,18 @@ class CachedFunction(Generic[P, R]):
                 _, (old_backend, _) = self._keys.popitem(last=False)
                 evicted_backends.append(old_backend)
         if evicted_keys:
-            backend.invalidate(keys=tuple(evicted_keys))
+            _ignored = backend.invalidate(keys=tuple(evicted_keys))
         for old_backend in evicted_backends:
-            old_backend.invalidate(tags=(self._tag,))
+            _ignored = old_backend.invalidate(tags=(self._tag,))
 
     def __call__(self, *args: P.args, **kwargs: P.kwargs) -> R:
         key = self._key(args, kwargs)
         result = self._native(*args, **kwargs)
-        if inspect.isawaitable(result):
+        pending = awaitable_value(result)
+        if pending is not None:
 
-            async def await_result() -> Any:
-                value = await result
+            async def await_result() -> object:
+                value = await pending
                 self._remember(key)
                 return value
 
@@ -138,13 +140,13 @@ class CachedFunction(Generic[P, R]):
         self._remember(key)
         return result
 
-    def invalidate(self, *args: Any, **kwargs: Any) -> None:
+    def invalidate(self, *args: object, **kwargs: object) -> None:
         """Invalidate one invocation through the native cache backend."""
         from hedron_core.cache import get_cache_backend
 
         key = self._key(args, kwargs)
         backend = get_cache_backend()
-        backend.invalidate(keys=(key,))
+        _ignored = backend.invalidate(keys=(key,))
         with self._lock:
             record = self._keys.get(id(backend))
             if record is not None and record[0] is backend:
@@ -158,7 +160,7 @@ class CachedFunction(Generic[P, R]):
         # Invalidate every application backend this facade has populated, not
         # merely whichever ContextVar happens to be active at this call site.
         for backend in backends.values():
-            backend.invalidate(tags=(self._tag,))
+            _ignored = backend.invalidate(tags=(self._tag,))
 
 
 def cache_data(

@@ -5,6 +5,8 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from typing import Literal, cast
 
+from typing_extensions import override
+
 from hedron_core.builtins._base import ElementProps, class_names
 from hedron_core.builtins.appearance import (
     TEXT_WRAPS,
@@ -132,12 +134,12 @@ class Text(Component[TextProps]):
         class_: str | None = None,
         **kwargs: object,
     ) -> None:
-        require_choice(role, TYPOGRAPHY_ROLES, label="role")
-        require_choice(overflow, ("wrap", "break", "truncate", "clip"), label="overflow")
-        require_choice(measure, TYPE_MEASURES, label="measure")
-        require_choice(effect, TYPE_EFFECTS, label="effect")
-        require_choice(tracking, TRACKING, label="tracking")
-        require_choice(wrap, TEXT_WRAPS, label="wrap")
+        _ignored = require_choice(role, TYPOGRAPHY_ROLES, label="role")
+        _ignored = require_choice(overflow, ("wrap", "break", "truncate", "clip"), label="overflow")
+        _ignored = require_choice(measure, TYPE_MEASURES, label="measure")
+        _ignored = require_choice(effect, TYPE_EFFECTS, label="effect")
+        _ignored = require_choice(tracking, TRACKING, label="tracking")
+        _ignored = require_choice(wrap, TEXT_WRAPS, label="wrap")
         super().__init__(
             TextProps(
                 content=content,
@@ -154,6 +156,7 @@ class Text(Component[TextProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         attrs = _typography_attrs(
             "hedron-text",
@@ -171,7 +174,7 @@ class Text(Component[TextProps]):
         scoped.update(data)
         data = scoped
         attrs["data"] = data
-        return getattr(html, self.props.as_)(self.props.content, **attrs)
+        return html.tag(self.props.as_)(self.props.content, **attrs)
 
 
 class HeadingProps(Props):
@@ -205,12 +208,12 @@ class Heading(Component[HeadingProps]):
         class_: str | None = None,
         **kwargs: object,
     ) -> None:
-        require_choice(role, TYPOGRAPHY_ROLES, label="role")
-        require_choice(overflow, ("wrap", "break", "truncate", "clip"), label="overflow")
-        require_choice(measure, TYPE_MEASURES, label="measure")
-        require_choice(effect, TYPE_EFFECTS, label="effect")
-        require_choice(tracking, TRACKING, label="tracking")
-        require_choice(wrap, TEXT_WRAPS, label="wrap")
+        _ignored = require_choice(role, TYPOGRAPHY_ROLES, label="role")
+        _ignored = require_choice(overflow, ("wrap", "break", "truncate", "clip"), label="overflow")
+        _ignored = require_choice(measure, TYPE_MEASURES, label="measure")
+        _ignored = require_choice(effect, TYPE_EFFECTS, label="effect")
+        _ignored = require_choice(tracking, TRACKING, label="tracking")
+        _ignored = require_choice(wrap, TEXT_WRAPS, label="wrap")
         super().__init__(
             HeadingProps(
                 content=content,
@@ -227,6 +230,7 @@ class Heading(Component[HeadingProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         attrs = _typography_attrs(
             "hedron-heading",
@@ -244,7 +248,7 @@ class Heading(Component[HeadingProps]):
         scoped.update(data)
         data = scoped
         attrs["data"] = data
-        return getattr(html, f"h{self.props.level}")(self.props.content, **attrs)
+        return html.tag(f"h{self.props.level}")(self.props.content, **attrs)
 
 
 class TypographyProps(Props):
@@ -277,10 +281,10 @@ class Typography(Component[TypographyProps]):
         class_: str | None = None,
         **kwargs: object,
     ) -> None:
-        require_choice(role, TYPOGRAPHY_ROLES, label="role")
-        require_choice(overflow, ("wrap", "break", "truncate", "clip"), label="overflow")
-        require_choice(measure, TYPE_MEASURES, label="measure")
-        require_choice(effect, TYPE_EFFECTS, label="effect")
+        _ignored = require_choice(role, TYPOGRAPHY_ROLES, label="role")
+        _ignored = require_choice(overflow, ("wrap", "break", "truncate", "clip"), label="overflow")
+        _ignored = require_choice(measure, TYPE_MEASURES, label="measure")
+        _ignored = require_choice(effect, TYPE_EFFECTS, label="effect")
         super().__init__(
             TypographyProps(
                 content=content,
@@ -295,6 +299,7 @@ class Typography(Component[TypographyProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         attrs = _typography_attrs(
             "hedron-text",
@@ -305,7 +310,7 @@ class Typography(Component[TypographyProps]):
             measure=self.props.measure,
             effect=self.props.effect,
         )
-        return getattr(html, self.props.as_)(self.props.content, **attrs)
+        return html.tag(self.props.as_)(self.props.content, **attrs)
 
 
 class LinkProps(ElementProps):
@@ -345,6 +350,7 @@ class Link(Component[LinkProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         from hedron_core.builtins._base import class_names, mark_data
 
@@ -389,6 +395,7 @@ class Image(Component[ImageProps]):
         )
         super().__init__(ImageProps(src=url, alt=alt, width=width, height=height, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {"src": self.props.src, "alt": self.props.alt}
         if self.props.width is not None:
@@ -409,6 +416,7 @@ class CodeBlock(Component[CodeBlockProps]):
     def __init__(self, code: str, *, language: str | None = None, **kwargs: object) -> None:
         super().__init__(CodeBlockProps(code=code, language=language, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {}
         if self.props.language:
@@ -427,6 +435,7 @@ class List(Component[ListProps]):
         super().__init__(ListProps(ordered=ordered, **kwargs))
         self._items = _kids(*items)
 
+    @override
     def render(self) -> NodeLike:
         lis = [html.li(item) for item in self._items]
         return html.ol(*lis) if self.props.ordered else html.ul(*lis)
@@ -464,6 +473,7 @@ class DescriptionList(Component[DescriptionListProps]):
         )
         self._pairs = pairs
 
+    @override
     def render(self) -> NodeLike:
         nodes: list[NodeLike] = []
         for term, desc in self._pairs:
@@ -533,9 +543,9 @@ class Table(Component[TableProps]):
         if column_meta and len(column_meta) != len(resolved_headers):
             raise ValueError(
                 "Table columns metadata must have one entry per header "
-                f"({len(column_meta)} columns, {len(resolved_headers)} headers)"
+                + f"({len(column_meta)} columns, {len(resolved_headers)} headers)"
             )
-        require_choice(responsive, ("scroll", "stack", "priority"), label="responsive")
+        _ignored = require_choice(responsive, ("scroll", "stack", "priority"), label="responsive")
         super().__init__(
             TableProps(
                 caption=caption,
@@ -571,6 +581,7 @@ class Table(Component[TableProps]):
             data["hedron-col-kind"] = column.kind
         return data
 
+    @override
     def render(self) -> NodeLike:
         children: list[NodeLike] = []
         if self.props.caption:

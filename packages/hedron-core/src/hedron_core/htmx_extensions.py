@@ -8,6 +8,8 @@ from dataclasses import dataclass
 from types import MappingProxyType
 from typing import Literal, TypedDict, cast
 
+from typing_extensions import override
+
 from hedron_core.codes import (
     HED_EXT_0001,
     HED_EXT_0002,
@@ -187,10 +189,14 @@ class ExtensionSet:
         *,
         kind: Literal["unset", "empty", "declared"],
     ) -> None:
-        object.__setattr__(self, "_ids", ids)
-        object.__setattr__(self, "_kind", kind)
+        self._ids = ids
+        self._kind = kind
 
+    @override
     def __setattr__(self, name: str, value: object) -> None:
+        if name in {"_ids", "_kind"} and not hasattr(self, name):
+            object.__setattr__(self, name, value)
+            return
         raise AttributeError("ExtensionSet is immutable")
 
     @classmethod
@@ -233,14 +239,17 @@ class ExtensionSet:
     def __bool__(self) -> bool:
         return self._kind == "declared" and bool(self._ids)
 
+    @override
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ExtensionSet):
             return NotImplemented
         return self._kind == other._kind and self._ids == other._ids
 
+    @override
     def __hash__(self) -> int:
         return hash((self._kind, self._ids))
 
+    @override
     def __repr__(self) -> str:
         if self.is_unset:
             return "ExtensionSet.unset()"
@@ -474,7 +483,7 @@ def reset_extension_collect(
 def declare_page_extensions(declaration: ExtensionSet) -> None:
     current = _declaration.get()
     if current is None:
-        _declaration.set(declaration)
+        _ignored = _declaration.set(declaration)
 
 
 def require_htmx_extension(public_id: str) -> None:
@@ -482,7 +491,7 @@ def require_htmx_extension(public_id: str) -> None:
     current = _requirements.get()
     if current is None:
         return
-    _requirements.set(current | {normalized})
+    _ignored = _requirements.set(current | {normalized})
 
 
 def finish_extension_plan(*, mode: object = "page") -> ExtensionPlan:

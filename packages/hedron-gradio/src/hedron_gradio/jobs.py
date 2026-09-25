@@ -7,7 +7,7 @@ import time
 import uuid
 from collections.abc import Mapping
 from dataclasses import dataclass, field
-from typing import Any, Literal, cast
+from typing import Literal, cast
 
 from hedron_gradio.errors import GradioRemoteError
 
@@ -31,12 +31,12 @@ def job_scope_key(*, tenant_id: str | None = None, auth_subject: str | None = No
 class GradioJobHandle:
     job_id: str
     endpoint_name: str
-    payload: Mapping[str, Any]
+    payload: Mapping[str, object]
     scope_key: str
     created_at: float = field(default_factory=time.monotonic)
     deadline_at: float | None = None
     status: JobState = "pending"
-    result: dict[str, Any] | None = None
+    result: dict[str, object] | None = None
     error: str | None = None
 
     def is_expired(self, *, now: float | None = None) -> bool:
@@ -50,11 +50,11 @@ class GradioJobHandle:
 class GradioPollingStatus:
     job_id: str
     status: JobState
-    result: dict[str, Any] | None = None
+    result: dict[str, object] | None = None
     error: str | None = None
 
-    def as_dict(self) -> dict[str, Any]:
-        payload: dict[str, Any] = {"job_id": self.job_id, "status": self.status}
+    def as_dict(self) -> dict[str, object]:
+        payload: dict[str, object] = {"job_id": self.job_id, "status": self.status}
         if self.result is not None:
             payload["result"] = self.result
         if self.error is not None:
@@ -66,7 +66,7 @@ class GradioJobManager:
     """In-process job registry with scope isolation and deadlines."""
 
     def __init__(self, *, default_timeout_seconds: float = 30.0) -> None:
-        raw_timeout = cast(Any, default_timeout_seconds)
+        raw_timeout = cast(object, default_timeout_seconds)
         if (
             isinstance(raw_timeout, bool)
             or not isinstance(raw_timeout, (int, float))
@@ -80,14 +80,14 @@ class GradioJobManager:
     def submit(
         self,
         endpoint_name: str,
-        payload: Mapping[str, Any],
+        payload: Mapping[str, object],
         *,
         scope_key: str,
         timeout_seconds: float | None = None,
     ) -> str:
         job_id = uuid.uuid4().hex
         timeout = timeout_seconds if timeout_seconds is not None else self._default_timeout_seconds
-        raw_timeout = cast(Any, timeout)
+        raw_timeout = cast(object, timeout)
         if (
             isinstance(raw_timeout, bool)
             or not isinstance(raw_timeout, (int, float))
@@ -129,7 +129,7 @@ class GradioJobManager:
         job_id: str,
         *,
         scope_key: str,
-        result: dict[str, Any],
+        result: dict[str, object],
     ) -> GradioPollingStatus:
         record = self._get_scoped(job_id, scope_key)
         if record.status == "cancelled":

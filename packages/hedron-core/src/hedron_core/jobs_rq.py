@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from collections import OrderedDict
 from collections.abc import Callable, Mapping
-from typing import Any, Protocol, cast
+from typing import Protocol, cast
 
 from hedron_core.job_status_store import (
     RQ_ENQUEUE_FAILED,
@@ -14,6 +14,7 @@ from hedron_core.job_status_store import (
 )
 from hedron_core.jobs import JobHandle, JobState, JobStatus, RedisClient
 from hedron_core.typing_aliases import JsonValue
+from hedron_core.typing_support import dynamic_attribute
 
 __all__ = ["RQJobBackend"]
 
@@ -49,17 +50,17 @@ class RQJobBackend:
 
     def __init__(
         self,
-        queue: Any,
+        queue: object,
         *,
         redis_client: RedisClient | None = None,
-        task_registry: Mapping[str, Callable[..., Any]] | None = None,
+        task_registry: Mapping[str, Callable[..., object]] | None = None,
         key_prefix: str = "h1:job:",
         ttl_seconds: int = 86400,
         max_cached_jobs: int = 1_024,
     ) -> None:
         self._queue = queue
         self._registry = dict(task_registry or {})
-        self._rq_jobs: OrderedDict[str, Any] = OrderedDict()
+        self._rq_jobs: OrderedDict[str, object] = OrderedDict()
         self._max_cached_jobs = max(1, int(max_cached_jobs))
         self._store = RedisStatusStore(
             require_redis_status_client(redis_client),
@@ -67,14 +68,14 @@ class RQJobBackend:
             ttl_seconds=ttl_seconds,
         )
 
-    def _remember_rq_job(self, job_id: str, rq_job: Any) -> None:
+    def _remember_rq_job(self, job_id: str, rq_job: object) -> None:
         self._rq_jobs[job_id] = rq_job
         self._rq_jobs.move_to_end(job_id)
         while len(self._rq_jobs) > self._max_cached_jobs:
-            self._rq_jobs.popitem(last=False)
+            _ignored = self._rq_jobs.popitem(last=False)
 
     def _forget_rq_job(self, job_id: str) -> None:
-        self._rq_jobs.pop(job_id, None)
+        _ignored = self._rq_jobs.pop(job_id, None)
 
     def _prune_rq_jobs(self) -> None:
         for job_id in list(self._rq_jobs):
@@ -108,7 +109,7 @@ class RQJobBackend:
             self._remember_rq_job(handle.job_id, rq_job)
         except Exception:
             # Release idempotency so a later submit can retry after a broker blip (#199).
-            self._store.mark_enqueue_failed(handle.job_id, error=RQ_ENQUEUE_FAILED)
+            _ignored = self._store.mark_enqueue_failed(handle.job_id, error=RQ_ENQUEUE_FAILED)
             raise
         return handle
 
@@ -140,7 +141,7 @@ class RQJobBackend:
             except Exception:
                 _logger.exception(
                     "HED-JOB-0001 RQ Job.fetch failed during cancel for job_id=%s; "
-                    "restoring prior status",
+                    + "restoring prior status",
                     job_id,
                 )
                 if prior is not None and cancelled is not None:
@@ -153,7 +154,7 @@ class RQJobBackend:
                     if not restored:
                         _logger.warning(
                             "HED-JOB-0001 RQ cancel restore skipped for job_id=%s "
-                            "(status advanced concurrently)",
+                            + "(status advanced concurrently)",
                             job_id,
                         )
                 return False
@@ -162,7 +163,7 @@ class RQJobBackend:
             self._forget_rq_job(job_id)
             return True
         try:
-            rq_job.cancel()
+            _ignored = rq_job.cancel()
         except Exception:
             _logger.exception(
                 "HED-JOB-0001 RQ cancel failed for job_id=%s; restoring prior status",
@@ -178,7 +179,7 @@ class RQJobBackend:
                 if not restored:
                     _logger.warning(
                         "HED-JOB-0001 RQ cancel restore skipped for job_id=%s "
-                        "(status advanced concurrently)",
+                        + "(status advanced concurrently)",
                         job_id,
                     )
             return False
@@ -191,7 +192,7 @@ class RQJobBackend:
         Missing jobs (``NoSuchJobError``) return ``None``. Unexpected fetch
         failures raise so callers can fail closed instead of reporting success (#206).
         """
-        connection = getattr(self._queue, "connection", None)
+        connection = dynamic_attribute(self._queue, "connection")
         if connection is None:
             return None
         try:
@@ -225,7 +226,7 @@ class RQJobBackend:
         job_id: str,
         state: JobState,
         *,
-        result: Any = None,
+        result: object = None,
         error: str | None = None,
     ) -> JobStatus | None:
         status = self._store.mark(job_id, state, result=result, error=error)

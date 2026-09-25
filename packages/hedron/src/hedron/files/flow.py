@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import inspect
 from collections.abc import Awaitable, Callable, Sequence
-from typing import Any, Generic, Protocol, TypeVar, cast
+from typing import Generic, Protocol, TypeVar, cast
 
 from fastapi import Request
 
@@ -22,6 +22,12 @@ from hedron_core.bundles import FeatureBundle, FeatureRequirement
 from hedron_core.catalog import PackageProjection, ProjectionCapability
 from hedron_core.codes import HED_UPLOADFLOW_0001, HED_UPLOADFLOW_0002, HED_UPLOADFLOW_0003
 from hedron_core.diagnostics import error
+from hedron_core.typing_support import (
+    awaitable_value,
+    dynamic_attribute,
+    model_fields,
+    validate_model,
+)
 
 __all__ = ["UploadFlow"]
 
@@ -53,7 +59,7 @@ class _UploadFlowApp(Protocol):
         name: str | None = None,
         fallback: str | None = None,
         dependencies: Sequence[object] | None = None,
-    ) -> Callable[[Callable[..., object]], ActionHandle[Any, Any]]: ...
+    ) -> Callable[[Callable[..., object]], ActionHandle[object, object]]: ...
 
     def view(
         self,
@@ -61,7 +67,15 @@ class _UploadFlowApp(Protocol):
         *,
         name: str | None = None,
         dependencies: Sequence[object] | None = None,
-    ) -> Callable[[Callable[..., object]], FragmentHandle[Any, Any]]: ...
+    ) -> Callable[[Callable[..., object]], FragmentHandle[object, object]]: ...
+
+
+class _PayloadCallback(Protocol):
+    def __call__(self, data: object) -> object: ...
+
+
+class _SessionGetter(Protocol):
+    def __call__(self, key: str) -> object: ...
 
 
 class UploadFlow(Generic[StoredT, ResultT]):
@@ -125,10 +139,11 @@ class UploadFlow(Generic[StoredT, ResultT]):
         self.result_view: object | None = None
         self.download_view: object | None = None
 
-    async def _call(self, fn: Callable[..., Any], *args: object, **kwargs: object) -> Any:
+    async def _call(self, fn: Callable[..., object], *args: object, **kwargs: object) -> object:
         value = fn(*args, **kwargs)
-        if inspect.isawaitable(value):
-            return await value
+        pending = awaitable_value(value)
+        if pending is not None:
+            return await pending
         return value
 
     def _session_key_stored(self) -> str:
@@ -159,10 +174,10 @@ class UploadFlow(Generic[StoredT, ResultT]):
         from hedron.jobs.scope import JobScopeProvider, evaluate_job_scope
         from hedron_core.typing_aliases import JsonValue
 
-        input_model = getattr(process, "input_model", None)
-        payload_fn = getattr(process, "payload", None)
-        job_type = getattr(process, "job_type", None)
-        scope_policy = getattr(process, "scope", None)
+        input_model = dynamic_attribute(process, "input_model")
+        payload_fn = dynamic_attribute(process, "payload")
+        job_type = dynamic_attribute(process, "job_type")
+        scope_policy = dynamic_attribute(process, "scope")
         if input_model is None or not callable(payload_fn) or not isinstance(job_type, str):
             raise error(
                 HED_UPLOADFLOW_0002,
@@ -177,7 +192,7 @@ class UploadFlow(Generic[StoredT, ResultT]):
                 explanation="process TaskFlow is missing a JobScopeProvider.",
                 remediation="Pass scope=... on the TaskFlow used as process=.",
             )
-        fields = list(getattr(input_model, "model_fields", {}) or {})
+        fields = list(model_fields(input_model))
         if len(fields) != 1:
             raise error(
                 HED_UPLOADFLOW_0002,
@@ -189,9 +204,10 @@ class UploadFlow(Generic[StoredT, ResultT]):
                 remediation="Use a single-field input model for UploadFlow process composition.",
             )
         opaque = self._opaque_stored(stored)
-        data = input_model.model_validate({fields[0]: opaque})
+        data = validate_model(input_model, {fields[0]: opaque})
         try:
-            body = payload_fn(data)
+            payload_target: object = payload_fn
+            body = cast(_PayloadCallback, payload_target)(data)
         except Exception as exc:
             raise error(
                 HED_UPLOADFLOW_0002,
@@ -206,7 +222,8 @@ class UploadFlow(Generic[StoredT, ResultT]):
                 explanation="process.payload() must return a JSON-compatible mapping.",
                 remediation="Return a dict payload for enqueue_durable.",
             )
-        scope = evaluate_job_scope(cast(JobScopeProvider, scope_policy), request=request)
+        scope_value: object = scope_policy
+        scope = evaluate_job_scope(cast(JobScopeProvider, scope_value), request=request)
         return enqueue_durable(
             job_type,
             cast(Mapping[str, JsonValue], body),
@@ -217,11 +234,12 @@ class UploadFlow(Generic[StoredT, ResultT]):
     def to_bundle(self) -> FeatureBundle:
         flow = self
 
-        def _ensure_upload_command(app: _UploadFlowApp) -> ActionHandle[Any, Any]:
+        def _ensure_upload_command(app: _UploadFlowApp) -> ActionHandle[object, object]:
             if flow.upload_command is not None:
                 return flow.upload_command  # type: ignore[return-value]
 
-            from fastapi import File, Request, UploadFile
+            from fastapi import Request, UploadFile
+            from fastapi.params import File as FileParam
 
             from hedron import FileUpload
             from hedron.security import redirect_local
@@ -230,7 +248,7 @@ class UploadFlow(Generic[StoredT, ResultT]):
             field_name = flow.field.name
             allow_multiple = flow.field.budget.maximum_count > 1
             # Alias must match FileUpload(name=...); default param name "file" alone 422s (#591).
-            file_param = File(..., alias=field_name)
+            file_param = FileParam(..., alias=field_name)
             file_annotation: type[UploadFile] | type[list[UploadFile]] = (
                 list[UploadFile] if allow_multiple else UploadFile
             )
@@ -403,13 +421,14 @@ class UploadFlow(Generic[StoredT, ResultT]):
             from hedron import Text
 
             async def result_view(request: Request) -> object:
-                session = getattr(request, "session", None)
+                session = dynamic_attribute(request, "session")
                 if session is None:
                     return Text("No upload result")
-                get = getattr(session, "get", None)
+                get = dynamic_attribute(session, "get")
                 if not callable(get):
                     return Text("No upload result")
-                stored = get(flow._session_key_stored())
+                get_target: object = get
+                stored = cast(_SessionGetter, get_target)(flow._session_key_stored())
                 if stored is None:
                     return Text("No upload result")
                 try:

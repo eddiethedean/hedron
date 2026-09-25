@@ -14,8 +14,10 @@ import html as html_lib
 import re
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Protocol
+from typing import Protocol
 from urllib.parse import urlsplit
+
+from typing_extensions import override
 
 from hedron_notebook.topology import require_loopback_host
 
@@ -67,7 +69,7 @@ def redact_text(text: str) -> str:
     return _WINDOWS_PATH.sub(REDACTED, redacted)
 
 
-def _as_html(content: Any) -> str:
+def _as_html(content: object) -> str:
     """Render ``content`` to HTML, escaping anything that is not already markup."""
     if isinstance(content, str):
         return content
@@ -107,12 +109,12 @@ class DisplayHandle:
         """Number of ``update`` calls applied; stable across repeated cell runs."""
         return self._revision
 
-    def update(self, content: Any) -> DisplayHandle:
+    def update(self, content: object) -> DisplayHandle:
         """Replace the displayed content. Returns ``self`` so cells can chain."""
         if self._closed:
             raise StaleDisplayHandleError(
                 f"notebook display handle {self.handle_id!r} is closed; "
-                "create a new handle instead of updating a stale view"
+                + "create a new handle instead of updating a stale view"
             )
         self._html = _as_html(content)
         self._revision += 1
@@ -132,7 +134,7 @@ class DisplayHandle:
         label = self.title or self.handle_id
         return f"[hedron notebook view: {label} ({state}, revision {self._revision})]"
 
-    def snapshot(self) -> dict[str, Any]:
+    def snapshot(self) -> dict[str, object]:
         """Return a redacted, JSON-serializable record of the current view."""
         url = redact_text(self.url) if self.url else None
         return {
@@ -156,16 +158,16 @@ class DisplayHandle:
         if not self.url:
             raise ValueError(
                 f"notebook display handle {self.handle_id!r} has no URL to open; "
-                "static views render through as_html() / as_text()"
+                + "static views render through as_html() / as_text()"
             )
         host = urlsplit(self.url).hostname or ""
-        require_loopback_host(host, surface="browser open")
+        _ignored = require_loopback_host(host, surface="browser open")
         if opener is None:
             import webbrowser
 
-            webbrowser.open(self.url)
+            _ignored = webbrowser.open(self.url)
         else:
-            opener(self.url)
+            _ignored = opener(self.url)
         return self.url
 
     def close(self) -> None:
@@ -191,6 +193,7 @@ class DisplayHandle:
     def _repr_html_(self) -> str:
         return self.as_html()
 
+    @override
     def __repr__(self) -> str:
         state = "closed" if self._closed else "live"
         return f"DisplayHandle(handle_id={self.handle_id!r}, {state}, revision={self._revision})"
@@ -210,7 +213,7 @@ def preview_handle(
         url=preview.external_url(),
         _on_close=on_close,
     )
-    handle.update(preview.iframe_html())
+    _ignored = handle.update(preview.iframe_html())
     return handle
 
 
@@ -238,7 +241,7 @@ class NotebookSession:
 
     def display(
         self,
-        content: Any = "",
+        content: object = "",
         *,
         handle_id: str | None = None,
         title: str = "",
@@ -256,10 +259,10 @@ class NotebookSession:
         if len(self._handles) >= self.max_handles:
             raise ValueError(
                 f"notebook session {self.session_id!r} holds its maximum of "
-                f"{self.max_handles} handles; close one before adding another"
+                + f"{self.max_handles} handles; close one before adding another"
             )
         handle = DisplayHandle(handle_id=key, title=title, url=url, _on_close=on_close)
-        handle.update(content)
+        _ignored = handle.update(content)
         self._handles[key] = handle
         return handle
 
@@ -274,7 +277,7 @@ class NotebookSession:
         if len(self._handles) >= self.max_handles:
             raise ValueError(
                 f"notebook session {self.session_id!r} holds its maximum of "
-                f"{self.max_handles} handles; close one before adding another"
+                + f"{self.max_handles} handles; close one before adding another"
             )
         self._handles[handle.handle_id] = handle
         return handle
@@ -291,7 +294,7 @@ class NotebookSession:
         """Register a teardown callable (server shutdown, temp dir removal)."""
         self._cleanups.append(cleanup)
 
-    def snapshot(self) -> dict[str, Any]:
+    def snapshot(self) -> dict[str, object]:
         """Redacted snapshot of every view in registration order."""
         return {
             "schema_version": DISPLAY_SNAPSHOT_SCHEMA,

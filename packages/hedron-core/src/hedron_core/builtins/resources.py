@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Any, ClassVar, cast
+from typing import ClassVar, cast
+
+from typing_extensions import override
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.builtins.appearance import Density, appearance_data
@@ -74,7 +76,7 @@ class ResourceRow(Component[ResourceRowProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if not title.strip():
             raise error(
@@ -127,6 +129,7 @@ class ResourceRow(Component[ResourceRowProps]):
         if meta is not None:
             self._slot_values["meta"] = meta
 
+    @override
     def render(self) -> NodeLike:
         title_node: NodeLike
         if self.props.href is not None:
@@ -181,7 +184,7 @@ class ResourceList(Component[ResourceListProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if not label.strip():
             raise error(
@@ -202,6 +205,7 @@ class ResourceList(Component[ResourceListProps]):
         )
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         data = {
             "hedron-resource-list": "true",

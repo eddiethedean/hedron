@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Literal
+from typing import Literal
 
 from hedron.mount import cookie_path_for_mount, normalize_mount_path
 from hedron_posit.config import WorkbenchTopology
@@ -85,7 +85,7 @@ DEFAULT_MATRIX: tuple[MatrixCase, ...] = (
 )
 
 
-def evaluate_matrix_case(case: MatrixCase) -> dict[str, Any]:
+def evaluate_matrix_case(case: MatrixCase) -> dict[str, object]:
     """Evaluate every invariant against independent fixture expectations."""
     mount = normalize_mount_path(case.mount)
     if case.mount not in {"", "/"} and not mount:
@@ -141,7 +141,7 @@ def evaluate_matrix_case(case: MatrixCase) -> dict[str, Any]:
 
 def run_deployment_matrix(
     cases: tuple[MatrixCase, ...] = DEFAULT_MATRIX,
-) -> dict[str, Any]:
+) -> dict[str, object]:
     results = [evaluate_matrix_case(case) for case in cases]
     failed = [row["id"] for row in results if not row["ok"]]
     return {"cases": results, "failed": failed, "ok": not failed}

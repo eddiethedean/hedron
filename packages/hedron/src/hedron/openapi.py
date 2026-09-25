@@ -12,6 +12,7 @@ from hedron.fastapi_compat import cached_openapi, set_cached_openapi
 from hedron_core.registry import get_registry
 from hedron_core.scopes import RequiresScopes
 from hedron_core.typing_aliases import JsonObject, JsonValue
+from hedron_core.typing_support import call_dynamic, dynamic_attribute
 from hedron_core.updates import list_handle_descriptors
 
 __all__ = ["install_openapi", "operation_id_for"]
@@ -38,7 +39,7 @@ def install_openapi(app: FastAPI) -> None:
         )
         registry = get_registry()
         route_by_op = {r.operation_id: r for r in registry.routes()}
-        handles = getattr(getattr(app, "state", None), "hedron_handles", None)
+        handles = dynamic_attribute(dynamic_attribute(app, "state"), "hedron_handles")
         handle_map = cast(dict[str, object], handles) if isinstance(handles, dict) else {}
         descriptors = {item.logical_id: item for item in list_handle_descriptors()}
         needs_hedron_scopes = False
@@ -56,45 +57,53 @@ def install_openapi(app: FastAPI) -> None:
                     meta = route_by_op.get(op_id) if isinstance(op_id, str) else None
                     if meta is None:
                         continue
-                    operation.setdefault("x-hedron-kind", meta.kind)
-                    operation.setdefault("x-hedron-logical-id", meta.logical_id)
+                    _ignored = operation.setdefault("x-hedron-kind", meta.kind)
+                    _ignored = operation.setdefault("x-hedron-logical-id", meta.logical_id)
                     entry = None
-                    catalog = getattr(app.state, "hedron_interactions", None)
+                    catalog = dynamic_attribute(
+                        dynamic_attribute(app, "state"), "hedron_interactions"
+                    )
                     if catalog is not None:
-                        getter = getattr(catalog, "get", None)
+                        getter = dynamic_attribute(catalog, "get")
                         if callable(getter):
-                            entry = getter(meta.logical_id)
+                            entry = call_dynamic(getter, meta.logical_id)
                     if entry is not None:
-                        operation.setdefault(
+                        descriptor_fingerprint = dynamic_attribute(entry, "descriptor_fingerprint")
+                        _ignored = operation.setdefault(
                             "x-hedron-descriptor-fingerprint",
-                            getattr(entry, "descriptor_fingerprint", None),
+                            cast(JsonValue, descriptor_fingerprint),
                         )
-                        if getattr(entry, "type_schema_fingerprint", None):
-                            operation.setdefault(
+                        type_schema_fingerprint = dynamic_attribute(
+                            entry, "type_schema_fingerprint"
+                        )
+                        if type_schema_fingerprint:
+                            _ignored = operation.setdefault(
                                 "x-hedron-type-schema-fingerprint",
-                                getattr(entry, "type_schema_fingerprint", None),
+                                cast(JsonValue, type_schema_fingerprint),
                             )
                     if meta.htmx_inference:
-                        operation.setdefault(
+                        _ignored = operation.setdefault(
                             "x-hedron-htmx",
                             cast(JsonValue, dict(meta.htmx_inference)),
                         )
-                    provenance = getattr(meta, "router_provenance", None)
+                    provenance = dynamic_attribute(meta, "router_provenance")
                     if not provenance:
                         for route in app.routes:
-                            if getattr(route, "operation_id", None) == op_id:
-                                provenance = getattr(route, "hedron_provenance", None)
+                            if dynamic_attribute(route, "operation_id") == op_id:
+                                provenance = dynamic_attribute(route, "hedron_provenance")
                                 break
                     if provenance:
-                        operation.setdefault("x-hedron-router-provenance", provenance)
-                    descriptor = getattr(meta, "descriptor", None)
+                        _ignored = operation.setdefault(
+                            "x-hedron-router-provenance", cast(JsonValue, provenance)
+                        )
+                    descriptor = dynamic_attribute(meta, "descriptor")
                     if descriptor is None:
                         handle = handle_map.get(meta.logical_id)
-                        descriptor = getattr(handle, "descriptor", None)
+                        descriptor = dynamic_attribute(handle, "descriptor")
                     if descriptor is None:
                         for handle in handle_map.values():
-                            if getattr(handle, "path", None) == meta.path:
-                                descriptor = getattr(handle, "descriptor", None)
+                            if dynamic_attribute(handle, "path") == meta.path:
+                                descriptor = dynamic_attribute(handle, "descriptor")
                                 break
                     if descriptor is None:
                         descriptor = descriptors.get(meta.logical_id)
@@ -108,30 +117,32 @@ def install_openapi(app: FastAPI) -> None:
 
                         loaded = type_schema_from_descriptor(descriptor)
                         if loaded is not None and loaded.schema_version >= 2:
-                            operation.setdefault(
+                            _ignored = operation.setdefault(
                                 "x-hedron-input-schema",
                                 cast(JsonValue, dict(loaded.input_projection)),
                             )
-                            operation.setdefault(
+                            _ignored = operation.setdefault(
                                 "x-hedron-output-schema",
                                 cast(JsonValue, dict(loaded.output_projection)),
                             )
-                    scopes = getattr(meta, "requires_scopes", None)
-                    endpoint = getattr(meta, "endpoint", None)
+                    scopes = dynamic_attribute(meta, "requires_scopes")
+                    endpoint = dynamic_attribute(meta, "endpoint")
                     if scopes is None and endpoint is not None:
-                        scopes = getattr(endpoint, "_hedron_requires_scopes", None)
+                        scopes = dynamic_attribute(endpoint, "_hedron_requires_scopes")
                     if isinstance(scopes, RequiresScopes) and scopes.scopes:
-                        operation.setdefault(
+                        _ignored = operation.setdefault(
                             "security",
                             [{"hedronScopes": list(scopes.scopes)}],
                         )
                         needs_hedron_scopes = True
-                    callbacks = getattr(meta, "openapi_callbacks", None)
+                    callbacks = dynamic_attribute(meta, "openapi_callbacks")
                     if isinstance(callbacks, dict):
-                        operation.setdefault("callbacks", cast(JsonValue, callbacks))
-                    webhooks_note = getattr(meta, "openapi_webhooks", None)
+                        _ignored = operation.setdefault("callbacks", cast(JsonValue, callbacks))
+                    webhooks_note = dynamic_attribute(meta, "openapi_webhooks")
                     if webhooks_note:
-                        operation.setdefault("x-hedron-webhooks", webhooks_note)
+                        _ignored = operation.setdefault(
+                            "x-hedron-webhooks", cast(JsonValue, webhooks_note)
+                        )
                     responses = operation.setdefault("responses", cast(JsonValue, {}))
                     if not isinstance(responses, dict):
                         continue
@@ -140,13 +151,13 @@ def install_openapi(app: FastAPI) -> None:
                         continue
                     content = ok.setdefault("content", {})
                     if isinstance(content, dict):
-                        content.setdefault("text/html", {"schema": {"type": "string"}})
+                        _ignored = content.setdefault("text/html", {"schema": {"type": "string"}})
         if needs_hedron_scopes:
             components = schema.setdefault("components", {})
             if isinstance(components, dict):
                 schemes = components.setdefault("securitySchemes", {})
                 if isinstance(schemes, dict):
-                    schemes.setdefault(
+                    _ignored = schemes.setdefault(
                         "hedronScopes",
                         {
                             "type": "apiKey",

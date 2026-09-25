@@ -4,10 +4,9 @@ from __future__ import annotations
 
 import runpy
 import sys
-from typing import Any
 
 
-def test_python_m_hedron_invokes_cli(monkeypatch: Any) -> None:
+def test_python_m_hedron_invokes_cli(monkeypatch: object) -> None:
     called: list[list[str]] = []
 
     def fake_main(argv: list[str] | None = None) -> int:

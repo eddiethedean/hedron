@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing_extensions import override
+
 from hedron_core.builtins._base import ElementProps, class_names, dom_id_part
 from hedron_core.component import Component, NodeLike
 from hedron_core.enhancements import SecretOperation
@@ -47,6 +49,7 @@ class SecretField(Component[SecretFieldProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         field_id = self.props.id or f"secret-{dom_id_part(self.props.name)}"
         description_id = f"{field_id}-state"

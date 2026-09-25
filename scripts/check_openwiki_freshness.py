@@ -19,8 +19,6 @@ import stat
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any
-
 
 ROOT = Path(__file__).resolve().parents[1]
 OPENWIKI_DIR = ROOT / "openwiki"
@@ -172,7 +170,7 @@ def is_source_path(value: str, ignore: OpenWikiIgnore) -> bool:
     return not is_openwiki_path(value) and not ignore.ignores(value)
 
 
-def update_field(digest: Any, label: str, value: bytes | str) -> None:
+def update_field(digest: object, label: str, value: bytes | str) -> None:
     encoded = value if isinstance(value, bytes) else value.encode("utf-8", "surrogateescape")
     digest.update(label.encode("utf-8"))
     digest.update(b"\0")
@@ -213,10 +211,7 @@ def source_fingerprint(
     baseline: str | None = None,
 ) -> tuple[str, str]:
     resolved_head = repository_head() if head is None else head
-    tracked = {
-        decode(value)
-        for value in split_nul(run_git("ls-files", "--cached", "-z"))
-    }
+    tracked = {decode(value) for value in split_nul(run_git("ls-files", "--cached", "-z"))}
     if baseline is not None:
         # A completed OpenWiki run normally observes a dirty worktree and is
         # then committed. Include paths that existed in that pre-commit tree so
@@ -272,9 +267,7 @@ def source_fingerprint(
 
 
 def committed_snapshot_statuses(baseline: str, head: str) -> list[tuple[str, str]]:
-    fields = split_nul(
-        run_git("diff", "--name-status", "--no-renames", "-z", baseline, head, "--")
-    )
+    fields = split_nul(run_git("diff", "--name-status", "--no-renames", "-z", baseline, head, "--"))
     if len(fields) % 2:
         raise RuntimeError("git returned malformed NUL-delimited diff output")
 
@@ -343,7 +336,7 @@ def factual_pages_on_disk() -> set[str]:
     return pages
 
 
-def load_json(path: Path) -> dict[str, Any]:
+def load_json(path: Path) -> dict[str, object]:
     try:
         value = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as error:
@@ -448,8 +441,7 @@ def main() -> int:
         for error in errors:
             print(f"- {error}", file=sys.stderr)
         print(
-            "Run a local OpenWiki update in Codex, then rerun "
-            "scripts/ci_checks.sh all.",
+            "Run a local OpenWiki update in Codex, then rerun scripts/ci_checks.sh all.",
             file=sys.stderr,
         )
         return 1

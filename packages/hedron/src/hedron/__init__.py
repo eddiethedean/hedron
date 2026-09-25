@@ -454,6 +454,7 @@ from hedron_core.trace_contract import (
     encode_interaction_trace,
     profile_interaction_trace,
 )
+from hedron_core.typing_support import dynamic_attribute
 
 if TYPE_CHECKING:
     from hedron.auth import OAuthHelper as OAuthHelper
@@ -522,31 +523,31 @@ def __getattr__(name: str) -> object:
 
         warnings.warn(
             f"hedron.{name} is experimental; import from hedron.experimental "
-            "(polling remains the Supported production fallback).",
+            + "(polling remains the Supported production fallback).",
             DeprecationWarning,
             stacklevel=2,
         )
-        return getattr(_experimental, name)
+        return dynamic_attribute(_experimental, name)
     if name in _DATA_EXPORTS:
         try:
             import hedron_data as _hedron_data
         except ImportError as exc:  # pragma: no cover - exercised when extra missing
             raise ImportError(
                 f"{name} requires the hedron-data package. "
-                'Install with: pip install "hedron[data]" or pip install hedron-data'
+                + 'Install with: pip install "hedron[data]" or pip install hedron-data'
             ) from exc
-        return getattr(_hedron_data, name)
+        return dynamic_attribute(_hedron_data, name)
     if name in _CHART_EXPORTS:
         try:
             import hedron_charts as _hedron_charts
         except ImportError as exc:  # pragma: no cover
             raise ImportError(
                 f"{name} requires the hedron-charts package. "
-                'Install with: pip install "hedron[charts]>=0.29.0,<0.30" or '
-                'pip install "hedron-charts>=0.1.10,<0.2". '
-                "See https://hedron.readthedocs.io/en/latest/COMPATIBILITY/"
+                + 'Install with: pip install "hedron[charts]>=0.29.0,<0.30" or '
+                + 'pip install "hedron-charts>=0.1.10,<0.2". '
+                + "See https://hedron.readthedocs.io/en/latest/COMPATIBILITY/"
             ) from exc
-        return getattr(_hedron_charts, name)
+        return dynamic_attribute(_hedron_charts, name)
     if name == "Markdown":
         from hedron.content import Markdown
 
@@ -554,15 +555,15 @@ def __getattr__(name: str) -> object:
     if name in {"validate_email_address", "highlight_code", "process_image"}:
         import hedron.content as _content
 
-        return getattr(_content, name)
+        return dynamic_attribute(_content, name)
     if name in {"OAuthHelper", "create_oauth_client"}:
         import hedron.auth as _auth
 
-        return getattr(_auth, name)
+        return dynamic_attribute(_auth, name)
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__version__ = "1.1.1"
+__version__ = "1.1.2"
 
 # Stable + beta public facade. Live transports live in ``hedron.experimental``
 # (compat attribute access retained via ``__getattr__``). Optional data/charts/auth

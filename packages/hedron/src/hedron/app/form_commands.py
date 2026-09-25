@@ -7,7 +7,6 @@ import inspect
 from collections.abc import Callable, Mapping, Sequence
 from typing import (
     Annotated,
-    Any,
     Literal,
     ParamSpec,
     Protocol,
@@ -16,7 +15,6 @@ from typing import (
     cast,
     get_args,
     get_origin,
-    get_type_hints,
 )
 
 from pydantic import BaseModel
@@ -28,6 +26,13 @@ from hedron_core.component import NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.htmx_contract import is_local_path
 from hedron_core.interaction import InteractionResult, OobUpdate
+from hedron_core.typing_support import (
+    dynamic_attribute,
+    parameter_annotation,
+    parameter_default,
+    resolved_type_hints,
+    signature_return_annotation,
+)
 
 __all__ = [
     "FormEncoding",
@@ -53,10 +58,10 @@ class _ActionApp(Protocol):
         fallback: SafeLocalPath,
         dependencies: Sequence[object] | None,
         outcomes: object | None,
-    ) -> Callable[[Callable[..., object]], ActionHandle[Any, Any]]: ...
+    ) -> Callable[[Callable[..., object]], ActionHandle[object, object]]: ...
 
 
-Update: TypeAlias = FragmentHandle[Any, Any] | BoundFragment[Any]
+Update: TypeAlias = FragmentHandle[object, object] | BoundFragment[object]
 
 _FORM_COMMAND_CONTROLS: dict[str, Mapping[str, Control | NodeLike]] = {}
 
@@ -81,11 +86,11 @@ def discover_form_model(
     for name, parameter in signature.parameters.items():
         if name in {"self", "cls"}:
             continue
-        if _is_injected(parameter, hints.get(name, parameter.annotation)):
+        annotation = hints.get(name, parameter_annotation(parameter))
+        if _is_injected(parameter, annotation):
             continue
         if parameter.kind in {inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD}:
             continue
-        annotation = hints.get(name, parameter.annotation)
         base, metadata = _split_annotated(annotation)
         if _has_competing_fastapi_marker(metadata):
             raise error(
@@ -188,7 +193,7 @@ def form_command(
     path: str,
     *,
     name: str | None = None,
-    refreshes: Sequence[FragmentHandle[Any, Any]] = (),
+    refreshes: Sequence[FragmentHandle[object, object]] = (),
     updates: Sequence[Update] = (),
     success: NodeLike | str | None = None,
     outcomes: object | None = None,
@@ -196,7 +201,7 @@ def form_command(
     encoding: FormEncoding = "urlencoded",
     controls: Mapping[str, Control | NodeLike] | None = None,
     dependencies: Sequence[object] | None = None,
-) -> Callable[[Callable[P, object]], ActionHandle[Any, Any]]:
+) -> Callable[[Callable[P, object]], ActionHandle[object, object]]:
     """Decorator factory that discovers a form model and registers via ``app.action``."""
     if not is_local_path(str(fallback)):
         raise error(
@@ -206,7 +211,7 @@ def form_command(
             remediation="Use a path starting with '/' and no scheme/host (same as redirect_local).",
         )
 
-    def decorator(fn: Callable[P, object]) -> ActionHandle[Any, Any]:
+    def decorator(fn: Callable[P, object]) -> ActionHandle[object, object]:
         _reject_effect_conflicts(
             fn,
             refreshes=refreshes,
@@ -247,11 +252,11 @@ def form_command(
 
 
 def _attach_success_effect(
-    handle: ActionHandle[Any, Any],
+    handle: ActionHandle[object, object],
     *,
-    refreshes: Sequence[FragmentHandle[Any, Any]],
+    refreshes: Sequence[FragmentHandle[object, object]],
     success: NodeLike | str | None,
-) -> ActionHandle[Any, Any]:
+) -> ActionHandle[object, object]:
     if refreshes:
         intent: object = refresh(*refreshes)
         if success is not None:
@@ -275,9 +280,9 @@ def _attach_success_effect(
 
 
 def _with_default_form_controls(
-    handle: ActionHandle[Any, Any],
+    handle: ActionHandle[object, object],
     controls: Mapping[str, Control | NodeLike],
-) -> ActionHandle[Any, Any]:
+) -> ActionHandle[object, object]:
     original = handle.form
 
     @functools.wraps(original)
@@ -335,7 +340,8 @@ def _reject_effect_conflicts(
             remediation="Use either form_command refreshes/updates/success or handler effects.",
         )
     hints = _resolve_hints(fn)
-    return_ann = hints.get("return", inspect.signature(fn).return_annotation)
+    signature = inspect.signature(fn)
+    return_ann = hints.get("return", signature_return_annotation(signature))
     _, metadata = _split_annotated(return_ann)
     if any(isinstance(item, (Refreshes, Updates)) for item in metadata) and (
         refreshes or updates or success is not None
@@ -348,11 +354,14 @@ def _reject_effect_conflicts(
         )
 
 
-def _resolve_hints(fn: Callable[..., object]) -> dict[str, object]:
+def _resolve_hints(fn: Callable[..., object]) -> Mapping[str, object]:
     try:
-        return get_type_hints(fn, include_extras=True)
+        return resolved_type_hints(fn, include_extras=True)
     except (NameError, TypeError, AttributeError, RecursionError):
-        return dict(getattr(fn, "__annotations__", {}) or {})
+        annotations = dynamic_attribute(fn, "__annotations__", {})
+        if isinstance(annotations, Mapping):
+            return {str(name): value for name, value in annotations.items()}
+        return {}
 
 
 def _split_annotated(annotation: object) -> tuple[object, tuple[object, ...]]:
@@ -375,11 +384,11 @@ def _is_injected(parameter: inspect.Parameter, annotation: object) -> bool:
         return True
     if annotation is Request or (isinstance(annotation, type) and issubclass(annotation, Request)):
         return True
-    if isinstance(parameter.default, DependsParam):
+    if isinstance(parameter_default(parameter), DependsParam):
         return True
     from hedron.type_authoring.depends import DependsOn
 
-    if isinstance(parameter.default, DependsOn):
+    if isinstance(parameter_default(parameter), DependsOn):
         return True
     _, metadata = _split_annotated(cast(object, annotation))
     if any(isinstance(item, DependsParam) for item in metadata):

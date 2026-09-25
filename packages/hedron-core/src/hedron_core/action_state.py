@@ -12,10 +12,11 @@ import time
 from collections.abc import Mapping
 from dataclasses import dataclass, field, replace
 from types import MappingProxyType
-from typing import Any, Literal, cast
+from typing import Literal, cast
 
 from hedron_core.compat import StrEnum
 from hedron_core.security.secrets import redact_secret_like
+from hedron_core.typing_support import dynamic_attribute
 
 __all__ = [
     "ActionPhase",
@@ -101,11 +102,11 @@ class OperationIdentity:
     def __post_init__(self) -> None:
         if not self.operation_id or len(self.operation_id) > 128:
             raise ValueError("operation_id must be non-empty and at most 128 characters")
-        _require_int("generation", self.generation, minimum=0)
-        _require_int("attempt", self.attempt, minimum=0)
+        _ignored = _require_int("generation", self.generation, minimum=0)
+        _ignored = _require_int("attempt", self.attempt, minimum=0)
         for name in ("target", "correlation_id"):
-            value = getattr(self, name)
-            if value is not None and (not value or len(value) > 512):
+            value = dynamic_attribute(self, name)
+            if value is not None and (not isinstance(value, str) or not value or len(value) > 512):
                 raise ValueError(f"{name} must be non-empty and at most 512 characters")
 
     def next_generation(self, *, attempt: int | None = None) -> OperationIdentity:
@@ -143,7 +144,7 @@ class ActionPolicy:
         timeout_seconds = cast(object, self.timeout_seconds)
         if self.concurrency not in {"drop", "replace", "queue"}:
             raise ValueError("concurrency must be 'drop', 'replace', or 'queue'")
-        _require_int("max_attempts", self.max_attempts, minimum=1)
+        _ignored = _require_int("max_attempts", self.max_attempts, minimum=1)
         if timeout_seconds is not None and (
             isinstance(timeout_seconds, bool)
             or not isinstance(timeout_seconds, (int, float))
@@ -393,8 +394,8 @@ class ActionTrace:
     max_fact_chars: int = 512
 
     def __post_init__(self) -> None:
-        _require_int("max_events", self.max_events, minimum=1, maximum=10_000)
-        _require_int("max_fact_chars", self.max_fact_chars, minimum=32)
+        _ignored = _require_int("max_events", self.max_events, minimum=1, maximum=10_000)
+        _ignored = _require_int("max_fact_chars", self.max_fact_chars, minimum=32)
         if len(self.events) > self.max_events:
             raise ValueError("trace exceeds max_events")
 
@@ -428,7 +429,7 @@ class ActionTrace:
             events = events[-self.max_events :]
         return replace(self, events=events)
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         """Return a JSON-compatible redacted representation."""
 
         return {

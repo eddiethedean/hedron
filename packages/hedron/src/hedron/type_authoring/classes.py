@@ -13,6 +13,7 @@ from hedron_core.component import NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.hosts import FragmentHost
 from hedron_core.htmx.policy import CacheHint
+from hedron_core.typing_support import parameter_annotation, signature_return_annotation
 
 ParamsT = TypeVar("ParamsT")
 DataT = TypeVar("DataT")
@@ -88,7 +89,7 @@ def _stamp_callable(target: Callable[..., object], **attributes: object) -> None
 def compile_view_class(
     cls: type[RefreshableView[ParamsT, DataT]],
 ) -> Callable[..., object]:
-    _reject_instance(cast(object, cls))
+    _ignored = _reject_instance(cast(object, cls))
     if not _is_subclass(cls, RefreshableView):
         raise error(
             HED_TYPE_0008,
@@ -123,7 +124,7 @@ def compile_view_class(
         if inspect.isawaitable(result):
             close = getattr(result, "close", None)
             if callable(close):
-                close()
+                _ignored = close()
             raise error(
                 HED_TYPE_0008,
                 title="render must be deterministic",
@@ -145,8 +146,9 @@ def compile_view_class(
     for name, param in load_sig.parameters.items():
         if name == "self":
             continue
-        if param.annotation is not inspect.Parameter.empty:
-            annotations[name] = param.annotation
+        annotation = parameter_annotation(param)
+        if annotation is not inspect.Parameter.empty:
+            annotations[name] = annotation
     endpoint.__annotations__ = annotations
     return endpoint
 
@@ -154,7 +156,7 @@ def compile_view_class(
 def compile_command_class(
     cls: type[CommandHandler[InputT, ResultT]],
 ) -> Callable[..., object]:
-    _reject_instance(cast(object, cls))
+    _ignored = _reject_instance(cast(object, cls))
     if not _is_subclass(cls, CommandHandler):
         raise error(
             HED_TYPE_0008,
@@ -189,9 +191,10 @@ def compile_command_class(
     for name, param in exec_sig.parameters.items():
         if name == "self":
             continue
-        if param.annotation is not inspect.Parameter.empty:
-            annotations[name] = param.annotation
-    ret = exec_sig.return_annotation
+        annotation = parameter_annotation(param)
+        if annotation is not inspect.Parameter.empty:
+            annotations[name] = annotation
+    ret = signature_return_annotation(exec_sig)
     if ret is not inspect.Parameter.empty:
         annotations["return"] = ret
     endpoint.__annotations__ = annotations

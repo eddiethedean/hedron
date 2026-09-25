@@ -36,7 +36,7 @@ def oob_swap(
         raise ValueError(f"Unsafe OOB swap value: {swap!r}")
     from hedron_core.html import html
 
-    return getattr(html, tag)(content, id=element_id, **{"hx-swap-oob": swap})
+    return html.tag(tag)(content, id=element_id, **{"hx-swap-oob": swap})
 
 
 def materialize_interaction_nodes(
@@ -65,8 +65,8 @@ def materialize_interaction_nodes(
             targets = ", ".join(f"#{item}" for item in sorted(conflicts))
             raise ValueError(
                 f"select_oob / OobUpdate same-target conflict for {targets}; "
-                "use one OOB mechanism per target (prefer OobUpdate with "
-                "swap='innerHTML' and omit matching select_oob)"
+                + "use one OOB mechanism per target (prefer OobUpdate with "
+                + "swap='innerHTML' and omit matching select_oob)"
             )
 
     regions = result.policy.declared_regions if result.policy is not None else ()

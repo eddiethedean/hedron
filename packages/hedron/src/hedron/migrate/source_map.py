@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-from typing import Any
 
 from hedron.migrate.ir import StreamlitMigrationPlan
 
@@ -12,7 +11,7 @@ def build_source_map(
     plan: StreamlitMigrationPlan,
     *,
     generated_files: dict[str, str],
-) -> dict[str, Any]:
+) -> dict[str, object]:
     return {
         "schema_version": plan.schema_version,
         "mapping_catalog_version": plan.mapping_catalog_version,
@@ -40,5 +39,5 @@ def build_source_map(
     }
 
 
-def dumps_source_map(payload: dict[str, Any]) -> str:
+def dumps_source_map(payload: dict[str, object]) -> str:
     return json.dumps(payload, indent=2, sort_keys=True) + "\n"

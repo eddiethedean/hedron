@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Literal, cast
+from typing import ClassVar, Literal, cast
+
+from typing_extensions import override
 
 from hedron_core.action_state import ActionPhase, AsyncPhase
 from hedron_core.builtins._base import ElementProps, class_names, collect_children
@@ -61,7 +63,7 @@ class AsyncRegion(Component[AsyncRegionProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         normalized_state = cast(
             AsyncPhase, ActionPhase(state).value if isinstance(state, ActionPhase) else str(state)
@@ -106,6 +108,7 @@ class AsyncRegion(Component[AsyncRegionProps]):
             if value is not None:
                 self._slot_values[name] = value
 
+    @override
     def render(self) -> NodeLike:
         state = self.props.state
         slot_name = "initial" if state == "idle" else state

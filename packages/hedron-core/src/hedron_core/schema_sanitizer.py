@@ -306,7 +306,7 @@ def _drop_named_fields(schema: JsonObject, fields: set[str] | tuple[str, ...]) -
         if filtered:
             result["required"] = filtered
         else:
-            result.pop("required", None)
+            _ignored = result.pop("required", None)
     return result
 
 

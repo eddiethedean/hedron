@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass, field, replace
-from typing import Any, Literal
+from typing import Literal
 
 from hedron_core.action_state import ActionState, ActionTrace
 from hedron_core.component import NodeLike
@@ -275,7 +275,7 @@ class InteractionResult:
                 )
 
 
-def default_interaction_policy(**overrides: Any) -> InteractionPolicy:
+def default_interaction_policy(**overrides: object) -> InteractionPolicy:
     base = InteractionPolicy()
     if not overrides:
         return base

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Any, cast
+from typing import cast
 
 from hedron_core.identifiers import content_digest
 from hedron_core.plugins import (
@@ -38,7 +38,7 @@ _STATIC = _ROOT / "static"
 
 PLUGIN_META = PluginMeta(
     name="hedron_elements",
-    version="1.1.1",
+    version="1.1.2",
     distribution="hedron-elements",
     hedron_version=">=1.0,<2.0",
     capabilities=PluginCapabilities(
@@ -50,7 +50,7 @@ PLUGIN_META = PluginMeta(
     ),
 )
 
-_ELEMENT_COMPONENTS: tuple[tuple[type, Mapping[str, Any]], ...] = (
+_ELEMENT_COMPONENTS: tuple[tuple[type, Mapping[str, object]], ...] = (
     (Example, {"logical_id": EXAMPLE_ID, "tag_name": EXAMPLE_TAG, "abi_version": EXAMPLE_ABI}),
     (FieldText, FIELD_TEXT_META),
     (FieldChoice, FIELD_CHOICE_META),
@@ -92,8 +92,10 @@ def _register_static_assets(ctx: PluginContext) -> None:
         )
 
 
-def _register_component(ctx: PluginContext, component_type: type, meta: Mapping[str, Any]) -> None:
-    typed_component = cast(Any, component_type)
+def _register_component(
+    ctx: PluginContext, component_type: type, meta: Mapping[str, object]
+) -> None:
+    typed_component = cast(object, component_type)
     logical = (
         f"{typed_component.distribution}:{typed_component.__module__}."
         f"{getattr(typed_component, 'logical_name', typed_component.__name__)}"
@@ -112,7 +114,7 @@ def _register_component(ctx: PluginContext, component_type: type, meta: Mapping[
     )
 
 
-def _register_element(ctx: PluginContext, meta: Mapping[str, Any]) -> None:
+def _register_element(ctx: PluginContext, meta: Mapping[str, object]) -> None:
     asset_id = str(meta["module_asset_id"])
     module_name = _MODULE_FILENAMES.get(asset_id, asset_id.split(":")[-1])
     module_path = _STATIC / module_name

@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import ClassVar, cast
 
+from typing_extensions import override
+
 from hedron.builtins.hx import safe_target
 from hedron.routing.reverse import ComponentRef
 from hedron_core.component import Component, NodeLike
@@ -59,6 +61,7 @@ class RefreshButton(Component[Props]):
         target = region.selector if isinstance(region, FragmentRegion) else str(region)
         return cls(label, ref=ref, href=href, target=target, swap=swap)
 
+    @override
     def render(self) -> NodeLike:
         attrs: HtmlAttrMap = {"type": "button"}
         if self.ref is not None:
@@ -90,6 +93,7 @@ class Lazy(Component[Props]):
         self.target_id = target_id
         self.error = error
 
+    @override
     def render(self) -> NodeLike:
         target_id = self.target_id or f"lazy-{self.render_instance_id()}"
         body_id = f"{target_id}-body"
@@ -133,6 +137,7 @@ class Poll(Component[Props]):
         self.target_id = target_id
         self.content = content
 
+    @override
     def render(self) -> NodeLike:
         target_id = self.target_id or f"poll-{self.render_instance_id()}"
         attrs: HtmlAttrMap = {"id": target_id}
@@ -165,6 +170,7 @@ class InfiniteScroll(Component[Props]):
         self.target = safe_target(target)
         self.swap = swap
 
+    @override
     def render(self) -> NodeLike:
         attrs: HtmlAttrMap = dict(
             self.ref.htmx_attributes(target=self.target, swap=self.swap, trigger="revealed")
@@ -180,6 +186,7 @@ class Loading(Component[Props]):
         super().__init__(Props())
         self.message = message
 
+    @override
     def render(self) -> NodeLike:
         return html.div(
             html.span(self.message),
@@ -207,6 +214,7 @@ class ErrorState(Component[Props]):
         self.retry_label = retry_label
         self.target = safe_target(target)
 
+    @override
     def render(self) -> NodeLike:
         children: list[NodeLike] = [
             html.p(self.message, role="alert"),
@@ -251,6 +259,7 @@ class Pagination(Component[Props]):
         self.base_path = base_path
         self.target = safe_target(target)
 
+    @override
     def render(self) -> NodeLike:
         pages = max(1, (self.total + self.page_size - 1) // self.page_size)
         links: list[NodeLike] = []

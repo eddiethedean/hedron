@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, Generic, Literal, Protocol, TypeAlias, TypeVar, cast
+from typing import Generic, Literal, Protocol, TypeAlias, TypeVar, cast
 
 from pydantic import BaseModel
 
@@ -43,7 +43,7 @@ class _TaskFlowApp(Protocol):
         *,
         name: str | None = None,
         dependencies: Sequence[object] | None = None,
-    ) -> Callable[[Callable[..., object]], FragmentHandle[Any, Any]]: ...
+    ) -> Callable[[Callable[..., object]], FragmentHandle[object, object]]: ...
 
     def action(
         self,
@@ -52,7 +52,7 @@ class _TaskFlowApp(Protocol):
         name: str | None = None,
         fallback: str | None = None,
         dependencies: Sequence[object] | None = None,
-    ) -> Callable[[Callable[..., object]], ActionHandle[Any, Any]]: ...
+    ) -> Callable[[Callable[..., object]], ActionHandle[object, object]]: ...
 
 
 @dataclass(frozen=True, slots=True)
@@ -316,7 +316,7 @@ class TaskFlow(Generic[InputT, ResultT]):
                 scope = flow._scope_for_request()
                 job_id = str(data.job_id)
                 try:
-                    flow._job_backend().request_cancel(
+                    _ignored = flow._job_backend().request_cancel(
                         job_id,
                         auth_subject=scope.auth_subject,
                         tenant_id=scope.tenant_id,

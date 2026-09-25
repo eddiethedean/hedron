@@ -14,7 +14,7 @@
   <a href="https://hedron.readthedocs.io/en/latest/"><img src="https://img.shields.io/readthedocs/hedron?style=flat&label=docs" alt="Docs"></a>
   <a href="https://pypi.org/project/hedron/"><img src="https://img.shields.io/pypi/v/hedron.svg?label=hedron" alt="Hedron on PyPI"></a>
   <a href="https://pypi.org/project/hedron/"><img src="https://img.shields.io/pypi/pyversions/hedron.svg" alt="Python versions"></a>
-  <a href="https://microsoft.github.io/pyright/"><img src="https://img.shields.io/badge/Pyright-strict-3178c6.svg" alt="Pyright strict"></a>
+  <a href="https://docs.basedpyright.com/latest/"> <img src="https://img.shields.io/badge/BasedPyright-all%20%7C%20no%20Any-3178c6.svg" alt="BasedPyright all mode; Any forbidden"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT license"></a>
 </p>
 
@@ -142,8 +142,8 @@ The stable 1.0 boundary is defined in
 Gradio, simulation, and other satellites remain opt-in Beta or tooling-grade surfaces. A `1.0.x`
 version line alone does not promote a package or symbol into the stable platform.
 
-Stable-package source trees are checked in Pyright strict mode. Type errors and warning regressions
-block commit and release workflows.
+Every shipped Python package source tree is checked with BasedPyright in `all` mode. Explicit and
+inferred `Any` values are errors, and package code cannot suppress either Any diagnostic.
 
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
 [Review what is ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) ·
@@ -193,7 +193,7 @@ uv sync
 
 uv run pytest -q
 uv run ruff check packages tests examples
-uv run pyright
+uv run basedpyright
 bash scripts/ci_checks.sh typing --python 3.12
 ```
 

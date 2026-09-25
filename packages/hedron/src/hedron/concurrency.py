@@ -9,7 +9,6 @@ from collections.abc import Awaitable
 from contextlib import contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass
-from typing import Any
 
 from hedron_core.diagnostics import HedronError, error
 
@@ -66,7 +65,7 @@ class ConcurrencyLimiter:
     def overload_count(self) -> int:
         return self._overload_count
 
-    async def run(self, awaitable: Awaitable[Any]) -> Any:
+    async def run(self, awaitable: Awaitable[object]) -> object:
         if not self.config.enabled:
             return await awaitable
         async with self._lock:
@@ -75,7 +74,7 @@ class ConcurrencyLimiter:
                 self._overload_count += 1
                 close = getattr(awaitable, "close", None)
                 if callable(close):
-                    close()
+                    _ignored = close()
                 raise error(
                     "HED-CONC-0001",
                     title="Concurrency capacity exceeded",
@@ -91,7 +90,7 @@ class ConcurrencyLimiter:
                 self._overload_count += 1
                 close = getattr(awaitable, "close", None)
                 if callable(close):
-                    close()
+                    _ignored = close()
                 raise error(
                     "HED-CONC-0001",
                     title="Concurrency capacity exceeded",
@@ -171,7 +170,7 @@ def reset_concurrency_for_tests() -> None:
     global _global, _limiter
     _global = None
     _limiter = None
-    _config.set(None)
+    _ignored = _config.set(None)
 
 
 def get_limiter() -> ConcurrencyLimiter:
@@ -190,9 +189,9 @@ _get_limiter = get_limiter
 
 
 async def adaptive_gather(
-    *aws: Awaitable[Any],
+    *aws: Awaitable[object],
     return_exceptions: bool = False,
-) -> list[Any]:
+) -> list[object]:
     """Gather with capacity limits when adaptive concurrency is enabled."""
     if not aws:
         return []
@@ -204,19 +203,19 @@ async def adaptive_gather(
         except BaseException:
             for task in tasks:
                 if not task.done():
-                    task.cancel()
-            await asyncio.gather(*tasks, return_exceptions=True)
+                    _ignored = task.cancel()
+            _ignored = await asyncio.gather(*tasks, return_exceptions=True)
             raise
 
     overload_event = asyncio.Event()
 
     async def _cancel_siblings_on_overload() -> None:
-        await overload_event.wait()
+        _ignored = await overload_event.wait()
         for task in tasks:
             if not task.done():
-                task.cancel()
+                _ignored = task.cancel()
 
-    async def _wrapped(aw: Awaitable[Any]) -> Any:
+    async def _wrapped(aw: Awaitable[object]) -> object:
         try:
             return await limiter.run(aw)
         except HedronError as exc:
@@ -231,10 +230,10 @@ async def adaptive_gather(
     except BaseException:
         for task in tasks:
             if not task.done():
-                task.cancel()
-        await asyncio.gather(*tasks, return_exceptions=True)
+                _ignored = task.cancel()
+        _ignored = await asyncio.gather(*tasks, return_exceptions=True)
         raise
     finally:
-        cancel_task.cancel()
+        _ignored = cancel_task.cancel()
         with contextlib.suppress(asyncio.CancelledError):
             await cancel_task

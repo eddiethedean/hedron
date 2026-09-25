@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
-from typing import Any, Literal
+from typing import Literal
 
 from hedron_core.bundles import FeatureBundle, FeatureConflictError, FeatureRequirement
 from hedron_core.catalog import PackageProjection, ProjectionCapability
@@ -24,10 +24,10 @@ class McpExposure:
     projection: McpProjection
     name: str
     authorize: Callable[..., None]
-    schema: Mapping[str, Any] | None = None
+    schema: Mapping[str, object] | None = None
     mutate: bool = False
     uri: str = ""
-    handler: Callable[..., Any] | None = None
+    handler: Callable[..., object] | None = None
     description: str = ""
 
     def apply(self) -> None:

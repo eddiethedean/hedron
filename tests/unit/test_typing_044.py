@@ -1,4 +1,4 @@
-"""TYPING-044: generic arity, overloads, stock pyright fixtures."""
+"""TYPING-044: generic arity, overloads, stock BasedPyright fixtures."""
 
 from __future__ import annotations
 
@@ -36,6 +36,6 @@ def test_pyright_fixtures() -> None:
     assert "hedron.plugin" not in good.read_text(encoding="utf-8")
     # Invoke the locked test interpreter directly so this check cannot rewrite the
     # shared workspace environment while xdist workers are running.
-    cmd = [sys.executable, "-m", "pyright", str(good)]
+    cmd = [sys.executable, "-m", "basedpyright", str(good)]
     result = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, check=False)
     assert result.returncode == 0, result.stdout + result.stderr

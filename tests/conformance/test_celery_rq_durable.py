@@ -5,8 +5,6 @@ These tests use an in-process fake Redis client — not multi-process workers.
 
 from __future__ import annotations
 
-from typing import Any
-
 import pytest
 
 from hedron_core.jobs import JobBackend, JobState
@@ -101,17 +99,17 @@ class _SharedRedis:
 
 
 class _FakeCelery:
-    def send_task(self, *args: Any, **kwargs: Any) -> None:
+    def send_task(self, *args: object, **kwargs: object) -> None:
         return None
 
     class control:
         @staticmethod
-        def revoke(*args: Any, **kwargs: Any) -> None:
+        def revoke(*args: object, **kwargs: object) -> None:
             return None
 
 
 class _FakeQueue:
-    def enqueue(self, *args: Any, **kwargs: Any) -> Any:
+    def enqueue(self, *args: object, **kwargs: object) -> object:
         return type("Job", (), {"cancel": lambda self: None})()
 
 
@@ -122,7 +120,7 @@ def test_celery_requires_redis() -> None:
 
 def test_celery_status_shared_via_client_protocol() -> None:
     """Stub client only — not a multi-process worker proof."""
-    shared: Any = _SharedRedis()
+    shared: object = _SharedRedis()
     a = CeleryJobBackend(_FakeCelery(), redis_client=shared)
     b = CeleryJobBackend(_FakeCelery(), redis_client=shared)
     assert isinstance(a, JobBackend)
@@ -137,7 +135,7 @@ def test_celery_status_shared_via_client_protocol() -> None:
 
 def test_celery_idempotency_shared_via_client_protocol() -> None:
     """Stub client only — not a multi-process worker proof."""
-    shared: Any = _SharedRedis()
+    shared: object = _SharedRedis()
     a = CeleryJobBackend(_FakeCelery(), redis_client=shared)
     b = CeleryJobBackend(_FakeCelery(), redis_client=shared)
     first = a.submit(
@@ -159,7 +157,7 @@ def test_celery_idempotency_shared_via_client_protocol() -> None:
 
 def test_rq_status_shared_via_client_protocol() -> None:
     """Stub client only — not a multi-process worker proof."""
-    shared: Any = _SharedRedis()
+    shared: object = _SharedRedis()
 
     def _demo(payload: dict[str, object]) -> None:
         del payload
@@ -175,7 +173,7 @@ def test_rq_status_shared_via_client_protocol() -> None:
 
 def test_rq_cancel_shared_via_client_protocol() -> None:
     """Stub client only — not a multi-process worker proof."""
-    shared: Any = _SharedRedis()
+    shared: object = _SharedRedis()
 
     def _demo(payload: dict[str, object]) -> None:
         del payload
@@ -196,7 +194,7 @@ def test_rq_cancel_shared_via_client_protocol() -> None:
 
 def test_rq_idempotency_shared_via_client_protocol() -> None:
     """Stub client only — not a multi-process worker proof."""
-    shared: Any = _SharedRedis()
+    shared: object = _SharedRedis()
 
     def _demo(payload: dict[str, object]) -> None:
         del payload
@@ -222,15 +220,15 @@ def test_rq_idempotency_shared_via_client_protocol() -> None:
 
 
 def test_celery_revoke_failure_restores_status() -> None:
-    shared: Any = _SharedRedis()
+    shared: object = _SharedRedis()
 
     class _FailRevoke:
-        def send_task(self, *args: Any, **kwargs: Any) -> None:
+        def send_task(self, *args: object, **kwargs: object) -> None:
             return None
 
         class control:
             @staticmethod
-            def revoke(*args: Any, **kwargs: Any) -> None:
+            def revoke(*args: object, **kwargs: object) -> None:
                 raise RuntimeError("broker down")
 
     backend = CeleryJobBackend(_FailRevoke(), redis_client=shared)
@@ -243,7 +241,7 @@ def test_celery_revoke_failure_restores_status() -> None:
 
 
 def test_rq_unknown_job_type_raises() -> None:
-    shared: Any = _SharedRedis()
+    shared: object = _SharedRedis()
     backend = RQJobBackend(_FakeQueue(), redis_client=shared, task_registry={})
     with pytest.raises(KeyError, match="Unknown RQ"):
         backend.submit("demo.task", {"n": 1})

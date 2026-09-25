@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any
 
 from hedron_charts.compile import beginner_to_spec, compile_chart
 from hedron_charts.spec import ChartSpec
@@ -13,7 +12,7 @@ FIXTURES = Path(__file__).resolve().parents[1] / "fixtures" / "charts_038"
 DATASETS = json.loads((FIXTURES / "datasets.json").read_text(encoding="utf-8"))
 
 
-def sample_rows(name: str = "numeric") -> list[dict[str, Any]]:
+def sample_rows(name: str = "numeric") -> list[dict[str, object]]:
     rows = DATASETS[name]
     if name == "dense":
         return [{"x": i, "y": (i % 17) + 1} for i in range(3000)]
@@ -21,7 +20,7 @@ def sample_rows(name: str = "numeric") -> list[dict[str, Any]]:
     return list(rows)
 
 
-def sample_spec(**kwargs: Any) -> ChartSpec:
+def sample_spec(**kwargs: object) -> ChartSpec:
     data = kwargs.pop("data", sample_rows())
     kind = kwargs.pop("kind", "line")
     return beginner_to_spec(
@@ -35,5 +34,5 @@ def sample_spec(**kwargs: Any) -> ChartSpec:
     )
 
 
-def sample_plan(**kwargs: Any):
+def sample_plan(**kwargs: object):
     return compile_chart(sample_spec(**kwargs))

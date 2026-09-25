@@ -122,7 +122,7 @@ def _type_check(*, fixture: Path, package_root: Path) -> dict[str, int]:
         )
     )
     result = subprocess.run(
-        [sys.executable, "-m", "pyright", str(fixture / "app.py")],
+        [sys.executable, "-m", "basedpyright", str(fixture / "app.py")],
         cwd=package_root,
         env=env,
         text=True,

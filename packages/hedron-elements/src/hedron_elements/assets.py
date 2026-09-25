@@ -48,7 +48,7 @@ def asset_path(name: str) -> Path:
     with resources.as_file(root) as base:
         target = (Path(base) / safe).resolve()
         try:
-            target.relative_to(Path(base).resolve())
+            _ignored = target.relative_to(Path(base).resolve())
         except ValueError as exc:
             raise error(
                 "HED-ELEMENT-ASSET-0001",

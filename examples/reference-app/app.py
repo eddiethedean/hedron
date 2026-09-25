@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Annotated, Any, Literal
+from typing import Annotated, Literal
 
 from fastapi import Depends, FastAPI, Form, HTTPException, Request, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
@@ -282,7 +282,7 @@ def dashboard_page(
             data_theme = resolve_color_mode(preference)
     if flash is None and request is not None:
         flash = request.query_params.get("msg")
-    children: list[Any] = [
+    children: list[object] = [
         Heading("Users", level=2),
         Lazy(ref=table_ref, target_id="user-table"),
         RefreshButton(ref=table_ref, target="#user-table", label="Refresh users"),
@@ -334,7 +334,7 @@ def dashboard_page(
     )
 
 
-async def _employee_page() -> Any:
+async def _employee_page() -> object:
     return await ASYNC_EMPLOYEE_SOURCE.fetch(
         DataQuery(
             limit=5,
@@ -348,8 +348,8 @@ def _phase05_section(
     *,
     csrf_token: str,
     preference: ColorMode = ColorMode.SYSTEM,
-    page: Any | None = None,
-) -> Any:
+    page: object | None = None,
+) -> object:
     if page is None:
         page = EMPLOYEE_SOURCE.fetch(
             DataQuery(
@@ -404,7 +404,7 @@ def _phase05_section(
     )
 
 
-def _phase06_section(*, csrf_token: str) -> Any:
+def _phase06_section(*, csrf_token: str) -> object:
     from hedron.content import Markdown
     from hedron_charts import LineChart
 
@@ -476,7 +476,7 @@ def _load_status_banner_module():
     return module
 
 
-def _status_banner_section(*, request: Request | None = None) -> Any:
+def _status_banner_section(*, request: Request | None = None) -> object:
     """Python StatusBanner with build-produced scoped styles."""
     from hedron_core.compile_gate import assert_runtime_compile_allowed, is_production_env
     from hedron_core.html import _HtmlTag
@@ -525,7 +525,7 @@ def _create_form(
     csrf_token: str,
     form_errors: tuple[str, ...] = (),
     action: object | None = None,
-) -> Any:
+) -> object:
     import json
 
     from hedron import Form
@@ -568,7 +568,7 @@ def _create_form(
     )
 
 
-def _edit_form(*, user: User, csrf_token: str, form_errors: tuple[str, ...] = ()) -> Any:
+def _edit_form(*, user: User, csrf_token: str, form_errors: tuple[str, ...] = ()) -> object:
     import json
 
     from hedron import Form
@@ -761,7 +761,7 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
         role: Annotated[Role, Form()] = "member",
         store: Store = Depends(get_store),
         username: str = Depends(require_admin),
-    ) -> Table | ErrorState | Page | Any:
+    ) -> Table | ErrorState | Page | object:
         from hedron.htmx import is_htmx_request
         from hedron.security.redirects import redirect_local
 
@@ -799,7 +799,7 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
         role: Annotated[Role, Form()] = "member",
         store: Store = Depends(get_store),
         username: str = Depends(require_admin),
-    ) -> Table | ErrorState | Page | Any:
+    ) -> Table | ErrorState | Page | object:
         from hedron.htmx import is_htmx_request
         from hedron.security.redirects import redirect_local
 
@@ -836,7 +836,7 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
         user_id: str,
         store: Store = Depends(get_store),
         _: str = Depends(require_admin),
-    ) -> Table | Any:
+    ) -> Table | object:
         from hedron.htmx import is_htmx_request
         from hedron.security.redirects import redirect_local
 
@@ -935,7 +935,7 @@ def mount_phase05_routes(app: FastAPI) -> None:
         request: Request,
         color_mode: Annotated[str, Form()] = "system",
         _: str = Depends(require_user),
-    ) -> Any:
+    ) -> object:
         from fastapi.responses import RedirectResponse
 
         policy = getattr(request.app.state, "hedron_security", SecurityPolicy.from_name("strict"))
@@ -1013,7 +1013,7 @@ def mount_phase05_routes(app: FastAPI) -> None:
         }
 
     @app.get("/downloads/roster.csv")
-    async def download_roster(_: str = Depends(require_user)) -> Any:
+    async def download_roster(_: str = Depends(require_user)) -> object:
         from fastapi.responses import Response
 
         page = EMPLOYEE_SOURCE.fetch(DataQuery(limit=100))
@@ -1128,7 +1128,7 @@ def build_plain_fastapi_app() -> FastAPI:
         role: Annotated[Role, Form()] = "member",
         store: Store = Depends(get_store),
         username: str = Depends(require_admin),
-    ) -> Table | ErrorState | Page | Any:
+    ) -> Table | ErrorState | Page | object:
         from hedron.htmx import is_htmx_request
         from hedron.security.redirects import redirect_local
 
@@ -1159,7 +1159,7 @@ def build_plain_fastapi_app() -> FastAPI:
         role: Annotated[Role, Form()] = "member",
         store: Store = Depends(get_store),
         username: str = Depends(require_admin),
-    ) -> Table | ErrorState | Page | Any:
+    ) -> Table | ErrorState | Page | object:
         from hedron.htmx import is_htmx_request
         from hedron.security.redirects import redirect_local
 
@@ -1190,7 +1190,7 @@ def build_plain_fastapi_app() -> FastAPI:
         user_id: str,
         store: Store = Depends(get_store),
         _: str = Depends(require_admin),
-    ) -> Table | Any:
+    ) -> Table | object:
         from hedron.htmx import is_htmx_request
         from hedron.security.redirects import redirect_local
 

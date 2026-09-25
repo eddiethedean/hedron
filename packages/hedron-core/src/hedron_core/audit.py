@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from collections.abc import Mapping
 from dataclasses import dataclass, field
-from typing import Any, Protocol, runtime_checkable
+from typing import Protocol, runtime_checkable
 
 from hedron_core.compat import StrEnum
 from hedron_core.csrf import redact_secret_like
@@ -33,7 +33,7 @@ class SecurityAuditEventType(StrEnum):
 class SecurityAuditEvent:
     event_type: SecurityAuditEventType
     message: str
-    attributes: Mapping[str, Any] = field(default_factory=dict[str, Any])
+    attributes: Mapping[str, object] = field(default_factory=dict[str, object])
 
 
 @runtime_checkable
@@ -78,7 +78,7 @@ def emit_security_audit(
     event_type: SecurityAuditEventType | str,
     message: str,
     *,
-    attributes: Mapping[str, Any] | None = None,
+    attributes: Mapping[str, object] | None = None,
 ) -> None:
     typed = (
         event_type

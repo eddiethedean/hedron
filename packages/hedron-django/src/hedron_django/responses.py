@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Mapping, Sequence
-from typing import Any, cast
+from typing import cast
 
 from django.http import HttpRequest, HttpResponse
 
@@ -176,7 +176,7 @@ def _header_value(headers: Mapping[str, str], name: str) -> str | None:
     return None
 
 
-def _fragment_value(value: NodeLike | Component[Any]) -> NodeLike | Component[Any]:
+def _fragment_value(value: NodeLike | Component[object]) -> NodeLike | Component[object]:
     if isinstance(value, Page):
         children = list(value.child_nodes)
         if len(children) == 1:
@@ -215,7 +215,7 @@ def _authorize_component_htmx(
         _header_value(headers_map, "HX-History-Restore-Request") or ""
     ).lower() == "true"
     try:
-        authorize_htmx_target(
+        _ignored = authorize_htmx_target(
             InteractionPolicy(
                 declared_regions=fragment_regions,
                 allow_undeclared_targets=allow_undeclared_targets,
@@ -235,7 +235,7 @@ def _authorize_component_htmx(
 
 
 def _maybe_prepare(
-    value: NodeLike | Component[Any] | RenderResult,
+    value: NodeLike | Component[object] | RenderResult,
     *,
     skip_prepare: bool = False,
 ) -> None:
@@ -252,7 +252,7 @@ def _maybe_prepare(
     if running_loop():
         raise RuntimeError(
             "component prepare cannot run while an event loop is already running; "
-            "await prepare_tree(...) then pass skip_prepare=True, or use respond_async()."
+            + "await prepare_tree(...) then pass skip_prepare=True, or use respond_async()."
         )
     run_prepare(lambda: prepare_tree(value))
 
@@ -281,7 +281,7 @@ def _default_render_context(request: HttpRequest | None) -> RenderContext:
 
 
 def _render_body(
-    value: NodeLike | Component[Any] | RenderResult,
+    value: NodeLike | Component[object] | RenderResult,
     *,
     request: HttpRequest | None = None,
     context: RenderContext | None = None,
@@ -299,7 +299,7 @@ def _render_body(
         hdrs = _headers_mapping(request)
         selected_mode = render_mode_for_request(hdrs, force=mode)
         render_context = context or _default_render_context(request)
-        to_render: NodeLike | Component[Any] = value
+        to_render: NodeLike | Component[object] = value
         if selected_mode is RenderMode.FRAGMENT:
             to_render = _fragment_value(value)
         return render(to_render, context=render_context, mode=selected_mode)
@@ -381,7 +381,7 @@ def _inject_page_html(
 
 
 def component_response(
-    value: NodeLike | Component[Any] | RenderResult,
+    value: NodeLike | Component[object] | RenderResult,
     *,
     request: HttpRequest | None = None,
     status_code: int = 200,
@@ -468,7 +468,7 @@ def interaction_response(
         if result.status_code == 204 and result.oob:
             raise ValueError("OOB updates are not allowed on 204 InteractionResult responses")
         target = select_htmx_auth_target(client_target=client_target, region_id=result.region_id)
-        authorize_htmx_target(
+        _ignored = authorize_htmx_target(
             result.policy,
             target,
             is_htmx=is_htmx,

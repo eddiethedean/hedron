@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Any
-
 from hedron import Color, DesignSystem, StyleContext, StyleRecipe, Theme, ThemeSpec
 
 
@@ -10,12 +8,12 @@ def theme(
     *,
     accent: str | Color,
     base: Theme | None = None,
-    density: Any = "comfortable",
-    geometry: Any = "soft",
-    typography: Any = "system-sans",
-    elevation: Any = "subtle",
-    motion: Any = "standard",
-    navigation: Any = "default",
+    density: object = "comfortable",
+    geometry: object = "soft",
+    typography: object = "system-sans",
+    elevation: object = "subtle",
+    motion: object = "standard",
+    navigation: object = "default",
     recipes: tuple[StyleRecipe, ...] = (),
 ) -> DesignSystem:
     return DesignSystem.brand(

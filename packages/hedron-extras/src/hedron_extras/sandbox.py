@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
 
 from pydantic import Field
+from typing_extensions import override
 
 from hedron_core.builtins._base import ElementProps, class_names, mark_data
 from hedron_core.component import Component, NodeLike
@@ -54,7 +54,7 @@ class BrowserPythonSandbox(Component[BrowserPythonSandboxProps]):
         budget: SandboxBudget | None = None,
         runtime: str = "pyodide",
         network: bool = False,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if runtime not in {"pyodide", "jupyterlite"}:
             raise ValueError("Sandbox runtime must be pyodide or jupyterlite")
@@ -73,6 +73,7 @@ class BrowserPythonSandbox(Component[BrowserPythonSandboxProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         return html.div(
             html.p("Isolated browser Python sandbox (no server/session access)."),

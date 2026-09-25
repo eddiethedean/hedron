@@ -6,7 +6,7 @@ import json
 from collections.abc import Mapping
 from dataclasses import dataclass
 from dataclasses import field as dc_field
-from typing import Any, Literal
+from typing import Literal
 
 from hedron_core.diagnostics import error
 from hedron_core.typing_aliases import JsonValue
@@ -103,7 +103,7 @@ GridEvent = (
 
 
 def validate_grid_event(event: GridEvent, *, max_payload_bytes: int = 65_536) -> GridEvent:
-    raw_max_payload_bytes: Any = max_payload_bytes
+    raw_max_payload_bytes: object = max_payload_bytes
     if (
         isinstance(raw_max_payload_bytes, bool)
         or not isinstance(raw_max_payload_bytes, int)

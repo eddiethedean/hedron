@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, cast
+from typing import cast
 
 from hedron_core.diagnostics import error
 from hedron_core.typing_aliases import JsonValue
@@ -137,7 +137,7 @@ class TransformPlan:
             auth_context=dict(self.auth_context),
         )
 
-    def to_diagnostics(self) -> dict[str, Any]:
+    def to_diagnostics(self) -> dict[str, object]:
         plan = self.validated()
         return {
             "steps": [

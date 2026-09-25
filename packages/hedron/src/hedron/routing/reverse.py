@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass, field
-from typing import Any, Literal, cast
+from typing import Literal, cast
 
 from hedron_core.registry import get_registry
 from hedron_core.typing_aliases import HtmlAttrValue, JsonValue
@@ -21,7 +21,7 @@ class ComponentRef:
     method: str = "GET"
     target: str | None = None
     swap: str = "innerHTML"
-    params: Mapping[str, Any] = field(default_factory=dict[str, Any])
+    params: Mapping[str, object] = field(default_factory=dict[str, object])
     inference: Mapping[str, JsonValue] = field(default_factory=dict[str, JsonValue])
 
     def htmx_attributes(

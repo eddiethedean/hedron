@@ -6,7 +6,7 @@ import json
 from collections.abc import Callable, Mapping, Sequence
 from contextlib import AbstractContextManager, nullcontext
 from pathlib import Path
-from typing import cast
+from typing import Protocol, cast
 
 from hedron_core.bundles import (
     FeatureBundle,
@@ -26,6 +26,7 @@ from hedron_core.feature_explanation import (
 from hedron_core.feature_explanation import (
     source_map_for,
 )
+from hedron_core.typing_support import dynamic_attribute, set_dynamic_attribute
 from hedron_core.updates import list_handle_descriptors, unregister_handle_descriptor
 
 __all__ = [
@@ -37,15 +38,23 @@ __all__ = [
 ]
 
 
+class _NoArgAction(Protocol):
+    def __call__(self) -> object: ...
+
+
+class _FeatureFactory(Protocol):
+    def __call__(self, app: object) -> object: ...
+
+
 def _is_handle(item: object) -> bool:
     return hasattr(item, "logical_id") and hasattr(item, "descriptor")
 
 
 def _runtime_scope(app: object) -> AbstractContextManager[object]:
-    runtime = getattr(app, "_hedron_runtime", None)
-    activate = getattr(runtime, "activate", None)
+    runtime = dynamic_attribute(app, "_hedron_runtime")
+    activate = dynamic_attribute(runtime, "activate")
     if callable(activate):
-        return cast(AbstractContextManager[object], activate())
+        return cast(AbstractContextManager[object], cast(_NoArgAction, activate)())
     return nullcontext()
 
 
@@ -53,26 +62,37 @@ def _materialize_item(item: object, app: object) -> object:
     if _is_handle(item):
         return item
     if callable(item) and not isinstance(item, type):
-        return item(app)
+        return cast(_FeatureFactory, item)(app)
     return item
 
 
 def _host_routers(app: object) -> list[object]:
     routers: list[object] = []
-    root = getattr(app, "_root_router", None)
+    root = dynamic_attribute(app, "_root_router")
     if root is not None:
         routers.append(root)
-    fastapi_router = getattr(app, "router", None)
+    fastapi_router = dynamic_attribute(app, "router")
     if fastapi_router is not None and fastapi_router is not root:
         routers.append(fastapi_router)
     return routers
+
+
+def _snapshot_host_routes(app: object) -> list[object]:
+    snapshot: list[object] = []
+    for router in _host_routers(app):
+        routes = dynamic_attribute(router, "routes")
+        if isinstance(routes, list):
+            snapshot.extend(cast(list[object], routes))
+    return snapshot
 
 
 def _collect_new_routes(app: object, snapshot: Sequence[object]) -> list[object]:
     found: list[object] = []
     seen: set[int] = set()
     for router in _host_routers(app):
-        for route in list(getattr(router, "routes", [])):
+        router_routes = dynamic_attribute(router, "routes", [])
+        routes = cast(list[object], router_routes) if isinstance(router_routes, list) else []
+        for route in routes:
             if route in snapshot or id(route) in seen:
                 continue
             seen.add(id(route))
@@ -82,7 +102,7 @@ def _collect_new_routes(app: object, snapshot: Sequence[object]) -> list[object]
 
 def _drop_routes(app: object, routes: Sequence[object]) -> None:
     for router in _host_routers(app):
-        live_routes = getattr(router, "routes", None)
+        live_routes = dynamic_attribute(router, "routes")
         if not isinstance(live_routes, list):
             continue
         typed_routes = cast(list[object], live_routes)
@@ -93,13 +113,13 @@ def _drop_routes(app: object, routes: Sequence[object]) -> None:
 
 
 def _record_bundle_routes(app: object, logical_id: str, routes: Sequence[object]) -> None:
-    state = getattr(app, "state", None)
+    state = dynamic_attribute(app, "state")
     if state is None:
         return
-    recorded = getattr(state, "hedron_bundle_routes", None)
+    recorded = dynamic_attribute(state, "hedron_bundle_routes")
     if not isinstance(recorded, dict):
         recorded_routes: dict[str, list[object]] = {}
-        state.hedron_bundle_routes = recorded_routes
+        set_dynamic_attribute(state, "hedron_bundle_routes", recorded_routes)
     else:
         recorded_routes = cast(dict[str, list[object]], recorded)
     recorded_routes[logical_id] = list(routes)
@@ -112,19 +132,19 @@ def rollback_materialized(
     routes_snapshot: list[object] | None = None,
     keep_logical_ids: set[str] | None = None,
 ) -> None:
-    app_id = str(getattr(app, "hedron_app_id", "") or "")
-    state = getattr(app, "state", None)
-    handles = getattr(state, "hedron_handles", None)
+    app_id = str(dynamic_attribute(app, "hedron_app_id", "") or "")
+    state = dynamic_attribute(app, "state")
+    handles = dynamic_attribute(state, "hedron_handles")
     preserved = keep_logical_ids or set()
     if routes_snapshot is not None:
         _drop_routes(app, _collect_new_routes(app, routes_snapshot))
     for item in items:
-        ident = getattr(item, "logical_id", None)
+        ident = dynamic_attribute(item, "logical_id")
         if not isinstance(ident, str) or ident in preserved:
             continue
         unregister_handle_descriptor(ident, app_id=app_id)
         if isinstance(handles, dict):
-            cast(dict[str, object], handles).pop(ident, None)
+            _ignored = cast(dict[str, object], handles).pop(ident, None)
 
 
 class _suppress:
@@ -161,30 +181,30 @@ def _is_mcp_exposure(feature: object) -> bool:
 def _apply_optional_exposure(feature: object) -> None:
     if not _is_mcp_exposure(feature):
         return
-    apply = getattr(feature, "apply", None)
+    apply = dynamic_attribute(feature, "apply")
     if callable(apply):
-        apply()
+        _ignored = cast(_NoArgAction, apply)()
 
 
 def _unapply_optional_exposure(feature: object) -> None:
     if not _is_mcp_exposure(feature):
         return
-    unapply = getattr(feature, "unapply", None)
+    unapply = dynamic_attribute(feature, "unapply")
     if callable(unapply):
         with _suppress():
-            unapply()
+            _ignored = cast(_NoArgAction, unapply)()
 
 
 def _undo_included_bundle(app: object, logical_id: str, *, app_id: str) -> None:
     with _suppress():
-        eject_bundle(logical_id, app_id=app_id)
-    state = getattr(app, "state", None)
-    recorded = getattr(state, "hedron_bundles", None)
+        _ignored = eject_bundle(logical_id, app_id=app_id)
+    state = dynamic_attribute(app, "state")
+    recorded = dynamic_attribute(state, "hedron_bundles")
     if isinstance(recorded, dict):
-        cast(dict[str, object], recorded).pop(logical_id, None)
-    exposures = getattr(state, "hedron_mcp_exposures", None)
+        _ignored = cast(dict[str, object], recorded).pop(logical_id, None)
+    exposures = dynamic_attribute(state, "hedron_mcp_exposures")
     if isinstance(exposures, dict):
-        cast(dict[str, object], exposures).pop(logical_id, None)
+        _ignored = cast(dict[str, object], exposures).pop(logical_id, None)
 
 
 def _include_feature(
@@ -215,14 +235,13 @@ def _include_feature(
             )
         )
     resolved = resolve_feature(feature)
-    router = getattr(app, "_root_router", None)
-    snapshot_routes = list(getattr(router, "routes", [])) if router is not None else []
-    app_id = str(getattr(app, "hedron_app_id", "") or "")
+    snapshot_routes = _snapshot_host_routes(app)
+    app_id = str(dynamic_attribute(app, "hedron_app_id", "") or "")
     prior_ids = {item.logical_id for item in list_handle_descriptors(app_id=app_id)}
     known: list[str] = []
     for item in included_bundles(app_id=app_id):
         for handle in (*item.views, *item.commands):
-            ident = getattr(handle, "logical_id", None)
+            ident = dynamic_attribute(handle, "logical_id")
             if isinstance(ident, str) and ident:
                 known.append(ident)
     materialized_items: list[object] = []
@@ -232,28 +251,28 @@ def _include_feature(
         live = materialize_feature(resolved, app)
         materialized_items.extend((*live.views, *live.commands))
         caps = dict(capabilities or {})
-        caps.setdefault(live.provider, True)
-        include_bundle(
+        _ignored = caps.setdefault(live.provider, True)
+        _ignored = include_bundle(
             live,
             app_id=app_id,
             capabilities=caps,
             known_logical_ids=known,
         )
         included_id = live.logical_id
-        state = getattr(app, "state", None)
+        state = dynamic_attribute(app, "state")
         if state is not None:
-            recorded = getattr(state, "hedron_bundles", None)
+            recorded = dynamic_attribute(state, "hedron_bundles")
             if not isinstance(recorded, dict):
                 recorded_bundles: dict[str, FeatureBundle] = {}
-                state.hedron_bundles = recorded_bundles
+                set_dynamic_attribute(state, "hedron_bundles", recorded_bundles)
             else:
                 recorded_bundles = cast(dict[str, FeatureBundle], recorded)
             recorded_bundles[live.logical_id] = live
             if _is_mcp_exposure(feature):
-                exposures = getattr(state, "hedron_mcp_exposures", None)
+                exposures = dynamic_attribute(state, "hedron_mcp_exposures")
                 if not isinstance(exposures, dict):
                     recorded_exposures: dict[str, object] = {}
-                    state.hedron_mcp_exposures = recorded_exposures
+                    set_dynamic_attribute(state, "hedron_mcp_exposures", recorded_exposures)
                 else:
                     recorded_exposures = cast(dict[str, object], exposures)
                 recorded_exposures[live.logical_id] = feature
@@ -306,11 +325,11 @@ def include_feature(
 
 def _explain_feature(app: object, logical_id: str) -> dict[str, object]:
     """Return a redacted ``hedron.feature-explanation/1`` mapping for an included feature."""
-    app_id = str(getattr(app, "hedron_app_id", "") or "")
+    app_id = str(dynamic_attribute(app, "hedron_app_id", "") or "")
     matches = [item for item in included_bundles(app_id=app_id) if item.logical_id == logical_id]
     if not matches:
-        state = getattr(app, "state", None)
-        recorded = getattr(state, "hedron_bundles", None)
+        state = dynamic_attribute(app, "state")
+        recorded = dynamic_attribute(state, "hedron_bundles")
         if isinstance(recorded, dict) and logical_id in recorded:
             candidate = cast(dict[str, object], recorded)[logical_id]
             if isinstance(candidate, FeatureBundle):
@@ -350,7 +369,7 @@ def _eject_feature(
     When ``output`` is set, writes ``explicit.py`` and ``source_map.json`` under that
     project-local directory (schema ``hedron.feature-source-map/1``).
     """
-    app_id = str(getattr(app, "hedron_app_id", "") or "")
+    app_id = str(dynamic_attribute(app, "hedron_app_id", "") or "")
     bundle = eject_bundle(logical_id, app_id=app_id)
     source = eject_source(bundle)
     if surface is not None:
@@ -359,35 +378,35 @@ def _eject_feature(
             f"# Selected surface: {surface!r}\n"
             f"# Remaining surfaces were omitted from this ejection selection.\n"
         )
-    state = getattr(app, "state", None)
-    recorded = getattr(state, "hedron_bundles", None)
+    state = dynamic_attribute(app, "state")
+    recorded = dynamic_attribute(state, "hedron_bundles")
     if isinstance(recorded, dict):
-        cast(dict[str, object], recorded).pop(logical_id, None)
-    exposures = getattr(state, "hedron_mcp_exposures", None)
+        _ignored = cast(dict[str, object], recorded).pop(logical_id, None)
+    exposures = dynamic_attribute(state, "hedron_mcp_exposures")
     exposure: object | None = (
         cast(dict[str, object], exposures).pop(logical_id, None)
         if isinstance(exposures, dict)
         else None
     )
     _unapply_optional_exposure(exposure)
-    routes_map = getattr(state, "hedron_bundle_routes", None)
+    routes_map = dynamic_attribute(state, "hedron_bundle_routes")
     extra: list[object] = (
         cast(dict[str, list[object]], routes_map).pop(logical_id, [])
         if isinstance(routes_map, dict)
         else []
     )
     _drop_routes(app, extra)
-    handles = getattr(state, "hedron_handles", None)
+    handles = dynamic_attribute(state, "hedron_handles")
     if isinstance(handles, dict):
         for item in (*bundle.views, *bundle.commands):
-            ident = getattr(item, "logical_id", None)
+            ident = dynamic_attribute(item, "logical_id")
             if isinstance(ident, str):
-                cast(dict[str, object], handles).pop(ident, None)
+                _ignored = cast(dict[str, object], handles).pop(ident, None)
     if output is not None:
         cwd = Path.cwd().resolve()
         out_dir = Path(output).expanduser().resolve()
         try:
-            out_dir.relative_to(cwd)
+            _ignored = out_dir.relative_to(cwd)
         except ValueError as exc:
             raise FeatureConflictError(
                 make_diagnostic(
@@ -437,7 +456,7 @@ def _eject_feature(
                         remediation="Pass overwrite=True or choose an empty output directory.",
                     )
                 )
-        dest.write_text(source, encoding="utf-8")
+        _ignored = dest.write_text(source, encoding="utf-8")
         rel_files = ["explicit.py", "source_map.json"]
         source_map = source_map_for(
             feature_id=logical_id,
@@ -445,9 +464,11 @@ def _eject_feature(
             files=rel_files,
             facade_source=source,
             catalog_payload=[item.namespace for item in bundle.projections],
-            scenario_payload=tuple(getattr(item, "name", repr(item)) for item in bundle.scenarios),
+            scenario_payload=tuple(
+                str(dynamic_attribute(item, "name", repr(item))) for item in bundle.scenarios
+            ),
         )
-        map_path.write_text(
+        _ignored = map_path.write_text(
             json.dumps(source_map.to_mapping(), indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
         )

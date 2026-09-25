@@ -11,12 +11,10 @@ from decimal import Decimal
 from enum import Enum
 from typing import (
     Annotated,
-    Any,
     Literal,
     TypeGuard,
     Union,
     cast,
-    get_args,
     get_origin,
     get_type_hints,
 )
@@ -52,6 +50,16 @@ from hedron_core.type_schema import (
     stable_fingerprint,
 )
 from hedron_core.typing_aliases import JsonObject, JsonValue
+from hedron_core.typing_support import (
+    closure_cell_value,
+    field_default,
+    field_metadata,
+    model_config,
+    parameter_annotation,
+    parameter_default,
+    signature_return_annotation,
+    type_arguments,
+)
 from hedron_core.updates import BindingPlan
 
 __all__ = ["CompiledTypeHandler", "TypeNormalizer", "inspect_handler"]
@@ -99,7 +107,7 @@ class CompiledTypeHandler:
     injected_names: frozenset[str]
     declared_refresh_ids: tuple[str, ...]
     declared_update_ids: tuple[str, ...]
-    outcomes: OutcomeMap[Any] | None
+    outcomes: OutcomeMap[object] | None
     adapter: PydanticBindingAdapter | None
     schema: TypeSchema | None
     form_encoding: str | None = None
@@ -123,13 +131,13 @@ class TypeNormalizer:
 
     def inspect(
         self,
-        fn: Callable[..., Any],
+        fn: Callable[..., object],
         *,
         kind: str,
         path: str | None = None,
         handler_name: str = "",
         fallback: str | None = None,
-        outcomes: OutcomeMap[Any] | None = None,
+        outcomes: OutcomeMap[object] | None = None,
     ) -> CompiledTypeHandler:
         hints = _safe_hints(fn)
         signature = inspect.signature(fn)
@@ -137,7 +145,9 @@ class TypeNormalizer:
         view_hits, form_hits, _extra_plain = _collect_boundary_hits(
             signature, hints, kind=kind, injected=injected
         )
-        refreshes, updates = _return_effects(hints.get("return", signature.return_annotation))
+        refreshes, updates = _return_effects(
+            hints.get("return", signature_return_annotation(signature))
+        )
         class_refresh, class_update = _class_effect_ids(fn)
         if _is_unmodeled(
             view_hits,
@@ -183,7 +193,7 @@ class TypeNormalizer:
         )
         effect: str = "declared" if (declared_refresh or declared_update) else "dynamic"
         if outcomes is not None:
-            return_annotation = hints.get("return", signature.return_annotation)
+            return_annotation = hints.get("return", signature_return_annotation(signature))
             if return_annotation is not inspect.Parameter.empty:
                 outcomes.validate_union(return_annotation)
         schema = None
@@ -240,7 +250,7 @@ def _collect_boundary_hits(
     form_hits: list[tuple[str, type[BaseModel], FormBody]] = []
     extra_plain: list[str] = []
     for name, parameter in signature.parameters.items():
-        annotation = hints.get(name, parameter.annotation)
+        annotation = hints.get(name, parameter_annotation(parameter))
         base, metadata = _split_annotated(annotation)
         sources = [item for item in metadata if isinstance(item, (ViewParams, FormBody))]
         if len(sources) > 1:
@@ -307,7 +317,7 @@ def _is_unmodeled(
     form_hits: Sequence[object],
     refreshes: Refreshes | None,
     updates: Updates | None,
-    outcomes: OutcomeMap[Any] | None,
+    outcomes: OutcomeMap[object] | None,
     class_refresh: tuple[str, ...],
     class_update: tuple[str, ...],
 ) -> bool:
@@ -329,7 +339,7 @@ def _unmodeled_handler(
     injected: frozenset[str],
     refreshes: Refreshes | None,
     updates: Updates | None,
-    outcomes: OutcomeMap[Any] | None,
+    outcomes: OutcomeMap[object] | None,
 ) -> CompiledTypeHandler:
     return CompiledTypeHandler(
         modeled=False,
@@ -404,7 +414,7 @@ def _build_type_schema(
     effect: str,
     declared_refresh: tuple[str, ...],
     declared_update: tuple[str, ...],
-    outcomes: OutcomeMap[Any] | None,
+    outcomes: OutcomeMap[object] | None,
 ) -> TypeSchema:
     field_paths: list[Mapping[str, JsonValue]] = [
         {
@@ -459,13 +469,13 @@ def _build_type_schema(
 
 
 def inspect_handler(
-    fn: Callable[..., Any],
+    fn: Callable[..., object],
     *,
     kind: str,
     path: str | None = None,
     handler_name: str = "",
     fallback: str | None = None,
-    outcomes: OutcomeMap[Any] | None = None,
+    outcomes: OutcomeMap[object] | None = None,
 ) -> CompiledTypeHandler:
     return TypeNormalizer().inspect(
         fn,
@@ -482,7 +492,7 @@ def _safe_hints(fn: Callable[..., object]) -> dict[str, object]:
     if fn.__closure__:
         for name, cell in zip(fn.__code__.co_freevars, fn.__closure__, strict=True):
             try:
-                namespace[name] = cell.cell_contents
+                namespace[name] = closure_cell_value(cell)
             except ValueError:
                 continue
     frame = inspect.currentframe()
@@ -492,10 +502,13 @@ def _safe_hints(fn: Callable[..., object]) -> dict[str, object]:
         frame = frame.f_back
         depth += 1
     try:
-        return get_type_hints(fn, globalns=namespace, localns=namespace, include_extras=True)
+        return cast(
+            dict[str, object],
+            get_type_hints(fn, globalns=namespace, localns=namespace, include_extras=True),
+        )
     except (NameError, TypeError, AttributeError, RecursionError):
         try:
-            return get_type_hints(fn, include_extras=True)
+            return cast(dict[str, object], get_type_hints(fn, include_extras=True))
         except (NameError, TypeError, AttributeError, RecursionError):
             return dict(getattr(fn, "__annotations__", {}) or {})
 
@@ -503,12 +516,12 @@ def _safe_hints(fn: Callable[..., object]) -> dict[str, object]:
 def _split_annotated(annotation: object) -> tuple[object, tuple[object, ...]]:
     origin = get_origin(annotation)
     if origin is Annotated:
-        args = get_args(annotation)
-        return args[0], tuple(args[1:])
+        typed_args = type_arguments(annotation)
+        return typed_args[0], tuple(typed_args[1:])
     return annotation, ()
 
 
-def _safe_issubclass(annotation: object, parent: type[Any]) -> bool:
+def _safe_issubclass(annotation: object, parent: type[object]) -> bool:
     """Check subclass relationships without crashing on generic aliases.
 
     Python 3.10 reports parameterized aliases such as ``list[UploadFile]`` as
@@ -536,16 +549,17 @@ def _injected_names(signature: inspect.Signature, hints: Mapping[str, object]) -
         if name in {"request", "websocket", "self", "cls"}:
             names.add(name)
             continue
-        annotation = hints.get(name, parameter.annotation)
+        annotation = hints.get(name, parameter_annotation(parameter))
         if annotation is Request or _safe_issubclass(annotation, Request):
             names.add(name)
             continue
-        if isinstance(parameter.default, DependsParam):
+        default = parameter_default(parameter)
+        if isinstance(default, DependsParam):
             names.add(name)
             continue
         from hedron.type_authoring.depends import DependsOn
 
-        if isinstance(parameter.default, DependsOn):
+        if isinstance(default, DependsOn):
             names.add(name)
             continue
         _, metadata = _split_annotated(annotation)
@@ -680,8 +694,9 @@ def _walk_model(
                 remediation="Remove the field or provide an explicit full-form override.",
             )
         required = info.is_required()
-        if not required and info.default is not PydanticUndefined:
-            default = info.default
+        raw_default = field_default(info)
+        if not required and raw_default is not PydanticUndefined:
+            default = raw_default
         else:
             default = inspect.Parameter.empty
         kind = getattr(control, "kind", None) if control is not None else None
@@ -724,14 +739,14 @@ def _walk_model(
 def _nested_model_type(annotation: object) -> type[BaseModel] | None:
     origin = get_origin(annotation)
     if origin is Annotated:
-        args = get_args(annotation)
+        args = type_arguments(annotation)
         if args:
             return _nested_model_type(args[0])
         return None
     if _is_model(annotation):
         return annotation
     if _is_union(origin) or str(type(annotation)) == "<class 'types.UnionType'>":
-        for item in get_args(annotation):
+        for item in type_arguments(annotation):
             if item is not type(None) and _is_model(item):
                 return item
     return None
@@ -740,7 +755,7 @@ def _nested_model_type(annotation: object) -> type[BaseModel] | None:
 def _field_markers(info: FieldInfo) -> tuple[bool, bool, object]:
     from hedron.type_authoring.markers import Control
 
-    metadata = tuple(info.metadata or ())
+    metadata = field_metadata(info)
     sensitive = any(isinstance(item, Sensitive) for item in metadata)
     identity = any(isinstance(item, InstanceKey) and item.include for item in metadata)
     controls = [item for item in metadata if isinstance(item, Control)]
@@ -841,7 +856,7 @@ def _resolve_encoding(source: FormBody, fields: Sequence[FieldRecord]) -> str:
 def _union_count(annotation: object) -> int:
     origin = get_origin(annotation)
     if _is_union(origin) or isinstance(annotation, type(int | str)):
-        args = [item for item in get_args(annotation) if item is not type(None)]
+        args = [item for item in type_arguments(annotation) if item is not type(None)]
         return len(args)
     return 0
 
@@ -850,10 +865,10 @@ def _inventory_disposition(annotation: object, *, depth: int) -> tuple[str, bool
     runtime_annotation = _runtime_object(annotation)
     model_annotation = _runtime_object(annotation)
     origin = get_origin(annotation)
-    args = get_args(annotation)
+    args = type_arguments(annotation)
     if origin is Annotated:
         return _inventory_disposition(args[0], depth=depth)
-    if annotation is Any:
+    if annotation is object:
         return "rejected", False
     if annotation is dict or origin is dict:
         return "rejected", False
@@ -871,7 +886,7 @@ def _inventory_disposition(annotation: object, *, depth: int) -> tuple[str, bool
             return "supported", False
         return "override_only", False
     if origin is list or origin is set or origin is tuple:
-        inner = args[0] if args else Any
+        inner = args[0] if args else object
         if _is_model(inner):
             return "override_only", False
         disp, is_file = _inventory_disposition(inner, depth=depth)
@@ -897,7 +912,7 @@ def _inventory_disposition(annotation: object, *, depth: int) -> tuple[str, bool
     return "rejected", False
 
 
-_SCALARS: frozenset[type[Any]] = frozenset(
+_SCALARS: frozenset[type[object]] = frozenset(
     {str, int, float, bool, Decimal, date, time, datetime, UUID}
 )
 
@@ -919,7 +934,7 @@ def _model_config(model_type: type[BaseModel]) -> JsonObject:
             "required": info.is_required(),
             "alias": info.alias,
         }
-    config = getattr(model_type, "model_config", {}) or {}
+    config = model_config(model_type)
     return {
         "qualname": getattr(model_type, "__qualname__", model_type.__name__),
         "extra": str(config.get("extra", "")),

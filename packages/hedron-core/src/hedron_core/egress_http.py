@@ -6,8 +6,10 @@ import http.client
 import socket
 import ssl
 from collections.abc import Iterable, Mapping
-from typing import Any, cast
+from typing import Protocol, cast
 from urllib.parse import urlsplit, urlunsplit
+
+from typing_extensions import override
 
 from hedron_core.egress import (
     EgressDecision,
@@ -16,6 +18,22 @@ from hedron_core.egress import (
 )
 
 _SINGLETON_HEADERS = frozenset({"content-encoding", "content-length", "content-type", "location"})
+
+
+class _ConnectionWithSocket(Protocol):
+    sock: socket.socket | None
+
+
+class _SocketWithPeerAddress(Protocol):
+    def getpeername(self) -> tuple[object, ...]: ...
+
+
+class _TunnelableConnection(_ConnectionWithSocket, Protocol):
+    def _tunnel(self) -> None: ...
+
+
+class _TransportErrorFactory(Protocol):
+    def __call__(self, reason: str, *, retryable: bool) -> EgressTransportError: ...
 
 
 class _PinnedHTTPSConnection(http.client.HTTPSConnection):
@@ -34,12 +52,14 @@ class _PinnedHTTPSConnection(http.client.HTTPSConnection):
         self._validated_address = address
         self._validated_context = context
 
+    @override
     def connect(self) -> None:
-        self.sock = socket.create_connection(
+        sock = socket.create_connection(
             (self._validated_address, self.port),
             self.timeout,
         )
-        self.sock = self._validated_context.wrap_socket(self.sock, server_hostname=self.host)
+        self.sock = sock
+        self.sock = self._validated_context.wrap_socket(sock, server_hostname=self.host)
 
 
 class _PinnedProxyHTTPSConnection(http.client.HTTPSConnection):
@@ -61,13 +81,19 @@ class _PinnedProxyHTTPSConnection(http.client.HTTPSConnection):
         self._validated_context = context
         self.set_tunnel(hostname, port=port)
 
+    @override
     def connect(self) -> None:
-        self.sock = socket.create_connection(
+        sock = socket.create_connection(
             (self._proxy_address, self._proxy_port),
             self.timeout,
         )
-        cast(Any, self)._tunnel()
-        self.sock = self._validated_context.wrap_socket(self.sock, server_hostname=self.host)
+        self.sock = sock
+        connection = cast(_TunnelableConnection, self)
+        connection._tunnel()
+        tunnel_sock = connection.sock
+        if tunnel_sock is None:
+            raise OSError("HTTP proxy tunnel did not establish a socket")
+        self.sock = self._validated_context.wrap_socket(tunnel_sock, server_hostname=self.host)
 
 
 class StdlibEgressTransport:
@@ -84,7 +110,7 @@ class StdlibEgressTransport:
         chunk_size: int = 65_536,
         user_agent: str = "hedron-egress/1",
     ) -> None:
-        raw_chunk_size = cast(Any, chunk_size)
+        raw_chunk_size = cast(object, chunk_size)
         if (
             isinstance(raw_chunk_size, bool)
             or not isinstance(raw_chunk_size, int)
@@ -136,11 +162,15 @@ class StdlibEgressTransport:
                 headers=headers,
                 encode_chunked=False,
             )
-            sock = connection.sock
+            sock = cast(_ConnectionWithSocket, connection).sock
             if sock is None:
-                raise EgressTransportError("transport_peer_unavailable", retryable=True)
-            peer = str(sock.getpeername()[0])
-            sock.settimeout(decision.read_deadline_seconds)
+                transport_error = cast(
+                    _TransportErrorFactory,
+                    cast(object, EgressTransportError),
+                )
+                raise transport_error("transport_peer_unavailable", retryable=True)
+            peer = str(cast(_SocketWithPeerAddress, sock).getpeername()[0])
+            _ignored = sock.settimeout(decision.read_deadline_seconds)
             response = connection.getresponse()
             response_headers = _response_headers(response)
         except EgressTransportError:

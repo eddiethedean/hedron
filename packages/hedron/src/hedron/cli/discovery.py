@@ -6,11 +6,11 @@ import importlib
 import sys
 from functools import lru_cache
 from pathlib import Path
-from typing import Any
 
 from hedron.config import HedronSettings
 from hedron_core.compat import tomllib
 from hedron_core.registry import ComponentMeta, get_registry
+from hedron_core.typing_support import dynamic_attribute
 
 
 @lru_cache(maxsize=1)
@@ -57,22 +57,22 @@ def scaffold_dep(package: str) -> str:
     return f"{package}>={floor},<{ceiling}"
 
 
-def load_app(app_path: str | None) -> Any | None:
+def load_app(app_path: str | None) -> object | None:
     if not app_path:
         return None
     if ":" not in app_path:
         raise SystemExit("--app must look like 'module.path:attribute'")
     module_name, attr = app_path.split(":", 1)
     module = importlib.import_module(module_name)
-    target: Any = module
+    target: object = module
     for part in attr.split("."):
-        target = getattr(target, part)
+        target = dynamic_attribute(target, part)
     if _should_invoke_app_factory(target):
         target = target()
     return target
 
 
-def _should_invoke_app_factory(target: Any) -> bool:
+def _should_invoke_app_factory(target: object) -> bool:
     """Invoke only ASGI/Starlette factories, not Flask apps or WSGI callables."""
     if not callable(target):
         return False
@@ -98,7 +98,7 @@ def registry_empty_hint(*, app: str | None, what: str) -> None:
         return
     print(
         f"No {what} found. Pass --app module:attr to load an application "
-        "before inspecting the registry.",
+        + "before inspecting the registry.",
         file=sys.stderr,
     )
 
@@ -112,10 +112,10 @@ def apply_project_discovery(base: Path | None = None) -> HedronSettings:
     root = (base or Path.cwd()).resolve()
     settings = load_hedron_settings(root)
     discovered = discover_component_folders(settings.resolved_roots(base=root))
-    apply_discovery_to_registry(discovered)
+    _ignored = apply_discovery_to_registry(discovered)
     if settings.plugins is not None:
         try:
-            load_plugins(enabled=list(settings.plugins))
+            _ignored = load_plugins(enabled=list(settings.plugins))
         except Exception as exc:
             print(f"Plugin load failed: {exc}", file=sys.stderr)
             raise SystemExit(1) from exc

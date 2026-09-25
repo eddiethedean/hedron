@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass, field
-from typing import Any
 
 from hedron_core.compat import StrEnum
 from hedron_core.diagnostics import HedronError
@@ -70,7 +69,7 @@ class PublishedRevision:
     published_at: float
     publisher: str
     immutable: bool = True
-    snapshot: Mapping[str, Any] = field(default_factory=dict[str, Any])
+    snapshot: Mapping[str, object] = field(default_factory=dict[str, object])
 
 
 @dataclass(frozen=True, slots=True)
@@ -78,7 +77,7 @@ class WorkflowEditorView:
     """Non-spatial structured editor: list / outline / table rows."""
 
     mode: str  # "list" | "outline" | "table"
-    rows: tuple[Mapping[str, Any], ...]
+    rows: tuple[Mapping[str, object], ...]
 
 
 @dataclass(frozen=True, slots=True)
@@ -87,9 +86,9 @@ class WorkflowNodeResult:
 
     node_id: str
     status: str  # "ok" | "skipped" | "failed" | "cancelled"
-    output: Any = None
+    output: object = None
     error: str | None = None
-    provenance: Mapping[str, Any] = field(default_factory=dict[str, Any])
+    provenance: Mapping[str, object] = field(default_factory=dict[str, object])
 
 
 @dataclass(frozen=True, slots=True)
@@ -99,7 +98,7 @@ class WorkflowRunResult:
     workflow_id: str
     status: str  # "completed" | "partial" | "cancelled" | "failed"
     nodes: tuple[WorkflowNodeResult, ...]
-    outputs: Mapping[str, Any] = field(default_factory=dict[str, Any])
+    outputs: Mapping[str, object] = field(default_factory=dict[str, object])
     request_id: str | None = None
 
 

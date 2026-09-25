@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing_extensions import override
 
 from hedron_core.component import Component
 from hedron_core.html import html
@@ -20,10 +20,11 @@ class Callout(Component[CalloutProps]):
     logical_name = "Callout"
     distribution = "hedron-sample-kit"
 
-    def __init__(self, message: str = "Hello from sample kit", **kwargs: Any) -> None:
+    def __init__(self, message: str = "Hello from sample kit", **kwargs: object) -> None:
         super().__init__(CalloutProps(message=message, **kwargs))
 
-    def render(self) -> Any:
+    @override
+    def render(self) -> object:
         return html.div(self.props.message, class_="root")
 
 

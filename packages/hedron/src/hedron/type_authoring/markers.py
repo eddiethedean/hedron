@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from hedron_core.codes import HED_TYPE_0005, HED_TYPE_0006
 from hedron_core.diagnostics import error
@@ -116,10 +116,10 @@ def _logical_ids(targets: Sequence[object]) -> tuple[str, ...]:
 
 @dataclass(frozen=True, slots=True)
 class Refreshes:
-    targets: tuple[Any, ...]
+    targets: tuple[object, ...]
     target_ids: tuple[str, ...]
 
-    def __init__(self, *targets: FragmentHandle[Any, Any] | BoundFragment[Any]) -> None:
+    def __init__(self, *targets: FragmentHandle[object, object] | BoundFragment[object]) -> None:
         ids = _logical_ids(targets)
         if len(ids) > MAX_REFRESH_TARGETS:
             raise error(
@@ -134,10 +134,10 @@ class Refreshes:
 
 @dataclass(frozen=True, slots=True)
 class Updates:
-    targets: tuple[Any, ...]
+    targets: tuple[object, ...]
     target_ids: tuple[str, ...]
 
-    def __init__(self, *targets: FragmentHandle[Any, Any] | BoundFragment[Any]) -> None:
+    def __init__(self, *targets: FragmentHandle[object, object] | BoundFragment[object]) -> None:
         ids = _logical_ids(targets)
         if len(ids) > MAX_PATCH_TARGETS:
             raise error(

@@ -6,7 +6,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Protocol, cast
 
 from hedron.cli.discovery import find_component as _find_component
 from hedron.cli.discovery import load_app as _load_app
@@ -14,7 +14,15 @@ from hedron.cli.discovery import registry_empty_hint as _registry_empty_hint
 from hedron_core.typing_aliases import JsonObject
 
 
-def accessibility_contract_for(meta: object) -> Any:
+class _InspectArgs(Protocol):
+    component: str
+    app: str | None
+    json: bool
+    manifest: str | None
+    static: str | None
+
+
+def accessibility_contract_for(meta: object) -> object:
     """Prefer curated reviewed contracts; fall back to an unreviewed stub."""
     from hedron_core.a11y import (
         AccessibilityContractCatalog,
@@ -39,24 +47,25 @@ _accessibility_contract_for = accessibility_contract_for
 
 
 def _cmd_inspect(args: argparse.Namespace) -> int:
-    if args.component == "interactions":
+    typed_args = cast(_InspectArgs, cast(object, args))
+    if typed_args.component == "interactions":
         return _cmd_inspect_interactions(args)
-    if args.component == "features":
+    if typed_args.component == "features":
         return _cmd_inspect_features(args)
-    if args.component == "htmx-extensions":
+    if typed_args.component == "htmx-extensions":
         return _cmd_inspect_htmx_extensions(args)
-    _load_app(args.app)
+    _ignored = _load_app(typed_args.app)
     from hedron.config import load_hedron_settings
     from hedron_core.discovery import apply_discovery_to_registry, discover_component_folders
 
     settings = load_hedron_settings(Path.cwd())
     discovered = discover_component_folders(settings.resolved_roots(base=Path.cwd()))
-    apply_discovery_to_registry(discovered)
+    _ignored = apply_discovery_to_registry(discovered)
 
-    meta = _find_component(args.component)
+    meta = _find_component(typed_args.component)
     if meta is None:
-        _registry_empty_hint(app=args.app, what="components")
-        print(f"Component {args.component!r} not found", file=sys.stderr)
+        _registry_empty_hint(app=typed_args.app, what="components")
+        print(f"Component {typed_args.component!r} not found", file=sys.stderr)
         return 1
     contract = accessibility_contract_for(meta)
     payload: JsonObject = {
@@ -84,7 +93,7 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
     try:
         from hedron_explorer.services.catalog import component_payload, find_component
 
-        explorer_meta = find_component(args.component)
+        explorer_meta = find_component(typed_args.component)
         if explorer_meta is not None:
             payload["explorer"] = component_payload(explorer_meta)
     except ImportError:
@@ -105,21 +114,22 @@ def _set_inspect_provenance(payload: JsonObject, *, mode: str) -> None:
 
 
 def _cmd_inspect_interactions(args: argparse.Namespace) -> int:
+    typed_args = cast(_InspectArgs, cast(object, args))
     from hedron.interactions import (
         app_interactions,
         inspect_interactions_static,
     )
     from hedron_core.catalog import compile_interaction_catalog
 
-    as_json = bool(getattr(args, "json", False))
-    manifest = getattr(args, "manifest", None)
-    static_root = getattr(args, "static", None)
+    as_json = typed_args.json
+    manifest = typed_args.manifest
+    static_root = typed_args.static
     if manifest:
         payload = inspect_interactions_static(Path(), manifest=Path(manifest))
     elif static_root:
         payload = inspect_interactions_static(Path(static_root))
-    elif getattr(args, "app", None):
-        app = _load_app(args.app)
+    elif typed_args.app:
+        app = _load_app(typed_args.app)
         catalog = app_interactions(app) if app is not None else compile_interaction_catalog()
         payload = catalog.to_manifest(profile="development").as_mapping()
         _set_inspect_provenance(payload, mode="trusted-app")
@@ -134,8 +144,8 @@ def _cmd_inspect_interactions(args: argparse.Namespace) -> int:
     provenance = payload.get("provenance")
     mode = provenance.get("mode") if isinstance(provenance, dict) else None
     print(
-        f"interactions  fingerprint="
-        f"{payload.get('fingerprint') or payload.get('catalog_fingerprint')}"
+        "interactions  fingerprint="
+        + f"{payload.get('fingerprint') or payload.get('catalog_fingerprint')}"
     )
     print(f"mode={mode} unknown={payload.get('unknown', False)}")
     if not isinstance(entries, list):
@@ -145,18 +155,19 @@ def _cmd_inspect_interactions(args: argparse.Namespace) -> int:
             continue
         print(
             f"  {entry.get('logical_id')}  kind={entry.get('kind')}  "
-            f"descriptor={entry.get('descriptor_fingerprint')}  "
-            f"type={entry.get('type_schema_fingerprint') or 'absent'}"
+            + f"descriptor={entry.get('descriptor_fingerprint')}  "
+            + f"type={entry.get('type_schema_fingerprint') or 'absent'}"
         )
     return 0
 
 
 def _cmd_inspect_features(args: argparse.Namespace) -> int:
+    typed_args = cast(_InspectArgs, cast(object, args))
     from hedron_core.bundles import included_bundles
 
     app_id = None
-    if getattr(args, "app", None):
-        app = _load_app(args.app)
+    if typed_args.app:
+        app = _load_app(typed_args.app)
         app_id = str(getattr(app, "hedron_app_id", "") or "") or None
     bundles = included_bundles(app_id=app_id)
     payload: JsonObject = {
@@ -176,7 +187,7 @@ def _cmd_inspect_features(args: argparse.Namespace) -> int:
             for item in bundles
         ]
     }
-    if bool(getattr(args, "json", False)):
+    if typed_args.json:
         print(json.dumps(payload, indent=2, sort_keys=True))
         return 0
     print(f"features  count={len(bundles)}")
@@ -186,6 +197,7 @@ def _cmd_inspect_features(args: argparse.Namespace) -> int:
 
 
 def _cmd_inspect_htmx_extensions(args: argparse.Namespace) -> int:
+    typed_args = cast(_InspectArgs, cast(object, args))
     from hedron_core.htmx_extensions import catalog_facts
 
     facts = catalog_facts()
@@ -200,13 +212,13 @@ def _cmd_inspect_htmx_extensions(args: argparse.Namespace) -> int:
         "extensions": extensions,
         "executes_untrusted_code": False,
     }
-    if bool(getattr(args, "json", False)):
+    if typed_args.json:
         print(json.dumps(payload, indent=2, sort_keys=True))
         return 0
     print("htmx-extensions  executes_untrusted_code=false")
     for item in extensions:
         print(
             f"  {item['public_id']}  asset={item['asset_name']}  "
-            f"version={item['version']}  hdj={item['hdj_extension_id']}"
+            + f"version={item['version']}  hdj={item['hdj_extension_id']}"
         )
     return 0

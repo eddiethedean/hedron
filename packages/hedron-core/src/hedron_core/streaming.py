@@ -6,7 +6,8 @@ import math
 import time
 from collections.abc import AsyncIterator, Callable, Iterator, Sequence
 from dataclasses import dataclass, field
-from typing import Any
+
+from hedron_core.typing_support import dynamic_attribute
 
 __all__ = [
     "ChunkedList",
@@ -29,11 +30,11 @@ class StreamBudget:
 
     def __post_init__(self) -> None:
         for name in ("max_chunks", "max_chars"):
-            value = getattr(self, name)
+            value = dynamic_attribute(self, name)
             if isinstance(value, bool) or not isinstance(value, int) or value < 1:
                 raise ValueError(f"StreamBudget.{name} must be a positive integer")
         for name in ("deadline_seconds", "chunk_delay_seconds"):
-            value = getattr(self, name)
+            value = dynamic_attribute(self, name)
             if value is None and name == "deadline_seconds":
                 continue
             if (
@@ -51,9 +52,9 @@ class StreamBudget:
 class ChunkedList:
     """Yield HTML list-item chunks for a bounded collection."""
 
-    items: Sequence[Any]
+    items: Sequence[object]
     region_id: str
-    item_html: Callable[[Any, int], str]
+    item_html: Callable[[object, int], str]
     budget: StreamBudget = field(default_factory=StreamBudget)
     fallback_html: str = ""
 

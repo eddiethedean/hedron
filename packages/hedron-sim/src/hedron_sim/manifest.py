@@ -8,7 +8,6 @@ diff the manifest instead of discovering an approximation at demo time.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
 
 from hedron_sim.subset import (
     DECLARED_HX_ATTRS,
@@ -57,7 +56,7 @@ class ManifestEntry:
     def failure_code(self) -> str | None:
         return None if self.supported else HED_SIM_UNSUPPORTED
 
-    def as_dict(self) -> dict[str, Any]:
+    def as_dict(self) -> dict[str, object]:
         return {
             "category": self.category,
             "name": self.name,
@@ -226,7 +225,7 @@ def _build_entries() -> dict[str, tuple[ManifestEntry, ...]]:
 _ENTRIES: dict[str, tuple[ManifestEntry, ...]] = _build_entries()
 
 
-def subset_manifest() -> dict[str, Any]:
+def subset_manifest() -> dict[str, object]:
     """Return the machine-readable declared subset (supported features only)."""
     return {
         "schema_version": SIM_MANIFEST_SCHEMA,
@@ -237,9 +236,9 @@ def subset_manifest() -> dict[str, Any]:
     }
 
 
-def divergence_manifest() -> dict[str, Any]:
+def divergence_manifest() -> dict[str, object]:
     """Return the declared subset plus every explicitly refused feature."""
-    categories: dict[str, Any] = {}
+    categories: dict[str, object] = {}
     for category, rows in _ENTRIES.items():
         categories[category] = {
             "supported": [entry.name for entry in rows if entry.supported],
@@ -265,7 +264,7 @@ def require_supported_feature(category: str, name: str) -> str:
     if category not in _ENTRIES:
         raise UnsupportedSimFeatureError(
             f"hedron-sim has no manifest category {category!r}; "
-            f"declared categories={list(MANIFEST_CATEGORIES)}",
+            + f"declared categories={list(MANIFEST_CATEGORIES)}",
             category=category,
             feature=name,
         )

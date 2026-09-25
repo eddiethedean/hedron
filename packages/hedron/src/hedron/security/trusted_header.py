@@ -11,7 +11,6 @@ the header.
 from __future__ import annotations
 
 from collections.abc import Callable, Collection, Iterable
-from typing import Any
 
 from fastapi import HTTPException, Request, status
 
@@ -52,7 +51,7 @@ class TrustedHeaderIdentity:
         value = raw.strip()
         return value or None
 
-    def dependency(self) -> Callable[..., Any]:
+    def dependency(self) -> Callable[..., object]:
         """FastAPI dependency factory returning the identity string."""
 
         def _dep(request: Request) -> str | None:

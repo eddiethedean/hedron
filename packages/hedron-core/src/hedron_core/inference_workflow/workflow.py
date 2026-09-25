@@ -6,7 +6,7 @@ import time
 from collections import defaultdict, deque
 from collections.abc import Mapping
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from hedron_core.codes import HED_WORKFLOW_0001, HED_WORKFLOW_0002, HED_WORKFLOW_0003
 from hedron_core.diagnostics import error
@@ -45,7 +45,9 @@ class InferenceWorkflow:
         default_factory=dict[str, set[WorkflowPermission]], init=False
     )
     _published: list[PublishedRevision] = field(default_factory=list[PublishedRevision], init=False)
-    _history: list[Mapping[str, Any]] = field(default_factory=list[Mapping[str, Any]], init=False)
+    _history: list[Mapping[str, object]] = field(
+        default_factory=list[Mapping[str, object]], init=False
+    )
     _version: int = field(default=1, init=False)
     _etag: int = field(default=1, init=False)
     _http_exposed: bool = field(default=False, init=False)
@@ -90,7 +92,7 @@ class InferenceWorkflow:
         try:
             self.validate()
         except WorkflowError:
-            self._edges.pop()
+            _ignored = self._edges.pop()
             raise
         self._bump()
 
@@ -228,7 +230,7 @@ class InferenceWorkflow:
 
         return _editor_view(self._nodes, self._edges, mode=mode)
 
-    def to_json(self) -> dict[str, Any]:
+    def to_json(self) -> dict[str, object]:
         return {
             "workflow_id": self.workflow_id,
             "schema_version": self.schema_version,
@@ -268,7 +270,9 @@ class InferenceWorkflow:
             "mcp_exposed": False,
         }
 
-    def from_json(self, data: Mapping[str, Any], *, principal: str, replace: bool = False) -> None:
+    def from_json(
+        self, data: Mapping[str, object], *, principal: str, replace: bool = False
+    ) -> None:
         self.assert_permission(principal, WorkflowPermission.EDIT)
         raw = dict(data)
         # Adversarial: reject host paths / code in JSON
@@ -332,7 +336,7 @@ class InferenceWorkflow:
                 self._edges.clear()
             else:
                 for node in pending_nodes:
-                    self._nodes.pop(node.node_id, None)
+                    _ignored = self._nodes.pop(node.node_id, None)
                 del self._edges[-len(pending_edges) :]
             raise
         self._bump()
@@ -342,14 +346,14 @@ class InferenceWorkflow:
         *,
         principal: str,
         registry: ActionRegistry,
-        inputs: Mapping[str, Any] | None = None,
+        inputs: Mapping[str, object] | None = None,
         policy: InferencePolicy | None = None,
         request_id: str | None = None,
     ) -> WorkflowRunResult:
         """Execute ACTION/MODEL nodes via registered handlers (no graph-hosted code)."""
         self.assert_permission(principal, WorkflowPermission.RUN)
         order = self.topological_order()
-        node_outputs: dict[str, Any] = {}
+        node_outputs: dict[str, object] = {}
         results: list[WorkflowNodeResult] = []
         cancelled = False
         failed = False
@@ -538,10 +542,10 @@ class InferenceWorkflow:
     def _gather_inputs(
         self,
         node_id: str,
-        node_outputs: Mapping[str, Any],
-        seed: Mapping[str, Any],
-    ) -> dict[str, Any]:
-        inbound: dict[str, Any] = {}
+        node_outputs: Mapping[str, object],
+        seed: Mapping[str, object],
+    ) -> dict[str, object]:
+        inbound: dict[str, object] = {}
         for frm, fp, to, tp in self._edges:
             if to != node_id:
                 continue

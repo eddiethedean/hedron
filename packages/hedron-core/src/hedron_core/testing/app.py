@@ -7,6 +7,8 @@ from dataclasses import dataclass, field
 from html.parser import HTMLParser
 from typing import TYPE_CHECKING, cast
 
+from typing_extensions import override
+
 if TYPE_CHECKING:
     from hedron_core.catalog import CatalogEntry, InteractionCatalog
 
@@ -90,6 +92,7 @@ class _MarkCollector(HTMLParser):
         self._chunks: list[str] = []
         self._pos = 0
 
+    @override
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         attr_map = {k: ("" if v is None else v) for k, v in attrs}
         mark = attr_map.get("data-hedron-mark")
@@ -99,6 +102,7 @@ class _MarkCollector(HTMLParser):
         self._pos += len(rendered)
         self._stack.append((tag, attr_map, start, mark))
 
+    @override
     def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         attr_map = {k: ("" if v is None else v) for k, v in attrs}
         mark = attr_map.get("data-hedron-mark")
@@ -108,6 +112,7 @@ class _MarkCollector(HTMLParser):
         if mark is not None:
             self.elements.append(MarkedElement(mark=mark, tag=tag, attrs=attr_map, html=rendered))
 
+    @override
     def handle_endtag(self, tag: str) -> None:
         rendered = f"</{tag}>"
         self._chunks.append(rendered)
@@ -116,26 +121,30 @@ class _MarkCollector(HTMLParser):
             open_tag, attr_map, start, mark = self._stack[idx]
             if open_tag != tag:
                 continue
-            self._stack.pop(idx)
+            _ignored = self._stack.pop(idx)
             if mark is not None:
                 html = "".join(self._chunks)[start : self._pos]
                 self.elements.append(MarkedElement(mark=mark, tag=tag, attrs=attr_map, html=html))
             break
 
+    @override
     def handle_data(self, data: str) -> None:
         self._chunks.append(data)
         self._pos += len(data)
 
+    @override
     def handle_entityref(self, name: str) -> None:
         chunk = f"&{name};"
         self._chunks.append(chunk)
         self._pos += len(chunk)
 
+    @override
     def handle_charref(self, name: str) -> None:
         chunk = f"&#{name};"
         self._chunks.append(chunk)
         self._pos += len(chunk)
 
+    @override
     def handle_comment(self, data: str) -> None:
         chunk = f"<!--{data}-->"
         self._chunks.append(chunk)
@@ -580,7 +589,7 @@ class ModelDemoScenario:
         if self.trust_generated_output:
             raise AssertionError(
                 "ModelDemoScenario refuses to treat generated output as trustworthy "
-                "test data by default; keep trust_generated_output=False"
+                + "test data by default; keep trust_generated_output=False"
             )
         self.synthetic_results[result_id] = dict(payload)
 

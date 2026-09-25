@@ -6,13 +6,14 @@ import argparse
 import json
 from pathlib import Path
 
+from hedron.cli.arguments import string_argument
 from hedron.cli.discovery import scaffold_dep as _scaffold_dep
 
 
 def scaffold_flask(args: argparse.Namespace, dest: Path) -> int:
-    (dest / "pyproject.toml").write_text(
+    _ignored = (dest / "pyproject.toml").write_text(
         f'''[project]
-name = "{args.name}"
+name = "{string_argument(args, "name", "")}"
 version = "0.1.0"
 requires-python = ">=3.10"
 dependencies = [
@@ -26,7 +27,7 @@ component_roots = ["components"]
 ''',
         encoding="utf-8",
     )
-    (dest / "app.py").write_text(
+    _ignored = (dest / "app.py").write_text(
         """import os
 from datetime import datetime, timezone
 
@@ -81,12 +82,12 @@ flask_app = app.flask
 """,
         encoding="utf-8",
     )
-    (dest / "README.md").write_text(
+    _ignored = (dest / "README.md").write_text(
         "# Hedron Flask app\n\n"
-        "Set `HEDRON_SESSION_SECRET` before production. "
-        "Under `HEDRON_ENV=production`, placeholder secrets are refused "
-        "unless listed in `HEDRON_SECURITY_RISK_ACCEPTANCE`.\n\n"
-        "```bash\nuv sync && uv run flask --app app run\n```\n",
+        + "Set `HEDRON_SESSION_SECRET` before production. "
+        + "Under `HEDRON_ENV=production`, placeholder secrets are refused "
+        + "unless listed in `HEDRON_SECURITY_RISK_ACCEPTANCE`.\n\n"
+        + "```bash\nuv sync && uv run flask --app app run\n```\n",
         encoding="utf-8",
     )
     print(

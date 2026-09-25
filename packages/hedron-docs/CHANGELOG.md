@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.1] — 2026-09-25
+
+### Changed
+
+- Adopt strict BasedPyright checks and typed boundaries for code without `Any`.
+
 ## [0.5.0]
 
 - W5: replaced the proving app's bespoke chrome with Hedron AppShell, Brand, and SkipLink.

@@ -63,7 +63,7 @@ def escape_attr(value: str) -> str:
 
 
 def _require_safe_attr_name(name: str) -> None:
-    default_html_policy.require_safe_attr_name(name)
+    _ignored = default_html_policy.require_safe_attr_name(name)
 
 
 def _attr_sort_key(name: str) -> tuple[int, str]:

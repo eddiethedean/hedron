@@ -4,10 +4,11 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Literal
+from typing import Literal
 
 from fastapi import FastAPI
 from fastapi.params import Depends as DependsParam
+from typing_extensions import override
 
 from hedron.app.bootstrap import (
     HedronBootstrapConfig,
@@ -82,7 +83,7 @@ class Hedron(HedronPagesMixin, FastAPI):
 
     def __init__(
         self,
-        *args: Any,
+        *args: object,
         security: SecurityProfileName | str | SecurityPolicy = "standard",
         explorer: ExplorerMode | str | None = None,
         session_secret: str | None = DEFAULT_SESSION_SECRET,
@@ -100,7 +101,7 @@ class Hedron(HedronPagesMixin, FastAPI):
         job_backend: JobBackend | None = None,
         concurrency_config: ConcurrencyConfig | None = None,
         tracing_config: TraceConfig | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         self._hedron_runtime = HedronRuntimeContext.from_defaults()
         if cache_backend is not None:
@@ -121,7 +122,7 @@ class Hedron(HedronPagesMixin, FastAPI):
                     raise ValueError("accent is supported with theme='folio' only")
                 theme = folio_theme(accent=accent)
             resolved_theme, design_system = normalize_theme_selection(theme)
-            kwargs.setdefault(
+            _ignored = kwargs.setdefault(
                 "lifespan",
                 compose_lifespan(
                     user_lifespan,
@@ -148,7 +149,7 @@ class Hedron(HedronPagesMixin, FastAPI):
                 root_path=root_path,
             )
             extensions = tuple(bootstrap_steps) if bootstrap_steps is not None else ()
-            HedronBootstrapper(extension_steps=extensions).bootstrap(self, config)
+            _ignored = HedronBootstrapper(extension_steps=extensions).bootstrap(self, config)
             self.state.hedron_demand_driven_assets = demand_driven_assets
             self.add_middleware(
                 RuntimeContextMiddleware,
@@ -200,7 +201,8 @@ class Hedron(HedronPagesMixin, FastAPI):
             self.state.hedron_application_styles = (*existing, meta.logical_id)
             return meta
 
-    def include_router(self, router: Any, *args: Any, **kwargs: Any) -> None:  # type: ignore[override]
+    @override
+    def include_router(self, router: object, *args: object, **kwargs: object) -> None:  # type: ignore[override]
         # Router inclusion is application-owned registration.  Keep the
         # runtime active for the entire operation so late-registration checks
         # and nested Hedron routers consult this app's builder rather than the

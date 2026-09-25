@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Any, Literal, cast
+from typing import Literal, cast
+
+from typing_extensions import override
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.builtins.appearance import Density, appearance_data, require_choice
@@ -73,10 +75,10 @@ class ConnectorNode(Component[ConnectorNodeProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
-        require_choice(kind, CONNECTOR_KINDS, label="connector kind")
-        require_choice(state, CONNECTOR_STATES, label="connector state")
+        _ignored = require_choice(kind, CONNECTOR_KINDS, label="connector kind")
+        _ignored = require_choice(state, CONNECTOR_STATES, label="connector state")
         if not label.strip():
             raise error(
                 HED_HTML_0006,
@@ -100,6 +102,7 @@ class ConnectorNode(Component[ConnectorNodeProps]):
         self._children = collect_children(*nodes, children=children)
         self._leading = leading
 
+    @override
     def render(self) -> NodeLike:
         heading: list[NodeLike] = []
         if self._leading is not None:
@@ -155,15 +158,25 @@ class ConnectorFlow(Component[ConnectorFlowProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
-        require_choice(direction, ("horizontal", "vertical"), label="connector direction")
-        require_choice(collapse, ("never", "sm", "md", "lg"), label="connector collapse")
-        require_choice(appearance, ("plain", "soft", "raised"), label="connector appearance")
-        require_choice(density, ("compact", "comfortable", "spacious"), label="connector density")
-        require_choice(background, ("none", "grid", "dots"), label="connector background")
-        require_choice(overflow, ("visible", "auto", "scroll"), label="connector overflow")
-        require_choice(min_size, ("none", "sm", "md", "lg"), label="connector min_size")
+        _ignored = require_choice(
+            direction, ("horizontal", "vertical"), label="connector direction"
+        )
+        _ignored = require_choice(collapse, ("never", "sm", "md", "lg"), label="connector collapse")
+        _ignored = require_choice(
+            appearance, ("plain", "soft", "raised"), label="connector appearance"
+        )
+        _ignored = require_choice(
+            density, ("compact", "comfortable", "spacious"), label="connector density"
+        )
+        _ignored = require_choice(
+            background, ("none", "grid", "dots"), label="connector background"
+        )
+        _ignored = require_choice(
+            overflow, ("visible", "auto", "scroll"), label="connector overflow"
+        )
+        _ignored = require_choice(min_size, ("none", "sm", "md", "lg"), label="connector min_size")
         super().__init__(
             ConnectorFlowProps(
                 direction=direction,
@@ -181,6 +194,7 @@ class ConnectorFlow(Component[ConnectorFlowProps]):
         )
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         return html.div(
             *self._children,
@@ -226,7 +240,7 @@ class ConnectorTrack(Component[ConnectorTrackProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             ConnectorTrackProps(
@@ -240,6 +254,7 @@ class ConnectorTrack(Component[ConnectorTrackProps]):
         )
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {
             "id": self.props.id,
@@ -290,12 +305,14 @@ class FlowStep(Component[FlowStepProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
-        require_choice(status, FLOW_STATUSES, label="status")
-        require_choice(kind, FLOW_KINDS, label="kind")
-        require_choice(appearance, ("default", "plain"), label="appearance")
-        require_choice(media_placement, ("trailing", "leading", "above"), label="media_placement")
+        _ignored = require_choice(status, FLOW_STATUSES, label="status")
+        _ignored = require_choice(kind, FLOW_KINDS, label="kind")
+        _ignored = require_choice(appearance, ("default", "plain"), label="appearance")
+        _ignored = require_choice(
+            media_placement, ("trailing", "leading", "above"), label="media_placement"
+        )
         if not label.strip():
             raise error(
                 HED_HTML_0006,
@@ -322,6 +339,7 @@ class FlowStep(Component[FlowStepProps]):
         )
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         status = self.props.status
         body: list[NodeLike] = [
@@ -397,10 +415,10 @@ class ProcessFlow(Component[ProcessFlowProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
-        require_choice(collapse, ("never", "sm", "md", "lg"), label="collapse")
-        require_choice(appearance, ("default", "plain"), label="appearance")
+        _ignored = require_choice(collapse, ("never", "sm", "md", "lg"), label="collapse")
+        _ignored = require_choice(appearance, ("default", "plain"), label="appearance")
         if not label.strip():
             raise error(
                 HED_HTML_0006,
@@ -423,6 +441,7 @@ class ProcessFlow(Component[ProcessFlowProps]):
         )
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         data = {
             "hedron-process-flow": "true",

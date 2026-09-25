@@ -4,12 +4,14 @@ from __future__ import annotations
 
 import html as html_lib
 import logging
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, cast
+from typing import cast
 from urllib.parse import urlencode
 
 from fastapi import HTTPException, Request
 
+from hedron_core.app_state import request_app, request_state, state_value
 from hedron_core.component import Component
 from hedron_core.plugins import ExplorerProvider
 from hedron_core.registry import get_registry
@@ -49,13 +51,20 @@ from hedron_explorer.views.shell import (
 _logger = logging.getLogger("hedron.explorer")
 
 
+def _joined_display_values(value: object, separator: str) -> str:
+    if not isinstance(value, (list, tuple)):
+        return ""
+    values = cast(Sequence[object], value)
+    return separator.join(str(item) for item in values)
+
+
 async def index(request: Request) -> str:
     page = page_components(request)
     rows = "".join(
         f"<tr><td><a href='{component_href(request, c.name)}'>"
-        f"{html_lib.escape(c.name)}</a></td>"
-        f"<td><code>{html_lib.escape(c.logical_id)}</code></td>"
-        f"<td>{html_lib.escape(c.distribution)}</td></tr>"
+        + f"{html_lib.escape(c.name)}</a></td>"
+        + f"<td><code>{html_lib.escape(c.logical_id)}</code></td>"
+        + f"<td>{html_lib.escape(c.distribution)}</td></tr>"
         for c in page.items
     )
     body = f"""
@@ -78,9 +87,9 @@ async def routes_view(request: Request) -> str:
     page = page_routes(request)
     rows = "".join(
         f"<tr><td>{html_lib.escape(r.kind)}</td><td>{html_lib.escape(r.name)}</td>"
-        f"<td><code>{html_lib.escape(r.path)}</code></td>"
-        f"<td>{html_lib.escape(','.join(r.methods))}</td>"
-        f"<td><code>{html_lib.escape(str(dict(r.htmx_inference)))}</code></td></tr>"
+        + f"<td><code>{html_lib.escape(r.path)}</code></td>"
+        + f"<td>{html_lib.escape(','.join(r.methods))}</td>"
+        + f"<td><code>{html_lib.escape(str(dict(r.htmx_inference)))}</code></td></tr>"
         for r in page.items
     )
     body = f"""
@@ -124,16 +133,16 @@ async def graph_view(request: Request) -> str:
         diagnostic=diagnostic if isinstance(diagnostic, str) else None,
     )
     edges_raw = payload.get("edges")
-    edges = cast(list[Any], edges_raw) if isinstance(edges_raw, list) else []
+    edges = cast(list[object], edges_raw) if isinstance(edges_raw, list) else []
     edge_rows: list[str] = []
     for edge in edges:
         if not isinstance(edge, dict):
             continue
-        typed_edge = cast(dict[str, Any], edge)
+        typed_edge = cast(dict[str, object], edge)
         edge_rows.append(
             f"<li>{html_lib.escape(str(typed_edge.get('from')))} → "
-            f"{html_lib.escape(str(typed_edge.get('kind')))} "
-            f"{html_lib.escape(str(typed_edge.get('to')))}</li>"
+            + f"{html_lib.escape(str(typed_edge.get('kind')))} "
+            + f"{html_lib.escape(str(typed_edge.get('to')))}</li>"
         )
     items = "".join(edge_rows)
     return shell(
@@ -152,10 +161,10 @@ async def graph_view(request: Request) -> str:
 async def security_view(request: Request) -> str:
     payload = security_json(request)
     findings_raw = payload.get("findings")
-    findings = cast(list[Any], findings_raw) if isinstance(findings_raw, list) else []
+    findings = cast(list[object], findings_raw) if isinstance(findings_raw, list) else []
     items = "".join(f"<li>{html_lib.escape(str(f))}</li>" for f in findings)
     audit_raw = payload.get("audit_tail")
-    audit = cast(list[Any], audit_raw) if isinstance(audit_raw, list) else []
+    audit = cast(list[object], audit_raw) if isinstance(audit_raw, list) else []
     audit_items = "".join(f"<li><pre>{html_lib.escape(str(entry))}</pre></li>" for entry in audit)
     return shell(
         "Security",
@@ -191,12 +200,12 @@ async def a11y_view(request: Request) -> str:
     shown = page.items
     rows = "".join(
         "<tr>"
-        f"<td>{html_lib.escape(c.component)}</td>"
-        f"<td>{'yes' if c.reviewed else 'stub'}</td>"
-        f"<td>{html_lib.escape(c.native_semantics or '—')}</td>"
-        f"<td>{html_lib.escape(c.keyboard or '—')}</td>"
-        f"<td>{html_lib.escape(c.notes or '—')}</td>"
-        "</tr>"
+        + f"<td>{html_lib.escape(c.component)}</td>"
+        + f"<td>{'yes' if c.reviewed else 'stub'}</td>"
+        + f"<td>{html_lib.escape(c.native_semantics or '—')}</td>"
+        + f"<td>{html_lib.escape(c.keyboard or '—')}</td>"
+        + f"<td>{html_lib.escape(c.notes or '—')}</td>"
+        + "</tr>"
         for c in shown
     )
     sample = render(
@@ -306,13 +315,13 @@ async def cache_view(request: Request) -> str:
     events = cache_page.items
     rows = "".join(
         "<tr>"
-        f"<td>{html_lib.escape(str(e['kind']))}</td>"
-        f"<td><code>{html_lib.escape(str(e['key_fingerprint']))}</code></td>"
-        f"<td>{html_lib.escape(str(e['scope']))}</td>"
-        f"<td>{html_lib.escape(str(e.get('age_ms')))}</td>"
-        f"<td>{html_lib.escape(str(e.get('size')))}</td>"
-        f"<td>{html_lib.escape(str(e.get('detail') or ''))}</td>"
-        "</tr>"
+        + f"<td>{html_lib.escape(str(e['kind']))}</td>"
+        + f"<td><code>{html_lib.escape(str(e['key_fingerprint']))}</code></td>"
+        + f"<td>{html_lib.escape(str(e['scope']))}</td>"
+        + f"<td>{html_lib.escape(str(e.get('age_ms')))}</td>"
+        + f"<td>{html_lib.escape(str(e.get('size')))}</td>"
+        + f"<td>{html_lib.escape(str(e.get('detail') or ''))}</td>"
+        + "</tr>"
         for e in events
     )
     body = f"""
@@ -340,11 +349,11 @@ async def charts_view(request: Request) -> str:
     ]
     rows = "".join(
         "<tr>"
-        f"<td><code>{html_lib.escape(c.name)}</code></td>"
-        f"<td><code>{html_lib.escape(c.distribution)}</code></td>"
-        f"<td>{html_lib.escape(c.accessibility_notes or '')}</td>"
-        f"<td>{'yes' if c.browser_modules else 'no'}</td>"
-        "</tr>"
+        + f"<td><code>{html_lib.escape(c.name)}</code></td>"
+        + f"<td><code>{html_lib.escape(c.distribution)}</code></td>"
+        + f"<td>{html_lib.escape(c.accessibility_notes or '')}</td>"
+        + f"<td>{'yes' if c.browser_modules else 'no'}</td>"
+        + "</tr>"
         for c in chart_components
     )
     assets = "".join(
@@ -385,10 +394,10 @@ async def maps_view(request: Request) -> str:
     ]
     rows = "".join(
         "<tr>"
-        f"<td><code>{html_lib.escape(c.name)}</code></td>"
-        f"<td><code>{html_lib.escape(c.distribution)}</code></td>"
-        f"<td>{html_lib.escape(c.accessibility_notes or '')}</td>"
-        "</tr>"
+        + f"<td><code>{html_lib.escape(c.name)}</code></td>"
+        + f"<td><code>{html_lib.escape(c.distribution)}</code></td>"
+        + f"<td>{html_lib.escape(c.accessibility_notes or '')}</td>"
+        + "</tr>"
         for c in map_components
     )
     assets = "".join(
@@ -426,11 +435,11 @@ async def extensions_view(request: Request) -> str:
     facts = catalog_facts()
     rows = "".join(
         "<tr>"
-        f"<td><code>{html_lib.escape(str(item.get('public_id', '')))}</code></td>"
-        f"<td><code>{html_lib.escape(str(item.get('asset_name', '')))}</code></td>"
-        f"<td>{html_lib.escape(str(item.get('version', '')))}</td>"
-        f"<td><code>{html_lib.escape(str(item.get('hdj_extension_id', '')))}</code></td>"
-        "</tr>"
+        + f"<td><code>{html_lib.escape(str(item.get('public_id', '')))}</code></td>"
+        + f"<td><code>{html_lib.escape(str(item.get('asset_name', '')))}</code></td>"
+        + f"<td>{html_lib.escape(str(item.get('version', '')))}</td>"
+        + f"<td><code>{html_lib.escape(str(item.get('hdj_extension_id', '')))}</code></td>"
+        + "</tr>"
         for item in facts["extensions"]
     )
     body = f"""
@@ -462,11 +471,11 @@ async def data_view(request: Request) -> str:
     ]
     rows = "".join(
         "<tr>"
-        f"<td><code>{html_lib.escape(c.name)}</code></td>"
-        f"<td><code>{html_lib.escape(c.distribution)}</code></td>"
-        f"<td>{html_lib.escape(c.accessibility_notes or '')}</td>"
-        f"<td>{'yes' if c.browser_modules else 'no'}</td>"
-        "</tr>"
+        + f"<td><code>{html_lib.escape(c.name)}</code></td>"
+        + f"<td><code>{html_lib.escape(c.distribution)}</code></td>"
+        + f"<td>{html_lib.escape(c.accessibility_notes or '')}</td>"
+        + f"<td>{'yes' if c.browser_modules else 'no'}</td>"
+        + "</tr>"
         for c in data_components
     )
     sample_schema = (
@@ -536,14 +545,15 @@ def _map_plan_facts_html(request: Request) -> str:
         return "<p>hedron-maps is not installed; MapPlan inspection is unavailable.</p>"
 
     plans: list[MapPlan] = []
-    stored = getattr(getattr(request.app, "state", None), "hedron_map_plans", None)
+    state = request_state(request)
+    stored = state_value(state, "hedron_map_plans")
     if isinstance(stored, (list, tuple)):
         plans.extend(
             item
             for item in cast(list[object] | tuple[object, ...], stored)
             if isinstance(item, MapPlan)
         )
-    single = getattr(getattr(request.app, "state", None), "hedron_map_plan", None)
+    single = state_value(state, "hedron_map_plan")
     if isinstance(single, MapPlan):
         plans.append(single)
     if not plans:
@@ -563,15 +573,15 @@ def _map_plan_facts_html(request: Request) -> str:
         facts = plan_facts(plan)
         rows = "".join(
             "<tr>"
-            f"<th>{html_lib.escape(str(key))}</th>"
-            f"<td><code>{html_lib.escape(str(value))}</code></td>"
-            "</tr>"
+            + f"<th>{html_lib.escape(str(key))}</th>"
+            + f"<td><code>{html_lib.escape(str(value))}</code></td>"
+            + "</tr>"
             for key, value in facts.items()
         )
         blocks.append(
             "<table>"
-            "<thead><tr><th>Fact</th><th>Value</th></tr></thead>"
-            f"<tbody>{rows}</tbody></table>"
+            + "<thead><tr><th>Fact</th><th>Value</th></tr></thead>"
+            + f"<tbody>{rows}</tbody></table>"
         )
     return "<h3>MapPlan facts</h3>" + "".join(blocks)
 
@@ -634,13 +644,13 @@ async def elements_view(request: Request) -> str:
         origin = "first-party" if meta.first_party else "third-party"
         rows.append(
             "<tr>"
-            f'<td><a href="{href}">{html_lib.escape(meta.logical_id)}</a></td>'
-            f"<td>{html_lib.escape(meta.tag_name)}</td>"
-            f"<td>{meta.abi_version}</td>"
-            f"<td>{origin}</td>"
-            f"<td>{events}</td>"
-            f"<td>{parts}</td>"
-            "</tr>"
+            + f'<td><a href="{href}">{html_lib.escape(meta.logical_id)}</a></td>'
+            + f"<td>{html_lib.escape(meta.tag_name)}</td>"
+            + f"<td>{meta.abi_version}</td>"
+            + f"<td>{origin}</td>"
+            + f"<td>{events}</td>"
+            + f"<td>{parts}</td>"
+            + "</tr>"
         )
     empty = '<tr><td colspan="6">No element definitions</td></tr>'
     body = (
@@ -693,7 +703,7 @@ def _collect_hdj_inventory(
     reports: list[JsonObject] = []
     caps: set[str] = set()
     mismatches: list[str] = []
-    project_root = getattr(request.app.state, "hedron_project_root", None)
+    project_root = state_value(request_state(request), "hedron_project_root")
     roots = project_component_roots(request)
     search_roots = list(roots)
     if project_root:
@@ -748,7 +758,7 @@ async def inventory_view(request: Request) -> str:
         return shell(
             "Inventory",
             "<p>Install <code>hedron-jinja</code> (or <code>hedron[jinja]</code>) "
-            "to enable HDJ production inventory.</p>",
+            + "to enable HDJ production inventory.</p>",
             request=request,
             active="inventory",
         )
@@ -776,9 +786,10 @@ async def inventory_view(request: Request) -> str:
 
 
 async def settings_view(request: Request) -> str:
-    theme = getattr(request.app.state, "hedron_theme", None)
-    production = getattr(request.app.state, "hedron_production", None)
-    diff_html = format_diff_html(explorer_diff_report(request.app))
+    app = request_app(request)
+    theme = state_value(app.state, "hedron_theme")
+    production = state_value(app.state, "hedron_production")
+    diff_html = format_diff_html(explorer_diff_report(app))
     body = f"""
     <h2>Settings</h2>
     <dl>
@@ -805,8 +816,8 @@ async def theme_lab_view(request: Request) -> str:
     def options(choices: list[str], selected: str) -> str:
         return "".join(
             f'<option value="{html_lib.escape(choice, quote=True)}"'
-            f"{' selected' if choice == selected else ''}>"
-            f"{html_lib.escape(choice.title())}</option>"
+            + f"{' selected' if choice == selected else ''}>"
+            + f"{html_lib.escape(choice.title())}</option>"
             for choice in choices
         )
 
@@ -828,33 +839,37 @@ async def theme_lab_view(request: Request) -> str:
     )
     export_query = urlencode({**selection, "profile": report["profile"]})
     cards: list[str] = []
-    for theme in cast(list[dict[str, Any]], report["themes"]):
-        validation = cast(dict[str, Any], theme["validation"])
-        spec = cast(dict[str, Any], theme["spec"])
-        tokens = cast(dict[str, Any], spec["tokens"])
+    for theme in cast(list[dict[str, object]], report["themes"]):
+        validation = cast(dict[str, object], theme["validation"])
+        spec = cast(dict[str, object], theme["spec"])
+        tokens = cast(dict[str, object], spec["tokens"])
         rows = "".join(
             f"<tr><th>{html_lib.escape(str(key))}</th><td><code>{html_lib.escape(str(value))}</code></td></tr>"
             for key, value in sorted(tokens.items())
         )
         cards.append(
             "<article class='theme-lab-card' "
-            f"data-theme-lab-theme='{html_lib.escape(str(theme['name']))}'>"
-            f"<h3>{html_lib.escape(str(theme['name']))}</h3>"
+            + f"data-theme-lab-theme='{html_lib.escape(str(theme['name']))}'>"
+            + f"<h3>{html_lib.escape(str(theme['name']))}</h3>"
             + (
                 f"<p>Accent: <strong>{html_lib.escape(str(theme['accent']).title())}</strong></p>"
                 if theme["accent"]
                 else ""
             )
             + f"<p>Validation: <strong>{'pass' if validation['ok'] else 'review'}</strong></p>"
-            f"<p>Modes: {html_lib.escape(', '.join(theme['modes']))}</p>"
-            "<table><thead><tr><th>Token</th><th>Resolved value</th></tr></thead>"
-            f"<tbody>{rows}</tbody></table>"
-            "</article>"
+            + f"<p>Modes: {html_lib.escape(_joined_display_values(theme['modes'], ', '))}</p>"
+            + "<table><thead><tr><th>Token</th><th>Resolved value</th></tr></thead>"
+            + f"<tbody>{rows}</tbody></table>"
+            + "</article>"
         )
+    raw_exercises = report["exercises"]
+    exercise_records = (
+        cast(list[dict[str, object]], raw_exercises) if isinstance(raw_exercises, list) else []
+    )
     exercises = "".join(
         f"<li><strong>{html_lib.escape(str(item['label']))}</strong>: "
-        f"{html_lib.escape('; '.join(item['assertions']))}</li>"
-        for item in report["exercises"]
+        + f"{html_lib.escape(_joined_display_values(item['assertions'], '; '))}</li>"
+        for item in exercise_records
     )
     body = (
         "<h2>Theme Lab</h2>"
@@ -874,7 +889,7 @@ async def theme_lab_view(request: Request) -> str:
 
 
 async def interactions_view(request: Request) -> str:
-    catalog = app_catalog(request.app)
+    catalog = app_catalog(request_app(request))
     page = page_interactions(request, catalog)
     rows: list[str] = []
     for entry in page.items:
@@ -886,8 +901,8 @@ async def interactions_view(request: Request) -> str:
         namespaces = html_lib.escape(", ".join(sorted(entry.projections)) or "none")
         rows.append(
             f"<tr><td>{ident}</td><td>{kind}</td><td>{effect}</td>"
-            f"<td><code>{desc}</code></td><td><code>{schema}</code></td>"
-            f"<td>{namespaces}</td></tr>"
+            + f"<td><code>{desc}</code></td><td><code>{schema}</code></td>"
+            + f"<td>{namespaces}</td></tr>"
         )
     projections = "".join(
         f"<li><code>{html_lib.escape(name)}</code> provider={html_lib.escape(item.provider)}</li>"
@@ -917,7 +932,7 @@ async def interactions_view(request: Request) -> str:
 async def features_view(request: Request) -> str:
     from hedron_core.bundles import included_bundles
 
-    app_id = str(getattr(getattr(request.app, "state", None), "hedron_app_id", "") or "")
+    app_id = str(state_value(request_state(request), "hedron_app_id", "") or "")
     rows: list[str] = []
     for bundle in included_bundles(app_id=app_id or None):
         ident = html_lib.escape(bundle.logical_id)
@@ -934,7 +949,7 @@ async def features_view(request: Request) -> str:
         limitations = html_lib.escape("; ".join(bundle.limitations) or "—")
         rows.append(
             f"<tr><td>{ident}</td><td>{provider}</td><td>{views}</td>"
-            f"<td>{commands}</td><td>{projections}</td><td>{limitations}</td></tr>"
+            + f"<td>{commands}</td><td>{projections}</td><td>{limitations}</td></tr>"
         )
     empty = '<tr><td colspan="6">No FeatureBundles included</td></tr>'
     body = f"""

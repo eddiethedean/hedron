@@ -9,7 +9,6 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "dist" / "evidence-bundle"
@@ -83,16 +82,16 @@ def _run_pip_audit() -> subprocess.CompletedProcess[str]:
         )
 
 
-def _vuln_entries(payload: Any) -> list[dict[str, Any]]:
+def _vuln_entries(payload: object) -> list[dict[str, object]]:
     """Return packages that have non-empty vulns lists."""
-    deps: list[Any]
+    deps: list[object]
     if isinstance(payload, dict):
         deps = list(payload.get("dependencies") or [])
     elif isinstance(payload, list):
         deps = payload
     else:
         return []
-    found: list[dict[str, Any]] = []
+    found: list[dict[str, object]] = []
     for dep in deps:
         if not isinstance(dep, dict):
             continue
@@ -120,7 +119,7 @@ def main() -> int:
         or "command not found" in (proc.stderr or "").lower()
         or proc.returncode == 2
     )
-    payload: Any = []
+    payload: object = []
     if proc.stdout.strip():
         try:
             payload = json.loads(proc.stdout)

@@ -9,7 +9,6 @@ import json
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
 
 from hedron_core import compile_css
 from hedron_core.builtins.layout import Container
@@ -37,8 +36,8 @@ PARSER_CASES = {
 }
 
 
-def parser_probe() -> dict[str, Any]:
-    cases: dict[str, Any] = {}
+def parser_probe() -> dict[str, object]:
+    cases: dict[str, object] = {}
     for name, source in PARSER_CASES.items():
         try:
             if name == "imports":
@@ -71,7 +70,7 @@ def parser_probe() -> dict[str, Any]:
     return {"compiler_format": 2, "cases": cases}
 
 
-def recipe_probe() -> dict[str, Any]:
+def recipe_probe() -> dict[str, object]:
     return {
         "container": {
             "query_default": Container.__init__.__kwdefaults__.get("query"),
@@ -86,7 +85,7 @@ def recipe_probe() -> dict[str, Any]:
     }
 
 
-def browser_probe(browser_name: str) -> dict[str, Any]:
+def browser_probe(browser_name: str) -> dict[str, object]:
     from playwright.sync_api import sync_playwright
 
     with sync_playwright() as playwright:
@@ -140,7 +139,7 @@ def main() -> int:
     parser.add_argument("--browser", choices=sorted(PINNED))
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
-    result: dict[str, Any] = {
+    result: dict[str, object] = {
         "schema": "hedron.css-probe/1",
         "phase": "0.59",
         "generated_at": datetime.now(timezone.utc).isoformat(),

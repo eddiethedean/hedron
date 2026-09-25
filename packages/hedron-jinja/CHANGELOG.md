@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.2] — 2026-09-25
+
+### Changed
+
+- Adopt strict BasedPyright checks and typed boundaries for code without `Any`.
+
 ## [1.1.1] — 2026-09-18
 
 ### Fixed

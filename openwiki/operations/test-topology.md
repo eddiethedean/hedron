@@ -73,7 +73,7 @@ and by the CI/release workflows. Its suites have distinct responsibilities:
 
 - `test` runs the strict full pytest configuration; `coverage` runs a serial,
   branch-aware test pass and checks independent floors for the main packages.
-- `typing` runs the warning-fatal Pyright path; `quality` combines formatting,
+- `typing` runs the all-diagnostics BasedPyright path; `quality` combines formatting,
   linting, workspace/package typing, release-contract checks, docs checks,
   package verification, and optional wheel smoke.
 - `docs` builds strict MkDocs and the documentation ownership, inventory,

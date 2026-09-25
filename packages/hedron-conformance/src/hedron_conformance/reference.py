@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import html as html_stdlib
-from typing import Any, cast
+from typing import cast
 
 from hedron_conformance.normalize import normalize_html, normalize_identity
 from hedron_conformance.schema import Capability, ConformanceFixture, ExpectedOutcome
@@ -17,7 +17,7 @@ def escape_attr(value: str) -> str:
     return html_stdlib.escape(value.replace("\x00", ""), quote=True)
 
 
-def _render_node(node: dict[str, Any]) -> str:
+def _render_node(node: dict[str, object]) -> str:
     kind = node.get("kind")
     if kind == "empty":
         return ""
@@ -29,11 +29,11 @@ def _render_node(node: dict[str, Any]) -> str:
         safe = str(node.get("text", "")).replace("--", " - - ")
         return f"<!--{safe}-->"
     if kind == "fragment":
-        children = cast(list[dict[str, Any]], node.get("children", []))
+        children = cast(list[dict[str, object]], node.get("children", []))
         return "".join(_render_node(child) for child in children)
     if kind == "element":
         tag = str(node.get("tag", "div")).lower()
-        attrs = cast(dict[str, Any], node.get("attributes") or {})
+        attrs = cast(dict[str, object], node.get("attributes") or {})
         attr_parts: list[str] = []
         for name in sorted(attrs.keys()):
             value = attrs[name]
@@ -61,7 +61,7 @@ def _render_node(node: dict[str, Any]) -> str:
         }
         if void:
             return f"<{tag}{attr_str}>"
-        children = cast(list[dict[str, Any]], node.get("children", []))
+        children = cast(list[dict[str, object]], node.get("children", []))
         inner = "".join(_render_node(child) for child in children)
         return f"<{tag}{attr_str}>{inner}</{tag}>"
     raise ValueError(f"unknown node kind: {kind!r}")
@@ -99,15 +99,15 @@ def evaluate_fixture(fixture: ConformanceFixture) -> ExpectedOutcome:
     raise ValueError(f"unsupported fixture capability/kind: {fixture.capability}/{inp.kind}")
 
 
-def _a11y_ok(tree: dict[str, Any]) -> bool:
+def _a11y_ok(tree: dict[str, object]) -> bool:
     """Sound subset: img needs alt; button needs accessible name; duplicate ids fail."""
     seen_ids: set[str] = set()
 
-    def walk(node: dict[str, Any]) -> bool:
+    def walk(node: dict[str, object]) -> bool:
         if node.get("kind") != "element":
             return all(walk(c) for c in node.get("children", []))
         tag = str(node.get("tag", "")).lower()
-        attrs = cast(dict[str, Any], node.get("attributes") or {})
+        attrs = cast(dict[str, object], node.get("attributes") or {})
         element_id = attrs.get("id")
         if isinstance(element_id, str) and element_id in seen_ids:
             return False
@@ -116,14 +116,14 @@ def _a11y_ok(tree: dict[str, Any]) -> bool:
         if tag == "img" and "alt" not in attrs:
             return False
         if tag == "button":
-            children = cast(list[dict[str, Any]], node.get("children") or [])
+            children = cast(list[dict[str, object]], node.get("children") or [])
             text = "".join(
                 str(c.get("text", "")) for c in children if c.get("kind") == "text"
             ).strip()
             aria = attrs.get("aria-label") or attrs.get("aria-labelledby")
             if not text and not aria:
                 return False
-        children = cast(list[dict[str, Any]], node.get("children", []))
+        children = cast(list[dict[str, object]], node.get("children", []))
         return all(walk(child) for child in children)
 
     return walk(tree)

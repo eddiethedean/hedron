@@ -103,7 +103,7 @@ def fingerprint_file(
         dest = output_dir / filename
     output_dir.mkdir(parents=True, exist_ok=True)
     if not dest.exists():
-        shutil.copy2(source, dest)
+        _ignored = shutil.copy2(source, dest)
     content_type = mimetypes.guess_type(filename)[0] or "application/octet-stream"
     return AssetEntry(
         logical_id=logical_id,
@@ -135,7 +135,7 @@ def fingerprint_bytes(
         filename = f"{filename_prefix}.{digest[:24]}{suffix}"
         dest = output_dir / filename
     if not dest.exists():
-        dest.write_bytes(data)
+        _ignored = dest.write_bytes(data)
     return AssetEntry(
         logical_id=logical_id,
         kind=kind,

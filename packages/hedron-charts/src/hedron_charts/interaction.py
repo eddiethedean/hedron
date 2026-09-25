@@ -5,7 +5,7 @@ from __future__ import annotations
 import inspect
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Any, cast
+from typing import cast
 
 from hedron_core.bundles import (
     MAX_CHART_SELECTION_ITEMS,
@@ -83,7 +83,7 @@ class ChartInteraction:
 
     chart: object
     event: str
-    payload: type[Any]
+    payload: type[object]
     command: object
     refreshes: Sequence[object] = ()
     max_items: int = 100
@@ -152,10 +152,10 @@ class ChartInteraction:
             def on_chart_event(payload: object) -> object:
                 typed = payload
                 validator = getattr(payload_type, "model_validate", None)
-                if callable(validator) and not isinstance(payload, cast(Any, payload_type)):
+                if callable(validator) and not isinstance(payload, cast(object, payload_type)):
                     typed = validator(payload)
                 ids_value: object = getattr(typed, "ids", None)
-                ids = cast(list[Any], ids_value) if isinstance(ids_value, list) else []
+                ids = cast(list[object], ids_value) if isinstance(ids_value, list) else []
                 if len(ids) > max_items:
                     copier = getattr(typed, "model_copy", None)
                     if callable(copier):

@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import re
 from collections.abc import Mapping
-from typing import Any, ClassVar, Literal
+from typing import ClassVar, Literal
+
+from typing_extensions import override
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.builtins.appearance import (
@@ -67,7 +69,7 @@ class Container(Component[ContainerProps]):
         max_width: Literal["xs", "sm", "md", "lg", "xl", "full"] | None = None,
         align: Literal["start", "center", "end"] | None = None,
         padding: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if query not in {"none", "inline-size"}:
             raise raise_error(
@@ -90,9 +92,9 @@ class Container(Component[ContainerProps]):
                 explanation="A named container must use query='inline-size'.",
                 remediation="Pass query='inline-size' or omit name.",
             )
-        require_choice(max_width, BOUNDED_WIDTHS, label="max_width")
-        require_choice(align, CONTAINER_ALIGNMENTS, label="align")
-        require_choice(padding, ("none", "sm", "md", "lg"), label="padding")
+        _ignored = require_choice(max_width, BOUNDED_WIDTHS, label="max_width")
+        _ignored = require_choice(align, CONTAINER_ALIGNMENTS, label="align")
+        _ignored = require_choice(padding, ("none", "sm", "md", "lg"), label="padding")
         super().__init__(
             ContainerProps(
                 query=query,
@@ -107,6 +109,7 @@ class Container(Component[ContainerProps]):
         )
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         data: dict[str, str | bool | int | float | None] = {}
         if self.props.query == "inline-size":
@@ -141,11 +144,12 @@ class Stack(Component[StackProps]):
         gap: str = "1rem",
         id: str | None = None,
         class_: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(StackProps(gap=_validated_gap(gap), id=id, class_=class_, **kwargs))
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         return html.div(
             *self._children,
@@ -169,11 +173,12 @@ class Inline(Component[InlineProps]):
         gap: str = "0.5rem",
         id: str | None = None,
         class_: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(InlineProps(gap=_validated_gap(gap), id=id, class_=class_, **kwargs))
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         return html.div(
             *self._children,
@@ -203,7 +208,7 @@ class Grid(Component[GridProps]):
         gap: str = "1rem",
         id: str | None = None,
         class_: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         resolved = normalize_responsive_int(columns, label="columns", maximum=6)
         track_map = None if tracks is None else normalize_responsive_track(tracks, label="tracks")
@@ -219,6 +224,7 @@ class Grid(Component[GridProps]):
         )
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         data: dict[str, str | bool | int | float | None] = {
             "hedron-layout": "grid",
@@ -256,9 +262,9 @@ class GridItem(Component[GridItemProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
-        require_choice(align, GRID_ALIGNS, label="align")
+        _ignored = require_choice(align, GRID_ALIGNS, label="align")
         resolved = normalize_responsive_int(span, label="span", minimum=1, maximum=6)
         super().__init__(
             GridItemProps(
@@ -272,6 +278,7 @@ class GridItem(Component[GridItemProps]):
         )
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         data: dict[str, str | bool | int | float | None] = {
             "hedron-layout": "grid-item",
@@ -295,10 +302,11 @@ class Divider(Component[DividerProps]):
     props_type = DividerProps
 
     def __init__(
-        self, orientation: Literal["horizontal", "vertical"] = "horizontal", **kwargs: Any
+        self, orientation: Literal["horizontal", "vertical"] = "horizontal", **kwargs: object
     ) -> None:
         super().__init__(DividerProps(orientation=orientation, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         if self.props.orientation == "vertical":
             return html.div(role="separator", aria={"orientation": "vertical"})
@@ -324,7 +332,7 @@ class Spacer(Component[SpacerProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             SpacerProps(
@@ -337,6 +345,7 @@ class Spacer(Component[SpacerProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         data: dict[str, str | bool | int | float | None] = {
             "hedron-layout": "spacer",
@@ -411,23 +420,25 @@ class PageHeader(Component[PageHeaderProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
-        require_choice(title_measure, TYPE_MEASURES, label="title_measure")
-        require_choice(description_measure, TYPE_MEASURES, label="description_measure")
-        require_choice(title_effect, TYPE_EFFECTS, label="title_effect")
-        require_choice(description_effect, TYPE_EFFECTS, label="description_effect")
-        require_choice(measure, TYPE_MEASURES, label="measure")
-        require_choice(effect, TYPE_EFFECTS, label="effect")
-        require_choice(title_tracking, TRACKING, label="title_tracking")
-        require_choice(description_tracking, TRACKING, label="description_tracking")
-        require_choice(eyebrow_tracking, TRACKING, label="eyebrow_tracking")
-        require_choice(tracking, TRACKING, label="tracking")
-        require_choice(title_wrap, TEXT_WRAPS, label="title_wrap")
-        require_choice(description_wrap, TEXT_WRAPS, label="description_wrap")
-        require_choice(eyebrow_wrap, TEXT_WRAPS, label="eyebrow_wrap")
-        require_choice(wrap, TEXT_WRAPS, label="wrap")
-        require_choice(eyebrow_tone, ("accent", "muted", "neutral"), label="eyebrow_tone")
+        _ignored = require_choice(title_measure, TYPE_MEASURES, label="title_measure")
+        _ignored = require_choice(description_measure, TYPE_MEASURES, label="description_measure")
+        _ignored = require_choice(title_effect, TYPE_EFFECTS, label="title_effect")
+        _ignored = require_choice(description_effect, TYPE_EFFECTS, label="description_effect")
+        _ignored = require_choice(measure, TYPE_MEASURES, label="measure")
+        _ignored = require_choice(effect, TYPE_EFFECTS, label="effect")
+        _ignored = require_choice(title_tracking, TRACKING, label="title_tracking")
+        _ignored = require_choice(description_tracking, TRACKING, label="description_tracking")
+        _ignored = require_choice(eyebrow_tracking, TRACKING, label="eyebrow_tracking")
+        _ignored = require_choice(tracking, TRACKING, label="tracking")
+        _ignored = require_choice(title_wrap, TEXT_WRAPS, label="title_wrap")
+        _ignored = require_choice(description_wrap, TEXT_WRAPS, label="description_wrap")
+        _ignored = require_choice(eyebrow_wrap, TEXT_WRAPS, label="eyebrow_wrap")
+        _ignored = require_choice(wrap, TEXT_WRAPS, label="wrap")
+        _ignored = require_choice(
+            eyebrow_tone, ("accent", "muted", "neutral"), label="eyebrow_tone"
+        )
         super().__init__(
             PageHeaderProps(
                 title=title,
@@ -461,6 +472,7 @@ class PageHeader(Component[PageHeaderProps]):
         if meta is not None:
             self._slot_values["meta"] = meta
 
+    @override
     def render(self) -> NodeLike:
         from hedron_core.builtins.style_scope import presentation_data
 
@@ -493,7 +505,7 @@ class PageHeader(Component[PageHeaderProps]):
                     },
                 )
             )
-        heading = getattr(html, f"h{self.props.level}")
+        heading = html.tag(f"h{self.props.level}")
         title_data: dict[str, str | bool | int | float | None] = {
             **presentation_data("PageHeader.title")
         }
@@ -579,10 +591,10 @@ class SplitView(Component[SplitViewProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
-        require_choice(ratio, SPLIT_RATIOS, label="ratio")
-        require_choice(collapse, COLLAPSE_BREAKPOINTS, label="collapse")
+        _ignored = require_choice(ratio, SPLIT_RATIOS, label="ratio")
+        _ignored = require_choice(collapse, COLLAPSE_BREAKPOINTS, label="collapse")
         super().__init__(
             SplitViewProps(
                 ratio=ratio,
@@ -598,6 +610,7 @@ class SplitView(Component[SplitViewProps]):
         self._primary = primary
         self._secondary = secondary
 
+    @override
     def render(self) -> NodeLike:
         panes = [
             html.div(self._primary, class_="hedron-split-primary"),
@@ -676,10 +689,10 @@ class MasterDetail(Component[MasterDetailProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
-        require_choice(ratio, SPLIT_RATIOS, label="ratio")
-        require_choice(collapse, COLLAPSE_BREAKPOINTS, label="collapse")
+        _ignored = require_choice(ratio, SPLIT_RATIOS, label="ratio")
+        _ignored = require_choice(collapse, COLLAPSE_BREAKPOINTS, label="collapse")
         if state not in {"ready", "loading", "empty", "error", "permission"}:
             raise raise_error(
                 "HED-HTML-0006",
@@ -713,6 +726,7 @@ class MasterDetail(Component[MasterDetailProps]):
     def fragment_regions(self) -> tuple[str, str]:
         return (self.props.master_id, self.props.detail_id)
 
+    @override
     def render(self) -> NodeLike:
         state = self.props.state
         if state == "loading":
@@ -784,7 +798,7 @@ class FormGrid(Component[FormGridProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         resolved = normalize_responsive_int(columns, label="columns", maximum=4)
         super().__init__(
@@ -801,6 +815,7 @@ class FormGrid(Component[FormGridProps]):
         )
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         data: dict[str, str | bool | int | float | None] = {
             "hedron-layout": "form-grid",
@@ -845,10 +860,10 @@ class ActionGroup(Component[ActionGroupProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
-        require_choice(align, ACTION_ALIGNMENTS, label="align")
-        require_choice(collapse, COLLAPSE_BREAKPOINTS, label="collapse")
+        _ignored = require_choice(align, ACTION_ALIGNMENTS, label="align")
+        _ignored = require_choice(collapse, COLLAPSE_BREAKPOINTS, label="collapse")
         super().__init__(
             ActionGroupProps(
                 label=label,
@@ -864,6 +879,7 @@ class ActionGroup(Component[ActionGroupProps]):
         )
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {
             "id": self.props.id,

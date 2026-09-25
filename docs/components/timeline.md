@@ -38,7 +38,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```text
-Timeline(entries: 'Sequence[tuple[str, str, NodeLike] | dict[str, object]]', *, id: 'str | None' = None, label: 'str' = 'Timeline', class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
+Timeline(entries: 'Sequence[tuple[str, str, NodeLike] | dict[str, object]]', *, id: 'str | None' = None, label: 'str' = 'Timeline', class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |

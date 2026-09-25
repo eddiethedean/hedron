@@ -363,10 +363,10 @@ class Theme:
                     remediation="Use letters, numbers, underscores, and hyphens only.",
                 )
             for key, value in values.items():
-                _validated_token_key(f"mode.{mode}", key)
-                _validated_css_value(f"mode.{mode}", key, value)
+                _ignored = _validated_token_key(f"mode.{mode}", key)
+                _ignored = _validated_css_value(f"mode.{mode}", key, value)
         for variant, values in self.variants.items():
-            _validated_token_key("variant", variant)
+            _ignored = _validated_token_key("variant", variant)
             if not re.fullmatch(r"[A-Za-z0-9_-]+", variant):
                 raise error(
                     HED_THEME_INVALID,
@@ -375,16 +375,16 @@ class Theme:
                     remediation="Use letters, numbers, underscores, and hyphens only.",
                 )
             for key, value in values.items():
-                _validated_token_key(f"variant.{variant}", key)
-                _validated_css_value(f"variant.{variant}", key, value)
+                _ignored = _validated_token_key(f"variant.{variant}", key)
+                _ignored = _validated_css_value(f"variant.{variant}", key, value)
         for field_name, mapping in (
             ("palette", self.palette),
             ("shape", self.shape),
             ("elevation", self.elevation),
         ):
             for key, value in mapping.items():
-                _validated_token_key(field_name, key)
-                _validated_css_value(field_name, key, value)
+                _ignored = _validated_token_key(field_name, key)
+                _ignored = _validated_css_value(field_name, key, value)
         if self.density is not None and self.density not in THEME_DENSITIES:
             raise error(
                 HED_THEME_INVALID,
@@ -469,8 +469,8 @@ class Theme:
                     remediation="Use 'forced-colors' or 'more-contrast'.",
                 )
             for key, value in values.items():
-                _validated_token_key(f"accessibility.{mode}", key)
-                _validated_css_value(f"accessibility.{mode}", key, value)
+                _ignored = _validated_token_key(f"accessibility.{mode}", key)
+                _ignored = _validated_css_value(f"accessibility.{mode}", key, value)
 
     def extend(
         self,
@@ -1130,7 +1130,7 @@ def emit_theme_css(theme: Theme) -> str:
         lines.append("  }")
         lines.append(
             f'  [data-hedron-theme="{theme.name}"]:not([data-theme="light"])'
-            f':not([data-hedron-color-mode="light"]) {{'
+            + ':not([data-hedron-color-mode="light"]) {'
         )
         for key, value in sorted(dark_tokens.items()):
             lines.append(f"    {_token_to_css_var(key)}: {value};")
@@ -1146,7 +1146,7 @@ def emit_theme_css(theme: Theme) -> str:
         lines.append("}")
         lines.append(
             f'[data-hedron-theme="{theme.name}"][data-theme="dark"], '
-            f'[data-hedron-theme="{theme.name}"][data-hedron-color-mode="dark"] {{'
+            + f'[data-hedron-theme="{theme.name}"][data-hedron-color-mode="dark"] {{'
         )
         for key, value in sorted(dark_tokens.items()):
             lines.append(f"  {_token_to_css_var(key)}: {value};")
@@ -1162,7 +1162,7 @@ def emit_theme_css(theme: Theme) -> str:
         lines.append("}")
         lines.append(
             f'[data-hedron-theme="{theme.name}"][data-theme="light"], '
-            f'[data-hedron-theme="{theme.name}"][data-hedron-color-mode="light"] {{'
+            + f'[data-hedron-theme="{theme.name}"][data-hedron-color-mode="light"] {{'
         )
         for key, value in sorted(emitted_tokens.items()):
             lines.append(f"  {_token_to_css_var(key)}: {value};")
@@ -1239,7 +1239,7 @@ def ensure_builtin_themes_registered() -> tuple[Theme, ...]:
 
 def ensure_default_theme_registered() -> Theme:
     """Register built-in themes and return the backwards-compatible default."""
-    ensure_builtin_themes_registered()
+    _ignored = ensure_builtin_themes_registered()
     return default_theme()
 
 

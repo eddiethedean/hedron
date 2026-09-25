@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.6] — 2026-09-25
+
+### Changed
+
+- Adopt strict BasedPyright checks and typed boundaries for code without `Any`.
+
 ## [0.2.5] — 2026-09-18
 
 - Release the updated simulation stylesheet as a new immutable package artifact.

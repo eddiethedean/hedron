@@ -2,11 +2,32 @@
 
 from __future__ import annotations
 
-import argparse
 import sys
+from typing import Protocol
+
+from hedron_core.typing_support import dynamic_attribute
 
 
-def _cmd_run_app(args: argparse.Namespace) -> int:
+class _RunArgs(Protocol):
+    allow_external_bind: bool
+    app: str | None
+    debug: bool
+    discover: bool
+    factory: bool
+    forwarded_allow_ips: str | None
+    host: str | None
+    mount: str | None
+    port: int | None
+    public_base_url: str | None
+    reload: bool
+    target: str | None
+    topology: str
+    workbench: bool
+    workbench_mode: str
+    workers: int
+
+
+def _cmd_run_app(args: _RunArgs) -> int:
     """Run locally, or delegate to the optional Workbench pre-import launcher."""
     import os
 
@@ -14,7 +35,8 @@ def _cmd_run_app(args: argparse.Namespace) -> int:
     if not target or ":" not in target:
         print("hedron run requires module:attribute", file=sys.stderr)
         return 2
-    discover = bool(getattr(args, "discover", False))
+    discover_value = dynamic_attribute(args, "discover", False)
+    discover = discover_value if isinstance(discover_value, bool) else False
     workbench_runtime = bool(str(os.environ.get("RS_SERVER_URL") or "").strip())
     if args.workbench or workbench_runtime or discover:
         try:
@@ -27,7 +49,7 @@ def _cmd_run_app(args: argparse.Namespace) -> int:
         except ImportError:
             print(
                 "Posit Workbench runtime detected but hedron-posit is not installed; "
-                "install hedron[posit]",
+                + "install hedron[posit]",
                 file=sys.stderr,
             )
             return 2

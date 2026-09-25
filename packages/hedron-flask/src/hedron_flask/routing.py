@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from functools import wraps
-from typing import Any, TypeVar, cast
+from typing import Protocol, TypeVar, cast
 from urllib.parse import urlsplit
 
 from flask import Flask, Response, current_app, request, url_for
@@ -15,6 +15,7 @@ from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.interaction_067 import Outcome
 from hedron_core.mount import prefix_local_path
 from hedron_core.rendering import RenderResult
+from hedron_core.typing_support import dynamic_attribute
 from hedron_flask.csrf import DEFAULT_CSRF_COOKIE, validate_csrf
 from hedron_flask.responses import (  # pyright: ignore[reportPrivateUsage]
     _outcome_response,  # pyright: ignore[reportPrivateUsage]
@@ -27,19 +28,29 @@ __all__ = [
     "hedron_route",
 ]
 
-F = TypeVar("F", bound=Callable[..., Any])
+F = TypeVar("F", bound=Callable[..., object])
 
 _SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS", "TRACE"})
 
 
-def _as_node_like(value: object) -> NodeLike | Component[Any]:
+class _FlaskAppLike(Protocol):
+    extensions: Mapping[str, object]
+
+    def ensure_sync(self, function: Callable[..., object]) -> Callable[..., object]: ...
+
+
+class _AuthSignal(Protocol):
+    def __call__(self, request: object) -> object: ...
+
+
+def _as_node_like(value: object) -> NodeLike | Component[object]:
     if isinstance(value, Component):
-        return cast(Component[Any], value)
+        return cast(Component[object], value)
     if isinstance(value, ComponentNode):
         return value
     if isinstance(value, (str, int, float, bool)) or value is None:
         return value
-    return cast(NodeLike | Component[Any], value)
+    return cast(NodeLike | Component[object], value)
 
 
 class FlaskUrlReverser:
@@ -80,21 +91,24 @@ def hedron_route(
     csrf_cookie_name: str = DEFAULT_CSRF_COOKIE,
     fragment_regions: Sequence[FragmentRegion | str] | None = None,
     allow_undeclared_targets: bool = False,
-    **options: Any,
+    **options: object,
 ) -> Callable[[F], F]:
     """Register a view that may return a component, InteractionResult, or Response."""
 
     def decorator(view: F) -> F:
         @app.route(rule, endpoint=endpoint, methods=methods, **options)
         @wraps(view)
-        def wrapped(*args: Any, **kwargs: Any) -> Any:
+        def wrapped(*args: object, **kwargs: object) -> object:
             from hedron_core.security_policy import SecurityPolicy
 
-            extension = current_app.extensions.get("hedron")
-            policy = getattr(extension, "security_policy", None) if extension is not None else None
+            app_view = cast(_FlaskAppLike, current_app)
+            extension = app_view.extensions.get("hedron")
+            policy = (
+                dynamic_attribute(extension, "security_policy") if extension is not None else None
+            )
             cookie = csrf_cookie_name
             if extension is not None:
-                cookie = str(getattr(extension, "csrf_cookie_name", csrf_cookie_name))
+                cookie = str(dynamic_attribute(extension, "csrf_cookie_name", csrf_cookie_name))
             protect = csrf_protect
             if isinstance(policy, SecurityPolicy):
                 protect = bool(policy.csrf_enabled)
@@ -103,12 +117,13 @@ def hedron_route(
                     validate_csrf(request, cookie_name=cookie, policy=policy)
                 else:
                     validate_csrf(request, cookie_name=cookie)
-            value = current_app.ensure_sync(view)(*args, **kwargs)
+            value = app_view.ensure_sync(view)(*args, **kwargs)
             authenticated = False
-            auth_fn = getattr(current_app, "auth_signal", None)
+            auth_fn = dynamic_attribute(app_view, "auth_signal")
             if callable(auth_fn):
-                signal = auth_fn(request)
-                authenticated = bool(getattr(signal, "authenticated", False))
+                auth_target: object = auth_fn
+                signal = cast(_AuthSignal, auth_target)(request)
+                authenticated = bool(dynamic_attribute(signal, "authenticated", False))
             from hedron_core.diagnostics import HedronError
             from hedron_core.updates import compile_to_interaction
             from hedron_flask.identity import expected_hedron_app_id

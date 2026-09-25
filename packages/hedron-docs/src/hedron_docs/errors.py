@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
+from hedron_core.typing_support import dynamic_attribute
+
 
 @dataclass(frozen=True, slots=True)
 class Diagnostic:
@@ -42,7 +44,7 @@ class Diagnostic:
             "remediation": self.remediation,
         }
         for name in ("source", "line", "column", "end_line", "end_column"):
-            value = getattr(self, name)
+            value = dynamic_attribute(self, name)
             if value is not None:
                 result[name] = value
         return result

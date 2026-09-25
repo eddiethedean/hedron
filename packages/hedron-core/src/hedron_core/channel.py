@@ -5,9 +5,10 @@ from __future__ import annotations
 import math
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, Literal
+from typing import Literal
 
 from hedron_core.typing_aliases import JsonValue
+from hedron_core.typing_support import dynamic_attribute
 
 __all__ = [
     "ChannelBudget",
@@ -28,13 +29,13 @@ class ChannelBudget:
 
     def __post_init__(self) -> None:
         for name in ("max_messages", "max_message_bytes", "max_batch"):
-            value: Any = getattr(self, name)
+            value = dynamic_attribute(self, name)
             if isinstance(value, bool) or not isinstance(value, int) or value < 1:
                 raise ValueError(f"ChannelBudget.{name} must be a positive integer")
-        debounce: Any = self.debounce_ms
+        debounce: object = self.debounce_ms
         if isinstance(debounce, bool) or not isinstance(debounce, int) or debounce < 0:
             raise ValueError("ChannelBudget.debounce_ms must be an integer >= 0")
-        idle_timeout: Any = self.idle_timeout_seconds
+        idle_timeout: object = self.idle_timeout_seconds
         if (
             isinstance(idle_timeout, bool)
             or not isinstance(idle_timeout, (int, float))

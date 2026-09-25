@@ -1,6 +1,6 @@
 [project]
 name = "edron"
-version = "1.1.1"
+version = "1.1.2"
 description = "Pythonic class-oriented authoring facade for Hedron"
 readme = "README.md"
 requires-python = ">=3.10,<3.15"
@@ -24,7 +24,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron>=1.1.1,<2.0",
+    "hedron>=1.1.2,<2.0",
     "hedron-data>=1.0.0,<2.0",
     "hedron-charts>=1.0.0,<2.0",
     "hedron-maps>=1.0.0,<2.0",

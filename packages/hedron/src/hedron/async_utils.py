@@ -8,7 +8,7 @@ import functools
 import inspect
 from collections.abc import Awaitable, Callable
 from concurrent.futures import ThreadPoolExecutor
-from typing import Any, Literal, TypeVar, overload
+from typing import Literal, TypeVar, overload
 
 T = TypeVar("T")
 
@@ -26,7 +26,7 @@ _executor: ThreadPoolExecutor | None = None
 _executor_workers = 4
 
 
-def is_async_callable(fn: Callable[..., Any]) -> bool:
+def is_async_callable(fn: Callable[..., object]) -> bool:
     return inspect.iscoroutinefunction(fn) or inspect.isasyncgenfunction(fn)
 
 
@@ -36,7 +36,7 @@ async def await_if_needed(value: T | Awaitable[T]) -> T:
     return value  # type: ignore[return-value]
 
 
-async def invoke(fn: Callable[..., T], /, *args: Any, **kwargs: Any) -> T:
+async def invoke(fn: Callable[..., T], /, *args: object, **kwargs: object) -> T:
     """Call async handlers directly and offload synchronous handlers.
 
     Routing wrappers are async so they can normalize component responses, but
@@ -109,12 +109,12 @@ async def gather(
     except BaseException:
         for task in tasks:
             if not task.done():
-                task.cancel()
-        await asyncio.gather(*tasks, return_exceptions=True)
+                _ignored = task.cancel()
+        _ignored = await asyncio.gather(*tasks, return_exceptions=True)
         raise
 
 
-async def run_sync(fn: Callable[..., T], /, *args: Any, **kwargs: Any) -> T:
+async def run_sync(fn: Callable[..., T], /, *args: object, **kwargs: object) -> T:
     """Run a sync callable in a bounded thread pool with ContextVar copy.
 
     Callables marked with ``mark_cpu_heavy`` are rejected — apps should use a

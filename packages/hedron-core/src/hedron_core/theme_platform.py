@@ -615,7 +615,7 @@ class ThemeSpec:
         # Resolve all aliases during construction so invalid graphs cannot sit
         # in a registry or package waiting for a later render.
         for key in self.aliases:
-            self.resolve_token(key)
+            _ignored = self.resolve_token(key)
 
     def resolve_token(self, key: str, *, mode: str | None = None) -> str:
         source = self.tokens
@@ -1470,7 +1470,7 @@ def load_theme_package(archive: bytes | ThemePackage) -> ThemeSpec:
                 chunk = member.read(min(64 * 1024, MAX_THEME_MEMBER_BYTES + 1))
                 if not chunk:
                     break
-                output.write(chunk)
+                _ignored = output.write(chunk)
                 if output.tell() > MAX_THEME_MEMBER_BYTES:
                     raise ValueError("theme package member exceeds the decompressed-size limit")
         return output.getvalue()

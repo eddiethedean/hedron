@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing_extensions import override
 
 from edron.diagnostics import EdronDiagnostic, SourceLocation
 
@@ -45,8 +45,8 @@ class EdronError(Exception):
         title: str | None = None,
         remediation: str = "",
         severity: str = "error",
-        native_diagnostic: Any = None,
-        **details: Any,
+        native_diagnostic: object = None,
+        **details: object,
     ) -> None:
         super().__init__(message)
         self.message = message
@@ -63,6 +63,7 @@ class EdronError(Exception):
             context=details,
         )
 
+    @override
     def __str__(self) -> str:
         return self.diagnostic.as_text()
 

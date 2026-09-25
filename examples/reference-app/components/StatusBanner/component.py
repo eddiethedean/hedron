@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Any
 
 from hedron_core import (
     Component,
@@ -40,7 +39,7 @@ def load_styles(symbols: Mapping[str, str] | None = None) -> StyleSymbols:
     return _styles
 
 
-def __getattr__(name: str) -> Any:
+def __getattr__(name: str) -> object:
     if name == "styles":
         return load_styles()
     raise AttributeError(name)
@@ -58,10 +57,10 @@ class StatusBanner(Component[StatusBannerProps]):
     distribution = "hedron-reference"
     logical_name = "StatusBanner"
 
-    def __init__(self, label: str = "Ready", *, tone: str = "info", **kwargs: Any) -> None:
+    def __init__(self, label: str = "Ready", *, tone: str = "info", **kwargs: object) -> None:
         super().__init__(StatusBannerProps(label=label, tone=tone, **kwargs))
 
-    def render(self) -> Any:
+    def render(self) -> object:
         return html.div(
             html.strong(self.props.label),
             class_=load_styles().root,

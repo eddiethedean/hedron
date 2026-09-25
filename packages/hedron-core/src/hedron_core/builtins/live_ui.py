@@ -6,6 +6,8 @@ import itertools
 import re
 from typing import ClassVar, Literal, cast
 
+from typing_extensions import override
+
 from hedron_core.alpine import AlpineAttrs, AlpineDirective, AlpineExpression
 from hedron_core.builtins._base import collect_children
 from hedron_core.component import Component, NodeLike
@@ -55,7 +57,7 @@ class Dialog(Component[DialogProps]):
         elif not _DIALOG_ID_RE.fullmatch(str(resolved_id)):
             raise ValueError(
                 f"Dialog id {resolved_id!r} must match /^[A-Za-z][\\w:.-]*$/ "
-                "(required by hedron-ui dialog openers)."
+                + "(required by hedron-ui dialog openers)."
             )
         super().__init__(
             DialogProps(
@@ -70,6 +72,7 @@ class Dialog(Component[DialogProps]):
         )
         self._body = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         body = self._slot_values.get("body", self._body)
         if not isinstance(body, tuple):
@@ -169,6 +172,7 @@ class ChatMessage(Component[ChatMessageProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {
             "class_": f"hedron-chat-message hedron-chat-{self.props.role}",

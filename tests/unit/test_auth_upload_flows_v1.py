@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import re
 from types import SimpleNamespace
-from typing import Any
 
 import pytest
 from fastapi import Depends
@@ -30,8 +29,8 @@ class Credentials(BaseModel):
     password: str
 
 
-def _auth_flow(**overrides: Any) -> SessionAuthFlow[Credentials, str, str]:
-    values: dict[str, Any] = {
+def _auth_flow(**overrides: object) -> SessionAuthFlow[Credentials, str, str]:
+    values: dict[str, object] = {
         "credentials": Credentials,
         "authenticate": lambda data: (
             AuthSuccess(principal=data.username) if data.password == "secret" else AuthDenied()

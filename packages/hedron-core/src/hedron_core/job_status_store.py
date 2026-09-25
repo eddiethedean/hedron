@@ -110,13 +110,13 @@ def _watch_error_type() -> type[BaseException]:
     except ImportError as exc:
         raise RuntimeError(
             "RedisStatusStore requires redis.exceptions.WatchError for CAS; "
-            "install redis-py or use a client with WATCH support."
+            + "install redis-py or use a client with WATCH support."
         ) from exc
     watch = getattr(redis_exc, "WatchError", None)
     if not isinstance(watch, type) or not issubclass(watch, BaseException):
         raise RuntimeError(
             "RedisStatusStore requires redis.exceptions.WatchError for CAS; "
-            "install redis-py or use a client with WATCH support."
+            + "install redis-py or use a client with WATCH support."
         )
     return watch
 
@@ -153,14 +153,14 @@ def _compare_and_delete_if_owner(client: RedisClient, key: str, expected: str) -
         )
     for _ in range(8):
         try:
-            pipe.watch(key)
+            _ignored = pipe.watch(key)
             pointed = _decode_redis(pipe.get(key) if hasattr(pipe, "get") else client.get(key))
             if pointed != expected:
-                pipe.unwatch()
+                _ignored = pipe.unwatch()
                 return False
-            pipe.multi()
-            deleter(key)
-            pipe.execute()
+            _ignored = pipe.multi()
+            _ignored = deleter(key)
+            _ignored = pipe.execute()
             return True
         except Exception as exc:
             if _is_watch_error(exc):
@@ -174,7 +174,7 @@ def require_redis_status_client(client: RedisClient | None) -> RedisClient:
     if client is None:
         raise RuntimeError(
             "Celery/RQ JobBackend durability requires a shared Redis status client "
-            "(pass redis_client=...). Process-local status is not multi-worker safe."
+            + "(pass redis_client=...). Process-local status is not multi-worker safe."
         )
     return client
 
@@ -231,7 +231,7 @@ class RedisStatusStore:
         return _loads_object(raw)
 
     def _store(self, data: Mapping[str, object]) -> None:
-        self._client.set(
+        _ignored = self._client.set(
             self._key(str(data["job_id"])),
             json.dumps(data, default=str, separators=(",", ":")),
             ex=self._ttl,
@@ -267,22 +267,22 @@ class RedisStatusStore:
         if not callable(pipeline_factory):
             raise RuntimeError(
                 "RedisStatusStore requires a client with pipeline()/WATCH for CAS; "
-                "blind overwrite is not allowed for production job state."
+                + "blind overwrite is not allowed for production job state."
             )
         pipe: RedisPipeline = self._client.pipeline()
-        _watch_error_type()  # fail closed without redis-py WatchError
+        _ignored = _watch_error_type()  # fail closed without redis-py WatchError
         for _ in range(8):
             try:
-                pipe.watch(key)
+                _ignored = pipe.watch(key)
                 if idem_key is not None:
-                    pipe.watch(idem_key)
+                    _ignored = pipe.watch(idem_key)
                 raw = self._decode(pipe.get(key) if hasattr(pipe, "get") else self._client.get(key))
                 if raw is None:
-                    pipe.unwatch()
+                    _ignored = pipe.unwatch()
                     return False
                 current = _loads_object(raw)
                 if _as_float(current.get("updated_at"), default=-1.0) != expected_updated_at:
-                    pipe.unwatch()
+                    _ignored = pipe.unwatch()
                     return False
                 merged = dict(data)
                 if sticky_cancel:
@@ -297,15 +297,15 @@ class RedisStatusStore:
                     # Refresh when we still own the key, or recreate when TTL skew
                     # expired it while the job body remains (#210).
                     refresh_idem = pointed is None or pointed == job_id
-                pipe.multi()
-                pipe.set(
+                _ignored = pipe.multi()
+                _ignored = pipe.set(
                     key,
                     json.dumps(merged, default=str, separators=(",", ":")),
                     ex=self._ttl,
                 )
                 if idem_key is not None and refresh_idem:
-                    pipe.set(idem_key, job_id, ex=self._ttl)
-                pipe.execute()
+                    _ignored = pipe.set(idem_key, job_id, ex=self._ttl)
+                _ignored = pipe.execute()
                 return True
             except Exception as exc:
                 if _is_watch_error(exc):
@@ -328,7 +328,7 @@ class RedisStatusStore:
         if expected_updated_at is None:
             raise RuntimeError(
                 "RedisStatusStore.restore_snapshot requires expected_updated_at for CAS; "
-                "blind overwrite is not allowed."
+                + "blind overwrite is not allowed."
             )
         return self._store_cas(
             dict(data),
@@ -339,7 +339,7 @@ class RedisStatusStore:
     def delete(self, job_id: str) -> None:
         """Remove a job body and any idempotency pointer it owns."""
         data = self.load(job_id)
-        self._client.delete(self._key(job_id))
+        _ignored = self._client.delete(self._key(job_id))
         if data is None:
             return
         self._release_idempotency_pointer(job_id, data)
@@ -369,7 +369,7 @@ class RedisStatusStore:
                 )
             else:
                 return
-        _compare_and_delete_if_owner(self._client, idem_key, job_id)
+        _ignored = _compare_and_delete_if_owner(self._client, idem_key, job_id)
 
     def mark_enqueue_failed(self, job_id: str, *, error: str) -> JobStatus | None:
         """Mark FAILED for a broker enqueue miss and reclaim the idempotency key (#199)."""
@@ -418,7 +418,9 @@ class RedisStatusStore:
                         # Heal pre-fix stuck pointers: broker never accepted the task.
                         self.release_idempotency(status.job_id)
                         # Legacy pointers are not owned by release_idempotency().
-                        _compare_and_delete_if_owner(self._client, candidate_key, existing_raw)
+                        _ignored = _compare_and_delete_if_owner(
+                            self._client, candidate_key, existing_raw
+                        )
                         continue
                     return (
                         JobHandle(job_id=status.job_id, idempotency_key=idempotency_key),
@@ -426,7 +428,7 @@ class RedisStatusStore:
                     )
                 # The pointed-to job expired or was removed, so reclaim the key
                 # only if we still own it (concurrent SET NX may have claimed it).
-                _compare_and_delete_if_owner(self._client, candidate_key, existing_raw)
+                _ignored = _compare_and_delete_if_owner(self._client, candidate_key, existing_raw)
 
         job_id = secrets.token_urlsafe(12)
         now = time.time()
@@ -457,7 +459,7 @@ class RedisStatusStore:
                 ex=self._ttl,
             )
             if not created:
-                self._client.delete(self._key(job_id))
+                _ignored = self._client.delete(self._key(job_id))
                 existing = self._decode(self._client.get(idem_redis_key))
                 if existing is not None:
                     for _ in range(5):
@@ -621,7 +623,7 @@ class RedisStatusStore:
                 if job_id:
                     self.delete(job_id)
                 else:
-                    self._client.delete(key_s)
+                    _ignored = self._client.delete(key_s)
                 removed += 1
         return removed
 

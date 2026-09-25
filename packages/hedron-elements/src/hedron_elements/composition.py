@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import re
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from typing import Literal
 
 _ID = re.compile(r"^[A-Za-z][A-Za-z0-9_.:-]{0,127}$")
@@ -50,9 +50,21 @@ class CompositionEdge:
     def as_payload(self) -> dict[str, object]:
         """Return the JS runner schema (camelCase keys, list detailKeys)."""
         payload: dict[str, object] = {}
-        for key, value in asdict(self).items():
+        values: dict[str, object] = {
+            "id": self.id,
+            "event": self.event,
+            "action": self.action,
+            "target": self.target,
+            "detail_keys": self.detail_keys,
+            "authorization": self.authorization,
+            "concurrency": self.concurrency,
+            "max_depth": self.max_depth,
+            "max_payload_bytes": self.max_payload_bytes,
+            "fallback": self.fallback,
+        }
+        for key, value in values.items():
             out_key = _PAYLOAD_KEYS.get(key, key)
-            payload[out_key] = list(value) if key == "detail_keys" else value
+            payload[out_key] = list(self.detail_keys) if key == "detail_keys" else value
         return payload
 
 
@@ -67,7 +79,16 @@ class BrowserTrace:
     duration_ms: int | None = None
 
     def as_payload(self) -> dict[str, object]:
-        payload = {key: value for key, value in asdict(self).items() if value is not None}
+        values: dict[str, object] = {
+            "correlation_id": self.correlation_id,
+            "element_id": self.element_id,
+            "outcome": self.outcome,
+            "edge_id": self.edge_id,
+            "operation_id": self.operation_id,
+            "diagnostic_code": self.diagnostic_code,
+            "duration_ms": self.duration_ms,
+        }
+        payload = {key: value for key, value in values.items() if value is not None}
         validate_trace_payload(payload)
         return payload
 

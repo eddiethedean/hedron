@@ -36,7 +36,7 @@ def asset_path(name: str) -> Path:
     with resources.as_file(root) as base:
         target = (Path(base) / safe).resolve()
         try:
-            target.relative_to(Path(base).resolve())
+            _ignored = target.relative_to(Path(base).resolve())
         except ValueError as exc:
             raise error(
                 "HED-SIM-ASSET-0001",
@@ -78,12 +78,12 @@ def copy_assets(
     js_dir = Path(javascript_dir)
     js_dir.mkdir(parents=True, exist_ok=True)
     js_dest = js_dir / "hedron-sim.js"
-    js_dest.write_text(javascript_text(), encoding="utf-8")
+    _ignored = js_dest.write_text(javascript_text(), encoding="utf-8")
 
     css_dest: Path | None = None
     if stylesheets_dir is not None:
         css_dir = Path(stylesheets_dir)
         css_dir.mkdir(parents=True, exist_ok=True)
         css_dest = css_dir / "hedron-sim.css"
-        css_dest.write_text(css_text(), encoding="utf-8")
+        _ignored = css_dest.write_text(css_text(), encoding="utf-8")
     return js_dest, css_dest

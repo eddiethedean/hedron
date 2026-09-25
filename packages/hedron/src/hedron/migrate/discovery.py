@@ -68,13 +68,13 @@ def discover_sources(
     for path in files:
         resolved = path.resolve()
         try:
-            resolved.relative_to(root.resolve())
+            _ignored = resolved.relative_to(root.resolve())
         except ValueError as exc:
             raise ValueError(f"refusing path outside project root: {resolved}") from exc
         if path.is_symlink():
             link_target = path.resolve()
             try:
-                link_target.relative_to(root.resolve())
+                _ignored = link_target.relative_to(root.resolve())
             except ValueError as exc:
                 raise ValueError(f"refusing symlink escape: {path}") from exc
         contained.append(resolved)

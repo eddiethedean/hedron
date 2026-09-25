@@ -24,7 +24,7 @@
 #   browser (Chromium; pass --all-browsers for main-branch matrix) → realwb →
 #   realconnect → evidence → packaging
 #
-# Independent checks inside a suite run concurrently (ruff / pyright / strict package types / docs;
+# Independent checks inside a suite run concurrently (ruff / basedpyright / typing inventory / docs;
 # workbench bounds; evidence bundle vs verifiers). Wheel smoke and verify-pkgs
 # stay sequential after those jobs so `uv build` / `uv run` cannot race the
 # project .venv. Suite order in `all` stays sequential for the same reason.
@@ -420,46 +420,18 @@ quality_ruff() {
   run_venv_tool ruff check packages tests examples
 }
 
-quality_pyright() {
-  # Always `uv run` so pyright uses the same interpreter as the rest of CI.
-  # Bare `$venv/bin/pyright` follows `[tool.pyright] venv` / auto-detected `.venv`,
+quality_basedpyright() {
+  # Always `uv run` so BasedPyright uses the same interpreter as the rest of CI.
+  # Bare `$venv/bin/basedpyright` follows `[tool.basedpyright] venv` / auto-detected `.venv`,
   # which can disagree with UV_PROJECT_ENVIRONMENT.
-  run_uv pyright
+  run_uv basedpyright
 }
 
-quality_strict_package_types() {
-  # Every shipped Python package must remain warning-free under the workspace's
-  # strict Pyright configuration. Keep paths explicit for reviewability, and
-  # verify the list stays in sync with the uv workspace before running Pyright.
+quality_package_typing_policy() {
+  # Every shipped Python package must be covered by the workspace's all-mode
+  # BasedPyright run. Keep the inventory in sync and forbid suppressing the
+  # complete Any ban at package boundaries.
   run_py scripts/check_package_typing_inventory.py
-  if rg -n '# pyright:.*reportUnknown[A-Za-z]*Type=false' packages --glob '*.py'; then
-    echo "Package-wide unknown-type suppressions are forbidden; type or cast the boundary instead." >&2
-    return 1
-  fi
-  run_uv pyright --warnings \
-    packages/hedron-core/src/hedron_core \
-    packages/hedron/src/hedron \
-    packages/hedron-data/src/hedron_data \
-    packages/hedron-charts/src/hedron_charts \
-    packages/hedron-maps/src/hedron_maps \
-    packages/edron/src/edron \
-    packages/hedron-explorer/src/hedron_explorer \
-    packages/hedron-sample-kit/src/hedron_sample_kit \
-    packages/hedron-flask/src/hedron_flask \
-    packages/hedron-django/src/hedron_django \
-    packages/hedron-jinja/src/hedron_jinja \
-    packages/hedron-conformance/src/hedron_conformance \
-    packages/hedron-native/src/hedron_native \
-    packages/hedron-extras/src/hedron_extras \
-    packages/hedron-notebook/src/hedron_notebook \
-    packages/hedron-mcp/src/hedron_mcp \
-    packages/hedron-gradio/src/hedron_gradio \
-    packages/hedron-sim/src/hedron_sim \
-    packages/hedron-posit/src/hedron_posit \
-    packages/hedron-elements/src/hedron_elements \
-    packages/hedron-docs/src/hedron_docs \
-    packages/edron-sim/src/edron_sim \
-    packages/fastapi-workbench/src/fastapi_workbench
 }
 
 quality_wheels_smoke() {
@@ -556,8 +528,11 @@ import tomllib
 from pathlib import Path
 
 workspace_version = tomllib.loads(Path("pyproject.toml").read_text())["project"]["version"]
+edron_sim_version = tomllib.loads(
+    Path("packages/edron-sim/pyproject.toml").read_text()
+)["project"]["version"]
 assert metadata.version("edron") == workspace_version
-assert metadata.version("edron-sim") == "0.1.0"
+assert metadata.version("edron-sim") == edron_sim_version
 assert metadata.version("hedron") == workspace_version
 assert metadata.version("hedron-data") == workspace_version
 print(f"ok: Edron {workspace_version} installs against the Hedron train")
@@ -679,7 +654,8 @@ cmd_docs() {
 
 cmd_typing() {
   resolve_python
-  quality_strict_package_types
+  quality_basedpyright
+  quality_package_typing_policy
 }
 
 cmd_quality() {
@@ -687,10 +663,10 @@ cmd_quality() {
   resolve_python
   # Keep `.venv` mutations off this pool: `uv run` without a pinned interpreter
   # (verify_pkg_*.py) and `uv build` can recreate the project venv and race
-  # with pyright / docs.
+  # with BasedPyright / docs.
   start_job ruff quality_ruff
-  start_job pyright quality_pyright
-  start_job strict-package-types quality_strict_package_types
+  start_job basedpyright quality_basedpyright
+  start_job package-typing-policy quality_package_typing_policy
   start_job core-neutral quality_core_neutral
   start_job release-contract quality_release_contract
   start_job docs quality_docs
@@ -1005,7 +981,7 @@ shift
 parse_args "$@"
 
 # Pin child `uv run` (verify_pkg_*.py pytest) to this interpreter so they cannot
-# recreate `.venv` with another CPython while pyright is using it.
+# recreate `.venv` with another CPython while BasedPyright is using it.
 export UV_PYTHON="${UV_PYTHON:-$PYTHON}"
 
 if [[ -z "$JOBS" ]]; then

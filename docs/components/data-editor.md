@@ -49,7 +49,7 @@ DataEditor(rows=None, *, key='editor', row_model=None, columns=None, key_field='
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `rows` | `Any` | Materialized editable rows. |
+| `rows` | `object` | Materialized editable rows. |
 | `key` | `str` | Stable browser editor identity. |
 | `row_model / columns` | `schema inputs` | Field types and edit policy. |
 | `key_field` | `str` | Stable row identity field. |

@@ -7,7 +7,7 @@ import json
 import math
 import statistics
 from collections.abc import Mapping, Sequence
-from typing import Any, cast
+from typing import cast
 
 from hedron_charts.limits import redact_rows
 from hedron_charts.operators import (
@@ -247,7 +247,7 @@ def _validate_scales(scales: Sequence[ScaleDef]) -> None:
             )
 
 
-def _as_number(value: Any) -> float | None:
+def _as_number(value: object) -> float | None:
     if value is None:
         return None
     if isinstance(value, bool):
@@ -283,7 +283,7 @@ def _sort_key(value: object) -> tuple[int, str, object]:
 
 def _distinct_key(value: object) -> tuple[str, object]:
     try:
-        hash(value)
+        _ignored = hash(value)
     except TypeError:
         return (type(value).__name__, json.dumps(value, sort_keys=True, default=str))
     return (type(value).__name__, value)
@@ -802,7 +802,7 @@ def compile_chart(spec: ChartSpec | Mapping[str, object]) -> ChartPlan:
     warnings: list[str] = []
     transformed = apply_transforms(rows, parsed.transforms)
     facets: object = parsed.composition.get("facet")
-    facet_list = cast(list[Any], facets) if isinstance(facets, list) else []
+    facet_list = cast(list[object], facets) if isinstance(facets, list) else []
     if len(facet_list) > MAX_FACETS:
         raise _chart_error(
             "HED-CHART-0071",

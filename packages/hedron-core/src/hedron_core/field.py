@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, cast
+from typing import cast
 
 from pydantic import Field as PydanticField
 from pydantic.fields import FieldInfo
@@ -12,16 +12,16 @@ from hedron_core.typing_aliases import JsonObject
 
 
 def Field(
-    default: Any = ...,
+    default: object = ...,
     *,
-    default_factory: Any = None,
+    default_factory: object = None,
     # Validation
     minimum: float | int | None = None,
     maximum: float | int | None = None,
     min_length: int | None = None,
     max_length: int | None = None,
     pattern: str | None = None,
-    choices: list[Any] | tuple[Any, ...] | None = None,
+    choices: list[object] | tuple[object, ...] | None = None,
     required: bool | None = None,
     # Presentation
     label: str | None = None,
@@ -47,7 +47,7 @@ def Field(
     accessible_description: str | None = None,
     accessible_error: str | None = None,
     **extra: object,
-) -> Any:
+) -> object:
     """Declare validation, presentation, access, data, and a11y metadata."""
     if read_only and writable_policy is not None:
         raise error(
@@ -137,7 +137,7 @@ def Field(
         },
     )
     pydantic_kwargs["json_schema_extra"] = json_schema_extra
-    return PydanticField(**cast(Any, pydantic_kwargs))
+    return PydanticField(**cast(object, pydantic_kwargs))
 
 
 def hedron_meta(info: FieldInfo) -> dict[str, object]:

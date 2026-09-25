@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Any, ClassVar, Literal
+from typing import ClassVar, Literal
+
+from typing_extensions import override
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.builtins.appearance import (
@@ -50,10 +52,10 @@ class Surface(Component[SurfaceProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if appearance is not None:
-            require_choice(appearance, ("plain", "raised"), label="appearance")
+            _ignored = require_choice(appearance, ("plain", "raised"), label="appearance")
         super().__init__(
             SurfaceProps(
                 appearance=appearance,
@@ -68,6 +70,7 @@ class Surface(Component[SurfaceProps]):
         )
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         data = {
             "hedron-surface": "true",
@@ -110,7 +113,7 @@ class AmbientLayer:
             (self.placement, ("flow", "surface", "fixed-canvas"), "placement"),
             (self.scale, ("sm", "md", "lg"), "scale"),
         ):
-            require_choice(value, choices, label=label)
+            _ignored = require_choice(value, choices, label=label)
         if isinstance(self.order, bool) or not 0 <= self.order <= 8:
             raise ValueError("AmbientLayer order must be an integer between 0 and 8")
 
@@ -138,11 +141,11 @@ class AmbientBackdrop(Component[AmbientBackdropProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
-        require_choice(pattern, ("radial", "dots", "grid", "mesh"), label="pattern")
-        require_choice(tone, ("accent", "muted", "neutral"), label="tone")
-        require_choice(intensity, ("subtle", "soft"), label="intensity")
+        _ignored = require_choice(pattern, ("radial", "dots", "grid", "mesh"), label="pattern")
+        _ignored = require_choice(tone, ("accent", "muted", "neutral"), label="tone")
+        _ignored = require_choice(intensity, ("subtle", "soft"), label="intensity")
         resolved_layers = tuple(layers or ())
         if not resolved_layers:
             resolved_layers = (AmbientLayer(pattern=pattern, tone=tone, intensity=intensity),)
@@ -160,6 +163,7 @@ class AmbientBackdrop(Component[AmbientBackdropProps]):
         self._layers = tuple(sorted(resolved_layers, key=lambda layer: layer.order))
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         decorations = tuple(
             html.div(
@@ -218,7 +222,7 @@ class Card(Component[CardProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             CardProps(
@@ -239,6 +243,7 @@ class Card(Component[CardProps]):
         if footer is not None:
             self._slot_values["footer"] = footer
 
+    @override
     def render(self) -> NodeLike:
         parts: list[NodeLike] = []
         if "header" in self._slot_values:
@@ -321,7 +326,7 @@ class Badge(Component[BadgeProps]):
         size: Size | None = None,
         appearance: Appearance | None = None,
         class_: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             BadgeProps(
@@ -334,6 +339,7 @@ class Badge(Component[BadgeProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         data = appearance_data(
             size=self.props.size,
@@ -368,7 +374,7 @@ class Alert(Component[AlertProps]):
         size: Size | None = None,
         appearance: Appearance | None = None,
         class_: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             AlertProps(
@@ -382,6 +388,7 @@ class Alert(Component[AlertProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         role = "alert" if self.props.tone == "danger" else "status"
         parts: list[NodeLike] = []
@@ -408,9 +415,10 @@ class SkeletonProps(Props):
 class Skeleton(Component[SkeletonProps]):
     props_type = SkeletonProps
 
-    def __init__(self, *, lines: int = 3, **kwargs: Any) -> None:
+    def __init__(self, *, lines: int = 3, **kwargs: object) -> None:
         super().__init__(SkeletonProps(lines=lines, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         return html.div(
             *[
@@ -463,9 +471,9 @@ class StateView(Component[StateViewProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
-        require_choice(kind, STATE_KINDS, label="kind")
+        _ignored = require_choice(kind, STATE_KINDS, label="kind")
         super().__init__(
             StateViewProps(
                 kind=kind,
@@ -482,6 +490,7 @@ class StateView(Component[StateViewProps]):
         if actions is not None:
             self._slot_values["actions"] = actions
 
+    @override
     def render(self) -> NodeLike:
         kind = self.props.kind
         parts: list[NodeLike] = [

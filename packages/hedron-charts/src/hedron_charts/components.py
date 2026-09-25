@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import html as html_stdlib
 from collections.abc import Mapping, Sequence
-from typing import Any
+
+from typing_extensions import override
 
 from hedron_charts.adapters import (
     AltairAdapter,
@@ -76,7 +77,7 @@ def _xy_fallback_figure(  # pyright: ignore[reportUnusedFunction]
         waiver=waiver,
         tabular_fallback=redact_rows(data),
     )
-    ensure_limits(data, None, limits=limits)
+    _ignored = ensure_limits(data, None, limits=limits)
     try:
         import matplotlib
 
@@ -86,7 +87,7 @@ def _xy_fallback_figure(  # pyright: ignore[reportUnusedFunction]
         fig: object
         ax: object
         fig, ax = plt.subplots()  # type: ignore[reportUnknownMemberType]
-        axes: Any = ax
+        axes: object = ax
         xs_raw = [row.get(x) for row in data]
         ys = [_coerce_float(row.get(y)) for row in data]
         labels = [str(v) for v in xs_raw]
@@ -104,24 +105,24 @@ def _xy_fallback_figure(  # pyright: ignore[reportUnusedFunction]
         if kind == "bar" or categorical:
             ax_x = list(range(len(ys)))
             if kind == "bar":
-                axes.bar(ax_x, ys)
+                _ignored = axes.bar(ax_x, ys)
             elif kind == "scatter":
-                axes.scatter(ax_x, ys)
+                _ignored = axes.scatter(ax_x, ys)
             elif kind == "area":
-                axes.fill_between(ax_x, ys)
+                _ignored = axes.fill_between(ax_x, ys)
             else:
-                axes.plot(ax_x, ys)
-            axes.set_xticks(ax_x)
-            axes.set_xticklabels(labels)
+                _ignored = axes.plot(ax_x, ys)
+            _ignored = axes.set_xticks(ax_x)
+            _ignored = axes.set_xticklabels(labels)
         elif kind == "scatter":
-            axes.scatter(numeric_xs, ys)
+            _ignored = axes.scatter(numeric_xs, ys)
         elif kind == "area":
-            axes.fill_between(numeric_xs, ys)
+            _ignored = axes.fill_between(numeric_xs, ys)
         else:
-            axes.plot(numeric_xs, ys)
-        axes.set_xlabel(x)
-        axes.set_ylabel(y)
-        axes.set_title(acc.title)
+            _ignored = axes.plot(numeric_xs, ys)
+        _ignored = axes.set_xlabel(x)
+        _ignored = axes.set_ylabel(y)
+        _ignored = axes.set_title(acc.title)
         adapter = MatplotlibAdapter()
         output = adapter.compile(fig, accessibility=acc, limits=limits)
         plt.close(fig)
@@ -173,8 +174,8 @@ def _xy_fallback_figure(  # pyright: ignore[reportUnusedFunction]
                 bh = abs(zero_y - top)
                 shapes.append(
                     f'<rect x="{10 + i * bar_w:.1f}" y="{y_rect:.1f}" '
-                    f'width="{max(bar_w - 2, 1):.1f}" '
-                    f'height="{max(bh, 0.0):.1f}" fill="currentColor"/>'
+                    + f'width="{max(bar_w - 2, 1):.1f}" '
+                    + f'height="{max(bh, 0.0):.1f}" fill="currentColor"/>'
                 )
         elif kind == "scatter":
             for xv, yv in zip(xs_plot, ys, strict=False):
@@ -190,9 +191,9 @@ def _xy_fallback_figure(  # pyright: ignore[reportUnusedFunction]
             poly = " ".join(points)
             if kind == "area" and points:
                 shapes.append(
-                    f'<polygon fill="currentColor" fill-opacity="0.3" '
-                    f'points="{_px(float(xs_plot[0])):.1f},{zero_y:.1f} {poly} '
-                    f'{_px(float(xs_plot[-1])):.1f},{zero_y:.1f}"/>'
+                    '<polygon fill="currentColor" fill-opacity="0.3" '
+                    + f'points="{_px(float(xs_plot[0])):.1f},{zero_y:.1f} {poly} '
+                    + f'{_px(float(xs_plot[-1])):.1f},{zero_y:.1f}"/>'
                 )
             shapes.append(
                 f'<polyline fill="none" stroke="currentColor" stroke-width="2" points="{poly}"/>'
@@ -255,17 +256,18 @@ class LineChart(Component[_ChartProps]):
         self._y = y
         self._limits = limits
 
+    @override
     def render(self) -> NodeLike:
         from hedron_charts.element import chart_from_beginner
 
-        accessibility_or_raise(
+        _ignored = accessibility_or_raise(
             title=self.props.title,
             description=self.props.description,
             alt=self.props.alt,
             waiver=self.props.waiver,
             tabular_fallback=redact_rows(self._data),
         )
-        ensure_limits(self._data, None, limits=self._limits)
+        _ignored = ensure_limits(self._data, None, limits=self._limits)
         return chart_from_beginner(
             kind="line",
             data=self._data,
@@ -303,17 +305,18 @@ class AreaChart(Component[_ChartProps]):
         self._y = y
         self._limits = limits
 
+    @override
     def render(self) -> NodeLike:
         from hedron_charts.element import chart_from_beginner
 
-        accessibility_or_raise(
+        _ignored = accessibility_or_raise(
             title=self.props.title,
             description=self.props.description,
             alt=self.props.alt,
             waiver=self.props.waiver,
             tabular_fallback=redact_rows(self._data),
         )
-        ensure_limits(self._data, None, limits=self._limits)
+        _ignored = ensure_limits(self._data, None, limits=self._limits)
         return chart_from_beginner(
             kind="area",
             data=self._data,
@@ -351,17 +354,18 @@ class BarChart(Component[_ChartProps]):
         self._y = y
         self._limits = limits
 
+    @override
     def render(self) -> NodeLike:
         from hedron_charts.element import chart_from_beginner
 
-        accessibility_or_raise(
+        _ignored = accessibility_or_raise(
             title=self.props.title,
             description=self.props.description,
             alt=self.props.alt,
             waiver=self.props.waiver,
             tabular_fallback=redact_rows(self._data),
         )
-        ensure_limits(self._data, None, limits=self._limits)
+        _ignored = ensure_limits(self._data, None, limits=self._limits)
         return chart_from_beginner(
             kind="bar",
             data=self._data,
@@ -399,17 +403,18 @@ class ScatterChart(Component[_ChartProps]):
         self._y = y
         self._limits = limits
 
+    @override
     def render(self) -> NodeLike:
         from hedron_charts.element import chart_from_beginner
 
-        accessibility_or_raise(
+        _ignored = accessibility_or_raise(
             title=self.props.title,
             description=self.props.description,
             alt=self.props.alt,
             waiver=self.props.waiver,
             tabular_fallback=redact_rows(self._data),
         )
-        ensure_limits(self._data, None, limits=self._limits)
+        _ignored = ensure_limits(self._data, None, limits=self._limits)
         return chart_from_beginner(
             kind="scatter",
             data=self._data,
@@ -449,6 +454,7 @@ class MatplotlibChart(Component[_ChartProps]):
         self._figure = figure
         self._fmt = fmt
 
+    @override
     def render(self) -> NodeLike:
         adapter = MatplotlibAdapter()
         acc = accessibility_or_raise(
@@ -485,6 +491,7 @@ class PlotlyChart(Component[_ChartProps]):
         )
         self._figure = figure
 
+    @override
     def render(self) -> NodeLike:
         adapter, output = compile_figure(
             self._figure,
@@ -531,6 +538,7 @@ class AltairChart(Component[_ChartProps]):
         )
         self._chart = chart
 
+    @override
     def render(self) -> NodeLike:
         adapter = AltairAdapter()
         acc = accessibility_or_raise(

@@ -50,7 +50,7 @@ def parse_file(
     if len(raw) + bytes_so_far > limits.max_bytes:
         raise ValueError(
             f"byte limit exceeded while reading {path} "
-            f"({len(raw) + bytes_so_far} > {limits.max_bytes})"
+            + f"({len(raw) + bytes_so_far} > {limits.max_bytes})"
         )
     text = raw.decode("utf-8")
     feature = _FEATURE_BY_VERSION.get(python_version)

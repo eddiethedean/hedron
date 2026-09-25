@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing_extensions import override
+
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
@@ -26,6 +28,7 @@ class Dialog(Component[DialogProps]):
     def __init__(self, title: str = "Dialog", *, open: bool = False, **kwargs: object) -> None:
         super().__init__(DialogProps(title=title, open=open, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         return html.tag(TAG_NAME)(
             html.dialog(

@@ -11,6 +11,7 @@ from typing import NoReturn, Protocol, cast
 from typing_extensions import TypeIs
 
 from hedron_core.typing_aliases import JsonObject, JsonValue
+from hedron_core.typing_support import dynamic_attribute
 from hedron_mcp.bounds import BoundsError
 from hedron_mcp.compat import (
     UNSUPPORTED_CAPABILITY_BEHAVIOR,
@@ -206,7 +207,7 @@ async def _handle_session_delete(request: McpHttpRequest, projection: McpProject
     try:
         _enforce_session_principal(projection, session_id=session_id, principal=principal)
         projection.bounds.close_session(session_id)
-        projection.audit.emit(
+        _ignored = projection.audit.emit(
             code="HED-MCP-SESSION-DELETE",
             kind="cancellation",
             principal=principal,
@@ -216,7 +217,7 @@ async def _handle_session_delete(request: McpHttpRequest, projection: McpProject
 
         return Response(status_code=204)
     except PermissionError as exc:
-        projection.audit.emit(
+        _ignored = projection.audit.emit(
             code="HED-MCP-AUTHZ",
             kind="authorization",
             principal=principal,
@@ -275,7 +276,7 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
         projection.bounds.check_rate(principal or "anonymous")
         projection.bounds.acquire()
     except BoundsError as exc:
-        projection.audit.emit(
+        _ignored = projection.audit.emit(
             code="HED-MCP-BOUNDS",
             kind="failure",
             principal=principal,
@@ -307,7 +308,7 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
             # Server-minted session ids — never bind unbound client-chosen values (#173).
             session_id = uuid.uuid4().hex
             projection.bounds.open_session(session_id, principal=principal or "", origin=origin)
-            projection.audit.emit(
+            _ignored = projection.audit.emit(
                 code="HED-MCP-INIT",
                 kind="registration",
                 principal=principal,
@@ -352,7 +353,7 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
                 }
                 for item in projection.list_resources()
             ]
-            projection.audit.emit(
+            _ignored = projection.audit.emit(
                 code="HED-MCP-LIST-RESOURCES",
                 kind="execution",
                 principal=principal,
@@ -365,7 +366,7 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
             _raise_if_cancelled(projection, cancel_key, owner=cancel_owner)
             uri = str(params.get("uri") or "")
             content = projection.read_resource(uri, principal=principal)
-            projection.audit.emit(
+            _ignored = projection.audit.emit(
                 code="HED-MCP-READ-RESOURCE",
                 kind="execution",
                 principal=principal,
@@ -398,7 +399,7 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
                 }
                 for tool in projection.list_tools()
             ]
-            projection.audit.emit(
+            _ignored = projection.audit.emit(
                 code="HED-MCP-LIST-TOOLS",
                 kind="execution",
                 principal=principal,
@@ -413,7 +414,7 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
             raw_arguments = params.get("arguments")
             arguments = _as_json_object(raw_arguments) if isinstance(raw_arguments, dict) else {}
             result = projection.call_tool(name, arguments, principal=principal)
-            projection.audit.emit(
+            _ignored = projection.audit.emit(
                 code="HED-MCP-CALL-TOOL",
                 kind="execution",
                 principal=principal,
@@ -449,7 +450,7 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
                 )
             cancel_id = str(raw_cancel)
             projection.bounds.request_cancel(cancel_id, owner=cancel_owner)
-            projection.audit.emit(
+            _ignored = projection.audit.emit(
                 code="HED-MCP-CANCEL",
                 kind="cancellation",
                 principal=principal,
@@ -467,7 +468,7 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
             _error(req_id, -32601, f"method not found: {method}"), status_code=404
         )
     except BoundsError as exc:
-        projection.audit.emit(
+        _ignored = projection.audit.emit(
             code="HED-MCP-BOUNDS",
             kind="failure",
             principal=principal,
@@ -475,7 +476,7 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
         )
         return _json_response(_error(req_id, -32000, str(exc)), status_code=429)
     except PermissionError as exc:
-        projection.audit.emit(
+        _ignored = projection.audit.emit(
             code="HED-MCP-AUTHZ",
             kind="authorization",
             principal=principal,
@@ -483,7 +484,7 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
         )
         return _json_response(_error(req_id, -32001, str(exc)), status_code=403)
     except InvalidParamsError as exc:
-        projection.audit.emit(
+        _ignored = projection.audit.emit(
             code="HED-MCP-INVALID-PARAMS",
             kind="failure",
             principal=principal,
@@ -491,7 +492,7 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
         )
         return _json_response(_error(req_id, -32602, str(exc)), status_code=400)
     except KeyError as exc:
-        projection.audit.emit(
+        _ignored = projection.audit.emit(
             code="HED-MCP-NOT-FOUND",
             kind="failure",
             principal=principal,
@@ -499,7 +500,7 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
         )
         return _json_response(_error(req_id, -32002, str(exc)), status_code=404)
     except Exception as exc:  # noqa: BLE001 — map to JSON-RPC failure
-        projection.audit.emit(
+        _ignored = projection.audit.emit(
             code="HED-MCP-FAIL",
             kind="failure",
             principal=principal,
@@ -537,12 +538,12 @@ def mount_streamable_http(
 
     route = Route(path, endpoint=endpoint, methods=["POST", "DELETE"])
     # FastAPI / Starlette both expose .routes; prefer router include when present.
-    router = getattr(app, "router", None)
-    router_routes = getattr(router, "routes", None) if router is not None else None
+    router = dynamic_attribute(app, "router")
+    router_routes = dynamic_attribute(router, "routes") if router is not None else None
     if isinstance(router_routes, list):
         cast(list[object], router_routes).append(route)
         return
-    app_routes = getattr(app, "routes", None)
+    app_routes = dynamic_attribute(app, "routes")
     if isinstance(app_routes, list):
         cast(list[object], app_routes).append(route)
         return

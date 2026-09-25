@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Literal
+
+from typing_extensions import override
 
 from hedron_core.builtins._base import collect_children
 from hedron_core.component import Component, NodeLike
@@ -72,23 +74,23 @@ def _landmark_attrs(props: LandmarkProps) -> dict[str, HtmlAttrValue]:
 
 
 def _filter_landmark_kwargs(
-    kwargs: dict[str, Any],
+    kwargs: dict[str, object],
     *,
     extra_allowed: frozenset[str] = frozenset(),
-) -> dict[str, Any]:
+) -> dict[str, object]:
     allowed = _LANDMARK_SAFE_KEYS | extra_allowed | set(LandmarkProps.model_fields)
     unknown = set(kwargs) - allowed
     if unknown:
         raise TypeError(
             f"Unsupported landmark attribute(s): {sorted(unknown)}. "
-            f"Allowlisted: {sorted(_LANDMARK_SAFE_KEYS | extra_allowed)}."
+            + f"Allowlisted: {sorted(_LANDMARK_SAFE_KEYS | extra_allowed)}."
         )
     role = kwargs.get("role")
     if isinstance(role, str) and role.strip():
         raise TypeError(
             f"role={role!r} is not allowed on landmark components "
-            "(native landmark tags already imply the correct role; "
-            "do not set role= on Header/Main/Nav/Aside/Footer)."
+            + "(native landmark tags already imply the correct role; "
+            + "do not set role= on Header/Main/Nav/Aside/Footer)."
         )
     return {k: v for k, v in kwargs.items() if k in allowed}
 
@@ -109,6 +111,7 @@ class Header(Component[LandmarkProps]):
         super().__init__(LandmarkProps(**_filter_landmark_kwargs(dict(kwargs))))
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         return html.header(*self._children, **_landmark_attrs(self.props))
 
@@ -123,6 +126,7 @@ class Main(Component[LandmarkProps]):
         super().__init__(LandmarkProps(**_filter_landmark_kwargs(dict(kwargs))))
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         return html.main(*self._children, **_landmark_attrs(self.props))
 
@@ -137,6 +141,7 @@ class Nav(Component[LandmarkProps]):
         super().__init__(LandmarkProps(**_filter_landmark_kwargs(dict(kwargs))))
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         return html.nav(*self._children, **_landmark_attrs(self.props))
 
@@ -151,6 +156,7 @@ class Aside(Component[LandmarkProps]):
         super().__init__(LandmarkProps(**_filter_landmark_kwargs(dict(kwargs))))
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         return html.aside(*self._children, **_landmark_attrs(self.props))
 
@@ -165,6 +171,7 @@ class Footer(Component[LandmarkProps]):
         super().__init__(LandmarkProps(**_filter_landmark_kwargs(dict(kwargs))))
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         return html.footer(*self._children, **_landmark_attrs(self.props))
 
@@ -179,5 +186,6 @@ class Section(Component[LandmarkProps]):
         super().__init__(LandmarkProps(**_filter_landmark_kwargs(dict(kwargs))))
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         return html.section(*self._children, **_landmark_attrs(self.props))

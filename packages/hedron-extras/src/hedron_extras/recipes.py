@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Any
+
+from typing_extensions import override
 
 from hedron_core.builtins._base import ElementProps, class_names, mark_data
 from hedron_core.component import Component, NodeLike
@@ -45,7 +46,7 @@ class AvatarProfile(Component[AvatarProfileProps]):
         image_src: SafeUrl | str | None = None,
         caption: str | None = None,
         href: SafeUrl | str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             AvatarProfileProps(
@@ -57,6 +58,7 @@ class AvatarProfile(Component[AvatarProfileProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         from hedron_core.builtins.identity import Identity
 
@@ -85,9 +87,10 @@ class BadgeLink(Component[BadgeLinkProps]):
     logical_name = "BadgeLink"
     distribution = "hedron-extras"
 
-    def __init__(self, label: str, href: str, *, tone: str = "neutral", **kwargs: Any) -> None:
+    def __init__(self, label: str, href: str, *, tone: str = "neutral", **kwargs: object) -> None:
         super().__init__(BadgeLinkProps(label=label, href=_nav(href), tone=tone, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         return html.a(
             self.props.label,
@@ -109,9 +112,12 @@ class MetricCard(Component[MetricCardProps]):
     logical_name = "MetricCard"
     distribution = "hedron-extras"
 
-    def __init__(self, label: str, value: str, *, hint: str | None = None, **kwargs: Any) -> None:
+    def __init__(
+        self, label: str, value: str, *, hint: str | None = None, **kwargs: object
+    ) -> None:
         super().__init__(MetricCardProps(label=label, value=value, hint=hint, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         parts: list[NodeLike] = [
             html.dt(self.props.label),
@@ -145,14 +151,15 @@ class TodoList(Component[TodoListProps]):
 
     def __init__(
         self,
-        items: Sequence[TodoItem | dict[str, Any]],
+        items: Sequence[TodoItem | dict[str, object]],
         *,
         name: str = "todo",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         parsed = [i if isinstance(i, TodoItem) else TodoItem.model_validate(i) for i in items]
         super().__init__(TodoListProps(items=parsed, name=name, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         rows = [
             html.li(

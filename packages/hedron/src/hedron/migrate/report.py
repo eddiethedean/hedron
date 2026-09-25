@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-from typing import Any
 
 from hedron.migrate.ir import StreamlitMigrationPlan
 from hedron_core.diagnostics import (
@@ -19,7 +18,7 @@ def report_payload(
     diagnostics: list[Diagnostic],
     *,
     generated_files: dict[str, str] | None = None,
-) -> dict[str, Any]:
+) -> dict[str, object]:
     counts = {
         "error": 0,
         "warning": 0,

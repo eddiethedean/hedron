@@ -8,9 +8,10 @@ from __future__ import annotations
 
 import re
 import unicodedata
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import cast
+from typing import Protocol, cast
 
 from markdown_it import MarkdownIt
 from markdown_it.token import Token
@@ -29,6 +30,7 @@ _DIRECTIVE = re.compile(r"^:::\s*(?P<target>.*?)\s*$")
 _API_TARGET = re.compile(r"^[A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*$", re.UNICODE)
 _DEMO_TARGET = re.compile(r"^[a-z][a-z0-9]*(?:[-_.][a-z0-9]+)*$")
 _EXPLICIT_HEADING_IDS = re.compile(r"\s*\{(?P<ids>(?:#[A-Za-z][\w:.-]*\s*)+)\}\s*$", re.UNICODE)
+_EXPLICIT_HEADING_ID_TOKEN = re.compile(r"#[A-Za-z][\w:.-]*", re.UNICODE)
 _CODE_LANGUAGE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_+#./-]{0,31}$")
 _ATTRIBUTE_LIST = re.compile(r"\{\s*(?:[#.][\w:-]+)(?:\s+[#.][\w:-]+)*\s*\}")
 _EXTENSION_PREFIX = ("!!!", "???", "???+", "===", ":::")
@@ -54,6 +56,24 @@ _OPEN_KINDS = {
     "footnote_open": "footnote",
 }
 _INLINE_OPEN_KINDS = {"em_open": "emphasis", "strong_open": "strong", "link_open": "link"}
+
+
+class _TokenMetadata(Protocol):
+    meta: Mapping[str, object]
+
+
+class _MatchGroup(Protocol):
+    def group(self, group: int | str = 0) -> str | None: ...
+
+
+def _token_meta(token: Token) -> Mapping[str, object]:
+    """Read markdown-it token metadata through its object-valued boundary."""
+    return cast(_TokenMetadata, cast(object, token)).meta
+
+
+def _match_group(match: re.Match[str], group: int | str = 0) -> str | None:
+    """Read regex groups as strings without typeshed's ``Any`` return."""
+    return cast(_MatchGroup, cast(object, match)).group(group)
 
 
 @dataclass(frozen=True, slots=True)
@@ -171,14 +191,14 @@ class _Parser:
             if active_fence:
                 if (
                     fence_match
-                    and fence_match.group("marker")[0] == active_fence[0]
-                    and len(fence_match.group("marker")) >= len(active_fence)
+                    and (_match_group(fence_match, "marker") or "")[0] == active_fence[0]
+                    and len(_match_group(fence_match, "marker") or "") >= len(active_fence)
                 ):
                     active_fence = ""
                 index += 1
                 continue
             if fence_match:
-                active_fence = fence_match.group("marker")
+                active_fence = _match_group(fence_match, "marker") or ""
                 index += 1
                 continue
             tab_match = _TAB.fullmatch(line_text)
@@ -244,7 +264,7 @@ class _Parser:
                 continue
             break
         while body and not body[-1].strip():
-            body.pop()
+            _ignored = body.pop()
         return "".join(body), index, first_content, max(marker_index, index - 1)
 
     def _parse_tabs(
@@ -263,7 +283,7 @@ class _Parser:
             match = _TAB.fullmatch(lines[index].rstrip("\r\n"))
             if match is None:
                 break
-            label = match.group("label").strip()
+            label = (_match_group(match, "label") or "").strip()
             if not label:
                 raise self._error(
                     "HED-DOCS-0108", "tab label must not be empty", base_line + index, 1
@@ -324,7 +344,7 @@ class _Parser:
                 base_line + index,
                 column_offset + 1,
             )
-        source_type = match.group("type").casefold()
+        source_type = (_match_group(match, "type") or "").casefold()
         tone = {
             "note": "info",
             "tip": "info",
@@ -335,9 +355,9 @@ class _Parser:
             "danger": "danger",
             "error": "danger",
         }.get(source_type, "info")
-        marker = match.group("marker")
+        marker = _match_group(match, "marker") or ""
         kind = "alert" if marker == "!!!" else "details"
-        title = (match.group("title") or source_type.replace("-", " ").title()).strip()
+        title = (_match_group(match, "title") or source_type.replace("-", " ").title()).strip()
         children = tuple(
             self._parse_extensions(
                 body,
@@ -371,7 +391,7 @@ class _Parser:
         base_line: int,
         column_offset: int,
     ) -> tuple[DocNode, int]:
-        target = match.group("target").strip()
+        target = (_match_group(match, "target") or "").strip()
         if not target:
             raise self._error(
                 "HED-DOCS-0108",
@@ -468,8 +488,8 @@ class _Parser:
                     raise self._error(
                         "HED-DOCS-0105",
                         "document exceeds code block count or byte limit "
-                        f"({self.limits.max_code_blocks} blocks, "
-                        f"{self.limits.max_code_block_bytes} bytes each)",
+                        + f"({self.limits.max_code_blocks} blocks, "
+                        + f"{self.limits.max_code_block_bytes} bytes each)",
                         line,
                         column_offset + 1,
                     )
@@ -506,7 +526,8 @@ class _Parser:
                 append(self._node_from_token("divider", token, base_line, column_offset))
                 continue
             if token.type == "footnote_anchor":
-                label = str(token.meta.get("label", token.meta.get("id", "")))
+                token_meta = _token_meta(token)
+                label = str(token_meta.get("label", token_meta.get("id", "")))
                 anchor = (
                     stack[-1].children[-1]
                     if stack and stack[-1].children
@@ -548,7 +569,8 @@ class _Parser:
             if token.type == "ordered_list_open" and token.attrGet("start"):
                 attrs["start"] = str(token.attrGet("start"))
         elif builder.kind == "footnote":
-            attrs["label"] = str(token.meta.get("label", token.meta.get("id", "")))
+            token_meta = _token_meta(token)
+            attrs["label"] = str(token_meta.get("label", token_meta.get("id", "")))
         return self._node_from_token(
             builder.kind,
             token,
@@ -668,7 +690,8 @@ class _Parser:
                 append(locator.node("image", start, end_start + 1, attrs=attrs))
                 continue
             if child.type == "footnote_ref":
-                label = str(child.meta.get("label", child.meta.get("id", "")))
+                child_meta = _token_meta(child)
+                label = str(child_meta.get("label", child_meta.get("id", "")))
                 marker = f"[^{label}]"
                 start = locator.find(marker)
                 append(
@@ -692,10 +715,15 @@ class _Parser:
         match = _EXPLICIT_HEADING_IDS.search(text)
         if match is None:
             return text, children, None, ()
-        trim = len(match.group(0))
+        trim = len(_match_group(match, 0) or "")
+        identifier_source = _match_group(match, "ids") or ""
         identifiers = tuple(
-            item[1:] for item in re.findall(r"#[A-Za-z][\w:.-]*", match.group("ids"))
+            group[1:]
+            for identifier_match in _EXPLICIT_HEADING_ID_TOKEN.finditer(identifier_source)
+            if (group := _match_group(identifier_match, 0)) is not None
         )
+        if not identifiers:
+            return text, children, None, ()
         canonical, aliases = identifiers[0], identifiers[1:]
         remaining = trim
         mutable = list(children)
@@ -705,7 +733,7 @@ class _Parser:
                 break
             if len(last.text) <= remaining:
                 remaining -= len(last.text)
-                mutable.pop()
+                _ignored = mutable.pop()
             else:
                 mutable[-1] = DocNode(
                     kind="text",

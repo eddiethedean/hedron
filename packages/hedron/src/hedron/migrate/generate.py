@@ -420,15 +420,15 @@ def generate_project(plan: StreamlitMigrationPlan, out: Path) -> dict[str, str]:
             target = staging / rel
             target.parent.mkdir(parents=True, exist_ok=True)
             data = content.encode("utf-8")
-            target.write_bytes(data)
+            _ignored = target.write_bytes(data)
             hashes[rel] = hashlib.sha256(data).hexdigest()
         # Refresh source-map / report with hashes
         source_map = build_source_map(plan, generated_files=hashes)
         report["generated_files"] = hashes
-        (staging / "migration" / "source-map.json").write_text(
+        _ignored = (staging / "migration" / "source-map.json").write_text(
             dumps_source_map(source_map), encoding="utf-8"
         )
-        (staging / "migration" / "report.json").write_text(
+        _ignored = (staging / "migration" / "report.json").write_text(
             json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8"
         )
         hashes["migration/source-map.json"] = hashlib.sha256(
@@ -442,6 +442,6 @@ def generate_project(plan: StreamlitMigrationPlan, out: Path) -> dict[str, str]:
             dest = out / item.name
             if dest.exists():
                 raise FileExistsError(f"Refusing to overwrite {dest}")
-            item.rename(dest)
+            _ignored = item.rename(dest)
     (out / "components").mkdir(exist_ok=True)
     return hashes

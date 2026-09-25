@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 from collections.abc import Collection, Sequence
-from typing import Any, cast
+from typing import cast
 
 from fastapi import HTTPException, Request, status
 from starlette.responses import Response
@@ -12,6 +12,7 @@ from starlette.responses import Response
 from hedron.security.policy import SecurityPolicy, SecurityProfile
 from hedron_core.csrf import generate_csrf_token as _core_generate_csrf_token
 from hedron_core.csrf_strategy import CsrfStrategy, CsrfValidationError
+from hedron_core.typing_support import dynamic_attribute
 
 __all__ = [
     "csrf_token_for_request",
@@ -44,8 +45,8 @@ def _trusted_proxy_peers(request: Request) -> set[str]:
     raw_env = os.environ.get("HEDRON_TRUSTED_PROXIES", "")
     peers.update(part.strip() for part in raw_env.split(",") if part.strip())
     app: object | None = request.scope.get("app")
-    state = getattr(app, "state", None) if app is not None else None
-    configured = getattr(state, "hedron_trusted_peers", None) if state is not None else None
+    state = dynamic_attribute(app, "state") if app is not None else None
+    configured = dynamic_attribute(state, "hedron_trusted_peers") if state is not None else None
     if isinstance(configured, (list, tuple, set, frozenset)):
         peers.update(
             str(item).strip() for item in cast(Collection[object], configured) if str(item).strip()
@@ -128,7 +129,7 @@ def ensure_csrf_cookie(
         if request is None:
             raise ValueError(
                 "ensure_csrf_cookie requires a Request when the CSRF strategy "
-                "does not set a cookie (e.g. SessionTokenCsrf)"
+                + "does not set a cookie (e.g. SessionTokenCsrf)"
             )
         return token or strategy.issue(request)
 
@@ -157,8 +158,8 @@ def ensure_csrf_cookie(
         # Prefer scope lookup: Request.app raises KeyError when ASGI scope lacks "app"
         # (common in unit tests that build Request(scope) without an application).
         app: object | None = request.scope.get("app")
-        state = getattr(app, "state", None) if app is not None else None
-        configured = getattr(state, "hedron_cookie_path", None) if state is not None else None
+        state = dynamic_attribute(app, "state") if app is not None else None
+        configured = dynamic_attribute(state, "hedron_cookie_path") if state is not None else None
         if isinstance(configured, str) and configured:
             cookie_path = configured
         else:
@@ -241,7 +242,7 @@ def validate_csrf(request: Request, policy: SecurityPolicy) -> None:
 
 
 def extract_csrf_from_form(
-    data: Any,
+    data: object,
     *,
     field_name: str = "csrf_token",
 ) -> str | None:

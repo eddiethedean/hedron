@@ -38,7 +38,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```text
-ScrollRegion(*nodes: 'NodeLike', children: 'NodeLike' = None, axis: "Literal['block', 'inline', 'both']" = 'block', size: "Literal['sm', 'md', 'lg']" = 'md', affordance: "Literal['auto', 'always']" = 'auto', label: 'str | None' = None, id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
+ScrollRegion(*nodes: 'NodeLike', children: 'NodeLike' = None, axis: "Literal['block', 'inline', 'both']" = 'block', size: "Literal['sm', 'md', 'lg']" = 'md', affordance: "Literal['auto', 'always']" = 'auto', label: 'str | None' = None, id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |

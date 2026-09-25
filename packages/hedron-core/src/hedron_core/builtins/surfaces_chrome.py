@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Any, Literal
+from typing import Literal
+
+from typing_extensions import override
 
 from hedron_core.builtins._base import (
     ElementProps,
@@ -39,7 +41,7 @@ class Carousel(Component[CarouselProps]):
         label: str = "Carousel",
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(CarouselProps(id=id, label=label, class_=class_, mark=mark, **kwargs))
         normalized: list[tuple[str, NodeLike]] = []
@@ -52,6 +54,7 @@ class Carousel(Component[CarouselProps]):
             raise ValueError("Carousel requires at least one slide")
         self._slides = tuple(normalized)
 
+    @override
     def render(self) -> NodeLike:
         carousel_id = self.props.id or f"carousel-{self.render_instance_id()[2:10]}"
         items: list[NodeLike] = []
@@ -116,7 +119,7 @@ class Timeline(Component[TimelineProps]):
         label: str = "Timeline",
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(TimelineProps(id=id, label=label, class_=class_, mark=mark, **kwargs))
         normalized: list[tuple[str, str, NodeLike]] = []
@@ -133,6 +136,7 @@ class Timeline(Component[TimelineProps]):
                 normalized.append((entry[0], entry[1], entry[2]))
         self._entries = tuple(normalized)
 
+    @override
     def render(self) -> NodeLike:
         items: list[NodeLike] = []
         for _index, (time_text, label, body) in enumerate(self._entries):
@@ -175,7 +179,7 @@ class ContextMenu(Component[ContextMenuProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             ContextMenuProps(
@@ -189,6 +193,7 @@ class ContextMenu(Component[ContextMenuProps]):
         )
         self._actions = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         root_id = self.props.id or f"context-menu-{self.render_instance_id()[2:10]}"
         menu_id = f"{root_id}-menu"
@@ -257,14 +262,14 @@ class Popover(Component[PopoverProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
-        require_choice(
+        _ignored = require_choice(
             placement,
             ("block-start", "block-end", "inline-start", "inline-end", "center"),
             label="placement",
         )
-        require_choice(collision, ("flip", "shift", "static"), label="collision")
+        _ignored = require_choice(collision, ("flip", "shift", "static"), label="collision")
         super().__init__(
             PopoverProps(
                 label=label,
@@ -279,6 +284,7 @@ class Popover(Component[PopoverProps]):
         )
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         root_id = self.props.id or f"popover-{self.render_instance_id()[2:10]}"
         panel_id = f"{root_id}-panel"
@@ -336,7 +342,7 @@ class ActionDock(Component[ActionDockProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             ActionDockProps(
@@ -350,6 +356,7 @@ class ActionDock(Component[ActionDockProps]):
         )
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         base = (
             "hedron-action-dock hedron-bottom-dock"
@@ -383,7 +390,7 @@ class BottomDock(ActionDock):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             *nodes,
@@ -415,11 +422,12 @@ class Tooltip(Component[TooltipProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(TooltipProps(text=text, id=id, class_=class_, mark=mark, **kwargs))
         self._children = collect_children(*nodes, children=children)
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {
             "id": self.props.id,
@@ -451,10 +459,11 @@ class Help(Component[HelpProps]):
         for_: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(HelpProps(text=text, id=id, for_=for_, class_=class_, mark=mark, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         help_id = self.props.id or (
             f"help-{dom_id_part(self.props.for_ or 'hint')}-{self.render_instance_id()[2:10]}"
@@ -496,7 +505,7 @@ class ConfirmButton(Component[ConfirmButtonProps]):
         disabled: bool = False,
         variant: Literal["primary", "secondary", "danger"] = "danger",
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             ConfirmButtonProps(
@@ -510,6 +519,7 @@ class ConfirmButton(Component[ConfirmButtonProps]):
             )
         )
 
+    @override
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {
             "type": self.props.type,
@@ -543,12 +553,13 @@ class ClipboardCopy(Component[ClipboardCopyProps]):
         *,
         label: str = "Copy",
         mark: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if len(text) > 100_000:
             raise ValueError("ClipboardCopy text exceeds 100000 character budget")
         super().__init__(ClipboardCopyProps(text=text, label=label, mark=mark, **kwargs))
 
+    @override
     def render(self) -> NodeLike:
         return html.button(
             self.props.label,

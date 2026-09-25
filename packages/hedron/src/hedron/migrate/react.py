@@ -10,7 +10,6 @@ from __future__ import annotations
 import hashlib
 import re
 from pathlib import Path
-from typing import Any
 
 from hedron_core.codes import (
     HED_MIGRATE_0001,
@@ -27,7 +26,7 @@ SCHEMA = "hedron.react-migration/1"
 MAX_FILES = 500
 MAX_BYTES = 512 * 1024
 
-_RULES: tuple[dict[str, Any], ...] = (
+_RULES: tuple[dict[str, object], ...] = (
     {
         "pattern": r"\b(useActionState|useFormState|<form\b|<Form\b)",
         "kind": "form-lifecycle",
@@ -87,7 +86,7 @@ _RULES: tuple[dict[str, Any], ...] = (
 )
 
 
-def migration_disposition_manifest() -> dict[str, Any]:
+def migration_disposition_manifest() -> dict[str, object]:
     """Return the frozen disposition catalog used by the source scanner."""
 
     rows = [
@@ -99,7 +98,7 @@ def migration_disposition_manifest() -> dict[str, Any]:
         }
         for rule in _RULES
     ]
-    payload: dict[str, Any] = {
+    payload: dict[str, object] = {
         "schema": "hedron.react-migration-disposition/1",
         "rules": rows,
         "non_executing": True,
@@ -131,11 +130,11 @@ def _span(text: str, offset: int) -> dict[str, int]:
     return {"start_line": line, "start_column": offset - previous}
 
 
-def analyze_react_source(source: Path) -> dict[str, Any]:
+def analyze_react_source(source: Path) -> dict[str, object]:
     """Analyze React/TypeScript source using bounded lexical facts only."""
 
     root = source if source.is_dir() else source.parent
-    findings: list[dict[str, Any]] = []
+    findings: list[dict[str, object]] = []
     files_seen = 0
     bytes_seen = 0
     for path in _files(source):
@@ -184,7 +183,7 @@ def analyze_react_source(source: Path) -> dict[str, Any]:
     for finding in findings:
         disposition = str(finding["disposition"])
         disposition_counts[disposition] = disposition_counts.get(disposition, 0) + 1
-    payload: dict[str, Any] = {
+    payload: dict[str, object] = {
         "schema": SCHEMA,
         "source": str(source),
         "non_executing": True,

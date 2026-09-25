@@ -4,30 +4,40 @@ from __future__ import annotations
 
 from collections.abc import Generator, Mapping
 from contextlib import contextmanager
-from typing import Any, cast
+from importlib.metadata import PackageNotFoundError, version
+from typing import Protocol, cast
 
 __all__ = ["axe_scan", "axe_scan_report", "playwright", "playwright_page"]
 
 
+class _PlaywrightManager(Protocol):
+    def __enter__(self) -> object: ...
+
+    def __exit__(self, exc_type: object, exc: object, traceback: object) -> object: ...
+
+
+class _PlaywrightFactory(Protocol):
+    def __call__(self, *args: object, **kwargs: object) -> _PlaywrightManager: ...
+
+
 @contextmanager
-def playwright(*args: Any, **kwargs: Any) -> Generator[Any, None, None]:
+def playwright(*args: object, **kwargs: object) -> Generator[object, None, None]:
     """Yield a Playwright sync API instance (requires ``hedron[browser]``)."""
     try:
-        import importlib
-
-        sync_api = importlib.import_module("playwright.sync_api")
+        from playwright.sync_api import sync_playwright
     except ImportError as exc:  # pragma: no cover
         raise ImportError("Install browser extras: pip install 'hedron[browser]'") from exc
-    with sync_api.sync_playwright(*args, **kwargs) as pw:
+    factory = cast(_PlaywrightFactory, sync_playwright)
+    with factory(*args, **kwargs) as pw:
         yield pw
 
 
-def playwright_page(*args: Any, **kwargs: Any) -> Any:
+def playwright_page(*args: object, **kwargs: object) -> object:
     """Deprecated alias for :func:`playwright` (returns a context manager, not a page)."""
     return playwright(*args, **kwargs)
 
 
-def axe_scan(page: Any) -> list[dict[str, Any]]:
+def axe_scan(page: object) -> list[dict[str, object]]:
     """Run an axe-core scan (requires ``hedron[browser]`` with axe-playwright-python).
 
     Raises ``ImportError`` when axe is not installed. Prefer :func:`axe_scan_report`
@@ -39,16 +49,20 @@ def axe_scan(page: Any) -> list[dict[str, Any]]:
         raise ImportError(
             report.get("message") or "axe_playwright_python not installed; install hedron[browser]"
         )
-    return list(report.get("violations") or [])
+    violations = report.get("violations", [])
+    if not isinstance(violations, list):
+        return []
+    return [
+        {str(key): value for key, value in cast(Mapping[object, object], item).items()}
+        for item in cast(list[object], violations)
+        if isinstance(item, Mapping)
+    ]
 
 
-def axe_scan_report(page: Any) -> dict[str, Any]:
+def axe_scan_report(page: object) -> dict[str, object]:
     """Return axe violations plus provenance metadata for SARIF export."""
     try:
-        import importlib
-
-        axe_mod = importlib.import_module("axe_playwright_python.sync_playwright")
-        axe_cls = axe_mod.Axe
+        from axe_playwright_python.sync_playwright import Axe
     except ImportError:
         return {
             "violations": [],
@@ -57,7 +71,7 @@ def axe_scan_report(page: Any) -> dict[str, Any]:
             "message": "axe_playwright_python not installed; scan incomplete",
             "accessible": False,
         }
-    axe = axe_cls()
+    axe = Axe()
     results = axe.run(page)
     response_value: object = getattr(results, "response", {})
     response: Mapping[str, object] = (
@@ -65,11 +79,14 @@ def axe_scan_report(page: Any) -> dict[str, Any]:
     )
     violations_value = response.get("violations", [])
     violations = cast(list[object], violations_value) if isinstance(violations_value, list) else []
-    version = getattr(axe_mod, "__version__", "unknown")
+    try:
+        package_version = version("axe-playwright-python")
+    except PackageNotFoundError:
+        package_version = "unknown"
     return {
         "violations": list(violations),
         "incomplete": False,
-        "engine": f"axe_playwright_python:{version}",
+        "engine": f"axe_playwright_python:{package_version}",
         "accessible": False,
         "gate": "TEST-019",
     }

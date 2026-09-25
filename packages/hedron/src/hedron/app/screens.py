@@ -5,7 +5,7 @@ from __future__ import annotations
 import inspect
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, Generic, Literal, ParamSpec, TypeAlias, cast
+from typing import Generic, Literal, ParamSpec, TypeAlias, cast
 
 from hedron_core.builtins.document import Page
 from hedron_core.builtins.layout import Grid, Stack
@@ -13,6 +13,7 @@ from hedron_core.builtins.shell import AppShell, NavLink
 from hedron_core.codes import HED_SCREEN_0001, HED_SCREEN_0002, HED_SCREEN_0003
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
+from hedron_core.typing_support import dynamic_attribute
 
 __all__ = [
     "PageOptions",
@@ -40,11 +41,11 @@ class ScreenHandle(Generic[P]):
     name: str
     title: str
     layout: ScreenLayout
-    handler: Callable[..., Any]
+    handler: Callable[..., object]
     shell: AppShell | None = None
-    navigation: tuple[ScreenHandle[Any], ...] = ()
+    navigation: tuple[ScreenHandle[object], ...] = ()
     page_options: Mapping[str, object] = field(default_factory=dict[str, object])
-    __wrapped__: Callable[..., Any] | None = None
+    __wrapped__: Callable[..., object] | None = None
 
     @property
     def logical_id(self) -> str:
@@ -93,7 +94,7 @@ class ScreenHandle(Generic[P]):
             mark=mark,
         )
 
-    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+    def __call__(self, *args: object, **kwargs: object) -> object:
         return self.handler(*args, **kwargs)
 
 
@@ -144,7 +145,7 @@ def normalize_screen_result(
     title: str,
     layout: ScreenLayout = "stack",
     shell: AppShell | None = None,
-    navigation: Sequence[ScreenHandle[Any]] = (),
+    navigation: Sequence[ScreenHandle[object]] = (),
     page_options: PageOptions | None = None,
 ) -> Page:
     """Normalize ``NodeLike`` / bounded sequence / ``Page`` into a titled ``Page``."""
@@ -178,7 +179,7 @@ def normalize_screen_result(
     body: NodeLike = _apply_layout(nodes, layout=layout)
     body = _compose_shell(body, shell=shell, navigation=navigation)
     page_kwargs = dict(options)
-    page_kwargs.setdefault("title", title)
+    _ignored = page_kwargs.setdefault("title", title)
     return Page(body, **page_kwargs)  # type: ignore[arg-type]
 
 
@@ -189,7 +190,7 @@ def _validate_explicit_page(
     shell: AppShell | None,
     page_options: Mapping[str, object],
 ) -> Page:
-    page_title = getattr(page.props, "title", None)
+    page_title = dynamic_attribute(page.props, "title")
     if page_title is not None and str(page_title) != str(title):
         raise error(
             HED_SCREEN_0001,
@@ -267,7 +268,7 @@ def _compose_shell(
     body: NodeLike,
     *,
     shell: AppShell | None,
-    navigation: Sequence[ScreenHandle[Any]],
+    navigation: Sequence[ScreenHandle[object]],
 ) -> NodeLike:
     nav_from_handles: list[NodeLike] = [item.link() for item in navigation]
     if shell is None:

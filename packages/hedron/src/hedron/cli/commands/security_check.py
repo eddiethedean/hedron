@@ -8,12 +8,21 @@ from collections.abc import Sequence
 from dataclasses import asdict, dataclass, field
 from datetime import date, datetime, timezone
 from pathlib import Path
-from typing import Any, Literal, cast
+from typing import Literal, Protocol, cast
 
 from hedron_core.compat import tomllib
 from hedron_core.security_plane import CONFORMANCE_PROFILE_VERSION, SecurityPolicy
 
 Confidence = Literal["proven", "heuristic", "application_owned", "unsupported", "unverifiable"]
+
+
+class _SecurityCheckArgs(Protocol):
+    project: str | None
+    policy: str
+    suppressions: str | None
+    baseline: str | None
+    format: str
+    strict: bool
 
 
 @dataclass(frozen=True, slots=True)
@@ -34,11 +43,11 @@ class PostureReport:
     policy_profile: str
     findings: list[PostureFinding] = field(default_factory=list[PostureFinding])
     unknowns: list[str] = field(default_factory=list[str])
-    suppressions: list[dict[str, Any]] = field(default_factory=list[dict[str, Any]])
+    suppressions: list[dict[str, object]] = field(default_factory=list[dict[str, object]])
     baseline_drift: list[str] = field(default_factory=list[str])
     conformance_status: str = "unknown"
 
-    def redacted_dict(self) -> dict[str, Any]:
+    def redacted_dict(self) -> dict[str, object]:
         return {
             "profile_version": self.profile_version,
             "policy_profile": self.policy_profile,
@@ -50,7 +59,7 @@ class PostureReport:
         }
 
 
-def _load_suppressions(path: Path | None) -> list[dict[str, Any]]:
+def _load_suppressions(path: Path | None) -> list[dict[str, object]]:
     if path is None or not path.is_file():
         return []
     decoded: object = json.loads(path.read_text(encoding="utf-8"))
@@ -60,10 +69,12 @@ def _load_suppressions(path: Path | None) -> list[dict[str, Any]]:
         rows = decoded
     if not isinstance(rows, list):
         return []
-    return [cast(dict[str, Any], row) for row in cast(list[object], rows) if isinstance(row, dict)]
+    return [
+        cast(dict[str, object], row) for row in cast(list[object], rows) if isinstance(row, dict)
+    ]
 
 
-def _suppression_active(row: dict[str, Any], *, today: date) -> bool:
+def _suppression_active(row: dict[str, object], *, today: date) -> bool:
     expires = row.get("expires")
     if not expires:
         return True
@@ -188,7 +199,7 @@ def collect_posture(
     )
 
 
-def report_to_sarif(report: PostureReport) -> dict[str, Any]:
+def report_to_sarif(report: PostureReport) -> dict[str, object]:
     return {
         "version": "2.1.0",
         "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
@@ -251,16 +262,17 @@ def exit_code_for(
 
 
 def _cmd_security_check(args: argparse.Namespace) -> None:
-    project = Path(args.project or ".").resolve()
+    typed_args = cast(_SecurityCheckArgs, cast(object, args))
+    project = Path(typed_args.project or ".").resolve()
     report = collect_posture(
         project=project,
-        policy_name=args.policy,
-        suppressions_path=Path(args.suppressions) if args.suppressions else None,
-        baseline_path=Path(args.baseline) if args.baseline else None,
+        policy_name=typed_args.policy,
+        suppressions_path=Path(typed_args.suppressions) if typed_args.suppressions else None,
+        baseline_path=Path(typed_args.baseline) if typed_args.baseline else None,
     )
-    if args.format == "json":
+    if typed_args.format == "json":
         print(json.dumps(report.redacted_dict(), indent=2))
-    elif args.format == "sarif":
+    elif typed_args.format == "sarif":
         print(json.dumps(report_to_sarif(report), indent=2))
     else:
         print(f"hedron security-check ({report.policy_profile} / {report.profile_version})")
@@ -268,7 +280,7 @@ def _cmd_security_check(args: argparse.Namespace) -> None:
         for finding in report.findings:
             print(
                 f"[{finding.severity}/{finding.confidence}] {finding.id}: {finding.title} "
-                f"({finding.ownership})"
+                + f"({finding.ownership})"
             )
             print(f"  evidence: {finding.evidence}")
             print(f"  remediation: {finding.remediation}")
@@ -278,7 +290,7 @@ def _cmd_security_check(args: argparse.Namespace) -> None:
             print("baseline drift:")
             for item in report.baseline_drift:
                 print(f"  - {item}")
-    raise SystemExit(exit_code_for(report, strict=bool(args.strict)))
+    raise SystemExit(exit_code_for(report, strict=typed_args.strict))
 
 
 cmd_security_check = _cmd_security_check

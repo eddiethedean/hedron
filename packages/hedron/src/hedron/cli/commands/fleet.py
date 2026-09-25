@@ -4,18 +4,20 @@ from __future__ import annotations
 
 import argparse
 import json
-from typing import Any, cast
+from typing import cast
+
+from hedron.cli.arguments import string_argument
 
 
-def _mapping(value: object) -> dict[str, Any]:
-    return cast(dict[str, Any], value) if isinstance(value, dict) else {}
+def _mapping(value: object) -> dict[str, object]:
+    return cast(dict[str, object], value) if isinstance(value, dict) else {}
 
 
 def _cmd_fleet(args: argparse.Namespace) -> int:
     from hedron.fleet import diagnose_installed_fleet
 
     report = diagnose_installed_fleet()
-    if args.format == "json":
+    if string_argument(args, "format", "human") == "json":
         print(json.dumps(report, indent=2, sort_keys=True, default=str))
     else:
         dists = _mapping(report.get("distributions"))
@@ -25,8 +27,8 @@ def _cmd_fleet(args: argparse.Namespace) -> int:
         if skew:
             print(
                 "train_skew "
-                f"mismatch={skew.get('train_version_mismatch')} "
-                f"multi={skew.get('multi_version_train')}"
+                + f"mismatch={skew.get('train_version_mismatch')} "
+                + f"multi={skew.get('multi_version_train')}"
             )
         recommendations: object = report.get("recommendations") or []
         for rec_value in (

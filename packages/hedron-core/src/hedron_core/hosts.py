@@ -5,6 +5,8 @@ from __future__ import annotations
 from contextvars import ContextVar, Token
 from typing import ClassVar
 
+from typing_extensions import override
+
 from hedron_core.codes import HED_HOST_0001, HED_VIEW_0002
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error as raise_error
@@ -226,6 +228,7 @@ class FragmentHost(Component[FragmentHostProps]):
             load_on_mount=load_on_mount,
         )
 
+    @override
     def render(self) -> NodeLike:
         if self._dom_id:
             _note_mounted(self._dom_id)
@@ -262,7 +265,7 @@ class FragmentHost(Component[FragmentHostProps]):
             attrs["data-hedron-fallback"] = self._fallback
         if self._error is not None:
             attrs["data-hedron-error-slot"] = "true"
-        tag = getattr(html, self.props.tag)
+        tag = html.tag(self.props.tag)
         children: list[NodeLike] = []
         if self._error is not None:
             error_node: NodeLike = (

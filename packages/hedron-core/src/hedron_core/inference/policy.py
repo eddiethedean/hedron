@@ -9,7 +9,7 @@ import time
 from collections import OrderedDict, defaultdict, deque
 from collections.abc import Callable, Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, Protocol, cast, runtime_checkable
+from typing import Protocol, cast, runtime_checkable
 
 from hedron_core.codes import HED_INFER_0001, HED_INFER_0002, HED_INFER_0003
 from hedron_core.diagnostics import error
@@ -491,7 +491,7 @@ class InferencePolicy:
                     tenant_id=tenant_id,
                 ):
                     break
-                pending.popleft()
+                _ignored = pending.popleft()
                 self._forget_request_maps(rid)
                 released += 1
             if released:
@@ -519,13 +519,13 @@ class InferencePolicy:
 
     def stream_progress(
         self,
-        values: Iterator[Any],
+        values: Iterator[object],
         *,
         request_id: str,
-        on_chunk: Callable[[Any], None] | None = None,
-    ) -> list[Any]:
+        on_chunk: Callable[[object], None] | None = None,
+    ) -> list[object]:
         """Consume a generator while honoring cancellation (INFER-018)."""
-        chunks: list[Any] = []
+        chunks: list[object] = []
         for value in values:
             if self.is_cancelled(request_id):
                 raise InferenceError(
@@ -553,10 +553,10 @@ class InferencePolicy:
         )
 
     def _forget_request_maps(self, request_id: str) -> None:
-        self._diagnostics.pop(request_id, None)
-        self._request_jobs.pop(request_id, None)
-        self._request_auth.pop(request_id, None)
-        self._request_groups.pop(request_id, None)
+        _ignored = self._diagnostics.pop(request_id, None)
+        _ignored = self._request_jobs.pop(request_id, None)
+        _ignored = self._request_auth.pop(request_id, None)
+        _ignored = self._request_groups.pop(request_id, None)
 
     def _drop_inflight_id(self, group: str, request_id: str) -> None:
         pending = self._inflight_ids.get(group)
@@ -573,7 +573,7 @@ class InferencePolicy:
         self._cancel[request_id] = now
         self._cancel.move_to_end(request_id)
         while len(self._cancel) > self.max_cancelled:
-            self._cancel.popitem(last=False)
+            _ignored = self._cancel.popitem(last=False)
 
     def _prune_cancelled(self, now: float) -> None:
         expired = [

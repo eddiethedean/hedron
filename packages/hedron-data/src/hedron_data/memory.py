@@ -426,9 +426,9 @@ class InMemoryDataSource:
                 errors.append(FieldError(row_key=key, field=None, message="Unknown row"))
                 continue
             del rows[key]
-            row_versions.pop(key, None)
+            _ignored = row_versions.pop(key, None)
             accepted_deletes.append(key)
-            next_version()
+            _ignored = next_version()
 
         ok = not errors and not conflicts
         accepted = DataChanges(

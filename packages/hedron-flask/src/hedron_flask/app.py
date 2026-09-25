@@ -6,7 +6,7 @@ import logging
 import secrets
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import replace
-from typing import Any, ParamSpec, TypeVar, cast
+from typing import ParamSpec, TypeVar, cast
 
 from flask import Flask, Request, Response
 from flask import session as flask_session
@@ -19,6 +19,7 @@ from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.interaction_067 import Outcome
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult
 from hedron_core.security_policy import SecurityPolicy, SecurityProfileName
+from hedron_core.typing_support import object_get
 from hedron_flask.blueprint import attach_hedron_to_flask
 from hedron_flask.csrf import (
     csrf_cookie_force_secure,
@@ -60,7 +61,7 @@ class HedronFlask:
         csrf_protect: bool = True,
         csrf_cookie_secure: bool | None = None,
         security: SecurityProfileName | str | SecurityPolicy = "standard",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         self.csrf_cookie_name = csrf_cookie_name
         self.csrf_protect = csrf_protect
@@ -77,7 +78,7 @@ class HedronFlask:
         self.url_reverser: FlaskUrlReverser | None = None
         if import_name is not None:
             app = Flask(import_name, **kwargs)
-            self.init_app(app)
+            _ignored = self.init_app(app)
 
     def _sync_csrf_cookie_name(self) -> None:
         """Keep extension and SecurityPolicy CSRF cookie names identical."""
@@ -131,13 +132,13 @@ class HedronFlask:
         """Return the immutable capability declaration for the Flask adapter."""
         return FLASK_CAPABILITIES
 
-    def route(self, rule: str, **options: Any) -> Callable[[RouteCallable], RouteCallable]:
+    def route(self, rule: str, **options: object) -> Callable[[RouteCallable], RouteCallable]:
         """Delegate native route registration to the bound Flask application."""
         if self.flask is None:
             raise RuntimeError("HedronFlask.init_app(app) must be called before route()")
         return self.flask.route(rule, **options)
 
-    def page(self, rule: str, **options: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
+    def page(self, rule: str, **options: object) -> Callable[[Callable[P, R]], Callable[P, R]]:
         """Register a page view on the bound app (non-Blueprint convenience)."""
         from hedron_flask.blueprint import wrap_hedron_view
 
@@ -162,7 +163,9 @@ class HedronFlask:
 
         return decorator
 
-    def _view_route(self, rule: str, **options: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
+    def _view_route(
+        self, rule: str, **options: object
+    ) -> Callable[[Callable[P, R]], Callable[P, R]]:
         from hedron_flask.blueprint import wrap_hedron_view
 
         methods = list(options.pop("methods", ("GET",)))
@@ -186,7 +189,7 @@ class HedronFlask:
 
         return decorator
 
-    def view(self, rule: str, **options: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
+    def view(self, rule: str, **options: object) -> Callable[[Callable[P, R]], Callable[P, R]]:
         """Register the canonical replaceable view route.
 
         Flask has no separate response type for a fragment, so the adapter's
@@ -195,7 +198,7 @@ class HedronFlask:
         """
         return self._view_route(rule, **options)
 
-    def action(self, rule: str, **options: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
+    def action(self, rule: str, **options: object) -> Callable[[Callable[P, R]], Callable[P, R]]:
         from hedron_flask.blueprint import wrap_hedron_view
 
         methods = list(options.pop("methods", ("POST",)))
@@ -226,7 +229,7 @@ class HedronFlask:
 
     def render(
         self,
-        value: NodeLike | Component[Any] | RenderResult,
+        value: NodeLike | Component[object] | RenderResult,
         request: Request,
         *,
         context: RenderContext | None = None,
@@ -245,7 +248,7 @@ class HedronFlask:
 
     def respond(
         self,
-        value: NodeLike | Component[Any] | InteractionResult | RenderResult,
+        value: NodeLike | Component[object] | InteractionResult | RenderResult,
         request: Request,
         *,
         context: RenderContext | None = None,
@@ -265,7 +268,7 @@ class HedronFlask:
         if running_loop():
             raise RuntimeError(
                 "HedronFlask.respond() cannot prepare components while an event loop "
-                "is running; await respond_async(...) instead."
+                + "is running; await respond_async(...) instead."
             )
         if self.security_policy.csrf_enabled and request.method.upper() not in _SAFE_METHODS:
             validate_csrf(
@@ -318,7 +321,7 @@ class HedronFlask:
 
     async def respond_async(
         self,
-        value: NodeLike | Component[Any] | InteractionResult | RenderResult,
+        value: NodeLike | Component[object] | InteractionResult | RenderResult,
         request: Request,
         *,
         context: RenderContext | None = None,
@@ -359,9 +362,9 @@ class HedronFlask:
             )
         if isinstance(value, InteractionResult):
             if value.content is not None:
-                await prepare_tree(value.content)
+                _ignored = await prepare_tree(value.content)
             for update in value.oob:
-                await prepare_tree(update.content)
+                _ignored = await prepare_tree(update.content)
             return interaction_response(
                 value,
                 context=context,
@@ -376,9 +379,9 @@ class HedronFlask:
         if (
             isinstance(value, (Component, str)) or hasattr(value, "__hedron_component__")
         ) and not isinstance(value, RenderResult):
-            await prepare_tree(value)  # type: ignore[arg-type]
+            _ignored = await prepare_tree(value)  # type: ignore[arg-type]
         return component_response(
-            cast(NodeLike | Component[Any] | RenderResult | None, value),
+            cast(NodeLike | Component[object] | RenderResult | None, value),
             context=context,
             mode=mode,
             extra_headers=extra_headers,
@@ -394,15 +397,11 @@ class HedronFlask:
         user_id = None
         flask_login_authoritative = False
         try:
-            from flask_login import current_user  # type: ignore[import-not-found]
+            from flask_login import current_user
 
             flask_login_authoritative = True
-            if getattr(current_user, "is_authenticated", False):
-                get_id = getattr(current_user, "get_id", None)
-                if callable(get_id):
-                    user_id = get_id()
-                if user_id is None:
-                    user_id = getattr(current_user, "id", None)
+            if current_user.is_authenticated:
+                user_id = current_user.get_id()
         except ImportError:
             _logger.debug("flask_login is not installed; using session identity")
         except Exception as exc:  # noqa: BLE001
@@ -410,9 +409,9 @@ class HedronFlask:
             flask_login_authoritative = False
             _logger.debug("flask_login current_user unavailable: %s", exc)
         if user_id is None and not flask_login_authoritative:
-            user_id = flask_session.get("user_id")
+            user_id = object_get(flask_session, "user_id")
             if user_id is None:
-                user_id = flask_session.get("_user_id")
+                user_id = object_get(flask_session, "_user_id")
         authenticated = bool(user_id)
         if not authenticated:
             return AuthSignal(
@@ -421,7 +420,7 @@ class HedronFlask:
                 scopes=(),
                 tenant_id=None,
             )
-        scopes_raw = flask_session.get("scopes", ())
+        scopes_raw = object_get(flask_session, "scopes", ())
         scopes = (
             tuple(
                 item
@@ -431,7 +430,7 @@ class HedronFlask:
             if isinstance(scopes_raw, (list, tuple))
             else ()
         )
-        tenant_id = flask_session.get("tenant_id")
+        tenant_id = object_get(flask_session, "tenant_id")
         return AuthSignal(
             authenticated=authenticated,
             subject_id=str(user_id) if user_id is not None else None,

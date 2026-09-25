@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any
 
 from hedron_core.diagnostics import error
 
@@ -44,7 +43,7 @@ __all__ = [
 ]
 
 
-def validate_element_author_meta(meta: dict[str, Any]) -> dict[str, Any]:
+def validate_element_author_meta(meta: dict[str, object]) -> dict[str, object]:
     """Validate the minimum portable element-author metadata contract."""
     missing = [key for key in REQUIRED_ELEMENT_META_KEYS if key not in meta]
     if missing:

@@ -7,7 +7,7 @@ import json
 import logging
 import re
 from collections.abc import Mapping, Sequence
-from typing import Any, cast
+from typing import cast
 from urllib.parse import unquote
 
 from hedron_charts.host_render import (
@@ -57,21 +57,21 @@ __all__ = [
 _logger = logging.getLogger("hedron.charts")
 
 
-def _mapping(value: Any) -> Mapping[str, Any]:
-    return cast(Mapping[str, Any], value)
+def _mapping(value: object) -> Mapping[str, object]:
+    return cast(Mapping[str, object], value)
 
 
 def _json_output(
     *,
     kind: str,
-    body: Mapping[str, Any] | Sequence[Any] | str,
+    body: Mapping[str, object] | Sequence[object] | str,
     accessibility: ChartAccessibility,
     limits: VisualizationLimits | None,
-    metadata: Mapping[str, Any] | None = None,
+    metadata: Mapping[str, object] | None = None,
 ) -> ChartOutput:
     acc = accessibility.validated()
     payload = body if isinstance(body, str) else json.dumps(body, default=str)
-    ensure_limits(None, payload, limits=limits)
+    _ignored = ensure_limits(None, payload, limits=limits)
     if isinstance(body, Mapping):
         reject_remote_urls(body)
         reject_callbacks(body)
@@ -140,7 +140,7 @@ class VegaTransformAdapter:
         transforms_value: object = mapping.get("transform") or []
         if not isinstance(transforms_value, list):
             raise TypeError("transform must be a list")
-        transforms: list[Any] = cast(list[Any], transforms_value)
+        transforms: list[object] = cast(list[object], transforms_value)
         return _json_output(
             kind="vega-lite",
             body=dict(mapping),
@@ -171,10 +171,10 @@ class PyDeckAdapter:
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
         if isinstance(value, Mapping):
-            raw_body: Mapping[str, Any] = dict(_mapping(value))
+            raw_body: Mapping[str, object] = dict(_mapping(value))
         else:
             try:
-                importlib.import_module("pydeck")
+                _ignored = importlib.import_module("pydeck")
             except ImportError as exc:
                 raise missing_extra("pydeck") from exc
             to_json = getattr(value, "to_json", None)
@@ -183,7 +183,7 @@ class PyDeckAdapter:
                 parsed = json.loads(raw)
                 if not isinstance(parsed, Mapping):
                     raise TypeError("PyDeck to_json() must return a mapping")
-                raw_body = cast(Mapping[str, Any], parsed)
+                raw_body = cast(Mapping[str, object], parsed)
             else:
                 raise TypeError(
                     "PyDeck value must expose to_json() returning MapLibre-compatible JSON"
@@ -219,7 +219,7 @@ class MapLibreAdapter:
         if not isinstance(value, Mapping):
             raise TypeError(f"{self.name} adapter expected a mapping; got {type(value).__name__}")
         body = dict(_mapping(value))
-        body.setdefault("coord_order", "lnglat")
+        _ignored = body.setdefault("coord_order", "lnglat")
         return _json_output(
             kind="maplibre",
             body=body,
@@ -251,7 +251,7 @@ class FoliumAdapter:
     ) -> ChartOutput:
         if not isinstance(value, Mapping):
             try:
-                importlib.import_module("folium")
+                _ignored = importlib.import_module("folium")
             except ImportError as exc:
                 raise missing_extra("folium") from exc
         body = extract_folium_payload(cast(object, value))
@@ -323,10 +323,11 @@ class GraphVizAdapter:
         from hedron_core.diagnostics import HedronError
 
         source = value if isinstance(value, str) else str(getattr(value, "source", value))
-        ensure_limits(None, source, limits=limits)
+        _ignored = ensure_limits(None, source, limits=limits)
         svg: str | None = None
         try:
-            graphviz = importlib.import_module("graphviz")
+            import graphviz
+
             src = graphviz.Source(source)
             rendered = src.pipe(format="svg")
             svg = rendered.decode("utf-8") if isinstance(rendered, bytes) else str(rendered)
@@ -392,7 +393,7 @@ class MermaidAdapter:
     ) -> ChartOutput:
         if not isinstance(value, str):
             raise TypeError(f"{self.name} adapter expected a string; got {type(value).__name__}")
-        ensure_limits(None, value, limits=limits)
+        _ignored = ensure_limits(None, value, limits=limits)
         return _json_output(
             kind="mermaid",
             body={"diagram": value},
@@ -462,7 +463,7 @@ class GreatTablesAdapter:
                 if isinstance(row, Mapping)
             ]
             body = json.dumps(redact_rows(rows))
-            ensure_limits(rows, body, limits=limits)
+            _ignored = ensure_limits(rows, body, limits=limits)
             return ChartOutput(
                 kind="html",
                 body=body,
@@ -472,7 +473,7 @@ class GreatTablesAdapter:
                 metadata={"adapter": self.name, "rows": len(rows)},
             )
         try:
-            importlib.import_module("great_tables")
+            _ignored = importlib.import_module("great_tables")
         except ImportError as exc:
             raise missing_extra("great_tables") from exc
         raw = str(value)
@@ -540,14 +541,13 @@ class SigmaAdapter:
             body = dict(_mapping(value))
         else:
             try:
-                nx = importlib.import_module("networkx")
+                import networkx as nx
             except ImportError as exc:
                 raise missing_extra("networkx") from exc
-            graph_type = getattr(nx, "Graph", object)
-            if not isinstance(value, graph_type):
+            if not isinstance(value, nx.Graph):
                 raise TypeError("SigmaAdapter expects networkx.Graph or {nodes,edges}")
-            nodes = getattr(value, "nodes", ())
-            edges = getattr(value, "edges", ())
+            nodes = value.nodes
+            edges = value.edges
             body = {
                 "nodes": [{"id": str(n)} for n in nodes],
                 "edges": [{"source": str(u), "target": str(v)} for u, v in edges],
@@ -669,7 +669,7 @@ class DatashaderAdapter:
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
         try:
-            importlib.import_module("datashader")
+            _ignored = importlib.import_module("datashader")
         except ImportError as exc:
             raise missing_extra("datashader") from exc
         return _json_output(
@@ -702,7 +702,7 @@ class BokehAdapter:
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
         try:
-            importlib.import_module("bokeh")
+            _ignored = importlib.import_module("bokeh")
         except ImportError as exc:
             if not isinstance(value, Mapping):
                 raise missing_extra("bokeh") from exc
@@ -737,7 +737,7 @@ class HoloViewsAdapter:
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
         try:
-            importlib.import_module("holoviews")
+            _ignored = importlib.import_module("holoviews")
         except ImportError as exc:
             if not isinstance(value, Mapping):
                 raise missing_extra("holoviews") from exc
@@ -775,7 +775,7 @@ class PygalAdapter:
             svg = str(_mapping(value)["svg"])
         else:
             try:
-                importlib.import_module("pygal")
+                _ignored = importlib.import_module("pygal")
             except ImportError as exc:
                 raise missing_extra("pygal") from exc
             render = getattr(cast(object, value), "render", None)
@@ -784,7 +784,7 @@ class PygalAdapter:
                 svg = rendered.decode("utf-8") if isinstance(rendered, bytes) else str(rendered)
             else:
                 svg = str(cast(object, value))
-        ensure_limits(None, svg, limits=limits)
+        _ignored = ensure_limits(None, svg, limits=limits)
         reject_active_svg(svg)
         return ChartOutput(
             kind="svg",

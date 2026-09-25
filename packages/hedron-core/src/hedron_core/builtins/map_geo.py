@@ -17,6 +17,7 @@ from typing import TypeGuard, cast
 from urllib.parse import unquote, urlsplit
 
 from pydantic import field_validator
+from typing_extensions import override
 
 from hedron_core.builtins._base import ElementProps, class_names, mark_data
 from hedron_core.component import Component, NodeLike
@@ -529,6 +530,7 @@ class Map(Component[MapProps]):
         self._geojson = sanitized
         self._features = features
 
+    @override
     def render(self) -> NodeLike:
         table = self._alternative_table()
         enhance_attrs: dict[str, HtmlAttrValue] = {

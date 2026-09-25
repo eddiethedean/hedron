@@ -72,8 +72,8 @@ def refuse_in_memory_backends(*, jobs: bool = True, cache: bool = True) -> None:
         )
         raise RuntimeError(
             "InMemoryJobBackend is not allowed under HEDRON_ENV=production. "
-            "Call set_job_backend(...) with Redis/Celery/RQ, or unset production "
-            "for local demos."
+            + "Call set_job_backend(...) with Redis/Celery/RQ, or unset production "
+            + "for local demos."
         )
     if cache and is_process_local(get_cache_backend()):
         from hedron_core.audit import SecurityAuditEventType, emit_security_audit
@@ -85,8 +85,8 @@ def refuse_in_memory_backends(*, jobs: bool = True, cache: bool = True) -> None:
         )
         raise RuntimeError(
             "InMemoryCacheBackend is not allowed under HEDRON_ENV=production. "
-            "Call set_cache_backend(...) with an external store, or unset production "
-            "for local demos."
+            + "Call set_cache_backend(...) with an external store, or unset production "
+            + "for local demos."
         )
 
 
@@ -105,7 +105,7 @@ def assert_durable_backends(
     ):
         warnings.warn(
             "security='strict' with in-memory job/cache backends is not multi-worker safe; "
-            "configure set_job_backend / set_cache_backend before production.",
+            + "configure set_job_backend / set_cache_backend before production.",
             UserWarning,
             stacklevel=warning_stacklevel,
         )
@@ -136,8 +136,8 @@ def resolve_production_plugins(
     if RISK_PLUGINS_DISCOVER_ALL in accepted:
         warnings.warn(
             "Production plugin discover-all accepted via "
-            f"{RISK_ACCEPTANCE_ENV}={RISK_PLUGINS_DISCOVER_ALL}; "
-            "prefer an explicit [tool.hedron] plugins allowlist.",
+            + f"{RISK_ACCEPTANCE_ENV}={RISK_PLUGINS_DISCOVER_ALL}; "
+            + "prefer an explicit [tool.hedron] plugins allowlist.",
             UserWarning,
             stacklevel=3,
         )
@@ -145,8 +145,8 @@ def resolve_production_plugins(
 
     warnings.warn(
         "Production: [tool.hedron] plugins omitted — loading none (deny-by-default). "
-        "Set an explicit allowlist, plugins = [], or "
-        f"{RISK_ACCEPTANCE_ENV}={RISK_PLUGINS_DISCOVER_ALL}.",
+        + "Set an explicit allowlist, plugins = [], or "
+        + f"{RISK_ACCEPTANCE_ENV}={RISK_PLUGINS_DISCOVER_ALL}.",
         UserWarning,
         stacklevel=3,
     )
@@ -178,9 +178,9 @@ def assert_experimental_live_allowed(
     )
     raise RuntimeError(
         "Experimental live transports (SSE/WebSocket/streaming/preload) are not "
-        "allowed under HEDRON_ENV=production without explicit risk acceptance. "
-        "Prefer polling, or set "
-        f"{RISK_ACCEPTANCE_ENV}={RISK_EXPERIMENTAL_LIVE}."
+        + "allowed under HEDRON_ENV=production without explicit risk acceptance. "
+        + "Prefer polling, or set "
+        + f"{RISK_ACCEPTANCE_ENV}={RISK_EXPERIMENTAL_LIVE}."
     )
 
 
@@ -294,6 +294,6 @@ def assert_production_security_config(
     accepted_hint = ",".join(sorted(code for code, _ in blocked))
     raise RuntimeError(
         f"Production security gate failed ({detail}). "
-        f"Fix the configuration or set {RISK_ACCEPTANCE_ENV}={accepted_hint} "
-        "to document explicit risk acceptance."
+        + f"Fix the configuration or set {RISK_ACCEPTANCE_ENV}={accepted_hint} "
+        + "to document explicit risk acceptance."
     )

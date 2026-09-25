@@ -129,7 +129,7 @@ def validate_csrf(request: HttpRequest) -> None:
             elif not (request.META.get(django_hdr) or request.META.get(portable_hdr)):
                 raise DjangoCsrfError(
                     "CSRF validation failed: could not read csrf_token from the POST "
-                    "body; send X-CSRFToken or X-CSRF-Token instead"
+                    + "body; send X-CSRFToken or X-CSRF-Token instead"
                 )
 
     from django.http import HttpRequest as DjangoHttpRequest
@@ -154,5 +154,5 @@ def validate_csrf(request: HttpRequest) -> None:
         )
         raise DjangoCsrfError(
             "CSRF validation failed; send csrfmiddlewaretoken / csrf_token form field "
-            "or X-CSRFToken / X-CSRF-Token header"
+            + "or X-CSRFToken / X-CSRF-Token header"
         )

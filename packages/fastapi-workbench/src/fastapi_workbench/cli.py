@@ -8,7 +8,7 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import Any, cast
+from typing import Protocol, cast
 
 from fastapi_workbench import __version__
 from fastapi_workbench.cli_support import (
@@ -34,28 +34,61 @@ from fastapi_workbench.runner import (
 _cookie_path_matches_mount = cookie_path_matches_mount
 
 
-def _config_from_args(args: argparse.Namespace) -> WorkbenchConfig:
-    mode = WorkbenchMode.parse(args.mode) if getattr(args, "mode", None) else WorkbenchMode.AUTO
+class _WorkbenchArgs(Protocol):
+    command: str
+    format: str
+    mode: str | None
+    host: str
+    port: int
+    mount: str | None
+    public_base_url: str | None
+    rserver_url: str | None
+    open_browser: bool
+    reload: bool
+    workers: int | None
+    forwarded_allow_ips: str | None
+    allow_external_bind: bool
+    debug: bool
+    factory: bool
+    app: str | None
+    topology: str | None
+    discover: bool
+    live: bool
+
+
+class _SocketAddress(Protocol):
+    def getsockname(self) -> tuple[object, ...]: ...
+
+
+def _bound_port(sock: object) -> int:
+    address = cast(_SocketAddress, sock).getsockname()
+    if len(address) < 2 or not isinstance(address[1], int):
+        raise ValueError("bound socket address does not contain an integer port")
+    return address[1]
+
+
+def _config_from_args(args: _WorkbenchArgs) -> WorkbenchConfig:
+    mode = WorkbenchMode.parse(args.mode) if args.mode else WorkbenchMode.AUTO
     return WorkbenchConfig(
         mode=mode,
-        host=getattr(args, "host", None),
-        port=getattr(args, "port", None),
-        mount=getattr(args, "mount", None),
-        public_base_url=getattr(args, "public_base_url", None),
-        rserver_url_bin=getattr(args, "rserver_url", None) or WorkbenchConfig().rserver_url_bin,
-        open_browser=bool(getattr(args, "open_browser", False)),
-        reload=bool(getattr(args, "reload", False)),
-        workers=getattr(args, "workers", None),
-        forwarded_allow_ips=getattr(args, "forwarded_allow_ips", None),
-        allow_external_bind=bool(getattr(args, "allow_external_bind", False)),
-        debug=bool(getattr(args, "debug", False)),
-        factory=bool(getattr(args, "factory", False)),
-        app_target=getattr(args, "app", None),
-        topology=WorkbenchTopology.parse(getattr(args, "topology", None)),
+        host=args.host,
+        port=args.port,
+        mount=args.mount,
+        public_base_url=args.public_base_url,
+        rserver_url_bin=args.rserver_url or WorkbenchConfig().rserver_url_bin,
+        open_browser=args.open_browser,
+        reload=args.reload,
+        workers=args.workers,
+        forwarded_allow_ips=args.forwarded_allow_ips,
+        allow_external_bind=args.allow_external_bind,
+        debug=args.debug,
+        factory=args.factory,
+        app_target=args.app,
+        topology=WorkbenchTopology.parse(args.topology),
     )
 
 
-def _emit(resolved: Any, *, fmt: str) -> None:
+def _emit(resolved: object, *, fmt: str) -> None:
     payload = deployment_payload(resolved)
     if fmt == "json":
         print(json.dumps(payload, indent=2, sort_keys=True))
@@ -63,14 +96,14 @@ def _emit(resolved: Any, *, fmt: str) -> None:
     print("\n".join(deployment_text_lines(payload)))
 
 
-def _cmd_check(args: argparse.Namespace) -> int:
+def _cmd_check(args: _WorkbenchArgs) -> int:
     cfg = _config_from_args(args)
     try:
         result = resolve_check(
             host=cfg.host or "127.0.0.1",
             port=cfg.port or 0,
-            discover=bool(getattr(args, "discover", False)),
-            discovery_available=bool(rs_server_url()) or bool(getattr(args, "discover", False)),
+            discover=args.discover,
+            discovery_available=bool(rs_server_url()) or args.discover,
             explicit_mount=lambda _port: (
                 explicit_mount_hint(cfg, os.environ, bound_port=cfg.port) is not None
             ),
@@ -87,10 +120,13 @@ def _cmd_check(args: argparse.Namespace) -> int:
     return 0
 
 
-def _cmd_run(args: argparse.Namespace) -> int:
+def _cmd_run(args: _WorkbenchArgs) -> int:
+    if not args.app:
+        print("run requires an application target", file=sys.stderr)
+        return 2
     cfg = _config_from_args(args)
     try:
-        if getattr(args, "discover", False):
+        if args.discover:
             run_target(args.app, config=cfg, discover=True)
         else:
             run_target(args.app, config=cfg)
@@ -100,11 +136,11 @@ def _cmd_run(args: argparse.Namespace) -> int:
     return 0
 
 
-async def _probe_app(app: Any, mount: str) -> dict[str, object]:
+async def _probe_app(app: object, mount: str) -> dict[str, object]:
     return await probe_asgi_app(app, mount)
 
 
-def _cmd_doctor(args: argparse.Namespace) -> int:
+def _cmd_doctor(args: _WorkbenchArgs) -> int:
     cfg = _config_from_args(args)
     sock = None
     report: dict[str, object] = {"checks": {}}
@@ -114,11 +150,11 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
         # Validate the requested host before opening a socket. This prevents
         # `doctor --live` from briefly exposing an externally bound listener
         # when allow_external_bind was not explicitly granted.
-        resolve_deployment(cfg)
+        _ignored = resolve_deployment(cfg)
         if args.live:
             sock = bind_loopback(cfg.host or "127.0.0.1", cfg.port or 0)
-            bound_port = int(sock.getsockname()[1])
-            if (getattr(args, "discover", False) or rs_server_url()) and explicit_mount_hint(
+            bound_port = _bound_port(sock)
+            if (args.discover or rs_server_url()) and explicit_mount_hint(
                 cfg, os.environ, bound_port=bound_port
             ) is None:
                 discovered = discover_rserver_url(binary=cfg.rserver_url_bin, port=bound_port)
@@ -138,7 +174,7 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
                 WorkbenchTopology.LAUNCHER_SLURM,
             }
         )
-        discovery_requested = bool(getattr(args, "discover", False) or rs_server_url())
+        discovery_requested = bool(args.discover or rs_server_url())
         checks["rserver_url_binary"] = not discovery_requested or (
             Path(resolved.rserver_url_bin).is_absolute()
             and os.access(resolved.rserver_url_bin, os.X_OK)
@@ -168,35 +204,35 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="fastapi-workbench")
-    parser.add_argument("--version", action="version", version=__version__)
+    _ignored = parser.add_argument("--version", action="version", version=__version__)
     sub = parser.add_subparsers(dest="command", required=True)
 
     def add_shared(p: argparse.ArgumentParser) -> None:
-        p.add_argument("--mode", choices=("auto", "on", "off"), default="auto")
-        p.add_argument("--host")
-        p.add_argument("--port", type=int)
-        p.add_argument("--mount")
-        p.add_argument("--public-base-url")
-        p.add_argument("--rserver-url")
-        p.add_argument("--forwarded-allow-ips")
-        p.add_argument(
+        _ignored = p.add_argument("--mode", choices=("auto", "on", "off"), default="auto")
+        _ignored = p.add_argument("--host")
+        _ignored = p.add_argument("--port", type=int)
+        _ignored = p.add_argument("--mount")
+        _ignored = p.add_argument("--public-base-url")
+        _ignored = p.add_argument("--rserver-url")
+        _ignored = p.add_argument("--forwarded-allow-ips")
+        _ignored = p.add_argument(
             "--allow-external-bind",
             action="store_true",
             help="Permit a non-loopback --host after operator review",
         )
-        p.add_argument("--debug", action="store_true")
-        p.add_argument(
+        _ignored = p.add_argument("--debug", action="store_true")
+        _ignored = p.add_argument(
             "--topology",
             choices=tuple(item.value for item in WorkbenchTopology),
             default="auto",
         )
-        p.add_argument("--format", choices=("text", "json"), default="text")
-        p.add_argument(
+        _ignored = p.add_argument("--format", choices=("text", "json"), default="text")
+        _ignored = p.add_argument(
             "--reload",
             action="store_true",
             help="Discover once, then exec Uvicorn's reload supervisor",
         )
-        p.add_argument(
+        _ignored = p.add_argument(
             "--workers",
             type=int,
             default=None,
@@ -205,20 +241,20 @@ def main(argv: list[str] | None = None) -> int:
 
     check_p = sub.add_parser("check", help="Resolve deployment without importing the app")
     add_shared(check_p)
-    check_p.add_argument("--dry-run", action="store_true", help="Alias of check")
-    check_p.add_argument(
+    _ignored = check_p.add_argument("--dry-run", action="store_true", help="Alias of check")
+    _ignored = check_p.add_argument(
         "--discover",
         action="store_true",
         help="Always call rserver-url after binding (still no app import)",
     )
-    check_p.add_argument("app", nargs="?", help="Ignored; check does not import the app")
+    _ignored = check_p.add_argument("app", nargs="?", help="Ignored; check does not import the app")
 
     run_p = sub.add_parser("run", help="Discover, export mount, import, wrap, serve")
     add_shared(run_p)
-    run_p.add_argument("app", help="module:attr or module:factory")
-    run_p.add_argument("--factory", action="store_true")
-    run_p.add_argument("--open-browser", action="store_true")
-    run_p.add_argument(
+    _ignored = run_p.add_argument("app", help="module:attr or module:factory")
+    _ignored = run_p.add_argument("--factory", action="store_true")
+    _ignored = run_p.add_argument("--open-browser", action="store_true")
+    _ignored = run_p.add_argument(
         "--discover",
         action="store_true",
         help="Always call rserver-url after binding, even without RS_SERVER_URL",
@@ -226,24 +262,32 @@ def main(argv: list[str] | None = None) -> int:
 
     dry = sub.add_parser("dry-run", help="Same as check")
     add_shared(dry)
-    dry.add_argument("app", nargs="?")
+    _ignored = dry.add_argument("app", nargs="?")
 
     doctor = sub.add_parser("doctor", help="Diagnose topology and optionally probe the app")
     add_shared(doctor)
-    doctor.add_argument("app", nargs="?", help="module:attr (required with --live)")
-    doctor.add_argument("--factory", action="store_true")
-    doctor.add_argument(
+    _ignored = doctor.add_argument("app", nargs="?", help="module:attr (required with --live)")
+    _ignored = doctor.add_argument("--factory", action="store_true")
+    _ignored = doctor.add_argument(
         "--live",
         action="store_true",
         help="bind, discover, import, and ASGI-probe",
     )
-    doctor.add_argument(
+    _ignored = doctor.add_argument(
         "--discover",
         action="store_true",
         help="Always call rserver-url during --live, even without RS_SERVER_URL",
     )
 
-    args = parser.parse_args(argv)
+    for command_parser in (check_p, run_p, dry, doctor):
+        command_parser.set_defaults(
+            open_browser=False,
+            factory=False,
+            discover=False,
+            live=False,
+        )
+
+    args = cast(_WorkbenchArgs, cast(object, parser.parse_args(argv)))
     if args.command in {"check", "dry-run"}:
         return _cmd_check(args)
     if args.command == "run":

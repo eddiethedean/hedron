@@ -5,7 +5,6 @@ from __future__ import annotations
 import asyncio
 import json
 import re
-from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
@@ -121,7 +120,7 @@ def test_236_redis_idempotency_release_uses_eval() -> None:
         def pipeline(self) -> _SharedPipeline:
             return _SharedPipeline(self)
 
-    shared: Any = _EvalRedis()
+    shared: object = _EvalRedis()
     backend = RedisJobBackend(shared)
     handle = backend.submit("demo", {}, idempotency_key="k1", tenant_id="t")
     backend.mark(handle.job_id, JobState.SUCCEEDED)

@@ -29,7 +29,7 @@ def tokens_match(expected: object, provided: object) -> bool:
     except (TypeError, UnicodeEncodeError):
         return False
     if len(left) != len(right):
-        hmac.compare_digest(left, left)
+        _ignored = hmac.compare_digest(left, left)
         return False
     try:
         return hmac.compare_digest(left, right)
