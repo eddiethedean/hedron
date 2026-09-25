@@ -55,7 +55,10 @@ Build wheels and test them in a clean environment before tagging:
 
 ```bash
 uv build --all-packages
-uv run python scripts/check_published_quickstart.py 1.1.1 --dist-dir dist --attempts 1
+RELEASE_VERSION="$(uv run --no-project --python 3.12 python -c \
+  'import tomllib; from pathlib import Path; print(tomllib.loads(Path("pyproject.toml").read_text())["project"]["version"])')"
+uv run --python 3.12 python scripts/check_published_quickstart.py \
+  "$RELEASE_VERSION" --dist-dir dist --attempts 1
 uv run python scripts/check_workbench_release_artifacts.py --dist-dir dist
 ```
 
