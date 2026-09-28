@@ -3,6 +3,19 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 1.1.3 — 2026-09-28
+
+Coordinated maintenance release for the Stable 1.1 package train. The [main merge CI run](https://github.com/eddiethedean/hedron/actions/runs/36462702533)
+and [Read the Docs `latest` build](https://app.readthedocs.org/projects/hedron/builds/34810170/)
+passed, and the [release workflow](https://github.com/eddiethedean/hedron/actions/runs/36465704186)
+published Hedron, Edron, and the coordinated workspace from the immutable
+[`release-20260928-01`](https://github.com/eddiethedean/hedron/releases/tag/release-20260928-01)
+tag.
+
+### Changed
+
+- Update the bundled HTMX runtime to 2.0.11.
+
 ## 1.1.2 — 2026-09-25
 
 Coordinated release for the Stable 1.1 package train. The [main merge CI run](https://github.com/eddiethedean/hedron/actions/runs/36183189826)

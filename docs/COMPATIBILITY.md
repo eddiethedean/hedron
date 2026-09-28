@@ -1,7 +1,7 @@
 # Compatibility policy
 
-**Status:** Accepted for the verified and published **1.1.x** release (`v1.1.2`).
-**Reviewed:** 2026-08-28
+**Status:** Accepted for the verified and published **1.1.x** release (`v1.1.3`).
+**Reviewed:** 2026-09-28
 
 ## Current train (read this first)
 
@@ -22,8 +22,8 @@ until evidence is green. In the 1.1 boundary, `hedron-core`, `hedron`, `edron`, 
 platform packages. Host adapters, Explorer, elements, extras, Posit, conformance, Workbench,
 native, MCP, Gradio, notebook, sample-kit, and simulation packages are independent Beta
 satellites; experimental adapter surfaces remain outside the Stable API even when their owning
-package is Stable. The repository resolves the coordinated 1.1.3 development workspace, and the
-public index serves the coordinated 1.1.2 release. The 0.67.0 train remains the immutable
+package is Stable. The coordinated 1.1.3 package train is published on the public index. The
+0.67.0 train remains the immutable
 migration baseline for compatibility evidence.
 
 ### Charts and sample-kit compatibility floor

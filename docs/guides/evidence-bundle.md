@@ -1,8 +1,8 @@
 ---
-description: Locate the release, provenance, compatibility, security, and acceptance evidence for 1.1.2.
+description: Locate the release, provenance, compatibility, security, and acceptance evidence for 1.1.3.
 ---
 
-# 1.1.2 evidence bundle
+# 1.1.3 evidence bundle
 
 Use this page to establish what was published, how it was built, what was verified, and which
 responsibilities remain with the adopting organization.
@@ -11,11 +11,12 @@ responsibilities remain with the adopting organization.
 
 | Evidence | Source |
 |---|---|
-| Hedron package and files | [Published `1.1.2` on PyPI](https://pypi.org/project/hedron/1.1.2/) |
-| Edron package and files | [Published `1.1.2` on PyPI](https://pypi.org/project/edron/1.1.2/) |
-| Source tag, wheels, checksums, and attached evidence | Published from immutable [`release-20260925-01`](https://github.com/eddiethedean/hedron/releases/tag/release-20260925-01) tag |
-| Main merge CI | [Run `36183189826`](https://github.com/eddiethedean/hedron/actions/runs/36183189826) |
-| Coordinated publication | [Run `36184225081`](https://github.com/eddiethedean/hedron/actions/runs/36184225081) |
+| Hedron package and files | [Published `1.1.3` on PyPI](https://pypi.org/project/hedron/1.1.3/) |
+| Edron package and files | [Published `1.1.3` on PyPI](https://pypi.org/project/edron/1.1.3/) |
+| Source tag, wheels, checksums, and attached evidence | Published from immutable [`release-20260928-01`](https://github.com/eddiethedean/hedron/releases/tag/release-20260928-01) tag |
+| Main merge CI | [Run `36462702533`](https://github.com/eddiethedean/hedron/actions/runs/36462702533) |
+| Read the Docs `latest` build | [Build `34810170`](https://app.readthedocs.org/projects/hedron/builds/34810170/) |
+| Coordinated publication | [Run `36465704186`](https://github.com/eddiethedean/hedron/actions/runs/36465704186) |
 | Current install and support facts | [Current release](current-release.md) |
 
 The GitHub release attaches `release-manifest.json`, built distributions, generated evidence,
@@ -51,4 +52,6 @@ uv run python scripts/check_100.py --gate ENTRY-100 --verify
 ```
 
 The release workflow also installs the published artifact into a clean environment and imports
-the generated scaffold before creating the GitHub release.
+the generated scaffold before creating the GitHub release. It published 22 package/version
+artifacts to PyPI; the optional npm and Maven publishing steps ran package dry-runs because their
+publishing credentials were not configured.
