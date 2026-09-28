@@ -240,7 +240,7 @@ def test_htmx_static_mounted_for_plain_and_hedron() -> None:
         assert asset.status_code == 200
         assert len(asset.content) > 1000
         digest = base64.b64encode(hashlib.sha384(asset.content).digest()).decode("ascii")
-        assert digest == "H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V"
+        assert digest == "2OatzQy1H+Zd/IIrjr1TcuDGqLXeHhbooAyJY1KdQMKnr4LZ22k31GBLdYKHmVjg"
 
 
 def test_authenticated_cache_headers() -> None:

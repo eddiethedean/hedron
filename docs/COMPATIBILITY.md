@@ -10,7 +10,7 @@
 | Python | CPython 3.10–3.14 | `>=3.10,<3.15` | |
 | FastAPI | `>=0.121.0,<0.142` | `>=0.121.0,<0.150` (`hedron`, `hedron-explorer`) | Not required by `hedron-core` |
 | Pydantic | `>=2.12.0,<2.14` | `>=2.12.0,<2.15` | Required by `hedron-core` / `hedron` |
-| HTMX | Bundled 2.0.10; contract `>=2.0,<3.0` | same | Injected on PAGE responses |
+| HTMX | Bundled 2.0.11; contract `>=2.0,<3.0` | same | Injected on PAGE responses |
 | Flask | `>=3.0,<4` via `hedron-flask` | same | Waitress `>=3,<4` reference WSGI |
 | Django | `>=5.2,<6` via `hedron-django` | same | WSGI + ASGI |
 | Jinja (optional HDJ) | `>=3.1,<4` via `hedron[jinja]` | same | Not a default install |
@@ -22,9 +22,9 @@ until evidence is green. In the 1.1 boundary, `hedron-core`, `hedron`, `edron`, 
 platform packages. Host adapters, Explorer, elements, extras, Posit, conformance, Workbench,
 native, MCP, Gradio, notebook, sample-kit, and simulation packages are independent Beta
 satellites; experimental adapter surfaces remain outside the Stable API even when their owning
-package is Stable. The repository resolves the coordinated 1.1.2 workspace, and the public index
-serves the coordinated 1.1.2 release. The 0.67.0 train remains the immutable migration baseline
-for compatibility evidence.
+package is Stable. The repository resolves the coordinated 1.1.3 development workspace, and the
+public index serves the coordinated 1.1.2 release. The 0.67.0 train remains the immutable
+migration baseline for compatibility evidence.
 
 ### Charts and sample-kit compatibility floor
 

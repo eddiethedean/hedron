@@ -45,7 +45,7 @@ pip install "hedron[data,dev,posit]>=1.0.0"
 ```
 
 Public PyPI contains the verified `v1.1.2` release. The current workspace is
-`1.1.2`, the published coordinated train.
+`1.1.3`, the coordinated development train.
 
 ## Alternate facade
 

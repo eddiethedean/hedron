@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.3] — Unreleased
+
+### Changed
+
+- Update the bundled HTMX runtime to 2.0.11.
+
 ## [1.1.2] — 2026-09-25
 
 ### Changed

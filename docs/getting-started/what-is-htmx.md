@@ -160,7 +160,7 @@ codebase.
 This is a particularly good fit for dashboards, admin tools, forms, CRUD applications,
 and job-status views where the server already owns the data and business rules.
 
-Hedron bundles HTMX **2.0.10** and serves it from `/hedron-static/htmx.min.js`. A standard
+Hedron bundles HTMX **2.0.11** and serves it from `/hedron-static/htmx.min.js`. A standard
 Hedron page includes it automatically. Plain FastAPI integrations call
 `mount_hedron_static(...)`; you do not install HTMX with npm or add a CDN script.
 

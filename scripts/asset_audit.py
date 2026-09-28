@@ -11,9 +11,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 HTMX_PATH = ROOT / "packages" / "hedron" / "src" / "hedron" / "static" / "htmx.min.js"
 EXT_DIR = ROOT / "packages" / "hedron" / "src" / "hedron" / "static" / "ext"
-# Exact pin for the compatibility baseline (HTMX 2.0.10).
-EXPECTED_VERSION = "2.0.10"
-EXPECTED_SHA256 = "71ea67185bfa8c98c39d31717c6fce5d852370fcdfd129db4543774d3145c0de"
+# Exact pin for the bundled runtime (HTMX 2.0.11).
+EXPECTED_VERSION = "2.0.11"
+EXPECTED_SHA256 = "d6fdc75f204e6bdefa99b69bf1e6d4ac69b8a364f77929f45c13476b4000f717"
 
 
 def main() -> int:

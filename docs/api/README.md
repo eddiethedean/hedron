@@ -35,7 +35,7 @@ Live transports stay **experimental**; prefer polling. Upgrade notes:
 [upgrade guide](../guides/upgrade.md).
 
 The latest installable PyPI release is verified **`v1.1.2`**. The current
-workspace is **`1.1.2`**.
+workspace is **`1.1.3`**.
 Public-index users should require `hedron>=1.0.0`.
 
 !!! note "Contracts vs full reference"

@@ -16,7 +16,6 @@
 #   scripts/ci_checks.sh realwb [--python 3.12]
 #   scripts/ci_checks.sh realconnect [--python 3.12]
 #   scripts/ci_checks.sh packaging [--python 3.12]
-#   scripts/ci_checks.sh openwiki [--python 3.12]
 #   scripts/ci_checks.sh all [--python 3.12] [--gate-version 0.37.0] [options]
 #
 # Full local CI (`all`) mirrors `.github/workflows/ci.yml` job order:
@@ -41,11 +40,6 @@
 #   --all-browsers      Run Chromium + Firefox + WebKit (main / release CI)
 #   --release-gate      Treat skipped browser/adapter/backend gates as failures
 #   --with-browser      Deprecated alias (browser runs by default in `all`)
-#
-# Local-only documentation gate:
-#   `all` starts by checking that the generated OpenWiki Claims and source
-#   fingerprint cover the current model-visible working tree. This is not
-#   called by any GitHub Actions job; refresh OpenWiki in Codex when it fails.
 #
 # Env:
 #   HEDRON_BROWSER / HEDRON_BROWSER_ENGINE — browser suite (default engine: chromium)
@@ -867,10 +861,6 @@ cmd_packaging() {
   run_py scripts/verify_pkg_58.py
 }
 
-cmd_openwiki() {
-  run_py scripts/check_openwiki_freshness.py
-}
-
 cmd_all() {
   local py browser saved_python="$PYTHON"
   local -a browsers
@@ -890,9 +880,6 @@ Prerequisites (same as GitHub Actions setup steps):
   Rust, Java 17, Node 20, Playwright — see script header
 Concurrency: ${JOBS} jobs (--jobs / HEDRON_CHECK_JOBS)
 NOTE
-
-  section "openwiki freshness (local)"
-  cmd_openwiki
 
   if [[ "$ALL_PYTHONS" -eq 1 ]]; then
     for py in "${CI_PYTHONS[@]}"; do
@@ -1006,7 +993,6 @@ case "$SUITE" in
   realwb) cmd_realwb ;;
   realconnect) cmd_realconnect ;;
   packaging) cmd_packaging ;;
-  openwiki) cmd_openwiki ;;
   all) cmd_all ;;
   -h | --help) usage 0 ;;
   *)

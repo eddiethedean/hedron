@@ -1,8 +1,8 @@
 # HTMX 2 integration audit
 
 **Status:** Phase 0.6 complete; active plan for phases 0.7–0.8  
-**Reviewed:** 2026-08-03  
-**Baseline:** HTMX 2.0.10
+**Reviewed:** 2026-09-28<br>
+**Baseline:** HTMX 2.0.11
 
 Hedron treats HTMX as the request-and-swap layer, not as an opaque client runtime. The core
 asset is pinned and locally served; optional HTMX extensions are separate, independently
@@ -20,7 +20,7 @@ versioned browser assets and are never implied by the core compatibility range.
 | History | `historyRestoreAsHxRequest` is disabled so `HX-Request` remains a reliable fragment signal; the server still treats `HX-History-Restore-Request` as PAGE defensively. |
 | CSP and validation | Eval, response script processing, and injected indicator styles are disabled; native form-validity reporting is enabled. Applications may supply an explicit `htmx-config` meta element to override the complete default profile. |
 | OOB and events | OOB helpers and before-swap/after-swap/after-settle response events are supported without hiding the resulting HTML or headers. |
-| Browser asset | The bundled file matches the official 2.0.10 SHA-384 digest and requires no Node.js runtime. |
+| Browser asset | The bundled file matches the official 2.0.11 SHA-384 digest (`sha384-2OatzQy1H+Zd/IIrjr1TcuDGqLXeHhbooAyJY1KdQMKnr4LZ22k31GBLdYKHmVjg`) and requires no Node.js runtime. |
 
 ## Phase 0.6 — visualization and browser lifecycle
 
