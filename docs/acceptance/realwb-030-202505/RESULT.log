@@ -1,17 +1,18 @@
-REALWB-030-202505 start 2026-08-13T14:00:20Z
+REALWB-030-202505 start 2026-09-28T15:49:42Z
 image=posit/workbench@sha256:***
 docker_platform=linux/amd64
-python=Python 3.11.14
+compose_project=hedron-realwb-6788
+python=Python 3.12.13
 image_digest=sha256:***
 host_arch=arm64
 compose=up workbench pull=never
- Network workbench-reference_default Creating 
- Network workbench-reference_default Created 
- Container workbench-reference-workbench-1 Creating 
- Container workbench-reference-workbench-1 Created 
- Container workbench-reference-workbench-1 Starting 
- Container workbench-reference-workbench-1 Started 
-auth-sign-in=ok
+ Network hedron-realwb-6788_default Creating
+ Network hedron-realwb-6788_default Created
+ Container hedron-realwb-6788-workbench-1 Creating
+ Container hedron-realwb-6788-workbench-1 Created
+ Container hedron-realwb-6788-workbench-1 Starting
+ Container hedron-realwb-6788-workbench-1 Started
+auth-sign-in=ok health=healthy
 rserver-url=/usr/lib/rstudio-server/bin/rserver-url
 rstudio-server=2025.05.1+513.pro3 Workbench (Mariposa Orchid) for Ubuntu Jammy
 rserver-url_rc=139
@@ -24,7 +25,7 @@ CSRF=ok
 ASSETS=ok
 OPENAPI=ok docs=200 spec=200
 explorer=off
-REDIRECT=ok mount_once=ok
+REDIRECT=ok scheme_absolute=ok mount_once=ok
 ENCODED_TARGET=ok
 TARGET_GUARDS=ok unsafe=400 conflict=400 origin=400 oversized=414
 DIAGNOSTICS=ok active=true normalizer_count=1 handoff=ok redacted=ok
@@ -36,7 +37,7 @@ POSIT_PACKAGE=begin
 POSIT_LAUNCHER_PATH=ok stripped_prefix=ok
 POSIT_PAGE=ok mount_prefix=ok
 POSIT_REDIRECT=ok mount_once=ok
-POSIT_DIAGNOSTICS=ok product=inactive compatibility_facade=false handoff=ok
+POSIT_DIAGNOSTICS=ok product=workbench compatibility_facade=false handoff=ok
 POSIT_OUTSIDE_WORKBENCH=ok active=false generic_aliases_ignored=ok
 POSIT_PACKAGE=pass
 FASTAPI_PACKAGE=begin
@@ -52,6 +53,6 @@ FASTAPI_WEBSOCKET=ok
 FASTAPI_OUTSIDE_WORKBENCH=ok active=false workbenchified=false generic_aliases_ignored=ok
 FASTAPI_PACKAGE=pass
 RESULT=pass
-REALWB-030-202505 end 2026-08-13T14:00:40Z
+REALWB-030-202505 end 2026-09-28T15:50:12Z
 LICENSE_DEACTIVATE=begin timeout=120s
 LICENSE_DEACTIVATE=end
