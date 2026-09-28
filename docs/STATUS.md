@@ -4,9 +4,9 @@
 > product readiness use [What’s ready](guides/whats-ready.md); for the public roadmap use
 > [What’s next](guides/whats-next.md). Do not treat gate tables as the getting-started guide.
 
-**Roadmap position:** `v1.1.2` is Verified, tagged, and published on PyPI, including Edron.
-**Current workspace:** `1.1.3` is the coordinated development package train for the next maintenance cut. It includes the open
-enhancement completion phase and its complementary application features, with BasedPyright `all`
+**Roadmap position:** `v1.1.3` is Verified, tagged, and published on PyPI, including Edron.
+**Current workspace:** `1.1.3` is the coordinated published package train. It updates the bundled
+HTMX runtime to 2.0.11, removes the retired OpenWiki integration, and keeps BasedPyright `all`
 mode enforcing errors for explicit and inferred `Any` in first-party Python code.
 `v1.0.17` remains the immutable migration baseline for compatibility evidence.
 **Date:** 2026-09-28
