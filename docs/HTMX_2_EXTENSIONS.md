@@ -12,7 +12,7 @@ Hedron's fragment asset/head policy:
 2. FRAGMENT responses do **not** invent `<head>` script tags; they assume the shell already
    loaded required runtimes unless registered head management (`htmx-ext-head-support`) is enabled.
 3. Optional HTMX extensions are independently versioned browser assets and are never implied by
-   the core HTMX pin (2.0.10). See `hedron_core.htmx_extensions.ExtensionAsset`.
+   the core HTMX pin (2.0.11). See `hedron_core.htmx_extensions.ExtensionAsset`.
 
 ## Evaluations
 

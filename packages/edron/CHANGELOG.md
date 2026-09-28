@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.3] — Unreleased
+
+### Changed
+
+- Align the Hedron dependency floor with the 1.1.3 development train.
+
 ## [1.1.2] — 2026-09-25
 
 ### Changed

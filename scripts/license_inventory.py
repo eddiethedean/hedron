@@ -48,7 +48,7 @@ def main() -> int:
                 "name": "htmx",
                 "license": "BSD-Zero-Clause (upstream HTMX)",
                 "path": str(htmx.relative_to(ROOT)),
-                "version": "2.0.10",
+                "version": "2.0.11",
             }
         )
     else:
