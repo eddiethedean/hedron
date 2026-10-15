@@ -1,11 +1,5 @@
 # Changelog
 
-## [1.1.4] — Unreleased
-
-### Added
-
-- Register the replay-storage capacity diagnostic.
-
 ## [1.1.3] — Unreleased
 
 ### Changed

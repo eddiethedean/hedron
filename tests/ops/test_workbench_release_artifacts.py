@@ -66,6 +66,49 @@ def test_unreleased_development_train_allows_same_package_version(monkeypatch) -
     assert version_check.version_change_errors("base", "head") == []
 
 
+def test_published_train_keeps_package_versions_until_coordinated_release_prep(monkeypatch) -> None:
+    monkeypatch.setattr(
+        version_check,
+        "changed_paths",
+        lambda base, head: ["packages/hedron/src/hedron/cache.py"],
+    )
+    monkeypatch.setattr(
+        version_check,
+        "git_show",
+        lambda ref, path: {
+            "packages/hedron/pyproject.toml": '[project]\nname = "hedron"\nversion = "1.1.3"\n',
+            "docs/release.toml": (
+                '[release]\ndevelopment_version = "1.1.3"\npublished_version = "1.1.3"\n'
+            ),
+        }.get(path),
+    )
+
+    assert version_check.version_change_errors("base", "head") == []
+
+
+def test_unreleased_train_rejects_package_left_on_published_version(monkeypatch) -> None:
+    monkeypatch.setattr(
+        version_check,
+        "changed_paths",
+        lambda base, head: ["packages/hedron/src/hedron/cache.py"],
+    )
+    monkeypatch.setattr(
+        version_check,
+        "git_show",
+        lambda ref, path: {
+            "packages/hedron/pyproject.toml": '[project]\nname = "hedron"\nversion = "1.0.17"\n',
+            "docs/release.toml": (
+                '[release]\ndevelopment_version = "1.0.18"\npublished_version = "1.0.17"\n'
+            ),
+        }.get(path),
+    )
+
+    errors = version_check.version_change_errors("base", "head")
+    assert errors == [
+        "hedron: package files changed but version stayed at 1.0.17; bump the package version"
+    ]
+
+
 def wheel_bytes(entries: dict[str, bytes]) -> bytes:
     output = io.BytesIO()
     with zipfile.ZipFile(output, "w") as archive:
