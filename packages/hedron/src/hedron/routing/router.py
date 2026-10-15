@@ -344,6 +344,14 @@ async def _begin_replay(
         if legacy_anonymous_scope not in legacy_scope_keys:
             legacy_scope_keys.append(legacy_anonymous_scope)
     if replay_claim.state == ReplayState.FIRST:
+        # Free the current-scope reservation while probing legacy scopes. The
+        # migration lookup must not consume a second key/byte slot, or a request
+        # with exactly enough capacity for its real claim would be rejected.
+        replay_store.abort(
+            key=replay_key,
+            scope=replay_scope_key,
+            fingerprint=replay_fp,
+        )
         for legacy_scope_key in legacy_scope_keys:
             if legacy_scope_key == replay_scope_key:
                 continue
@@ -360,14 +368,22 @@ async def _begin_replay(
                     fingerprint=replay_fp,
                 )
                 continue
-            replay_store.abort(
-                key=replay_key,
-                scope=replay_scope_key,
-                fingerprint=replay_fp,
-            )
+            if legacy_claim.state == ReplayState.CAPACITY:
+                # A missing legacy key can be unreservable even though the
+                # current-scope claim fits. Keep looking, then reclaim current.
+                continue
             replay_claim = legacy_claim
             replay_scope_key = legacy_scope_key
             break
+        else:
+            # A concurrent request may have claimed this key during the legacy
+            # probes; use its resulting state instead of assuming FIRST.
+            replay_claim = replay_store.claim(
+                key=replay_key,
+                fingerprint=replay_fp,
+                scope=replay_scope_key,
+                retention_seconds=replay_policy.retention_seconds,
+            )
     if replay_claim.state == ReplayState.CONFLICT:
         from hedron_core.diagnostics import error
 
