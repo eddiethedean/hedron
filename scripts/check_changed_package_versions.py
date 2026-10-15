@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Require a package version bump whenever a package payload changes.
+"""Require packages to use the active coordinated version on payload changes.
 
 This check is intentionally based on the pull request diff rather than the
 registry. It catches a package change before a release is cut, including
-changes to static assets that are bundled into a wheel.
+changes to static assets that are bundled into a wheel. Before release prep
+declares a new development version, package versions remain on the published
+version and advance together as part of the coordinated release.
 """
 
 from __future__ import annotations
@@ -84,12 +86,17 @@ def version_change_errors(base: str, head: str) -> list[str]:
                 "rename the package explicitly instead of reusing its version"
             )
         elif head_version == base_version:
-            if (
-                development_versions is not None
-                and head_version == development_versions[0]
-                and development_versions[0] != development_versions[1]
-            ):
-                print(f"ok: {head_name} remains on unreleased development version {head_version}")
+            if development_versions is not None and head_version == development_versions[0]:
+                development, published = development_versions
+                if development == published:
+                    print(
+                        f"ok: {head_name} remains on published version {head_version}; "
+                        "the next version is assigned during coordinated release prep"
+                    )
+                else:
+                    print(
+                        f"ok: {head_name} remains on unreleased development version {head_version}"
+                    )
             else:
                 errors.append(
                     f"{head_name}: package files changed but version stayed at {head_version}; "

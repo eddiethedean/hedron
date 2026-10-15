@@ -52,6 +52,7 @@ reserved for 0.47 are listed under [HED-MAP](#hed-map).
 | `HED-REPLAY-0002` | blocker | Idempotency key conflict | Use a new key for a distinct mutation |
 | `HED-REPLAY-0003` | warning | Idempotency key in flight | Retry after the first request completes |
 | `HED-REPLAY-0004` | blocker | Replay store misconfigured | Install a `ReplayStore` or omit `hedron_replay_store=None` |
+| `HED-REPLAY-0005` | blocker | Replay storage unavailable | If the action did not run, check store capacity and entry-size limits before retrying the same key; if its response was not retained, inspect operation state before using a new key |
 | `HED-UPGRADE-0001` | blocker | Unsupported upgrade from_version | Use a supported `0.x` from version |
 | `HED-UPGRADE-0002` | blocker | Stale upgrade baseline schema | Refresh the reviewed baseline |
 | CSRF **403** on POST | blocker | Missing or mismatched CSRF token | Seed on GET; include token on POST — [Troubleshooting](troubleshooting.md#csrf-403-on-post-fastapi-flask) |
@@ -528,6 +529,7 @@ Phase 0.47 assigns the following families:
 | `HED-REPLAY-0002` | `HED_REPLAY_0002` |
 | `HED-REPLAY-0003` | `HED_REPLAY_0003` |
 | `HED-REPLAY-0004` | `HED_REPLAY_0004` |
+| `HED-REPLAY-0005` | `HED_REPLAY_0005` |
 
 ## HED-UPGRADE
 

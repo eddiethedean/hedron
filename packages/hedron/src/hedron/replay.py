@@ -19,6 +19,8 @@ class ReplayState(StrEnum):
     REPLAYED = "replayed"
     CONFLICT = "conflict"
     IN_FLIGHT = "in_flight"
+    CAPACITY = "capacity"
+    UNREPLAYABLE = "unreplayable"
 
 
 @dataclass(frozen=True, slots=True)
@@ -77,6 +79,7 @@ class _Entry:
     headers: tuple[tuple[str, str], ...] | None = None
     expires_at: float = 0.0
     in_flight: bool = True
+    unreplayable: bool = False
 
 
 _MISSING = object()
@@ -152,7 +155,11 @@ class MemoryReplayStore:
             existing = self._entries.get(slot)
             if existing is None:
                 if len(self._entries) >= self._max_keys:
-                    raise RuntimeError("Replay store key budget exceeded")
+                    return ReplayOutcome(
+                        state=ReplayState.CAPACITY,
+                        key=key,
+                        fingerprint=fingerprint,
+                    )
                 entry = _Entry(
                     fingerprint=fingerprint,
                     expires_at=now + retention_seconds,
@@ -163,9 +170,9 @@ class MemoryReplayStore:
                     entry_bytes > self._max_entry_bytes
                     or self._total_bytes + entry_bytes > self._max_total_bytes
                 ):
-                    # Execute the request without retaining an unbounded claim.
+                    # The caller must not run a mutation without a reserved claim.
                     return ReplayOutcome(
-                        state=ReplayState.FIRST,
+                        state=ReplayState.CAPACITY,
                         key=key,
                         fingerprint=fingerprint,
                     )
@@ -174,6 +181,12 @@ class MemoryReplayStore:
                 return ReplayOutcome(state=ReplayState.FIRST, key=key, fingerprint=fingerprint)
             if existing.fingerprint != fingerprint:
                 return ReplayOutcome(state=ReplayState.CONFLICT, key=key, fingerprint=fingerprint)
+            if existing.unreplayable:
+                return ReplayOutcome(
+                    state=ReplayState.UNREPLAYABLE,
+                    key=key,
+                    fingerprint=fingerprint,
+                )
             if existing.in_flight or existing.status is None:
                 return ReplayOutcome(state=ReplayState.IN_FLIGHT, key=key, fingerprint=fingerprint)
             return ReplayOutcome(
@@ -216,10 +229,14 @@ class MemoryReplayStore:
             if completed_bytes > self._max_entry_bytes or (
                 self._total_bytes - current_bytes + completed_bytes > self._max_total_bytes
             ):
-                # Do not retain an in-flight claim that cannot be replayed;
-                # callers still receive their original response, while a
-                # retry can execute normally instead of seeing IN_FLIGHT.
-                _ignored = self._remove(slot)
+                # Keep the already-reserved claim as a compact tombstone. A retry
+                # can learn that the operation ran but its response cannot replay.
+                entry.status = status
+                entry.body = None
+                entry.media_type = None
+                entry.headers = None
+                entry.in_flight = False
+                entry.unreplayable = True
                 return False
             self._entries[slot] = completed
             self._total_bytes += completed_bytes - current_bytes
