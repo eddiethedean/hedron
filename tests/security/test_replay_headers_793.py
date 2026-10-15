@@ -89,11 +89,11 @@ def test_memory_replay_store_rejects_entry_and_total_byte_limits() -> None:
     assert first.state is ReplayState.FIRST
     assert not store.complete(key="one", scope="s", fingerprint="one", status=200, body=b"12345")
     retry = store.claim(key="one", fingerprint="one", scope="s", retention_seconds=60)
-    assert retry.state is ReplayState.FIRST
-    assert store.complete(key="one", scope="s", fingerprint="one", status=200, body=b"1234")
+    assert retry.state is ReplayState.UNREPLAYABLE
+    assert store._entries[("s", "one")].unreplayable
     second = store.claim(key="two", fingerprint="two", scope="s", retention_seconds=60)
     assert second.state is ReplayState.FIRST
-    assert not store.complete(key="two", scope="s", fingerprint="two", status=200, body=b"1234")
+    assert store.complete(key="two", scope="s", fingerprint="two", status=200, body=b"1234")
 
 
 def test_memory_replay_store_charges_headers_and_key_material() -> None:
@@ -110,8 +110,8 @@ def test_memory_replay_store_charges_headers_and_key_material() -> None:
         body=b"",
         headers=(("X-Large", "x" * 64),),
     )
-    assert not store._entries
-    assert store._total_bytes == 0
+    assert store._entries[("s", "one")].unreplayable
+    assert store._total_bytes > 0
 
     oversized_key = "k" * 65
     outcome = store.claim(
@@ -120,8 +120,72 @@ def test_memory_replay_store_charges_headers_and_key_material() -> None:
         scope="s",
         retention_seconds=60,
     )
-    assert outcome.state is ReplayState.FIRST
-    assert not store._entries
+    assert outcome.state is ReplayState.CAPACITY
+    assert set(store._entries) == {("s", "one")}
+
+
+def test_required_idempotency_rejects_claim_when_replay_storage_is_full() -> None:
+    from fastapi.testclient import TestClient
+    from starlette.responses import Response
+
+    from hedron import Hedron, Text
+    from hedron.replay import MemoryReplayStore
+
+    calls: list[str] = []
+    app = Hedron(security="standard", explorer="off", session_secret="test-secret")
+    app.state.hedron_replay_store = MemoryReplayStore(max_entry_bytes=32, max_total_bytes=32)
+
+    @app.page("/")
+    def home() -> Text:
+        return Text("home")
+
+    @app.action("/save", method="POST", idempotency="required")
+    def save() -> Response:
+        calls.append("ran")
+        return Response("saved")
+
+    client = TestClient(app)
+    csrf = client.get("/").cookies["hedron_csrf"]
+    headers = {"Idempotency-Key": "large-key", "X-CSRF-Token": csrf}
+    first = client.post("/save", headers=headers)
+    retry = client.post("/save", headers=headers)
+
+    assert first.status_code == retry.status_code == 503
+    assert "HED-REPLAY-0005" in retry.text
+    assert calls == []
+
+
+def test_required_idempotency_keeps_marker_when_response_exceeds_budget() -> None:
+    from fastapi.testclient import TestClient
+    from starlette.responses import Response
+
+    from hedron import Hedron, Text
+    from hedron.replay import MemoryReplayStore
+
+    calls: list[str] = []
+    app = Hedron(security="standard", explorer="off", session_secret="test-secret")
+    app.state.hedron_replay_store = MemoryReplayStore(max_entry_bytes=512, max_total_bytes=512)
+
+    @app.page("/")
+    def home() -> Text:
+        return Text("home")
+
+    @app.action("/save", method="POST", idempotency="required")
+    def save() -> Response:
+        calls.append("ran")
+        return Response("x" * 600)
+
+    client = TestClient(app)
+    csrf = client.get("/").cookies["hedron_csrf"]
+    headers = {"Idempotency-Key": "same-key", "X-CSRF-Token": csrf}
+    first = client.post("/save", headers=headers)
+    retry = client.post("/save", headers=headers)
+
+    assert first.status_code == 200
+    assert retry.status_code == 503
+    assert "HED-REPLAY-0005" in retry.text
+    assert "already ran" in retry.text
+    assert calls == ["ran"]
 
 
 def test_replay_scope_keeps_delimited_identifiers_isolated() -> None:

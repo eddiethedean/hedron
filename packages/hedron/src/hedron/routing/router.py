@@ -386,6 +386,20 @@ async def _begin_replay(
             explanation="A concurrent request already claimed this key.",
             remediation="Retry after the first request completes.",
         )
+    if replay_claim.state in {ReplayState.CAPACITY, ReplayState.UNREPLAYABLE}:
+        from fastapi import HTTPException
+
+        if replay_claim.state == ReplayState.UNREPLAYABLE:
+            detail = (
+                "HED-REPLAY-0005: This idempotent action already ran, but its response could "
+                "not be retained. Check the operation's state before retrying with a new key."
+            )
+        else:
+            detail = (
+                "HED-REPLAY-0005: Replay storage is at capacity; the action did not run. "
+                "Retry with the same key after capacity becomes available."
+            )
+        raise HTTPException(status_code=503, detail=detail)
     if replay_claim.state == ReplayState.REPLAYED:
         cached_headers = replay_claim.cached_headers
         if cached_headers is None:

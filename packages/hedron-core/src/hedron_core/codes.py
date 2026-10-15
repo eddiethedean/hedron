@@ -507,6 +507,7 @@ HED_REPLAY_0001 = "HED-REPLAY-0001"  # idempotency key required
 HED_REPLAY_0002 = "HED-REPLAY-0002"  # idempotency key conflict (fingerprint mismatch)
 HED_REPLAY_0003 = "HED-REPLAY-0003"  # idempotency key in flight / concurrent claim
 HED_REPLAY_0004 = "HED-REPLAY-0004"  # replay store explicitly misconfigured
+HED_REPLAY_0005 = "HED-REPLAY-0005"  # replay storage capacity / response unavailable
 HED_UPGRADE_0001 = "HED-UPGRADE-0001"  # unsupported upgrade from_version
 HED_UPGRADE_0002 = "HED-UPGRADE-0002"  # stale/incompatible upgrade baseline schema
 HED_UPGRADE_1001 = "HED-UPGRADE-1001"  # heuristic: legacy workflow migration status
