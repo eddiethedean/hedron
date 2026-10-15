@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.4] — Unreleased
+
+### Fixed
+
+- Fail closed on replay storage exhaustion to prevent duplicate idempotent mutations.
+
 ## [1.1.3] — Unreleased
 
 ### Changed

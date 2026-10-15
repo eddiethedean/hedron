@@ -396,8 +396,9 @@ async def _begin_replay(
             )
         else:
             detail = (
-                "HED-REPLAY-0005: Replay storage is at capacity; the action did not run. "
-                "Retry with the same key after capacity becomes available."
+                "HED-REPLAY-0005: Replay storage could not reserve this claim, so the action "
+                "did not run. Check the store's capacity and entry-size limits before retrying "
+                "with the same key."
             )
         raise HTTPException(status_code=503, detail=detail)
     if replay_claim.state == ReplayState.REPLAYED:

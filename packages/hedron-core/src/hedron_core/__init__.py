@@ -700,7 +700,7 @@ from hedron_core.visualization_theme import (
     resolve_visualization_theme,
 )
 
-__version__ = "1.1.3"
+__version__ = "1.1.4"
 
 __all__ = [
     "__version__",

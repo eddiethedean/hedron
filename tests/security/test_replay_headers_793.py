@@ -124,7 +124,7 @@ def test_memory_replay_store_charges_headers_and_key_material() -> None:
     assert set(store._entries) == {("s", "one")}
 
 
-def test_required_idempotency_rejects_claim_when_replay_storage_is_full() -> None:
+def test_required_idempotency_rejects_claim_that_exceeds_entry_budget() -> None:
     from fastapi.testclient import TestClient
     from starlette.responses import Response
 
@@ -152,6 +152,7 @@ def test_required_idempotency_rejects_claim_when_replay_storage_is_full() -> Non
 
     assert first.status_code == retry.status_code == 503
     assert "HED-REPLAY-0005" in retry.text
+    assert "entry-size limits" in retry.text
     assert calls == []
 
 
