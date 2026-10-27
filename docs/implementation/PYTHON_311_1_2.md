@@ -91,7 +91,9 @@ through their owning suites. Optional dependencies must remain optional on base/
 
 Run the declared 3.11–3.14 runtime matrix, dependency-bound combinations, clean wheel/sdist installs,
 and native platform/interpreter conformance. Prove pure-Python fallback parity. Required missing
-runtimes, native artifacts, or host services leave rows incomplete; a skip is not release evidence.
+runtimes or native artifacts leave rows incomplete; a skip is not release evidence. The licensed
+live Connect Docker smoke is advisory and cannot block publication; in-tree Connect adapter and
+contract tests remain required.
 
 **Exit:** `RUNTIME-120`, `NATIVE-120`, and `PKG-120` Verified with source/artifact provenance.
 

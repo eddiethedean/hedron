@@ -28,8 +28,9 @@ window was extended. The machine gate keeps these distinctions explicit.
 - Live install/support guidance describes moving to 3.11+, environment recreation, and rollback;
   historical published-release metadata remains unchanged.
 
-Actual supported-runtime, dependency-bound, host, native-wheel, installed-application, wheel/sdist,
-3.10 rejection, resolver, and rollback evidence remains required before release verification.
+Actual supported-runtime, dependency-bound, required host/satellite contract, native-wheel,
+installed-application, wheel/sdist, 3.10 rejection, resolver, and rollback evidence remains
+required before release verification. The separately licensed live Connect smoke is advisory.
 
 ## Required gates
 
@@ -42,7 +43,7 @@ Actual supported-runtime, dependency-bound, host, native-wheel, installed-applic
 | `TYPING-120` | Equivalent available typing imports use the stdlib; retained newer backports have reasons and direct dependency coverage; subclass inference, resolved hints, TypedDict requirements, schemas, and signatures remain correct; no newer syntax enters the 3.11 floor |
 | `STDLIB-120` | Native enum/TOML paths replace obsolete fallbacks; required public aliases remain; direct tomli/stub cleanup follows consumer audit; enum/string/serialization/TOML behavior preserved |
 | `COMPAT-120` | Stable public imports and API inventory preserved on remaining runtimes; FastAPI/Pydantic/HDJ forms, DI, schemas, validation and relevant security contracts retain parity; historical baselines remain intact |
-| `RUNTIME-120` | Required runtime and existing supported host/satellite suites pass on declared 3.11–3.14 combinations; minimum/latest dependency cases reproduce; installed reference application upgrade succeeds on 3.11; no skipped Required row |
+| `RUNTIME-120` | Required runtime and nonlicensed host/satellite suites pass on declared 3.11–3.14 combinations; minimum/latest dependency cases reproduce; installed reference application upgrade succeeds on 3.11; no skipped Required row. The live licensed Connect Docker smoke is advisory. |
 | `NATIVE-120` | Both active wheel selectors retire cp310; metadata/tags and all advertised platform/runtime wheels agree; native and pure-Python fallback conformance passes on the declared matrix |
 | `PKG-120` | Clean wheel/sdist builds and installs for all maintained packages; base/extra import isolation, direct dependencies, coordinated ranges and publish order verified; 3.10 explicit rejection and unpinned older-release resolution documented and exercised |
 | `DOCS-120` | Live support, install, contributor, generated-app, migration and release guidance agree with artifacts; environment recreation and lockfile upgrade/rollback demonstrated; historical 3.10 evidence preserved; no unsupported security/LTS promise |
@@ -57,6 +58,9 @@ An unavailable required interpreter, browser/service used by an existing require
 wheel is incomplete evidence. It cannot become a pass through a skip or narrower undocumented matrix.
 Every listed gate is required for this cut: the strict release checker requires all rows to be
 `Verified` and `release_cut_satisfied = true`; `Deferred` does not authorize publication.
+The licensed Posit Connect Docker smoke is supplemental: the release workflow records its redacted
+result when available, but does not wait for or gate on its license, service, or probe outcome.
+In-tree Connect adapter and contract tests remain part of the required runtime/compatibility suites.
 
 The packet begins with the current 23 workspace packages. Stage 0 reconciles that list against the
 actual release inventory; any exclusion or changed support claim requires an explicit disposition.

@@ -131,6 +131,23 @@ def test_release_workflow_uses_metadata_version_with_release_namespace() -> None
     assert "Using legacy version tag for manual recovery" in workflow
 
 
+def test_connect_live_smoke_is_advisory_to_release_publication() -> None:
+    workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
+    connect_start = workflow.index("  realconnect:")
+    connect_end = workflow.index("  publish_only_typing:", connect_start)
+    connect_job = workflow[connect_start:connect_end]
+    publish_start = workflow.index("  publish:\n")
+    publish_job = workflow[publish_start:]
+    publish_needs = publish_job[publish_job.index("    needs:") : publish_job.index("    if:")]
+
+    assert "name: Connect backend smoke (advisory)" in connect_job
+    assert "continue-on-error: true" in connect_job
+    assert "HEDRON_REQUIRED_LIVE_GATES" not in connect_job
+    assert "Upload advisory Connect result" in connect_job
+    assert "realconnect" not in publish_needs
+    assert "needs.realconnect.result" not in publish_job
+
+
 def test_ci_requires_package_version_change_detection() -> None:
     workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
     assert "name: Detect package version changes" in workflow

@@ -132,9 +132,12 @@ jobs:
         run: bash scripts/ci_checks.sh realwb --python 3.12
 
   realconnect:
-    name: Required Connect backend gate
+    name: Connect backend smoke (advisory)
     if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_only) }}
     runs-on: ubuntu-latest
+    # Connect requires a separately licensed service. Preserve its redacted result,
+    # but never gate or delay a release on license or service availability.
+    continue-on-error: true
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -147,12 +150,18 @@ jobs:
         run: uv python install 3.12
       - name: Install dependencies
         run: uv sync --locked --python 3.12
-      - name: Run required Connect Docker smoke
+      - name: Run advisory Connect Docker smoke
         env:
           CONNECT_LICENSE: ${{ secrets.CONNECT_LICENSE }}
           HEDRON_REALCONNECT: "1"
-          HEDRON_REQUIRED_LIVE_GATES: "1"
         run: bash scripts/ci_checks.sh realconnect --python 3.12
+      - name: Upload advisory Connect result
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: realconnect-033-result
+          path: docs/acceptance/realconnect-033/RESULT.log
+          if-no-files-found: ignore
 
   publish_only_typing:
     name: Recovery release gates (publish-only)
@@ -278,7 +287,6 @@ jobs:
         quality,
         dependency_bounds,
         realwb,
-        realconnect,
         publish_only_typing,
         browser,
         evidence,
@@ -294,7 +302,6 @@ jobs:
       (needs.quality.result == 'success' || needs.quality.result == 'skipped') &&
       (needs.dependency_bounds.result == 'success' || needs.dependency_bounds.result == 'skipped') &&
       (needs.realwb.result == 'success' || needs.realwb.result == 'skipped') &&
-      (needs.realconnect.result == 'success' || needs.realconnect.result == 'skipped') &&
       (needs.publish_only_typing.result == 'success' || needs.publish_only_typing.result == 'skipped') &&
       (needs.browser.result == 'success' || needs.browser.result == 'skipped') &&
       (needs.evidence.result == 'success' || needs.evidence.result == 'skipped')
