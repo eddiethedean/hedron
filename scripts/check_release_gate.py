@@ -79,6 +79,20 @@ EVIDENCE_BY_MAJOR_MINOR = {
     "1.2": ROOT / "docs" / "acceptance" / "release-gate-1.2.toml",
 }
 DEFAULT_EVIDENCE = EVIDENCE_BY_MAJOR_MINOR["0.6"]
+PHASE_120_EVIDENCE_IDS = (
+    "POLICY-120",
+    "FREEZE-120",
+    "METADATA-120",
+    "CHECKS-120",
+    "TYPING-120",
+    "STDLIB-120",
+    "COMPAT-120",
+    "RUNTIME-120",
+    "NATIVE-120",
+    "PKG-120",
+    "DOCS-120",
+    "RELEASE-120",
+)
 # Includes historical ``release`` attestation used by older gate manifests.
 KNOWN_CI_JOBS = frozenset(
     {"test", "quality", "browser", "evidence", "realwb", "realconnect", "packaging", "release"}
@@ -392,6 +406,28 @@ def check_evidence_manifest(path: Path) -> list[str]:
             errors.append(
                 f"{eid}: state {state!r} does not close the release gate "
                 "(use Verified or Deferred with ownership)"
+            )
+    if data.get("phase") == "1.2":
+        found = tuple(str(row.get("id", "")).strip() for row in rows if isinstance(row, dict))
+        if found != PHASE_120_EVIDENCE_IDS:
+            errors.append(
+                f"{path}: phase 1.2 gate order mismatch: {found!r}; "
+                f"expected {PHASE_120_EVIDENCE_IDS!r}"
+            )
+        if data.get("target") != "v1.2.0":
+            errors.append(f"{path}: phase 1.2 release target must be v1.2.0")
+        if data.get("support_policy_amendment_accepted") is not True:
+            errors.append(f"{path}: phase 1.2 support-policy amendment must be accepted")
+        if data.get("stage_1_entry_satisfied") is not True:
+            errors.append(f"{path}: phase 1.2 implementation entry must be satisfied")
+        if data.get("release_cut_satisfied") is not True:
+            errors.append(f"{path}: release_cut_satisfied must be true before v1.2.0 publication")
+        if any(
+            not isinstance(row, dict) or str(row.get("state", "")).strip() != "Verified"
+            for row in rows
+        ):
+            errors.append(
+                f"{path}: every required phase 1.2 gate must be Verified before publication"
             )
     return errors
 

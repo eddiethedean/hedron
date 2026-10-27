@@ -81,6 +81,35 @@ def test_release_gate_1_2_candidate_is_selected_without_historical_fallback() ->
         gate.evidence_manifest_for("1.3.0")
 
 
+def test_release_gate_1_2_rejects_deferred_required_gates(tmp_path: Path) -> None:
+    lines = [
+        'phase = "1.2"',
+        'target = "v1.2.0"',
+        "support_policy_amendment_accepted = true",
+        "stage_1_entry_satisfied = true",
+        "release_cut_satisfied = false",
+        "",
+    ]
+    for gate_id in gate.PHASE_120_EVIDENCE_IDS:
+        lines.extend(
+            [
+                "[[evidence]]",
+                f'id = "{gate_id}"',
+                'state = "Deferred"',
+                'owner = "release"',
+                'rationale = "Required evidence is still pending."',
+                'destination = "Complete before publication."',
+                "",
+            ]
+        )
+    manifest = tmp_path / "release-gate-1.2.toml"
+    manifest.write_text("\n".join(lines), encoding="utf-8")
+
+    errors = gate.check_evidence_manifest(manifest)
+    assert any("release_cut_satisfied must be true" in error for error in errors)
+    assert any("every required phase 1.2 gate must be Verified" in error for error in errors)
+
+
 def test_current_patch_package_metadata_passes() -> None:
     release = tomllib.loads((ROOT / "docs" / "release.toml").read_text(encoding="utf-8"))["release"]
     # The workspace may be preparing a patch that is not on PyPI yet.

@@ -14,20 +14,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import check_python_311  # noqa: E402
 import check_release_gate  # noqa: E402
 
-EXPECTED_GATES = (
-    "POLICY-120",
-    "FREEZE-120",
-    "METADATA-120",
-    "CHECKS-120",
-    "TYPING-120",
-    "STDLIB-120",
-    "COMPAT-120",
-    "RUNTIME-120",
-    "NATIVE-120",
-    "PKG-120",
-    "DOCS-120",
-    "RELEASE-120",
-)
+EXPECTED_GATES = check_release_gate.PHASE_120_EVIDENCE_IDS
 
 
 def main() -> int:

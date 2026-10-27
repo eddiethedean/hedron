@@ -55,11 +55,18 @@ source commit, artifact digest where applicable, and a retained evidence locatio
 comparisons distinguish expected interpreter metadata changes from regressions in public behavior.
 An unavailable required interpreter, browser/service used by an existing required slice, or native
 wheel is incomplete evidence. It cannot become a pass through a skip or narrower undocumented matrix.
+Every listed gate is required for this cut: the strict release checker requires all rows to be
+`Verified` and `release_cut_satisfied = true`; `Deferred` does not authorize publication.
 
 The packet begins with the current 23 workspace packages. Stage 0 reconciles that list against the
 actual release inventory; any exclusion or changed support claim requires an explicit disposition.
 Default-build CPython 3.11–3.14 is the candidate matrix; 3.15, PyPy, and free-threaded builds are
 outside the claim. Package maturity remains governed by the existing stability inventory.
 
-No phase-specific checker exists yet. W0 binds existing check commands to the corpus; implementation
-must integrate machine-packet selection and any new enforcement before release verification.
+Phase-specific enforcement is in place: `scripts/check_python_311.py` checks the maintained
+interpreter, typing, dependency, and native-wheel baseline; `scripts/verify_pkg_120.py` binds that
+check to the 1.2.0 package inventory and acceptance packet. The release workflow selects this
+packet explicitly. Its strict release check rejects `Planned`, `Implemented`, and `Blocked` rows,
+so implementation CI cannot authorize publication while release evidence is incomplete. W0's
+source, host, and platform inventory and the runtime, artifact, upgrade, resolver, and rollback
+evidence listed above remain open until verified against the frozen candidate.
