@@ -1,0 +1,89 @@
+{
+  "architecture": "x86_64",
+  "package": "hedron-native",
+  "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+  "platforms": {
+    "linux-aarch64": [
+      {
+        "name": "hedron_native-0.1.4-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.whl",
+        "sha256": "81824adbfda651750b536c23e84dd9d133c8c9f287f432b2b5ca36434de061e4"
+      },
+      {
+        "name": "hedron_native-0.1.4-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.whl",
+        "sha256": "08df887bf2701832262ed9c6c9f9d1cbc577793a85f97c0520c671c304162eb3"
+      },
+      {
+        "name": "hedron_native-0.1.4-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.whl",
+        "sha256": "8ad9238a8bfc7c8296ee9451cd6579c1c00bfa389a2122cd230f62b5ba29e90a"
+      },
+      {
+        "name": "hedron_native-0.1.4-cp314-cp314-manylinux2014_aarch64.manylinux_2_17_aarch64.whl",
+        "sha256": "a07244ffec2ea0df851ba7ebabc39d53939308cd9c1a2c4084878c2dc5f87f9d"
+      }
+    ],
+    "linux-x86_64": [
+      {
+        "name": "hedron_native-0.1.4-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+        "sha256": "7c6ea8656829306c547acf5db80c1f50b18d49b59da9eced9a75e705f026e02e"
+      },
+      {
+        "name": "hedron_native-0.1.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+        "sha256": "a37ab72f9a04ddd19d3a2febd839cf9b14214073582803822e1deb583f4961c7"
+      },
+      {
+        "name": "hedron_native-0.1.4-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+        "sha256": "c955d432d34cd55172eb89b8486671097e0e2a10827a67e6cb227f3b1e892e67"
+      },
+      {
+        "name": "hedron_native-0.1.4-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+        "sha256": "5341ae8e1fd77e5e54b0a058b1f184131833eb000637f7832110179f89aa3a56"
+      }
+    ],
+    "macos-arm64": [
+      {
+        "name": "hedron_native-0.1.4-cp311-cp311-macosx_11_0_arm64.whl",
+        "sha256": "6b6a1ef9270da1850e43b26699cfa9acd6db5c29abdcf87cd1393f11b04ff68f"
+      },
+      {
+        "name": "hedron_native-0.1.4-cp312-cp312-macosx_11_0_arm64.whl",
+        "sha256": "c6dbe1d31df0229ff854341a7948add19e4e671b63dcdee4f71397c2ed854061"
+      },
+      {
+        "name": "hedron_native-0.1.4-cp313-cp313-macosx_11_0_arm64.whl",
+        "sha256": "bd959229b5de2980fe75f42f5fbda66879516b1a565b617698e504a9b23eeb09"
+      },
+      {
+        "name": "hedron_native-0.1.4-cp314-cp314-macosx_11_0_arm64.whl",
+        "sha256": "ba98c490db8242762c5750234dafac34b1bf49403864cd4082f310dfbcaffa98"
+      }
+    ],
+    "windows-amd64": [
+      {
+        "name": "hedron_native-0.1.4-cp311-cp311-win_amd64.whl",
+        "sha256": "326807a1da6e70e4be68bff11d488900044e60f5b7ad9f0f4c0036b3bf38d168"
+      },
+      {
+        "name": "hedron_native-0.1.4-cp312-cp312-win_amd64.whl",
+        "sha256": "1f7fb5f04c24bfcf09b5241bd0b39fbe52d60fc208ada3ab99cfa72005e92180"
+      },
+      {
+        "name": "hedron_native-0.1.4-cp313-cp313-win_amd64.whl",
+        "sha256": "803be1cc8c0cc43d94dc398fe84761791032e5d8c573037c729101a68949b630"
+      },
+      {
+        "name": "hedron_native-0.1.4-cp314-cp314-win_amd64.whl",
+        "sha256": "4b515a4a402412083f29e4827af8b79ad50ed93e1f5e442d47463a4a61c5e780"
+      }
+    ]
+  },
+  "python_tags": [
+    "cp311",
+    "cp312",
+    "cp313",
+    "cp314"
+  ],
+  "schema": "hedron.native-wheel-inventory/1",
+  "source_commit": "b061d0e79269e309fa97f0585562d79cbc45d40b",
+  "version": "0.1.4",
+  "workflow_run": "https://github.com/eddiethedean/hedron/actions/runs/40555194235"
+}
