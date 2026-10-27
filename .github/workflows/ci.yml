@@ -130,7 +130,7 @@ jobs:
         run: bash scripts/ci_checks.sh test --python ${{ matrix.python-version }}
       - name: Upload Python package coverage
         if: always() && matrix.python-version == '3.12'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: python-package-coverage-3.12
           path: |
@@ -291,7 +291,7 @@ jobs:
         run: bash scripts/ci_checks.sh browser --python 3.12
       - name: Upload Playwright artifacts on failure
         if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: browser-htmx-${{ matrix.browser }}
           path: |
@@ -330,7 +330,7 @@ jobs:
         run: bash scripts/ci_checks.sh realwb --python 3.12
       - name: Upload redacted RESULT.log
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: realwb-030-result
           path: docs/acceptance/realwb-030/RESULT.log
@@ -367,7 +367,7 @@ jobs:
         run: bash scripts/ci_checks.sh realconnect --python 3.12
       - name: Upload redacted RESULT.log
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: realconnect-033-result
           path: docs/acceptance/realconnect-033/RESULT.log
@@ -412,7 +412,7 @@ jobs:
       - name: Run evidence suite
         run: bash scripts/ci_checks.sh evidence --python 3.12 --gate-version ${{ env.HEDRON_GATE_VERSION }}
       - name: Upload evidence bundle
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: hedron-evidence-bundle
           path: dist/evidence-bundle/
