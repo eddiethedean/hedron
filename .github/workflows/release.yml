@@ -395,6 +395,12 @@ jobs:
       - name: Verify exact approved candidate artifacts
         if: ${{ steps.version.outputs.version == '1.0.0' }}
         run: uv run --python 3.12 python scripts/verify_release_artifacts.py
+      - name: Verify exact approved 1.2.0 candidate artifacts
+        if: ${{ steps.version.outputs.version == '1.2.0' }}
+        run: >
+          uv run --python 3.12 python scripts/verify_release_artifacts.py
+          --evidence-manifest docs/acceptance/evidence-120/python-artifacts.json
+          --dist-dir dist --expected-artifact-count 44 --exact-set
       - name: Write release checksum manifest
         run: >
           uv run --python 3.12 python scripts/write_release_manifest.py

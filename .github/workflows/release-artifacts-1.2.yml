@@ -1,0 +1,74 @@
+name: Release artifact rehearsal (1.2.0)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/release-artifacts-1.2.yml
+      - .github/workflows/release.yml
+      - docs/acceptance/RELEASE_1_2.md
+      - docs/acceptance/release-gate-1.2.toml
+      - docs/implementation/PYTHON_311_1_2.md
+      - packages/**
+      - pyproject.toml
+      - release/**
+      - scripts/build_reproducible_release_artifacts.py
+      - scripts/check_python_310_candidate.py
+      - scripts/rehearse_python_311_upgrade_rollback.py
+      - scripts/check_python_311.py
+      - scripts/verify_pkg_120.py
+      - scripts/verify_release_artifacts.py
+      - scripts/verify_release_reproducibility.py
+      - uv.lock
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-artifact-rehearsal-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  UV_NO_PROGRESS: "1"
+  UV_VERSION: "0.12.1"
+  SOURCE_DATE_EPOCH: "315619200"
+  PYTHONDONTWRITEBYTECODE: "1"
+
+jobs:
+  build-and-compare:
+    name: Reproducible Python distributions
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install compatibility interpreters
+        run: uv python install 3.10 3.11
+      - name: Verify the 1.2.0 package and support baseline
+        run: uv run --locked --python 3.12 python scripts/verify_pkg_120.py --allow-planned
+      - name: Build each coordinated package twice and verify hashes
+        env:
+          RETENTION_REFERENCE: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: >
+          uv run --locked --python 3.12 python
+          scripts/build_reproducible_release_artifacts.py
+          dist/phase-120 --retention-reference "$RETENTION_REFERENCE"
+      - name: Retain both builds and the hash ledger
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-artifacts-1.2.0-${{ github.run_id }}
+          path: dist/phase-120/
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0

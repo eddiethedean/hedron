@@ -99,10 +99,12 @@ contract tests remain required.
 
 ## W4 — Migration docs and release decision
 
-Explain explicit 3.10 candidate-install rejection and unpinned resolver fallback; demonstrate
-rollback using the previous environment and lock. Update live support guidance at the implementation
-cut while preserving immutable prior release evidence. Publish package-specific versions in the
-existing order; coordinate independently versioned satellites and their dependency bounds.
+Explain explicit 3.10 candidate-install rejection and unpinned resolver fallback; the artifact
+rehearsal executes both checks against the exact candidate wheel and binds their results into the
+artifact ledger. Demonstrate rollback using the previous environment and lock. Update live support
+guidance at the implementation cut while preserving immutable prior release evidence. Publish
+package-specific versions in the existing order; coordinate independently versioned satellites and
+their dependency bounds.
 
 Document each evidence result with commit, command, interpreter/dependency versions, platform,
 artifact digest, and retained log location. Attach the support-policy decision and candidate
@@ -110,6 +112,15 @@ migration/rollback guidance. Recheck that metadata, support claims, wheel tags, 
 and the release packet agree. Only then may the release decision promote the packet.
 
 **Exit:** `DOCS-120` and `RELEASE-120` Verified; no remaining Required Planned row.
+
+The artifact rehearsal is implemented in `.github/workflows/release-artifacts-1.2.yml` and
+`scripts/build_reproducible_release_artifacts.py`. It produces a retained, source-linked hash ledger
+only after two complete builds match. It binds the Python 3.10 rejection/resolver check and the
+Python 3.11 installed-app upgrade/rollback with the original lock to the candidate wheels.
+`scripts/verify_release_artifacts.py` enforces the ledger for the 1.2.0 publish job. The scope
+inventory is recorded in
+`docs/acceptance/evidence-120/SCOPE.md`; maintainer review and the candidate runtime, upgrade,
+rollback, native, and artifact runs remain required evidence.
 
 ## Candidate checkpoints and handoff
 

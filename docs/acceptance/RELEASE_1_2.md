@@ -29,8 +29,18 @@ window was extended. The machine gate keeps these distinctions explicit.
   historical published-release metadata remains unchanged.
 
 Actual supported-runtime, dependency-bound, required host/satellite contract, native-wheel,
-installed-application, wheel/sdist, 3.10 rejection, resolver, and rollback evidence remains
-required before release verification. The separately licensed live Connect smoke is advisory.
+installed-application upgrade, and rollback evidence remains required before release verification.
+The artifact rehearsal runs and binds the Python 3.10 rejection and unpinned resolver fallback to
+the exact candidate wheel; that retained run is still required. The separately licensed live
+Connect smoke is advisory.
+
+The nonpublishing [1.2 artifact rehearsal workflow](../../.github/workflows/release-artifacts-1.2.yml)
+builds the 22 coordinated Python distributions twice, compares the complete 44-file inventory and
+hashes, checks Python 3.10 rejection/resolution fallback, rehearses an installed 1.1.3 app upgrade
+and lock-based rollback on Python 3.11, and retains the results with a source-linked ledger. The
+reviewed ledger is committed under `evidence-120/` after the source freeze; the release workflow
+verifies it against its own build before publication. Native platform wheels remain a separate
+workflow and evidence set.
 
 ## Required gates
 

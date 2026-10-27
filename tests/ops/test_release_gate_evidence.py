@@ -175,6 +175,36 @@ def test_workbench_artifacts_are_verified_before_pypi_upload() -> None:
     assert workflow.count('|| [ "$name" = "fastapi-workbench" ]') == 2
 
 
+def test_120_release_requires_exact_approved_candidate_artifacts() -> None:
+    workflow = (ROOT / ".github/workflows/release.yml").read_text(encoding="utf-8")
+    prepublish = workflow.index("Verify exact approved 1.2.0 candidate artifacts")
+    upload = workflow.index("name: Publish to PyPI", prepublish)
+    release_steps = workflow[prepublish:upload]
+
+    assert "steps.version.outputs.version == '1.2.0'" in release_steps
+    assert "docs/acceptance/evidence-120/python-artifacts.json" in release_steps
+    assert "--expected-artifact-count 44 --exact-set" in release_steps
+
+
+def test_120_artifact_rehearsal_builds_twice_and_never_publishes() -> None:
+    workflow = (ROOT / ".github/workflows/release-artifacts-1.2.yml").read_text(encoding="utf-8")
+
+    assert "workflow_dispatch:" in workflow
+    assert "push:" in workflow
+    assert "branches:" in workflow and "- main" in workflow
+    assert "build_reproducible_release_artifacts.py" in workflow
+    assert "check_python_310_candidate.py" in (
+        ROOT / "scripts/build_reproducible_release_artifacts.py"
+    ).read_text(encoding="utf-8")
+    assert "rehearse_python_311_upgrade_rollback.py" in (
+        ROOT / "scripts/build_reproducible_release_artifacts.py"
+    ).read_text(encoding="utf-8")
+    assert "actions/upload-artifact@" in workflow
+    assert "retention-days: 90" in workflow
+    assert "uv publish" not in workflow
+    assert "PyPI" not in workflow
+
+
 def test_workbench_dependency_is_published_before_hedron_posit() -> None:
     publish_order = tomllib.loads(
         (ROOT / "release" / "publish-order.toml").read_text(encoding="utf-8")
