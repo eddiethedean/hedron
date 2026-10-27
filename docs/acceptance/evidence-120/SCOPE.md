@@ -70,12 +70,13 @@ release workflow.
   source grammar is retained for inspecting older applications, not for running Hedron on 3.10.
 - `check_python_310_candidate.py` automates explicit 3.10 candidate-install rejection and unpinned
   fallback to 1.1.3; its candidate-wheel digest and results are bound into the reproducibility
-  ledger. The retained rehearsal run remains required.
+  ledger. The successful rehearsal is retained in `python-artifacts.json`.
 
 ## Ownership and review status
 
 The evidence packet assigns functional owners by gate. Package `[project].authors` metadata is a
 contact inventory, not proof of an accountable release maintainer, and one distribution does not
-declare an author. A named maintainer must review and accept this inventory before `FREEZE-120` is
-marked `Verified`. Record that review, the frozen source commit, and the resulting reference scan
-alongside the runtime and artifact evidence in this directory.
+declare an author. Odos Matthews (`@eddiethedean`) reviewed and accepted this inventory on
+2026-10-27. The review record, frozen source commit, reference scan, runtime, and artifact evidence
+are retained in this directory; the shared full `source_commit` in both artifact ledgers identifies
+the frozen candidate.

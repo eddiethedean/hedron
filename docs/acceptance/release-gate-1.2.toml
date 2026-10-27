@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "1.2"
-status = "Implemented; release evidence pending"
+status = "Verified"
 planning_baseline = "v1.1.3"
 required_predecessor = "v1.1.3"
 predecessor_satisfied = true
@@ -8,7 +8,7 @@ target = "v1.2.0"
 owning_rfc = "RFC-0099"
 implementation = "../implementation/PYTHON_311_1_2.md"
 stage_1_entry_satisfied = true
-release_cut_satisfied = false
+release_cut_satisfied = true
 support_policy_amendment_accepted = true
 python_requires = ">=3.11,<3.15"
 python_matrix = ["3.11", "3.12", "3.13", "3.14"]
@@ -44,74 +44,110 @@ starting_workspace_packages = [
     "fastapi-workbench",
 ]
 
+[maintainer_review]
+reviewer = "Odos Matthews (@eddiethedean)"
+reviewed_at = "2026-10-27"
+accepted = true
+review_record = "evidence-120/REVIEW.md"
+
+[release_approval]
+approver = "Odos Matthews (@eddiethedean)"
+approved_at = "2026-10-27"
+approved = true
+approval_record = "evidence-120/REVIEW.md"
+
 [[evidence]]
 id = "POLICY-120"
-state = "Implemented"
+state = "Verified"
 owner = "architecture"
 ci_job = "evidence"
+command = "python scripts/check_release_gate.py 1.2.0"
+evidence = "evidence-120/REVIEW.md"
 
 [[evidence]]
 id = "FREEZE-120"
-state = "Planned"
-owner = "architecture"
-ci_job = "evidence"
+state = "Verified"
+owner = "Odos Matthews (@eddiethedean)"
+ci_job = "quality"
+command = "python scripts/check_python_311.py"
+evidence = "evidence-120/REVIEW.md"
 
 [[evidence]]
 id = "METADATA-120"
-state = "Implemented"
+state = "Verified"
 owner = "packages"
 ci_job = "packaging"
+command = "python scripts/verify_pkg_120.py"
+evidence = "evidence-120/REVIEW.md"
 
 [[evidence]]
 id = "CHECKS-120"
-state = "Implemented"
+state = "Verified"
 owner = "tooling"
 ci_job = "quality"
+command = "bash scripts/ci_checks.sh quality --python 3.11"
+evidence = "evidence-120/REVIEW.md"
 
 [[evidence]]
 id = "TYPING-120"
-state = "Implemented"
+state = "Verified"
 owner = "typing"
 ci_job = "quality"
+command = "bash scripts/ci_checks.sh quality --python 3.11"
+evidence = "evidence-120/REVIEW.md"
 
 [[evidence]]
 id = "STDLIB-120"
-state = "Implemented"
+state = "Verified"
 owner = "core"
 ci_job = "test"
+command = "bash scripts/ci_checks.sh test --python 3.11"
+evidence = "evidence-120/REVIEW.md"
 
 [[evidence]]
 id = "COMPAT-120"
-state = "Implemented"
+state = "Verified"
 owner = "compatibility"
 ci_job = "test"
+command = "bash scripts/ci_checks.sh test --python 3.12"
+evidence = "evidence-120/REVIEW.md"
 
 [[evidence]]
 id = "RUNTIME-120"
-state = "Planned"
+state = "Verified"
 owner = "hosts"
 ci_job = "test"
+command = "bash scripts/ci_checks.sh test --python 3.11"
+evidence = "evidence-120/REVIEW.md"
 
 [[evidence]]
 id = "NATIVE-120"
-state = "Implemented"
+state = "Verified"
 owner = "native"
 ci_job = "packaging"
+command = "python scripts/verify_native_wheel_inventory.py dist/native --all-platforms --output dist/native-artifacts.json"
+evidence = "evidence-120/native-artifacts.json"
 
 [[evidence]]
 id = "PKG-120"
-state = "Implemented"
+state = "Verified"
 owner = "packages"
 ci_job = "packaging"
+command = "bash scripts/ci_checks.sh packaging --python 3.12"
+evidence = "evidence-120/python-artifacts.json"
 
 [[evidence]]
 id = "DOCS-120"
-state = "Implemented"
+state = "Verified"
 owner = "docs"
 ci_job = "quality"
+command = "bash scripts/ci_checks.sh quality --python 3.11"
+evidence = "evidence-120/REVIEW.md"
 
 [[evidence]]
 id = "RELEASE-120"
-state = "Planned"
-owner = "release"
+state = "Verified"
+owner = "Odos Matthews (@eddiethedean)"
 ci_job = "release"
+command = "python scripts/check_release_gate.py 1.2.0"
+evidence = "evidence-120/REVIEW.md"

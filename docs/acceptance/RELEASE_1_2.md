@@ -1,6 +1,6 @@
 # Hedron `v1.2.0` Python 3.11+ acceptance plan
 
-**Status:** Implemented in the candidate workspace; release verification pending
+**Status:** Verified and approved for the v1.2.0 release cut; not published
 **Baseline:** Published `v1.1.3`
 **Target:** Candidate `v1.2.0`; independently versioned packages retain their own release lines
 **Authority:** [RFC-0099](../rfcs/RFC-0099-PYTHON-311-BASELINE.md)
@@ -9,9 +9,10 @@
 
 Decision D-120 accepts retiring Python 3.10 because it no longer receives CPython security fixes.
 The candidate implementation updates maintained package metadata, typing/runtime checks, stdlib
-compatibility paths, release selection, and migration guidance. This packet does not claim that the
-full runtime/native/artifact matrix has passed, that publication occurred, or that the 1.1 support
-window was extended. The machine gate keeps these distinctions explicit.
+compatibility paths, release selection, and migration guidance. The required runtime, native, and
+artifact evidence is recorded against the frozen candidate, and the machine gate records maintainer
+acceptance and release approval. This approval clears the v1.2.0 release cut; it does not claim
+that publication occurred or extend the 1.1 support window.
 
 ## In-tree implementation
 
@@ -28,11 +29,10 @@ window was extended. The machine gate keeps these distinctions explicit.
 - Live install/support guidance describes moving to 3.11+, environment recreation, and rollback;
   historical published-release metadata remains unchanged.
 
-Actual supported-runtime, dependency-bound, required host/satellite contract, native-wheel,
-installed-application upgrade, and rollback evidence remains required before release verification.
-The artifact rehearsal runs and binds the Python 3.10 rejection and unpinned resolver fallback to
-the exact candidate wheel; that retained run is still required. The separately licensed live
-Connect smoke is advisory.
+Supported-runtime, dependency-bound, required host/satellite contract, native-wheel,
+installed-application upgrade, and rollback evidence is retained in `evidence-120/` and bound to the
+frozen candidate. The artifact rehearsal binds Python 3.10 rejection and unpinned resolver fallback
+to the exact candidate wheel. The separately licensed live Connect smoke is advisory.
 
 The nonpublishing [1.2 artifact rehearsal workflow](../../.github/workflows/release-artifacts-1.2.yml)
 builds the 22 coordinated Python distributions twice, compares the complete 44-file inventory and
@@ -72,15 +72,16 @@ The licensed Posit Connect Docker smoke is supplemental: its redacted Actions lo
 and the release workflow does not wait for or gate on its license, service, or probe outcome.
 In-tree Connect adapter and contract tests remain part of the required runtime/compatibility suites.
 
-The packet begins with the current 23 workspace packages. Stage 0 reconciles that list against the
-actual release inventory; any exclusion or changed support claim requires an explicit disposition.
-Default-build CPython 3.11–3.14 is the candidate matrix; 3.15, PyPy, and free-threaded builds are
-outside the claim. Package maturity remains governed by the existing stability inventory.
+The packet begins with the current 23 workspace packages. The maintainer reviewed the reconciled
+release inventory and its reference dispositions; any future exclusion or changed support claim
+requires a new explicit disposition. Default-build CPython 3.11–3.14 is the candidate matrix;
+3.15, PyPy, and free-threaded builds are outside the claim. Package maturity remains governed by
+the existing stability inventory.
 
 Phase-specific enforcement is in place: `scripts/check_python_311.py` checks the maintained
 interpreter, typing, dependency, and native-wheel baseline; `scripts/verify_pkg_120.py` binds that
 check to the 1.2.0 package inventory and acceptance packet. The release workflow selects this
 packet explicitly. Its strict release check rejects `Planned`, `Implemented`, and `Blocked` rows,
-so implementation CI cannot authorize publication while release evidence is incomplete. W0's
-source, host, and platform inventory and the runtime, artifact, upgrade, resolver, and rollback
-evidence listed above remain open until verified against the frozen candidate.
+so implementation CI cannot authorize publication while release evidence is incomplete. All
+required phase 1.2 rows are now `Verified`; the packet records the maintainer's release approval
+and `release_cut_satisfied = true`. Publication remains a separate action.
