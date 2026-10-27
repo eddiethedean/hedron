@@ -117,8 +117,10 @@ The artifact rehearsal is implemented in `.github/workflows/release-artifacts-1.
 `scripts/build_reproducible_release_artifacts.py`. It produces a retained, source-linked hash ledger
 only after two complete builds match. It binds the Python 3.10 rejection/resolver check and the
 Python 3.11 installed-app upgrade/rollback with the original lock to the candidate wheels.
-`scripts/verify_release_artifacts.py` enforces the ledger for the 1.2.0 publish job. The scope
-inventory is recorded in
+`scripts/verify_release_artifacts.py` enforces the ledger for the 1.2.0 publish job. Native wheel
+builds use cibuildwheel 3.1+ and the separate `.github/workflows/native-wheels-ci.yml` matrix, which
+validates all 16 CPython/platform artifacts and their extension/fallback behavior before retaining
+their hash ledger. The scope inventory is recorded in
 `docs/acceptance/evidence-120/SCOPE.md`; maintainer review and the candidate runtime, upgrade,
 rollback, native, and artifact runs remain required evidence.
 

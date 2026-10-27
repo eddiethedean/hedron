@@ -53,6 +53,7 @@ rust = false
 build = "cp311-* cp312-* cp313-* cp314-*"
 skip = "pp* *-musllinux_*"
 before-build = "rustup default stable"
+test-command = "python {project}/scripts/verify_wheel.py"
 
 # Native-wheels.yml already splits Linux across ubuntu-latest (x86_64) and
 # ubuntu-24.04-arm (aarch64). Building both arches on one runner pulls a
@@ -60,6 +61,8 @@ before-build = "rustup default stable"
 # until the job timeout.
 [tool.cibuildwheel.linux]
 archs = ["native"]
+manylinux-x86_64-image = "manylinux2014"
+manylinux-aarch64-image = "manylinux2014"
 
 [tool.cibuildwheel.macos]
 archs = ["arm64"]

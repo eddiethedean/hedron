@@ -23,9 +23,13 @@ package list, hashes, and retention reference, then place the reviewed file at
 source commit. The 1.2.0 publish workflow checks the ledger against the newly built 44-file release
 set and rejects missing, changed, extra, stale, or non-reproducible artifacts.
 
-The native wheel run remains separate because it builds platform-specific wheels on Linux x86_64,
-Linux ARM64, macOS, and Windows. Retain its successful run URL and downloaded wheel inventory with
-the native evidence before marking `NATIVE-120` verified.
+The native wheel matrix workflow in `.github/workflows/native-wheels-ci.yml` builds and tests
+CPython 3.11–3.14 wheels on Linux x86_64, Linux ARM64, macOS ARM64, and Windows x64. It rejects a
+missing interpreter or platform wheel and retains the 16-wheel inventory, binary hashes, and
+combined evidence artifact for 90 days. The publishing workflow uses the same cibuildwheel version
+and per-wheel conformance command. Retain the successful run URL and reviewed
+`native-artifacts.json` at this path in the evidence-only commit alongside `python-artifacts.json`
+before marking `NATIVE-120` verified.
 
 The final Python artifact ledger is intentionally absent until the rehearsal has run on the frozen
 candidate. A placeholder or hash list copied from an earlier source commit is not release evidence.

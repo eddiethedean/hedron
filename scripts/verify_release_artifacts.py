@@ -68,7 +68,10 @@ def evidence_source_errors(
             allowed_prefix = relative_root.rstrip("/") + "/"
         except ValueError:
             return ["approved release evidence directory must be inside the repository"]
-        allowed_paths = {allowed_prefix + "python-artifacts.json"}
+        allowed_paths = {
+            allowed_prefix + "python-artifacts.json",
+            allowed_prefix + "native-artifacts.json",
+        }
     unexpected = sorted((set(changed) | set(working_tree_changed) | set(untracked)) - allowed_paths)
     if unexpected:
         return [

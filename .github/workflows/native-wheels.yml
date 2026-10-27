@@ -57,12 +57,16 @@ jobs:
         include:
           - os: ubuntu-latest
             arch: auto
+            native_platform: linux-x86_64
           - os: ubuntu-24.04-arm
             arch: auto
+            native_platform: linux-aarch64
           - os: macos-14
             arch: auto
+            native_platform: macos-arm64
           - os: windows-latest
             arch: auto
+            native_platform: windows-amd64
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -80,7 +84,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install cibuildwheel
-        run: python -m pip install "cibuildwheel>=2.21,<3" "maturin>=1.7,<2"
+        run: python -m pip install "cibuildwheel>=3.1,<4" "maturin>=1.7,<2"
 
       - name: Build wheels
         working-directory: packages/hedron-native
@@ -103,6 +107,12 @@ jobs:
             echo "Retrying after transient container pull/build failure..."
             sleep 30
           done
+
+      - name: Verify complete CPython wheel inventory
+        run: >-
+          python scripts/verify_native_wheel_inventory.py
+          packages/hedron-native/wheelhouse
+          --platform "${{ matrix.native_platform }}"
 
       - name: Upload wheels
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

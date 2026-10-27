@@ -201,7 +201,8 @@ def test_release_artifact_verifier_rejects_stale_source_commit(monkeypatch) -> N
 def test_candidate_ledger_allows_only_the_ledger_after_source_freeze(monkeypatch) -> None:
     source = "b" * 40
     evidence_root = verify_release_artifacts.ROOT / "docs/acceptance/evidence-120"
-    changed = f"{evidence_root.relative_to(verify_release_artifacts.ROOT)}/python-artifacts.json\n"
+    evidence_prefix = f"{evidence_root.relative_to(verify_release_artifacts.ROOT)}/"
+    changed = f"{evidence_prefix}python-artifacts.json\n{evidence_prefix}native-artifacts.json\n"
 
     def fake_check_output(command, **_kwargs):
         if command[:3] == ["git", "diff", "--name-only"]:
