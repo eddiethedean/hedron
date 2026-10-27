@@ -185,9 +185,7 @@ def validate_published_parity(
     errors: list[str] = []
     distributions = tuple(package_names) if package_names is not None else PAIR
     for distribution in distributions:
-        package_name = (
-            package_names[distribution] if package_names is not None else distribution
-        )
+        package_name = package_names[distribution] if package_names is not None else distribution
         published = published_wheel(package_name, versions[distribution])
         if published is None:
             print(

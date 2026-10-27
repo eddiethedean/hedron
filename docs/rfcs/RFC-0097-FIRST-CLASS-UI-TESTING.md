@@ -1,15 +1,15 @@
 # RFC-0097: First-class UI testing and adoption confidence
 
 **Status:** Proposed; Stage 0 refinement only
-**Target:** Hedron `1.2` planning candidate
+**Target:** Hedron `1.3` planning candidate
 **Baseline:** Published Hedron `v1.0.0`
-**Implementation:** [UI_TESTING_1_2](../implementation/UI_TESTING_1_2.md)
-**Acceptance:** [RELEASE_1_2](../acceptance/RELEASE_1_2.md) ·
-[release-gate-1.2.toml](../acceptance/release-gate-1.2.toml)
+**Implementation:** [UI_TESTING_1_3](../implementation/UI_TESTING_1_3.md)
+**Acceptance:** [RELEASE_1_3](../acceptance/RELEASE_1_3.md) ·
+[release-gate-1.3.toml](../acceptance/release-gate-1.3.toml)
 
 ## Summary
 
-Hedron 1.2 should make real user-interface testing an ordinary pytest task. An application author
+Hedron 1.3 should make real user-interface testing an ordinary pytest task. An application author
 should be able to supply a Hedron application, open a real browser, interact through accessible
 roles and labels, and receive useful failure evidence without manually starting a server or
 assembling browser lifecycle, tracing, and cleanup infrastructure.
@@ -25,9 +25,9 @@ value: managed application hosting, semantic Hedron locators, bounded interactio
 correlated server/browser diagnostics, safe cleanup, and failure artifacts. It does not implement
 a fake DOM, copy Playwright's complete API, or introduce a second application runtime.
 
-The 2026-09-18 roadmap revision moves this testing proposal from 1.1 to 1.2,
-after the open-enhancement implementation phase. The older unaccepted
-HTMX/Alpine 1.1 transition proposal is therefore unassigned and cannot change 1.2 runtime behavior
+The 2026-09-18 roadmap revision moved this testing proposal after the 1.1 enhancement phase.
+The current sequence places Python 3.11+ support in 1.2 and this testing proposal in 1.3. The
+older unaccepted HTMX/Alpine 1.1 transition proposal is therefore unassigned and cannot change 1.3 runtime behavior
 without a separate accepted RFC and phase decision.
 
 ## Motivation and background
@@ -79,7 +79,7 @@ actual user agent or the interaction among browser authorities.
 ### Primary pytest experience
 
 The candidate primary surface is an optional pytest fixture backed by a `BrowserScenario` object.
-The exact fixture and method names remain a `FREEZE-120` decision, but the target ergonomics are:
+The exact fixture and method names remain a `FREEZE-130` decision, but the target ergonomics are:
 
 ```python
 def test_profile_save(hedron_ui, app):
@@ -262,7 +262,7 @@ Hedron adds a small semantic convenience surface and framework diagnostics, not 
 Rejected. Pytest is already the project and ecosystem runner. A second runner would split fixture,
 plugin, selection, parallelism, and CI configuration.
 
-### Make visual golden comparisons Stable in 1.2
+### Make visual golden comparisons Stable in 1.3
 
 Deferred. Screenshots are Required failure evidence. Baseline management, platform-font variance,
 pixel thresholds, review workflows, and intentional-update provenance require a separate maturity
@@ -299,7 +299,7 @@ Browser startup is inherently more expensive than render or `AppScenario` tests.
 scaffolds preserve the testing pyramid and do not make browser tests the default for pure rendering
 or HTTP behavior.
 
-`FREEZE-120` records measured budgets for managed-host readiness, first navigation, settle overhead,
+`FREEZE-130` records measured budgets for managed-host readiness, first navigation, settle overhead,
 memory/process cleanup, artifact size/count, parallel workers, and release-matrix duration. No exact
 threshold is invented before the baseline probe. On-success tracing and screenshots are disabled or
 minimal by default; failure evidence is bounded.
@@ -320,7 +320,7 @@ runtime changes, compatibility shims, deprecations, and proposed 2.0 removals ar
 phase. Any subset later proposed for a release needs its own accepted authority and compatibility
 packet.
 
-## Open questions for `FREEZE-120`
+## Open questions for `FREEZE-130`
 
 1. Is `BrowserScenario` the stable class name, and is `hedron_ui` the stable fixture name?
 2. Does the scenario delegate common Playwright locators or expose them only through `.page`?
@@ -363,4 +363,4 @@ remote-testing authority.
 12. Every coordinated and optional package has a machine-readable testing disposition; admitted
     contributions use the central protocol, preserve import isolation, and pass package-local plus
     fleet conformance without ambient pytest registration.
-13. Every Required row in `release-gate-1.2.toml` is Verified before any release claim.
+13. Every Required row in `release-gate-1.3.toml` is Verified before any release claim.

@@ -32,6 +32,9 @@ Hedron 1.1.3 is the published Stable 1.1 release, with strict typing checks acro
 reproduction). Review the [compatibility matrix](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/)
 before combining independently versioned satellites.
 
+Python 3.10 has reached end of security support and will receive no further CPython security fixes.
+The in-tree 1.2.0 candidate requires CPython 3.11–3.14; move to Python 3.11+ before upgrading.
+
 For the strict typing policy and other changes in this release, see the
 [release notes](docs/guides/release-notes.md).
 

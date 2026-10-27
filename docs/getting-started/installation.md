@@ -39,16 +39,16 @@ satellites retain their documented Beta or tooling-grade maturity. Capability de
 
 ### Prerequisites
 
-- CPython **3.10–3.14** — verify with `python3 --version` (Windows: `py -3 --version`)
+- CPython **3.11–3.14** — verify with `python3 --version` (Windows: `py -3 --version`)
 - A **clean virtual environment** (shared data-science envs with older FastAPI often fail
   to resolve — see [Compatibility](../COMPATIBILITY.md) for declared vs CI-supported
   FastAPI/Pydantic bands)
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) (recommended) or `pip`
 - No Node.js required
 
-### Installing Python 3.10+
+### Installing Python 3.11+
 
-If `python3 --version` is missing or older than 3.10:
+If `python3 --version` is missing or older than 3.11:
 
 | Platform | Suggestion |
 |---|---|
@@ -219,7 +219,7 @@ Leave Explorer off in production.
 
 | Symptom | Fix |
 |---|---|
-| Python older than 3.10 | Hedron requires **3.10–3.14**. Check with `python3 --version`, then install a supported interpreter (see Prerequisites above). |
+| Python older than 3.11 | Hedron requires **3.11–3.14**. Check with `python3 --version`, then install a supported interpreter (see Prerequisites above). |
 | `hedron: command not found` | Use `python -m hedron …`, `uvx --from "hedron>=1.0.0" …`, or see [FAQ](../guides/faq.md#hedron-command-not-found) / [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found) |
 | `ModuleNotFoundError: hedron` | Same interpreter as uvicorn; activate the venv, then `pip install -e .` / `uv sync` — [Troubleshooting](../guides/troubleshooting.md#wrong-interpreter-or-modulenotfounderror-for-hedron) |
 | FastAPI / pip resolver conflict | **Use a clean venv.** Shared data-science envs with older FastAPI often fail. See [pin conflicts](../COMPATIBILITY.md#dependency-pin-conflicts) and [Troubleshooting](../guides/troubleshooting.md#fastapi-version-conflict-on-install) |

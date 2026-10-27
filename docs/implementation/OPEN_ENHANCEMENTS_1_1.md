@@ -56,7 +56,7 @@ normalization and trust policy for navigation, form actions, assets, Location, a
 Required complements: share asset provenance between build/runtime verification and conformance
 failures; document one exception-handler integration and one redirect helper composition; exercise
 root, proxy-prefix, Workbench, Connect, and inactive Posit modes. Missing browser coverage is
-incomplete evidence, never a pass. This bounded runner does not absorb the Phase 1.2 managed harness.
+incomplete evidence, never a pass. This bounded runner does not absorb the Phase 1.3 managed harness.
 
 ### W2 — Identity-aware, bounded server-backed collections
 
@@ -109,7 +109,7 @@ computed properties across Folio light/dark, selected custom themes, narrow/norm
 RTL, zoom, forced colors, reduced motion, and native/component stylesheets. Use existing render,
 AppScenario, and Playwright tests; cover no-JS fallbacks, denial, redaction, stale responses,
 cleanup, optional imports, packaging, compatibility, and rollback. Link issue implementation and
-evidence before closure. Hand this corpus to Phase 1.2 testing without moving runtime ownership.
+evidence before closure. Hand this corpus to Phase 1.3 testing without moving runtime ownership.
 
 ## Completion
 

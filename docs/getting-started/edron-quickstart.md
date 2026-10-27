@@ -6,7 +6,7 @@ search:
 
 # Build your first Edron app
 
-This path takes about five minutes with Python **3.10–3.14** and
+This path takes about five minutes with Python **3.11–3.14** and
 [`uv`](https://docs.astral.sh/uv/). Node.js is not required.
 
 <!-- hedron-release-status -->

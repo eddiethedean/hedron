@@ -142,7 +142,7 @@ def _pyproject(name: str) -> str:
     return f'''[project]
 name = "{name}"
 version = "0.1.0"
-requires-python = ">=3.10,<3.15"
+requires-python = ">=3.11,<3.15"
 dependencies = [
     "edron>=1.0.0,<2.0",
     "hedron>=1.0.0,<2.0",

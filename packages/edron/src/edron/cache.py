@@ -135,7 +135,7 @@ class CachedFunction(Generic[P, R]):
                 return value
 
             # ``inspect.isawaitable`` establishes that R is awaitable at runtime,
-            # but Python 3.10 typing cannot express that conditional relationship.
+            # but the generic return type cannot express that conditional relationship.
             return cast(R, await_result())
         self._remember(key)
         return result

@@ -1,96 +1,65 @@
-# Hedron `v1.2.0` first-class UI testing acceptance plan
+# Hedron `v1.2.0` Python 3.11+ acceptance plan
 
-**Status:** Proposed and unscheduled; Stage 0 refinement only
-**Baseline:** Published Hedron `v1.0.0`
-**Target:** Candidate `v1.2.0`
-**Authority:** [RFC-0097](../rfcs/RFC-0097-FIRST-CLASS-UI-TESTING.md)
-**Implementation:** [UI_TESTING_1_2](../implementation/UI_TESTING_1_2.md)
+**Status:** Implemented in the candidate workspace; release verification pending
+**Baseline:** Published `v1.1.3`
+**Target:** Candidate `v1.2.0`; independently versioned packages retain their own release lines
+**Authority:** [RFC-0099](../rfcs/RFC-0099-PYTHON-311-BASELINE.md)
+**Implementation:** [PYTHON_311_1_2](../implementation/PYTHON_311_1_2.md)
 **Machine packet:** [release-gate-1.2.toml](release-gate-1.2.toml)
 
-This packet refines a proposed phase; it does not claim implementation, verification, a release
-date, or a final public API. Every gate is Planned. There is intentionally no `check_120.py` yet:
-W0 must freeze the public contract, schemas, corpus, matrices, and budgets before an executable
-checker can be authoritative.
+Decision D-120 accepts retiring Python 3.10 because it no longer receives CPython security fixes.
+The candidate implementation updates maintained package metadata, typing/runtime checks, stdlib
+compatibility paths, release selection, and migration guidance. This packet does not claim that the
+full runtime/native/artifact matrix has passed, that publication occurred, or that the 1.1 support
+window was extended. The machine gate keeps these distinctions explicit.
 
-## Entry decision
+## In-tree implementation
 
-The predecessor is satisfied because `v1.0.0` is published and its stable testing inventory is the
-compatibility baseline. Stage 1 remains blocked on `FREEZE-120`. The freeze must reconcile the
-existing render helpers, `AppScenario`, browser hooks, interaction traces, marks/regions,
-first-party Playwright fixtures, and test-generation paths before adding a public surface.
+- All 23 workspace distributions and generated project templates declare `>=3.11,<3.15`;
+  package versions/changelogs identify the 1.2.0 candidate train while published 1.1.3 facts stay
+  immutable.
+- Ruff targets `py311`; BasedPyright targets Python 3.11 in `all` mode. CI and local matrices cover
+  CPython 3.11–3.14, and both native wheel selectors omit `cp310`.
+- Equivalent `Self` and `NotRequired` types use `typing`; stdlib `StrEnum` and `tomllib` replace
+  compatibility branches while public aliases remain available. Obsolete direct `tomli`
+  requirements and stubs are removed; newer `typing_extensions` imports have direct dependencies.
+- `scripts/check_python_311.py` checks the maintained support baseline, and
+  `scripts/verify_pkg_120.py` binds that check to candidate package versions and this packet.
+- Live install/support guidance describes moving to 3.11+, environment recreation, and rollback;
+  historical published-release metadata remains unchanged.
 
-The release is an additive testing/tooling phase. It does not change production routing,
-rendering, browser assets, HTMX/Alpine/Web Component authority, security defaults, state ownership,
-or supported application behavior.
+Actual supported-runtime, dependency-bound, host, native-wheel, installed-application, wheel/sdist,
+3.10 rejection, resolver, and rollback evidence remains required before release verification.
 
-## Gates
+## Required gates
 
 | Gate | Required evidence |
 |---|---|
-| `FREEZE-120` | Complete current-task/source/fixture inventory; fresh-user prototype results; exact public candidate names/signatures; host/maturity matrix; settle and artifact schemas; redaction/error/capture/network policies; reference corpus; measured budgets; zero unresolved authority-changing question |
-| `CONTRACT-120` | Render/AppScenario/browser layer boundary; Playwright remains browser authority; no fake DOM, second runner, production instrumentation, broad remote authority, or duplicate locator/action API |
-| `HOST-120` | Loopback pre-bound listener, readiness, lifespan, root path, assets, overrides, startup/shutdown failure, interruption, timeout, xdist isolation, external URL and remote authorization behavior; zero leaked resource |
-| `LOCATOR-120` | Role/name, label, text, mark, and region lookup; strict ambiguity and dynamic re-query; accessible-first guidance; direct Playwright escape hatch; shadow/specialist-host dispositions |
-| `SETTLE-120` | Versioned bounded Hedron-owned settle facts for request/swap/action/lifecycle paths; no global idle claim; deliberate hang diagnostics; zero arbitrary sleeps in maintained examples |
-| `ERROR-120` | Correlated server exception, page error, console, request/response, asset, crash, expected-failure, and clean-state behavior; narrow scoped expectations restore deterministically |
-| `ARTIFACT-120` | Versioned failure bundle with allowed screenshot/DOM, Playwright trace, semantic/settle/server/browser/environment facts, deterministic layout, redaction, truncation/missing markers, path safety, retention and byte/count budgets, no upload |
-| `PYTEST-120` | Optional dependency/import isolation, fixture/options/markers/config precedence, pytest-playwright composition, missing-browser diagnostics, headed/debug/trace workflow, xdist safety, ordinary `pytest` runner |
-| `SATELLITE-120` | Every coordinated/optional package has a module/facade/host-provider/protocol-provider/testing-product/private/non-fit disposition; admitted contributions use one explicit versioned central protocol, preserve optional imports and stable compatibility re-exports, package public fixtures, reject conflicts, and never ambiently register pytest plugins or duplicate harness authority |
-| `BEHAVIOR-120` | Required PAGE/fragment/OOB/history, form/CSRF/auth, local/request/combined, specialist element, upload/download, action-state, no-JS/failure, root-path, and deliberate-failure corpus |
-| `A11Y-120` | Semantic lookup, keyboard/focus/announcement, reduced-motion, forced-colors, zoom/reflow and viewport fixtures; axe provenance/incomplete/error behavior; no automated accessibility-conformance claim |
-| `SECURITY-120` | Loopback and remote authorization, network policy, secrets/header/cookie/query/form/trace redaction, synthetic fixture guidance, path/archive safety, browser/context/process isolation, no authorization bypass |
-| `PERF-120` | Frozen startup, navigation/probe, settle, memory/process, artifact, shutdown, xdist, and release-matrix budgets with exact-limit/one-over tests and no on-success artifact tax beyond the accepted profile |
-| `COMPAT-120` | Stable 1.0 testing inventory and behavior unchanged; base/core installs import without pytest/Playwright/browser; no-Node render/HTTP path; managed/external host and supported dependency matrix reproducible |
-| `DOCS-120` | Testing-pyramid guide, installation, first test, failure debugging, trace viewing, CI, remote/security limits, accessibility honesty, troubleshooting, scaffold and review-first generated example |
-| `PKG-120` | Clean base/browser/testing-extra wheel/sdist/offline installs, metadata, bounds, import order, missing-extra behavior, browser install instructions, SBOM/notices and reproducible artifacts |
-| `RELEASE-120` | Every other Required row Verified; immutable evidence, support/maturity matrix, migration/rollback notes and release approval present; zero skipped Required browser row or contradictory 1.2 claim |
+| `POLICY-120` | Accepted RFC and explicit support-policy amendment authorizing retirement of 3.10 in the candidate 1.2 line; migration notice, support-window treatment, package coordination, and rollback decision recorded |
+| `FREEZE-120` | Complete workspace/release/retired-tree inventory; active versus historical reference dispositions; named maintainers; frozen interpreter/host/dependency/native matrix and parity corpus; exact evidence commands |
+| `METADATA-120` | Root, all maintained distributions, classifiers, generated project requirements, lockfile, and live support manifests agree on `>=3.11,<3.15`; built metadata agrees; explicit 3.10 install rejected |
+| `CHECKS-120` | BasedPyright targets 3.11 in all mode with no weakening of no-Any or other fatal diagnostics; Ruff targets py311; actual 3.11 typing/import lane plus 3.11–3.14 runtime/release/local matrices; release tooling selects the new packet explicitly |
+| `TYPING-120` | Equivalent available typing imports use the stdlib; retained newer backports have reasons and direct dependency coverage; subclass inference, resolved hints, TypedDict requirements, schemas, and signatures remain correct; no newer syntax enters the 3.11 floor |
+| `STDLIB-120` | Native enum/TOML paths replace obsolete fallbacks; required public aliases remain; direct tomli/stub cleanup follows consumer audit; enum/string/serialization/TOML behavior preserved |
+| `COMPAT-120` | Stable public imports and API inventory preserved on remaining runtimes; FastAPI/Pydantic/HDJ forms, DI, schemas, validation and relevant security contracts retain parity; historical baselines remain intact |
+| `RUNTIME-120` | Required runtime and existing supported host/satellite suites pass on declared 3.11–3.14 combinations; minimum/latest dependency cases reproduce; installed reference application upgrade succeeds on 3.11; no skipped Required row |
+| `NATIVE-120` | Both active wheel selectors retire cp310; metadata/tags and all advertised platform/runtime wheels agree; native and pure-Python fallback conformance passes on the declared matrix |
+| `PKG-120` | Clean wheel/sdist builds and installs for all maintained packages; base/extra import isolation, direct dependencies, coordinated ranges and publish order verified; 3.10 explicit rejection and unpinned older-release resolution documented and exercised |
+| `DOCS-120` | Live support, install, contributor, generated-app, migration and release guidance agree with artifacts; environment recreation and lockfile upgrade/rollback demonstrated; historical 3.10 evidence preserved; no unsupported security/LTS promise |
+| `RELEASE-120` | Every other Required row Verified; immutable commit/artifact-linked logs and hashes, policy decision, compatibility/support inventory, migration/rollback notes, and explicit release approval present |
 
-## Required vertical slice
+## Evidence rules
 
-The entry implementation is a synthetic secured profile form in the reference application. It
-must prove managed startup, semantic form interaction, an expected validation failure, focus and
-announcement behavior, one successful HTMX action/swap, settle and clean assertions, deliberate
-failure artifacts, redaction, root-path behavior, and leak-free success/failure/timeout teardown.
+Each gate records interpreter and dependency versions, OS/architecture, command and result,
+source commit, artifact digest where applicable, and a retained evidence location. Schema/type
+comparisons distinguish expected interpreter metadata changes from regressions in public behavior.
+An unavailable required interpreter, browser/service used by an existing required slice, or native
+wheel is incomplete evidence. It cannot become a pass through a skip or narrower undocumented matrix.
 
-The slice begins in Chromium. It is not considered phase evidence until the bounded
-Chromium/Firefox/WebKit release corpus and declared host matrix pass.
+The packet begins with the current 23 workspace packages. Stage 0 reconciles that list against the
+actual release inventory; any exclusion or changed support claim requires an explicit disposition.
+Default-build CPython 3.11–3.14 is the candidate matrix; 3.15, PyPy, and free-threaded builds are
+outside the claim. Package maturity remains governed by the existing stability inventory.
 
-## Maturity boundary
-
-The phase may promote only the surface supported by evidence. Candidate dispositions are:
-
-- Stable: pytest entry point, managed flagship host, external URL, browser scenario lifecycle,
-  semantic marks/regions, cleanup, and the supported failure workflow;
-- Beta: versioned settle/artifact schemas and generated browser stubs until downstream experience
-  proves compatibility; package testing modules and the contribution protocol until package/fleet
-  evidence justifies narrower promotion; and
-- Deferred: visual golden comparison, record/replay, remote production testing, a fake widget/DOM
-  emulator, and any unproven managed adapter launcher.
-
-W0 may narrow these dispositions. It cannot promote a Deferred item merely by implementing it.
-
-## Prerelease checkpoints
-
-| Checkpoint | Exit evidence |
-|---|---|
-| `1.2a0` | `FREEZE-120`, prototypes, support/maturity decisions, schemas, corpus, and measured budgets |
-| `1.2a1` | Managed host, BrowserScenario vertical slice, semantic locators, settle, error, artifact, and cleanup proof in Chromium |
-| `1.2b1` | Pytest/package/scaffold integration, `SATELLITE-120` dispositions/conformance, plus full behavior, security, accessibility, and parallel-execution corpus |
-| `1.2rc1` | Three-browser/host/dependency matrix, clean artifacts, compatibility, docs, rollback, and every non-release gate Verified |
-
-## Stop conditions
-
-Stop implementation or promotion if Stage 0 cannot define bounded owned-work settle semantics; the
-harness needs production runtime instrumentation; known secrets can enter retained artifacts; a
-failure or timeout leaks hosts, ports, contexts, overrides, or files; required browser evidence is
-skipped; the optional extra changes base imports; remote capture is ambient; or stable 1.0 testing
-behavior changes without a compatible additive path.
-
-If a candidate misses its gate, narrow its maturity or defer it. Do not label raw Playwright setup,
-an empty axe result, a Chromium-only smoke, or an artifact screenshot as completion of the phase.
-
-## Release condition
-
-No `v1.2.0` claim is authorized until the machine packet is updated from Planned to Verified by an
-accepted checker and immutable evidence. Documentation may describe the proposal only as proposed
-and unscheduled before that point.
+No phase-specific checker exists yet. W0 binds existing check commands to the corpus; implementation
+must integrate machine-packet selection and any new enforcement before release verification.

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
+from typing import cast
 
 from hedron_core.compat import tomllib
 
@@ -16,7 +17,11 @@ def release_pin_bounds() -> tuple[str, str]:
         candidate = parent / "docs" / "release.toml"
         if not candidate.is_file():
             continue
-        release = tomllib.loads(candidate.read_text(encoding="utf-8")).get("release", {})
+        decoded = cast(dict[str, object], tomllib.loads(candidate.read_text(encoding="utf-8")))
+        release_value: object = decoded.get("release", {})
+        if not isinstance(release_value, dict):
+            continue
+        release = cast(dict[str, object], release_value)
         floor = str(release.get("pin_floor", "")).strip()
         ceiling = str(release.get("pin_ceiling", "")).strip()
         if floor and ceiling:

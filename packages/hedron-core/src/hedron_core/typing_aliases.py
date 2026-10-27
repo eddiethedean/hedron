@@ -3,9 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TypeAlias, TypedDict, TypeGuard, cast
-
-from typing_extensions import NotRequired
+from typing import NotRequired, TypeAlias, TypedDict, TypeGuard, cast
 
 from hedron_core.security import SafeUrl
 

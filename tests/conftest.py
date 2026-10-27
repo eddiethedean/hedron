@@ -10,11 +10,6 @@ from functools import lru_cache
 from pathlib import Path
 from types import ModuleType
 
-if sys.version_info < (3, 11):
-    import tomli
-
-    sys.modules.setdefault("tomllib", tomli)
-
 import django
 import pytest
 from django.conf import settings

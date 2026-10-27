@@ -106,8 +106,8 @@ def _is_injected(parameter: inspect.Parameter) -> bool:
             if issubclass(cast(type[object], annotation), Request):
                 return True
         except TypeError:
-            # Parameterized aliases (for example ``list[UploadFile]``) report
-            # as types on Python 3.10 but cannot participate in issubclass.
+            # Parameterized aliases (for example ``list[UploadFile]``) can be
+            # exposed as types but cannot participate in issubclass.
             pass
     default = parameter_default(parameter)
     if isinstance(default, DependsParam):

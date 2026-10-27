@@ -524,9 +524,10 @@ def _split_annotated(annotation: object) -> tuple[object, tuple[object, ...]]:
 def _safe_issubclass(annotation: object, parent: type[object]) -> bool:
     """Check subclass relationships without crashing on generic aliases.
 
-    Python 3.10 reports parameterized aliases such as ``list[UploadFile]`` as
-    classes, but ``issubclass`` still rejects them. Handler annotations can
-    legitimately contain those aliases, so treat them as non-subclasses.
+    Runtime subscription aliases such as ``list[UploadFile]`` can be exposed as
+    classes by annotation libraries, but ``issubclass`` still rejects them.
+    Handler annotations can legitimately contain those aliases, so treat them
+    as non-subclasses.
     """
     if not isinstance(annotation, type):
         return False

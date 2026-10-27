@@ -113,7 +113,7 @@ maturity = "experimental"
 
 [[optional]]
 id = "chart.matplotlib"
-requirements = ["matplotlib>=3.8,<4"]
+requirements = ["matplotlib>=3.10.8,<4"]
 shortcut = "edron[matplotlib]"
 owner = "hedron-charts"
 maturity = "beta/static-supported-scope candidate"

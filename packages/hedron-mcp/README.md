@@ -28,7 +28,7 @@ uv add "hedron-mcp>=0.2.5,<0.3"
 pip install "hedron[mcp]>=1.0.0"
 ```
 
-Requires Python 3.10–3.14.
+Requires Python 3.11–3.14.
 
 ## Quick start
 

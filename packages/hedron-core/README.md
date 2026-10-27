@@ -31,7 +31,7 @@ pip install "hedron-core>=1.0.0,<2.0"
 uv add "hedron-core>=1.0.0,<2.0"
 ```
 
-Requires Python 3.10–3.14.
+Requires Python 3.11–3.14.
 
 ## Quick start
 

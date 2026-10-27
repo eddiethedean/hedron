@@ -37,7 +37,7 @@ Each tab below is a real file from the runnable example.
     from __future__ import annotations
 
     import os
-    from datetime import datetime, timezone
+    from datetime import UTC, datetime
 
     from components import (
         ActivityEvent,
@@ -82,7 +82,7 @@ Each tab below is a real file from the runnable example.
 
     @app.view("/status")
     def status():
-        stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
+        stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
         return service_status(stamp)
 
 
@@ -435,7 +435,7 @@ This alternate entry point reuses the same imported component modules:
     [project]
     name = "hedron-composable-example"
     version = "0.1.0"
-    requires-python = ">=3.10"
+    requires-python = ">=3.11,<3.15"
     dependencies = [
       "hedron>=1.0.0",
       "uvicorn[standard]>=0.32,<1.0",

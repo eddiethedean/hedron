@@ -7,7 +7,7 @@ import argparse
 import hashlib
 import json
 import tempfile
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from hedron_core import compile_css
@@ -142,7 +142,7 @@ def main() -> int:
     result: dict[str, object] = {
         "schema": "hedron.css-probe/1",
         "phase": "0.59",
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "parser": parser_probe(),
         "recipe": recipe_probe(),
     }

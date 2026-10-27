@@ -9,6 +9,7 @@ from importlib import metadata
 from pathlib import Path
 
 import pytest
+from packaging.specifiers import SpecifierSet
 
 import hedron_core
 from hedron_core import __version__
@@ -116,13 +117,13 @@ def test_version_is_synchronized() -> None:
         if classifier.startswith("Development Status ::")
     ]
     assert gradio_status == ["Development Status :: 4 - Beta"]
-    assert gradio["version"] == "0.2.5"
+    assert gradio["version"] == "0.2.6"
 
 
 def test_public_metadata_fields() -> None:
     project = _project()
     assert project["name"] == "hedron-core"
-    assert project["requires-python"] == ">=3.10,<3.15"
+    assert project["requires-python"] == ">=3.11,<3.15"
     assert project["license"] == "MIT"
     assert project["license-files"] == ["LICENSE"]
     dependencies = project["dependencies"]
@@ -145,12 +146,16 @@ def test_public_metadata_fields() -> None:
     assert (ROOT / "LICENSE").is_file()
 
 
-def test_every_publishable_package_supports_python_310() -> None:
+def test_every_publishable_package_supports_python_311_only() -> None:
     for pyproject in sorted((ROOT / "packages").glob("*/pyproject.toml")):
         project = tomllib.loads(pyproject.read_text(encoding="utf-8"))["project"]
-        assert project["requires-python"] == ">=3.10,<3.15", project["name"]
+        specifier = str(project["requires-python"])
+        assert specifier == ">=3.11,<3.15", project["name"]
+        assert not SpecifierSet(specifier).contains("3.10"), project["name"]
+        assert SpecifierSet(specifier).contains("3.11"), project["name"]
         classifiers = project.get("classifiers", [])
-        assert "Programming Language :: Python :: 3.10" in classifiers, project["name"]
+        assert "Programming Language :: Python :: 3.10" not in classifiers, project["name"]
+        assert "Programming Language :: Python :: 3.11" in classifiers, project["name"]
 
 
 def test_package_maturity_classifiers() -> None:

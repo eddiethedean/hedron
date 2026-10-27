@@ -1,0 +1,119 @@
+schema_version = 1
+phase = "1.3"
+status = "Planned"
+planning_baseline = "v1.0.0"
+required_predecessor = "v1.0.0"
+predecessor_satisfied = true
+target = "v1.3.0"
+owning_rfc = "RFC-0097"
+implementation = "../implementation/UI_TESTING_1_3.md"
+stage_1_entry_satisfied = false
+release_cut_satisfied = false
+production_runtime_authority_change = false
+fake_browser_runtime_allowed = false
+remote_testing_default_allowed = false
+satellite_pytest_autoregistration_allowed = false
+required_runner = "pytest"
+browser_authority = "Playwright"
+
+[[evidence]]
+id = "FREEZE-130"
+state = "Planned"
+owner = "architecture"
+ci_job = "evidence"
+
+[[evidence]]
+id = "CONTRACT-130"
+state = "Planned"
+owner = "testing"
+ci_job = "test"
+
+[[evidence]]
+id = "HOST-130"
+state = "Planned"
+owner = "testing"
+ci_job = "browser"
+
+[[evidence]]
+id = "LOCATOR-130"
+state = "Planned"
+owner = "testing"
+ci_job = "browser"
+
+[[evidence]]
+id = "SETTLE-130"
+state = "Planned"
+owner = "browser-platform"
+ci_job = "browser"
+
+[[evidence]]
+id = "ERROR-130"
+state = "Planned"
+owner = "testing"
+ci_job = "browser"
+
+[[evidence]]
+id = "ARTIFACT-130"
+state = "Planned"
+owner = "testing"
+ci_job = "browser"
+
+[[evidence]]
+id = "PYTEST-130"
+state = "Planned"
+owner = "tooling"
+ci_job = "test"
+
+[[evidence]]
+id = "SATELLITE-130"
+state = "Planned"
+owner = "packages"
+ci_job = "packaging"
+
+[[evidence]]
+id = "BEHAVIOR-130"
+state = "Planned"
+owner = "reference-app"
+ci_job = "browser"
+
+[[evidence]]
+id = "A11Y-130"
+state = "Planned"
+owner = "accessibility"
+ci_job = "browser"
+
+[[evidence]]
+id = "SECURITY-130"
+state = "Planned"
+owner = "security"
+ci_job = "evidence"
+
+[[evidence]]
+id = "PERF-130"
+state = "Planned"
+owner = "performance"
+ci_job = "browser"
+
+[[evidence]]
+id = "COMPAT-130"
+state = "Planned"
+owner = "compatibility"
+ci_job = "test"
+
+[[evidence]]
+id = "DOCS-130"
+state = "Planned"
+owner = "docs"
+ci_job = "quality"
+
+[[evidence]]
+id = "PKG-130"
+state = "Planned"
+owner = "packaging"
+ci_job = "packaging"
+
+[[evidence]]
+id = "RELEASE-130"
+state = "Planned"
+owner = "release"
+ci_job = "release"

@@ -40,7 +40,7 @@ rerun loop.
 > **Package maturity:** Stable · **Version line documented:** `1.0.x`
 >
 > Every command and example below targets the Hedron 1.0 API. Supported Python versions are
-> 3.10–3.14; applications should require the `>=1.0.0` stable compatibility floor shown below.
+> 3.11–3.14; applications should require the `>=1.0.0` stable compatibility floor shown below.
 
 ## Start in under a minute
 

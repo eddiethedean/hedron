@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import os
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from components import (
     ActivityEvent,
@@ -48,7 +48,7 @@ app = Hedron(
 
 @app.view("/status")
 def status():
-    stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
+    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
     return service_status(stamp)
 
 

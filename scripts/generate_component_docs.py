@@ -59,7 +59,7 @@ _TRAIN_PIN = ">=1.0.0"
 _ALPHA_PIN = ">=0.1.0,<0.2"
 _CHARTS_PIN = ">=1.0.0,<2.0"
 _CHARTS_FLAGSHIP_PIN = _TRAIN_PIN
-_NATIVE_PIN = ">=0.1.3,<0.2"
+_NATIVE_PIN = ">=0.1.4,<0.2"
 
 
 def _install_requirement(package: str) -> str:

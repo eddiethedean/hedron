@@ -211,7 +211,7 @@ async def async_token_chunks(
             token = await asyncio.wait_for(next_token, timeout=remaining)
         except StopAsyncIteration:
             break
-        except asyncio.TimeoutError:
+        except TimeoutError:
             break
         buffer.append(token if first_token else f"{join_with}{token}")
         first_token = False

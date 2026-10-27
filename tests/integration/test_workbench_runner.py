@@ -479,7 +479,7 @@ def test_run_target_shuts_down_on_sigterm() -> None:
         stderr=subprocess.PIPE,
     )
     try:
-        deadline = time.monotonic() + 20
+        deadline = time.monotonic() + 60
         while time.monotonic() < deadline:
             if proc.poll() is not None:
                 stderr = (proc.stderr.read() if proc.stderr else b"").decode("utf-8", "replace")

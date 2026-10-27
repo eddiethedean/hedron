@@ -99,7 +99,7 @@ EXPECTED_OPTIONAL_REQUIREMENTS = {
     "pyarrow": ("pyarrow>=15.0", "narwhals>=1.1"),
     "plotly": ("plotly>=5.18,<7",),
     "altair": ("altair>=6,<7", "vl-convert-python>=1.0"),
-    "matplotlib": ("matplotlib>=3.8,<4",),
+    "matplotlib": ("matplotlib>=3.10.8,<4",),
     "sqlalchemy": ("sqlalchemy>=2,<3",),
 }
 EXPECTED_REQUIRED_DISTRIBUTION_IDS = (

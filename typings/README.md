@@ -24,6 +24,3 @@ preserving typed boundaries when those adapters are enabled.
 
 `axe_playwright_python.sync_playwright` has a narrow stub for its scan result; Playwright's own
 typed sync API is imported directly so its maintained package declarations remain authoritative.
-
-`tomllib` and `tomli` declare recursive TOML values as `object` for callers that consume decoded
-configuration. Keep TOML values narrowed before field-specific use.

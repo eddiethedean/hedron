@@ -188,7 +188,7 @@ shipping a degraded private replacement.
 ## Required version train
 
 Edron supports the same Python range as its compatible Hedron train. The first release targets
-Python 3.10 through 3.14 unless the accepted upstream packet changes the complete train
+Python 3.10 through 3.14 on the published 1.1.3 artifacts. The 1.2 candidate changes the complete train
 consistently.
 
 Before RFC acceptance, the packaging packet freezes:
@@ -239,7 +239,7 @@ The initial curated shortcut registry is:
 | `data.pyarrow` | `pyarrow>=15.0`, `narwhals>=1.1` | `edron[pyarrow]` | `hedron-data`, beta |
 | `chart.plotly` | `plotly>=5.18,<7` | `edron[plotly]` | `hedron-charts`, experimental |
 | `chart.altair` | `altair>=6,<7`, `vl-convert-python>=1.0` | `edron[altair]` | `hedron-charts`, experimental |
-| `chart.matplotlib` | `matplotlib>=3.8,<4` | `edron[matplotlib]` | `hedron-charts`, beta/static Supported scope |
+| `chart.matplotlib` | `matplotlib>=3.10.8,<4` | `edron[matplotlib]` | `hedron-charts`, beta/static Supported scope |
 | `data.sqlalchemy` | `sqlalchemy>=2,<3` | `edron[sqlalchemy]` | `hedron-data`, beta |
 
 These are release candidates until the accepted packet verifies the owning packages' exact ranges.

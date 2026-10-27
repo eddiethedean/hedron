@@ -120,17 +120,14 @@ def _scoped_css() -> str:
     source_comment = (
         "/* The showcase adds composition to Folio's built-in palette and components. */\n"
     )
-    first_rule = (
-        "body:has(.showcase-shell) {\n  padding: clamp(1rem, 2.5vw, 2rem);\n}\n\n"
-    )
+    first_rule = "body:has(.showcase-shell) {\n  padding: clamp(1rem, 2.5vw, 2rem);\n}\n\n"
     if not css.startswith(source_comment + first_rule):
         raise RuntimeError("showcase.css changed; update the simulator CSS scoping rule")
     css = css[len(source_comment + first_rule) :].replace(
         ".showcase-shell", ".hedron-sim .showcase-shell"
     )
     return (
-        "/* Generated from examples/showcase/assets/showcase.css for the docs simulator. */\n"
-        + css
+        "/* Generated from examples/showcase/assets/showcase.css for the docs simulator. */\n" + css
     )
 
 

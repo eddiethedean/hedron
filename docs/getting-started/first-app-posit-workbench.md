@@ -40,7 +40,7 @@ Hedron supports Posit Workbench **2025.05.1 or newer** on `linux/amd64`; see the
 [compatibility contract](../COMPATIBILITY.md) before treating a different version or architecture
 as Supported.
 
-Hedron packages support CPython **3.10–3.14**. This beginner guide uses Python 3.11
+Hedron packages support CPython **3.11–3.14**. This beginner guide uses Python 3.11
 consistently so every command has one concrete spelling.
 
 Official Workbench references:

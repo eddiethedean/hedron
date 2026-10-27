@@ -23,7 +23,7 @@ uv add "hedron-data>=1.0.0"
 pip install "hedron[data]>=1.0.0"
 ```
 
-Requires Python 3.10–3.14 and `hedron-core`.
+Requires Python 3.11–3.14 and `hedron-core`.
 
 ### Optional extras
 

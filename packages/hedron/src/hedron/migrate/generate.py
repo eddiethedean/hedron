@@ -37,7 +37,7 @@ def _pyproject(name: str, extras: list[str]) -> str:
     return f'''[project]
 name = "{name}"
 version = "0.1.0"
-requires-python = ">=3.10"
+requires-python = ">=3.11,<3.15"
 dependencies = [
     {dep_lines},
 ]

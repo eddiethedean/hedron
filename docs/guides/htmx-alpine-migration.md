@@ -2,7 +2,7 @@
 
 !!! warning "Unassigned proposal"
 
-    Hedron 1.1 owns open enhancement completion; first-class UI testing moves to 1.2 under
+    Hedron 1.1 owns open enhancement completion; first-class UI testing moves to 1.3 under
     [RFC-0097](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0097-FIRST-CLASS-UI-TESTING.md).
     The runtime transition below is outside both phases and has no scheduled release. It requires a
     separate accepted phase decision.

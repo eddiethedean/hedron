@@ -29,7 +29,7 @@ pip install "hedron-django>=1.0.0,<2.0"
 uv add "hedron-django>=1.0.0,<2.0"
 ```
 
-Requires Python 3.10–3.14, `hedron-core`, and Django `>=5.2,<6`.
+Requires Python 3.11–3.14, `hedron-core`, and Django `>=5.2,<6`.
 
 Install the AppConfig for system checks:
 

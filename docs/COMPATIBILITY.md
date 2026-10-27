@@ -3,11 +3,26 @@
 **Status:** Accepted for the verified and published **1.1.x** release (`v1.1.3`).
 **Reviewed:** 2026-09-28
 
-## Current train (read this first)
+## Candidate 1.2.0 baseline (read this first)
+
+The maintained workspace now targets default-build CPython **3.11–3.14** with
+`requires-python = ">=3.11,<3.15"`. Python 3.10 has reached end of security support and no further
+CPython security fixes will be released for it. New Hedron releases therefore require Python 3.11
+or newer. Use the [upgrade guide](guides/upgrade.md) to move an application and recreate its
+environment before selecting the 1.2 package train.
+
+| Dependency | Candidate matrix (tested in CI) | Declared range | Notes |
+|---|---|---|---|
+| Python | CPython 3.11–3.14 (configured candidate matrix) | `>=3.11,<3.15` | BasedPyright targets 3.11; Python 3.15, PyPy, and free-threaded builds are excluded. |
+
+## Published 1.1.3 compatibility facts
+
+These rows describe the already-published 1.1 artifacts. Their immutable metadata still declares
+CPython 3.10–3.14; that declaration does not provide security fixes for an end-of-life interpreter.
 
 | Dependency | Supported matrix (tested) | Declared range | Notes |
 |---|---|---|---|
-| Python | CPython 3.10–3.14 | `>=3.10,<3.15` | |
+| Python | CPython 3.10–3.14 | `>=3.10,<3.15` | Historical 1.1.3 artifact metadata; new releases require 3.11+. |
 | FastAPI | `>=0.121.0,<0.142` | `>=0.121.0,<0.150` (`hedron`, `hedron-explorer`) | Not required by `hedron-core` |
 | Pydantic | `>=2.12.0,<2.14` | `>=2.12.0,<2.15` | Required by `hedron-core` / `hedron` |
 | HTMX | Bundled 2.0.11; contract `>=2.0,<3.0` | same | Injected on PAGE responses |
@@ -177,8 +192,8 @@ The framework capability matrix labels each guarantee as portable, ASGI, WSGI, o
 framework-specific. A version appearing in dependency metadata is not considered supported until
 its native conformance slice is green.
 
-Every declared Python minor from 3.10 through 3.14 is exercised by CI. Python 3.15 is outside
-the current contract. FastAPI 0.121.0 and Pydantic 2.12.0 are the verified lower bounds;
+The published 1.1.3 Python matrix was exercised from 3.10 through 3.14. The 1.2 candidate matrix
+starts at 3.11; Python 3.15 is outside both contracts. FastAPI 0.121.0 and Pydantic 2.12.0 are the verified lower bounds;
 FastAPI 0.141.1 is the latest stable release reviewed for the baseline. HTMX's official
 repository documents 2.0.10, while later major-line work is not used for the initial contract.
 

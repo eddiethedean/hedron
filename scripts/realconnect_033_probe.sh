@@ -33,6 +33,7 @@ CONTAINER_STARTED=0
 PLACEHOLDER_GUID="00000000-0000-4000-8000-000000000000"
 PLACEHOLDER_MOUNT="/content/${PLACEHOLDER_GUID}"
 RESULT_BACKUP=""
+LICENSE_SKIP=0
 LICENSE_STOP_TIMEOUT="${HEDRON_CONNECT_LICENSE_STOP_TIMEOUT:-120}"
 CONNECT_LICENSE_MANAGER="/opt/rstudio-connect/bin/license-manager"
 docker_cmd() {
@@ -72,9 +73,7 @@ skip_license_unavailable() {
   log "$PROBE_ID skip reason=$reason $*"
   log "RESULT=skip"
   log "$PROBE_ID end $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-  if [[ -n "${RESULT_BACKUP:-}" && -f "$RESULT_BACKUP" ]]; then
-    cp "$RESULT_BACKUP" "$RESULT"
-  fi
+  LICENSE_SKIP=1
   exit 42
 }
 
@@ -164,7 +163,7 @@ cleanup() {
     wait "$APP_PID" >/dev/null 2>&1 || true
   fi
   if docker inspect "$CONTAINER" >/dev/null 2>&1; then
-    if [[ "$exit_status" -ne 0 ]]; then
+    if [[ "$exit_status" -ne 0 && "$LICENSE_SKIP" -ne 1 ]]; then
       log "failure_container_log_begin"
       docker logs --tail 200 "$CONTAINER" 2>&1 | redact_stream || true
       log "failure_container_log_end"
@@ -180,6 +179,9 @@ cleanup() {
     log "cleanup_refused_unexpected_temp_path=true"
   fi
   if [[ -n "${RESULT_BACKUP:-}" && -f "$RESULT_BACKUP" ]]; then
+    if [[ "$LICENSE_SKIP" -eq 1 && "$exit_status" -eq 42 ]]; then
+      cp "$RESULT_BACKUP" "$RESULT"
+    fi
     rm -f -- "$RESULT_BACKUP"
   fi
   trap - EXIT INT TERM
@@ -296,6 +298,10 @@ log "rsconnect_python=$CLIENT_VERSION"
 export CONNECT_BOOTSTRAP_SECRETKEY="$(tr -d '\n' < "$SMOKE_DIR/bootstrap.key")"
 if ! "$CLIENT_DIR/bin/rsconnect" bootstrap \
   --raw --server "http://127.0.0.1:${CONNECT_PORT}" > "$SMOKE_DIR/api.key"; then
+  logs="$(docker logs --tail 200 "$CONTAINER" 2>&1 | redact_stream || true)"
+  if license_unavailable_in_logs "$logs"; then
+    skip_license_unavailable "license_unavailable" "Connect license unavailable (redacted)"
+  fi
   fail "HED-CONNECT-0004" "one-time Connect API bootstrap failed"
 fi
 unset CONNECT_BOOTSTRAP_SECRETKEY
@@ -355,6 +361,10 @@ if [[ "$deploy_rc" -ne 0 ]]; then
     log "CONNECT_DEPLOY=verify_failed_continuing"
     deploy_rc=0
   else
+    logs="$(docker logs --tail 200 "$CONTAINER" 2>&1 | redact_stream || true)"
+    if license_unavailable_in_logs "$logs"; then
+      skip_license_unavailable "license_unavailable" "Connect license unavailable (redacted)"
+    fi
     log "deploy_log=$(redact_stream < "$SMOKE_DIR/deploy.log" | tail -n 100)"
     fail "HED-CONNECT-0005" "FastAPI content deployment failed"
   fi

@@ -58,8 +58,8 @@ def main() -> int:
 
     # Offline-wheel / min-deps narrative retained in COMPATIBILITY + archetype.
     compat = (ROOT / "docs" / "COMPATIBILITY.md").read_text(encoding="utf-8")
-    if "3.11" not in compat or "3.14" not in compat:
-        errors.append("COMPATIBILITY.md must advertise Python 3.10–3.14")
+    if "3.11" not in compat or "3.14" not in compat or ">=3.11,<3.15" not in compat:
+        errors.append("COMPATIBILITY.md must advertise the 1.2 candidate Python 3.11–3.14 matrix")
 
     # Production startup gate module importable.
     try:

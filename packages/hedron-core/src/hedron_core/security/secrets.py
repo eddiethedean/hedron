@@ -77,6 +77,7 @@ class Secret(Generic[T]):
             # Unhashable payloads (e.g. list) fall back to identity hashing.
             return hash(("Secret", id(self)))
 
+    @override
     def __getstate__(self) -> dict[str, object]:
         return {"value": _REDACTED}
 

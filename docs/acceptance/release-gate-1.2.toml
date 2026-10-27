@@ -1,20 +1,54 @@
 schema_version = 1
 phase = "1.2"
-status = "Planned"
-planning_baseline = "v1.0.0"
-required_predecessor = "v1.0.0"
+status = "Implemented; release evidence pending"
+planning_baseline = "v1.1.3"
+required_predecessor = "v1.1.3"
 predecessor_satisfied = true
 target = "v1.2.0"
-owning_rfc = "RFC-0097"
-implementation = "../implementation/UI_TESTING_1_2.md"
-stage_1_entry_satisfied = false
+owning_rfc = "RFC-0099"
+implementation = "../implementation/PYTHON_311_1_2.md"
+stage_1_entry_satisfied = true
 release_cut_satisfied = false
-production_runtime_authority_change = false
-fake_browser_runtime_allowed = false
-remote_testing_default_allowed = false
-satellite_pytest_autoregistration_allowed = false
-required_runner = "pytest"
-browser_authority = "Playwright"
+support_policy_amendment_accepted = true
+python_requires = ">=3.11,<3.15"
+python_matrix = ["3.11", "3.12", "3.13", "3.14"]
+python_implementation = "CPython default build"
+python_type_target = "3.11"
+ruff_target = "py311"
+type_checking_mode = "all"
+any_diagnostics_may_be_weakened = false
+newer_typing_backports_may_be_retained = true
+starting_workspace_packages = [
+    "hedron-core",
+    "hedron",
+    "hedron-explorer",
+    "hedron-sample-kit",
+    "hedron-data",
+    "hedron-charts",
+    "hedron-maps",
+    "hedron-flask",
+    "hedron-django",
+    "hedron-jinja",
+    "hedron-conformance",
+    "hedron-native",
+    "hedron-extras",
+    "hedron-notebook",
+    "hedron-mcp",
+    "hedron-gradio",
+    "hedron-sim",
+    "hedron-posit",
+    "hedron-elements",
+    "hedron-docs",
+    "edron",
+    "edron-sim",
+    "fastapi-workbench",
+]
+
+[[evidence]]
+id = "POLICY-120"
+state = "Implemented"
+owner = "architecture"
+ci_job = "evidence"
 
 [[evidence]]
 id = "FREEZE-120"
@@ -23,94 +57,58 @@ owner = "architecture"
 ci_job = "evidence"
 
 [[evidence]]
-id = "CONTRACT-120"
-state = "Planned"
-owner = "testing"
-ci_job = "test"
-
-[[evidence]]
-id = "HOST-120"
-state = "Planned"
-owner = "testing"
-ci_job = "browser"
-
-[[evidence]]
-id = "LOCATOR-120"
-state = "Planned"
-owner = "testing"
-ci_job = "browser"
-
-[[evidence]]
-id = "SETTLE-120"
-state = "Planned"
-owner = "browser-platform"
-ci_job = "browser"
-
-[[evidence]]
-id = "ERROR-120"
-state = "Planned"
-owner = "testing"
-ci_job = "browser"
-
-[[evidence]]
-id = "ARTIFACT-120"
-state = "Planned"
-owner = "testing"
-ci_job = "browser"
-
-[[evidence]]
-id = "PYTEST-120"
-state = "Planned"
-owner = "tooling"
-ci_job = "test"
-
-[[evidence]]
-id = "SATELLITE-120"
-state = "Planned"
+id = "METADATA-120"
+state = "Implemented"
 owner = "packages"
 ci_job = "packaging"
 
 [[evidence]]
-id = "BEHAVIOR-120"
-state = "Planned"
-owner = "reference-app"
-ci_job = "browser"
+id = "CHECKS-120"
+state = "Implemented"
+owner = "tooling"
+ci_job = "quality"
 
 [[evidence]]
-id = "A11Y-120"
-state = "Planned"
-owner = "accessibility"
-ci_job = "browser"
+id = "TYPING-120"
+state = "Implemented"
+owner = "typing"
+ci_job = "quality"
 
 [[evidence]]
-id = "SECURITY-120"
-state = "Planned"
-owner = "security"
-ci_job = "evidence"
-
-[[evidence]]
-id = "PERF-120"
-state = "Planned"
-owner = "performance"
-ci_job = "browser"
+id = "STDLIB-120"
+state = "Implemented"
+owner = "core"
+ci_job = "test"
 
 [[evidence]]
 id = "COMPAT-120"
-state = "Planned"
+state = "Implemented"
 owner = "compatibility"
 ci_job = "test"
 
 [[evidence]]
-id = "DOCS-120"
+id = "RUNTIME-120"
 state = "Planned"
-owner = "docs"
-ci_job = "quality"
+owner = "hosts"
+ci_job = "test"
+
+[[evidence]]
+id = "NATIVE-120"
+state = "Implemented"
+owner = "native"
+ci_job = "packaging"
 
 [[evidence]]
 id = "PKG-120"
-state = "Planned"
-owner = "packaging"
+state = "Implemented"
+owner = "packages"
 ci_job = "packaging"
+
+[[evidence]]
+id = "DOCS-120"
+state = "Implemented"
+owner = "docs"
+ci_job = "quality"
 
 [[evidence]]
 id = "RELEASE-120"

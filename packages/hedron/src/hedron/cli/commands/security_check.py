@@ -6,7 +6,7 @@ import argparse
 import json
 from collections.abc import Sequence
 from dataclasses import asdict, dataclass, field
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Literal, Protocol, cast
 
@@ -135,7 +135,7 @@ def collect_posture(
         "deployment WAF configuration (unverifiable offline)",
         "TLS termination and HSTS at the edge (unverifiable offline)",
     ]
-    active_day = today or datetime.now(timezone.utc).date()
+    active_day = today or datetime.now(UTC).date()
     suppressions = _load_suppressions(suppressions_path)
     active_suppressions = [
         row for row in suppressions if _suppression_active(row, today=active_day)
@@ -175,7 +175,7 @@ def collect_posture(
     inventory = project / "docs" / "acceptance" / "security-control-inventory-056.toml"
     conformance_status = "unknown"
     if inventory.is_file():
-        data = tomllib.loads(inventory.read_text(encoding="utf-8"))
+        data = cast(dict[str, object], tomllib.loads(inventory.read_text(encoding="utf-8")))
         controls: object = data.get("control", [])
         dispositions = []
         if isinstance(controls, list):

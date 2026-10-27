@@ -25,9 +25,16 @@ The coordinated release supports CPython **3.10–3.14**. Package maturity, capa
 readiness, and individual API stability are separate: a stable package may contain a
 clearly labeled experimental capability.
 
+Python 3.10 has reached end of security support and will receive no further CPython security fixes.
+The 1.1.3 artifacts remain installable with their published metadata, while the 1.2 candidate
+requires CPython 3.11 or newer. Move the application to 3.11+ and recreate its environment before
+upgrading to the next train.
+
 The exact 1.1 package and API boundary is maintained in the repository’s
-[`release/support-matrix.toml`](https://github.com/eddiethedean/hedron/blob/main/release/support-matrix.toml). Beta
-host/tooling satellites are opt-in compatibility surfaces, not part of the stable platform contract.
+[`release/support-matrix.toml`](https://github.com/eddiethedean/hedron/blob/main/release/support-matrix.toml);
+the in-tree Python row now describes the 1.2 candidate matrix, while the compatibility table above
+preserves the published 1.1.3 requirement. Beta host/tooling satellites are opt-in compatibility
+surfaces, not part of the stable platform contract.
 
 ## What should I install?
 

@@ -37,7 +37,7 @@ the server runs on your computer and is reachable only through a local address s
 
 Install:
 
-1. CPython **3.10–3.14** from [python.org](https://www.python.org/downloads/) or your
+1. CPython **3.11–3.14** from [python.org](https://www.python.org/downloads/) or your
    operating system's package manager.
 2. [Visual Studio Code](https://code.visualstudio.com/Download).
 3. [`uv`](https://docs.astral.sh/uv/getting-started/installation/), which creates an isolated
@@ -79,7 +79,7 @@ you opened. Confirm the tools are available:
     Get-Location
     ```
 
-The Python result must be between 3.10 and 3.14. `pwd` and `Get-Location` mean “print working
+The Python result must be between 3.11 and 3.14. `pwd` and `Get-Location` mean “print working
 directory”; the result tells you which folder subsequent commands affect.
 
 If a command says it cannot find Python or `uv`, reopen VS Code after installing the tool. If it

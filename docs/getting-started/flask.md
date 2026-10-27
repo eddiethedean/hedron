@@ -5,7 +5,7 @@ Use `hedron-flask` for Flask-native apps. Scaffold with the `hedron` CLI
 the app process).
 
 **Install:** `pip install "hedron-flask>=1.0.0"` (or `uv add "hedron-flask>=1.0.0"`).
-Requires Python 3.10–3.14. See [Installation](installation.md).
+Requires Python 3.11–3.14. See [Installation](installation.md).
 
 Flask supports pages, fragments, and CSRF. Progressive FastAPI facades
 (`@app.view`, `@app.action`, and related symbols) are FastAPI-only — see the

@@ -6,7 +6,7 @@ Scaffold with the `hedron` CLI (`hedron new --django`); runtime is
 mounts `/hedron-static` so PAGE responses can inject bundled HTMX.
 
 **Install:** `pip install "hedron-django>=1.0.0"` (or `uv add "hedron-django>=1.0.0"`).
-Requires Python 3.10–3.14. See [Installation](installation.md).
+Requires Python 3.11–3.14. See [Installation](installation.md).
 
 Django supports AppConfig, forms, and QuerySet DataSource. Progressive FastAPI
 facades (`@app.view`, `@app.action`, and related symbols) are FastAPI-only —

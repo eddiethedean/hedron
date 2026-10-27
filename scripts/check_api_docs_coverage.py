@@ -83,8 +83,7 @@ def require_contract_sections(path: Path) -> None:
     ]
     if missing:
         raise SystemExit(
-            f"{path.relative_to(ROOT)} is missing flagship contract sections: "
-            + ", ".join(missing)
+            f"{path.relative_to(ROOT)} is missing flagship contract sections: " + ", ".join(missing)
         )
 
 

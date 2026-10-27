@@ -6946,12 +6946,13 @@ through `python scripts/check_100.py --gate <GATE-ID> --verify`.
 
 ## Proposed 1.X sequence
 
-**Planning revision:** 2026-09-18. The coordinated source workspace is `1.1.1`; the latest
-published workspace is `1.1.0`;
-published-channel facts remain owned by [docs/release.toml](release.toml). Phase 1.1 is complete;
-the previous 1.1–1.7 plans now continue as the proposed 1.2–1.8 sequence.
+**Planning revision:** 2026-10-27. The published `v1.1.3` train is the starting baseline;
+published-channel facts remain owned by [docs/release.toml](release.toml). Phase 1.1 is complete.
+Phase 1.2 raises the Python floor, and the former 1.2–1.8 plans continue as the proposed
+1.3–1.9 sequence.
 
-**Planning status:** Phase 1.1 is Verified and published; the remaining sequence is proposed,
+**Planning status:** Phase 1.1 is Verified and published; the 1.2 Python baseline is implemented
+in-tree under accepted decision D-120, with release evidence and publication pending. Phases 1.3–1.9 remain proposed,
 unscheduled, and subject to the 1.1 stability policy. This is a
 candidate ordering for post-1.0 work, not a release or calendar commitment. The phase number is a
 planning bucket, not a promise that every item in the bucket ships together. Each phase can end in
@@ -6960,40 +6961,43 @@ promotion, continued Beta/Experimental status, a narrower scope, or an explicit 
 | Phase | Theme | Primary question | Entry condition |
 |---|---|---|---|
 | **1.1** | Open enhancement completion and complementary application features | Can adopters use every open enhancement in complete, secure application flows? | **Verified and published as v1.1.0** |
-| **1.2** | First-class UI testing and adoption confidence | Can a team test real Hedron UI behavior and diagnose failures with ordinary pytest? | 1.0 testing/support inventory and interaction traces are the baseline |
-| **1.3** | Production async and durable workflows | Is anything beyond polling ready for production? | 1.2 browser, upgrade, and fixture baseline |
-| **1.4** | Inclusive and international UX | Can the stable surface work for more users and locales? | 1.0 interaction corpus plus human-evaluation protocol |
-| **1.5** | Visualization and media graduation | Which optional adapters can meet the first-party contract? | 1.4 accessibility/fallback corpus |
-| **1.6** | Stateful browser composition | Can partial updates retain local state without a second app runtime? | 1.3 interaction ownership and 1.4 browser evidence |
-| **1.7** | Controlled ecosystem expansion | Which advanced integrations have a trustworthy operating model? | The core, browser, and security contracts consumed by the selected integration are proven |
-| **1.8** | Evidence-gated large-application build scalability | Are current rebuild times acceptable at the largest application size Hedron promises to support? | A supported size ceiling and repeatable cold/no-op/one-change benchmark corpus |
+| **1.2** | Python 3.11+ support and typing baseline | Can Hedron retire Python 3.10 and use Python 3.11 typing semantics and checks across the coordinated workspace? | Accepted D-120; implementation complete, release evidence pending |
+| **1.3** | First-class UI testing and adoption confidence | Can a team test real Hedron UI behavior and diagnose failures with ordinary pytest? | 1.2 Python baseline plus the preserved stable testing inventory and interaction traces |
+| **1.4** | Production async and durable workflows | Is anything beyond polling ready for production? | 1.3 browser, upgrade, and fixture baseline |
+| **1.5** | Inclusive and international UX | Can the stable surface work for more users and locales? | 1.0 interaction corpus plus human-evaluation protocol |
+| **1.6** | Visualization and media graduation | Which optional adapters can meet the first-party contract? | 1.5 accessibility/fallback corpus |
+| **1.7** | Stateful browser composition | Can partial updates retain local state without a second app runtime? | 1.4 interaction ownership and 1.5 browser evidence |
+| **1.8** | Controlled ecosystem expansion | Which advanced integrations have a trustworthy operating model? | The core, browser, and security contracts consumed by the selected integration are proven |
+| **1.9** | Evidence-gated large-application build scalability | Are current rebuild times acceptable at the largest application size Hedron promises to support? | A supported size ceiling and repeatable cold/no-op/one-change benchmark corpus |
 
 ### Delivery priorities and dependencies
 
-The first delivery priority is the new 1.1 enhancement implementation phase. It completes the
+The first delivery priority is the 1.1 enhancement implementation phase. It completes the
 open backlog and the complementary features needed for useful application flows, using existing
-test facilities. The 1.2 testing foundation follows, then the 1.3 durable job contract, including
-a complete polling experience even if no live transport graduates.
-Human evaluation preparation for 1.4 and baseline measurements for 1.8 can proceed alongside these
-phases; neither depends on a new browser API to begin gathering evidence.
+test facilities. The 1.2 Python support transition is followed by the 1.3 testing foundation and
+1.4 durable job contract, including a complete polling experience even if no live transport
+graduates. Human evaluation preparation for 1.5 and baseline measurements for 1.9 can proceed
+alongside these phases; neither depends on a new browser API to begin gathering evidence.
 
 Phase numbers express the preferred delivery order. Admission depends on specific verified
 contracts, not on completing every earlier phase:
 
 - **1.1 uses existing testing facilities:** #915 extends the current browser conformance matrix;
-  it does not wait for the managed browser harness in 1.2.
-- **1.2 consumes the 1.1 reference corpus:** reuse the new settings, collection, chrome, and
+  it does not wait for the managed browser harness in 1.3.
+- **1.2 raises the language floor:** update coordinated package metadata and checks as one
+  support-policy transition.
+- **1.3 consumes the 1.1 reference corpus:** reuse the new settings, collection, chrome, and
   deployment flows when proving the managed testing experience.
-- **1.3 consumes 1.2:** reuse the browser lifecycle, failure evidence, and isolation corpus.
-- **1.4 consumes the existing human-evaluation protocol:** reuse 1.2 automation when available;
+- **1.4 consumes 1.3:** reuse the browser lifecycle, failure evidence, and isolation corpus.
+- **1.5 consumes the existing human-evaluation protocol:** reuse 1.3 automation when available;
   recruit participants and define tasks independently of the harness implementation.
-- **1.5 consumes 1.4:** use the relevant accessible interaction and fallback criteria for each
+- **1.6 consumes 1.5:** use the relevant accessible interaction and fallback criteria for each
   candidate adapter; unrelated locale work need not block an adapter packet.
-- **1.6 consumes 1.3 and 1.4:** use verified generation/cancellation and focus/announcement contracts.
+- **1.7 consumes 1.4 and 1.5:** use verified generation/cancellation and focus/announcement contracts.
   A decision to retain polling in 1.3 still satisfies the transport dependency.
-- **1.7 consumes only the contracts an integration needs:** a read-only adapter need not wait for
+- **1.8 consumes only the contracts an integration needs:** a read-only adapter need not wait for
   morph retention; mutation or shared-session candidates require the relevant ownership evidence.
-- **1.8 is a parallel measurement lane:** optimization starts only after the supported-size corpus
+- **1.9 is a parallel measurement lane:** optimization starts only after the supported-size corpus
   demonstrates a missed budget. It does not depend on ecosystem graduation.
 
 Maintenance of the supported 1.1 line continues independently. Correctness and security fixes stay
@@ -7040,19 +7044,57 @@ refined native chrome, and application-aware assets at root and a trusted deploy
 Existing 1.0 defaults and security authorities stay compatible. Issues close after implementation
 and evidence are linked; inclusion in this plan does not close them or change support claims.
 
-**Sequencing.** The previous 1.1–1.7 phases move to 1.2–1.8 with their themes intact. RFC-0097,
-its testing implementation/acceptance files, and gate IDs move to 1.2 / `*-120`. Phase 1.1 does not
-wait for that managed testing harness. Broader durable jobs, internationalization, ecosystem
-promotion, state retention, and build scalability retain their separate phases.
+**Sequencing.** Phase 1.2 introduces the Python 3.11+ support and typing transition. The former
+1.2–1.8 sequence moves intact to 1.3–1.9. RFC-0097, its testing implementation/acceptance files,
+and gate IDs move to 1.3 / `*-130`. Phase 1.1 does not wait for that managed testing harness.
+Broader durable jobs, internationalization, ecosystem promotion, state retention, and build
+scalability retain their separate phases.
 
-### 1.2 — First-class UI testing and adoption confidence
+### 1.2 — Python 3.11+ support and typing baseline
+
+**Implementation status:** Implemented in the v1.2.0 candidate workspace under accepted D-120;
+release matrix evidence and publication remain pending. See
+[RFC-0099](rfcs/RFC-0099-PYTHON-311-BASELINE.md), the
+[implementation plan](implementation/PYTHON_311_1_2.md), and the
+[acceptance packet](acceptance/RELEASE_1_2.md) with its
+[machine release gate](acceptance/release-gate-1.2.toml). The policy and repository changes are
+recorded; final release verification requires the declared CI, native artifact, migration, and
+rollback evidence.
+
+**Contract.** Retire Python 3.10 across all maintained Python packages. The candidate matrix is
+CPython 3.11–3.14 with `requires-python = ">=3.11,<3.15"`; independently versioned satellites
+retain their release lines. BasedPyright targets Python 3.11 in `all` mode with existing no-Any
+and fatal diagnostics; Ruff targets `py311`. Runtime checks execute on the minimum interpreter.
+The 23 current workspace members are the starting inventory, reconciled against release order,
+native artifacts, generated projects, tooling, examples, and retired/non-Python trees at freeze.
+
+**Typing and cleanup.** Use equivalent standard-library 3.11 typing forms where appropriate.
+Retain newer backports such as `typing_extensions.override` and `TypeIs`; do not introduce 3.12+
+syntax or weaken checking. Simplify `hedron_core.compat` to native enum/TOML implementations,
+preserve required public re-exports, and remove obsolete direct `tomli` dependencies and stubs
+only after auditing their consumers. Preserve schema, annotation-introspection, enum, and application
+behavior. Historical 3.10 evidence remains historical; a global text replacement is not a gate.
+
+**Delivery.** D-120 accepts the support-policy amendment; the repository now aligns the 1.2.0
+development train, package metadata, lockfile inputs, CI/runtime targets, release selection,
+typing imports, and stdlib fallbacks. Release promotion still requires runtime, dependency, host,
+native wheel, installed application, packaging, migration, and rollback evidence.
+
+**Release exit.** Every Required `*-120` row must be Verified with commit/artifact-linked evidence.
+Metadata, strict targets, actual 3.11–3.14 matrices, wheel selectors, live support guidance,
+release tooling, and independently versioned package bounds must agree. Required missing environments remain incomplete.
+Explicit 3.10 installs reject the candidate; unpinned resolver fallback and rollback to a retained
+1.1 environment are documented. No 3.15, PyPy, free-threaded, extended 1.1 support, new browser
+harness, or unrelated runtime redesign is implied. Phase 1.3 receives the floor and parity corpus.
+
+### 1.3 — First-class UI testing and adoption confidence
 
 **Planning status:** Proposed and unscheduled; Stage 0 refinement only. See
 [RFC-0097](rfcs/RFC-0097-FIRST-CLASS-UI-TESTING.md), the
-[implementation plan](implementation/UI_TESTING_1_2.md), and the
-[acceptance packet](acceptance/RELEASE_1_2.md). Every row in the
-[machine release gate](acceptance/release-gate-1.2.toml) remains Planned; implementation is not
-authorized until `FREEZE-120` resolves the public API, schemas, matrices, and measured budgets.
+[implementation plan](implementation/UI_TESTING_1_3.md), and the
+[acceptance packet](acceptance/RELEASE_1_3.md). Every row in the
+[machine release gate](acceptance/release-gate-1.3.toml) remains Planned; implementation is not
+authorized until `FREEZE-130` resolves the public API, schemas, matrices, and measured budgets.
 
 **Problem.** Hedron 1.0 has deterministic render assertions, portable HTTP/HTMX fixtures,
 `AppScenario`, low-level Playwright/axe hooks, interaction traces, and test generation, but an
@@ -7090,10 +7132,10 @@ and every stable 1.0 testing import and non-browser path remains compatible.
 
 | Checkpoint | Reviewable result | Authority |
 |---|---|---|
-| `1.2a0` | Compare the two thin-wrapper prototypes, run the fresh-user exercise, inventory fleet testing ownership, and freeze APIs, schemas, host matrix, and measured budgets | `FREEZE-120` |
-| `1.2a1` | Exercise a secured profile form through managed startup, invalid/valid submission, semantic lookup, settling, deliberate failure evidence, and cleanup in Chromium | `HOST-120` through `ARTIFACT-120`; required vertical slice |
-| `1.2b1` | Package pytest/scaffold integration and admitted satellite contributions; prove isolation, security, accessibility, and repeated/parallel execution | `PYTEST-120`, `SATELLITE-120`, behavior and assurance gates |
-| `1.2rc1` | Reproduce the declared host/dependency matrix in Chromium, Firefox, and WebKit from clean packages; finish compatibility, docs, and rollback evidence | Every non-release gate Verified |
+| `1.3a0` | Compare the two thin-wrapper prototypes, run the fresh-user exercise, inventory fleet testing ownership, and freeze APIs, schemas, host matrix, and measured budgets | `FREEZE-130` |
+| `1.3a1` | Exercise a secured profile form through managed startup, invalid/valid submission, semantic lookup, settling, deliberate failure evidence, and cleanup in Chromium | `HOST-130` through `ARTIFACT-130`; required vertical slice |
+| `1.3b1` | Package pytest/scaffold integration and admitted satellite contributions; prove isolation, security, accessibility, and repeated/parallel execution | `PYTEST-130`, `SATELLITE-130`, behavior and assurance gates |
+| `1.3rc1` | Reproduce the declared host/dependency matrix in Chromium, Firefox, and WebKit from clean packages; finish compatibility, docs, and rollback evidence | Every non-release gate Verified |
 
 **Ownership and handoff.** `hedron.testing` owns the optional managed host and pytest integration;
 `hedron_core.testing` retains portable render/HTTP facts; each satellite owns its contributed
@@ -7108,9 +7150,9 @@ new client-side state/runtime authority, or automated accessibility-conformance 
 **Prior 1.1 proposal disposition.** The older unaccepted HTMX/Alpine implementation transition is
 unassigned design input, not part of this phase. Runtime lowering, compatibility shims,
 deprecations, asset-default changes, and possible 2.0 removals require a separate accepted phase
-decision and cannot enter 1.2 through the testing packet.
+decision and cannot enter 1.3 through the testing packet.
 
-### 1.3 — Production async and durable workflows
+### 1.4 — Production async and durable workflows
 
 **Problem.** Polling is the Supported production baseline, while live transports and some richer
 async behavior remain Experimental. Adopters need a disposition they can operate, not another
@@ -7152,7 +7194,7 @@ cannot support a production claim.
 **Non-goals.** Hedron does not provide a queue, scheduler, worker fleet, durable store, or
 application authorization system.
 
-### 1.4 — Inclusive and international UX
+### 1.5 — Inclusive and international UX
 
 **Problem.** Automated accessibility and progressive-enhancement coverage is not the same as
 evidence from people using the product, and the 1.0 contract does not yet make international layout
@@ -7191,7 +7233,7 @@ pass alone cannot close the inherited human-evaluation gap.
 **Non-goals.** No automatic WCAG, legal-compliance, VPAT, ACR, or certification claim from a test
 suite or release label.
 
-### 1.5 — Visualization and media graduation
+### 1.6 — Visualization and media graduation
 
 **Problem.** Optional Plotly/Altair and related media paths are attractive, but promotion would be
 misleading unless they match the security, accessibility, fallback, and asset discipline of native
@@ -7229,7 +7271,7 @@ adapter does not block unrelated first-party visualization work.
 **Non-goals.** No implicit callbacks, arbitrary JavaScript, unbounded client payloads, or promotion
 based only on visual parity.
 
-### 1.6 — Stateful browser composition
+### 1.7 — Stateful browser composition
 
 **Problem.** Partial replacement is reliable when local state resets, but morph-aware retention is
 still deferred. Retaining state can easily create duplicate DOM writers, stale UI, or focus bugs.
@@ -7265,7 +7307,7 @@ reset rule, and no authority over server/domain state.
 **Non-goals.** No client-side application store, virtual DOM, general-purpose synchronization
 runtime, or peer browser framework choices for ordinary widgets.
 
-### 1.7 — Controlled ecosystem expansion
+### 1.8 — Controlled ecosystem expansion
 
 **Problem.** MCP mutations, multi-user notebooks, additional adapters, and satellite graduation
 require materially different trust and operations guarantees. Combining them into one blanket
@@ -7288,7 +7330,7 @@ story. Gate each integration independently and publish its maturity separately.
    exercise one useful operation, denial, timeout, revocation, and recovery. Mutation candidates
    must demonstrate duplicate delivery and transaction boundaries; shared sessions must prove
    isolation and cleanup for concurrent users.
-4. **Graduate independently.** Run the applicable 1.2 contribution and conformance corpus, verify
+4. **Graduate independently.** Run the applicable 1.3 contribution and conformance corpus, verify
    import isolation and missing-extra diagnostics, and publish runbooks and rollback guidance.
    A satellite may ship on its own version line once its own packet passes.
 
@@ -7305,7 +7347,7 @@ Supported scope.
 **Non-goals.** Hedron does not become an identity provider, ORM, authorization engine, hosted
 notebook service, queue, database, or ambient plugin runtime.
 
-### 1.8 — Evidence-gated large-application build scalability
+### 1.9 — Evidence-gated large-application build scalability
 
 **Planning status:** Proposed and unscheduled. This phase is a conditional performance lane, not
 authorization for a general build-system rewrite. Stage 0 first freezes the largest application
@@ -7394,8 +7436,10 @@ Use four checkpoints for each candidate phase:
 | Hardening | Required compatibility, browser/host, security, accessibility, performance, package, and cleanup rows pass with reproducible evidence |
 | Release decision | Explicit per-capability maturity, unresolved limitations, migration/rollback instructions, immutable artifacts, and an approved release disposition |
 
-Phases 1.1 and 1.2 have linked detailed RFCs, implementation plans, and machine packets in this
-sequence. The 1.3–1.8 steps above are planning scope; their owners must create and accept the
+Phases 1.1–1.3 have linked detailed RFCs, implementation plans, and machine packets in this
+sequence. Phase 1.1 is published; phase 1.2 is implemented in the candidate workspace with release
+evidence pending, while phase 1.3 remains Planned. The 1.4–1.9 steps above are
+planning scope; their owners must create and accept the
 corresponding packets before implementation gates can be claimed. Proposed gate names or commands
 must not be presented as existing checkers. Numeric limits for new work are frozen from measured
 baselines, with exact-limit and over-limit behavior where relevant.

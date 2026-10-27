@@ -29,7 +29,7 @@ Hedron is a server-rendered Python UI layer for **FastAPI + HTMX** (with Flask a
 Django adapters). It is not a notebook-style rerun engine, SPA framework, ORM, or IdP.
 Compare positioning: [Why Hedron](why-hedron.md).
 
-**Skills you need:** comfort with Python 3.10–3.14 and HTML forms. Basic FastAPI (or
+**Skills you need:** comfort with Python 3.11–3.14 and HTML forms. Basic FastAPI (or
 Flask/Django) helps but is not required; [What is HTMX](../getting-started/what-is-htmx.md)
 introduces the web concepts as they appear.
 
@@ -39,7 +39,7 @@ introduces the web concepts as they appear.
 |---|---|
 | Stable version | Verified and published **1.1.3** on the `1.1.x` train |
 | Previous train | `v1.0.17` — upgrade and migration baseline |
-| Python | 3.10–3.14 |
+| Python | 3.11–3.14 |
 | License | MIT |
 | Commercial SLA | **None** — community support via GitHub only |
 | Compatibility | Stable APIs follow the documented 1.x policy |

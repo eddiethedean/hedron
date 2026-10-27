@@ -231,7 +231,7 @@ async def prepare_tree(
                     if remaining is not None:
                         try:
                             await asyncio.wait_for(_body(), timeout=remaining)
-                        except asyncio.TimeoutError as exc:
+                        except TimeoutError as exc:
                             ctx.cancel()
                             raise error(
                                 "HED-PREPARE-0002",

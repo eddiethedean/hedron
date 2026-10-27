@@ -8,7 +8,7 @@ import os
 from collections.abc import Callable
 from typing import cast
 
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 
 # Ops / evidence disable (NATIVE-028). Honored on every escape / availability call.
 _DISABLE_ENV = "HEDRON_NATIVE_DISABLE"

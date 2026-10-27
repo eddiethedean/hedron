@@ -1,6 +1,6 @@
 # Single-file apps (pip evaluators)
 
-Run these without cloning the monorepo. Requires Python 3.10+ and a working network for
+Run these without cloning the monorepo. Requires Python 3.11+ and a working network for
 `pip install`. Prefer [Build your first app](../getting-started/quickstart.md)
 (`hedron new`) for the interactive Hello + Refresh first-hour path.
 

@@ -7,6 +7,8 @@ import sys
 import tomllib
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPTS = ROOT / "scripts"
 if str(SCRIPTS) not in sys.path:
@@ -69,6 +71,14 @@ def test_release_gate_0_67_plan_is_selected_and_well_formed() -> None:
     manifest = ROOT / "docs" / "acceptance" / "release-gate-0.67.toml"
     assert gate.evidence_manifest_for("0.67.0") == manifest
     assert gate.check_evidence_manifest_lenient(manifest) == []
+
+
+def test_release_gate_1_2_candidate_is_selected_without_historical_fallback() -> None:
+    manifest = ROOT / "docs" / "acceptance" / "release-gate-1.2.toml"
+    assert gate.evidence_manifest_for("1.2.0") == manifest
+    assert gate.check_evidence_manifest_lenient(manifest) == []
+    with pytest.raises(ValueError, match="no explicit release evidence manifest"):
+        gate.evidence_manifest_for("1.3.0")
 
 
 def test_current_patch_package_metadata_passes() -> None:

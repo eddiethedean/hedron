@@ -3,7 +3,6 @@ from collections.abc import Mapping, Sequence
 from httpx import Response
 from starlette.types import ASGIApp
 
-
 class TestClient:
     def __init__(
         self,
@@ -18,11 +17,8 @@ class TestClient:
         cookies: object | None = ...,
         headers: Mapping[str, str] | None = ...,
     ) -> None: ...
-
     def __enter__(self) -> TestClient: ...
-
     def __exit__(self, exc_type: object, exc: object, traceback: object) -> None: ...
-
     def get(
         self,
         url: str,
@@ -33,7 +29,6 @@ class TestClient:
         follow_redirects: bool | None = ...,
         **kwargs: object,
     ) -> Response: ...
-
     def post(
         self,
         url: str,

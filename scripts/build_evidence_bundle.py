@@ -8,7 +8,7 @@ import hashlib
 import json
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from hedron_core.compat import tomllib
@@ -58,7 +58,7 @@ def main() -> int:
     manifest = {
         "release_version": version,
         "phase": phase,
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "uv_lock_sha256": digest,
         "artifacts": sorted(p.name for p in OUT.iterdir() if p.is_file()),
         "gate_manifest": gate_manifest,

@@ -19,7 +19,7 @@
 #   scripts/ci_checks.sh all [--python 3.12] [--gate-version 0.37.0] [options]
 #
 # Full local CI (`all`) mirrors `.github/workflows/ci.yml` job order:
-#   test (Python 3.10–3.14 by default) → stable dependency bounds → quality →
+#   test (Python 3.11–3.14 by default) → stable dependency bounds → quality →
 #   browser (Chromium; pass --all-browsers for main-branch matrix) → realwb →
 #   realconnect → evidence → packaging
 #
@@ -29,7 +29,7 @@
 # project .venv. Suite order in `all` stays sequential for the same reason.
 #
 # `all` options (opt out of slow or credential-gated jobs):
-#   --python 3.12       Single Python for test (default matrix: 3.10–3.14)
+#   --python 3.12       Single Python for test (default matrix: 3.11–3.14)
 #   --all-pythons       Force full test matrix even after --python
 #   --jobs N            Max concurrent jobs (default: CPUs, or HEDRON_CHECK_JOBS)
 #   --skip-browser      Skip Playwright HTMX suite
@@ -80,7 +80,7 @@ GATE_VERSION="${HEDRON_GATE_VERSION:-}"
 if [[ -z "$GATE_VERSION" ]]; then
   GATE_VERSION="$(awk -F'"' '/^version = "/ { print $2; exit }' pyproject.toml)"
 fi
-CI_PYTHONS=(3.10 3.11 3.12 3.13 3.14)
+CI_PYTHONS=(3.11 3.12 3.13 3.14)
 PYTHON_EXPLICIT=0
 ALL_PYTHONS=0
 ALL_BROWSERS=0
@@ -428,6 +428,10 @@ quality_package_typing_policy() {
   run_py scripts/check_package_typing_inventory.py
 }
 
+quality_python_baseline() {
+  run_py scripts/check_python_311.py
+}
+
 quality_wheels_smoke() {
   # Fresh dist avoids conflicting train wheels on local re-runs.
   # Wheel-only: the smoke venv installs `dist/*.whl`; sdists are unused.
@@ -576,6 +580,10 @@ quality_release_contract() {
 
 quality_verify_pkgs() {
   # PR quality: tip train + two predecessors only. Older packets run on evidence.
+  if [[ "$GATE_VERSION" == 1.2.* ]]; then
+    run_py scripts/verify_pkg_120.py --allow-planned
+    return 0
+  fi
   run_py scripts/verify_pkg_56.py
   run_py scripts/verify_pkg_57.py
   run_py scripts/verify_pkg_58.py
@@ -661,6 +669,7 @@ cmd_quality() {
   start_job ruff quality_ruff
   start_job basedpyright quality_basedpyright
   start_job package-typing-policy quality_package_typing_policy
+  start_job python-baseline quality_python_baseline
   start_job core-neutral quality_core_neutral
   start_job release-contract quality_release_contract
   start_job docs quality_docs
@@ -696,7 +705,7 @@ cmd_workbench_bounds() {
       -e packages/hedron-charts -e packages/hedron-maps -e packages/edron \
       -r release/stable-dependencies.txt \
       "pytest>=8.3" "pytest-xdist>=3.6" "httpx>=0.28" \
-      "django>=5.2,<6" "matplotlib>=3.8,<4"
+      "django>=5.2,<6" "matplotlib>=3.10.8,<4"
   else
     uv pip install --python "$venv/bin/python" --resolution highest \
       -e packages/hedron-core -e packages/hedron -e packages/hedron-explorer \
@@ -706,7 +715,7 @@ cmd_workbench_bounds() {
       -e packages/hedron-charts -e packages/hedron-maps -e packages/edron \
       -r release/stable-dependencies.txt \
       "pytest>=8.3" "pytest-xdist>=3.6" "httpx>=0.28" \
-      "django>=5.2,<6" "matplotlib>=3.8,<4"
+      "django>=5.2,<6" "matplotlib>=3.10.8,<4"
   fi
   run "$venv/bin/python" scripts/check_stable_dependency_bounds.py --verify-installed "$bounds"
   run "$venv/bin/pytest" -q \
@@ -737,8 +746,13 @@ evidence_audit() {
 }
 
 evidence_gates() {
-  # Living tip capability gates are Verified for the configured train.
-  run_py scripts/check_release_gate.py "$GATE_VERSION"
+  # The 1.2 implementation packet remains open while platform/artifact evidence is collected.
+  # Release tags use the strict gate in release.yml before any publication step.
+  if [[ "$GATE_VERSION" == 1.2.* ]]; then
+    run_py scripts/check_release_gate.py "$GATE_VERSION" --allow-planned
+  else
+    run_py scripts/check_release_gate.py "$GATE_VERSION"
+  fi
   run_py scripts/check_human_at_packet.py
   run_py scripts/check_hed_codes.py
 }
@@ -749,6 +763,10 @@ evidence_verify_pkgs() {
     # their historical package versions and are covered by their own release
     # workflows rather than the current 1.0 evidence job.
     run_py scripts/check_100.py --check-plan
+    return 0
+  fi
+  if [[ "$GATE_VERSION" == 1.2.* ]]; then
+    run_py scripts/verify_pkg_120.py --allow-planned
     return 0
   fi
   run_py scripts/verify_pkg_34.py --allow-planned
@@ -824,6 +842,12 @@ cmd_packaging() {
   # PKG packaging rehearsal (same verify helper as the evidence suite).
   if [[ "$GATE_VERSION" == 1.0.* ]]; then
     run_py scripts/check_100.py --gate PKG-100 --verify
+    return 0
+  fi
+  if [[ "$GATE_VERSION" == 1.2.* ]]; then
+    resolve_python
+    run_py scripts/verify_pkg_120.py --allow-planned
+    quality_wheels_smoke
     return 0
   fi
   if [[ "${HEDRON_CI_ALL:-0}" == 1 ]]; then

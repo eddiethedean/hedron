@@ -9,11 +9,11 @@ server-rendered component tree, an allowlisted HTMX fragment, HTTP-level tests, 
 application object that adapts to local, Workbench, and Connect environments.
 
 This workshop targets the Hedron **1.0.x** train (`hedron>=1.0.0`) and Python
-**3.10–3.14** so it matches the current `hedron-posit` adapter. Before scheduling it, check the
+**3.11–3.14** so it matches the current `hedron-posit` adapter. Before scheduling it, check the
 current [capability matrix](whats-ready.md) and
 [compatibility guide](../COMPATIBILITY.md) against your Posit versions and internal package mirror.
 
-The package supports Python 3.10–3.14; the Workbench command examples use Python 3.11 as the
+The package supports Python 3.11–3.14; the Workbench command examples use Python 3.11 as the
 standard spelling.
 
 ## Training at a glance
@@ -64,7 +64,7 @@ explicit response. See [Should you migrate?](streamlit-migration.md#should-you-m
 
 Complete this checklist several days before the session.
 
-- Verify Python 3.10–3.14 and that participants can create and activate a project `venv`.
+- Verify Python 3.11–3.14 and that participants can create and activate a project `venv`.
 - If `python3.11` is unavailable, use the [Python 3.11 pyenv fallback](../getting-started/first-app-posit-workbench.md#python-311-fallback)
   before creating the virtual environment. When finished, return to [Facilitator preparation](#facilitator-preparation).
 - Confirm that the environment can install `hedron>=1.0.0` and optional packages
@@ -106,7 +106,7 @@ hedron --version
 
 Expected results:
 
-- Python reports a version from 3.10 through 3.14;
+- Python reports a version from 3.11 through 3.14;
 - `hedron` prints its version without an import or network error;
 - on Workbench, `test -n "$RS_SERVER_URL"` succeeds.
 

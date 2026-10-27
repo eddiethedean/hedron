@@ -5,11 +5,10 @@ from __future__ import annotations
 import copy
 from collections.abc import Mapping, Sequence
 from contextvars import ContextVar, Token
-from typing import ClassVar, Generic, Protocol, TypeAlias, TypeVar, cast, runtime_checkable
+from typing import ClassVar, Generic, Protocol, Self, TypeAlias, TypeVar, cast, runtime_checkable
 
 from pydantic import ValidationError
 from pydantic.fields import FieldInfo
-from typing_extensions import Self
 
 from hedron_core.diagnostics import error
 from hedron_core.field import hedron_meta

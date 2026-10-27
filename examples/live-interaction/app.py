@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import threading
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from fastapi import Request, WebSocket
 from fastapi.responses import HTMLResponse
@@ -79,7 +79,7 @@ class PreparedBanner(Component[_BannerProps]):
 
 
 def clock_text() -> Text:
-    now = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
+    now = datetime.now(UTC).strftime("%H:%M:%S UTC")
     return Text(now)
 
 

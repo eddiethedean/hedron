@@ -34,7 +34,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
     permissions:
       contents: read
 
@@ -79,9 +79,9 @@ jobs:
           tests/ops/test_packaging_isolation.py::test_all_packages_declare_license_and_version
 
       - name: Lint Edron release surface
-        if: matrix.python-version == '3.12'
+        if: matrix.python-version == '3.11'
         run: >-
-          uv run --python 3.12 ruff check
+          uv run --python 3.11 ruff check
           packages/edron/src/edron
           scripts/check_edron_release.py
           scripts/verify_edron_phase08.py
@@ -98,12 +98,12 @@ jobs:
           tests/unit/test_edron_phase02.py
 
       - name: Run Stable package typing gate
-        if: matrix.python-version == '3.12'
-        run: bash scripts/ci_checks.sh typing --python 3.12
+        if: matrix.python-version == '3.11'
+        run: bash scripts/ci_checks.sh typing --python 3.11
 
       - name: Verify Edron 1.0 packet
-        if: matrix.python-version == '3.12'
-        run: uv run --python 3.12 python scripts/verify_edron_100.py
+        if: matrix.python-version == '3.11'
+        run: uv run --python 3.11 python scripts/verify_edron_100.py
 
   dependency_bounds:
     name: Edron Stable dependency bounds

@@ -7,7 +7,7 @@
 **Machine packet:** [release-gate-1.1.toml](release-gate-1.1.toml)
 
 This packet replaces the former 1.1 testing packet, which moves to
-[Phase 1.2](RELEASE_1_2.md) with its gate IDs renumbered from `*-110` to `*-120`.
+[Phase 1.3](RELEASE_1_3.md) with its gate IDs renumbered from `*-110` to `*-130`.
 All rows below are Verified against the Phase 1.1 implementation, unit suite, and documentation
 source-of-truth checks. There is no `check_110.py`; the packet uses the repository’s existing
 release and test commands.

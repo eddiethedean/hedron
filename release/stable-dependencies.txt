@@ -8,6 +8,5 @@ packaging>=22.0
 pydantic<2.15,>=2.12.0
 python-multipart>=0.0.9
 starlette<2.0,>=0.40.0
-tomli>=2.0.1
-typing-extensions>=4.1.0
+typing-extensions>=4.10.0
 uvicorn<1.0,>=0.32

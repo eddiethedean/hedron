@@ -30,7 +30,7 @@ uv add "hedron-notebook>=0.1.0,<0.2"
 pip install "hedron[notebook]>=1.0.0"
 ```
 
-Requires Python 3.10–3.14.
+Requires Python 3.11–3.14.
 
 Optional server extra (uvicorn):
 

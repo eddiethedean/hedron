@@ -185,7 +185,8 @@ def normalize_page(value: object) -> PageState[object]:
     )
 
 
-class SecretOperation(str, Enum):
+# Keep the stable Enum-qualified ``str()`` behavior for this public token.
+class SecretOperation(str, Enum):  # noqa: UP042
     KEEP = "keep"
     REPLACE = "replace"
     CLEAR = "clear"

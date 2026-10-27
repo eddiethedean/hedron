@@ -46,7 +46,9 @@ def _any_suppressions() -> list[str]:
     for path in sorted(root.rglob("*.py")):
         for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
             if ANY_SUPPRESSION.search(line):
-                failures.append(f"{path.relative_to(ROOT)}:{line_number}: Any diagnostic suppression")
+                failures.append(
+                    f"{path.relative_to(ROOT)}:{line_number}: Any diagnostic suppression"
+                )
     return failures
 
 

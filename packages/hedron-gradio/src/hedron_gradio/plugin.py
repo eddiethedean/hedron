@@ -11,7 +11,7 @@ from hedron_core.plugins import (
 
 PLUGIN_META = PluginMeta(
     name="hedron_gradio",
-    version="0.2.5",
+    version="0.2.6",
     distribution="hedron-gradio",
     hedron_version=">=1.0,<2.0",
     capabilities=PluginCapabilities(

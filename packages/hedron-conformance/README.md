@@ -33,7 +33,7 @@ uv add "hedron-conformance>=1.0.0,<2.0"
 pip install "hedron[conformance]>=1.0.0"
 ```
 
-Requires Python 3.10–3.14.
+Requires Python 3.11–3.14.
 
 ## Runner
 

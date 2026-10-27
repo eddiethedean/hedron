@@ -29,7 +29,7 @@ def scaffold_element(name: str, dest: Path) -> int:
         f'''[project]
 name = "{distribution}"
 version = "0.1.0"
-requires-python = ">=3.10"
+requires-python = ">=3.11,<3.15"
 dependencies = [
     "{_scaffold_dep("hedron-core")}",
     "{_scaffold_dep("hedron-elements")}",

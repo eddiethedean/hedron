@@ -15,7 +15,7 @@ def scaffold_flask(args: argparse.Namespace, dest: Path) -> int:
         f'''[project]
 name = "{string_argument(args, "name", "")}"
 version = "0.1.0"
-requires-python = ">=3.10"
+requires-python = ">=3.11,<3.15"
 dependencies = [
     "{_scaffold_dep("hedron-flask")}",
     "{_scaffold_dep("hedron-core")}",

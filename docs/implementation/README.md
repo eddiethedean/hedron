@@ -103,7 +103,9 @@ These documents describe how accepted RFC behavior will be implemented. They def
 - [Hedron 1.1 open enhancement completion](OPEN_ENHANCEMENTS_1_1.md) — **Implemented and Verified**
   of all 20 open feature requests and required complementary form, collection, presentation,
   deployment, and conformance behavior
-- [Hedron 1.2 first-class UI testing](UI_TESTING_1_2.md) — **Proposed and unscheduled** Stage 0
+- [Hedron 1.2 Python 3.11+ baseline](PYTHON_311_1_2.md) — **Implemented in the candidate
+  workspace; release evidence pending** for runtime, host, native artifact, and migration checks
+- [Hedron 1.3 first-class UI testing](UI_TESTING_1_3.md) — **Proposed and unscheduled** Stage 0
   refinement for a managed real-browser pytest experience, semantic lookup, bounded Hedron-owned
   settle facts, correlated failures, redacted artifacts, satellite testing ownership/contributions,
   cleanup, compatibility, and release gates

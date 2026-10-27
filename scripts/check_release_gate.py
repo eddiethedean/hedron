@@ -76,6 +76,7 @@ EVIDENCE_BY_MAJOR_MINOR = {
     "0.67": ROOT / "docs" / "acceptance" / "release-gate-0.67.toml",
     "1.0": ROOT / "docs" / "acceptance" / "release-gate-1.0.toml",
     "1.1": ROOT / "docs" / "acceptance" / "release-gate-1.1.toml",
+    "1.2": ROOT / "docs" / "acceptance" / "release-gate-1.2.toml",
 }
 DEFAULT_EVIDENCE = EVIDENCE_BY_MAJOR_MINOR["0.6"]
 # Includes historical ``release`` attestation used by older gate manifests.
@@ -141,6 +142,8 @@ def evidence_manifest_for(version: str) -> Path:
         key = f"{parts[0]}.{parts[1]}"
         if key in EVIDENCE_BY_MAJOR_MINOR:
             return EVIDENCE_BY_MAJOR_MINOR[key]
+        if parts[0] == "1":
+            raise ValueError(f"no explicit release evidence manifest for version {version!r}")
     return DEFAULT_EVIDENCE
 
 

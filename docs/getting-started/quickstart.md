@@ -6,7 +6,7 @@ search:
 
 # Build your first app
 
-About 10 minutes after Python **3.10–3.14** and either
+About 10 minutes after Python **3.11–3.14** and either
 [`uv`](https://docs.astral.sh/uv/getting-started/installation/) or an activated virtual
 environment. Node.js is not required.
 

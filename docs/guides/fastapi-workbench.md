@@ -4,9 +4,9 @@ Deploy plain FastAPI applications behind Posit Workbench / RStudio Server withou
 installing Hedron.
 
 **Package line:** `fastapi-workbench` `1.x` (independent semver) · import `fastapi_workbench`
-**Requires:** Python 3.10–3.14, FastAPI/Starlette ASGI app
+**Requires:** Python 3.11–3.14, FastAPI/Starlette ASGI app
 
-The package supports Python 3.10–3.14; the commands below use Python 3.11 as the standard
+The package supports Python 3.11–3.14; the commands below use Python 3.11 as the standard
 Workbench spelling.
 
 If `python3.11` is unavailable, use the [Python 3.11 pyenv fallback](../getting-started/first-app-posit-workbench.md#python-311-fallback)

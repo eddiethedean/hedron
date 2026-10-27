@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from hedron_core.compat import tomllib
@@ -58,7 +58,7 @@ def main() -> int:
         "specVersion": "1.5",
         "version": 1,
         "metadata": {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "component": {
                 "type": "application",
                 "name": "hedron-workspace",

@@ -34,9 +34,9 @@ Scaffold an application.
 hedron new my-app
 hedron new my-app --path ./apps/my-app --force
 mkdir my-app && cd my-app
-python3.10 -m venv .venv
+python3.11 -m venv .venv
 source .venv/bin/activate
-python3.10 -m pip install "hedron>=1.0.0"
+python3.11 -m pip install "hedron>=1.0.0"
 hedron new my-app --path . --force
 hedron new my-flask-app --flask
 hedron new my-django-app --django
@@ -365,7 +365,7 @@ hedron migrate streamlit streamlit_app.py --out ./migrated-app --python-version 
 | `--project-root` | Boundary for local-module discovery |
 | `--analyze-only` | Report without generating files |
 | `--format` | `text`, `json`, or `sarif` |
-| `--python-version` | Parser grammar: Python 3.10–3.14 |
+| `--python-version` | Source grammar: Python 3.10–3.14; accepting 3.10 source is migration analysis and does not add runtime support |
 | `--fail-on` | Return `2` when findings reach `information`, `warning`, or `error` (default) |
 
 Exit `1` covers invalid input or generation failure; exit `2` means review findings met the

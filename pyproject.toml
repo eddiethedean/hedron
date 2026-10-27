@@ -1,8 +1,8 @@
 [project]
 name = "hedron-workspace"
-version = "1.1.3"
+version = "1.2.0"
 description = "Hedron monorepo workspace"
-requires-python = ">=3.10,<3.15"
+requires-python = ">=3.11,<3.15"
 readme = "README.md"
 
 [tool.uv]
@@ -63,15 +63,12 @@ dev = [
     "pytest>=8.3",
     "pytest-xdist>=3.6",
     "pytest-cov>=7.0",
-    # BasedPyright analyzes the declared Python 3.10 floor even when CI runs on a
-    # newer interpreter, so its environment must resolve the 3.10 TOML branch.
-    "tomli>=2.0.1",
     "httpx>=0.28",
     "anyio>=4.8",
     "syrupy>=4.8",
     "ruff>=0.11",
     "basedpyright>=1.39.9",
-    "matplotlib>=3.8,<4",
+    "matplotlib>=3.10.8,<4",
     "nh3>=0.2",
     "markdown>=3.5",
     "pygments>=2.17",
@@ -156,7 +153,7 @@ skip_covered = true
 output = "coverage.xml"
 
 [tool.ruff]
-target-version = "py310"
+target-version = "py311"
 line-length = 100
 src = ["packages/hedron-core/src", "packages/hedron/src", "packages/hedron-explorer/src", "packages/hedron-sample-kit/src", "packages/hedron-data/src", "packages/hedron-charts/src", "packages/hedron-maps/src", "packages/hedron-flask/src", "packages/hedron-django/src", "packages/hedron-jinja/src", "packages/hedron-conformance/src", "packages/hedron-native/src", "packages/hedron-extras/src", "packages/hedron-notebook/src", "packages/hedron-mcp/src", "packages/hedron-gradio/src", "packages/hedron-sim/src", "packages/hedron-posit/src", "packages/hedron-elements/src", "packages/hedron-docs/src", "packages/edron/src", "packages/edron-sim/src", "packages/fastapi-workbench/src", "tests", "examples"]
 extend-exclude = ["docs", "archive", "dist", ".venv", ".bug_hunt_repros"]
@@ -165,7 +162,6 @@ extend-exclude = ["docs", "archive", "dist", ".venv", ".bug_hunt_repros"]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF100", "RUF012", "S110", "S112", "BLE001", "ASYNC", "PTH", "DTZ", "RET"]
 
 [tool.ruff.lint.isort]
-# Tests import the Python 3.10 tomli alias under the stdlib module name.
 extra-standard-library = ["tomllib"]
 
 [tool.ruff.lint.per-file-ignores]
@@ -203,7 +199,7 @@ include = [
     "packages/edron-sim/src",
     "packages/fastapi-workbench/src",
 ]
-pythonVersion = "3.10"
+pythonVersion = "3.11"
 venvPath = "."
 venv = ".venv"
 stubPath = "typings"

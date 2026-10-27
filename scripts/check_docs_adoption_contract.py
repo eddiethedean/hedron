@@ -27,7 +27,7 @@ def forbid(relative: str, needle: str) -> None:
 def main() -> int:
     release_data = tomllib.loads(read("docs/release.toml"))["release"]
     current = str(release_data["published_version"])
-    bounded = f'>={release_data["pin_floor"]},<{release_data["pin_ceiling"]}'
+    bounded = f">={release_data['pin_floor']},<{release_data['pin_ceiling']}"
     exact = f"=={current}"
 
     # The docs must describe what the default FastAPI scaffold actually writes.

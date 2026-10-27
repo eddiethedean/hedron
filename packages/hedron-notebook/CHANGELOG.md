@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.6] — Unreleased
+
+### Changed
+
+- Require CPython 3.11 or newer after Python 3.10 reached end of security support.
+
 ## [0.2.5] — 2026-09-25
 
 ### Changed

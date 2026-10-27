@@ -27,7 +27,7 @@ uv add "hedron-gradio>=0.2.0,<0.3"
 pip install "hedron[gradio]>=1.0.0"
 ```
 
-Requires Python 3.10–3.14.
+Requires Python 3.11–3.14.
 
 Hedron does not automatically construct `gradio_client.Client`: that library
 does not expose the connection-bound transport needed to prevent DNS rebinding.

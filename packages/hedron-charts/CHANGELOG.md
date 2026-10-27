@@ -1,6 +1,13 @@
 # Changelog
 
-## [1.1.3] — Unreleased
+## [1.2.0] — Unreleased
+
+### Changed
+
+- Require CPython 3.11 or newer after Python 3.10 reached end of security support.
+- Raise the Matplotlib extra floor to a release with Python 3.14 wheels.
+
+## [1.1.3] — 2026-09-28
 
 ### Changed
 

@@ -15,8 +15,9 @@ those enhancements together in complete application flows. The 2026-09-18 GitHub
 their feature-request content despite having no enhancement label. The exact inventory and
 implementation order live in the implementation plan; all 20 are required scope.
 
-The former 1.1 testing phase moves intact to 1.2 under RFC-0097. The former 1.2–1.7 phases move
-to 1.3–1.8. This phase uses existing render, AppScenario, state-matrix, and Playwright facilities;
+Phase 1.2 now covers Python 3.11+ support and typing. The former 1.2 UI-testing phase moves intact
+to 1.3 under RFC-0097, and the former 1.3–1.8 phases move to 1.4–1.9. This phase uses existing
+render, AppScenario, state-matrix, and Playwright facilities;
 the computed-style work in #915 extends those facilities without depending on the future managed
 browser harness.
 
@@ -83,7 +84,7 @@ incomplete evidence. Issue closure requires linked implementation and passing ev
 
 Existing 1.0 defaults, string help/errors, testing imports, and framework authority remain compatible.
 New policies are opt-in; changed Beta surfaces require documented migration. The implementation and
-acceptance indexes point to the relocated testing packet, with unique `*-120` testing gates and
+acceptance indexes point to the relocated testing packet, with unique `*-130` testing gates and
 `*-110` enhancement gates. No current release versions, pins, tags, or production defaults change
 during this planning revision. Document feature installation and rollback before the release cut.
 

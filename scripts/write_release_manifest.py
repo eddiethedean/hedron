@@ -9,7 +9,7 @@ import json
 import os
 import re
 import subprocess
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -52,7 +52,7 @@ def main() -> int:
         "project": "hedron",
         "release_version": args.version,
         "git_commit": git_commit(),
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "assets": [asset_record(path) for path in assets],
     }
     output = DIST / "release-manifest.json"

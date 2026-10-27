@@ -1065,7 +1065,7 @@ The initial shortcut registry is:
 | PyArrow input | `pyarrow>=15.0` and `narwhals>=1.1` | `edron[pyarrow]` | beta data adapter |
 | Plotly | `plotly>=5.18,<7` | `edron[plotly]` | experimental |
 | Altair | `altair>=6,<7` and `vl-convert-python>=1.0` | `edron[altair]` | experimental |
-| Matplotlib | `matplotlib>=3.8,<4` | `edron[matplotlib]` | beta/static Supported scope |
+| Matplotlib | `matplotlib>=3.10.8,<4` | `edron[matplotlib]` | beta/static Supported scope |
 | SQLAlchemy source | `sqlalchemy>=2,<3` | `edron[sqlalchemy]` | beta data source |
 
 The final package ranges must equal the compatible owning-package adapter ranges at release. If an

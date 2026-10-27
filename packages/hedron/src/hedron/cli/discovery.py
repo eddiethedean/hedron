@@ -6,6 +6,7 @@ import importlib
 import sys
 from functools import lru_cache
 from pathlib import Path
+from typing import cast
 
 from hedron.config import HedronSettings
 from hedron_core.compat import tomllib
@@ -26,7 +27,11 @@ def release_pin_bounds() -> tuple[str, str]:
         candidate = parent / "docs" / "release.toml"
         if not candidate.is_file():
             continue
-        release = tomllib.loads(candidate.read_text(encoding="utf-8")).get("release", {})
+        decoded = cast(dict[str, object], tomllib.loads(candidate.read_text(encoding="utf-8")))
+        release_value: object = decoded.get("release", {})
+        if not isinstance(release_value, dict):
+            continue
+        release = cast(dict[str, object], release_value)
         status = str(release.get("registry_status", "")).strip()
         if status == "deferred":
             floor = str(release.get("pypi_pin_floor") or release.get("pin_floor") or "").strip()

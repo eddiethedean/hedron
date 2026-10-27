@@ -24,13 +24,32 @@ STABLE_BOUNDARY = (
 )
 
 
-def _canonical_signature(value: object) -> str:
-    signature = str(inspect.signature(value)).strip()
-    return re.sub(
+def _canonical_signature_text(signature: str) -> str:
+    signature = re.sub(
         r"<object object at 0x[0-9A-Fa-f]+>",
         "<object sentinel>",
         signature,
     )
+    optional = re.compile(r"(?:typing\.)?Optional\[")
+    while match := optional.search(signature):
+        opening = match.end() - 1
+        depth = 0
+        for closing in range(opening, len(signature)):
+            if signature[closing] == "[":
+                depth += 1
+            elif signature[closing] == "]":
+                depth -= 1
+                if depth == 0:
+                    inner = _canonical_signature_text(signature[opening + 1 : closing])
+                    signature = f"{signature[:match.start()]}{inner} | None{signature[closing + 1:]}"
+                    break
+        else:
+            break
+    return signature
+
+
+def _canonical_signature(value: object) -> str:
+    return _canonical_signature_text(str(inspect.signature(value)).strip())
 
 
 def _requires_signature(value: object) -> bool:
@@ -166,8 +185,22 @@ def main() -> int:
     native_project = tomllib.loads(
         (ROOT / "packages/hedron-native/pyproject.toml").read_text(encoding="utf-8")
     )["project"]
-    if native_project.get("version") != "0.1.3":
-        errors.append("hedron-native must publish corrected immutable release 0.1.3")
+    native_version = str(native_project.get("version", ""))
+    native_cargo = tomllib.loads(
+        (ROOT / "packages/hedron-native/Cargo.toml").read_text(encoding="utf-8")
+    )
+    native_lock = tomllib.loads(
+        (ROOT / "packages/hedron-native/Cargo.lock").read_text(encoding="utf-8")
+    )
+    native_lock_versions = {
+        str(package.get("version", ""))
+        for package in native_lock.get("package", [])
+        if package.get("name") == "hedron-native"
+    }
+    if native_cargo.get("package", {}).get("version") != native_version:
+        errors.append("hedron-native Python and Cargo package versions must match")
+    if native_lock_versions != {native_version}:
+        errors.append("hedron-native Cargo.lock must match the package release version")
 
     transient_readme_patterns = {
         "candidate": re.compile(r"\b(?:in-tree|release|stable-platform)?\s*candidate\b", re.I),
@@ -254,7 +287,7 @@ def main() -> int:
                         f"{distribution}.{symbol}: stable callable/class lacks a locked signature"
                     )
                 continue
-            expected_signature = str(expected_signature).strip()
+            expected_signature = _canonical_signature_text(str(expected_signature).strip())
             try:
                 actual_signature = _canonical_signature(value)
             except (TypeError, ValueError) as exc:
@@ -283,7 +316,7 @@ def main() -> int:
             except (TypeError, ValueError) as exc:
                 errors.append(f"{distribution}.{path}: signature inspection failed: {exc}")
                 continue
-            expected_signature = str(expected_signature).strip()
+            expected_signature = _canonical_signature_text(str(expected_signature).strip())
             if actual_signature != expected_signature:
                 errors.append(
                     f"{distribution}.{path}: signature drifted; "

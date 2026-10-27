@@ -1,14 +1,12 @@
 from collections.abc import Callable
 from typing import TextIO
 
-
 class JSONDecodeError(ValueError):
     msg: str
     doc: str
     pos: int
     lineno: int
     colno: int
-
 
 def dumps(
     obj: object,
@@ -24,8 +22,6 @@ def dumps(
     sort_keys: bool = ...,
     **kwargs: object,
 ) -> str: ...
-
-
 def loads(
     s: str | bytes | bytearray,
     *,
@@ -37,8 +33,6 @@ def loads(
     object_pairs_hook: Callable[[list[tuple[str, object]]], object] | None = ...,
     **kwargs: object,
 ) -> object: ...
-
-
 def dump(
     obj: object,
     fp: TextIO,
@@ -54,6 +48,4 @@ def dump(
     sort_keys: bool = ...,
     **kwargs: object,
 ) -> None: ...
-
-
 def load(fp: TextIO, *, cls: type[object] | None = ..., **kwargs: object) -> object: ...

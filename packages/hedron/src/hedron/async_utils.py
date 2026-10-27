@@ -97,9 +97,9 @@ async def gather(
     """Gather sibling awaitables with ContextVar propagation via task creation.
 
     When ``return_exceptions`` is false, the first failure cancels and drains
-    every unfinished sibling before the exception is propagated. This is a
-    stronger ownership guarantee than :func:`asyncio.gather` provides on
-    Python 3.10.
+        every unfinished sibling before the exception is propagated. This is a
+        stronger ownership guarantee than :func:`asyncio.gather` provides by
+        default.
     """
     if not aws:
         return []

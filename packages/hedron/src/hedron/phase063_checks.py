@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 import re
 from pathlib import Path
-from typing import TypedDict
+from typing import TypedDict, cast
 
 from hedron_core.codes import (
     HED_CHECK_0001,
@@ -81,7 +81,7 @@ def _suppressed(root: Path) -> set[str]:
     if not path.is_file():
         return set()
     try:
-        data = tomllib.loads(path.read_text(encoding="utf-8"))
+        data = cast(dict[str, object], tomllib.loads(path.read_text(encoding="utf-8")))
     except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError):
         return set()
     rows: object = data.get("suppressions", [])
