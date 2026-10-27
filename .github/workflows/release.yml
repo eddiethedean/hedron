@@ -155,13 +155,6 @@ jobs:
           CONNECT_LICENSE: ${{ secrets.CONNECT_LICENSE }}
           HEDRON_REALCONNECT: "1"
         run: bash scripts/ci_checks.sh realconnect --python 3.12
-      - name: Upload advisory Connect result
-        if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: realconnect-033-result
-          path: docs/acceptance/realconnect-033/RESULT.log
-          if-no-files-found: ignore
 
   publish_only_typing:
     name: Recovery release gates (publish-only)

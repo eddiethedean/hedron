@@ -58,8 +58,8 @@ An unavailable required interpreter, browser/service used by an existing require
 wheel is incomplete evidence. It cannot become a pass through a skip or narrower undocumented matrix.
 Every listed gate is required for this cut: the strict release checker requires all rows to be
 `Verified` and `release_cut_satisfied = true`; `Deferred` does not authorize publication.
-The licensed Posit Connect Docker smoke is supplemental: the release workflow records its redacted
-result when available, but does not wait for or gate on its license, service, or probe outcome.
+The licensed Posit Connect Docker smoke is supplemental: its redacted Actions log is informational,
+and the release workflow does not wait for or gate on its license, service, or probe outcome.
 In-tree Connect adapter and contract tests remain part of the required runtime/compatibility suites.
 
 The packet begins with the current 23 workspace packages. Stage 0 reconciles that list against the

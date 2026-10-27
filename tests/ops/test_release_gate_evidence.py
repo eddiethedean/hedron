@@ -143,7 +143,6 @@ def test_connect_live_smoke_is_advisory_to_release_publication() -> None:
     assert "name: Connect backend smoke (advisory)" in connect_job
     assert "continue-on-error: true" in connect_job
     assert "HEDRON_REQUIRED_LIVE_GATES" not in connect_job
-    assert "Upload advisory Connect result" in connect_job
     assert "realconnect" not in publish_needs
     assert "needs.realconnect.result" not in publish_job
 
