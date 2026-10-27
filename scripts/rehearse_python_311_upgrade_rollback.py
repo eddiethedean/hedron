@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 import platform
+import re
 import subprocess
 import sys
 import tempfile
@@ -15,6 +16,7 @@ import tomllib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+CANDIDATE_PYTHON_REQUIRES = ">=3.11,<3.15"
 
 
 def scaffold_pin(version: str) -> str:
@@ -72,13 +74,26 @@ def candidate_project_text(
     core_wheel: Path,
 ) -> str:
     parsed = tomllib.loads(source)
-    if parsed.get("tool", {}).get("uv", {}).get("sources"):
+    tool = parsed.get("tool", {})
+    uv = tool.get("uv", {}) if isinstance(tool, dict) else {}
+    if isinstance(uv, dict) and uv.get("sources"):
         raise ValueError("generated application already defines [tool.uv.sources]")
+    project = parsed.get("project", {})
+    if not isinstance(project, dict) or not isinstance(project.get("requires-python"), str):
+        raise ValueError("generated application has no [project].requires-python contract")
     old_pin = f'"hedron{scaffold_pin(predecessor_version)}"'
     new_pin = f'"hedron{scaffold_pin(candidate_version)}"'
     if source.count(old_pin) != 1:
         raise ValueError(f"expected one generated Hedron pin {old_pin}")
     updated = source.replace(old_pin, new_pin, 1)
+    updated, replacements = re.subn(
+        r"(?m)^(requires-python\s*=\s*)[\"'][^\"']+[\"']$",
+        rf'\1"{CANDIDATE_PYTHON_REQUIRES}"',
+        updated,
+        count=1,
+    )
+    if replacements != 1:
+        raise ValueError("generated application requires-python assignment is ambiguous")
     return (
         updated.rstrip()
         + "\n\n[tool.uv.sources]\n"

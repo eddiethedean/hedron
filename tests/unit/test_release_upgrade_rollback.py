@@ -12,6 +12,7 @@ from scripts import rehearse_python_311_upgrade_rollback as upgrade
 def test_candidate_project_pins_candidate_wheels_and_next_minor_train(tmp_path) -> None:
     source = (
         '[project]\nname = "upgrade-fixture"\n'
+        'requires-python = ">=3.10,<3.15"\n'
         'dependencies = ["hedron>=1.1.3,<1.2"]\n'
         '[build-system]\nrequires = ["hatchling"]\n'
         'build-backend = "hatchling.build"\n'
@@ -28,6 +29,7 @@ def test_candidate_project_pins_candidate_wheels_and_next_minor_train(tmp_path) 
     )
     parsed = tomllib.loads(updated)
 
+    assert parsed["project"]["requires-python"] == ">=3.11,<3.15"
     assert "hedron>=1.2.0,<1.3" in parsed["project"]["dependencies"]
     assert parsed["tool"]["uv"]["sources"] == {
         "hedron": {"path": str(hedron)},
@@ -37,7 +39,8 @@ def test_candidate_project_pins_candidate_wheels_and_next_minor_train(tmp_path) 
 
 def test_candidate_project_rejects_ambiguous_existing_uv_sources(tmp_path) -> None:
     source = (
-        '[project]\ndependencies = ["hedron>=1.1.3,<1.2"]\n'
+        '[project]\nrequires-python = ">=3.10,<3.15"\n'
+        'dependencies = ["hedron>=1.1.3,<1.2"]\n'
         '[tool.uv.sources]\nother = { path = "../other" }\n'
     )
 
