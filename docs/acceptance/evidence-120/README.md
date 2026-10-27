@@ -31,5 +31,7 @@ and per-wheel conformance command. Retain the successful run URL and reviewed
 `native-artifacts.json` at this path in the evidence-only commit alongside `python-artifacts.json`
 before marking `NATIVE-120` verified.
 
-The final Python artifact ledger is intentionally absent until the rehearsal has run on the frozen
-candidate. A placeholder or hash list copied from an earlier source commit is not release evidence.
+The Python artifact ledger must come from a successful rehearsal on the frozen source commit. If
+package, workflow, test, or implementation files change afterward, rerun the Python rehearsal and
+native wheel matrix on the updated source before replacing both ledgers. A placeholder or hash list
+copied from an earlier source commit is not release evidence.
