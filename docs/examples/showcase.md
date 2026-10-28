@@ -16,7 +16,6 @@ release gate; `hedron-sim` keeps those interactions local to the documentation p
 
 <!-- hedron-sim:showcase-dashboard -->
 
-![Hedron workspace overview using the Folio theme](../assets/hedron-showcase.jpg)
 
 ## Run the real app
 
@@ -31,7 +30,7 @@ Open <http://127.0.0.1:8000/>. The data is synthetic and local, but the applicat
 are real: AppShell chrome, typed components, fragment refresh, an unsafe action, and ordinary
 FastAPI-compatible routing.
 
-The complete source is [`examples/showcase/app.py`](https://github.com/eddiethedean/hedron/blob/v1.0/examples/showcase/app.py).
+The complete source is [`examples/showcase/app.py`](https://github.com/eddiethedean/hedron/blob/main/examples/showcase/app.py).
 
 The showcase uses Folio's paper light palette and neutral charcoal dark palette, following the
 browser color preference. A small application stylesheet refines its dashboard composition;

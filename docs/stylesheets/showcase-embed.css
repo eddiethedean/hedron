@@ -1,0 +1,51 @@
+/* The app responds to its documentation column, not the browser viewport. */
+.hedron-sim:has(.showcase-shell) {
+  container-type: inline-size;
+}
+
+/* Material's list styles otherwise override the app's timeline layout. */
+.hedron-sim .showcase-shell .hedron-timeline {
+  display: grid;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.hedron-sim .showcase-shell .hedron-timeline-entry {
+  margin: 0;
+}
+
+@container (max-width: 1000px) {
+  .hedron-sim .showcase-shell .hedron-split {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 1rem;
+  }
+
+  .hedron-sim .showcase-shell .hedron-split-divider {
+    display: none;
+  }
+
+  .hedron-sim .showcase-shell .showcase-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 1.5rem;
+  }
+
+  .hedron-sim .showcase-shell .showcase-metrics .hedron-metric:nth-child(3) {
+    padding-inline-start: 0;
+    border-inline-start: 0;
+  }
+}
+
+@container (max-width: 500px) {
+  .hedron-sim .showcase-shell .showcase-metrics .hedron-metric {
+    padding-inline: 0.5rem;
+  }
+
+  .hedron-sim .showcase-shell .showcase-metrics .hedron-metric:nth-child(odd) {
+    padding-inline-start: 0;
+  }
+
+  .hedron-sim .showcase-shell .showcase-metrics [data-metric-value] {
+    font-size: 1.35rem;
+  }
+}

@@ -408,3 +408,41 @@ def test_edron_showcase_preserves_native_layout_inside_docs_host(docs_server: st
             assert mobile["hasHorizontalOverflow"] is False
         finally:
             browser.close()
+
+
+def test_hedron_showcase_fits_its_docs_container_and_remains_interactive(docs_server: str) -> None:
+    """The embedded app must adapt to its column, even on a wide viewport."""
+    with sync_playwright() as pw:
+        browser = _launch(pw)
+        page = browser.new_page(viewport={"width": 1440, "height": 900})
+        try:
+            page.goto(f"{docs_server}/examples/showcase/", wait_until="networkidle", timeout=60000)
+            root = page.locator('[data-hedron-sim="showcase-dashboard"]')
+            for width in (1440, 390):
+                page.set_viewport_size({"width": width, "height": 900})
+                layout = root.evaluate(
+                    """root => {
+                      const split = root.querySelector('.showcase-details');
+                      const timeline = root.querySelector('.hedron-timeline');
+                      const values = [...root.querySelectorAll('[data-metric-value]')];
+                      return {
+                        columns: getComputedStyle(split).gridTemplateColumns.split(' ').length,
+                        timelineHeight: timeline.getBoundingClientRect().height,
+                        clippedValues: values.some(value => value.scrollWidth > value.clientWidth),
+                        overflow: root.scrollWidth > root.clientWidth,
+                      };
+                    }"""
+                )
+                assert layout["columns"] == 1
+                assert layout["timelineHeight"] < 700
+                assert not layout["clippedValues"]
+                assert not layout["overflow"]
+
+            root.get_by_role("button", name="Refresh pipeline").click()
+            root.get_by_text("Transform in progress · refreshed just now").wait_for(state="visible")
+            root.get_by_role("button", name="Approve release").click()
+            root.get_by_text("Release approved", exact=True).wait_for(state="visible")
+            root.get_by_role("link", name="Deployments", exact=True).first.click()
+            root.get_by_role("heading", name="Deployments", exact=True).wait_for(state="visible")
+        finally:
+            browser.close()

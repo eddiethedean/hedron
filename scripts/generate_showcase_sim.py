@@ -101,6 +101,13 @@ def build() -> str:
         return source.approve.handler()
 
     rendered = embed_demo(sim)
+    # Command buttons target themselves in the live app, whose response
+    # retargets the approved panel. The simulator swaps the declared region
+    # directly, so its request target must match that region.
+    command_target = 'hx-target="#approve"'
+    if command_target not in rendered:
+        raise RuntimeError("unexpected approval button target in showcase preview")
+    rendered = rendered.replace(command_target, f'hx-target="{source.approval_region.selector}"', 1)
     marker = '<section class="hedron-sim" data-hedron-sim="showcase-dashboard">'
     toolbar = (
         '<button class="hedron-sim__fullscreen" type="button" '

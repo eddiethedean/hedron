@@ -1075,7 +1075,7 @@ button[class*=" md-"] {
 }
 
 .md-typeset .hedron-actions .md-button:focus-visible,
-.md-typeset a.hedron-card:not(.edron-sim .hedron-card):focus-visible,
+.md-typeset a.hedron-card:not(.edron-sim .hedron-card, .showcase-shell .hedron-card):focus-visible,
 .hedron-not-found__links a:focus-visible {
   outline: 3px solid rgba(0, 139, 138, 0.55);
   outline: 3px solid color-mix(in srgb, var(--md-accent-fg-color) 60%, transparent);
@@ -1118,7 +1118,7 @@ button[class*=" md-"] {
 }
 
 .hedron-choice::after,
-.hedron-card:not(.edron-sim .hedron-card)::after {
+.hedron-card:not(.edron-sim .hedron-card, .showcase-shell .hedron-card)::after {
   background: url("../assets/polyhedron-mesh.svg") center / contain no-repeat;
   content: "";
   height: 5.4rem;
@@ -1132,7 +1132,7 @@ button[class*=" md-"] {
 }
 
 [data-md-color-scheme="slate"] .hedron-choice::after,
-[data-md-color-scheme="slate"] .hedron-card:not(.edron-sim .hedron-card)::after {
+[data-md-color-scheme="slate"] .hedron-card:not(.edron-sim .hedron-card, .showcase-shell .hedron-card)::after {
   opacity: 0.06;
 }
 
@@ -1166,14 +1166,14 @@ a.hedron-choice:hover {
   margin: 0.4rem 0 0;
 }
 
-.hedron-grid:not(.edron-sim .hedron-grid) {
+.hedron-grid:not(.edron-sim .hedron-grid, .showcase-shell .hedron-grid) {
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin: 1.4rem 0 3.2rem;
 }
 
-.hedron-card:not(.edron-sim .hedron-card) {
+.hedron-card:not(.edron-sim .hedron-card, .showcase-shell .hedron-card) {
   background: var(--hedron-surface);
   border: 1px solid var(--hedron-border);
   border-radius: 0.45rem;
@@ -1185,25 +1185,25 @@ a.hedron-choice:hover {
   transition: border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
 }
 
-a.hedron-card:not(.edron-sim .hedron-card):hover {
+a.hedron-card:not(.edron-sim .hedron-card, .showcase-shell .hedron-card):hover {
   border-color: rgba(0, 139, 138, 0.6);
   box-shadow: 0 8px 20px rgba(23, 33, 43, 0.08);
   transform: translateY(-1px);
 }
 
-.hedron-card:not(.edron-sim .hedron-card) strong {
+.hedron-card:not(.edron-sim .hedron-card, .showcase-shell .hedron-card) strong {
   color: var(--hedron-ink);
   display: block;
   font-size: 1rem;
   margin: 0.55rem 0 0.35rem;
 }
 
-.hedron-card:not(.edron-sim .hedron-card) p {
+.hedron-card:not(.edron-sim .hedron-card, .showcase-shell .hedron-card) p {
   font-size: 0.82rem;
   margin: 0;
 }
 
-.hedron-card__icon:not(.edron-sim .hedron-card__icon) {
+.hedron-card__icon:not(.edron-sim .hedron-card__icon, .showcase-shell .hedron-card__icon) {
   color: var(--md-accent-fg-color);
   display: inline-flex;
   font-size: 1.2rem;
@@ -1361,7 +1361,7 @@ a.hedron-card:not(.edron-sim .hedron-card):hover {
   }
 
   .hedron-choice-grid,
-  .hedron-grid:not(.edron-sim .hedron-grid),
+  .hedron-grid:not(.edron-sim .hedron-grid, .showcase-shell .hedron-grid),
   .hedron-path {
     grid-template-columns: 1fr;
   }
@@ -1370,7 +1370,7 @@ a.hedron-card:not(.edron-sim .hedron-card):hover {
     margin-top: 1.25rem;
   }
 
-  .hedron-card:not(.edron-sim .hedron-card) {
+  .hedron-card:not(.edron-sim .hedron-card, .showcase-shell .hedron-card) {
     min-height: 0;
   }
 
