@@ -1,6 +1,6 @@
 # Hedron `v1.3.0` first-class UI testing acceptance plan
 
-**Status:** Candidate Linux host/browser and budget evidence is recorded; all 17 release gates remain Planned pending acceptance and sign-off
+**Status:** Release candidate prepared on `4dbab1ea7c511b56058eca5d2da8297c43b1d059`; 16 non-release gates are Verified, and release approval/cut/tag/publication remain pending
 **Planning revision:** 2026-10-28
 **Planning baseline:** Published `v1.2.0`
 **Required release predecessor:** `v1.2.0` — PyPI publication verified
@@ -13,39 +13,38 @@
 **Behavior/accessibility inventory:** [ui-testing-inventory-130.toml](ui-testing-inventory-130.toml)
 **Skip policy:** [ui-testing-skip-policy-130.toml](ui-testing-skip-policy-130.toml)
 
-The candidate implementation now includes the direct-Page testing surface, spawned ASGI host,
-explicit pytest plugin, structured failure manifests, packaged sample app, and browser tests. The
+The candidate implementation includes the direct-Page testing surface, spawned ASGI host, explicit
+pytest plugin, structured failure manifests, packaged sample app, and browser tests. The
 [local vertical-slice record](evidence-130/LOCAL_VERTICAL_SLICE_2026-10-28.md) reports 31 passing
-tests on each local browser engine. Hosted Linux candidate evidence now covers the host/browser
-matrix, skip policy, measured budgets, capture limits, and structured privacy probe. Those results
-do not establish API freeze, maintainer acceptance, distributable rehearsal, or release approval.
-All 17 gate ids remain authoritative and their machine states remain Planned.
+tests on each local browser engine. The accepted scope/API contract and package dispositions are
+bound to the maintainer acceptance record. The current release ledger records 16 non-release gates
+as Verified; `RELEASE-130` remains Planned until release approval and the release cut are recorded.
 
-Strict release validation binds every Verified gate to a retained evidence file, its SHA-256, and
-the tested source revision. Evidence results, the final gate states, and review/approval records may
-be committed afterward under `docs/acceptance/evidence-130/` with the release gate and this plan;
-the verifier permits only those evidence-only changes after the source revision and requires a clean
-tree. It also requires the v1.2.0 publication record, frozen contract and measured budget evidence,
-complete package review, release artifact manifest, and explicit maintainer/release approvals. The
-in-progress ledger leaves those approval and publication records empty until they exist.
+Strict release validation binds every Verified gate to retained evidence, its SHA-256, and the tested
+source revision. The evidence-only record may follow that source revision under
+`docs/acceptance/evidence-130/`, with the gate and this plan; strict validation requires a clean
+tree. The ledger retains the v1.2.0 publication record, accepted frozen contract, measured budgets,
+complete package dispositions, reproducible artifact manifest, and upgrade/rollback rehearsal.
+Release approval remains empty, `release_cut_satisfied` is false, and no tag or publication is
+authorized by this candidate packet.
 
 ## Entry and release dependencies
 
 The maintained sequence requires the published 1.2 Python baseline and its release evidence.
 `predecessor_satisfied` is bound to the publication verification at
-[evidence-120/PUBLICATION.md](evidence-120/PUBLICATION.md). Implementation is proceeding on the
-candidate source while freeze evidence is gathered. A release still requires the accepted
-FREEZE-130 contract and all remaining release evidence.
+[evidence-120/PUBLICATION.md](evidence-120/PUBLICATION.md). Implementation and freeze evidence are
+complete on the candidate source. A release still requires the explicit release decision and
+release-cut evidence.
 
 FREEZE-130 requires actual results for process startup/root-path/cleanup, pytest-playwright context
 and capture ownership, checkpoint/event capability coverage, capture-resource limits, dependency/
 browser revisions, fresh-user/typing exercises, named maintainers, and measured budgets. The
-contract ledger records uncompleted requirements as Planned or Unmeasured. The
-version-aware [release gate checker](../../scripts/check_release_gate.py) now selects the 1.3
-ledger, accepts Planned rows only in candidate mode, and rejects incomplete evidence in strict
+accepted contract marks the freeze satisfied and all seven required numeric budgets Measured and
+frozen. The version-aware [release gate checker](../../scripts/check_release_gate.py) selects the
+1.3 ledger, accepts Planned rows only in candidate mode, and rejects incomplete evidence in strict
 release mode.
 
-## Hosted candidate evidence — 2026-10-29
+## Candidate evidence history — 2026-10-29
 
 CI run [40918890605](https://github.com/eddiethedean/hedron/actions/runs/40918890605) passed on
 Linux x86_64 at source revision `825f31c8af6e1c446995dbff8be30738b634b22c`. It exercised all 13
@@ -67,15 +66,50 @@ resolved 9.2.0, 0.10.0, 1.64.1, and 0.54.0. Browser end-to-end tests remain on t
 pinned Playwright 1.62.0 matrix. All checks in the follow-up run passed. The
 [retained evidence](evidence-130/ui-testing-resource-budgets-2026-10-29.json) records its artifact
 identities and a zero-hit scan across 49 downloaded files. The source revision and CI results are
-candidate evidence; release acceptance is still open.
+candidate evidence; release approval was still open after that run.
 
-The final full CI run [40924535172](https://github.com/eddiethedean/hedron/actions/runs/40924535172)
-passed on the current source revision `008959155f6426b5239069bd8bd4cd93323d8e28`, including
-quality/docs checks of the evidence-backed contract state. Its host, browser, bounds, packaging,
-integration, supply-chain, and required aggregate results are retained in
+An earlier full CI run [40924535172](https://github.com/eddiethedean/hedron/actions/runs/40924535172)
+passed on source revision `008959155f6426b5239069bd8bd4cd93323d8e28`, including quality/docs checks
+of the evidence-backed contract state. Its host, browser, bounds, packaging, integration,
+supply-chain, and required aggregate results are retained in
 [ci-run-40924535172.json](evidence-130/ci-run-40924535172.json). The 49 downloaded artifact files
-were scanned for randomized privacy-canary values with zero matches. This confirms the current
-candidate revision; it does not close the human-owned gates or produce release artifacts.
+were scanned for randomized privacy-canary values with zero matches. That run is historical evidence
+superseded by the final candidate run below.
+
+## Final candidate verification — 2026-10-29
+
+CI run [40937671727](https://github.com/eddiethedean/hedron/actions/runs/40937671727) completed
+successfully on source revision `4dbab1ea7c511b56058eca5d2da8297c43b1d059`. All 18 workflow jobs
+passed, including the required aggregate, the four Linux CPython host rows (3.11.15–3.14.6), the
+three Linux browser rows (Python 3.12.13; Chromium 151.0.7922.34, Firefox 153.0, WebKit 26.5),
+minimum/latest dependency bounds, strict quality and typing, package rehearsals, integration smokes,
+and the supply-chain bundle. Each browser row passed all 27 required cases. The 79–81 skips per row
+are classified as non-selected engines, retired historical APIs, separate privacy/capture probes,
+and a Chromium-only style check; no required case was skipped.
+
+The host rows each passed all 13 required cases with no skips. Measured maximum startup was 0.62–1.31
+seconds, maximum shutdown was 0.35–0.42 seconds, and every row used one host child. Browser suites
+completed in 269–442 seconds, within the frozen 1,800-second timeout and 128 MiB private tmpfs cap.
+The explicit synthetic capture probes retained valid failure traces (196–201 kB), surfaced the
+over-limit error, and terminated an over-budget profile within its measured overshoot bound. The
+structured privacy probes passed in all three engines with no canary category leaks or unexpected
+native output. A scan of all 142 downloaded run-artifact files found zero randomized canary-token
+matches.
+
+The minimum/latest testing-extra jobs explicitly activated `-p hedron.testing.pytest_plugin` and
+each passed 335 tests with 11 classified skips. The 22 coordinated packages produced 44
+distributions in two byte-identical builds. Independent verification against both retained builds
+matched all 44 approved hashes. The Python 3.11 upgrade rehearsal passed from v1.2.0 to v1.3.0 and
+rolled back to v1.2.0 with the original lock restored. The retained hash ledger and rollback record
+are [python-artifacts.json](evidence-130/python-artifacts.json) and
+[upgrade-rollback-1.3.json](evidence-130/upgrade-rollback-1.3.json); the full CI summary, job
+identities, and artifact digests are in
+[ci-run-40937671727.json](evidence-130/ci-run-40937671727.json). GitHub retains the run artifacts
+through 2027-01-27.
+
+The owner accepted the exact scope/API contract and package dispositions. That acceptance does not
+approve release. `RELEASE-130` stays Planned; `release_approval.approved` and
+`release_cut_satisfied` remain false, and no 1.3.0 tag or publication has been made.
 
 ## Required gates
 
@@ -106,21 +140,21 @@ candidate revision; it does not close the human-owned gates or produce release a
 | Sync pytest and direct Playwright, explicit plugin/testing extra | Asyncpytest or standalone non-pytest lifecycle, wrapper locator/assertion API |
 | Spawned flagship ASGI factory and literal-loopback external URL | Live app/closure serialization, managed WSGI/Posit launchers, remote server/browser capture |
 | Structured-only default and separate explicit synthetic capture corpus | Claimed generic trace/DOM/screenshot redaction, visual baseline comparison framework |
-| Draft all-package disposition inventory and one explicit sample-kit contribution | Public testing modules and executable host providers for every satellite |
+| Complete all-package disposition inventory and one explicit sample-kit contribution | Public testing modules and executable host providers for every satellite |
 | One packaged/scaffold example and bounded existing reference adoption | Browser testgen, testing doctor, all-historical-test sleep removal |
 | Existing runtime behavior and test-only observation | Runtime APIs, instrumentation, or feature semantics belonging to 1.4–1.7 |
 
-No existing accepted stable obligation is removed. The current implementation remains a Beta
-candidate; scope freeze must record actual included surfaces and maturity before release.
+No existing accepted stable obligation is removed. The accepted scope records the included surfaces;
+new 1.3 testing APIs remain Beta candidates for release.
 
 ## Required vertical slice and failure matrix
 
 The first synthetic profile slice passes locally in Chromium, Firefox, and WebKit. Hosted Linux CI
 passed the declared 27-case behavior/accessibility inventory on each pinned browser engine and the
 13-case host acceptance on each CPython 3.11–3.14 row. Follow-up CI also passed the minimum/latest
-testing-extra suites. Freeze actual API ownership, package dispositions, platform/runtime
-intersections, and optional OS pilots at W0. No full Cartesian or managed-adapter support is
-implied.
+testing-extra suites. The accepted freeze assigns API and package ownership, records the Linux
+platform/runtime intersections, and keeps macOS and Windows as pilots. No full Cartesian or
+managed-adapter support is implied.
 
 | Deliberate case | Required interpretation |
 |---|---|

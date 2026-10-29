@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "1.3"
-status = "ImplementationInProgress"
+status = "ReleaseCandidateReady"
 planning_revision = "2026-10-28"
 planning_baseline = "v1.2.0"
 compatibility_baseline = "v1.0.0 stable testing plus additive 1.x"
@@ -45,7 +45,7 @@ reviewer = "eddiethedean"
 reviewed_at = "2026-10-29T18:26:59Z"
 accepted = true
 review_record = "evidence-130/maintainer-acceptance-2026-10-29.json"
-review_record_sha256 = ""
+review_record_sha256 = "98a95c8481fce5d36f4e3c02e7e81453b0c9b3b9e0af300337928b5465d16862"
 
 [release_approval]
 approver = ""
@@ -55,135 +55,215 @@ approval_record = ""
 approval_record_sha256 = ""
 
 [release_artifacts]
-manifest = ""
-manifest_sha256 = ""
-source_revision = ""
+manifest = "evidence-130/python-artifacts.json"
+manifest_sha256 = "89a2f813eacced80ef20ffa4f6d52e666c3a685566139c97d1303d85f8692d76"
+source_revision = "4dbab1ea7c511b56058eca5d2da8297c43b1d059"
 
 [[evidence]]
 id = "FREEZE-130"
-state = "Planned"
+state = "Verified"
 owner = "architecture"
 ci_job = "evidence"
+command = "bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 1.3.0"
+maintainer = "eddiethedean"
+source_revision = "4dbab1ea7c511b56058eca5d2da8297c43b1d059"
+evidence = "evidence-130/ci-run-40937671727.json"
+evidence_sha256 = "dec94dbda09d4f0d5338dc0bbbb059e5655109e11ae62a684596773dd3a41df1"
 required = true
 description = "Source/export/task inventory, direct-Page prototype/user exercise, owned-host/context/capture/settle probes, exact candidate API/typing, named maintainers, complete dispositions, dependency/browser/host matrix, schemas, measured numeric budgets, exact commands/artifacts; no unresolved authority issue or Unmeasured Required budget."
 
 [[evidence]]
 id = "CONTRACT-130"
-state = "Planned"
+state = "Verified"
 owner = "testing"
-ci_job = "test"
+ci_job = "quality"
+command = "bash scripts/ci_checks.sh quality --python 3.11"
+maintainer = "eddiethedean"
+source_revision = "4dbab1ea7c511b56058eca5d2da8297c43b1d059"
+evidence = "evidence-130/ci-run-40937671727.json"
+evidence_sha256 = "dec94dbda09d4f0d5338dc0bbbb059e5655109e11ae62a684596773dd3a41df1"
 required = true
 description = "Three testing layers; native Page/Locator/expect; explicit central plugin activation; sync fixture/session scope; child/app and upstream context ownership; no wrapper DSL, second runner, shared live app, runtime instrumentation, or premature Stable promotion."
 
 [[evidence]]
 id = "HOST-130"
-state = "Planned"
+state = "Verified"
 owner = "testing"
-ci_job = "browser"
+ci_job = "test"
+command = "bash scripts/ci_checks.sh test --python 3.11"
+maintainer = "eddiethedean"
+source_revision = "4dbab1ea7c511b56058eca5d2da8297c43b1d059"
+evidence = "evidence-130/ci-run-40937671727.json"
+evidence_sha256 = "dec94dbda09d4f0d5338dc0bbbb059e5655109e11ae62a684596773dd3a41df1"
 required = true
 description = "Spawned importable ASGI factory; child-owned retained port-zero loopback listener; readiness after lifespan; real root-path/static/override parity; bounded graceful/forced cleanup; startup/fixture failure, interruption, xdist; caller-owned loopback external mode with unavailable server facts."
 
 [[evidence]]
 id = "LOCATOR-130"
-state = "Planned"
+state = "Verified"
 owner = "testing"
 ci_job = "browser"
+command = "bash scripts/ci_checks.sh browser --python 3.12"
+maintainer = "eddiethedean"
+source_revision = "4dbab1ea7c511b56058eca5d2da8297c43b1d059"
+evidence = "evidence-130/ci-run-40937671727.json"
+evidence_sha256 = "dec94dbda09d4f0d5338dc0bbbb059e5655109e11ae62a684596773dd3a41df1"
 required = true
 description = "Native Playwright semantic lookup and assertions, strict mark/region Locators, dynamic re-query after swap, ambiguity diagnostics, shadow/specialist boundaries, and direct Page/context interoperability; no get_by/expect clone."
 
 [[evidence]]
 id = "SETTLE-130"
-state = "Planned"
+state = "Verified"
 owner = "browser-platform"
 ci_job = "browser"
+command = "bash scripts/ci_checks.sh browser --python 3.12"
+maintainer = "eddiethedean"
+source_revision = "4dbab1ea7c511b56058eca5d2da8297c43b1d059"
+evidence = "evidence-130/ci-run-40937671727.json"
+evidence_sha256 = "dec94dbda09d4f0d5338dc0bbbb059e5655109e11ae62a684596773dd3a41df1"
 required = true
 description = "Pre-action checkpoint with session/navigation epoch; require actual matching start; distinguish trusted user actions from background polls, reject ambiguous same-target actions unless generation-scoped, and report scoped response/abort/204/swap/settle facts; fast request, supersession, OOB/removal, unknown capability and hung start/end; no global idle, future poll tick wait, fabricated readiness, or sleeps in new/adopted examples."
 
 [[evidence]]
 id = "ERROR-130"
-state = "Planned"
+state = "Verified"
 owner = "testing"
 ci_job = "browser"
+command = "bash scripts/ci_checks.sh browser --python 3.12"
+maintainer = "eddiethedean"
+source_revision = "4dbab1ea7c511b56058eca5d2da8297c43b1d059"
+evidence = "evidence-130/ci-run-40937671727.json"
+evidence_sha256 = "dec94dbda09d4f0d5338dc0bbbb059e5655109e11ae62a684596773dd3a41df1"
 required = true
 description = "Automatic session/fixture clean check; managed server/page/crash/console/HTTP/asset/network policy; canceled-request distinctions; narrow exact-count expected-HTTP scope; missing expectation failure; external facts unavailable; preserve primary test error plus capture/teardown secondary errors."
 
 [[evidence]]
 id = "ARTIFACT-130"
-state = "Planned"
+state = "Verified"
 owner = "testing"
 ci_job = "browser"
+command = "bash scripts/ci_checks.sh browser --python 3.12"
+maintainer = "eddiethedean"
+source_revision = "4dbab1ea7c511b56058eca5d2da8297c43b1d059"
+evidence = "evidence-130/ci-run-40937671727.json"
+evidence_sha256 = "dec94dbda09d4f0d5338dc0bbbb059e5655109e11ae62a684596773dd3a41df1"
 required = true
 description = "Versioned structured-only default manifest; separate explicit synthetic unredacted native capture; pre-creation upstream flag validation and one capture owner; recording-versus-retention distinction; bounded safe private temporaries/overshoot, atomic writes, disabled/unavailable/truncated/capture-failed markers, and no upload."
 
 [[evidence]]
 id = "PYTEST-130"
-state = "Planned"
+state = "Verified"
 owner = "tooling"
 ci_job = "test"
+command = "bash scripts/ci_checks.sh test --python 3.12"
+maintainer = "eddiethedean"
+source_revision = "4dbab1ea7c511b56058eca5d2da8297c43b1d059"
+evidence = "evidence-130/ci-run-40937671727.json"
+evidence_sha256 = "dec94dbda09d4f0d5338dc0bbbb059e5655109e11ae62a684596773dd3a41df1"
 required = true
 description = "Additive testing extra and explicit root-conftest/-p registration; supported pytest-playwright fixtures/options; one context lease/finalizer contract; no monkey patch; collection/no-binary behavior versus fail-on-missing selected browser; setup/call/teardown, xdist/rerun artifacts, no unrequested host/browser startup."
 
 [[evidence]]
 id = "SATELLITE-130"
-state = "Planned"
+state = "Verified"
 owner = "packages"
-ci_job = "packaging"
+ci_job = "browser"
+command = "bash scripts/ci_checks.sh browser --python 3.12"
+maintainer = "eddiethedean"
+source_revision = "4dbab1ea7c511b56058eca5d2da8297c43b1d059"
+evidence = "evidence-130/ci-run-40937671727.json"
+evidence_sha256 = "dec94dbda09d4f0d5338dc0bbbb059e5655109e11ae62a684596773dd3a41df1"
 required = true
 description = "Every coordinated/optional package has an explicit disposition; one minimal useful specialist contribution proves v1 identity/schema/capability/fixture metadata, explicit loading, absence/disabled/version/conflict/fleet behavior; stable re-exports/import isolation; no mandatory public modules/managed WSGI or duplicate harness/plugin authority."
 
 [[evidence]]
 id = "BEHAVIOR-130"
-state = "Planned"
+state = "Verified"
 owner = "reference-app"
 ci_job = "browser"
+command = "bash scripts/ci_checks.sh browser --python 3.12"
+maintainer = "eddiethedean"
+source_revision = "4dbab1ea7c511b56058eca5d2da8297c43b1d059"
+evidence = "evidence-130/ci-run-40937671727.json"
+evidence_sha256 = "dec94dbda09d4f0d5338dc0bbbb059e5655109e11ae62a684596773dd3a41df1"
 required = true
 description = "Linux browser matrix maps every required PAGE/fragment/OOB/history/form/CSRF/auth/local/request/combined/element/upload/download/poll/action/no-JS/asset-failure case to the acceptance inventory; all three engines pass with no required skip."
 
 [[evidence]]
 id = "A11Y-130"
-state = "Planned"
+state = "Verified"
 owner = "accessibility"
 ci_job = "browser"
+command = "bash scripts/ci_checks.sh browser --python 3.12"
+maintainer = "eddiethedean"
+source_revision = "4dbab1ea7c511b56058eca5d2da8297c43b1d059"
+evidence = "evidence-130/ci-run-40937671727.json"
+evidence_sha256 = "dec94dbda09d4f0d5338dc0bbbb059e5655109e11ae62a684596773dd3a41df1"
 required = true
 description = "Linux Chromium/Firefox/WebKit inventory covers native semantics, keyboard/focus/announcement, media modes, viewport/reflow, no-JS, axe engine/version/scope/incomplete/error evidence and deliberate violation; no WCAG/human-AT completion claim."
 
 [[evidence]]
 id = "SECURITY-130"
-state = "Planned"
+state = "Verified"
 owner = "security"
-ci_job = "evidence"
+ci_job = "browser"
+command = "bash scripts/ci_checks.sh browser --python 3.12"
+maintainer = "eddiethedean"
+source_revision = "4dbab1ea7c511b56058eca5d2da8297c43b1d059"
+evidence = "evidence-130/ci-run-40937671727.json"
+evidence_sha256 = "dec94dbda09d4f0d5338dc0bbbb059e5655109e11ae62a684596773dd3a41df1"
 required = true
 description = "Literal-loopback app/browser origins, fail-closed redirect responses, and service-worker/capability dispositions; test correlation cannot bypass app auth/CSRF; structured-only confidential canary proof; no raw trace redaction promise or remote capture; artifact paths/isolation and honest browser-versus-server-egress limits."
 
 [[evidence]]
 id = "PERF-130"
-state = "Planned"
+state = "Verified"
 owner = "performance"
 ci_job = "browser"
+command = "bash scripts/ci_checks.sh browser --python 3.12"
+maintainer = "eddiethedean"
+source_revision = "4dbab1ea7c511b56058eca5d2da8297c43b1d059"
+evidence = "evidence-130/ci-run-40937671727.json"
+evidence_sha256 = "dec94dbda09d4f0d5338dc0bbbb059e5655109e11ae62a684596773dd3a41df1"
 required = true
 description = "Retained Linux cold/warm startup/context/settle/cleanup and xdist measurements; frozen numeric event/artifact/private-disk/overshoot/time/worker/CI budgets with sample counts and hard-limit probes; capture overhead measured by profile; forced termination remains failed cleanup."
 
 [[evidence]]
 id = "COMPAT-130"
-state = "Planned"
+state = "Verified"
 owner = "compatibility"
 ci_job = "test"
+command = "bash scripts/ci_checks.sh test --python 3.14"
+maintainer = "eddiethedean"
+source_revision = "4dbab1ea7c511b56058eca5d2da8297c43b1d059"
+evidence = "evidence-130/ci-run-40937671727.json"
+evidence_sha256 = "dec94dbda09d4f0d5338dc0bbbb059e5655109e11ae62a684596773dd3a41df1"
 required = true
 description = "Stable 1.0 and additive 1.x testing exports/behavior preserved; Linux CPython 3.11–3.14 host/import/package checks; Linux Python 3.12 Chromium/Firefox/WebKit browser corpus; supported upstream min/max bounds and pinned browser revisions; no full Cartesian/managed-adapter parity claim."
 
 [[evidence]]
 id = "DOCS-130"
-state = "Planned"
+state = "Verified"
 owner = "docs"
 ci_job = "quality"
+command = "bash scripts/ci_checks.sh quality --python 3.11"
+maintainer = "eddiethedean"
+source_revision = "4dbab1ea7c511b56058eca5d2da8297c43b1d059"
+evidence = "evidence-130/ci-run-40937671727.json"
+evidence_sha256 = "dec94dbda09d4f0d5338dc0bbbb059e5655109e11ae62a684596773dd3a41df1"
 required = true
 description = "One packaged synthetic test-app factory and scaffold example; testing pyramid, explicit activation/install, direct Page, checkpoint/expected failure, capture/resource/privacy/cleanup limits, debug/CI and opt-out; optional browser testgen/doctor do not block cut; current-availability labels honest."
 
 [[evidence]]
 id = "PKG-130"
-state = "Planned"
+state = "Verified"
 owner = "packaging"
 ci_job = "packaging"
+command = "bash scripts/ci_checks.sh packaging --python 3.12"
+maintainer = "eddiethedean"
+source_revision = "4dbab1ea7c511b56058eca5d2da8297c43b1d059"
+evidence = "evidence-130/ci-run-40937671727.json"
+evidence_sha256 = "dec94dbda09d4f0d5338dc0bbbb059e5655109e11ae62a684596773dd3a41df1"
 required = true
 description = "Clean base/browser/testing-extra wheels/sdists/offline install/import/typing matrix on CPython 3.11–3.14; upstream fixture/capture options, missing-extra/browser diagnostics, bounded packaged resources, compatible versions and notices; no optional dependency leak or base pytest11 side effect."
 

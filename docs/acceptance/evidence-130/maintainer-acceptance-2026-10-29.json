@@ -1,0 +1,24 @@
+{
+  "schema": "hedron.phase-13-maintainer-review/1",
+  "phase": "1.3",
+  "source_revision": "d1709d47436488e8d20facd6c05a440b231bfb14",
+  "reviewer": "eddiethedean",
+  "repository_permission": "admin",
+  "reviewed_at": "2026-10-29T18:26:59Z",
+  "acceptance_basis": "The repository owner confirmed their maintainer-owner role and accepted the 1.3 scope and package dispositions in this task conversation.",
+  "accepted_records": {
+    "scope_and_api_contract": {
+      "path": "docs/acceptance/ui-testing-contract-130.toml",
+      "sha256": "4713c13fbdc6e1eb0e64ef1df66cf610af224a41a74f734e81ebbc2c49a053ee",
+      "api_maturity": "beta",
+      "matrix": "Frozen Linux host Python 3.11-3.14 and Linux Python 3.12 Chromium, Firefox, and WebKit; macOS and Windows remain pilots."
+    },
+    "package_dispositions": {
+      "path": "docs/acceptance/ui-testing-package-dispositions-130.toml",
+      "sha256": "d172acfd3dd1cb6317f2f63cc69b2ebcec92cf74cb6e816cac55043faf7c151c"
+    }
+  },
+  "release_approval": false,
+  "tag_authorized": false,
+  "publication_authorized": false
+}
