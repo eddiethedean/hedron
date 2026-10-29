@@ -742,6 +742,14 @@ cmd_browser() {
     --lane browser --python "$PYTHON" --browser "$HEDRON_BROWSER_ENGINE" \
     --junitxml test-results/browser.xml \
     --output "test-results/ui-testing-browser-${HEDRON_BROWSER_ENGINE}.json"
+  run_py scripts/run_ui_budgeted.py \
+    --output-json "test-results/ui-testing-resources-privacy-${HEDRON_BROWSER_ENGINE}.json" \
+    --timeout-seconds 300 --max-rss-mib 8192 --max-processes 64 \
+    --sample-interval-ms 25 --max-file-mib 64 \
+    "${tempfs_args[@]}" -- \
+    uv run --python "$PYTHON" python scripts/probe_ui_testing_privacy.py \
+      --browser "$HEDRON_BROWSER_ENGINE" \
+      --output-json "test-results/ui-testing-privacy-${HEDRON_BROWSER_ENGINE}.json"
 }
 
 cmd_workbench_bounds() {

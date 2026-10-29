@@ -26,6 +26,13 @@ allowed_in_browser_lane = true
 explanation = "Raw Playwright tracing is enabled only for the isolated, explicitly synthetic failure-capture probe."
 
 [[classification]]
+id = "STRUCTURED-PRIVACY-PROBE-SEPARATE-LANE"
+reason_regex = "^structured privacy canary is isolated to the privacy-probe lane$"
+disposition = "separate-privacy-probe"
+allowed_in_browser_lane = true
+explanation = "The intentional failing canary corpus runs in a separate lane so its JUnit failure is not treated as browser behavior evidence."
+
+[[classification]]
 id = "CHROMIUM-ONLY-STYLE-EVIDENCE"
 reason_regex = "^Chromium-only style evidence$"
 disposition = "not-applicable-engine-evidence"
