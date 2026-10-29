@@ -38,7 +38,7 @@ published = true
 published_at = "2026-10-27T20:06:05.000138Z"
 publication_url = "https://pypi.org/project/hedron/1.2.0/"
 release_record = "evidence-120/PUBLICATION.md"
-release_record_sha256 = "7bff4d9f9e25b70009c2b1e0b76de6477c28b50aeb137e6668df7516c3159dcb"
+release_record_sha256 = "86293379c15febd92c829eab88900dfad1b96641b583d750acb07f93e14ceb44"
 
 [maintainer_review]
 reviewer = ""
