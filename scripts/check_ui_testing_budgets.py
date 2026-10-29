@@ -431,18 +431,15 @@ def _check_parallel(
             errors.append("browser temporary filesystem exceeds its frozen capacity")
         if float(resource_report.get("temporary_filesystem_limit_bytes", 0)) != tmpfs_limit:
             errors.append("browser resource monitor did not enforce the frozen tmpfs capacity")
-        usage_limit = float(
-            cast(
-                Mapping[str, object],
-                budgets.get("synthetic_capture", {}).get("frozen_limits", {}),
-            ).get("temp_tree_max_bytes", 0)
-        )
+        # The full browser corpus shares the private tmpfs with pytest's
+        # per-test temporary directories. Bound that corpus by the hard mount
+        # capacity; only the isolated synthetic raw-capture profile uses the
+        # stricter monitored-tree threshold in `synthetic_capture`.
+        usage_limit = tmpfs_limit
         if float(resource_report.get("temporary_filesystem_usage_limit_bytes", 0)) != usage_limit:
-            errors.append(
-                "browser resource monitor did not enforce the frozen temporary-tree limit"
-            )
+            errors.append("browser resource monitor did not enforce the frozen tmpfs tree bound")
         if float(resource_report.get("max_temporary_tree_bytes", usage_limit + 1)) > usage_limit:
-            errors.append("browser temporary-tree usage exceeded its frozen monitored threshold")
+            errors.append("browser temporary-tree usage exceeded its private tmpfs capacity")
     if resource_report.get("termination_reason") is not None:
         errors.append(
             f"resource monitor terminated the test command: {resource_report['termination_reason']}"

@@ -724,9 +724,12 @@ cmd_browser() {
   export HEDRON_BROWSER_ENGINE="${HEDRON_BROWSER_ENGINE:-chromium}"
   local -a tempfs_args=()
   if [[ -n "${HEDRON_UI_CAPTURE_TMPFS_MIB:-}" ]]; then
+    # The complete browser suite is bounded by the private tmpfs capacity.
+    # Synthetic native-capture probes separately enforce the stricter 64 MiB
+    # monitored-tree threshold frozen for that capture profile.
     tempfs_args=(
       --tempfs-limit-mib "$HEDRON_UI_CAPTURE_TMPFS_MIB"
-      --tempfs-usage-limit-mib 64
+      --tempfs-usage-limit-mib "$HEDRON_UI_CAPTURE_TMPFS_MIB"
     )
   fi
   # Keep Playwright serial: xdist contention on browser processes flakes.
