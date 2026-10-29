@@ -30,7 +30,7 @@ def _py_escape_attr(value: str) -> str:
 
 def _load_extension() -> tuple[Callable[[str], str] | None, Callable[[str], str] | None]:
     try:
-        import hedron_native._native as extension  # pyright: ignore[reportMissingModuleSource]
+        import hedron_native._native as extension
 
         native_text = cast(Callable[[str], str], extension.escape_text)  # pyright: ignore[reportUnknownMemberType]
         native_attr = cast(Callable[[str], str], extension.escape_attr)  # pyright: ignore[reportUnknownMemberType]

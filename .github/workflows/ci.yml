@@ -185,7 +185,7 @@ jobs:
       - name: Set up Python
         run: uv python install 3.11
       - name: Install check dependencies
-        run: uv sync --locked --all-groups --python 3.11 --no-install-package hedron-native
+        run: uv sync --locked --all-groups --python 3.11
       - name: Run quality suite with strict package typing gate
         if: needs.changes.outputs.docs_only != 'true'
         run: bash scripts/ci_checks.sh quality --python 3.11 --skip-wheels
