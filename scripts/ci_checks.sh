@@ -724,7 +724,10 @@ cmd_browser() {
   export HEDRON_BROWSER_ENGINE="${HEDRON_BROWSER_ENGINE:-chromium}"
   local -a tempfs_args=()
   if [[ -n "${HEDRON_UI_CAPTURE_TMPFS_MIB:-}" ]]; then
-    tempfs_args=(--tempfs-limit-mib "$HEDRON_UI_CAPTURE_TMPFS_MIB")
+    tempfs_args=(
+      --tempfs-limit-mib "$HEDRON_UI_CAPTURE_TMPFS_MIB"
+      --tempfs-usage-limit-mib 64
+    )
   fi
   # Keep Playwright serial: xdist contention on browser processes flakes.
   mkdir -p test-results

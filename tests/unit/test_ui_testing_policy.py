@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 from collections import deque
+from pathlib import Path
 from types import SimpleNamespace
 from typing import cast, final
 
@@ -49,13 +50,19 @@ def test_upstream_capture_flags_require_synthetic_consent_before_context_creatio
         _validate_capture_options(config, ("structured", False))
 
 
-def test_explicit_synthetic_capture_accepts_only_the_admitted_options() -> None:
+def test_explicit_synthetic_capture_accepts_only_the_admitted_options(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.setenv("HEDRON_UI_CAPTURE_BUDGET", "linux-tmpfs-128m-monitor-25ms-file-64m-v1")
+    monkeypatch.setenv("TMPDIR", str(tmp_path))
     config = _capture_config(
         {
             "--tracing": "retain-on-failure",
             "--screenshot": "only-on-failure",
             "--video": "off",
             "--full-page-screenshot": False,
+            "--output": str(tmp_path / "playwright-output"),
         }
     )
     _validate_capture_options(config, ("synthetic", True))
@@ -66,10 +73,51 @@ def test_explicit_synthetic_capture_accepts_only_the_admitted_options() -> None:
             "--screenshot": "off",
             "--video": "on",
             "--full-page-screenshot": False,
+            "--output": str(tmp_path / "playwright-output"),
         }
     )
     with pytest.raises(pytest.UsageError, match="video and full-page capture are not admitted"):
         _validate_capture_options(unbounded_config, ("synthetic", True))
+
+
+def test_synthetic_capture_requires_the_monitored_linux_budget_runner(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.delenv("HEDRON_UI_CAPTURE_BUDGET", raising=False)
+    monkeypatch.setenv("TMPDIR", str(tmp_path))
+    config = _capture_config(
+        {
+            "--tracing": "retain-on-failure",
+            "--screenshot": "off",
+            "--video": "off",
+            "--full-page-screenshot": False,
+            "--output": str(tmp_path / "playwright-output"),
+        }
+    )
+    with pytest.raises(pytest.UsageError, match="requires Hedron's Linux budget runner"):
+        _validate_capture_options(config, ("synthetic", True))
+
+
+def test_synthetic_capture_output_must_stay_inside_private_tmpdir(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.setenv("HEDRON_UI_CAPTURE_BUDGET", "linux-tmpfs-128m-monitor-25ms-file-64m-v1")
+    private_tmp = tmp_path / "private"
+    private_tmp.mkdir()
+    monkeypatch.setenv("TMPDIR", str(private_tmp))
+    config = _capture_config(
+        {
+            "--tracing": "retain-on-failure",
+            "--screenshot": "off",
+            "--video": "off",
+            "--full-page-screenshot": False,
+            "--output": str(tmp_path / "public-output"),
+        }
+    )
+    with pytest.raises(pytest.UsageError, match="--output inside private TMPDIR"):
+        _validate_capture_options(config, ("synthetic", True))
 
 
 def _capture_config(options: dict[str, object]) -> pytest.Config:

@@ -36,7 +36,7 @@ installed-application upgrade, and rollback evidence is retained in `evidence-12
 frozen candidate. The artifact rehearsal binds Python 3.10 rejection and unpinned resolver fallback
 to the exact candidate wheel. The separately licensed live Connect smoke is advisory.
 
-The [1.2 artifact rehearsal workflow](../../.github/workflows/release-artifacts-1.2.yml)
+The [1.2 artifact rehearsal workflow](https://github.com/eddiethedean/hedron/blob/22a96e48f4612c087abb8256c549573df96c0407/.github/workflows/release-artifacts-1.2.yml)
 builds the 22 coordinated Python distributions twice, compares the complete 44-file inventory and
 hashes, checks Python 3.10 rejection/resolution fallback, rehearses an installed 1.1.3 app upgrade
 and lock-based rollback on Python 3.11, and retains the results with a source-linked ledger. The

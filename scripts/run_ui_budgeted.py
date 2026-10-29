@@ -15,6 +15,9 @@ import sys
 import time
 from pathlib import Path
 
+_CAPTURE_BUDGET_ENV = "HEDRON_UI_CAPTURE_BUDGET"
+_CAPTURE_BUDGET_VALUE = "linux-tmpfs-128m-monitor-25ms-file-64m-v1"
+
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -24,6 +27,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--max-processes", type=int, default=64)
     parser.add_argument("--sample-interval-ms", type=int, default=50)
     parser.add_argument("--tempfs-limit-mib", type=int)
+    parser.add_argument("--tempfs-usage-limit-mib", type=int)
     parser.add_argument("--max-file-mib", type=int, default=64)
     parser.add_argument("command", nargs=argparse.REMAINDER)
     args = parser.parse_args(argv)
@@ -40,10 +44,16 @@ def main(argv: list[str] | None = None) -> int:
 
     temp_root = Path(os.environ.get("TMPDIR", "/tmp")).resolve()
     temp_mount = _mount_for_path(temp_root)
+    temp_stat = temp_root.stat()
+    private_temp = temp_stat.st_uid == os.getuid() and temp_stat.st_mode & 0o077 == 0
     temp_capacity = os.statvfs(temp_root).f_blocks * os.statvfs(temp_root).f_frsize
     if args.tempfs_limit_mib is not None:
         if temp_mount != "tmpfs":
             parser.error(f"TMPDIR must be a bounded tmpfs mount; found {temp_mount!r}")
+        if not private_temp:
+            parser.error(
+                "TMPDIR must be owned by the current user and inaccessible to group/others"
+            )
         temp_limit_bytes = args.tempfs_limit_mib * 1024 * 1024
         if temp_capacity > temp_limit_bytes:
             parser.error(
@@ -51,11 +61,35 @@ def main(argv: list[str] | None = None) -> int:
             )
     else:
         temp_limit_bytes = None
+    if args.tempfs_usage_limit_mib is not None:
+        if temp_limit_bytes is None:
+            parser.error("--tempfs-usage-limit-mib requires --tempfs-limit-mib")
+        if args.tempfs_usage_limit_mib <= 0:
+            parser.error("temporary storage usage limit must be positive")
+        temp_usage_limit_bytes = args.tempfs_usage_limit_mib * 1024 * 1024
+        if temp_usage_limit_bytes > temp_limit_bytes:
+            parser.error("temporary storage usage limit cannot exceed the tmpfs capacity limit")
+    else:
+        temp_usage_limit_bytes = None
+
+    child_env = os.environ.copy()
+    # Never inherit a caller-supplied assertion. Mark the child only when this
+    # wrapper is enforcing the frozen raw-capture envelope itself.
+    child_env.pop(_CAPTURE_BUDGET_ENV, None)
+    if (
+        temp_mount == "tmpfs"
+        and private_temp
+        and temp_limit_bytes == 128 * 1024 * 1024
+        and temp_usage_limit_bytes == 64 * 1024 * 1024
+        and args.sample_interval_ms == 25
+        and args.max_file_mib == 64
+    ):
+        child_env[_CAPTURE_BUDGET_ENV] = _CAPTURE_BUDGET_VALUE
 
     start = time.monotonic()
     process = subprocess.Popen(
         command,
-        env=os.environ.copy(),
+        env=child_env,
         start_new_session=True,
         preexec_fn=_file_size_limit(args.max_file_mib),
     )
@@ -84,7 +118,7 @@ def main(argv: list[str] | None = None) -> int:
                 termination_reason = "process_group_rss_limit"
             elif process_count > args.max_processes:
                 termination_reason = "process_count_limit"
-            elif temp_limit_bytes is not None and temp_bytes > temp_limit_bytes:
+            elif temp_usage_limit_bytes is not None and temp_bytes > temp_usage_limit_bytes:
                 termination_reason = "temporary_storage_limit"
         if termination_reason is not None:
             _terminate_group(process.pid, process)
@@ -115,6 +149,7 @@ def main(argv: list[str] | None = None) -> int:
         "temporary_filesystem": temp_mount,
         "temporary_filesystem_capacity_bytes": temp_capacity,
         "temporary_filesystem_limit_bytes": temp_limit_bytes,
+        "temporary_filesystem_usage_limit_bytes": temp_usage_limit_bytes,
         "monitor_interval_ms": args.sample_interval_ms,
         "sample_count": sample_count,
         "per_file_rlimit_bytes": args.max_file_mib * 1024 * 1024,

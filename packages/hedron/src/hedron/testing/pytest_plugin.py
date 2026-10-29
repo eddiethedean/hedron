@@ -53,6 +53,8 @@ _WORKER_RE = re.compile(r"[A-Za-z0-9_-]{1,32}\Z")
 _MAX_MANIFEST_BYTES = 512 * 1024
 _MAX_ARTIFACT_BYTES_PER_WORKER = 64 * 1024 * 1024
 _MAX_ARTIFACTS_PER_WORKER = 128
+_CAPTURE_BUDGET_ENV = "HEDRON_UI_CAPTURE_BUDGET"
+_CAPTURE_BUDGET_VALUE = "linux-tmpfs-128m-monitor-25ms-file-64m-v1"
 
 
 def pytest_addoption(parser: pytest.Parser) -> None:
@@ -285,6 +287,29 @@ def _validate_capture_options(
         if tracing != "retain-on-failure":
             raise pytest.UsageError(
                 "synthetic UI capture requires pytest-playwright --tracing=retain-on-failure"
+            )
+        if os.environ.get(_CAPTURE_BUDGET_ENV) != _CAPTURE_BUDGET_VALUE:
+            raise pytest.UsageError(
+                "synthetic UI capture requires Hedron's Linux budget runner with a private "
+                + "128 MiB tmpfs, a 64 MiB total-tree limit, 25 ms monitoring, and a 64 MiB "
+                + "per-file limit"
+            )
+        output_dir = _get_option(config, "--output", None)
+        if not isinstance(output_dir, str):
+            raise pytest.UsageError(
+                "synthetic UI capture requires pytest-playwright --output inside private TMPDIR"
+            )
+        tmp_root = Path(os.environ.get("TMPDIR", "/tmp")).resolve()
+        output_path = Path(output_dir)
+        if not output_path.is_absolute():
+            output_path = Path.cwd() / output_path
+        try:
+            bounded_output = output_path.resolve(strict=False).is_relative_to(tmp_root)
+        except (OSError, RuntimeError):
+            bounded_output = False
+        if not bounded_output:
+            raise pytest.UsageError(
+                "synthetic UI capture requires pytest-playwright --output inside private TMPDIR"
             )
         if screenshot not in {"off", "only-on-failure"} or video != "off" or full_page:
             raise pytest.UsageError(

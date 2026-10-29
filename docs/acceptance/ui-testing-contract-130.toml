@@ -1,15 +1,15 @@
 schema_version = 1
 phase = "1.3"
-status = "ImplementationInProgress"
+status = "ScopeFrozen"
 planning_revision = "2026-10-28"
 owning_rfc = "RFC-0097"
 release_gate = "release-gate-1.3.toml"
 implementation = "../implementation/UI_TESTING_1_3.md"
 package_dispositions = "ui-testing-package-dispositions-130.toml"
-freeze_satisfied = false
+freeze_satisfied = true
 stage_0_probes_executed = true
 numeric_budgets_frozen = true
-named_maintainers_assigned = false
+named_maintainers_assigned = true
 planning_only = false
 local_vertical_slice = "passed-three-engines"
 local_probe_evidence = "evidence-130/LOCAL_VERTICAL_SLICE_2026-10-28.md"
@@ -25,9 +25,61 @@ compatibility = "stable v1.0.0 testing inventory plus additive 1.x"
 source_inventory_reviewed = true
 source_inventory_is_runtime_verification = false
 
+[[maintainer_assignment]]
+role = "architecture"
+maintainer = "eddiethedean"
+
+[[maintainer_assignment]]
+role = "testing"
+maintainer = "eddiethedean"
+
+[[maintainer_assignment]]
+role = "browser-platform"
+maintainer = "eddiethedean"
+
+[[maintainer_assignment]]
+role = "packages"
+maintainer = "eddiethedean"
+
+[[maintainer_assignment]]
+role = "reference-app"
+maintainer = "eddiethedean"
+
+[[maintainer_assignment]]
+role = "accessibility"
+maintainer = "eddiethedean"
+
+[[maintainer_assignment]]
+role = "security"
+maintainer = "eddiethedean"
+
+[[maintainer_assignment]]
+role = "performance"
+maintainer = "eddiethedean"
+
+[[maintainer_assignment]]
+role = "compatibility"
+maintainer = "eddiethedean"
+
+[[maintainer_assignment]]
+role = "docs"
+maintainer = "eddiethedean"
+
+[[maintainer_assignment]]
+role = "packaging"
+maintainer = "eddiethedean"
+
+[[maintainer_assignment]]
+role = "release"
+maintainer = "eddiethedean"
+
+[[maintainer_assignment]]
+role = "tooling"
+maintainer = "eddiethedean"
+
 [api]
-state = "CandidateImplemented"
-maturity = "beta-candidate"
+state = "Frozen"
+maturity = "beta"
 scenario_module = "hedron.testing.browser_scenario"
 pytest_module = "hedron.testing.pytest_plugin"
 fixture = "hedron_ui"
@@ -94,14 +146,14 @@ canary_corpus_required = true
 omission_and_failure_markers_required = true
 
 [capture.synthetic]
-state = "PartialCandidate"
+state = "CandidateImplemented"
 explicit_opt_in = true
 synthetic_fixture_declaration_required = true
 native_capture_redacted = false
 unredacted_label_required = true
 native_trace_recording = "during test, private temporary output"
 retention = "on failure; success temporaries removed"
-resource_contract = "freeze private storage monitoring, bounded overshoot and termination"
+resource_contract = "native capture is rejected unless the Linux budget runner enforces output below TMPDIR on a private 128 MiB tmpfs, a monitored 64 MiB total-tree threshold with 25 ms process-group checks and forced termination, and an inherited 64 MiB per-file limit"
 posthoc_size_check_proves_recording_cap = false
 required_failure_capture_can_be_silently_omitted = false
 
@@ -123,7 +175,7 @@ remote_browser_attachment = "Deferred"
 websocket_download_popup_capabilities = "freeze against pinned versions"
 
 [matrix]
-state = "RequiredLinuxMatrix"
+state = "Frozen"
 required_os_candidate = "Linux"
 os_pilots = ["macOS", "Windows"]
 core_host_import_package_python = ["3.11", "3.12", "3.13", "3.14"]
@@ -233,8 +285,8 @@ threshold_frozen = true
 limit = 67108864
 unit = "bytes_per_file"
 sample_count = 3
-frozen_limits = { tmpfs_max_bytes = 134217728, monitor_interval_ms = 25, max_overshoot_bytes = 67108864, termination_must_be_visible = true }
-measurement_scope = "Three hosted Linux probes on private 128 MiB tmpfs used 25 ms sampling, a 64 MiB per-file limit, a successful ENOSPC hard-limit probe, and an over-limit capture error probe. The largest historical 25 ms growth sample was 45,564,212 bytes; the selected bound leaves 21,544,652 bytes of measured margin."
+frozen_limits = { tmpfs_max_bytes = 134217728, temp_tree_max_bytes = 67108864, threshold_probe_limit_bytes = 33554432, monitor_interval_ms = 25, max_overshoot_bytes = 67108864, termination_must_be_visible = true }
+measurement_scope = "Three hosted Linux probes on private 128 MiB tmpfs used a monitored 64 MiB total-tree limit, 25 ms sampling, a 64 MiB per-file limit, a successful ENOSPC hard-limit probe, an over-limit capture error probe, and forced threshold termination."
 measurement_evidence = "evidence-130/ui-testing-resource-budgets-2026-10-29.json"
 measurement_sha256 = "c4a18f67cd4a1b522514b34219a5c7aab1a2a357434c8957889964ef6629c59a"
 

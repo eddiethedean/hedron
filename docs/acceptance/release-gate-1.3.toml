@@ -15,7 +15,7 @@ package_dispositions = "ui-testing-package-dispositions-130.toml"
 behavior_accessibility_inventory = "ui-testing-inventory-130.toml"
 skip_classification_policy = "ui-testing-skip-policy-130.toml"
 planning_only = false
-stage_1_entry_satisfied = false
+stage_1_entry_satisfied = true
 release_cut_satisfied = false
 local_probe_evidence = "evidence-130/LOCAL_VERTICAL_SLICE_2026-10-28.md"
 local_probe_engines = ["chromium", "firefox", "webkit"]
@@ -41,10 +41,10 @@ release_record = "evidence-120/PUBLICATION.md"
 release_record_sha256 = "86293379c15febd92c829eab88900dfad1b96641b583d750acb07f93e14ceb44"
 
 [maintainer_review]
-reviewer = ""
-reviewed_at = ""
-accepted = false
-review_record = ""
+reviewer = "eddiethedean"
+reviewed_at = "2026-10-29T18:26:59Z"
+accepted = true
+review_record = "evidence-130/maintainer-acceptance-2026-10-29.json"
 review_record_sha256 = ""
 
 [release_approval]

@@ -178,6 +178,23 @@ The default failure artifact is a bounded structured manifest under
 console messages, and target identifiers. Native trace/screenshot capture is a separate
 synthetic-data-only profile and labels retained output unredacted. Its resource ceilings are
 still part of the 1.3 release gate, so do not use it for real or confidential data.
+On Linux, opted-in native capture must run through Hedron's budget wrapper with pytest-playwright
+output inside a private 128 MiB tmpfs, a monitored 64 MiB total-tree threshold, 25 ms process-group
+checks, and a 64 MiB per-file limit. Crossing the tree threshold terminates and fails the test
+process; direct `pytest --tracing` use is rejected.
+The release CI browser lane configures this wrapper and tmpfs automatically.
+From a source checkout, the equivalent command is:
+
+```bash
+export HEDRON_BROWSER=1
+python scripts/run_ui_budgeted.py \
+  --output-json test-results/ui-resources.json \
+  --tempfs-limit-mib 128 --tempfs-usage-limit-mib 64 \
+  --sample-interval-ms 25 --max-file-mib 64 -- \
+  python -m pytest -p hedron.testing.pytest_plugin -q \
+  --browser chromium --tracing=retain-on-failure \
+  --output "$TMPDIR/playwright-output" path/to/test_ui.py
+```
 
 This API is beta. It supports synchronous pytest with pytest-playwright; asyncpytest, WSGI host
 launchers, remote services, and visual snapshot management are outside this cut. The lower-cost

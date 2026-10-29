@@ -82,7 +82,7 @@ The separately versioned `hedron-native==0.1.4` package lookup on PyPI remains u
 1.2 predecessor record covers the 22 coordinated Python distributions; native artifacts remain
 tracked separately and are not represented as a PyPI upload.
 
-## Execution update — 2026-10-29
+## Execution update — 2026-10-29 pre-freeze CI runs
 
 Hosted candidate CI run [40918890605](https://github.com/eddiethedean/hedron/actions/runs/40918890605)
 passed on source revision `825f31c8af6e1c446995dbff8be30738b634b22c`. It completed on Linux
@@ -124,11 +124,34 @@ retained artifact manifest can be reviewed before merge. PR #984 is still draft 
 assignee. The maintainer review and release approval records are empty. No tag or publication has
 been created.
 
+## Execution update — 2026-10-29 candidate freeze
+
+The repository owner accepted the exact Beta candidate API, frozen Linux/Python/browser matrix,
+resource budgets, and all package dispositions. The maintainer review record will bind those accepted
+files to the frozen source commit. This is scope and package review; final release approval remains
+separate and unset.
+
+The Python 3.10 release fallback has been removed from active 1.3 tooling and CI. Hosted run
+[40931129424](https://github.com/eddiethedean/hedron/actions/runs/40931129424) passed the four Linux
+host-Python rows, three browser lanes, stable dependency bounds, artifact build/hash rehearsal, and
+Python 3.11 upgrade/rollback rehearsal. Its quality job found a broken historical link left by
+retiring the 1.2 workflow; the acceptance record now points to the immutable workflow revision.
+
+The native-capture gap is being closed in the runner contract: opted-in trace output must stay under
+a private owner-only 128 MiB Linux tmpfs, with a monitored 64 MiB total-tree threshold, 25 ms
+sampling, process-group termination, and a 64 MiB per-file limit. Direct capture outside that
+envelope is rejected before context creation. The synthetic probe now exercises threshold
+termination as well as retained-trace validity, per-file failure, and hard tmpfs exhaustion. Focused
+policy tests pass; final hosted revalidation is pending on the frozen candidate revision.
+
+No tag or publication has been created. The release approval and cut remain open until final
+candidate evidence is bound and explicitly approved.
+
 ## Initial planning snapshot
 
-The following subsection records the state when this execution plan was first drafted. The
-execution update above supersedes its implementation and verification status; predecessor,
-freeze, ownership, and release blockers below remain open.
+The following subsection records the state when this execution plan was first drafted. Later
+2026-10-29 execution updates supersede its implementation, freeze, ownership, and verification
+status; the remaining release approval is still open.
 
 The UI testing candidate implements the direct Playwright API, managed ASGI host,
 explicit pytest plugin, structured manifests, synthetic capture option guards, and

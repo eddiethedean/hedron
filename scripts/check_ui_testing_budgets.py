@@ -310,6 +310,8 @@ def _check_capture(
     details = cast(Mapping[str, object], budget.get("frozen_limits", {}))
     if probe.get("temporary_filesystem") != "tmpfs":
         errors.append("synthetic capture probe did not use tmpfs")
+    if probe.get("temporary_filesystem_private") is not True:
+        errors.append("synthetic capture probe did not use private tmpfs storage")
     if probe.get("temporary_filesystem_capacity_bytes", limit + 1) > float(
         details.get("tmpfs_max_bytes", 0)
     ):
@@ -323,6 +325,16 @@ def _check_capture(
         errors.append("synthetic capture probe did not retain its intentional failure")
     if float(normal.get("trace_bytes", 0)) > limit:
         errors.append("synthetic failure trace exceeded its frozen per-file cap")
+    if normal.get("termination_reason") is not None:
+        errors.append("synthetic failure probe was terminated by the resource monitor")
+    if int(normal.get("temporary_filesystem_usage_limit_bytes", 0)) != int(
+        details.get("temp_tree_max_bytes", 0)
+    ):
+        errors.append("synthetic capture probe did not enforce the frozen temporary-tree limit")
+    if float(normal.get("max_temporary_tree_bytes", 0)) > float(
+        details.get("temp_tree_max_bytes", 0)
+    ):
+        errors.append("synthetic capture exceeded its frozen total temporary-tree limit")
     if probe.get("trace_file_limit_bytes") != limit:
         errors.append("synthetic capture probe did not apply the frozen per-file cap")
     if probe.get("monitor_interval_ms") != int(details.get("monitor_interval_ms", 0)):
@@ -331,6 +343,23 @@ def _check_capture(
         details.get("max_overshoot_bytes", 0)
     ):
         errors.append("synthetic capture overshoot exceeded its frozen bound")
+    threshold = cast(Mapping[str, object], probe.get("storage_threshold_termination", {}))
+    threshold_limit = float(details.get("threshold_probe_limit_bytes", 0))
+    overshoot_limit = float(details.get("max_overshoot_bytes", 0))
+    if threshold.get("termination_reason") != "temporary_storage_limit":
+        errors.append("synthetic capture storage threshold did not terminate the test process")
+    if threshold.get("process_terminated") is not True or threshold.get("wrapper_exit_code") != 1:
+        errors.append("synthetic capture threshold termination was not surfaced as a failure")
+    if int(threshold.get("soft_limit_bytes", 0)) != int(threshold_limit):
+        errors.append("synthetic capture threshold probe did not use its measured soft limit")
+    if int(threshold.get("monitor_interval_ms", 0)) != int(details.get("monitor_interval_ms", 0)):
+        errors.append("synthetic capture threshold probe used an unexpected monitor interval")
+    if float(threshold.get("max_temporary_tree_bytes", 0)) <= threshold_limit:
+        errors.append("synthetic capture threshold probe did not cross its soft storage limit")
+    if float(threshold.get("max_temporary_tree_bytes", 0)) > threshold_limit + overshoot_limit:
+        errors.append("synthetic capture threshold probe exceeded the frozen overshoot bound")
+    if float(threshold.get("max_temporary_growth_per_sample_bytes", 0)) > overshoot_limit:
+        errors.append("synthetic capture threshold probe exceeded the per-sample growth bound")
     overflow = cast(Mapping[str, object], probe.get("over_limit_capture", {}))
     if overflow.get("capture_limit_error_seen") is not True:
         errors.append("over-limit capture did not surface a file-size error")
@@ -341,6 +370,7 @@ def _check_capture(
         "limit_bytes": limit,
         "tmpfs_capacity_bytes": probe.get("temporary_filesystem_capacity_bytes"),
         "over_limit_error_visible": overflow.get("capture_limit_error_seen"),
+        "storage_threshold_termination": dict(threshold),
     }
 
 
@@ -401,6 +431,18 @@ def _check_parallel(
             errors.append("browser temporary filesystem exceeds its frozen capacity")
         if float(resource_report.get("temporary_filesystem_limit_bytes", 0)) != tmpfs_limit:
             errors.append("browser resource monitor did not enforce the frozen tmpfs capacity")
+        usage_limit = float(
+            cast(
+                Mapping[str, object],
+                budgets.get("synthetic_capture", {}).get("frozen_limits", {}),
+            ).get("temp_tree_max_bytes", 0)
+        )
+        if float(resource_report.get("temporary_filesystem_usage_limit_bytes", 0)) != usage_limit:
+            errors.append(
+                "browser resource monitor did not enforce the frozen temporary-tree limit"
+            )
+        if float(resource_report.get("max_temporary_tree_bytes", usage_limit + 1)) > usage_limit:
+            errors.append("browser temporary-tree usage exceeded its frozen monitored threshold")
     if resource_report.get("termination_reason") is not None:
         errors.append(
             f"resource monitor terminated the test command: {resource_report['termination_reason']}"
