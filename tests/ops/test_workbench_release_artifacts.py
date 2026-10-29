@@ -66,6 +66,57 @@ def test_unreleased_development_train_allows_same_package_version(monkeypatch) -
     assert version_check.version_change_errors("base", "head") == []
 
 
+def test_published_changelog_date_finalization_does_not_require_new_version(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        version_check,
+        "changed_paths",
+        lambda base, head: ["packages/demo/CHANGELOG.md"],
+    )
+    monkeypatch.setattr(
+        version_check,
+        "git_show",
+        lambda ref, path: {
+            "packages/demo/pyproject.toml": '[project]\nname = "demo"\nversion = "0.1.2"\n',
+            "packages/demo/CHANGELOG.md": (
+                "# Changelog\n\n## [0.1.2] — Unreleased\n\n### Fixed\n\n- Fix a defect.\n"
+                if ref == "base"
+                else "# Changelog\n\n## [0.1.2] — 2026-10-27\n\n### Fixed\n\n- Fix a defect.\n"
+            ),
+            "docs/release.toml": (
+                '[release]\ndevelopment_version = "1.3.0"\npublished_version = "1.2.0"\n'
+            ),
+        }.get(path),
+    )
+
+    assert version_check.version_change_errors("base", "head") == []
+
+
+def test_package_payload_change_still_requires_version_bump(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        version_check,
+        "changed_paths",
+        lambda base, head: ["packages/demo/src/demo.py"],
+    )
+    monkeypatch.setattr(
+        version_check,
+        "git_show",
+        lambda ref, path: {
+            "packages/demo/pyproject.toml": '[project]\nname = "demo"\nversion = "0.1.2"\n',
+            "docs/release.toml": (
+                '[release]\ndevelopment_version = "1.3.0"\npublished_version = "1.2.0"\n'
+            ),
+        }.get(path),
+    )
+
+    assert version_check.version_change_errors("base", "head") == [
+        "demo: package files changed but version stayed at 0.1.2; bump the package version"
+    ]
+
+
 def wheel_bytes(entries: dict[str, bytes]) -> bytes:
     output = io.BytesIO()
     with zipfile.ZipFile(output, "w") as archive:
