@@ -1,0 +1,928 @@
+{
+  "architecture": "x86_64",
+  "browser": "webkit",
+  "errors": [],
+  "junitxml": "test-results/browser.xml",
+  "lane": "browser",
+  "operating_system": "Linux",
+  "phase": "1.3",
+  "python": "3.12",
+  "required_cases": [
+    {
+      "id": "BEHAVIOR-PROFILE-CSRF-FORM",
+      "matched_testcases": [
+        {
+          "classname": "examples.ui-testing.test_profile_flow",
+          "name": "test_profile_validation_and_save",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "2.876"
+        }
+      ],
+      "status": "passed",
+      "test": "examples/ui-testing/test_profile_flow.py::test_profile_validation_and_save"
+    },
+    {
+      "id": "BEHAVIOR-EXTERNAL-LOOPBACK",
+      "matched_testcases": [
+        {
+          "classname": "examples.ui-testing.test_profile_flow",
+          "name": "test_external_loopback_scenario_leaves_server_owned_by_caller",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "2.587"
+        }
+      ],
+      "status": "passed",
+      "test": "examples/ui-testing/test_profile_flow.py::test_external_loopback_scenario_leaves_server_owned_by_caller"
+    },
+    {
+      "id": "BEHAVIOR-NO-JAVASCRIPT",
+      "matched_testcases": [
+        {
+          "classname": "examples.ui-testing.test_profile_flow",
+          "name": "test_native_form_submission_works_without_javascript",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "2.581"
+        }
+      ],
+      "status": "passed",
+      "test": "examples/ui-testing/test_profile_flow.py::test_native_form_submission_works_without_javascript"
+    },
+    {
+      "id": "BEHAVIOR-POLL-ACTION",
+      "matched_testcases": [
+        {
+          "classname": "examples.ui-testing.test_profile_flow",
+          "name": "test_settle_ignores_background_poll_before_user_action",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "2.817"
+        }
+      ],
+      "status": "passed",
+      "test": "examples/ui-testing/test_profile_flow.py::test_settle_ignores_background_poll_before_user_action"
+    },
+    {
+      "id": "BEHAVIOR-ACTION-GENERATION",
+      "matched_testcases": [
+        {
+          "classname": "examples.ui-testing.test_profile_flow",
+          "name": "test_settle_requires_generation_for_overlapping_same_target_actions",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "2.712"
+        }
+      ],
+      "status": "passed",
+      "test": "examples/ui-testing/test_profile_flow.py::test_settle_requires_generation_for_overlapping_same_target_actions"
+    },
+    {
+      "id": "BEHAVIOR-FRAGMENT-OOB",
+      "matched_testcases": [
+        {
+          "classname": "tests.browser.test_browser_matrix",
+          "name": "test_fragment_oob_per_engine[webkit]",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.729"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/browser/test_browser_matrix.py::test_fragment_oob_per_engine"
+    },
+    {
+      "id": "BEHAVIOR-HISTORY-RESTORE",
+      "matched_testcases": [
+        {
+          "classname": "tests.browser.test_browser_matrix",
+          "name": "test_history_restore_header_returns_page[webkit]",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.561"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/browser/test_browser_matrix.py::test_history_restore_header_returns_page"
+    },
+    {
+      "id": "BEHAVIOR-CSP-REDUCED-MOTION",
+      "matched_testcases": [
+        {
+          "classname": "tests.browser.test_browser_matrix",
+          "name": "test_csp_and_reduced_motion_meta[webkit]",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.664"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/browser/test_browser_matrix.py::test_csp_and_reduced_motion_meta"
+    },
+    {
+      "id": "BEHAVIOR-REQUEST-POLICY",
+      "matched_testcases": [
+        {
+          "classname": "tests.browser.test_browser_matrix",
+          "name": "test_cache_vary_and_forbidden_target[webkit]",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.658"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/browser/test_browser_matrix.py::test_cache_vary_and_forbidden_target"
+    },
+    {
+      "id": "BEHAVIOR-EXTENSION-ASSETS",
+      "matched_testcases": [
+        {
+          "classname": "tests.browser.test_browser_matrix",
+          "name": "test_extension_assets_served[webkit]",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.567"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/browser/test_browser_matrix.py::test_extension_assets_served"
+    },
+    {
+      "id": "BEHAVIOR-EXTENSION-LOAD-ORDER",
+      "matched_testcases": [
+        {
+          "classname": "tests.browser.test_browser_matrix",
+          "name": "test_htmx_core_loads_before_extensions[webkit]",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.651"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/browser/test_browser_matrix.py::test_htmx_core_loads_before_extensions"
+    },
+    {
+      "id": "BEHAVIOR-MOUNTED-LOAD-ORDER",
+      "matched_testcases": [
+        {
+          "classname": "tests.browser.test_browser_matrix",
+          "name": "test_htmx_core_loads_before_extensions_under_mount[webkit]",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.945"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/browser/test_browser_matrix.py::test_htmx_core_loads_before_extensions_under_mount"
+    },
+    {
+      "id": "BEHAVIOR-UNAUTHORIZED-TARGET",
+      "matched_testcases": [
+        {
+          "classname": "tests.browser.test_htmx_lifecycle",
+          "name": "test_unauthorized_target_returns_forbidden",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.872"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/browser/test_htmx_lifecycle.py::test_unauthorized_target_returns_forbidden"
+    },
+    {
+      "id": "BEHAVIOR-TOAST-TTL",
+      "matched_testcases": [
+        {
+          "classname": "tests.browser.test_htmx_lifecycle",
+          "name": "test_toast_ttl_expires_after_oob_beforeend_swap",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.870"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/browser/test_htmx_lifecycle.py::test_toast_ttl_expires_after_oob_beforeend_swap"
+    },
+    {
+      "id": "BEHAVIOR-ELEMENTS-UPLOAD-LOCAL-STATE",
+      "matched_testcases": [
+        {
+          "classname": "tests.browser.test_phase067_alpine",
+          "name": "test_alpine_core_and_focus_plugin_are_demand_loaded[webkit]",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "2.139"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/browser/test_phase067_alpine.py::test_alpine_core_and_focus_plugin_are_demand_loaded"
+    },
+    {
+      "id": "BEHAVIOR-COMBINED-REQUEST-STATE",
+      "matched_testcases": [
+        {
+          "classname": "tests.browser.test_phase067_alpine",
+          "name": "test_combined_interaction_has_one_local_transition_and_one_request",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.973"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/browser/test_phase067_alpine.py::test_combined_interaction_has_one_local_transition_and_one_request"
+    },
+    {
+      "id": "BEHAVIOR-ASSET-FAILURE",
+      "matched_testcases": [
+        {
+          "classname": "tests.browser.test_phase067_alpine",
+          "name": "test_semantic_content_survives_alpine_asset_failure",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.774"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/browser/test_phase067_alpine.py::test_semantic_content_survives_alpine_asset_failure"
+    },
+    {
+      "id": "BEHAVIOR-JS-DISABLED-SEMANTICS",
+      "matched_testcases": [
+        {
+          "classname": "tests.browser.test_phase067_alpine",
+          "name": "test_semantic_content_survives_javascript_disabled",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.739"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/browser/test_phase067_alpine.py::test_semantic_content_survives_javascript_disabled"
+    },
+    {
+      "id": "BEHAVIOR-INTEGRITY-FAILURE",
+      "matched_testcases": [
+        {
+          "classname": "tests.browser.test_phase067_alpine",
+          "name": "test_integrity_failure_does_not_cloak_semantic_content",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.947"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/browser/test_phase067_alpine.py::test_integrity_failure_does_not_cloak_semantic_content"
+    },
+    {
+      "id": "BEHAVIOR-DOWNLOAD",
+      "matched_testcases": [
+        {
+          "classname": "tests.browser.test_docs_styles_explorer",
+          "name": "test_explorer_navigation_themes_comparison_and_exports",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "8.433"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/browser/test_docs_styles_explorer.py::test_explorer_navigation_themes_comparison_and_exports"
+    },
+    {
+      "id": "PERF-BROWSER-RESOURCE-BUDGET",
+      "matched_testcases": [
+        {
+          "classname": "tests.browser.test_ui_testing_resource_budget",
+          "name": "test_ui_testing_resource_budget[webkit]",
+          "properties": {
+            "browser_version": "26.5",
+            "context_close_ms": "[4.218542999979036, 3.333538999982011, 4.987293999988651, 3.0376139999930274, 6.578111000010267, 9.882279999999355, 11.101301999985935, 3.611843999976827, 6.773023999983252, 7.01359799995771]",
+            "context_create_ms": "[10.353444999964267, 6.470411000009335, 8.936662999985856, 11.5026979999584, 19.907621999948333, 14.986903000021812, 10.969754999962333, 18.591712999977972, 10.060209000016584, 11.449513000002298]",
+            "event_count": "29",
+            "event_snapshot_bytes": "3149",
+            "playwright_version": "1.62.0",
+            "pytest_playwright_version": "0.10.0",
+            "scenario_cycle_ms": "2785.3095840000037",
+            "settle_ms": "[30.453900999987127]"
+          },
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "3.306"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/browser/test_ui_testing_resource_budget.py::test_ui_testing_resource_budget"
+    },
+    {
+      "id": "A11Y-KEYBOARD-AXE-REFLOW",
+      "matched_testcases": [
+        {
+          "classname": "tests.browser.test_phase19_at_matrix",
+          "name": "test_keyboard_and_landmarks_per_engine[webkit]",
+          "properties": {
+            "axe_deliberate_violation_detected": "True",
+            "axe_engine": "axe_playwright_python:0.1.8",
+            "axe_error": "none",
+            "axe_incomplete": "False",
+            "axe_scope": "entire rendered accessibility profile document",
+            "axe_violation_probe_incomplete": "False"
+          },
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "1.007"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/browser/test_phase19_at_matrix.py::test_keyboard_and_landmarks_per_engine"
+    },
+    {
+      "id": "A11Y-OFFLINE-SEMANTIC-SNAPSHOT",
+      "matched_testcases": [
+        {
+          "classname": "tests.browser.test_phase19_at_matrix",
+          "name": "test_at_matrix_offline_evidence_artifact",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.009"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/browser/test_phase19_at_matrix.py::test_at_matrix_offline_evidence_artifact"
+    },
+    {
+      "id": "A11Y-FORM-ANNOUNCEMENT",
+      "matched_testcases": [
+        {
+          "classname": "examples.ui-testing.test_profile_flow",
+          "name": "test_profile_validation_and_save",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "2.876"
+        }
+      ],
+      "status": "passed",
+      "test": "examples/ui-testing/test_profile_flow.py::test_profile_validation_and_save"
+    },
+    {
+      "id": "A11Y-NO-JAVASCRIPT",
+      "matched_testcases": [
+        {
+          "classname": "examples.ui-testing.test_profile_flow",
+          "name": "test_native_form_submission_works_without_javascript",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "2.581"
+        }
+      ],
+      "status": "passed",
+      "test": "examples/ui-testing/test_profile_flow.py::test_native_form_submission_works_without_javascript"
+    },
+    {
+      "id": "A11Y-SEMANTIC-ASSET-FAILURE",
+      "matched_testcases": [
+        {
+          "classname": "tests.browser.test_phase067_alpine",
+          "name": "test_semantic_content_survives_alpine_asset_failure",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.774"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/browser/test_phase067_alpine.py::test_semantic_content_survives_alpine_asset_failure"
+    },
+    {
+      "id": "BEHAVIOR-FACTORY-INPUT-REJECT",
+      "matched_testcases": [
+        {
+          "classname": "examples.ui-testing.test_profile_flow",
+          "name": "test_profile_factory_rejects_live_values",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "1.509"
+        }
+      ],
+      "status": "passed",
+      "test": "examples/ui-testing/test_profile_flow.py::test_profile_factory_rejects_live_values"
+    }
+  ],
+  "schema_version": 1,
+  "skips": [
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_browser_043::test_handle_lifecycle_three_engines[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_browser_043::test_handle_lifecycle_three_engines[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_browser_044::test_form_keyboard_submit[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_browser_044::test_form_keyboard_submit[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_browser_045::test_catalog_and_form_across_engines[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_browser_045::test_catalog_and_form_across_engines[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_browser_046::test_workspace_and_features_across_engines[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_browser_046::test_workspace_and_features_across_engines[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_browser_050::test_chromium"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_browser_050::test_firefox"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_browser_051::test_extras_hosts_three_engines[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_browser_051::test_extras_hosts_three_engines[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "HEDRON_BROWSER_ENGINE=webkit",
+      "test": "tests.browser.test_browser_matrix::test_fragment_oob_per_engine[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "HEDRON_BROWSER_ENGINE=webkit",
+      "test": "tests.browser.test_browser_matrix::test_fragment_oob_per_engine[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "HEDRON_BROWSER_ENGINE=webkit",
+      "test": "tests.browser.test_browser_matrix::test_csp_and_reduced_motion_meta[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "HEDRON_BROWSER_ENGINE=webkit",
+      "test": "tests.browser.test_browser_matrix::test_csp_and_reduced_motion_meta[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "HEDRON_BROWSER_ENGINE=webkit",
+      "test": "tests.browser.test_browser_matrix::test_cache_vary_and_forbidden_target[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "HEDRON_BROWSER_ENGINE=webkit",
+      "test": "tests.browser.test_browser_matrix::test_cache_vary_and_forbidden_target[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "HEDRON_BROWSER_ENGINE=webkit",
+      "test": "tests.browser.test_browser_matrix::test_history_restore_header_returns_page[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "HEDRON_BROWSER_ENGINE=webkit",
+      "test": "tests.browser.test_browser_matrix::test_history_restore_header_returns_page[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "HEDRON_BROWSER_ENGINE=webkit",
+      "test": "tests.browser.test_browser_matrix::test_extension_assets_served[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "HEDRON_BROWSER_ENGINE=webkit",
+      "test": "tests.browser.test_browser_matrix::test_extension_assets_served[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "HEDRON_BROWSER_ENGINE=webkit",
+      "test": "tests.browser.test_browser_matrix::test_htmx_core_loads_before_extensions[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "HEDRON_BROWSER_ENGINE=webkit",
+      "test": "tests.browser.test_browser_matrix::test_htmx_core_loads_before_extensions[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "HEDRON_BROWSER_ENGINE=webkit",
+      "test": "tests.browser.test_browser_matrix::test_htmx_core_loads_before_extensions_under_mount[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "HEDRON_BROWSER_ENGINE=webkit",
+      "test": "tests.browser.test_browser_matrix::test_htmx_core_loads_before_extensions_under_mount[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_builtin_theme_gallery::test_gallery_compositions_have_readable_text_and_no_page_overflow[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_builtin_theme_gallery::test_gallery_compositions_have_readable_text_and_no_page_overflow[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_builtin_theme_gallery::test_gallery_overlays_focus_and_control_layout[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_builtin_theme_gallery::test_gallery_overlays_focus_and_control_layout[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_builtin_theme_gallery::test_button_appearances_preserve_emphasis_sizes_and_disabled_states[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_builtin_theme_gallery::test_button_appearances_preserve_emphasis_sizes_and_disabled_states[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_charts_028_matrix::test_charts_028_matrix[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_charts_038_render::test_hedron_chart_upgrades[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_charts_038_render::test_hedron_chart_upgrades[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_charts_038_render::test_hedron_chart_keydown_not_stacked_on_remount[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_charts_038_render::test_hedron_chart_keydown_not_stacked_on_remount[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_charts_038_render::test_hedron_chart_idle_resize_observer_does_not_remount[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_charts_038_render::test_hedron_chart_idle_resize_observer_does_not_remount[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_charts_038_render::test_hedron_chart_scatter_uses_numeric_x_spacing[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_charts_038_render::test_hedron_chart_scatter_uses_numeric_x_spacing[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_charts_038_render::test_hedron_chart_numeric_string_categories_remain_ordinal[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_charts_038_render::test_hedron_chart_numeric_string_categories_remain_ordinal[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_data_chart_matrix::test_data_chart_matrix[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_data_chart_matrix::test_data_chart_matrix[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_elements_036_browser::test_engine_can_parse_example_module[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_elements_036_browser::test_engine_can_parse_example_module[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_elements_037_actionstate::test_interaction_state_module_parses[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_elements_037_actionstate::test_interaction_state_module_parses[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_elements_037_interact::test_gesture_catalog_module_loads[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_elements_037_interact::test_gesture_catalog_module_loads[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_elements_037_primitives::test_engine_can_parse_field_text_ssr[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_elements_037_primitives::test_engine_can_parse_field_text_ssr[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_explorer_folio_accents::test_explorer_shows_accents_only_when_folio_is_selected[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_explorer_folio_accents::test_explorer_shows_accents_only_when_folio_is_selected[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "HISTORICAL-API-RETIRED",
+      "reason": "historical 0.x API fixture retired on the Hedron 1.0 canonical surface",
+      "test": "tests.browser.test_hedron_sim_contracts::test_hedron_sim_boot_forces_hash_on_progressive_href"
+    },
+    {
+      "allowed": true,
+      "classification": "HISTORICAL-API-RETIRED",
+      "reason": "historical 0.x API fixture retired on the Hedron 1.0 canonical surface",
+      "test": "tests.browser.test_hedron_sim_runtime::test_hedron_sim_js_swaps_fragment_and_tokens"
+    },
+    {
+      "allowed": true,
+      "classification": "HISTORICAL-API-RETIRED",
+      "reason": "historical 0.x API fixture retired on the Hedron 1.0 canonical surface",
+      "test": "tests.browser.test_hedron_sim_runtime::test_hedron_sim_js_allowlist_denies_wrong_target"
+    },
+    {
+      "allowed": true,
+      "classification": "HISTORICAL-API-RETIRED",
+      "reason": "historical 0.x API fixture retired on the Hedron 1.0 canonical surface",
+      "test": "tests.browser.test_hedron_sim_runtime::test_hedron_sim_js_confirm_cancel_skips_swap"
+    },
+    {
+      "allowed": true,
+      "classification": "HISTORICAL-API-RETIRED",
+      "reason": "historical 0.x API fixture retired on the Hedron 1.0 canonical surface",
+      "test": "tests.browser.test_hedron_sim_runtime::test_hedron_sim_routes_survive_material_script_stripping"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_maps_047_render::test_hedron_map_upgrades[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_maps_047_render::test_hedron_map_upgrades[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_phase041_browser::test_phase041_module_preserves_native_fallback[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_phase041_browser::test_phase041_module_preserves_native_fallback[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_phase059_browser::test_phase059_css_feature_and_fallback_contract[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_phase059_browser::test_phase059_css_feature_and_fallback_contract[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_phase060_theme_platform::test_phase060_component_layout_and_media_contract[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_phase060_theme_platform::test_phase060_component_layout_and_media_contract[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "HEDRON_BROWSER_ENGINE=webkit",
+      "test": "tests.browser.test_phase067_alpine::test_alpine_core_and_focus_plugin_are_demand_loaded[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "HEDRON_BROWSER_ENGINE=webkit",
+      "test": "tests.browser.test_phase067_alpine::test_alpine_core_and_focus_plugin_are_demand_loaded[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "CHROMIUM-ONLY-STYLE-EVIDENCE",
+      "reason": "Chromium-only style evidence",
+      "test": "tests.browser.test_phase11_style_evidence::test_phase11_presentation_styles_have_browser_evidence"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "HEDRON_BROWSER_ENGINE=webkit",
+      "test": "tests.browser.test_phase19_at_matrix::test_keyboard_and_landmarks_per_engine[chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "HEDRON_BROWSER_ENGINE=webkit",
+      "test": "tests.browser.test_phase19_at_matrix::test_keyboard_and_landmarks_per_engine[firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "SYNTHETIC-CAPTURE-PROBE-SEPARATE-LANE",
+      "reason": "synthetic trace budget probe is isolated to the failure-capture lane",
+      "test": "tests.browser.test_ui_testing_capture_probe::test_synthetic_trace_capture_probe"
+    },
+    {
+      "allowed": true,
+      "classification": "STRUCTURED-PRIVACY-PROBE-SEPARATE-LANE",
+      "reason": "structured privacy canary is isolated to the privacy-probe lane",
+      "test": "tests.browser.test_ui_testing_privacy_canary::test_structured_failure_manifest_omits_confidential_canaries"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_v1_open_issues::test_legacy_ownerless_local_interaction_has_live_alpine_state[webkit-chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_v1_open_issues::test_legacy_ownerless_local_interaction_has_live_alpine_state[webkit-firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_v1_open_issues::test_collapsible_app_shell_keeps_rail_and_main_in_desktop_columns[webkit-chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_v1_open_issues::test_collapsible_app_shell_keeps_rail_and_main_in_desktop_columns[webkit-firefox]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_v1_open_issues::test_button_bundle_preserves_native_variants[webkit-chromium]"
+    },
+    {
+      "allowed": true,
+      "classification": "ENGINE-MATRIX-NOT-SELECTED",
+      "reason": "engine filter webkit",
+      "test": "tests.browser.test_v1_open_issues::test_button_bundle_preserves_native_variants[webkit-firefox]"
+    }
+  ],
+  "status_counts": {
+    "passed": 135,
+    "skipped": 81
+  },
+  "testcase_count": 216
+}

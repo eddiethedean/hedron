@@ -1,6 +1,6 @@
 # Hedron `v1.3.0` first-class UI testing acceptance plan
 
-**Status:** Release candidate prepared on `e76f595db5cf1643b05bf6124dbf970a8741b806`; 16 non-release gates are Verified, and release approval/cut/tag/publication remain pending
+**Status:** Candidate source verified on `dec75e9ab60a5632ce9d63d8662f01589e2ccb4d`; all 16 non-release gates have current retained evidence, and release approval/cut/tag/publication remain pending
 **Planning revision:** 2026-10-28
 **Planning baseline:** Published `v1.2.0`
 **Required release predecessor:** `v1.2.0` — PyPI publication verified
@@ -76,7 +76,7 @@ supply-chain, and required aggregate results are retained in
 were scanned for randomized privacy-canary values with zero matches. That run is historical evidence
 superseded by the final candidate run below.
 
-## Final candidate verification — 2026-10-29
+## Previous candidate verification — 2026-10-29 (`e76f595d`)
 
 The first candidate evidence run, [40937671727](https://github.com/eddiethedean/hedron/actions/runs/40937671727), passed on source revision `4dbab1ea7c511b56058eca5d2da8297c43b1d059`. An intervening run, [40941629675](https://github.com/eddiethedean/hedron/actions/runs/40941629675), exposed a stale release-gate test assertion after maintainer acceptance changed `FREEZE-130` to Verified. The assertion was corrected in the tested source below; this is recorded as CI history, not candidate evidence.
 
@@ -91,6 +91,14 @@ The minimum and latest dependency-bound jobs explicitly loaded `-p hedron.testin
 The 22 coordinated packages produced 44 distributions in two byte-identical builds. Independent verification from a clean checkout of candidate source matched all 44 approved hashes in each retained build. The CPython 3.11 upgrade rehearsal passed from v1.2.0 to v1.3.0 and rolled back to v1.2.0 with the original lock restored. The versioned [artifact hash ledger](evidence-130/python-artifacts-40942185662.json) and [upgrade/rollback record](evidence-130/upgrade-rollback-40942185662.json) are retained with the [CI summary, job identities, and artifact digests](evidence-130/ci-run-40942185662.json). GitHub retains these run artifacts through 2027-01-27.
 
 The owner accepted the exact scope/API contract and package dispositions. That acceptance does not approve release. `RELEASE-130` stays Planned; `release_approval.approved` and `release_cut_satisfied` remain false, and no 1.3.0 tag or publication has been made.
+
+## Current candidate verification — 2026-10-29
+
+The final release-CI repair is at source revision `dec75e9ab60a5632ce9d63d8662f01589e2ccb4d`. PR CI run [40973136018](https://github.com/eddiethedean/hedron/actions/runs/40973136018) passed every required job: coverage, strict typing/docs, packaging, both dependency bounds, bounded host acceptance on CPython 3.11–3.14, and the complete Chromium/Firefox/WebKit browser acceptance matrix. The supply-chain evidence job and candidate artifact rehearsal also passed. The separate full CI dispatch [40973327693](https://github.com/eddiethedean/hedron/actions/runs/40973327693) passed the general test suite on CPython 3.11–3.14 and the full CI matrix. Native wheel matrix [40973135817](https://github.com/eddiethedean/hedron/actions/runs/40973135817) passed on Linux x86_64, Linux ARM64, macOS ARM64, and Windows.
+
+The current [CI summary and retained acceptance reports](evidence-130/ci-run-40973136018.json) bind the 16 verified non-release gates to `dec75e9`. It retains the host/browser case reports, resource budgets, privacy and capture probes, supply-chain bundle, and run artifact identities. The current [Python artifact ledger](evidence-130/python-artifacts-40973136018.json) records 22 coordinated packages and 44 distributions, byte-identical repeated builds, and the [CPython 3.11 upgrade/rollback rehearsal](evidence-130/upgrade-rollback-40973136018.json), which passed baseline, upgrade, and rollback with the original lock restored. GitHub retains the run artifacts through 2027-01-27.
+
+`RELEASE-130` remains Planned until the release decision. `release_approval.approved` and `release_cut_satisfied` remain false; no tag or publication has been made. The candidate is technically prepared for the release decision, with the approval and cut record intentionally pending.
 
 ## Required gates
 
