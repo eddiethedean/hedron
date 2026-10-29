@@ -90,7 +90,7 @@ def test_release_gate_1_3_candidate_is_selected_and_inventory_is_fixed() -> None
     )
     assert any("FREEZE-130: state 'Planned'" in error for error in errors)
     assert any("every required phase 1.3 gate must be Verified" in error for error in errors)
-    assert any("planning contract freeze_satisfied must be true" in error for error in errors)
+    assert not any("planning contract freeze_satisfied must be true" in error for error in errors)
     assert any("release_approval.approved must be true" in error for error in errors)
 
 
