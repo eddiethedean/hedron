@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prove the 1.2.0 wheel rejects Python 3.10 and stable resolution falls back."""
+"""Prove a coordinated 1.2/1.3 wheel rejects Python 3.10 and resolution falls back."""
 
 from __future__ import annotations
 
@@ -15,22 +15,44 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PREDECESSOR_VERSION = "1.1.3"
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.verify_release_reproducibility import (  # noqa: E402
+    phase_for_version,
+    predecessor_for_version,
+)
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("dist_dir", type=Path)
     parser.add_argument("evidence_output", type=Path)
-    parser.add_argument("--predecessor-version", default=PREDECESSOR_VERSION)
+    parser.add_argument("--predecessor-version")
+    parser.add_argument("--candidate-version", default="1.2.0")
     args = parser.parse_args(argv)
 
     dist_dir = args.dist_dir.resolve()
-    wheels = sorted(dist_dir.glob("hedron-1.2.0-*.whl"))
+    try:
+        phase, phase_code = phase_for_version(args.candidate_version)
+        expected_predecessor = predecessor_for_version(args.candidate_version)
+    except ValueError as exc:
+        parser.error(str(exc))
+    if args.predecessor_version is None:
+        args.predecessor_version = expected_predecessor
+    if args.predecessor_version != expected_predecessor:
+        parser.error(
+            f"phase {phase} requires predecessor {expected_predecessor}, "
+            f"got {args.predecessor_version}"
+        )
+    wheels = sorted(dist_dir.glob(f"hedron-{args.candidate_version}-*.whl"))
     if len(wheels) != 1:
-        parser.error(f"expected one Hedron 1.2.0 wheel in {dist_dir}; found {len(wheels)}")
+        parser.error(
+            f"expected one Hedron {args.candidate_version} wheel in {dist_dir}; found {len(wheels)}"
+        )
     candidate_wheel = wheels[0]
     environment = os.environ.copy()
-    with tempfile.TemporaryDirectory(prefix="hedron-phase-120-py310-") as temporary:
+    with tempfile.TemporaryDirectory(prefix=f"hedron-phase-{phase_code}-py310-") as temporary:
         venv = Path(temporary) / ".venv"
         try:
             subprocess.run(
@@ -56,7 +78,9 @@ def main(argv: list[str] | None = None) -> int:
             )
             rejection_output = rejected.stdout + rejected.stderr
             if rejected.returncode == 0:
-                raise ValueError("Python 3.10 unexpectedly accepted the 1.2.0 Hedron wheel")
+                raise ValueError(
+                    f"Python 3.10 unexpectedly accepted the {args.candidate_version} Hedron wheel"
+                )
             if "3.10" not in rejection_output or "3.11" not in rejection_output:
                 raise ValueError(
                     "candidate installation failed without identifying the Python 3.10/3.11 "
@@ -99,7 +123,9 @@ def main(argv: list[str] | None = None) -> int:
         ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
     ).strip()
     payload = {
-        "schema": "hedron.phase-120-python310-compatibility/1",
+        "schema": f"hedron.phase-{phase_code}-python310-compatibility/1",
+        "phase": phase,
+        "candidate_version": args.candidate_version,
         "source_commit": source_commit,
         "python": resolved_facts["python"],
         "candidate_install": "rejected by Requires-Python",
@@ -116,7 +142,8 @@ def main(argv: list[str] | None = None) -> int:
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
     print(
-        f"ok: 1.2.0 candidate rejected on Python 3.10; resolver selected {args.predecessor_version}"
+        f"ok: {args.candidate_version} candidate rejected on Python 3.10; "
+        f"resolver selected {args.predecessor_version}"
     )
     print(f"evidence: {output}")
     return 0

@@ -4,7 +4,7 @@ description: Generated catalog of runnable and historical repository examples.
 
 # Repository example catalog
 
-Generated from `examples/catalog.toml`. Current examples target the 1.0 contract;
+Generated from `examples/catalog.toml`. Candidate examples document unreleased work;
 historical examples are phase evidence and are not recommended starting points.
 
 | Example | Outcome | Layer | Difficulty | Time | Status |
@@ -33,6 +33,8 @@ historical examples are phase evidence and are not recommended starting points.
 | [`streamlit-migration`](https://github.com/eddiethedean/hedron/tree/v1.0/examples/streamlit-migration) | Review-first Streamlit migration | Edron | Intermediate | 30 min | Current |
 | [`theme-gallery`](https://github.com/eddiethedean/hedron/tree/v1.0/examples/theme-gallery) | Theme and appearance gallery | Hedron | Intermediate | 20 min | Current |
 | [`workbench-reference`](https://github.com/eddiethedean/hedron/tree/v1.0/examples/workbench-reference) | Posit Workbench application | Hedron | Advanced | 30 min | Current |
+| [`ui-testing`](https://github.com/eddiethedean/hedron/tree/main/examples/ui-testing) | Real-browser testing with native Playwright APIs | Hedron testing | Advanced | 45 min | Candidate |
+| [`ui-testing-satellite`](https://github.com/eddiethedean/hedron/tree/main/examples/ui-testing-satellite) | Opt-in specialist contribution to browser tests | Hedron testing | Advanced | 30 min | Candidate |
 | [`dashboard-0.17`](https://github.com/eddiethedean/hedron/tree/v1.0/examples/dashboard-0.17) | Historical dashboard phase evidence | Hedron | Historical | — | Historical |
 | [`data-app-0.15`](https://github.com/eddiethedean/hedron/tree/v1.0/examples/data-app-0.15) | Historical data-app phase evidence | Hedron | Historical | — | Historical |
 | [`data-app-0.16`](https://github.com/eddiethedean/hedron/tree/v1.0/examples/data-app-0.16) | Historical data-app phase evidence | Hedron | Historical | — | Historical |

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import tomllib  # pyright: ignore[reportMissingImports] - stdlib in supported Python
 from collections.abc import Callable
 from pathlib import Path
@@ -34,23 +35,21 @@ def test_packages_do_not_silently_construct_unrestricted_http_clients() -> None:
         path.relative_to(ROOT).as_posix(): path.read_text(encoding="utf-8")
         for path in (ROOT / "packages").glob("*/src/**/*.py")
     }
-    direct_http_markers = (
-        "httpx.AsyncClient(",
-        "httpx.Client(",
-        "requests.get(",
-        "requests.post(",
-        "requests.request(",
-        "aiohttp.ClientSession(",
-        "urllib.request.urlopen(",
-        "socket.create_connection(",
-        "http.client.HTTPConnection(",
-        "http.client.HTTPSConnection(",
-        "from gradio_client import Client",
+    direct_http_patterns = (
+        r"\bhttpx\.AsyncClient\(",
+        r"\bhttpx\.Client\(",
+        r"\brequests\.(?:get|post|request)\(",
+        r"\baiohttp\.ClientSession\(",
+        r"\burllib\.request\.urlopen\(",
+        r"\bsocket\.create_connection\(",
+        r"\bhttp\.client\.HTTPConnection\(",
+        r"\bhttp\.client\.HTTPSConnection\(",
+        r"\bfrom\s+gradio_client\s+import\s+Client\b",
     )
     hits = {
         path
         for path, source in python_sources.items()
-        if any(marker in source for marker in direct_http_markers)
+        if any(re.search(pattern, source) for pattern in direct_http_patterns)
     }
     assert hits == {
         "packages/fastapi-workbench/src/fastapi_workbench/cli_support.py",

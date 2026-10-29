@@ -1,0 +1,47 @@
+schema_version = 1
+phase = "1.3"
+browser_lane_requires_explicit_classification = true
+unknown_skip_disposition = "fail"
+required_case_skip_disposition = "fail"
+
+[[classification]]
+id = "ENGINE-MATRIX-NOT-SELECTED"
+reason_regex = "^(?:engine filter [a-z0-9_-]+|HEDRON_BROWSER_ENGINE=[a-z0-9_-]+|skipped for this browser: (?:chromium|firefox|webkit))$"
+disposition = "not-applicable-engine-parameter"
+allowed_in_browser_lane = true
+explanation = "Legacy parametrized tests expose all engines while one CI row runs; pytest-playwright also marks unselected browser fixture parameters skipped."
+
+[[classification]]
+id = "BROWSER-OPT-IN-MISSING"
+reason_regex = "^(?:HEDRON_BROWSER not set|Opt-in.*|Set HEDRON_BROWSER=1.*)$"
+disposition = "lane-configuration-defect"
+allowed_in_browser_lane = false
+explanation = "The required browser lane must set HEDRON_BROWSER=1."
+
+[[classification]]
+id = "SYNTHETIC-CAPTURE-PROBE-SEPARATE-LANE"
+reason_regex = "^synthetic trace budget probe is isolated to the failure-capture lane$"
+disposition = "separate-capture-probe"
+allowed_in_browser_lane = true
+explanation = "Raw Playwright tracing is enabled only for the isolated, explicitly synthetic failure-capture probe."
+
+[[classification]]
+id = "HISTORICAL-API-RETIRED"
+reason_regex = "^historical 0.x API fixture retired on the Hedron 1.0 canonical surface$"
+disposition = "reviewed-legacy-test-inventory"
+allowed_in_browser_lane = true
+explanation = "The release retirement inventory explicitly classifies these 0.x fixtures as historical rather than current browser acceptance."
+
+[[classification]]
+id = "OPTIONAL-DEPENDENCY-MISSING"
+reason_regex = "^(?:could not import .+|.+ not installed.*)$"
+disposition = "lane-dependency-defect"
+allowed_in_browser_lane = false
+explanation = "The declared Linux browser environment installs every dependency needed by required browser evidence."
+
+[[classification]]
+id = "OTHER-PLATFORM-OR-FEATURE-SKIP"
+reason_regex = ".+"
+disposition = "unreviewed-skip"
+allowed_in_browser_lane = false
+explanation = "Every other skip requires a named case disposition before browser acceptance."

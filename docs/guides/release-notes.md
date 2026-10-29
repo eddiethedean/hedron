@@ -3,6 +3,21 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 1.2.0 — 2026-10-27
+
+Published coordinated release that raises the maintained Python baseline to CPython 3.11–3.14.
+The retained publication record confirms the SHA-256 values of all 44 wheel and source archive
+files for the 22 coordinated Python distributions, including Edron.
+
+### Changed
+
+- Require Python 3.11 or newer across the maintained distributions and generated applications.
+- Align typing, native wheel selectors, release tooling, and migration guidance with the new
+  Python baseline.
+
+See [What’s new in 1.2](whats-new-1.2.md) and the
+[publication verification](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/evidence-120/PUBLICATION.md).
+
 ## 1.1.3 — 2026-09-28
 
 Coordinated maintenance release for the Stable 1.1 package train. The [main merge CI run](https://github.com/eddiethedean/hedron/actions/runs/36462702533)

@@ -1,119 +1,196 @@
 schema_version = 1
 phase = "1.3"
-status = "Planned"
-planning_baseline = "v1.0.0"
-required_predecessor = "v1.0.0"
+status = "ImplementationInProgress"
+planning_revision = "2026-10-28"
+planning_baseline = "v1.2.0"
+compatibility_baseline = "v1.0.0 stable testing plus additive 1.x"
+required_predecessor = "v1.2.0"
 predecessor_satisfied = true
 target = "v1.3.0"
 owning_rfc = "RFC-0097"
 implementation = "../implementation/UI_TESTING_1_3.md"
+acceptance = "RELEASE_1_3.md"
+planning_contract = "ui-testing-contract-130.toml"
+package_dispositions = "ui-testing-package-dispositions-130.toml"
+behavior_accessibility_inventory = "ui-testing-inventory-130.toml"
+skip_classification_policy = "ui-testing-skip-policy-130.toml"
+planning_only = false
 stage_1_entry_satisfied = false
 release_cut_satisfied = false
+local_probe_evidence = "evidence-130/LOCAL_VERTICAL_SLICE_2026-10-28.md"
+local_probe_engines = ["chromium", "firefox", "webkit"]
+satellite_contribution = "hedron_sample_kit.ui_testing:CONTRIBUTION"
 production_runtime_authority_change = false
 fake_browser_runtime_allowed = false
 remote_testing_default_allowed = false
+non_loopback_testing_admitted = false
 satellite_pytest_autoregistration_allowed = false
+base_pytest_autoregistration_allowed = false
+raw_capture_default_allowed = false
+raw_trace_redaction_claim_allowed = false
 required_runner = "pytest"
 browser_authority = "Playwright"
+candidate_api_maturity = "beta"
+
+[predecessor_record]
+published_version = "v1.2.0"
+published = true
+published_at = "2026-10-27T20:06:05.000138Z"
+publication_url = "https://pypi.org/project/hedron/1.2.0/"
+release_record = "evidence-120/PUBLICATION.md"
+release_record_sha256 = "7bff4d9f9e25b70009c2b1e0b76de6477c28b50aeb137e6668df7516c3159dcb"
+
+[maintainer_review]
+reviewer = ""
+reviewed_at = ""
+accepted = false
+review_record = ""
+review_record_sha256 = ""
+
+[release_approval]
+approver = ""
+approved_at = ""
+approved = false
+approval_record = ""
+approval_record_sha256 = ""
+
+[release_artifacts]
+manifest = ""
+manifest_sha256 = ""
+source_revision = ""
 
 [[evidence]]
 id = "FREEZE-130"
 state = "Planned"
 owner = "architecture"
 ci_job = "evidence"
+required = true
+description = "Source/export/task inventory, direct-Page prototype/user exercise, owned-host/context/capture/settle probes, exact candidate API/typing, named maintainers, complete dispositions, dependency/browser/host matrix, schemas, measured numeric budgets, exact commands/artifacts; no unresolved authority issue or Unmeasured Required budget."
 
 [[evidence]]
 id = "CONTRACT-130"
 state = "Planned"
 owner = "testing"
 ci_job = "test"
+required = true
+description = "Three testing layers; native Page/Locator/expect; explicit central plugin activation; sync fixture/session scope; child/app and upstream context ownership; no wrapper DSL, second runner, shared live app, runtime instrumentation, or premature Stable promotion."
 
 [[evidence]]
 id = "HOST-130"
 state = "Planned"
 owner = "testing"
 ci_job = "browser"
+required = true
+description = "Spawned importable ASGI factory; child-owned retained port-zero loopback listener; readiness after lifespan; real root-path/static/override parity; bounded graceful/forced cleanup; startup/fixture failure, interruption, xdist; caller-owned loopback external mode with unavailable server facts."
 
 [[evidence]]
 id = "LOCATOR-130"
 state = "Planned"
 owner = "testing"
 ci_job = "browser"
+required = true
+description = "Native Playwright semantic lookup and assertions, strict mark/region Locators, dynamic re-query after swap, ambiguity diagnostics, shadow/specialist boundaries, and direct Page/context interoperability; no get_by/expect clone."
 
 [[evidence]]
 id = "SETTLE-130"
 state = "Planned"
 owner = "browser-platform"
 ci_job = "browser"
+required = true
+description = "Pre-action checkpoint with session/navigation epoch; require actual matching start; distinguish trusted user actions from background polls, reject ambiguous same-target actions unless generation-scoped, and report scoped response/abort/204/swap/settle facts; fast request, supersession, OOB/removal, unknown capability and hung start/end; no global idle, future poll tick wait, fabricated readiness, or sleeps in new/adopted examples."
 
 [[evidence]]
 id = "ERROR-130"
 state = "Planned"
 owner = "testing"
 ci_job = "browser"
+required = true
+description = "Automatic session/fixture clean check; managed server/page/crash/console/HTTP/asset/network policy; canceled-request distinctions; narrow exact-count expected-HTTP scope; missing expectation failure; external facts unavailable; preserve primary test error plus capture/teardown secondary errors."
 
 [[evidence]]
 id = "ARTIFACT-130"
 state = "Planned"
 owner = "testing"
 ci_job = "browser"
+required = true
+description = "Versioned structured-only default manifest; separate explicit synthetic unredacted native capture; pre-creation upstream flag validation and one capture owner; recording-versus-retention distinction; bounded safe private temporaries/overshoot, atomic writes, disabled/unavailable/truncated/capture-failed markers, and no upload."
 
 [[evidence]]
 id = "PYTEST-130"
 state = "Planned"
 owner = "tooling"
 ci_job = "test"
+required = true
+description = "Additive testing extra and explicit root-conftest/-p registration; supported pytest-playwright fixtures/options; one context lease/finalizer contract; no monkey patch; collection/no-binary behavior versus fail-on-missing selected browser; setup/call/teardown, xdist/rerun artifacts, no unrequested host/browser startup."
 
 [[evidence]]
 id = "SATELLITE-130"
 state = "Planned"
 owner = "packages"
 ci_job = "packaging"
+required = true
+description = "Every coordinated/optional package has an explicit disposition; one minimal useful specialist contribution proves v1 identity/schema/capability/fixture metadata, explicit loading, absence/disabled/version/conflict/fleet behavior; stable re-exports/import isolation; no mandatory public modules/managed WSGI or duplicate harness/plugin authority."
 
 [[evidence]]
 id = "BEHAVIOR-130"
 state = "Planned"
 owner = "reference-app"
 ci_job = "browser"
+required = true
+description = "Linux browser matrix maps every required PAGE/fragment/OOB/history/form/CSRF/auth/local/request/combined/element/upload/download/poll/action/no-JS/asset-failure case to the acceptance inventory; all three engines pass with no required skip."
 
 [[evidence]]
 id = "A11Y-130"
 state = "Planned"
 owner = "accessibility"
 ci_job = "browser"
+required = true
+description = "Linux Chromium/Firefox/WebKit inventory covers native semantics, keyboard/focus/announcement, media modes, viewport/reflow, no-JS, axe engine/version/scope/incomplete/error evidence and deliberate violation; no WCAG/human-AT completion claim."
 
 [[evidence]]
 id = "SECURITY-130"
 state = "Planned"
 owner = "security"
 ci_job = "evidence"
+required = true
+description = "Literal-loopback app/browser origins, fail-closed redirect responses, and service-worker/capability dispositions; test correlation cannot bypass app auth/CSRF; structured-only confidential canary proof; no raw trace redaction promise or remote capture; artifact paths/isolation and honest browser-versus-server-egress limits."
 
 [[evidence]]
 id = "PERF-130"
 state = "Planned"
 owner = "performance"
 ci_job = "browser"
+required = true
+description = "Retained Linux cold/warm startup/context/settle/cleanup and xdist measurements; frozen numeric event/artifact/private-disk/overshoot/time/worker/CI budgets with sample counts and hard-limit probes; capture overhead measured by profile; forced termination remains failed cleanup."
 
 [[evidence]]
 id = "COMPAT-130"
 state = "Planned"
 owner = "compatibility"
 ci_job = "test"
+required = true
+description = "Stable 1.0 and additive 1.x testing exports/behavior preserved; Linux CPython 3.11–3.14 host/import/package checks; Linux Python 3.12 Chromium/Firefox/WebKit browser corpus; supported upstream min/max bounds and pinned browser revisions; no full Cartesian/managed-adapter parity claim."
 
 [[evidence]]
 id = "DOCS-130"
 state = "Planned"
 owner = "docs"
 ci_job = "quality"
+required = true
+description = "One packaged synthetic test-app factory and scaffold example; testing pyramid, explicit activation/install, direct Page, checkpoint/expected failure, capture/resource/privacy/cleanup limits, debug/CI and opt-out; optional browser testgen/doctor do not block cut; current-availability labels honest."
 
 [[evidence]]
 id = "PKG-130"
 state = "Planned"
 owner = "packaging"
 ci_job = "packaging"
+required = true
+description = "Clean base/browser/testing-extra wheels/sdists/offline install/import/typing matrix on CPython 3.11–3.14; upstream fixture/capture options, missing-extra/browser diagnostics, bounded packaged resources, compatible versions and notices; no optional dependency leak or base pytest11 side effect."
 
 [[evidence]]
 id = "RELEASE-130"
 state = "Planned"
 owner = "release"
 ci_job = "release"
+required = true
+description = "All other Required rows Verified; v1.2.0 predecessor evidence, accepted exact contract and immutable artifacts, upgrade/opt-out/rollback and maturity/limits, explicit release approval; no skipped Required browser row or future feature claim."

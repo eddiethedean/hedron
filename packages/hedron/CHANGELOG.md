@@ -1,6 +1,12 @@
 # Changelog
 
-## [1.2.0] — Unreleased
+## [1.3.0] — Unreleased
+
+### Added
+
+- Add first-class UI testing with direct Playwright APIs, an opt-in pytest plugin, managed ASGI scenarios, and an opt-in scaffold.
+
+## [1.2.0] — 2026-10-27
 
 ### Changed
 

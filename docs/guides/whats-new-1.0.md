@@ -6,6 +6,11 @@ search:
 
 # What’s new in Hedron 1.0
 
+!!! note "Historical release note"
+
+    This page describes the 1.0 release. For current installation, support, and release details,
+    see [Current release and support](current-release.md).
+
 Hedron `v1.0.0` is a subtractive, compatibility-reviewed stable release. It turns the proven
 0.x capabilities into one canonical application model and freezes an enumerated stable surface.
 All 17 technical release gates are Verified; the Git tag and PyPI upload are complete.

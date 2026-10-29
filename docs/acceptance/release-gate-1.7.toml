@@ -1,0 +1,120 @@
+schema_version = 1
+phase = "1.7"
+status = "Planned"
+planning_baseline = "v1.2.0"
+required_predecessor = "v1.6.0"
+predecessor_satisfied = false
+target = "v1.7.0"
+owning_rfc = "RFC-0100"
+implementation = "../implementation/FORM_SAVE_STATE_1_7.md"
+acceptance = "RELEASE_1_7.md"
+stage_1_entry_satisfied = false
+release_cut_satisfied = false
+production_runtime_authority_change = false
+changes_existing_defaults = false
+new_policy_api_maturity = "beta-candidate"
+planning_only = true
+
+[[evidence]]
+id = "FREEZE-170"
+state = "Planned"
+owner = "architecture"
+ci_job = "evidence"
+required = true
+description = "Accepted detailed RFC/phase contract; current-source inventory, named maintainers, exact additive APIs and diagnostics, required/deferred scope, host/maturity matrix, schemas, numeric limits, measured baselines, and exact executable commands/artifact paths."
+
+[[evidence]]
+id = "CONTRACT-170"
+state = "Planned"
+owner = "architecture"
+ci_job = "test"
+required = true
+description = "Existing HTMX/Alpine/element authorities and canonical handles reused; one transport/presentation owner; no duplicate state runtime; compatible omitted-policy defaults and documented invalid combinations."
+
+[[evidence]]
+id = "REVISION-170"
+state = "Planned"
+owner = "runtime"
+ci_job = "test"
+required = true
+description = "Separate dirty/validated/submitted/committed revisions; acknowledge only the submitted revision; newer edits stay dirty; validation, denial, conflict, and stale results cannot clear guards."
+
+[[evidence]]
+id = "GUARD-170"
+state = "Planned"
+owner = "browser-platform"
+ci_job = "browser"
+required = true
+description = "Existing unsaved guards integrated with native controls, reset and navigation confirmation/focus return; scoped bypass rules; best-effort unload behavior; cleanup and no duplicate listeners."
+
+[[evidence]]
+id = "RECONCILE-170"
+state = "Planned"
+owner = "application-contract"
+ci_job = "browser"
+required = true
+description = "Lost-response unknown state, authorized read/version reconciliation, no automatic mutation replay, correct application-confirmed Saved outcome, and explicit conflict recovery."
+
+[[evidence]]
+id = "LIFECYCLE-170"
+state = "Planned"
+owner = "browser-platform"
+ci_job = "browser"
+required = true
+description = "Repeated/nested/OOB replacement, removed targets, stale generations, asset failure, interruption, and teardown; exactly-once initialization/cleanup and zero retained owned resources after removal."
+
+[[evidence]]
+id = "A11Y-170"
+state = "Planned"
+owner = "accessibility"
+ci_job = "browser"
+required = true
+description = "Keyboard/native fallback, focus and announcement ownership, semantic busy/error states, reduced motion, zoom/reflow, and the declared no-JavaScript flow; no blanket accessibility-conformance claim."
+
+[[evidence]]
+id = "SECURITY-170"
+state = "Planned"
+owner = "security"
+ci_job = "evidence"
+required = true
+description = "Application authorization/persistence remain authoritative. Scope/entity/operation/revision correlation prevents another form, principal, or stale response from clearing state. Never persist credentials or arbitrary unsaved values to localStorage, snapshots, URLs, or traces; reconciliation reads remain authorized and bounded."
+
+[[evidence]]
+id = "PERF-170"
+state = "Planned"
+owner = "performance"
+ci_job = "browser"
+required = true
+description = "Freeze native-control corpus, maximum scope/field/revision metadata, serialized trace limits, event-processing costs, and repeated-navigation listener budgets before implementation. Measure presentation responsiveness without copying form values. Zero secret values in retained artifacts and zero owned listeners after scope removal are invariant checks."
+
+[[evidence]]
+id = "COMPAT-170"
+state = "Planned"
+owner = "compatibility"
+ci_job = "test"
+required = true
+description = "Stable inventory and current-default behavior preserved; explicit FastAPI/Flask/Django/HDJ/Edron/mount dispositions, strict CSP, three-browser evidence, unsupported combinations and Beta migration guidance."
+
+[[evidence]]
+id = "DOCS-170"
+state = "Planned"
+owner = "docs"
+ci_job = "quality"
+required = true
+description = "Packaged reference flow and examples, policy defaults/limits, failure/recovery, HTTP fallback, privacy, diagnostics, API maturity, and exercised opt-out/rollback instructions."
+
+[[evidence]]
+id = "PKG-170"
+state = "Planned"
+owner = "packaging"
+ci_job = "packaging"
+required = true
+description = "Clean wheel/sdist base/extra installs, optional-import isolation, compatible pins and asset plans, typing, provenance/notices, and package/version evidence for every changed distribution."
+
+[[evidence]]
+id = "RELEASE-170"
+state = "Planned"
+owner = "release"
+ci_job = "release"
+required = true
+description = "Every other Required row Verified; immutable artifact-bound evidence, predecessor/support/maturity decisions, migration/rollback, and explicit release approval; no skipped Required row."

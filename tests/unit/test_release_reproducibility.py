@@ -16,6 +16,17 @@ def test_expected_packages_follow_publish_order_and_exclude_native_lane() -> Non
     assert list(packages)[-1] == "edron-sim"
 
 
+def test_release_versions_select_their_phase_schema_and_predecessor() -> None:
+    assert reproducibility.phase_for_version("1.2.0") == ("1.2", "120")
+    assert reproducibility.phase_for_version("1.3.0") == ("1.3", "130")
+    assert reproducibility.predecessor_for_version("1.2.0") == "1.1.3"
+    assert reproducibility.predecessor_for_version("1.3.0") == "1.2.0"
+    with pytest.raises(ValueError, match="unsupported reproducible release phase"):
+        reproducibility.phase_for_version("1.4.0")
+    with pytest.raises(ValueError, match="invalid release version"):
+        reproducibility.phase_for_version("v1.3.0")
+
+
 def test_reproducibility_requires_exact_wheel_and_sdist_set(tmp_path) -> None:
     first = tmp_path / "first"
     second = tmp_path / "second"
@@ -85,6 +96,45 @@ def test_python310_evidence_is_bound_to_the_candidate_wheel() -> None:
             source_commit="a" * 40,
             artifacts=artifacts,
             candidate_version="1.2.0",
+        )
+
+
+def test_python310_evidence_supports_1_3_and_its_predecessor() -> None:
+    evidence = {
+        "schema": "hedron.phase-130-python310-compatibility/1",
+        "source_commit": "a" * 40,
+        "python": "3.10.20",
+        "candidate_install": "rejected by Requires-Python",
+        "candidate_artifact": "hedron-1.3.0-py3-none-any.whl",
+        "candidate_sha256": "b" * 64,
+        "candidate_rejection_mentions_python_310_and_311": True,
+        "unpinned_requirement": "hedron",
+        "resolved_version": "1.2.0",
+        "predecessor_version": "1.2.0",
+        "platform": "Linux-6.8",
+        "architecture": "x86_64",
+    }
+    artifacts: list[dict[str, str | int]] = [
+        {"name": "hedron-1.3.0-py3-none-any.whl", "sha256": "b" * 64, "size": 10}
+    ]
+
+    assert (
+        reproducibility.validate_python310_evidence_data(
+            evidence,
+            source_commit="a" * 40,
+            artifacts=artifacts,
+            candidate_version="1.3.0",
+            predecessor_version="1.2.0",
+        )
+        == evidence
+    )
+    with pytest.raises(ValueError, match="incomplete or mismatched"):
+        reproducibility.validate_python310_evidence_data(
+            evidence,
+            source_commit="a" * 40,
+            artifacts=artifacts,
+            candidate_version="1.3.0",
+            predecessor_version="1.1.3",
         )
 
 

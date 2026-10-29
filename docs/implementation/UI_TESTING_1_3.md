@@ -1,322 +1,279 @@
 # Phase 1.3: first-class UI testing and adoption confidence
 
-**Status:** Proposed refinement; implementation not authorized
-**Predecessor:** Published Hedron `v1.0.0`
+**Status:** Candidate implementation in progress; local three-engine slice passes; all release gates remain open
+**Planning revision:** 2026-10-28
+**Planning baseline:** Published `v1.2.0`
+**Release predecessor:** `v1.2.0`, published on PyPI and bound to the retained release evidence
+**Compatibility baseline:** Stable `v1.0.0` testing inventory plus additive 1.x behavior
 **Authority:** [RFC-0097](../rfcs/RFC-0097-FIRST-CLASS-UI-TESTING.md)
 **Acceptance:** [RELEASE_1_3](../acceptance/RELEASE_1_3.md) ·
-[release-gate-1.3.toml](../acceptance/release-gate-1.3.toml)
+[release gate](../acceptance/release-gate-1.3.toml) ·
+[planning contract](../acceptance/ui-testing-contract-130.toml)
 
-## Outcome
+**Release execution:** [1.3.0 readiness plan](EXECUTION_1_3.md) — ordered work packages,
+regression coverage, CI/tooling updates, evidence, and release-candidate exit criteria.
 
-An application author can test a real Hedron user interface with pytest while Hedron manages the
-application host, browser context, framework settle facts, error correlation, cleanup, and failure
-evidence. Render tests and `AppScenario` remain the preferred faster layers when a real browser is
-not required.
+## Outcome and bounded release
 
-This document defines work packages and repository seams. Names and signatures shown here are
-candidates until `FREEZE-130` is Verified.
+Run a real synthetic Hedron profile-form test with ordinary pytest and direct Playwright Page/
+Locator/expect, without hand-written host startup or arbitrary waits. Hedron owns only managed
+hosting, context integration, semantic mark/region helpers, checkpoint-scoped observation, error
+correlation, structured artifacts, and deterministic cleanup. Render and AppScenario remain the
+preferred lower-cost layers.
 
-## Entry lock
+Required scope is sync pytest, a spawned flagship ASGI factory, literal-loopback external URLs,
+one small specialist contribution, one packaged/scaffold example, and a bounded existing behavior
+corpus. Managed WSGI/Posit, standalone/asyncpytest APIs, remote production testing, browser testgen,
+visual golden management, and a fleet of new public testing modules are outside the required cut.
+Existing 17 gate ids remain authoritative.
 
-Stage 1 is blocked until W0 produces and freezes:
+## Current-source inventory
 
-- a public-task inventory for render, application-contract, and browser testing;
-- the exact `BrowserScenario`/pytest fixture candidate API and Playwright escape hatch;
-- managed-host and external-URL support/maturity dispositions;
-- a versioned settle record and a catalog of observable Hedron-owned lifecycle facts;
-- a versioned failure-bundle schema, redaction rules, capture profiles, and size limits;
-- default console, server, request, response, asset, and expected-failure policies;
-- the reference behavior and deliberate-failure corpus;
-- supported Python, host, browser, Playwright, pytest, OS, and parallel-execution matrices;
-- a complete coordinated/optional-package testing disposition and the versioned contribution
-  protocol, including import, registration, conflict, maturity, and missing-package behavior;
-- measured performance, resource, artifact, and release-CI budgets; and
-- additive packaging and compatibility decisions for `hedron[browser]` and a possible
-  `hedron[testing]` extra.
+Reviewed on 2026-10-28; source inspection does not verify prototype/runtime/release evidence.
 
-The lock may choose different public spellings from this proposal. It may not authorize a fake DOM,
-remote capture by default, a second test runner, a production runtime authority, or a regression in
-the stable 1.0 testing inventory.
-
-## Repository seam map
-
-| Seam | Current owner | 1.3 responsibility |
+| Seam | Reviewed source | Current finding / implementation action |
 |---|---|---|
-| Render assertions | `hedron.testing.fastapi` / renderer | Preserve; document as layer one |
-| HTTP/HTMX scenarios | `hedron_core.testing.app`, adapter fixtures | Preserve; document as layer two and reuse portable response facts |
-| Browser hooks | `hedron.testing.browser` | Refine low-level imports and compose with the new scenario without breaking them |
-| Interaction trace | `hedron-core` trace/lifecycle contracts | Supply redacted, versioned events to settle and failure evidence |
-| Marks and regions | component/render and testing helpers | Supply stable app-aware locator identity |
-| Managed host | new optional testing module | Own listener, readiness, lifespan, root path, exception channel, and teardown |
-| Pytest integration | new optional plugin module | Own fixture/options/markers/artifact lifecycle without base-import side effects |
-| Browser engine | Playwright | Own page, locator, actionability, web assertions, contexts, traces, screenshots |
-| Test generation | `hedron testgen` | Optionally emit reviewable browser stubs from declared interactions |
-| Satellite test semantics | owning optional package | Contribute only package-native fixtures, lifecycle facts, assertions, redactors, or summaries through the central protocol |
-| Documentation/scaffold | docs and `hedron new` | Teach the testing pyramid and include one bounded browser example |
+| Render and HTTP helpers | [fastapi.py](../../packages/hedron/src/hedron/testing/fastapi.py), [AppScenario](../../packages/hedron-core/src/hedron_core/testing/app.py) | Preserve public helpers and portable contract behavior; do not add DOM simulation |
+| Browser/axe hooks | [browser.py](../../packages/hedron/src/hedron/testing/browser.py) | Sync lazy Playwright/axe imports; retain `playwright`, deprecated alias behavior, scan/report distinction |
+| Root testing facade | [testing exports](../../packages/hedron/src/hedron/testing/__init__.py) | Freeze all existing exports and optional-import behavior before moving ownership |
+| Dependency extras | [hedron metadata](../../packages/hedron/pyproject.toml) | `testing` extra now includes pytest, pytest-playwright, Playwright, and Uvicorn; plugin activation remains explicit |
+| Private hosting | [shared harness](../../tests/browser/_harness.py), [Alpine fixture](../../tests/browser/test_phase067_alpine.py) | TCP polling, reserve/release port and daemon-thread patterns are migration inputs; do not publish them unchanged |
+| Registry isolation | [browser conftest](../../tests/browser/conftest.py), [root conftest](../../tests/conftest.py) | Module/function reset ordering and Explorer registration motivate child-owned app isolation |
+| Reuse experiments | [private reuse helper](../../tests/browser/_playwright.py) | Opt-in monkey patch is private; new harness uses supported upstream fixtures |
+| Existing corpus | [HTMX lifecycle](../../tests/browser/test_htmx_lifecycle.py), [theme gallery](../../tests/browser/test_builtin_theme_gallery.py) | Choose a bounded reusable subset; route.fulfill/TestClient tests are not evidence for managed live-server lifecycle |
+| Observable lifecycle | [UI module](../../packages/hedron-core/src/hedron_core/static/hedron-ui.mjs), [Alpine module](../../packages/hedron-core/src/hedron_core/static/hedron-alpine.mjs) | HTMX lifecycle events and data-hedron action markers exist; Python state objects alone do not prove browser readiness |
+| CI/browser installation | [CI](../../.github/workflows/ci.yml), [installer](../../scripts/ci_install_playwright.sh) | Reuse pinned browser/dependency installation and existing browser job; missing browsers cannot satisfy release rows |
 
-Candidate source placement is `hedron.testing.browser_scenario` plus
-`hedron.testing.pytest_plugin`; Stage 0 must confirm import layering before these paths become
-public. Core-only modules cannot import pytest, Playwright, Uvicorn, or host implementations.
+The [local vertical-slice record](../acceptance/evidence-130/LOCAL_VERTICAL_SLICE_2026-10-28.md)
+records pytest 9.1.1, pytest-playwright 0.10.0, Playwright 1.62.0, Uvicorn 0.52.1, Python
+3.12.13, macOS 26.6.2, browser versions, commands, and the 31-test result per engine. Do not
+infer supported minimums or Linux release support from this one environment. No performance
+budget or release matrix is claimed.
 
-## Candidate public artifacts
+## Candidate implementation status
 
-| Artifact | Candidate maturity | Contract |
+| Slice | Current state | Remaining evidence or work |
 |---|---|---|
-| `BrowserScenario` | Stable candidate | One application/browser test session with navigation, semantic lookup, settle, error, and cleanup behavior |
-| `hedron_ui` pytest fixture | Stable candidate | Isolated scenario factory or instance; exact fixture shape freezes in W0 |
-| `from_app` managed ASGI host | Stable candidate | Loopback-only ephemeral live server with readiness, lifespan, root path, assets, and bounded teardown |
-| `from_url` external host | Stable candidate | Host-neutral browser session; non-loopback use is explicit and capture-conservative |
-| mark/region locators | Stable candidate | Strict lookup by rendered `data-hedron-mark` or declared region identity |
-| settle record v1 | Beta candidate | Bounded owned-work facts; never a claim that arbitrary browser work is idle |
-| failure bundle v1 | Beta candidate | Redacted and bounded diagnostic artifact with provenance and missing-data markers |
-| testing contribution v1 | Beta candidate | Explicit versioned satellite contribution metadata; no ambient pytest registration or duplicate harness authority |
-| browser `testgen` profile | Beta candidate | Reviewable pytest stub generation; no execution or overwrite authority |
-| visual golden comparison | Deferred | Requires a separate baseline/review/platform-variance contract |
+| Spawned ASGI host | Implemented and exercised for lifespan, startup failure, root path, static assets, and graceful stop | Forced-stop, timeout interruption, xdist, and broad fixture-failure cases |
+| pytest/Playwright integration | Explicit sync plugin, lazy `new_context` lease, option guards, and native Page/Locator usage implemented | Setup/call/teardown matrix, reruns, missing-browser behavior, and clean package matrix |
+| Checkpoint and settle | Bounded browser event ring, pre-action checkpoint, target-scoped request correlation, expected HTTP rules, and error collection implemented | Full 204/abort/OOB/removal/supersession/hung-request corpus and capability boundaries |
+| Structured diagnostics | Versioned manifest, safe summaries, private per-run paths, atomic writes, and bounded size implemented | Confidential canary sweep, overflow/partial-write cases, and retained immutable artifacts |
+| Synthetic native capture | Explicit synthetic marker and upstream trace/screenshot option validation implemented | Recording-time disk limits, overshoot, capture failure ownership, and successful-run cleanup proof |
+| Example and browser matrix | Packaged profile app passes the local Chromium/Firefox/WebKit slice; external loopback and JavaScript-off forms pass | Bounded existing Hedron behavior and accessibility corpus on Linux |
+| Package extension | Hedron validates versioned contribution objects or JSON-shaped metadata, with explicit marker loading and conflict/resource checks; sample-kit declares a core-only metadata record and optional FastAPI factory using hedron-core without importing flagship Hedron; a draft inventory names all 23 workspace packages | Maintainer review, absence/conflict/version matrix, and fleet import isolation remain |
+| Freeze and release | API remains a Beta candidate; all 17 machine-gate rows remain Planned | Accepted exact contract, named maintainers, numeric budgets, v1.2 predecessor, and release evidence |
 
-Only evidence can promote a candidate. A convenient import, manifest, or generated stub does not
-make an artifact Stable.
+## Candidate API and ownership lock
 
-## Work packages
+Adopt the direct-Page design as the preferred candidate. Keep one function-scoped `hedron_ui`
+factory, context-managed `from_app(importable_factory, config=...)` / `from_url(base_url)`,
+`page`/`context`, `url`, `mark`/`region`, checkpoint/settle/event snapshots, narrow expected-HTTP
+rules, and clean assertions. Native Playwright owns locators/actions/assertions. No `ui.get_by_*`
+delegation, `ui.expect`, global idle, or standalone second host/browser lifecycle.
 
-### W0 — Baseline, prototypes, and `FREEZE-130`
+Use explicit root-conftest plugin loading; select an additive testing extra without base-import
+side effects. New policy/scenario/schema/protocol surfaces are Beta candidates; existing stable
+helpers remain Stable. Freeze final signatures/typing and registration only after probes/user
+exercise. Config precedence is package defaults, project config, test marker, explicit session
+arguments for Hedron-owned settings; security/capture ceilings intersect and cannot be loosened
+by an unrelated marker. Upstream browser CLI/fixture options remain upstream-owned, with conflicts
+reported before context creation.
 
-- Inventory all current testing exports, browser fixtures, first-party browser helpers, raw
-  Playwright setup, sleeps, server launchers, artifact patterns, and CI browser jobs.
-- Build two disposable API prototypes: thin `.page` composition and bounded locator delegation.
-- Run a documented fresh-user exercise against both prototypes and record ambiguity, setup time,
-  failure comprehension, and escape-hatch needs.
-- Probe managed ASGI, Flask, Django, and external-URL lifecycle behavior without assuming parity.
-- Inventory package-owned fixtures/assertions and assign every coordinated and optional package a
-  proposed module/facade/host-provider/protocol-provider/testing-product/private/non-fit disposition.
-- Capture baseline startup, navigation, settle, cleanup, xdist, and artifact measurements.
-- Freeze public names, schemas, maturity, support matrix, budgets, and the Required corpus.
+The child owns the constructed app, registry, loop, overrides, DB resources, listener, and lifespan.
+The parent owns deadlines, supervision, isolated artifact roots, and teardown reporting. Browser
+driver/process reuse remains owned by pytest-playwright; each test leases isolated context state.
+Factory config is bounded JSON-compatible synthetic input; live apps/closures/DB connections are
+not serialized across the host boundary.
 
-**Exit:** `FREEZE-130` is Verified and no open design question changes authority or release scope.
+## W0 — Complete the empirical freeze
 
-### W1 — Managed host and isolation
+Resolve the following concrete probes. The local slice above covers only part of the managed-host
+and browser-matrix probes; the remaining results are still open.
 
-- Start the flagship application on a pre-bound ephemeral loopback listener to prevent port races.
-- Enter and exit application lifespan exactly once; surface startup/shutdown exceptions.
-- Preserve configured root path, forwarded/path behavior, cookies, static assets, build manifest,
-  and dependency overrides.
-- Provide readiness based on an owned signal rather than retrying an arbitrary public page.
-- Isolate temporary roots, logs, registries, overrides, ports, threads/processes, and worker ids.
-- Implement cancellation and forced bounded cleanup without leaking a background host.
-- Add `from_url` with explicit remote authorization and capture/network policy.
+| Probe | Required result | Gate owner |
+|---|---|---|
+| Factory/child hosting | Spawned factory, child-bound port zero retained through serving, owned readiness after lifespan, route/static/root-path parity, startup error, graceful/forced shutdown, xdist isolation | HOST-130 |
+| Upstream fixture composition | Preserve engine/headed/context/device/locale/JS options; one context-close/capture owner; setup/call/teardown failure; no monkey patches | PYTEST-130 / CONTRACT-130 |
+| Observation coverage | Capture before action; fast/slow request; 204/abort; OOB and nested removal; stale target/epoch; missing event capability clearly unavailable | SETTLE-130 |
+| Capture boundary | Structured-only canary corpus; synthetic native trace/screenshots; early flag conflicts; temporary-disk monitoring and declared overshoot/termination; partial-write/permission failures | ARTIFACT-130 / SECURITY-130 |
+| API/user exercise | Compare direct Page with disposable thin delegation; record first-test setup/failure comprehension/typing; publish one selected API | FREEZE-130 / LOCATOR-130 |
+| Dependency and matrix | Actual pytest/pytest-playwright/Playwright/Uvicorn/xdist bounds, Linux host matrix and browser revisions, core/base isolation | COMPAT-130 / PKG-130 |
+| Resource baseline | Repeated cold/warm host/context, request-settle, bounded artifact and teardown/xdist measurements with named hardware and exact commands | PERF-130 |
+| Satellite ownership | Every package disposition, one minimal public-use-case contribution, explicit loading, absence/conflict/version behavior | SATELLITE-130 |
 
-**Exit:** repeated, failed, timed-out, interrupted, and xdist sessions leave no live resource and
-produce a deterministic startup or teardown diagnostic.
+The [contract ledger](../acceptance/ui-testing-contract-130.toml) and [package inventory](../acceptance/ui-testing-package-dispositions-130.toml)
+are implementation records, not accepted release evidence. Budgets remain Unmeasured with no
+numeric thresholds; replace them with measured/frozen values, exact commands/artifact paths, and
+actual maintainers before FREEZE-130 can be Verified. The 1.2 release predecessor and detailed
+scope freeze are separate conditions.
 
-### W2 — Browser session and semantic lookup
+## W1 — Small managed host and browser core
 
-- Compose the managed/external host with the pinned Playwright pytest/browser lifecycle.
-- Expose direct `Page`, `BrowserContext`, and supported Playwright configuration where needed.
-- Add only the frozen convenience surface for goto, role, label, text, mark, and region lookup.
-- Preserve Playwright strictness, auto-waiting, web assertions, device/viewport, locale/timezone,
-  color-scheme, reduced-motion, and JavaScript settings.
-- Generate app-aware ambiguity reports containing semantic candidates without dumping secrets.
-- Make CSS/XPath an explicit direct-Playwright path rather than a Hedron locator abstraction.
+Implement only the frozen flagship host and context integration first:
 
-**Exit:** the locator corpus proves accessible-first lookup, strict ambiguity, dynamic re-query after
-swaps, shadow/element boundary dispositions, and direct Playwright interoperability.
+- The child binds literal loopback/port zero, retains its socket, and reports startup/lifespan-ready
+  through a bounded session-owned channel; no reserve-close port race, public-page readiness probe,
+  reload, multiple web workers, or orphan daemon thread.
+- Test root-path/mount semantics with real URLs, static requests and actual ASGI scope; construct
+  overrides and synthetic auth/DB state inside the test factory.
+- Install test-only request/event listeners before navigation. Scope any correlation header/channel
+  to the managed origin; never alter application authorization, response bodies, or status.
+- Lease isolated contexts via the supported upstream fixture seam and preserve options explicitly.
+  Close only owned leases; never stop borrowed session browser/driver fixtures.
+- Dispose observers, finish capture, close page/context through its single owner, request graceful
+  child stop, then bounded terminate/kill/join. Forced termination remains a failed cleanup outcome.
+- External URL mode accepts a declared literal-loopback origin, retains caller server ownership,
+  and marks lifespan/server-exception facts unavailable.
 
-### W3 — Owned-work settle probe
+**Exit:** HOST-130/CONTRACT-130 vertical evidence passes for the selected managed path, including
+startup failure and timeout teardown. This does not require W5 satellite breadth.
 
-- Install a test-only observer before application scripts without changing shipped browser assets.
-- Normalize HTMX/Hedron request generation, swap, settle, abort, timeout, error, and removal events.
-- Consume existing action-state and interaction-trace identities rather than inventing parallel ids.
-- Observe only documented first-party Alpine and Web Component lifecycle facts.
-- Define opt-in polling/action completion waits and reject implicit unbounded background waiting.
-- Return a versioned settle record with current/pending events, sources, ages, truncation, and
-  unavailable facts.
-- Add a source check banning arbitrary sleeps from maintained browser examples and generated tests.
+## W2 — Checkpoint, errors, and the first end-to-end slice
 
-**Exit:** every maintained interaction either settles through the owned schema or has an explicit
-non-settling/third-party disposition; deliberate hangs produce actionable timeouts.
+Implement the smallest event ring and automatic clean checks needed to prove the profile form.
+Checkpoint before the action; require an observed matching request start; consume response and
+applicable swap/settle phases by target/epoch/generation. A 204 or cancellation has no required swap.
+Unsupported readiness needs explicit Playwright assertions; do not change production assets.
 
-### W4 — Error correlation and expectations
+Unexpected server/page/crash/console-error, HTTP 4xx/5xx, required-resource failures, or unexpected
+blocked traffic fail automatically on context exit/finalization. Permit narrow expected-HTTP
+contexts with method/path/status/count/checkpoint and reject unused expectations. Intentional
+validation/denial UI remains testable; matching a 422 never ignores an unrelated JS/server error.
+Exception summaries omit raw messages/locals by default.
 
-- Capture server exception chains through a bounded channel tied to test/request identity.
-- Capture page errors, console messages, request failures, responses, asset failures, and crashes.
-- Define default severity and allow/expect APIs with lexical scope and automatic restoration.
-- Keep validation, authorization, and domain failure responses testable without global suppression.
-- Correlate browser requests, Hedron operation ids, lifecycle events, route ids, and server errors.
-- Make `assert_clean()` deterministic and include unexpected/missing expected failures.
+**Required slice, before breadth work:**
 
-**Exit:** each deliberate failure class is detected at the right boundary, expected failure UI can
-pass narrowly, and no ignored failure leaks into a later test.
+1. Start a synthetic app with real lifespan/static/root-path support.
+2. Navigate and fill by native role/label.
+3. Declare an expected invalid response; verify inline error, focus, and announcement.
+4. Checkpoint and submit valid data; settle the matching request and assert visible success.
+5. Inject one deliberate server/browser/settle failure and retain structured diagnostic evidence.
+6. Prove failure/timeout does not leak the child, context, listener, overrides, or temporary roots.
 
-### W5 — Artifact schema, redaction, and retention
+Run in Chromium first. The early slice is partial gate evidence, not a phase release or a reason
+to skip the eventual three-browser corpus.
 
-- Implement the frozen failure-bundle schema and deterministic artifact directory layout.
-- Retain Playwright trace, screenshot/DOM when policy permits, semantic diagnostic, settle record,
-  redacted interaction/server/browser facts, and environment manifest.
-- Apply header, cookie, query, form, `Secret`, field-policy, URL, and structured-trace redaction
-  before writes; record fields that cannot be safely captured.
-- Bound event counts, bodies, screenshots, traces, total bytes, names, path depth, and retention.
-- Reject path traversal and unsafe archive/member names derived from test ids or URLs.
-- Disable upload/telemetry and define conservative non-loopback capture defaults.
-- Supply one command/instruction for opening the retained Playwright trace.
+## W3 — Artifacts and pytest hardening
 
-**Exit:** adversarial secret, path, huge-body, repeated-failure, partial-write, and disk-budget tests
-pass; every omission/truncation is visible rather than reported as complete evidence.
+Implement a versioned structured failure manifest, bounded event/exception summaries, capability/
+availability markers, environment/provenance, deterministic safe paths, atomic writes, and failure
+phase. Preserve the original exception and append capture/teardown failures. Resource-policy
+breaches and a missing required artifact do not become successful omissions.
 
-### W6 — Pytest integration, packaging, and authoring loop
+Default structured capture records no raw trace, DOM, screenshot, video, HAR, bodies, header/cookie/
+storage/form/URL values, arbitrary console text, or exception locals/messages. Canary scans validate
+this profile. Synthetic capture is explicit: record native traces during execution if enabled,
+retain failed-test captures, delete successful private temporaries, and label captures unredacted.
+Do not promise trace archive redaction or capture-before-failure retroactively.
 
-- Add the frozen optional dependencies without importing them from base/core paths.
-- Register fixtures, markers, browser/options, artifact policy, timeout, and network policy with
-  deterministic precedence across CLI, config, marker, and fixture inputs.
-- Compose with pytest-playwright rather than forking its engine/browser lifecycle where possible.
-- Support collection without installed browser binaries and provide an actionable installation
-  diagnostic; skipped release evidence is never green.
-- Make xdist artifact paths, ports, browser contexts, and managed apps worker-safe.
-- Extend `hedron new` and optionally `hedron testgen` with a small reviewable browser example.
-- Add task-oriented installation, local debug, headed, trace, CI, and troubleshooting guidance.
+Integrate upstream trace/screenshot/video/output options before creating a context. Reject flags
+that bypass the selected capture ceiling; one owner writes capture output. Freeze resource limits
+with observed monitoring granularity and bounded overshoot for native artifacts; a final-size check
+alone cannot establish a hard maximum during recording.
 
-**Exit:** a clean generated project installs one optional testing surface and runs render, HTTP,
-and browser examples with ordinary pytest; core/base installations remain unchanged.
+Use a function/session/xdist-aware artifact path with retry/phase identity. Required release runs
+fail on missing binaries or unexpected skips. Collection can succeed without browser binaries;
+base tests and unselected browser tests must not start a host/browser. Central activation is
+explicit, and adding a satellite cannot alter collection or options. Reruns cannot erase earlier
+failed-attempt evidence.
 
-### W7 — Satellite testing ownership and contribution protocol
+**Exit:** ERROR-130, ARTIFACT-130, PYTEST-130, and SECURITY-130 pass their declared core corpus;
+timing/resource evidence remains bound to the frozen measurement plan.
 
-- Inventory helpers currently exposed from the flagship package that construct optional-package
-  types, and classify each as central, compatibility re-export, or owning-package behavior.
-- Freeze a minimal contribution record containing package/logical id, version, maturity,
-  capabilities, required dependencies, supported artifact/settle schema versions, and conflicts.
-- Keep discovery explicit: direct import, declared package registration, or another frozen
-  non-ambient mechanism. Installing a distribution may not silently register a pytest plugin.
-- Define bounded capabilities for synthetic fixture factories, semantic component helpers,
-  readiness/settle facts, event assertions, redactors, artifact summaries, host launchers, and
-  reusable conformance scenarios.
-- Reject duplicate browser/session/server/locator/artifact/error-policy ownership and conflicting
-  contributions with package/source diagnostics.
-- Add candidate package-native modules only where downstream authors need them; do not publish a
-  module merely to expose a package's private tests.
-- Preserve stable `hedron.testing` imports as compatibility re-exports when ownership moves, and
-  keep optional imports lazy and actionable when the owning package is absent.
-- Move any admitted public fixture data out of repository `tests/` paths and into bounded packaged
-  resources; otherwise keep the loader private.
-- Exercise each admitted contribution alone, missing, disabled, duplicated, incompatible,
-  out-of-order, and in the full installed fleet.
+## W4 — Bounded behavior, compatibility, and access corpus
 
-Candidate Stage 0 dispositions include:
+Reuse the existing 1.1 reference flows and a selected browser subset rather than migrate every
+historical test. Required families are page/native navigation; fragment/OOB/history; validation/
+CSRF/auth; local/request/combined; one admitted specialist lifecycle; synthetic upload/download;
+current polling/action terminal/cancel/stale behavior; no-JS/required-asset fallback; focus/keyboard/
+announcements and mode/viewport checks; deliberate failures.
 
-| Package family | Candidate disposition |
-|---|---|
-| `hedron-data`, `hedron-charts`, `hedron-maps`, `hedron-elements`, qualifying curated extras | Owning-package testing module for specialist UI types and semantics |
-| `edron` | Thin facade over the central harness plus Edron-native app construction |
-| `hedron-flask`, `hedron-django`, optionally `hedron-posit` | Managed-host contribution only if lifecycle evidence passes; external URL remains the portable fallback |
-| `hedron-gradio`, `hedron-mcp`, `hedron-native`, `hedron-notebook` | Protocol-fixture provider only when a downstream public use case is proven |
-| `hedron-conformance`, `hedron-sim`, `edron-sim`, `hedron-sample-kit`, portable runtime evaluators | Testing product; no nested testing module |
-| Explorer, Jinja, deployment/tooling packages without downstream fixture demand | Private-only or explicit non-fit unless W0 evidence justifies a narrower provider |
+Run the bounded integration corpus on Chromium, Firefox, WebKit at a pinned Linux integration
+runtime. Check default-build CPython 3.11–3.14 for host/import/package compatibility. Freeze exact
+minimum/maximum upstream dependency rows and any risk-based Python/browser intersections.
+macOS/Windows and managed adapter launchers remain pilot/Deferred unless admitted separately with
+evidence; external loopback behavior is the portable adapter path.
 
-**Exit:** `SATELLITE-130` records every package disposition; all admitted contributions use one
-protocol, preserve optional dependency isolation, and pass conflict, absence, fleet, and package
-artifact tests without an ambient pytest plugin.
+Capture axe version/scope/incomplete/error provenance; automated results do not close human AT
+obligations. Reject runtime-instrumentation requirements and keep no-JS semantics observable through
+native Playwright. Preserve stable test signatures/imports, and baseline current defaults.
 
-### W8 — Reference behavior and accessibility verticals
+**Exit:** LOCATOR-130, SETTLE-130, BEHAVIOR-130, A11Y-130, COMPAT-130 and relevant assurance rows
+have a complete declared matrix. Missing capability is explicit, not fabricated settled evidence.
 
-- Implement the ten RFC reference behavior families using synthetic data and stable semantics.
-- Cover PAGE/fragment/OOB/history, forms/security failures, local/request/combined interactions,
-  specialist elements, focus/keyboard, uploads/downloads, action states, no-JS, and failures.
-- Exercise reduced motion, forced colors, zoom/reflow, representative viewports, and semantic names.
-- Integrate axe with engine/version/scope/incomplete metadata and deliberate violation fixtures.
-- Run Chromium as the ordinary default and the bounded corpus on Chromium, Firefox, and WebKit.
-- Prove root-path/proxy and external URL paths; add managed adapter rows only at their frozen maturity.
+## W5 — Minimal satellite proof and downstream handoff
 
-**Exit:** `BEHAVIOR-130`, `A11Y-130`, and the browser/host matrix pass with no blanket accessibility
-or managed-adapter parity claim.
+Inventory all 23 current workspace members and reconcile actual release/optional membership at
+freeze. Assign a machine-readable module/facade/host-provider/protocol-provider/testing-product/
+private/non-fit disposition. Do not require public modules for all packages.
 
-### W9 — Compatibility, fleet, and release closure
+Prove one specialist contribution through explicitly loaded v1 metadata: package id/version,
+schema ranges, capability names, bounded synthetic event/assertion summaries, declared fixture
+resources, and conflict rules. Reject duplicate session/host/locator/artifact/error ownership.
+Executable test hooks are trusted application test code, not a security sandbox. Host-launcher
+extensions and broad hooks remain optional. Preserve stable flagship imports and optional-package
+isolation; packaged public resources cannot be loaded from private repository tests paths.
 
-- Freeze and compare the stable 1.0 testing inventory, signatures, behavior, imports, and extras.
-- Run clean base, browser, and testing-extra wheel/sdist/offline-install fixtures.
-- Prove package import order and missing-extra messages without optional dependency leakage.
-- Adopt the harness in the reference app and every package family admitted by `SATELLITE-130`
-  before promotion.
-- Verify documentation, scaffold, testgen, testing API, stability, support, and compatibility claims.
-- Run security, accessibility, performance, browser, adapter, package, and rollback evidence.
+Handoff only the checkpoint/event schema, declared capability availability, clean/error rules,
+context isolation, and fixture extension seams to phases 1.4–1.7. Provide future scenario recipes:
 
-**Exit:** all Required `*-130` rows are Verified and the release packet contains immutable evidence.
+| Consumer | What 1.3 supplies | What remains downstream-owned |
+|---|---|---|
+| 1.4 polling | Bounded request observations, isolated pages, upstream clock/event controls | Actual hidden-tab/viewport/backoff/terminal scheduling |
+| 1.5 loading | Request/query observation supplied by synthetic app, stable region lookup | Viewport activation, deferred preparation and assets |
+| 1.6 timing | Controlled server response order, checkpoint/epoch facts, semantic controls | Debounce, IME, latest-result and submit/validation runtime policies |
+| 1.7 forms | Controlled save outcomes, native form assertions, response-loss fixtures | Dirty/save revisions, guards, unknown-save reconciliation |
 
-## Dependency and delivery order
+Do not claim a virtual clock proves genuine OS background-tab suspension. Future visibility tests
+need real browser/lifecycle evidence at their owning phase. The harness observes current behavior;
+it does not implement these features or invent their production events.
+
+**Exit:** SATELLITE-130 is Verified for the complete disposition inventory and minimal admitted
+contribution, with absence/disabled/version/conflict/fleet install evidence. This work does not
+block the earlier flagship vertical slice.
+
+## W6 — Packaging, documentation, and release
+
+Ship one synthetic importable test factory and one scaffold browser example. Teach render/
+AppScenario/browser selection, explicit plugin activation, browser installation, direct Page usage,
+expected failure, checkpoint settling, local debugging, capture profiles, and cleanup limitations.
+Browser testgen and testing doctor remain optional.
+
+Verify clean base/browser/testing-extra wheels/sdists, typing and optional-import boundaries,
+upstream plugin options, CI entry/selected tests, immutable artifacts and versions. Preserve existing
+scaffolds unless a user chooses generation; retain browser.py aliases and stable exports.
+
+Opt-out is removal of the explicit plugin/scenario while render/AppScenario/raw Playwright remain
+available. A context failure cannot change app data semantics or clear an application's dirty state.
+Record a clean install/upgrade/opt-out rehearsal; never treat removal of artifacts or disabling clean
+checks as rollback.
+
+**Exit:** DOCS-130, PKG-130 and all other Required rows Verified; recorded 1.2 predecessor and
+explicit release decision are required for RELEASE-130.
+
+## Delivery order and checkpoints
 
 ```text
-W0 freeze
-  -> W1 managed host
-  -> W2 browser session
-  -> W3 settle probe -----> W8 behavior/a11y corpus
-  -> W4 error policy ----/          |
-  -> W5 artifacts -------/          v
-  -> W6 pytest/package -> W7 satellites -> W9 release closure
+W0 empirical freeze
+  -> W1 managed host/context
+  -> W2 secured profile + intentional failure in Chromium
+  -> W3 diagnostics/capture/pytest hardening
+  -> W4 bounded behavior and three-browser/compatibility corpus
+  -> W5 minimal satellite proof (can overlap W4 after protocol freeze)
+  -> W6 release closure
 ```
 
-W1 and the schema portions of W3–W5 may proceed in parallel after the freeze. W7 requires the
-central protocols from W2–W6, while W8 requires the vertical slice from W1–W7. No public promotion
-occurs before W9.
-
-## Required vertical slice
-
-The first end-to-end slice is a secured profile form in the reference application:
-
-1. managed ASGI host starts on loopback with lifespan, root path, static assets, and synthetic user;
-2. the test navigates by URL and locates the form through roles and labels;
-3. invalid submission proves field error, focus, announcement, and expected 422 behavior;
-4. valid submission triggers one HTMX request, swap, action terminal state, and visible success;
-5. `assert_clean()` reports no unhandled failure;
-6. an intentional failure proves screenshot/DOM policy, Playwright trace, interaction trace, server
-   correlation, redaction, and a useful timeout/error message; and
-7. success, failure, timeout, and interruption leave no host, port, context, override, or temp file.
-
-This slice passes Chromium before breadth work begins. Satellite contributions join in W7;
-Firefox/WebKit and adapter/external rows join in W8.
-
-## Diagnostics and budgets
-
-Candidate diagnostic families are `HED-TEST-HOST-*`, `HED-TEST-LOCATOR-*`,
-`HED-TEST-SETTLE-*`, `HED-TEST-ERROR-*`, `HED-TEST-ARTIFACT-*`, and
-`HED-TEST-CONFIG-*`, plus `HED-TEST-SATELLITE-*` for package contribution/disposition failures.
-Stage 0 freezes code ownership, severity, remediation, structured fields, and
-suppression/expectation behavior.
-
-Budgets cover startup/readiness, navigation and probe overhead, settle event count/bytes, server and
-browser queues, screenshot/DOM/trace size, aggregate artifacts, path/name lengths, shutdown,
-parallel workers, memory, processes, and release-matrix duration. Exact-limit and one-over-limit
-tests are Required. Moving data from a trace into DOM, screenshots, logs, or archives does not bypass
-a budget.
-
-## Compatibility and rollback
-
-- Stable 1.0 test helpers and imports remain source-compatible.
-- Disabling/uninstalling the optional testing extra restores the 1.0 base dependency graph and
-  runtime output.
-- The test observer is injected by the browser context and is not shipped in production assets.
-- The managed host binds loopback only and changes no production server defaults.
-- Versioned settle and artifact records accept compatible unknown fields and reject incompatible
-  schema versions with an actionable diagnostic.
-- Satellite contributions are opt-in/explicit, independently versioned, and removable without
-  changing the central browser scenario; stable compatibility re-exports remain until a future
-  SemVer-authorized migration.
-- If browser lifecycle, redaction, or cleanup cannot meet the Required gates, the candidate remains
-  Beta/internal or the phase ships only adoption/compatibility documentation; it is not promoted by
-  schedule.
-- The unassigned HTMX/Alpine transition is not a rollback mechanism and cannot be bundled into 1.3.
+| Candidate | Required result |
+|---|---|
+| `1.3a0` | Empirical freeze, selected API, source inventory, matrices, actual maintainers, schema and measured limits |
+| `1.3a1` | W1/W2 flagship slice and bounded structured evidence; no satellite breadth prerequisite |
+| `1.3b1` | W3–W5, capture boundaries, bounded three-browser/host corpus, minimal satellite conformance |
+| `1.3rc1` | Clean packages/docs/upgrade/opt-out, predecessor evidence, every non-release gate Verified |
 
 ## Stop conditions
 
-Stop or narrow the phase if the design requires a fake browser semantics layer, a base Playwright or
-pytest dependency, remote access/capture by default, global failure suppression, arbitrary sleeps,
-production asset instrumentation, unstable hidden Playwright internals, managed-host privilege
-expansion, or a weakening of 1.0 rendering/interaction/security behavior.
-
-Also stop promotion if failures can lose server exceptions, artifacts can expose known secrets or
-escape their root, cleanup leaks resources, required browser evidence is skipped, or the supported
-matrix cannot be reproduced from clean artifacts.
-
-## Definition of done
-
-The phase is done only when a clean generated application demonstrates the three testing layers;
-the managed browser test uses semantic locators and no manual server or sleeps; deliberate failures
-produce correlated bounded evidence; the Required browser/host/accessibility/security/performance
-matrix passes; every package has a testing disposition and admitted satellite contributions pass
-fleet conformance; optional imports and parallel cleanup are proven; stable 1.0 testing behavior is
-unchanged; and every Required release-gate row is Verified.
+Do not enter implementation with unmeasured/unowned required budgets or unresolved host/context/
+capture/settle authority. Do not promote a phase whose Required rows skip, lose failures, leak owned
+resources, dump confidential captures, claim unavailable facts, alter base imports/defaults, or
+require production instrumentation. The [acceptance packet](../acceptance/RELEASE_1_3.md) keeps the
+17 gate ids and their precise descriptions; a documented prototype alone cannot verify them.

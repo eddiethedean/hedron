@@ -1,6 +1,12 @@
 # Changelog
 
-## [1.2.0] — Unreleased
+## [1.3.0] — Unreleased
+
+### Changed
+
+- Refresh bundled browser asset integrity metadata.
+
+## [1.2.0] — 2026-10-27
 
 ### Changed
 

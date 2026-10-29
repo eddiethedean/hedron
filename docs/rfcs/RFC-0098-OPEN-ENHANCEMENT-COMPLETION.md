@@ -7,6 +7,8 @@
 **Acceptance:** [RELEASE_1_1](../acceptance/RELEASE_1_1.md) ·
 [release-gate-1.1.toml](../acceptance/release-gate-1.1.toml)
 
+**Later planning revision (2026-10-28):** [RFC-0100](RFC-0100-INTERACTION-EFFICIENCY-AND-FORM-CONTINUITY.md) preserves 1.3 testing, inserts 1.4–1.7 interaction improvements, and moves the former 1.4–1.9 themes to 1.8–1.13. Earlier sequencing statements in this RFC remain historical; the completed 1.1 scope is unchanged.
+
 ## Outcome and scope
 
 Phase 1.1 implements the open enhancement backlog and the complementary features needed to use

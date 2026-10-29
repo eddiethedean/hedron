@@ -66,12 +66,12 @@ wheel with its immutable PyPI version. If a version already exists with differen
 fails and requires a version bump. Run the quick-start check first against local artifacts. After
 upload, rerun it against the registry and record the result before changing public documentation.
 
-The current coordinated release is **1.1.3**, published from immutable tag
-[`release-20260928-01`](https://github.com/eddiethedean/hedron/releases/tag/release-20260928-01)
-after merge CI, the Read the Docs `latest` build, the coordinated release workflow, and published
-artifact checks passed. The 1.1.3 changelog records the HTMX 2.0.11 update. Independently versioned
-satellites retain their own versions. Edron 1.1.3 requires `hedron>=1.1.3,<2.0`; publish Hedron
-before Edron using `release/publish-order.toml`.
+The current coordinated release is **1.2.0**, published on PyPI on 2026-10-27. The retained
+[publication verification](acceptance/evidence-120/PUBLICATION.md) matches all 44 wheel and source
+archive hashes for the 22 coordinated Python distributions against PyPI. The local annotated
+release tag is `release-20261027-01`; this runbook does not assert a hosted GitHub Release entry.
+The separately versioned native 0.1.4 PyPI upload remains unconfirmed. Edron 1.2.0 requires
+`hedron>=1.2.0,<2.0`; publish Hedron before Edron using `release/publish-order.toml`.
 
 ## Tag and publish
 

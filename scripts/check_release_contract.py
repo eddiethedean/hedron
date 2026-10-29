@@ -41,7 +41,9 @@ def _canonical_signature_text(signature: str) -> str:
                 depth -= 1
                 if depth == 0:
                     inner = _canonical_signature_text(signature[opening + 1 : closing])
-                    signature = f"{signature[:match.start()]}{inner} | None{signature[closing + 1:]}"
+                    signature = (
+                        f"{signature[: match.start()]}{inner} | None{signature[closing + 1 :]}"
+                    )
                     break
         else:
             break

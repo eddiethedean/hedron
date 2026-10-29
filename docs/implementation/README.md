@@ -105,10 +105,21 @@ These documents describe how accepted RFC behavior will be implemented. They def
   deployment, and conformance behavior
 - [Hedron 1.2 Python 3.11+ baseline](PYTHON_311_1_2.md) — **Implemented in the candidate
   workspace; release evidence pending** for runtime, host, native artifact, and migration checks
-- [Hedron 1.3 first-class UI testing](UI_TESTING_1_3.md) — **Proposed and unscheduled** Stage 0
-  refinement for a managed real-browser pytest experience, semantic lookup, bounded Hedron-owned
-  settle facts, correlated failures, redacted artifacts, satellite testing ownership/contributions,
-  cleanup, compatibility, and release gates
+- [Hedron 1.3 first-class UI testing](UI_TESTING_1_3.md) — **Candidate implementation in progress**;
+  direct Playwright/sync pytest, spawned ASGI factory, checkpoint-scoped observation, structured
+  diagnostics, sample-kit contribution, and a local three-engine slice are implemented; capture
+  ceilings, reviewed package dispositions, broad behavior evidence, and all 17 release gates remain open
+- [Hedron 1.3.0 release readiness plan](EXECUTION_1_3.md) — ordered E0–E7 work packages for
+  predecessor/tooling alignment, regression and lifecycle proof, capture guarantees, behavior,
+  accessibility, packaging, measured budgets, and the release decision
+- [Hedron 1.4 visibility-aware polling](VISIBILITY_POLLING_1_4.md) — **Proposed and unscheduled**;
+  additive interaction policies under RFC-0100; all acceptance gates Planned
+- [Hedron 1.5 viewport and on-demand loading](DEFERRED_LOADING_1_5.md) — **Proposed and unscheduled**;
+  additive interaction policies under RFC-0100; all acceptance gates Planned
+- [Hedron 1.6 typed input timing and request policies](INPUT_TIMING_1_6.md) — **Proposed and unscheduled**;
+  additive interaction policies under RFC-0100; all acceptance gates Planned
+- [Hedron 1.7 dirty-form and confirmed-save integration](FORM_SAVE_STATE_1_7.md) — **Proposed and unscheduled**;
+  additive interaction policies under RFC-0100; all acceptance gates Planned
 - [`hedron-docs` and Hedron-native documentation application](HEDRON_NATIVE_DOCUMENTATION.md) —
   draft unassigned workstreams for an experimental Markdown compiler/runtime package, the proving
   docs shell/search/API/live-demo application, parity, and FastAPI Cloud cutover

@@ -16,12 +16,16 @@ import difflib
 import inspect
 import re
 import sys
+import tomllib
 from dataclasses import dataclass
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs" / "components"
 DEMOS = ROOT / "docs"
+PUBLISHED_VERSION = tomllib.loads((ROOT / "docs" / "release.toml").read_text(encoding="utf-8"))[
+    "release"
+]["published_version"]
 
 # Resolve signatures and examples from the checkout, not a stale installed
 # release, when this script is run directly.
@@ -3788,6 +3792,7 @@ Then browse the groups below. Golden path:
 Use the pages below to choose a component, inspect its output, understand its constructor, and test its accessibility and backend contract.
 
 """
+        .replace("published 1.1 release", f"published {PUBLISHED_VERSION} release")
         + "\n\n".join(rows)
         + "\n"
     )

@@ -1,8 +1,8 @@
 # Hedron `v1.2.0` Python 3.11+ acceptance plan
 
-**Status:** Verified and approved for the v1.2.0 release cut; not published
+**Status:** Published on PyPI on 2026-10-27; coordinated Python artifacts verified
 **Baseline:** Published `v1.1.3`
-**Target:** Candidate `v1.2.0`; independently versioned packages retain their own release lines
+**Target:** Published `v1.2.0`; independently versioned packages retain their own release lines
 **Authority:** [RFC-0099](../rfcs/RFC-0099-PYTHON-311-BASELINE.md)
 **Implementation:** [PYTHON_311_1_2](../implementation/PYTHON_311_1_2.md)
 **Machine packet:** [release-gate-1.2.toml](release-gate-1.2.toml)
@@ -11,8 +11,10 @@ Decision D-120 accepts retiring Python 3.10 because it no longer receives CPytho
 The candidate implementation updates maintained package metadata, typing/runtime checks, stdlib
 compatibility paths, release selection, and migration guidance. The required runtime, native, and
 artifact evidence is recorded against the frozen candidate, and the machine gate records maintainer
-acceptance and release approval. This approval clears the v1.2.0 release cut; it does not claim
-that publication occurred or extend the 1.1 support window.
+acceptance and release approval. Publication is recorded in
+[evidence-120/PUBLICATION.md](evidence-120/PUBLICATION.md). It does not extend the 1.1 support
+window. The separate `hedron-native` 0.1.4 PyPI upload remains unconfirmed; its platform artifacts
+are tracked independently.
 
 ## In-tree implementation
 
@@ -34,7 +36,7 @@ installed-application upgrade, and rollback evidence is retained in `evidence-12
 frozen candidate. The artifact rehearsal binds Python 3.10 rejection and unpinned resolver fallback
 to the exact candidate wheel. The separately licensed live Connect smoke is advisory.
 
-The nonpublishing [1.2 artifact rehearsal workflow](../../.github/workflows/release-artifacts-1.2.yml)
+The [1.2 artifact rehearsal workflow](../../.github/workflows/release-artifacts-1.2.yml)
 builds the 22 coordinated Python distributions twice, compares the complete 44-file inventory and
 hashes, checks Python 3.10 rejection/resolution fallback, rehearses an installed 1.1.3 app upgrade
 and lock-based rollback on Python 3.11, and retains the results with a source-linked ledger. The

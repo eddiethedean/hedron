@@ -10,14 +10,22 @@ from hedron.cli.arguments import string_argument
 from hedron.cli.discovery import scaffold_dep as _scaffold_dep
 
 
-def _pyproject(*, name: str, extra_deps: list[str] | None = None) -> str:
+def _pyproject(
+    *, name: str, extra_deps: list[str] | None = None, include_ui_tests: bool = False
+) -> str:
     deps = [
         _scaffold_dep("hedron"),
         "uvicorn[standard]>=0.30",
         *(extra_deps or ()),
     ]
     dep_lines = ",\n".join(f'    "{dep}"' for dep in deps)
-    return f'''[project]
+    test_group = (
+        f'[dependency-groups]\ntest = [\n    "{_scaffold_dep("hedron[testing]")}",\n]\n'
+        if include_ui_tests
+        else ""
+    )
+    return (
+        f'''[project]
 name = "{name}"
 version = "0.1.0"
 requires-python = ">=3.11,<3.15"
@@ -30,6 +38,8 @@ component_roots = ["components"]
 theme = "folio"
 explorer = "off"
 '''
+        + test_group
+    )
 
 
 def _app_minimal() -> str:
@@ -295,23 +305,77 @@ def scaffold_fastapi(args: argparse.Namespace, dest: Path) -> int:
     if template not in _TEMPLATES:
         raise SystemExit(f"Unknown --template {template!r}")
     app_factory, extra_deps = _TEMPLATES[template]
+    include_ui_tests = bool(getattr(args, "with_ui_tests", False))
     _ignored = (dest / "pyproject.toml").write_text(
-        _pyproject(name=string_argument(args, "name", "") or "", extra_deps=extra_deps),
+        _pyproject(
+            name=string_argument(args, "name", "") or "",
+            extra_deps=extra_deps,
+            include_ui_tests=include_ui_tests,
+        ),
         encoding="utf-8",
     )
-    _ignored = (dest / "app.py").write_text(app_factory(), encoding="utf-8")
+    app_source = app_factory()
+    if include_ui_tests:
+        app_source += '''\n\n\ndef create_test_app(config: dict[str, object]) -> object:
+    """Return this app from Hedron's managed browser-test host."""
+    del config
+    return app
+'''
+    _ignored = (dest / "app.py").write_text(app_source, encoding="utf-8")
+    files = ["pyproject.toml", "app.py", "components/"]
+    if include_ui_tests:
+        tests_dir = dest / "tests"
+        tests_dir.mkdir(exist_ok=True)
+        _ignored = (tests_dir / "conftest.py").write_text(
+            'pytest_plugins = ["hedron.testing.pytest_plugin"]\n', encoding="utf-8"
+        )
+        _ignored = (tests_dir / "test_ui.py").write_text(_ui_test_example(), encoding="utf-8")
+        _ignored = (tests_dir / "README.md").write_text(_ui_test_readme(), encoding="utf-8")
+        files.extend(["tests/conftest.py", "tests/test_ui.py", "tests/README.md"])
     print(
         json.dumps(
             {
                 "created": str(dest),
                 "framework": "fastapi",
                 "template": template,
-                "files": ["pyproject.toml", "app.py", "components/"],
+                "files": files,
             },
             indent=2,
         )
     )
     return 0
+
+
+def _ui_test_example() -> str:
+    return """from __future__ import annotations
+
+from playwright.sync_api import expect
+
+from hedron.testing.browser_scenario import BrowserScenarioFactory
+
+
+def test_home_page_renders_in_a_real_browser(hedron_ui: BrowserScenarioFactory) -> None:
+    with hedron_ui.from_app("app:create_test_app") as ui:
+        ui.page.goto(ui.url)
+        expect(ui.page.get_by_text("All systems operational")).to_be_visible()
+"""
+
+
+def _ui_test_readme() -> str:
+    return """# Real-browser test example
+
+This test is opt-in. From the project root, install the test dependency group and a browser:
+
+    uv sync --group test
+    uv run playwright install chromium
+
+Run the test with the explicit Hedron plugin already enabled by conftest.py:
+
+    HEDRON_BROWSER=1 uv run pytest -q --browser chromium -n 0
+
+The test uses the native Playwright Page and expect APIs against an isolated synthetic app
+host. It does not enable tracing, screenshots, HAR, or video capture by default.
+"""
 
 
 _scaffold_fastapi = scaffold_fastapi

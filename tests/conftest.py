@@ -305,8 +305,15 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
 
     The same test tree is used by the immutable 0.67 bridge job, where these
     tests continue to execute.  On 1.0 they are explicit skips rather than
-    failures, while canonical phase-1.0 fixtures remain fully active.
+    failures, while canonical phase-1.0 fixtures remain fully active. Browser
+    tests are also classified before fixture setup so the ordinary host lane
+    never launches Playwright unless it has explicitly opted in.
     """
+    if not _browser_suite_enabled():
+        for item in items:
+            if item.get_closest_marker("browser") is not None:
+                item.add_marker(pytest.mark.skip(reason="HEDRON_BROWSER not set"))
+
     # A few Redis contract modules used to install collection-time fake
     # ``redis`` modules. Remove those placeholders before any version-specific
     # retirement logic, including the legacy 0.x bridge job.

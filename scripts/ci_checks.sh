@@ -386,24 +386,56 @@ wait_jobs() {
 
 cmd_test() {
   # Treat unknown markers and invalid pytest configuration as CI failures.
-  # Parallel workers come from pyproject addopts (`-n auto --dist=loadfile`).
   (
     export HEDRON_ENFORCE_RETIRED_INVENTORY=1
-    run_uv pytest -q --strict-config --strict-markers
+    mkdir -p test-results
+    run_py scripts/run_ui_budgeted.py \
+      --output-json test-results/ui-testing-resources.json \
+      --timeout-seconds 900 --max-rss-mib 8192 --max-processes 64 \
+      --sample-interval-ms 50 --max-file-mib 64 -- \
+      uv run --python "$PYTHON" pytest -q --strict-config --strict-markers \
+      --override-ini=junit_family=legacy \
+      --junitxml=test-results/full-suite.xml
   )
 }
 
 cmd_coverage() {
   # One branch-aware run covers both public Python packages. The post-check
   # enforces independent floors so aggregate coverage cannot hide regressions.
+  # The optional pytest/Playwright surface is covered in a second, serial
+  # Chromium run so it contributes to the same package totals without xdist
+  # browser contention.
+  if [[ "${HEDRON_COVERAGE_BROWSER:-0}" != 1 ]]; then
+    echo "coverage requires HEDRON_COVERAGE_BROWSER=1 and an installed Chromium browser" >&2
+    return 1
+  fi
   (
     export HEDRON_ENFORCE_RETIRED_INVENTORY=1
-    run_uv pytest -q -n 0 --strict-config --strict-markers \
+    mkdir -p test-results
+    run_py scripts/run_ui_budgeted.py \
+      --output-json test-results/ui-testing-resources.json \
+      --timeout-seconds 900 --max-rss-mib 8192 --max-processes 64 \
+      --sample-interval-ms 50 --max-file-mib 64 -- \
+    uv run --python "$PYTHON" pytest -q -n 4 --strict-config --strict-markers \
+      --override-ini=junit_family=legacy \
+      --junitxml=test-results/full-suite.xml \
       --cov=hedron --cov=hedron_core --cov-branch \
       --cov-report=term-missing:skip-covered \
       --cov-report=xml:coverage.xml \
       --cov-report=json:coverage.json \
       --cov-fail-under=0
+    HEDRON_BROWSER=1 HEDRON_BROWSER_ENGINE=chromium \
+      run_py scripts/run_ui_budgeted.py \
+        --output-json test-results/ui-testing-resources-coverage-chromium.json \
+        --timeout-seconds 1800 --max-rss-mib 8192 --max-processes 64 \
+        --sample-interval-ms 25 --max-file-mib 64 -- \
+        uv run --python "$PYTHON" pytest -q -m browser --tb=short -n 0 \
+        --override-ini=junit_family=legacy --browser chromium \
+        --junitxml=test-results/coverage-browser.xml \
+        --cov=hedron --cov=hedron_core --cov-branch --cov-append \
+        --cov-report=term-missing:skip-covered \
+        --cov-report=xml:coverage.xml --cov-report=json:coverage.json \
+        tests/browser examples/ui-testing examples/ui-testing-satellite
     run_py scripts/check_coverage_thresholds.py coverage.json \
       --hedron 73 --hedron-core 83
   )
@@ -584,6 +616,10 @@ quality_verify_pkgs() {
     run_py scripts/verify_pkg_120.py --allow-planned
     return 0
   fi
+  if [[ "$GATE_VERSION" == 1.3.* ]]; then
+    run_py scripts/check_release_gate.py "$GATE_VERSION" --allow-planned
+    return 0
+  fi
   run_py scripts/verify_pkg_56.py
   run_py scripts/verify_pkg_57.py
   run_py scripts/verify_pkg_58.py
@@ -686,8 +722,26 @@ cmd_quality() {
 cmd_browser() {
   export HEDRON_BROWSER="${HEDRON_BROWSER:-1}"
   export HEDRON_BROWSER_ENGINE="${HEDRON_BROWSER_ENGINE:-chromium}"
+  local -a tempfs_args=()
+  if [[ -n "${HEDRON_UI_CAPTURE_TMPFS_MIB:-}" ]]; then
+    tempfs_args=(--tempfs-limit-mib "$HEDRON_UI_CAPTURE_TMPFS_MIB")
+  fi
   # Keep Playwright serial: xdist contention on browser processes flakes.
-  run_uv pytest -q -m browser --tb=short -n 0
+  mkdir -p test-results
+  run_py scripts/run_ui_budgeted.py \
+    --output-json "test-results/ui-testing-resources-${HEDRON_BROWSER_ENGINE}.json" \
+    --timeout-seconds 1800 --max-rss-mib 8192 --max-processes 64 \
+    --sample-interval-ms 25 --max-file-mib 64 \
+    "${tempfs_args[@]}" -- \
+    uv run --python "$PYTHON" pytest -q -rs -m browser --tb=short -n 0 \
+    --override-ini=junit_family=legacy \
+    --browser "$HEDRON_BROWSER_ENGINE" \
+    --junitxml=test-results/browser.xml \
+    tests/browser examples/ui-testing examples/ui-testing-satellite
+  run_py scripts/check_ui_testing_acceptance.py \
+    --lane browser --python "$PYTHON" --browser "$HEDRON_BROWSER_ENGINE" \
+    --junitxml test-results/browser.xml \
+    --output "test-results/ui-testing-browser-${HEDRON_BROWSER_ENGINE}.json"
 }
 
 cmd_workbench_bounds() {
@@ -748,7 +802,7 @@ evidence_audit() {
 evidence_gates() {
   # The 1.2 implementation packet remains open while platform/artifact evidence is collected.
   # Release tags use the strict gate in release.yml before any publication step.
-  if [[ "$GATE_VERSION" == 1.2.* ]]; then
+  if [[ "$GATE_VERSION" == 1.2.* || "$GATE_VERSION" == 1.3.* ]]; then
     run_py scripts/check_release_gate.py "$GATE_VERSION" --allow-planned
   else
     run_py scripts/check_release_gate.py "$GATE_VERSION"
@@ -767,6 +821,10 @@ evidence_verify_pkgs() {
   fi
   if [[ "$GATE_VERSION" == 1.2.* ]]; then
     run_py scripts/verify_pkg_120.py --allow-planned
+    return 0
+  fi
+  if [[ "$GATE_VERSION" == 1.3.* ]]; then
+    run_py scripts/check_release_gate.py "$GATE_VERSION" --allow-planned
     return 0
   fi
   run_py scripts/verify_pkg_34.py --allow-planned
@@ -847,6 +905,12 @@ cmd_packaging() {
   if [[ "$GATE_VERSION" == 1.2.* ]]; then
     resolve_python
     run_py scripts/verify_pkg_120.py --allow-planned
+    quality_wheels_smoke
+    return 0
+  fi
+  if [[ "$GATE_VERSION" == 1.3.* ]]; then
+    resolve_python
+    run_py scripts/check_release_gate.py "$GATE_VERSION" --allow-planned
     quality_wheels_smoke
     return 0
   fi

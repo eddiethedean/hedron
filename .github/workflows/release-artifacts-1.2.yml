@@ -2,26 +2,6 @@ name: Release artifact rehearsal (1.2.0)
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - .github/workflows/release-artifacts-1.2.yml
-      - .github/workflows/release.yml
-      - docs/acceptance/RELEASE_1_2.md
-      - docs/acceptance/release-gate-1.2.toml
-      - docs/implementation/PYTHON_311_1_2.md
-      - packages/**
-      - pyproject.toml
-      - release/**
-      - scripts/build_reproducible_release_artifacts.py
-      - scripts/check_python_310_candidate.py
-      - scripts/rehearse_python_311_upgrade_rollback.py
-      - scripts/check_python_311.py
-      - scripts/verify_pkg_120.py
-      - scripts/verify_release_artifacts.py
-      - scripts/verify_release_reproducibility.py
-      - uv.lock
 
 permissions:
   contents: read
@@ -45,6 +25,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          ref: fced98f466478dd9e1c31a8e13f3b1bae7ce4fc3
           persist-credentials: false
       - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:

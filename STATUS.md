@@ -6,19 +6,19 @@
 > product readiness use [What’s ready](docs/guides/whats-ready.md); for the public roadmap use
 > [What’s next](docs/guides/whats-next.md). Do not treat gate tables as the getting-started guide.
 
-**Roadmap position:** `v1.1.3` is Verified, tagged, and published on PyPI, including Edron.
-**Current workspace:** `1.1.3` is the coordinated published package train. It updates the bundled
-HTMX runtime to 2.0.11, removes the retired OpenWiki integration, and keeps BasedPyright `all`
-mode enforcing errors for explicit and inferred `Any` in first-party Python code.
+**Roadmap position:** `v1.2.0` is Verified and published on PyPI, including Edron.
+**Current workspace:** Hedron `1.3.0` is in development; `1.2.0` is the current published train.
+The published release establishes the CPython 3.11+ baseline and retains BasedPyright `all` mode
+with errors for explicit and inferred `Any` in first-party Python code.
 `v1.0.17` remains the immutable migration baseline for compatibility evidence.
-**Date:** 2026-09-28
-**Implementation:** Stable platform — `hedron`, `hedron-core`, `edron`, `hedron-data`,
-`hedron-charts`, and `hedron-maps` `1.1.3`. Beta satellites — `hedron-explorer`,
-`hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
-and `hedron-elements` `1.1.3`; `hedron-posit` `1.0.11`; `fastapi-workbench` `1.0.12`;
-`hedron-native` `0.1.3`; `hedron-sample-kit` `0.2.4`; `hedron-notebook` and
-`hedron-gradio` `0.2.5`; `hedron-sim` `0.2.6`; `hedron-mcp` `0.2.6`; and `edron-sim`
-`0.1.1` (MIT, D-033).
+**Date:** 2026-10-28
+**Published package inventory:** Stable — `hedron`, `hedron-core`, `edron`, `hedron-data`,
+`hedron-charts`, and `hedron-maps` `1.2.0`. Beta — `hedron-explorer`, `hedron-flask`,
+`hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`, and `hedron-elements`
+`1.2.0`; `hedron-posit` `1.0.12`; `fastapi-workbench` `1.0.13`; `hedron-sample-kit` `0.2.5`;
+`hedron-notebook` and `hedron-gradio` `0.2.6`; `hedron-sim` and `hedron-mcp` `0.2.7`; and
+`edron-sim` `0.1.2` (MIT, D-033). Native `0.1.4` platform wheels are retained separately;
+PyPI project publication is unconfirmed.
 **Package maturity:** Stable — `hedron`, `hedron-core`, `edron`, `hedron-data`,
 `hedron-charts`, and `hedron-maps`. Beta — `hedron-explorer`, `hedron-flask`,
 `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`, `hedron-posit`,

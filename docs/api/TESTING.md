@@ -36,6 +36,21 @@ with fragment_client(app) as client:
 Optional browser extras live under `hedron.testing.browser` (`playwright()` context
 manager; `axe_scan`) and require `hedron[browser]`.
 
+Real browser page scenarios are a separate beta surface in
+`hedron.testing.browser_scenario`, activated by `hedron.testing.pytest_plugin` and installed with
+`hedron[testing]`. They preserve native Playwright `Page`/`Locator`/`expect` usage and use the
+supported pytest-playwright context fixture. See the [browser scenario guide](../guides/testing.md#real-browser-scenarios-13-beta).
+
+| Beta helper | Signature (summary) | Returns | Purpose |
+|---|---|---|---|
+| `BrowserScenarioFactory.from_app` | `(factory, *, config=None, root_path=None, allowed_origins=(), synthetic=False)` | context manager | Spawn an importable ASGI factory with bounded JSON config |
+| `BrowserScenarioFactory.from_url` | `(base_url, *, allowed_origins=(), synthetic=False)` | context manager | Observe a caller-owned literal-loopback HTTP(S) service |
+| `BrowserScenario.page` / `.context` | properties | native Playwright objects | Use Playwright directly for locators, actions, and assertions |
+| `BrowserScenario.checkpoint` / `.settle` | `(checkpoint, target, timeout=10, generation=None, user_action=True)` | `Checkpoint` / `SettleResult` | Match a trusted user-triggered HTMX request by default; filter by generation or set `user_action=None` for any trigger; ambiguous matches raise `AmbiguousSettleError` |
+| `BrowserScenario.expect_http` | `(method, path, status, count=1, since=None)` | context manager | Allow an exact expected HTTP response without suppressing unrelated errors |
+| `BrowserScenario.mark` / `.region` | `(name)` | native `Locator` | Resolve a test id or stable region id again after DOM swaps |
+| `UITestingContribution` | `(package_id, package_version, hedron_version_range, capabilities, fixture_resources=(), schema_version=1)` | immutable metadata | Declare bounded capabilities and required fixtures for an explicitly loaded package contribution |
+
 ## Portable adapter harness (0.11)
 
 Import from `hedron.testing.adapters` for PAGE/FRAGMENT/POST scenarios shared across hosts:

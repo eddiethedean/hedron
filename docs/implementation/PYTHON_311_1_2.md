@@ -1,6 +1,6 @@
 # Phase 1.2: Python 3.11+ support and typing baseline
 
-**Status:** Implementation in the v1.2.0 candidate workspace; release evidence pending
+**Status:** Published as v1.2.0 on PyPI; coordinated Python artifact evidence retained
 **Baseline:** Published `v1.1.3`
 **Authority:** [RFC-0099](../rfcs/RFC-0099-PYTHON-311-BASELINE.md)
 **Acceptance:** [RELEASE_1_2](../acceptance/RELEASE_1_2.md) ·

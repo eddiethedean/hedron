@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 
 import pytest
+from playwright.sync_api import Browser
 
 from hedron_core import (
     AlpineAttrs,
@@ -24,15 +25,15 @@ pytestmark = pytest.mark.browser
 
 
 @pytest.mark.parametrize("engine", ("chromium", "firefox", "webkit"))
-def test_legacy_ownerless_local_interaction_has_live_alpine_state(engine: str) -> None:
+def test_legacy_ownerless_local_interaction_has_live_alpine_state(
+    engine: str,
+    browser: Browser,
+) -> None:
     if os.environ.get("HEDRON_BROWSER", "").strip() not in {"1", "true", "yes"}:
         pytest.skip("HEDRON_BROWSER not set")
     selected = os.environ.get("HEDRON_BROWSER_ENGINE")
     if selected and selected != engine:
         pytest.skip(f"engine filter {selected}")
-    pytest.importorskip("playwright")
-    from playwright.sync_api import sync_playwright
-
     runtime = (
         Path(__file__).resolve().parents[2]
         / "packages/hedron-core/src/hedron_core/static/hedron-alpine.mjs"
@@ -44,9 +45,8 @@ def test_legacy_ownerless_local_interaction_has_live_alpine_state(engine: str) -
         html.button(value_component, id="toggle", interaction=Interaction.local("toggle"))
     ).html
 
-    with sync_playwright() as pw:
-        browser = getattr(pw, engine).launch(headless=True)
-        page = browser.new_page()
+    page = browser.new_page()
+    try:
         page.set_content(f"{markup}<script type='module'>{runtime}</script>")
         button = page.locator("#toggle")
         value_locator = button.locator("span")
@@ -56,19 +56,20 @@ def test_legacy_ownerless_local_interaction_has_live_alpine_state(engine: str) -
         assert value_locator.inner_text() == "false"
         button.click()
         assert value_locator.inner_text() == "true"
-        browser.close()
+    finally:
+        page.close()
 
 
 @pytest.mark.parametrize("engine", ("chromium", "firefox", "webkit"))
-def test_collapsible_app_shell_keeps_rail_and_main_in_desktop_columns(engine: str) -> None:
+def test_collapsible_app_shell_keeps_rail_and_main_in_desktop_columns(
+    engine: str,
+    browser: Browser,
+) -> None:
     if os.environ.get("HEDRON_BROWSER", "").strip() not in {"1", "true", "yes"}:
         pytest.skip("HEDRON_BROWSER not set")
     selected = os.environ.get("HEDRON_BROWSER_ENGINE")
     if selected and selected != engine:
         pytest.skip(f"engine filter {selected}")
-    pytest.importorskip("playwright")
-    from playwright.sync_api import sync_playwright
-
     css = (
         Path(__file__).resolve().parents[2]
         / "packages/hedron-core/src/hedron_core/static/hedron-default.css"
@@ -79,9 +80,8 @@ def test_collapsible_app_shell_keeps_rail_and_main_in_desktop_columns(engine: st
     ).read_text(encoding="utf-8")
     markup = render(AppShell(nav="Navigation", body="Main", nav_collapse="user")).html
 
-    with sync_playwright() as pw:
-        browser = getattr(pw, engine).launch(headless=True)
-        context = browser.new_context(viewport={"width": 1200, "height": 800})
+    context = browser.new_context(viewport={"width": 1200, "height": 800})
+    try:
         page = context.new_page()
         page.set_content(f"<style>{css}</style>{markup}<script type='module'>{ui}</script>")
 
@@ -102,19 +102,17 @@ def test_collapsible_app_shell_keeps_rail_and_main_in_desktop_columns(engine: st
         assert button.get_attribute("aria-expanded") == "false"
         assert button.inner_text() == "Expand navigation"
 
+    finally:
         context.close()
 
 
 @pytest.mark.parametrize("engine", ("chromium", "firefox", "webkit"))
-def test_button_bundle_preserves_native_variants(engine: str) -> None:
+def test_button_bundle_preserves_native_variants(engine: str, browser: Browser) -> None:
     if os.environ.get("HEDRON_BROWSER", "").strip() not in {"1", "true", "yes"}:
         pytest.skip("HEDRON_BROWSER not set")
     selected = os.environ.get("HEDRON_BROWSER_ENGINE")
     if selected and selected != engine:
         pytest.skip(f"engine filter {selected}")
-    pytest.importorskip("playwright")
-    from playwright.sync_api import sync_playwright
-
     native_css = (
         Path(__file__).resolve().parents[2]
         / "packages/hedron-core/src/hedron_core/static/hedron-default.css"
@@ -132,9 +130,8 @@ def test_button_bundle_preserves_native_variants(engine: str) -> None:
         )
     ).html
 
-    with sync_playwright() as pw:
-        browser = getattr(pw, engine).launch(headless=True)
-        context = browser.new_context(color_scheme="light")
+    context = browser.new_context(color_scheme="light")
+    try:
         page = context.new_page()
         page.set_content(f"<style>{native_css}</style><style>{bundle_css}</style>{markup}")
         assert (
@@ -157,4 +154,5 @@ def test_button_bundle_preserves_native_variants(engine: str) -> None:
         danger = page.locator("#danger")
         assert secondary.is_visible()
         assert danger.is_visible()
+    finally:
         context.close()

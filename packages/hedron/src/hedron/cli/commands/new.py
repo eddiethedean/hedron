@@ -18,6 +18,7 @@ class _NewArgs(Protocol):
     element_name: str | None
     path: str | None
     force: bool
+    with_ui_tests: bool
     flask: bool
     django: bool
     template: str | None
@@ -35,6 +36,9 @@ def _contains_only_project_venv(dest: Path) -> bool:
 def _cmd_new(args: argparse.Namespace) -> int:
     typed_args = cast(_NewArgs, cast(object, args))
     if typed_args.name == "element":
+        if typed_args.with_ui_tests:
+            print("--with-ui-tests is only supported for FastAPI applications", file=sys.stderr)
+            return 2
         if not typed_args.element_name:
             print("hedron new element requires an element name", file=sys.stderr)
             return 2
@@ -59,7 +63,16 @@ def _cmd_new(args: argparse.Namespace) -> int:
     if typed_args.flask and typed_args.django:
         print("Choose at most one of --flask / --django", file=sys.stderr)
         return 1
+    if typed_args.with_ui_tests and framework != "fastapi":
+        print("--with-ui-tests is only supported for FastAPI applications", file=sys.stderr)
+        return 2
     template = typed_args.template or "minimal"
+    if typed_args.with_ui_tests and template != "minimal":
+        print(
+            "--with-ui-tests is currently supported only by the minimal FastAPI template",
+            file=sys.stderr,
+        )
+        return 2
     if framework != "fastapi" and template != "minimal":
         print(
             f"--template {template!r} is only supported for the FastAPI scaffold",

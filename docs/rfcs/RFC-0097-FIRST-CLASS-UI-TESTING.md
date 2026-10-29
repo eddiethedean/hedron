@@ -1,366 +1,270 @@
 # RFC-0097: First-class UI testing and adoption confidence
 
-**Status:** Proposed; Stage 0 refinement only
-**Target:** Hedron `1.3` planning candidate
-**Baseline:** Published Hedron `v1.0.0`
+**Status:** Proposed; candidate implementation in progress, release freeze not complete
+**Planning revision:** 2026-10-28
+**Target:** Hedron `1.3`
+**Planning baseline:** Published `v1.2.0`
+**Required release predecessor:** `v1.2.0` (publication evidence retained in the 1.3 gate)
+**Compatibility baseline:** Stable `v1.0.0` testing inventory and subsequent additive 1.x behavior
 **Implementation:** [UI_TESTING_1_3](../implementation/UI_TESTING_1_3.md)
 **Acceptance:** [RELEASE_1_3](../acceptance/RELEASE_1_3.md) ·
-[release-gate-1.3.toml](../acceptance/release-gate-1.3.toml)
+[release gate](../acceptance/release-gate-1.3.toml) ·
+[planning contract](../acceptance/ui-testing-contract-130.toml)
 
-## Summary
+## Outcome and release scope
 
-Hedron 1.3 should make real user-interface testing an ordinary pytest task. An application author
-should be able to supply a Hedron application, open a real browser, interact through accessible
-roles and labels, and receive useful failure evidence without manually starting a server or
-assembling browser lifecycle, tracing, and cleanup infrastructure.
+An author can run a meaningful browser test with ordinary pytest, direct Playwright locators and
+assertions, and Hedron-owned application startup, bounded settling, diagnostics, and cleanup.
+Render tests and AppScenario remain the faster layers for HTML and HTTP/security contracts.
 
-The phase composes rather than replaces the existing testing layers:
+The required first release is deliberately bounded: synchronous pytest/Playwright integration,
+an isolated managed flagship ASGI application, an externally managed literal-loopback URL,
+request-scoped observation, structured failure evidence, explicit capture profiles, and one
+small versioned satellite contribution surface. Every coordinated package receives a testing
+disposition; creating public testing modules or managed launchers for every package is not Required.
 
-1. deterministic component rendering remains the fastest unit-test path;
-2. `AppScenario` remains the request, fragment, CSRF, cookie, and outcome contract path; and
-3. a candidate `BrowserScenario` plus pytest fixture owns real-browser behavior.
+Phase 1.3 remains tooling-only. It does not change production assets, interaction semantics,
+security, runtime instrumentation, or defaults. [RFC-0100](RFC-0100-INTERACTION-EFFICIENCY-AND-FORM-CONTINUITY.md)
+owns new polling, loading, input-timing, and form/save behavior in 1.4–1.7. Existing behavior may be
+tested now; those future features are not prerequisites or implicit 1.3 implementation scope.
 
-The browser layer uses Playwright as the browser authority. Hedron adds only framework-specific
-value: managed application hosting, semantic Hedron locators, bounded interaction-settle facts,
-correlated server/browser diagnostics, safe cleanup, and failure artifacts. It does not implement
-a fake DOM, copy Playwright's complete API, or introduce a second application runtime.
+## Current-source findings
 
-The 2026-09-18 roadmap revision moved this testing proposal after the 1.1 enhancement phase.
-The current sequence places Python 3.11+ support in 1.2 and this testing proposal in 1.3. The
-older unaccepted HTMX/Alpine 1.1 transition proposal is therefore unassigned and cannot change 1.3 runtime behavior
-without a separate accepted RFC and phase decision.
+The [implementation seam map](../implementation/UI_TESTING_1_3.md#current-source-inventory)
+records reviewed files. The source already provides low-level synchronous Playwright/axe helpers,
+AppScenario, marked HTML lookup, and browser CI. Private browser tests also contain reserve/release
+port selection, TCP-connect readiness, mutable registry resets, thread-based Uvicorn launchers,
+and an opt-in Playwright reuse monkey patch. These are migration inputs, not public host contracts.
 
-## Motivation and background
+The `hedron[testing]` extra and explicit pytest-playwright integration now exist. The
+[local vertical-slice record](../acceptance/evidence-130/LOCAL_VERTICAL_SLICE_2026-10-28.md)
+reports the managed profile and contribution examples passing 31 tests in each local browser
+engine. This does not
+establish the Linux matrix, user exercise, timing budget, complete behavior/security/accessibility
+corpus, or package/release evidence. All `*-130` release gates remain Planned.
 
-Hedron 1.0 already exposes useful but separate pieces:
+The candidate also includes a v1 contribution metadata type and an explicitly loaded
+`hedron-sample-kit` fixture/app contribution. The [23-package disposition inventory](../acceptance/ui-testing-package-dispositions-130.toml)
+is a draft pending maintainer review and fleet checks.
 
-- `render_html`, `assert_renders`, and render-result assertions for deterministic output;
-- `fragment_client`, portable adapter fixtures, and `AppScenario` for HTTP/HTMX contracts;
-- `playwright()` and axe helpers as low-level optional browser hooks; and
-- interaction traces, marks, regions, state matrices, and `hedron testgen` as reusable facts.
+## Selected candidate decisions
 
-Those pieces do not yet provide one supported path for starting a live application, obtaining an
-isolated browser page, waiting for Hedron-owned work, correlating server and browser failures, or
-retaining a bounded diagnostic bundle. Application authors currently have to design those parts
-themselves. That makes small UI tests disproportionately expensive and encourages arbitrary sleeps,
-fragile CSS selectors, and incomplete failure reports.
+These remain Beta candidate choices; local implementation exercises the flagship path, while the
+accepted freeze and release evidence remain open.
 
-The phase addresses an adopter problem, not a missing runtime capability. Production rendering,
-routing, interaction, state, and security authorities stay unchanged. The testing package observes
-the existing contract from a controlled test process.
-
-## Goals
-
-1. Make the first meaningful browser test short, discoverable, and runnable with ordinary pytest.
-2. Exercise the actual browser implementation of native HTML, HTMX, Alpine, and Web Components.
-3. Reuse accessibility-oriented roles, labels, names, text, and stable Hedron marks or regions.
-4. Remove manual server, port, lifespan, root-path, asset, browser, and teardown plumbing.
-5. Replace arbitrary sleeps with bounded Hedron-owned settle facts and Playwright web assertions.
-6. Turn a failure into an actionable, correlated, redacted, and size-bounded evidence bundle.
-7. Preserve direct Playwright access for behavior outside Hedron's owned semantics.
-8. Preserve every stable 1.0 testing API and the no-browser fast path.
-9. Give every coordinated and optional package an explicit testing-ownership disposition without
-   duplicating the central harness or creating ambient pytest plugins.
-
-## Testing layers and authority
-
-| Layer | Authority | Intended evidence |
+| Concern | Selected candidate | Explicit limit |
 |---|---|---|
-| Render | Hedron renderer | Deterministic HTML, assets, diagnostics, and metadata without HTTP or a browser |
-| Application contract | `AppScenario` and host test client | Page/fragment shape, cookies, CSRF, headers, targets, outcomes, and multi-step HTTP flow |
-| User interface | Playwright browser plus candidate `BrowserScenario` | DOM behavior, user actions, HTMX/Alpine/component lifecycle, focus, history, and platform behavior |
+| Public placement | `hedron.testing.browser_scenario` and `hedron.testing.pytest_plugin` | Existing root/low-level imports stay compatible; core imports no browser/host/pytest dependency |
+| Installation | Additive `hedron[testing]` extra | Do not raise the existing browser extra floor merely for new harness features |
+| Activation | `pytest_plugins = ["hedron.testing.pytest_plugin"]` in root conftest, or explicit `-p` | No new Hedron pytest11 entry point in the base distribution; no satellite auto-registration |
+| Browser authority | Sync pytest-playwright fixtures and native `Page`, `BrowserContext`, `Locator`, `expect` | No locator/action/assertion DSL or monkey-patched browser reuse |
+| Scenario construction | Function-scoped `hedron_ui` factory with context-managed `from_app` / `from_url` sessions | Sync first; no standalone second lifecycle/runner or asyncpytest API in Required scope |
+| Managed source | Importable ASGI test-app factory in an isolated spawned child | No pickled live app, inherited event loop, parent TestClient/DB connection, or shared mutable registry |
+| External source | Explicit literal-loopback origin, caller-owned server | No server-exception or lifespan evidence claim without an admitted channel |
+| Lookup | `ui.page` semantic locators; narrow `ui.mark` / `ui.region` helpers return real Locators | Strict ambiguity and re-query preserved; no delegated `get_by_*` or `ui.expect` |
+| Settling | Checkpoint-scoped observed request/swap/lifecycle completion | No global idle, networkidle, arbitrary sleeps, or future polling/visibility semantics |
+| Default artifacts | Structured metadata only; bodies/DOM/screenshots/video/HAR/raw trace off | Known redaction is not proof that arbitrary content is safe |
+| Rich artifacts | Explicit synthetic-only profile, captured during execution and retained on failure | Raw Playwright trace is labeled unredacted, never called sanitized |
+| Maturity | New scenario/host/fixture/protocol Beta candidates in 1.3 | Stable 1.x imports remain Stable; no automatic promotion from convenience |
 
-Browser tests do not replace render or `AppScenario` tests. Scaffolds and documentation teach the
-lowest layer that can prove a behavior. Browser tests are reserved for behavior that depends on an
-actual user agent or the interaction among browser authorities.
+## Candidate pytest experience
 
-## Proposed design
-
-### Primary pytest experience
-
-The candidate primary surface is an optional pytest fixture backed by a `BrowserScenario` object.
-The exact fixture and method names remain a `FREEZE-130` decision, but the target ergonomics are:
+The following illustrates the proposed API; it is not runnable against current Hedron.
 
 ```python
-def test_profile_save(hedron_ui, app):
-    ui = hedron_ui(app)
-    ui.goto("/profile")
+# root conftest.py — candidate, explicit activation
+pytest_plugins = ["hedron.testing.pytest_plugin"]
 
-    ui.get_by_label("Name").fill("Ada")
-    ui.get_by_role("button", name="Save").click()
+# test_profile.py — candidate API
+from playwright.sync_api import expect
 
-    ui.expect(ui.get_by_text("Saved")).to_be_visible()
-    ui.assert_clean()
+
+def test_profile_save(hedron_ui):
+    with hedron_ui.from_app("myapp.test_support:create_app") as ui:
+        ui.page.goto(ui.url("/profile"))
+        ui.page.get_by_label("Name").fill("Ada")
+
+        before = ui.checkpoint()
+        ui.page.get_by_role("button", name="Save").click()
+        ui.settle(since=before, target="profile")
+        expect(ui.page.get_by_role("status")).to_have_text("Saved")
 ```
 
-The fixture starts a managed loopback host, waits for readiness, creates an isolated browser
-context, installs test-only observation hooks, and guarantees bounded teardown. A direct
-constructor remains available for non-pytest consumers, but pytest is the documented runner.
+The factory module is application-owned and importable in the child. Configuration is bounded
+JSON-compatible synthetic data, not a transport for live objects or secrets. Overrides, synthetic
+authentication, database construction, and temporary roots are created inside that factory. The
+application's ordinary authorization/CSRF still runs. External URL sessions make no managed-host
+guarantees. Exiting a session and fixture teardown automatically assert clean state; an explicit
+`assert_clean()` remains a checkpoint, not something every author must remember.
 
-`BrowserScenario` may delegate a small semantic locator subset for convenience, but it must expose
-the underlying Playwright `Page`. It must not wrap the complete locator, action, expectation,
-network, context, or browser API.
+The scenario exposes `page` and `context`, URL joining, mark/region lookup, checkpoint/settle,
+bounded event snapshots, narrow expected-HTTP rules, and clean assertions. Playwright owns all
+other browser operations. Exact signatures, exception types, configuration fields, and typing
+must be frozen after the documented prototype/user exercise.
 
-### Application sources
+## Managed host and resource ownership
 
-Two sources are required candidates:
+A fresh spawned child constructs each managed application. The child binds a literal-loopback
+socket on port zero, retains that listener, starts the ASGI server with it, and reports the actual
+origin through an owned readiness channel after lifespan/startup is complete. Reserving then
+closing a port or treating a successful TCP connection as readiness is not accepted.
 
-- `from_app(app)` or the equivalent fixture form manages the flagship ASGI application on an
-  ephemeral loopback listener; and
-- `from_url(url)` drives an already running application and is host-neutral.
+The parent owns supervision and a deadline; the child owns its app, listener, lifespan, request
+exception channel, and shutdown. Readiness messages carry session identity and bounded facts.
+Configure root_path/mount behavior deliberately: the public test URL and ASGI scope must agree,
+not merely concatenate a prefix. Disable reload/multiple web workers in this launcher.
 
-Managed Flask and Django launchers are admission candidates, not assumed parity. The portable
-contract for every supported host is an external URL plus browser behavior; Stage 0 decides which
-managed host launchers can be Supported without hidden framework-specific lifecycle behavior.
+On normal close, dispose test observers/capture, close the scenario's page/context lease through
+its single documented owner, request graceful child shutdown, wait, then terminate/kill/join after
+the frozen deadlines if needed. Forced shutdown is reported as incomplete lifespan cleanup and a
+test failure even if the OS process was removed. Startup failure, Ctrl-C, fixture setup failure,
+and xdist worker interruption receive the same bounded supervision. No unkillable daemon thread
+may be accepted as a successful cleanup.
 
-Non-loopback URLs require explicit remote-test authorization. Remote mode uses a conservative
-artifact policy and may not silently capture production pages, cookies, or response bodies.
+pytest-playwright owns its driver/browser fixtures and option semantics. The Hedron adapter must
+lease an isolated context through a supported fixture path, preserve browser/context arguments,
+and coordinate a single actual close with plugin finalizers. Never close a borrowed browser or
+share cookies/storage between tests. W0 must prove this integration, including tracing ownership,
+instead of assuming `browser.new_context()` inherits plugin CLI flags.
 
-### Semantic lookup
+## Observed-work settling
 
-The preferred order is role and accessible name, associated label, visible text, and other
-Playwright semantic locators. `data-hedron-mark` and declared region identity provide explicit
-stable identities when user-facing semantics are not unique or are not the behavior under test.
-CSS and XPath remain Playwright escape hatches rather than Hedron's recommended default.
+A checkpoint records session, navigation epoch, and an event sequence before the triggering action.
+A settle call waits for a matching request to have actually started after that checkpoint, then
+for that request's response/abort/error and applicable swap/settle phases. Capture events before
+the action so a fast response cannot be missed. Cursors from another session or navigation epoch
+are invalid; absence of a matching start is a diagnostic timeout, not immediate success.
 
-Strict locator behavior is preserved. An ambiguous role, label, mark, or region fails with the
-matched candidates and remediation; Hedron does not silently select the first element.
+Scope by the declared target and existing operation/generation identities where observable. Newer
+requests may supersede old generations only under existing application policy. A canceled or 204
+response must not wait for a nonexistent swap. Account for OOB/cleanup work only when exposed by a
+documented causal/lifecycle fact. Unobservable first-party or third-party work is recorded as
+unavailable and tested with an explicit Playwright predicate, never fabricated as completed.
 
-### Settle contract
+Do not include future polling ticks, unrelated targets, animation frames, open streams, third-party
+timers, or queued user actions in a global idle calculation. For local-only/no-JS behavior, use
+native Playwright assertions. Explicit job-terminal predicates remain caller-owned. The test-only
+observer cannot add shipped runtime events merely to satisfy itself.
 
-Playwright remains responsible for actionability and retrying web assertions. Hedron adds a narrow
-`wait_for_settled()`-style operation for Hedron-owned work only. The candidate settle record covers:
+The v1 record contains bounded source capability/availability, checkpoint/epoch, observed request
+and operation identities, target, generation, pending/terminal facts, ages, truncation, and the
+completion/timeout reason. The contract does not claim a browser freeze or atomic snapshot.
 
-- active Hedron/HTMX request generations;
-- the latest request's swap and settle lifecycle;
-- pending Hedron action-state transitions;
-- registered first-party Web Component initialization/cleanup facts where the ABI exposes them;
-- bounded Alpine/Hedron lifecycle handoff queued by the tested interaction; and
-- declared polling or asynchronous status only when the test opts into that operation.
+## Failure policy and correlation
 
-It does not claim that arbitrary third-party JavaScript, animations, timers, sockets, analytics,
-or the whole network are idle. A timeout reports each remaining owned fact, its age and source,
-the last lifecycle events, and the artifact location. First-party examples may not use sleeps to
-hide missing settle semantics.
+| Observation | Default outcome |
+|---|---|
+| Unhandled managed server exception, pageerror, crash, console error | Fail; structured summaries omit arbitrary message/body content |
+| Unexpected application 4xx/5xx | Fail unless a narrow expected-HTTP rule matches; ordinary validation/denial tests declare their expected response |
+| Required script/style/asset failure or unexpected blocked external request | Fail with resource/capability facts |
+| Known superseded-request abort | Record as cancellation under the existing policy; do not treat all requestfailed events as errors |
+| Optional resource | Ignore only through a recorded exact policy; no universal favicon/third-party wildcard suppression |
+| Missing expected response, capture/probe failure, queue overflow | Fail or explicit incomplete evidence; never silently clean |
+| External-server exception details | Unavailable; browser-visible failures remain testable |
 
-### Error policy
+An expected-HTTP context is armed before an action and matches method, route/path, status, count,
+and the current checkpoint/session. It does not suppress a pageerror, different server exception,
+other request, or later test. Teardown calls clean checks automatically. Preserve the original
+assertion/exception as primary; append cleanup and evidence-write problems rather than replacing it.
 
-The scenario records server exceptions, page errors, console messages, request failures, asset
-failures, and Hedron interaction failures. `assert_clean()` fails on unhandled server exceptions,
-uncaught page errors, unexpected error-level console messages, and required asset/network failures.
+A managed test-only ASGI wrapper may emit opaque session/request correlation through the owned
+channel. It must not change response bodies, swallowed exceptions, status, auth, CSRF, or production
+middleware. Correlate existing operation ids when available; a synthetic test id is not application
+authority. External sessions explicitly mark server correlation unavailable.
 
-HTTP 4xx/5xx responses are not universally treated as harness failures: validation, authorization,
-and failure UI are legitimate test subjects. Tests can assert or allow expected failures through a
-scoped rule. Broad global ignore lists and silent console suppression are not supported defaults.
+## Capture, privacy, and network boundaries
 
-### Failure bundle
+Structured capture is the default: no raw bodies, headers/cookies/storage, URL values, form values,
+exception messages/locals, arbitrary console text, DOM, screenshots, traces, HAR, or video. Retain
+allowlisted route/resource identifiers, safe metadata, event categories, counts, bounded stacks
+without source locals/messages, correlation, policy, and omission markers. Unknown free text stays
+withheld unless an admitted policy can make it safe.
 
-On failure, the pytest integration retains a versioned, bounded bundle. Candidate members are:
+The explicit synthetic profile can start native tracing before the test and retain it on failure,
+plus bounded permitted screenshots/DOM. Trace recording may use private temporary files during a
+successful test; failure-only retention is not failure-only recording. These native captures are
+not generically redactable. Label them as synthetic/unredacted; do not promise post-hoc zip rewriting
+removes secrets. A confidential-value corpus runs under structured-only capture with canary scans.
+A separate synthetic corpus proves trace/viewer/screenshot behavior. Every bundle records omitted,
+unavailable, truncated, capture-failed, or disabled members; a missing required synthetic capture
+remains a failed artifact row.
 
-- screenshot and DOM snapshot under the active artifact policy;
-- Playwright trace;
-- console, page-error, request, response, and failed-resource summaries;
-- redacted Hedron interaction trace and server exception chain;
-- route, root-path, browser, engine, Python, Hedron, dependency, OS, viewport, and test identity;
-- settle-state snapshot and the final semantic locator diagnostic; and
-- explicit missing/truncated/redacted markers.
+One capture authority validates effective upstream `--tracing`, `--screenshot`, `--video`,
+artifact directory, and context options before creation. Reject incompatible flags instead of
+letting upstream finalizers write forbidden captures outside Hedron's policy. Raw captures cannot
+be guaranteed within a hard byte cap by checking their final size alone; W0 must prove monitored
+private temporary storage/termination limits or leave that capture disabled. Structured bundle
+limits, safe paths, atomic manifests, no upload, and best-effort expiry remain Required.
 
-Known secret headers, cookies, query values, form fields, and Hedron `Secret` values are redacted
-before persistence. DOM and screenshots can contain application content that is not mechanically
-recognizable as secret; managed tests therefore require synthetic fixtures, and remote capture is
-conservative and explicit. Artifacts are test outputs, never telemetry, and are not uploaded by
-Hedron.
+Browser traffic is restricted to the scenario's literal-loopback origin by default, with declared
+exact additional origins where needed. Redirects are denied because Playwright cannot safely recheck
+each redirect hop. Service workers are blocked
+in this controlled profile because they can bypass routing observation. This is test determinism,
+not a complete network sandbox or a restriction on server-side application egress. WebSocket,
+download, popup, and browser-origin capability limits must be stated per pinned browser version.
+Non-loopback/production targets, remote browser attachment, and raw remote capture are Deferred.
 
-### Packaging and pytest integration
+## Satellite and host boundary
 
-Stage 0 evaluates an additive `hedron[testing]` extra containing the supported pytest and browser
-integration. The existing `hedron[browser]` extra and low-level imports remain compatible.
-An auto-discovered pytest plugin may add fixtures, markers, and options only; importing Hedron in a
-non-pytest process must not import pytest or Playwright.
+Inventory every coordinated/optional package, preserve stable flagship testing imports, and assign
+module/facade/provider/testing-product/private/non-fit dispositions. Require one minimal admitted
+specialist contribution and absence/conflict/version tests to prove the central protocol. Other
+packages may remain private or Deferred without creating public testing modules merely for breadth.
 
-The ordinary command remains `pytest`. Hedron may extend `hedron testgen` to emit reviewable
-browser-scenario stubs and may add a read-only testing doctor, but it does not add a competing test
-runner.
+V1 contributions carry package identity/version, supported schema versions, declared capabilities,
+and bounded synthetic fixture/event summaries. An executable hook must be explicitly registered,
+trusted test code with a bounded lifecycle; it is not sandboxed. No host, browser, locator, artifact
+root, global error policy, or pytest plugin may acquire duplicate ownership. Managed WSGI/Posit
+launchers, broad provider capabilities, and ownership moves are optional admission candidates;
+caller-managed loopback URLs are the portable path.
 
-### Satellite testing ownership
+## Delivery, matrix, and acceptance
 
-The central harness owns browser/session lifecycle, managed hosting, Playwright composition,
-generic semantic lookup, settle/error/artifact schemas, redaction, and pytest integration. A
-satellite owns only test behavior that requires its public domain types, component semantics,
-protocol, host lifecycle, or artifact knowledge.
+Deliver the flagship vertical slice before satellite breadth: inventory/probes and freeze; managed
+host/context/checkpoint/error core; one synthetic secured form plus intentional failure; artifact
+and pytest hardening; minimal satellite contribution; bounded compatibility/release matrix.
 
-Stage 0 assigns every coordinated and optional package one explicit disposition:
+Use Linux as the required initial OS, default-build CPython 3.11–3.14 for core/import/host/package
+checks, and a bounded Chromium/Firefox/WebKit release corpus at the frozen integration runtime.
+Cross Python and browser dimensions only where an integration risk needs it; do not silently imply
+a full Cartesian matrix. macOS/Windows have explicit pilot dispositions until host/context/capture
+probes pass. Browser install failure or an unexpectedly skipped Required row fails release evidence.
 
-| Candidate disposition | Meaning | Candidate examples |
-|---|---|---|
-| Package testing module | Public synthetic fixtures, semantic helpers, event/assertion helpers, lifecycle facts, or artifact summarizers for a specialist UI package | `hedron_data.testing`, `hedron_charts.testing`, `hedron_maps.testing`, `hedron_elements.testing` |
-| Thin facade | Task-oriented re-export/adaptation over the central harness without a second engine | `edron.testing` |
-| Managed-host provider | Package-specific launcher/readiness/root-path facts consumed through the central host protocol | `hedron_flask.testing`, `hedron_django.testing`, and only if admitted `hedron_posit.testing` |
-| Protocol-fixture provider | Deterministic public stubs and assertions for an external protocol, without browser-runner ownership | Candidate `hedron_gradio.testing`, `hedron_mcp.testing`, `hedron_native.testing`, or `hedron_notebook.testing` |
-| Testing product; no nested module | The package already is a simulator, conformance kit, or authoring test kit | `hedron-conformance`, `hedron-sim`, `edron-sim`, `hedron-sample-kit` |
-| Private-only or non-fit | First-party tests consume the central harness; no downstream testing API is justified | Tooling/application packages without a public extension or fixture use case |
+The [contract ledger](../acceptance/ui-testing-contract-130.toml) records candidate decisions,
+scope, matrix, and Unmeasured budget rows. It cannot mark FREEZE-130 Verified. Freeze numeric
+limits, dependency bounds/browser revisions, user-exercise results, commands, expected artifacts,
+and named maintainers before release. Keep the existing 17 gate ids.
 
-These names are candidates, not preapproved modules. A package receives a public module only when
-downstream authors need reusable package-owned behavior. Package test suites remain private and do
-not justify a public API by themselves.
+## Alternatives and deferred work
 
-Satellite modules may provide bounded constructors, synthetic fixtures, package-specific semantic
-lookup, readiness/settle contributions, event assertions, redactors, artifact summaries, and
-reusable conformance scenarios. They may not provide another `BrowserScenario`, server runner,
-Playwright wrapper, locator DSL, artifact root, global error policy, or pytest configuration layer.
+Reject a simulated DOM, complete Playwright wrapper, second runner, shared live app/loop/database
+objects, thread-leak-as-success, raw-trace-redaction promises, and global-idle waits. Prefer the
+thin direct-Page prototype; compare bounded delegation only in W0 to test whether it materially
+helps novice authors. Record results rather than retaining two APIs.
 
-No satellite auto-registers a pytest plugin. Optional contributions are loaded through a frozen,
-explicit testing-contribution protocol or direct import, with package identity, maturity, version,
-capabilities, dependencies, and failure behavior. Installing an unrelated satellite must not alter
-pytest collection, browser behavior, network policy, artifact capture, or settle semantics.
+Asyncpytest integration, standalone non-pytest lifecycle, managed WSGI launchers, non-loopback
+testing, broad executable satellite hooks, browser testgen, testing-doctor commands, visual golden
+baseline management, record/replay, and automatic migration of every historical browser test are
+optional or Deferred. Keep one packaged/scaffold example Required and convert a bounded existing
+reference subset; do not make historical sleep removal a whole-repository migration.
 
-The current `hedron.testing` compatibility surface is inventoried before ownership moves. Helpers
-that construct optional-package types may gain an owning-package implementation while existing
-stable imports remain compatible re-exports. Repository-only fixture paths are not valid public
-package APIs; publish bounded fixture data inside the owning distribution or keep it private.
+## Open feasibility evidence
 
-## Reference behavior corpus
+W0 must still prove forced-stop/timeout cleanup, full pytest-playwright context and capture
+ownership, observable request/lifecycle coverage without runtime modification, private capture
+resource limits, dependency bounds/browser revisions, candidate typing, fresh-user comprehension,
+and measured budgets. Preferred API choices above resolve direction, not those empirical questions.
 
-The release corpus includes at least:
+All 17 Required release rows remain Planned. A cut needs accepted contracts, the 1.2 predecessor,
+immutable evidence, compatibility, security, accessibility, package and rollback proof, and an
+explicit release decision. Publication, release facts, production APIs, and 1.4–1.7 runtime behavior
+remain unchanged by refinement.
 
-1. full-page navigation and ordinary links/forms;
-2. HTMX fragment, OOB, retarget, redirect, push-url, history, abort, and error paths;
-3. schema-derived form fill, validation, CSRF, authorization denial, and success;
-4. local-only Alpine state plus server-only and combined interactions;
-5. retained specialist Web Components and their initialization/cleanup contract;
-6. focus movement/return, keyboard operation, announcements, reduced motion, forced colors,
-   zoom/reflow, and representative viewport changes;
-7. uploads, downloads, redirects, cookies, sessions, and dependency overrides using synthetic data;
-8. polling/action-state terminal success, validation, failure, cancel, and stale-result paths;
-9. JavaScript-disabled and required-asset-failure fallback; and
-10. deliberate server, page, console, locator, settle, and network failures proving diagnostics.
+## Sources
 
-Chromium is the local/default engine candidate. Chromium, Firefox, and WebKit are required for the
-bounded release corpus, not necessarily for every application test on every commit.
-
-## Alternatives considered
-
-### Expand `AppScenario` into a DOM simulator
-
-Rejected. `AppScenario` is valuable because it tests HTTP contracts without pretending to execute
-native browser behavior, HTMX, Alpine, Web Components, focus, or history. A partial simulator would
-create false confidence and a second frontend semantics implementation.
-
-### Expose raw Playwright only
-
-Retained as the advanced escape hatch but insufficient as the complete Hedron experience. Raw
-Playwright does not own Hedron application startup, interaction-settle facts, server exception
-correlation, marks/regions, redaction, or framework-specific failure evidence.
-
-### Build a complete Hedron locator and assertion DSL
-
-Rejected. Playwright already owns robust locators, actionability, auto-waiting, and web assertions.
-Hedron adds a small semantic convenience surface and framework diagnostics, not a shadow API.
-
-### Add a `hedron test ui` runner
-
-Rejected. Pytest is already the project and ecosystem runner. A second runner would split fixture,
-plugin, selection, parallelism, and CI configuration.
-
-### Make visual golden comparisons Stable in 1.3
-
-Deferred. Screenshots are Required failure evidence. Baseline management, platform-font variance,
-pixel thresholds, review workflows, and intentional-update provenance require a separate maturity
-decision before visual comparisons can be Stable.
-
-## Security implications
-
-- Managed hosts bind to loopback only and use validated ephemeral listeners.
-- External network requests are denied or reported by the deterministic default policy and require
-  an explicit allowlist where application behavior needs them.
-- Remote/non-loopback targets require explicit authorization and conservative capture defaults.
-- Cookies, authorization headers, CSRF values, secrets, and configured sensitive fields are
-  redacted from logs and traces before persistence.
-- Artifact paths, names, sizes, counts, retention, and archive behavior are bounded; test names and
-  URLs cannot escape the artifact root.
-- Browser contexts, dependency overrides, registries, temporary files, processes, threads, ports,
-  and credentials are isolated and cleaned up after success, failure, cancellation, and timeout.
-- The harness does not bypass application authorization, manufacture a principal, or infer that a
-  browser-visible control grants server authority.
-
-## Accessibility implications
-
-Semantic role/name and label locators reward accessible application markup and expose ambiguous or
-missing names early. The release corpus covers keyboard, focus, announcements, reduced motion,
-forced colors, zoom/reflow, and JavaScript-disabled behavior where automated evidence is meaningful.
-
-axe results retain engine/version, scope, incomplete, skipped, and error metadata. An empty
-violation list is not an accessibility or WCAG conformance claim. Human assistive-technology
-evaluation remains owned by its separate protocol and phase.
-
-## Performance implications
-
-Browser startup is inherently more expensive than render or `AppScenario` tests. Documentation and
-scaffolds preserve the testing pyramid and do not make browser tests the default for pure rendering
-or HTTP behavior.
-
-`FREEZE-130` records measured budgets for managed-host readiness, first navigation, settle overhead,
-memory/process cleanup, artifact size/count, parallel workers, and release-matrix duration. No exact
-threshold is invented before the baseline probe. On-success tracing and screenshots are disabled or
-minimal by default; failure evidence is bounded.
-
-## Compatibility and migration
-
-The phase is additive to the stable 1.0 testing inventory. `AppScenario`, adapter fixtures,
-`fragment_client`, render assertions, browser helpers, marks, and existing imports remain valid.
-The optional browser/testing extra cannot become a base dependency, and render/HTTP tests retain a
-no-browser and no-Node path.
-
-Generated scaffolds may add a new browser-test example but do not rewrite existing projects.
-`hedron testgen` output remains review-first and never executes generated tests or overwrites a file
-without explicit authorization.
-
-The previous `HTMX_ALPINE_REFINEMENT_1_1_2_0` proposal is recorded as unassigned design input. Its
-runtime changes, compatibility shims, deprecations, and proposed 2.0 removals are not part of this
-phase. Any subset later proposed for a release needs its own accepted authority and compatibility
-packet.
-
-## Open questions for `FREEZE-130`
-
-1. Is `BrowserScenario` the stable class name, and is `hedron_ui` the stable fixture name?
-2. Does the scenario delegate common Playwright locators or expose them only through `.page`?
-3. Which managed launchers beyond the flagship ASGI host can meet the lifecycle contract?
-4. Is `hedron[testing]` the additive installation name, and how does it compose with
-   `hedron[browser]`?
-5. Which console and request failures fail `assert_clean()` by default, and what is the scoped
-   expected-failure API?
-6. Which first-party events constitute the exact settle schema and version?
-7. What capture profile is safe and useful for local, CI, and explicitly authorized remote tests?
-8. Which budgets and supported OS/browser revisions are justified by the Stage 0 measurements?
-9. Which packages demonstrate a downstream need for a public testing module, and which contribution
-   capabilities can remain static registry facts rather than executable hooks?
-
-Implementation does not begin until these decisions, the evidence schema, and the reference corpus
-are frozen. Resolving an open question may narrow the phase; it may not silently broaden runtime or
-remote-testing authority.
-
-## Acceptance criteria
-
-1. One optional install and ordinary pytest run a managed-app browser test without manual server
-   setup.
-2. The public candidate composes with Playwright instead of emulating browser behavior or copying
-   its full API.
-3. Semantic locators, marks, regions, strict ambiguity, and direct Playwright escape hatches pass.
-4. Hedron-owned settle facts eliminate sleeps from maintained browser examples and diagnose every
-   timeout.
-5. Unhandled server/browser failures cannot silently pass, while expected HTTP failure UI remains
-   testable through scoped assertions.
-6. Every failed release-corpus test creates a bounded evidence bundle with explicit redaction,
-   truncation, provenance, and missing-data markers.
-7. The reference corpus passes its declared Chromium/Firefox/WebKit and host/root-path matrix.
-8. Accessibility checks are provenance-bearing and make no automated conformance claim.
-9. Parallel execution leaves no ports, processes, threads, browser contexts, overrides, registries,
-   or temporary artifacts active after the test session.
-10. Stable 1.0 testing imports and behavior remain compatible, and non-browser tests gain no
-    browser, pytest, Node.js, or service dependency.
-11. Documentation teaches the testing layers, failure workflow, security limits, and lowest-cost
-    appropriate test.
-12. Every coordinated and optional package has a machine-readable testing disposition; admitted
-    contributions use the central protocol, preserve import isolation, and pass package-local plus
-    fleet conformance without ambient pytest registration.
-13. Every Required row in `release-gate-1.3.toml` is Verified before any release claim.
+Design evidence: [Playwright pytest fixtures/options](https://playwright.dev/python/docs/test-runners),
+[native tracing](https://playwright.dev/python/docs/api/class-tracing),
+[trace viewing](https://playwright.dev/python/docs/trace-viewer),
+[BrowserContext routing limits](https://playwright.dev/python/docs/api/class-browsercontext#browser-context-route),
+and [explicit pytest plugin loading](https://docs.pytest.org/en/stable/how-to/writing_plugins.html#requiring-loading-plugins-in-a-test-module-or-conftest-file).
+These support the tool boundaries; the selected Hedron API and release choices are this proposal.

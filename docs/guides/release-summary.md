@@ -1,6 +1,7 @@
 # Release process summary
 
-Hedron’s coordinated `v1.1.3` package train is tagged, published, and Verified.
+Hedron’s coordinated `v1.2.0` package train is published on PyPI and its 44 wheel/sdist
+hashes across 22 Python distributions are recorded in the [publication verification](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/evidence-120/PUBLICATION.md).
 
 The exact maintainer commands and publication rules live in
 [`docs/RELEASE.md`](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md).
@@ -9,16 +10,15 @@ The exact maintainer commands and publication rules live in
 
 | Item | Value |
 |---|---|
-| Current stable release | **v1.1.3** (`hedron`, `hedron-core`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps`) |
+| Current stable release | **v1.2.0** (`hedron`, `hedron-core`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps`) |
 | Migration baseline | **v0.67.0** |
-| PyPI latest | **v1.1.3** |
+| PyPI latest | **v1.2.0** |
 | Public-index requirement | `hedron>=1.0.0` |
-| Repository version | `uv sync` (workspace and PyPI are both at 1.1.3) |
+| Repository version | `uv sync` installs development version `1.3.0`; PyPI remains at `1.2.0` until the next cut |
 | Charts package | `hedron-charts>=1.0.0` |
 | Maps package | `hedron-maps>=1.0.0` |
 | Generic Workbench adapter | `fastapi-workbench>=1.0.8,<2.0` |
-| Plan checker | `python scripts/check_100.py --check-plan` |
-| Entry gate | `python scripts/check_100.py --gate ENTRY-100 --verify` |
+| Release gate | `python scripts/check_release_gate.py 1.3.0 --allow-planned` for candidate checks; strict validation is required before a release cut |
 
 Adopter-facing sources of truth: [Current release](current-release.md) ·
 [What’s next](whats-next.md) · [Upgrade](upgrade.md) ·
@@ -28,7 +28,7 @@ Adopter-facing sources of truth: [Current release](current-release.md) ·
 
 1. Update `docs/release.toml` first when release-channel facts change.
 2. Synchronize `docs/STATUS.md` to root `STATUS.md`.
-3. Run `bash scripts/ci_checks.sh docs`, the 1.0 packet checker, tests, lint, and package checks.
+3. Run `bash scripts/ci_checks.sh all` and the strict 1.3 release gate before requesting release approval.
 4. Build all packages and test the built artifacts in a clean environment.
 5. Tag and publish only with explicit maintainer authorization; never move an existing tag.
 6. After upload, verify PyPI artifacts and install smoke tests before changing

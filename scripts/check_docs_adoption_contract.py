@@ -33,8 +33,14 @@ def main() -> int:
     # The docs must describe what the default FastAPI scaffold actually writes.
     require(
         "packages/hedron/src/hedron/cli/scaffold/fastapi.py",
-        '"files": ["pyproject.toml", "app.py", "components/"]',
+        'files = ["pyproject.toml", "app.py", "components/"]',
     )
+    require(
+        "packages/hedron/src/hedron/cli/scaffold/fastapi.py",
+        'files.extend(["tests/conftest.py", "tests/test_ui.py", "tests/README.md"])',
+    )
+    require("packages/hedron/src/hedron/cli/parser.py", '"--with-ui-tests"')
+    require("docs/guides/testing.md", "hedron new myapp --with-ui-tests")
     require(
         "packages/hedron/src/hedron/cli/commands/new.py",
         '(dest / "components").mkdir(exist_ok=True)',

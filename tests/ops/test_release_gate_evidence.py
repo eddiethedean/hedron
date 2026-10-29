@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
+import hashlib
 import re
 import sys
 import tomllib
 from pathlib import Path
-
-import pytest
+from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPTS = ROOT / "scripts"
@@ -77,8 +77,95 @@ def test_release_gate_1_2_candidate_is_selected_without_historical_fallback() ->
     manifest = ROOT / "docs" / "acceptance" / "release-gate-1.2.toml"
     assert gate.evidence_manifest_for("1.2.0") == manifest
     assert gate.check_evidence_manifest_lenient(manifest) == []
-    with pytest.raises(ValueError, match="no explicit release evidence manifest"):
-        gate.evidence_manifest_for("1.3.0")
+
+
+def test_release_gate_1_3_candidate_is_selected_and_inventory_is_fixed() -> None:
+    manifest = ROOT / "docs" / "acceptance" / "release-gate-1.3.toml"
+    assert gate.evidence_manifest_for("1.3.0") == manifest
+    assert gate.check_evidence_manifest_lenient(manifest) == []
+    errors = gate.check_evidence_manifest(manifest)
+    assert not any("predecessor evidence must be satisfied" in error for error in errors)
+    assert not any(
+        "predecessor_record must confirm v1.2.0 publication" in error for error in errors
+    )
+    assert any("FREEZE-130: state 'Planned'" in error for error in errors)
+    assert any("every required phase 1.3 gate must be Verified" in error for error in errors)
+    assert any("planning contract freeze_satisfied must be true" in error for error in errors)
+    assert any("release_approval.approved must be true" in error for error in errors)
+
+
+def test_release_gate_1_3_rejects_inventory_and_target_drift(tmp_path: Path) -> None:
+    source = (ROOT / "docs" / "acceptance" / "release-gate-1.3.toml").read_text(encoding="utf-8")
+    source = source.replace('target = "v1.3.0"', 'target = "v1.3.1"')
+    source = source.replace('id = "RELEASE-130"', 'id = "OTHER-130"')
+    manifest = tmp_path / "release-gate-1.3.toml"
+    manifest.write_text(source, encoding="utf-8")
+    errors = gate.check_evidence_manifest_lenient(manifest)
+    assert any("gate order mismatch" in error for error in errors)
+    assert any("target must be v1.3.0" in error for error in errors)
+
+
+def test_release_gate_1_3_binds_evidence_to_sha256(tmp_path: Path) -> None:
+    evidence_root = tmp_path / "acceptance"
+    evidence_root.mkdir()
+    evidence = evidence_root / "evidence.json"
+    evidence.write_text('{"result":"pass"}\n', encoding="utf-8")
+    digest = hashlib.sha256(evidence.read_bytes()).hexdigest()
+
+    assert gate._bound_record_errors(evidence_root, "evidence.json", digest, "TEST-130") == []
+    evidence.write_text('{"result":"stale"}\n', encoding="utf-8")
+    assert gate._bound_record_errors(evidence_root, "evidence.json", digest, "TEST-130") == [
+        "TEST-130: retained evidence SHA-256 does not match"
+    ]
+
+
+def test_release_gate_1_3_source_commit_allows_only_evidence_followup(monkeypatch) -> None:
+    source = "d" * 40
+    changed = (
+        "docs/acceptance/RELEASE_1_3.md\n"
+        "docs/acceptance/release-gate-1.3.toml\n"
+        "docs/acceptance/evidence-130/browser-linux.json\n"
+    )
+
+    def fake_run(command, **_kwargs):
+        assert command == ["git", "merge-base", "--is-ancestor", source, "HEAD"]
+        return SimpleNamespace(returncode=0)
+
+    def fake_check_output(command, **_kwargs):
+        if command[:3] == ["git", "diff", "--name-only"]:
+            if command[3] == f"{source}..HEAD":
+                return changed
+            return ""
+        if command[:2] == ["git", "status"]:
+            return ""
+        raise AssertionError(command)
+
+    monkeypatch.setattr(gate.subprocess, "run", fake_run)
+    monkeypatch.setattr(gate.subprocess, "check_output", fake_check_output)
+
+    assert gate._phase_130_source_revision_errors(source) == []
+
+    changed += "packages/hedron/src/hedron/app.py\n"
+    assert gate._phase_130_source_revision_errors(source) == [
+        "phase 1.3 source revision predates non-evidence changes: packages/hedron/src/hedron/app.py"
+    ]
+
+
+def test_release_gate_1_3_rejects_symlinked_evidence(tmp_path: Path) -> None:
+    evidence_root = tmp_path / "acceptance"
+    evidence_root.mkdir()
+    outside = tmp_path / "outside.json"
+    outside.write_text("{}\n", encoding="utf-8")
+    (evidence_root / "evidence.json").symlink_to(outside)
+
+    errors = gate._bound_record_errors(
+        evidence_root,
+        "evidence.json",
+        hashlib.sha256(outside.read_bytes()).hexdigest(),
+        "TEST-130",
+    )
+
+    assert errors == ["TEST-130: evidence path must not traverse symlinks"]
 
 
 def test_release_gate_1_2_rejects_deferred_required_gates(tmp_path: Path) -> None:
@@ -190,8 +277,8 @@ def test_120_artifact_rehearsal_builds_twice_and_never_publishes() -> None:
     workflow = (ROOT / ".github/workflows/release-artifacts-1.2.yml").read_text(encoding="utf-8")
 
     assert "workflow_dispatch:" in workflow
-    assert "push:" in workflow
-    assert "branches:" in workflow and "- main" in workflow
+    assert "\n  push:" not in workflow
+    assert "ref: fced98f466478dd9e1c31a8e13f3b1bae7ce4fc3" in workflow
     assert "build_reproducible_release_artifacts.py" in workflow
     assert "check_python_310_candidate.py" in (
         ROOT / "scripts/build_reproducible_release_artifacts.py"
