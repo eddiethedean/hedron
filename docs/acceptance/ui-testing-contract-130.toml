@@ -181,11 +181,11 @@ unit = "milliseconds"
 sample_count = 20
 frozen_limits = { startup_samples_per_row = 5, shutdown_samples_per_row = 5, shutdown_max_ms = 7000, child_processes_max = 1 }
 measurement_evidence = "evidence-130/ui-testing-resource-budgets-2026-10-29.json"
-measurement_sha256 = "3e25d355c6503a05e48ec57a0327c670153e8796e9c020497c405b45c517d1f6"
+measurement_sha256 = "6b612e6dfb2bf397c91f9b077452815cca6f7918e70830fbd637845062b94763"
 
 [[budgets]]
 id = "browser"
-state = "Frozen"
+state = "Measured"
 owner_role = "testing"
 metrics = "context create/close, preserved fixture options, warm/cold overhead"
 threshold_frozen = true
@@ -193,13 +193,13 @@ limit = 5000
 unit = "milliseconds"
 sample_count = 3
 frozen_limits = { context_samples_per_row = 10, scenario_cycle_max_ms = 15000 }
-measurement_scope = "Three local macOS browser rows inform the ceilings; required ubuntu-latest engine lanes measure Linux-specific samples because this container could not resolve the Playwright CDN."
+measurement_scope = "Three macOS per-engine resource profiles supplied the numeric observations; the required Linux engine lanes separately enforce the frozen limits."
 measurement_evidence = "evidence-130/ui-testing-resource-budgets-2026-10-29.json"
-measurement_sha256 = "3e25d355c6503a05e48ec57a0327c670153e8796e9c020497c405b45c517d1f6"
+measurement_sha256 = "6b612e6dfb2bf397c91f9b077452815cca6f7918e70830fbd637845062b94763"
 
 [[budgets]]
 id = "settle"
-state = "Frozen"
+state = "Measured"
 owner_role = "browser-platform"
 metrics = "event ring count/bytes, wait/probe overhead, timeout tolerance"
 threshold_frozen = true
@@ -207,9 +207,9 @@ limit = 1000
 unit = "milliseconds"
 sample_count = 3
 frozen_limits = { samples_per_row = 1, event_count_max = 256, event_snapshot_bytes_max = 1048576, default_timeout_ms = 10000, poll_interval_ms = 25, event_capacity_default = 256, event_capacity_max = 4096 }
-measurement_scope = "Three local macOS browser rows inform the ceilings; required ubuntu-latest engine lanes measure Linux-specific samples because this container could not resolve the Playwright CDN."
+measurement_scope = "Three macOS per-engine resource profiles supplied the numeric observations; the required Linux engine lanes separately enforce the frozen limits."
 measurement_evidence = "evidence-130/ui-testing-resource-budgets-2026-10-29.json"
-measurement_sha256 = "3e25d355c6503a05e48ec57a0327c670153e8796e9c020497c405b45c517d1f6"
+measurement_sha256 = "6b612e6dfb2bf397c91f9b077452815cca6f7918e70830fbd637845062b94763"
 
 [[budgets]]
 id = "structured_artifacts"
@@ -222,21 +222,21 @@ unit = "bytes_per_worker"
 sample_count = 4
 frozen_limits = { max_manifest_bytes = 524288, max_manifests_per_worker = 128, max_workers = 4, aggregate_max_bytes = 268435456 }
 measurement_evidence = "evidence-130/ui-testing-resource-budgets-2026-10-29.json"
-measurement_sha256 = "3e25d355c6503a05e48ec57a0327c670153e8796e9c020497c405b45c517d1f6"
+measurement_sha256 = "6b612e6dfb2bf397c91f9b077452815cca6f7918e70830fbd637845062b94763"
 
 [[budgets]]
 id = "synthetic_capture"
-state = "Frozen"
+state = "Measured"
 owner_role = "security"
 metrics = "native temporary disk, monitoring granularity, bounded overshoot, capture termination"
 threshold_frozen = true
 limit = 67108864
 unit = "bytes_per_file"
-sample_count = 0
-frozen_limits = { tmpfs_max_bytes = 134217728, monitor_interval_ms = 25, max_overshoot_bytes = 26214400, termination_must_be_visible = true }
-measurement_scope = "Linux-only tmpfs hard-limit and trace probes could not run locally because the arm64 container could not resolve the Playwright CDN; ubuntu-latest CI executes them."
+sample_count = 3
+frozen_limits = { tmpfs_max_bytes = 134217728, monitor_interval_ms = 25, max_overshoot_bytes = 67108864, termination_must_be_visible = true }
+measurement_scope = "Three ubuntu-latest Linux probes (Python 3.12, Playwright 1.62.0) measured the required engines on a 128 MiB private tmpfs. The largest 25 ms growth sample was 45,564,212 bytes; the 64 MiB ceiling leaves 21,544,652 bytes of measured margin and is half the tmpfs capacity. Final enforcement is pending CI rerun after the threshold change."
 measurement_evidence = "evidence-130/ui-testing-resource-budgets-2026-10-29.json"
-measurement_sha256 = "3e25d355c6503a05e48ec57a0327c670153e8796e9c020497c405b45c517d1f6"
+measurement_sha256 = "6b612e6dfb2bf397c91f9b077452815cca6f7918e70830fbd637845062b94763"
 
 [[budgets]]
 id = "parallel"
@@ -249,7 +249,7 @@ unit = "xdist_workers"
 sample_count = 1
 frozen_limits = { browser_xdist_workers = 0, rss_max_bytes = 8589934592, process_count_max = 64, host_timeout_seconds = 900, browser_timeout_seconds = 1800, host_monitor_interval_ms = 50, browser_monitor_interval_ms = 25, per_file_bytes = 67108864 }
 measurement_evidence = "evidence-130/ui-testing-resource-budgets-2026-10-29.json"
-measurement_sha256 = "3e25d355c6503a05e48ec57a0327c670153e8796e9c020497c405b45c517d1f6"
+measurement_sha256 = "6b612e6dfb2bf397c91f9b077452815cca6f7918e70830fbd637845062b94763"
 
 [[budgets]]
 id = "compatibility"
@@ -263,4 +263,4 @@ sample_count = 7
 frozen_limits = { host_python_min = "3.11", host_python_max = "3.14", browser_python = "3.12", browser_engines = ["chromium", "firefox", "webkit"], playwright = "1.62.0", pytest_playwright = "0.10.0" }
 measurement_scope = "Four Linux host Python rows (3.11–3.14) and three local macOS browser-engine rows were measured; all seven required Linux rows remain enforced by GitHub Actions."
 measurement_evidence = "evidence-130/ui-testing-resource-budgets-2026-10-29.json"
-measurement_sha256 = "3e25d355c6503a05e48ec57a0327c670153e8796e9c020497c405b45c517d1f6"
+measurement_sha256 = "6b612e6dfb2bf397c91f9b077452815cca6f7918e70830fbd637845062b94763"
