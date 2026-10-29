@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import sys
 import textwrap
@@ -12,6 +13,23 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def test_ci_action_versions_are_full_commit_pins() -> None:
+    for path in (
+        ROOT / ".github/workflows/ci.yml",
+        ROOT / ".github/workflows/release-artifacts-1.3.yml",
+    ):
+        workflow = path.read_text(encoding="utf-8")
+        references = re.findall(r"^\s+uses: ([^\s]+)(?:\s+#.*)?$", workflow, flags=re.MULTILINE)
+        assert references
+        for reference in references:
+            if reference.startswith("./"):
+                continue
+            _, separator, revision = reference.rpartition("@")
+            assert separator and re.fullmatch(r"[0-9a-f]{40}", revision), (
+                f"{path.relative_to(ROOT)} must pin {reference} to a full commit SHA"
+            )
 
 
 @pytest.mark.parametrize("conclusion", ["success", "failure", "cancelled", "null", ""])
