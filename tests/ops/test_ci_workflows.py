@@ -51,6 +51,10 @@ def test_release_requires_success_for_exact_checked_out_commit(
         ("pull_request", False, "coverage", False),
         ("pull_request", False, "packaging", False),
         ("pull_request", False, "quality", False),
+        ("pull_request", False, "dependency-bounds", False),
+        ("pull_request", False, "browser", False),
+        ("pull_request", False, "release-host", False),
+        ("pull_request", False, "evidence", False),
         ("pull_request", True, None, True),
         ("pull_request", True, "quality", False),
         ("pull_request", True, "changes", False),
@@ -79,13 +83,25 @@ def test_required_gate_handles_pr_docs_and_full_matrix(
             "quality",
             "browser",
             "packaging",
+            "release-host",
+            "evidence",
+            "release-artifact-rehearsal",
         )
     }
     if event == "pull_request":
-        for name in ("test", "dependency-bounds", "browser"):
-            results[name]["result"] = "skipped"
+        results["test"]["result"] = "skipped"
+        results["release-artifact-rehearsal"]["result"] = "skipped"
+    else:
+        results["release-artifact-rehearsal"]["result"] = "skipped"
     if docs_only:
-        for name in ("coverage", "packaging"):
+        for name in (
+            "coverage",
+            "packaging",
+            "dependency-bounds",
+            "browser",
+            "release-host",
+            "evidence",
+        ):
             results[name]["result"] = "skipped"
     if failed_job:
         results[failed_job]["result"] = "failure"
@@ -96,12 +112,51 @@ def test_required_gate_handles_pr_docs_and_full_matrix(
             "RESULTS": json.dumps(results),
             "DOCS_ONLY": str(docs_only).lower(),
             "EVENT_NAME": event,
+            "RELEASE_CANDIDATE": "false",
         },
         capture_output=True,
         text=True,
         check=False,
     )
     assert (result.returncode == 0) == expected_success, result.stderr
+
+
+def test_release_candidate_requires_reproducible_artifact_rehearsal() -> None:
+    workflow = (ROOT / ".github/workflows/ci.yml").read_text()
+    required_job = workflow.split("  required:\n", 1)[1]
+    body = textwrap.dedent(required_job.split("        run: |\n", 1)[1])
+    code = body.split("<<'PYTHON'\n", 1)[1].rsplit("PYTHON", 1)[0]
+    results = {
+        name: {"result": "success"}
+        for name in (
+            "changes",
+            "coverage",
+            "test",
+            "dependency-bounds",
+            "quality",
+            "browser",
+            "packaging",
+            "release-host",
+            "evidence",
+            "release-artifact-rehearsal",
+        )
+    }
+    results["release-artifact-rehearsal"]["result"] = "failure"
+    result = subprocess.run(
+        [sys.executable, "-c", code],
+        env={
+            **os.environ,
+            "RESULTS": json.dumps(results),
+            "DOCS_ONLY": "false",
+            "EVENT_NAME": "pull_request",
+            "RELEASE_CANDIDATE": "true",
+        },
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode != 0
+    assert "release-artifact-rehearsal" in result.stderr
 
 
 @pytest.mark.parametrize("fail_package", ["", "hedron-core", "hedron"])

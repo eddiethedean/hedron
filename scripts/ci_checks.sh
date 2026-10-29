@@ -698,14 +698,40 @@ cmd_quality() {
 }
 
 cmd_browser() {
-  export HEDRON_BROWSER=1
+  export HEDRON_BROWSER="${HEDRON_BROWSER:-1}"
   export HEDRON_BROWSER_ENGINE="${HEDRON_BROWSER_ENGINE:-chromium}"
+  local -a tempfs_args=()
+  if [[ -n "${HEDRON_UI_CAPTURE_TMPFS_MIB:-}" ]]; then
+    # Bound the complete suite by the private capture filesystem capacity.
+    tempfs_args=(
+      --tempfs-limit-mib "$HEDRON_UI_CAPTURE_TMPFS_MIB"
+      --tempfs-usage-limit-mib "$HEDRON_UI_CAPTURE_TMPFS_MIB"
+    )
+  fi
   # Keep Playwright serial: xdist contention on browser processes flakes.
   mkdir -p test-results
-  run_uv pytest -q -rs -m browser --tb=short -n 0 \
-    --override-ini=junit_family=legacy --browser "$HEDRON_BROWSER_ENGINE" \
+  run_py scripts/run_ui_budgeted.py \
+    --output-json "test-results/ui-testing-resources-${HEDRON_BROWSER_ENGINE}.json" \
+    --timeout-seconds 1800 --max-rss-mib 8192 --max-processes 64 \
+    --sample-interval-ms 25 --max-file-mib 64 \
+    "${tempfs_args[@]}" -- \
+    uv run --python "$PYTHON" pytest -q -rs -m browser --tb=short -n 0 \
+    --override-ini=junit_family=legacy \
+    --browser "$HEDRON_BROWSER_ENGINE" \
     --junitxml=test-results/browser.xml \
     tests/browser examples/ui-testing examples/ui-testing-satellite
+  run_py scripts/check_ui_testing_acceptance.py \
+    --lane browser --python "$PYTHON" --browser "$HEDRON_BROWSER_ENGINE" \
+    --junitxml test-results/browser.xml \
+    --output "test-results/ui-testing-browser-${HEDRON_BROWSER_ENGINE}.json"
+  run_py scripts/run_ui_budgeted.py \
+    --output-json "test-results/ui-testing-resources-privacy-${HEDRON_BROWSER_ENGINE}.json" \
+    --timeout-seconds 300 --max-rss-mib 8192 --max-processes 64 \
+    --sample-interval-ms 25 --max-file-mib 64 \
+    "${tempfs_args[@]}" -- \
+    uv run --python "$PYTHON" python scripts/probe_ui_testing_privacy.py \
+      --browser "$HEDRON_BROWSER_ENGINE" \
+      --output-json "test-results/ui-testing-privacy-${HEDRON_BROWSER_ENGINE}.json"
 }
 
 cmd_workbench_bounds() {

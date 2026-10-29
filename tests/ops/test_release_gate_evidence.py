@@ -273,18 +273,20 @@ def test_120_release_requires_exact_approved_candidate_artifacts() -> None:
     assert "--expected-artifact-count 44 --exact-set" in release_steps
 
 
-def test_release_rehearsal_does_not_restore_the_retired_120_fallback_path() -> None:
+def test_release_rehearsal_is_candidate_ci_only_and_has_no_publish_path() -> None:
     assert not (ROOT / ".github/workflows/release-artifacts-1.2.yml").exists()
     assert not (ROOT / "scripts/check_python_310_candidate.py").exists()
     workflow = (ROOT / ".github/workflows/release-artifacts-1.3.yml").read_text(encoding="utf-8")
     assert "check_python_310_candidate.py" not in workflow
     assert "uv python install 3.10" not in workflow
     assert "workflow_dispatch:" in workflow
+    assert "workflow_call:" in workflow
     assert "uv publish" not in workflow
 
     ci = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
-    assert "release-artifact-rehearsal:" not in ci
-    assert "release-artifacts-1.3.yml" not in ci
+    assert "release-artifact-rehearsal:" in ci
+    assert "github.event.pull_request.head.ref == 'codex/hedron-1.3-release-prep'" in ci
+    assert "uses: ./.github/workflows/release-artifacts-1.3.yml" in ci
 
 
 def test_workbench_dependency_is_published_before_hedron_posit() -> None:
@@ -330,9 +332,11 @@ def test_v1_branch_has_one_stable_required_ci_context() -> None:
     assert "branches: [main, v1.0]" in workflow
     assert "name: CI required" in workflow
     assert (
-        "needs: [changes, coverage, test, dependency-bounds, quality, browser, packaging]"
-        in workflow
+        "needs: [changes, coverage, test, dependency-bounds, quality, browser, packaging, "
+        "release-host, evidence, release-artifact-rehearsal]" in workflow
     )
+    assert "RELEASE_CANDIDATE" in workflow
+    assert 'required.add("release-artifact-rehearsal")' in workflow
 
 
 def test_local_release_gate_accepts_both_license_spelling_aliases() -> None:

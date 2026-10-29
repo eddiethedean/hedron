@@ -225,7 +225,7 @@ jobs:
   dependency-bounds:
     name: Stable dependency bounds (${{ matrix.bounds }})
     needs: changes
-    if: needs.changes.outputs.docs_only != 'true' && github.event_name != 'pull_request'
+    if: needs.changes.outputs.docs_only != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -253,14 +253,14 @@ jobs:
     needs: changes
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # Chromium runs once in the coverage job.
-    if: needs.changes.outputs.docs_only != 'true' && github.event_name != 'pull_request'
+    # The release acceptance corpus needs all three engines on pull requests too.
+    if: needs.changes.outputs.docs_only != 'true'
     env:
       PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/ms-playwright
     strategy:
       fail-fast: false
       matrix:
-        browser: [firefox, webkit]
+        browser: [chromium, firefox, webkit]
 
     steps:
       - name: Check out repository
@@ -276,7 +276,7 @@ jobs:
       - name: Set up Python
         run: uv python install 3.12
       - name: Sync locked dependencies
-        run: uv sync --locked --group docs --python 3.12 --no-install-package hedron-native
+        run: uv sync --locked --all-groups --python 3.12
       - name: Cache Playwright browser
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
@@ -284,11 +284,36 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ hashFiles('uv.lock') }}-${{ matrix.browser }}
       - name: Install Playwright browser
         run: bash scripts/ci_install_playwright.sh ${{ matrix.browser }} 3.12
+      - name: Prepare 128 MiB private capture tmpfs
+        run: |
+          set -euo pipefail
+          capture_tmp="${RUNNER_TEMP}/hedron-ui-capture"
+          mkdir -p "$capture_tmp"
+          sudo mount -t tmpfs -o "size=128m,mode=0700,uid=$(id -u),gid=$(id -g),nosuid,nodev" tmpfs "$capture_tmp"
+          echo "TMPDIR=${capture_tmp}" >> "$GITHUB_ENV"
+          echo "HEDRON_UI_CAPTURE_TMPFS_MIB=128" >> "$GITHUB_ENV"
       - name: Run browser suite
         env:
           HEDRON_BROWSER: "1"
           HEDRON_BROWSER_ENGINE: ${{ matrix.browser }}
         run: bash scripts/ci_checks.sh browser --python 3.12
+      - name: Probe failure-only synthetic capture limits
+        env:
+          HEDRON_BROWSER: "1"
+          HEDRON_BROWSER_ENGINE: ${{ matrix.browser }}
+        run: >-
+          uv run --python 3.12 python scripts/probe_ui_testing_capture.py
+          --browser ${{ matrix.browser }}
+          --junit-dir test-results
+          --output-json test-results/ui-capture-budget-${{ matrix.browser }}.json
+      - name: Check frozen browser resource budgets
+        run: >-
+          uv run --python 3.12 python scripts/check_ui_testing_budgets.py
+          --lane browser --python 3.12 --browser ${{ matrix.browser }}
+          --junitxml test-results/browser.xml
+          --resource-report test-results/ui-testing-resources-${{ matrix.browser }}.json
+          --capture-probe test-results/ui-capture-budget-${{ matrix.browser }}.json
+          --output test-results/ui-testing-budget-${{ matrix.browser }}.json
       - name: Retain browser and skip-classification evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -298,12 +323,127 @@ jobs:
             test-results/
             playwright-report/
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 90
+
+  release-host:
+    name: 1.3 host acceptance (Python ${{ matrix.python-version }})
+    needs: changes
+    if: needs.changes.outputs.docs_only != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install uv
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18c8 # v10.3.2
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - name: Set up Python
+        run: uv python install ${{ matrix.python-version }}
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
+        with:
+          toolchain: stable
+      - name: Install dependencies
+        run: uv sync --locked --python ${{ matrix.python-version }}
+      - name: Run bounded 1.3 host, import, and package acceptance
+        run: |
+          mkdir -p test-results
+          uv run --python ${{ matrix.python-version }} python scripts/run_ui_budgeted.py \
+            --output-json test-results/ui-testing-resources-host-${{ matrix.python-version }}.json \
+            --timeout-seconds 900 --max-rss-mib 8192 --max-processes 64 \
+            --sample-interval-ms 50 --max-file-mib 64 -- \
+            uv run --python ${{ matrix.python-version }} pytest -q -n 0 \
+            --override-ini=junit_family=legacy \
+            --junitxml=test-results/ui-host.xml \
+            tests/unit/test_ui_testing_host.py \
+            tests/unit/test_ui_testing_artifacts.py \
+            tests/unit/test_ui_testing_policy.py \
+            tests/unit/test_ui_testing_contributions.py \
+            tests/ops/test_packaging_isolation.py
+          uv run --python ${{ matrix.python-version }} python scripts/check_ui_testing_acceptance.py \
+            --lane host --python ${{ matrix.python-version }} \
+            --junitxml test-results/ui-host.xml \
+            --output test-results/ui-testing-host-${{ matrix.python-version }}.json
+          uv run --python ${{ matrix.python-version }} python scripts/check_ui_testing_budgets.py \
+            --lane host --python ${{ matrix.python-version }} \
+            --junitxml test-results/ui-host.xml \
+            --resource-report test-results/ui-testing-resources-host-${{ matrix.python-version }}.json \
+            --output test-results/ui-testing-budget-host-${{ matrix.python-version }}.json
+      - name: Retain 1.3 host acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ui-testing-host-${{ matrix.python-version }}
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 90
+
+  evidence:
+    name: Supply-chain evidence and release gate
+    needs: changes
+    if: needs.changes.outputs.docs_only != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install uv
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18c8 # v10.3.2
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
+        with:
+          toolchain: stable
+      - name: Install documentation dependencies
+        run: uv sync --locked --python 3.12 --group docs
+      - name: Set up Java
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "20"
+      - name: Run release evidence suite
+        run: bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 1.3.0
+      - name: Upload evidence bundle
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: hedron-evidence-bundle
+          path: dist/evidence-bundle/
+          if-no-files-found: error
+
+  release-artifact-rehearsal:
+    name: 1.3 reproducible artifact rehearsal
+    needs: changes
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.ref == 'codex/hedron-1.3-release-prep'
+    uses: ./.github/workflows/release-artifacts-1.3.yml
 
   required:
     name: CI required
     if: always()
-    needs: [changes, coverage, test, dependency-bounds, quality, browser, packaging]
+    needs: [changes, coverage, test, dependency-bounds, quality, browser, packaging, release-host, evidence, release-artifact-rehearsal]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -312,6 +452,7 @@ jobs:
           RESULTS: ${{ toJSON(needs) }}
           DOCS_ONLY: ${{ needs.changes.outputs.docs_only }}
           EVENT_NAME: ${{ github.event_name }}
+          RELEASE_CANDIDATE: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'codex/hedron-1.3-release-prep' }}
         run: |
           python3 - <<'PYTHON'
           import json
@@ -320,9 +461,11 @@ jobs:
           results = json.loads(os.environ["RESULTS"])
           required = {"changes", "quality"}
           if os.environ["DOCS_ONLY"] != "true":
-              required.update({"coverage", "packaging"})
+              required.update({"coverage", "packaging", "dependency-bounds", "browser", "release-host", "evidence"})
+              if os.environ["RELEASE_CANDIDATE"] == "true":
+                  required.add("release-artifact-rehearsal")
               if os.environ["EVENT_NAME"] != "pull_request":
-                  required.update({"test", "dependency-bounds", "browser"})
+                  required.add("test")
           failed = {name: results[name]["result"] for name in required
                     if results[name]["result"] != "success"}
           if failed:
