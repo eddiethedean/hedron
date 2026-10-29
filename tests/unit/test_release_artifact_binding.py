@@ -45,7 +45,6 @@ def test_release_artifact_verifier_authenticates_every_stable_artifact(
 def test_release_artifact_verifier_enforces_candidate_exact_set(
     tmp_path, monkeypatch, version, predecessor, phase_code
 ) -> None:
-    python310_fallback = "1.1.3"
     dist = tmp_path / "dist"
     dist.mkdir()
     rows: list[dict[str, str | int]] = []
@@ -75,7 +74,6 @@ def test_release_artifact_verifier_enforces_candidate_exact_set(
                 "phase": version.rsplit(".", 1)[0],
                 "target": f"v{version}",
                 "predecessor_version": predecessor,
-                "python310_fallback_version": python310_fallback,
                 "source_commit": "a" * 40,
                 "environment": {
                     "python": "3.12.0",
@@ -87,33 +85,6 @@ def test_release_artifact_verifier_enforces_candidate_exact_set(
                 "reproducibility": {"repeat_builds": 2, "verified": True},
                 "retention_reference": "https://github.com/example/actions/runs/1",
                 "packages": ["hedron-core", "hedron"],
-                "python310_compatibility": {
-                    "schema": (
-                        f"hedron.phase-{phase_code}-python310-compatibility/"
-                        f"{'1' if phase_code == '120' else '2'}"
-                    ),
-                    "source_commit": "a" * 40,
-                    "python": "3.10.20",
-                    "candidate_install": "rejected by Requires-Python",
-                    "candidate_artifact": next(
-                        row["name"]
-                        for row in rows
-                        if str(row["name"]).startswith(f"hedron-{version}-")
-                    ),
-                    "candidate_sha256": next(
-                        row["sha256"]
-                        for row in rows
-                        if str(row["name"]).startswith(f"hedron-{version}-")
-                    ),
-                    "candidate_rejection_mentions_python_310_and_311": True,
-                    "unpinned_requirement": "hedron",
-                    "resolved_version": python310_fallback,
-                    "predecessor_version" if phase_code == "120" else "fallback_version": (
-                        python310_fallback
-                    ),
-                    "platform": "Linux",
-                    "architecture": "x86_64",
-                },
                 "installed_application_upgrade_rollback": {
                     "schema": f"hedron.phase-{phase_code}-python311-upgrade-rollback/1",
                     "source_commit": "a" * 40,
@@ -165,6 +136,15 @@ def test_release_artifact_verifier_enforces_candidate_exact_set(
         "--exact-set",
     ]
     assert verify_release_artifacts.main(args) == 0
+
+    if phase_code == "130":
+        ledger = json.loads(evidence.read_text(encoding="utf-8"))
+        for legacy_key in ("python310_fallback_version", "python310_compatibility"):
+            ledger[legacy_key] = "retired"
+            evidence.write_text(json.dumps(ledger), encoding="utf-8")
+            assert verify_release_artifacts.main(args) == 1
+            del ledger[legacy_key]
+        evidence.write_text(json.dumps(ledger), encoding="utf-8")
 
     (dist / f"unapproved-{version}.tar.gz").write_bytes(b"extra")
     assert verify_release_artifacts.main(args) == 1
@@ -223,7 +203,6 @@ def test_candidate_ledger_allows_only_the_ledger_after_source_freeze(monkeypatch
     changed = (
         f"{evidence_prefix}python-artifacts.json\n"
         f"{evidence_prefix}native-artifacts.json\n"
-        f"{evidence_prefix}python310-compatibility.json\n"
         f"{evidence_prefix}upgrade-rollback-1.3.json\n"
     )
     untracked = ""

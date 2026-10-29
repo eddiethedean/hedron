@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compare two complete 1.2/1.3 Python release builds and write their hash ledger."""
+"""Compare two complete coordinated Python release builds and write their hash ledger."""
 
 from __future__ import annotations
 
@@ -14,7 +14,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 NATIVE_PACKAGE = "hedron-native"
-PYTHON310_FALLBACK_VERSION = "1.1.3"
 
 
 def phase_for_version(version: str) -> tuple[str, str]:
@@ -30,12 +29,6 @@ def phase_for_version(version: str) -> tuple[str, str]:
 def predecessor_for_version(version: str) -> str:
     phase, _phase_code = phase_for_version(version)
     return "1.1.3" if phase == "1.2" else "1.2.0"
-
-
-def python310_fallback_for_version(version: str) -> str:
-    """Return the newest coordinated Hedron release that supports Python 3.10."""
-    phase_for_version(version)
-    return PYTHON310_FALLBACK_VERSION
 
 
 def expected_packages() -> dict[str, str]:
@@ -112,67 +105,6 @@ def compare_builds(
         }
         for name, digest in sorted(first.items())
     ]
-
-
-def validate_python310_evidence_data(
-    evidence: object,
-    *,
-    source_commit: str,
-    artifacts: list[dict[str, str | int]],
-    candidate_version: str,
-    fallback_version: str | None = None,
-) -> dict[str, object]:
-    if not isinstance(evidence, dict):
-        raise ValueError("Python 3.10 compatibility evidence must be a JSON object")
-    phase, phase_code = phase_for_version(candidate_version)
-    expected_fallback = python310_fallback_for_version(candidate_version)
-    if fallback_version is None:
-        fallback_version = expected_fallback
-    evidence_fallback_key = "predecessor_version" if phase == "1.2" else "fallback_version"
-    compatibility_schema = "1" if phase == "1.2" else "2"
-    if (
-        evidence.get("schema")
-        != f"hedron.phase-{phase_code}-python310-compatibility/{compatibility_schema}"
-        or evidence.get("source_commit") != source_commit
-        or evidence.get("candidate_install") != "rejected by Requires-Python"
-        or evidence.get("candidate_rejection_mentions_python_310_and_311") is not True
-        or evidence.get("unpinned_requirement") != "hedron"
-        or fallback_version != expected_fallback
-        or evidence.get("resolved_version") != fallback_version
-        or evidence.get(evidence_fallback_key) != fallback_version
-        or not str(evidence.get("python", "")).startswith("3.10.")
-        or evidence.get("platform") in (None, "")
-        or evidence.get("architecture") in (None, "")
-    ):
-        raise ValueError("Python 3.10 compatibility evidence is incomplete or mismatched")
-    candidate_name = evidence.get("candidate_artifact")
-    candidate_hash = evidence.get("candidate_sha256")
-    if not isinstance(candidate_name, str) or not candidate_name.startswith(
-        f"hedron-{candidate_version}-"
-    ):
-        raise ValueError("Python 3.10 compatibility evidence names the wrong candidate wheel")
-    candidate = next((row for row in artifacts if row["name"] == candidate_name), None)
-    if candidate is None or candidate.get("sha256") != candidate_hash:
-        raise ValueError("Python 3.10 compatibility evidence is not bound to the Hedron wheel")
-    return evidence
-
-
-def validate_python310_evidence(
-    evidence_path: Path,
-    *,
-    source_commit: str,
-    artifacts: list[dict[str, str | int]],
-    candidate_version: str,
-    fallback_version: str | None = None,
-) -> dict[str, object]:
-    evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
-    return validate_python310_evidence_data(
-        evidence,
-        source_commit=source_commit,
-        artifacts=artifacts,
-        candidate_version=candidate_version,
-        fallback_version=fallback_version,
-    )
 
 
 def validate_upgrade_rollback_evidence_data(
@@ -268,7 +200,6 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("output", type=Path)
     parser.add_argument("--source-commit", required=True)
     parser.add_argument("--retention-reference", required=True)
-    parser.add_argument("--python310-evidence", type=Path, required=True)
     parser.add_argument("--upgrade-rollback-evidence", type=Path, required=True)
     parser.add_argument("--predecessor-version")
     args = parser.parse_args(argv)
@@ -291,13 +222,6 @@ def main(argv: list[str] | None = None) -> int:
                 f"got {args.predecessor_version}"
             )
         artifacts = compare_builds(args.first_build, args.second_build, packages=packages)
-        python310_evidence = validate_python310_evidence(
-            args.python310_evidence,
-            source_commit=args.source_commit,
-            artifacts=artifacts,
-            candidate_version=packages["hedron"],
-            fallback_version=python310_fallback_for_version(packages["hedron"]),
-        )
         upgrade_rollback_evidence = validate_upgrade_rollback_evidence(
             args.upgrade_rollback_evidence,
             source_commit=args.source_commit,
@@ -315,7 +239,6 @@ def main(argv: list[str] | None = None) -> int:
         "phase": phase,
         "target": f"v{packages['hedron']}",
         "predecessor_version": args.predecessor_version,
-        "python310_fallback_version": python310_fallback_for_version(packages["hedron"]),
         "source_commit": args.source_commit,
         "command": (
             "SOURCE_DATE_EPOCH=315619200 PYTHONDONTWRITEBYTECODE=1 "
@@ -336,7 +259,6 @@ def main(argv: list[str] | None = None) -> int:
         "retention_reference": args.retention_reference,
         "packages": list(packages),
         "artifacts": artifacts,
-        "python310_compatibility": python310_evidence,
         "installed_application_upgrade_rollback": upgrade_rollback_evidence,
     }
     output = args.output.resolve()

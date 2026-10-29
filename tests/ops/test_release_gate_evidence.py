@@ -273,23 +273,19 @@ def test_120_release_requires_exact_approved_candidate_artifacts() -> None:
     assert "--expected-artifact-count 44 --exact-set" in release_steps
 
 
-def test_120_artifact_rehearsal_builds_twice_and_never_publishes() -> None:
-    workflow = (ROOT / ".github/workflows/release-artifacts-1.2.yml").read_text(encoding="utf-8")
-
-    assert "workflow_dispatch:" in workflow
-    assert "\n  push:" not in workflow
-    assert "ref: fced98f466478dd9e1c31a8e13f3b1bae7ce4fc3" in workflow
-    assert "build_reproducible_release_artifacts.py" in workflow
-    assert "check_python_310_candidate.py" in (
-        ROOT / "scripts/build_reproducible_release_artifacts.py"
-    ).read_text(encoding="utf-8")
-    assert "rehearse_python_311_upgrade_rollback.py" in (
-        ROOT / "scripts/build_reproducible_release_artifacts.py"
-    ).read_text(encoding="utf-8")
-    assert "actions/upload-artifact@" in workflow
-    assert "retention-days: 90" in workflow
+def test_release_rehearsal_does_not_restore_the_retired_120_fallback_path() -> None:
+    assert not (ROOT / ".github/workflows/release-artifacts-1.2.yml").exists()
+    assert not (ROOT / "scripts/check_python_310_candidate.py").exists()
+    workflow = (ROOT / ".github/workflows/release-artifacts-1.3.yml").read_text(encoding="utf-8")
+    assert "check_python_310_candidate.py" not in workflow
+    assert "uv python install 3.10" not in workflow
+    assert "workflow_call:" in workflow
     assert "uv publish" not in workflow
-    assert "PyPI" not in workflow
+
+    ci = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    assert "release-artifact-rehearsal:" in ci
+    assert "github.event.pull_request.head.ref == 'codex/hedron-1.3-release-prep'" in ci
+    assert "RELEASE_ARTIFACT_REHEARSAL_RESULT" in ci
 
 
 def test_workbench_dependency_is_published_before_hedron_posit() -> None:

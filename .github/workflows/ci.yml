@@ -91,6 +91,14 @@ jobs:
         if: github.event_name != 'pull_request'
         run: echo "Not a pull_request — package version diff check not applicable."
 
+  release-artifact-rehearsal:
+    name: 1.3 release artifact rehearsal
+    needs: changes
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.ref == 'codex/hedron-1.3-release-prep'
+    uses: ./.github/workflows/release-artifacts-1.3.yml
+
   test:
     name: Tests (Python ${{ matrix.python-version }})
     needs: changes
@@ -535,7 +543,7 @@ jobs:
     name: CI required
     if: always()
     needs:
-      [changes, package_versions, test, dependency-bounds, quality, browser, realwb, realconnect, evidence, release]
+      [changes, package_versions, test, dependency-bounds, quality, browser, realwb, realconnect, evidence, release, release-artifact-rehearsal]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
@@ -550,6 +558,8 @@ jobs:
       REALCONNECT_RESULT: ${{ needs.realconnect.result }}
       EVIDENCE_RESULT: ${{ needs.evidence.result }}
       RELEASE_RESULT: ${{ needs.release.result }}
+      RELEASE_ARTIFACT_REHEARSAL_RESULT: ${{ needs.release-artifact-rehearsal.result }}
+      RUN_RELEASE_ARTIFACT_REHEARSAL: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'codex/hedron-1.3-release-prep' }}
       ALLOW_LIVE_SKIPS: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
     steps:
       - name: Enforce required CI outcomes
@@ -574,6 +584,9 @@ jobs:
           require_success browser "$BROWSER_RESULT"
           require_success evidence "$EVIDENCE_RESULT"
           require_success packaging "$RELEASE_RESULT"
+          if [ "$RUN_RELEASE_ARTIFACT_REHEARSAL" = "true" ]; then
+            require_success release-artifact-rehearsal "$RELEASE_ARTIFACT_REHEARSAL_RESULT"
+          fi
           if [ "$ALLOW_LIVE_SKIPS" = "true" ]; then
             [ "$REALWB_RESULT" = "success" ] || [ "$REALWB_RESULT" = "skipped" ]
             [ "$REALCONNECT_RESULT" = "success" ] || [ "$REALCONNECT_RESULT" = "skipped" ]

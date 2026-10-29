@@ -118,11 +118,11 @@ freeze, package review, release-artifact rehearsal, and approval remain open.
 
 The release remains in progress. The contract freeze flag is still false, no named maintainer
 assignments or package-disposition review are recorded, and the phase gate file keeps all 17 rows
-Planned. Reproducible distributables, the Python 3.10 fallback check, and the Python 3.11 scaffold
-upgrade/rollback rehearsal are bundled in the 1.3 release-artifact workflow, which is not yet on the
-default branch and has not produced an artifact manifest. PR #984 is still draft with no reviewer
-or assignee. The maintainer review and release approval records are empty. No tag or publication
-has been created.
+Planned. Reproducible distributables and the Python 3.11 scaffold upgrade/rollback rehearsal are
+bundled in the 1.3 release-artifact workflow. It runs against the release-prep pull request so its
+retained artifact manifest can be reviewed before merge. PR #984 is still draft with no reviewer or
+assignee. The maintainer review and release approval records are empty. No tag or publication has
+been created.
 
 ## Initial planning snapshot
 

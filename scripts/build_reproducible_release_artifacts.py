@@ -17,7 +17,6 @@ from scripts.verify_release_reproducibility import (  # noqa: E402
     expected_packages,
     phase_for_version,
     predecessor_for_version,
-    python310_fallback_for_version,
 )
 
 
@@ -49,7 +48,6 @@ def main(argv: list[str] | None = None) -> int:
                 f"expected {args.candidate_version}"
             )
         expected_predecessor = predecessor_for_version(args.candidate_version)
-        expected_python310_fallback = python310_fallback_for_version(args.candidate_version)
         if args.predecessor_version is None:
             args.predecessor_version = expected_predecessor
         if args.predecessor_version != expected_predecessor:
@@ -68,22 +66,6 @@ def main(argv: list[str] | None = None) -> int:
                 command = ["uv", "build", "--package", package, "--out-dir", str(build_dir)]
                 print("+", " ".join(command), flush=True)
                 subprocess.run(command, cwd=ROOT, env=env, check=True)
-        compatibility_evidence = output / "python310-compatibility.json"
-        subprocess.run(
-            [
-                sys.executable,
-                "scripts/check_python_310_candidate.py",
-                str(first),
-                str(compatibility_evidence),
-                "--candidate-version",
-                args.candidate_version,
-                "--fallback-version",
-                expected_python310_fallback,
-            ],
-            cwd=ROOT,
-            env=env,
-            check=True,
-        )
         upgrade_rollback_evidence = output / f"upgrade-rollback-{phase}.json"
         subprocess.run(
             [
@@ -111,8 +93,6 @@ def main(argv: list[str] | None = None) -> int:
             source_commit,
             "--retention-reference",
             args.retention_reference,
-            "--python310-evidence",
-            str(compatibility_evidence),
             "--upgrade-rollback-evidence",
             str(upgrade_rollback_evidence),
             "--predecessor-version",

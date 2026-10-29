@@ -18,8 +18,6 @@ from scripts.verify_release_reproducibility import (  # noqa: E402
     artifact_inventory,
     expected_packages,
     phase_for_version,
-    python310_fallback_for_version,
-    validate_python310_evidence_data,
     validate_upgrade_rollback_evidence_data,
 )
 
@@ -78,7 +76,6 @@ def evidence_source_errors(
         allowed_paths = {
             allowed_prefix + "python-artifacts.json",
             allowed_prefix + "native-artifacts.json",
-            allowed_prefix + "python310-compatibility.json",
             allowed_prefix + "upgrade-rollback-1.2.json",
             allowed_prefix + "upgrade-rollback-1.3.json",
         }
@@ -167,14 +164,10 @@ def main(argv: list[str] | None = None) -> int:
         expected_predecessor = "1.1.3" if phase == "1.2" else "1.2.0"
         if predecessor_version != expected_predecessor:
             errors.append(f"approved {phase} artifact ledger has an invalid predecessor")
-        python310_fallback_version = (
-            python310_fallback_for_version(target_version) if phase in {"1.2", "1.3"} else ""
-        )
-        recorded_fallback = evidence.get("python310_fallback_version")
-        if (phase == "1.3" and recorded_fallback != python310_fallback_version) or (
-            recorded_fallback is not None and recorded_fallback != python310_fallback_version
+        if phase == "1.3" and (
+            "python310_fallback_version" in evidence or "python310_compatibility" in evidence
         ):
-            errors.append(f"approved {phase} artifact ledger has an invalid Python 3.10 fallback")
+            errors.append("approved 1.3 artifact ledger must not define a legacy runtime fallback")
         reproducibility = evidence.get("reproducibility")
         if (
             not isinstance(reproducibility, dict)
@@ -199,18 +192,6 @@ def main(argv: list[str] | None = None) -> int:
                 if set(expected) != set(built):
                     errors.append(
                         "approved artifact ledger does not cover the exact current wheel/sdist set"
-                    )
-                try:
-                    validate_python310_evidence_data(
-                        evidence.get("python310_compatibility"),
-                        source_commit=str(evidence.get("source_commit", "")),
-                        artifacts=artifact_rows,
-                        candidate_version=current_packages["hedron"],
-                        fallback_version=python310_fallback_version,
-                    )
-                except ValueError as exc:
-                    errors.append(
-                        f"approved {phase} artifact ledger lacks valid Python 3.10 evidence: {exc}"
                     )
                 try:
                     validate_upgrade_rollback_evidence_data(

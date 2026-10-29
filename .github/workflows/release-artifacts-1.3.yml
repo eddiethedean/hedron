@@ -1,27 +1,8 @@
 name: Release artifact rehearsal (1.3.0)
 
 on:
+  workflow_call:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - .github/workflows/release-artifacts-1.3.yml
-      - .github/workflows/release.yml
-      - docs/acceptance/RELEASE_1_3.md
-      - docs/acceptance/release-gate-1.3.toml
-      - docs/acceptance/ui-testing-*.toml
-      - docs/implementation/UI_TESTING_1_3.md
-      - packages/**
-      - pyproject.toml
-      - release/**
-      - scripts/build_reproducible_release_artifacts.py
-      - scripts/check_python_310_candidate.py
-      - scripts/rehearse_python_311_upgrade_rollback.py
-      - scripts/check_release_gate.py
-      - scripts/verify_release_artifacts.py
-      - scripts/verify_release_reproducibility.py
-      - uv.lock
 
 permissions:
   contents: read
@@ -53,8 +34,8 @@ jobs:
           cache-dependency-glob: uv.lock
       - name: Set up Python
         run: uv python install 3.12
-      - name: Install compatibility interpreters
-        run: uv python install 3.10 3.11
+      - name: Install Python 3.11 for the scaffold upgrade and rollback rehearsal
+        run: uv python install 3.11
       - name: Verify the 1.3.0 package and candidate gate
         run: uv run --locked --python 3.12 python scripts/check_release_gate.py 1.3.0 --allow-planned
       - name: Build each coordinated package twice and verify hashes
