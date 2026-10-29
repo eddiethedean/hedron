@@ -14,7 +14,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 NATIVE_PACKAGE = "hedron-native"
-PREDECESSOR_VERSION = "1.1.3"
+PYTHON310_FALLBACK_VERSION = "1.1.3"
 
 
 def phase_for_version(version: str) -> tuple[str, str]:
@@ -30,6 +30,12 @@ def phase_for_version(version: str) -> tuple[str, str]:
 def predecessor_for_version(version: str) -> str:
     phase, _phase_code = phase_for_version(version)
     return "1.1.3" if phase == "1.2" else "1.2.0"
+
+
+def python310_fallback_for_version(version: str) -> str:
+    """Return the newest coordinated Hedron release that supports Python 3.10."""
+    phase_for_version(version)
+    return PYTHON310_FALLBACK_VERSION
 
 
 def expected_packages() -> dict[str, str]:
@@ -114,19 +120,26 @@ def validate_python310_evidence_data(
     source_commit: str,
     artifacts: list[dict[str, str | int]],
     candidate_version: str,
-    predecessor_version: str = PREDECESSOR_VERSION,
+    fallback_version: str | None = None,
 ) -> dict[str, object]:
     if not isinstance(evidence, dict):
         raise ValueError("Python 3.10 compatibility evidence must be a JSON object")
-    _phase, phase_code = phase_for_version(candidate_version)
+    phase, phase_code = phase_for_version(candidate_version)
+    expected_fallback = python310_fallback_for_version(candidate_version)
+    if fallback_version is None:
+        fallback_version = expected_fallback
+    evidence_fallback_key = "predecessor_version" if phase == "1.2" else "fallback_version"
+    compatibility_schema = "1" if phase == "1.2" else "2"
     if (
-        evidence.get("schema") != f"hedron.phase-{phase_code}-python310-compatibility/1"
+        evidence.get("schema")
+        != f"hedron.phase-{phase_code}-python310-compatibility/{compatibility_schema}"
         or evidence.get("source_commit") != source_commit
         or evidence.get("candidate_install") != "rejected by Requires-Python"
         or evidence.get("candidate_rejection_mentions_python_310_and_311") is not True
         or evidence.get("unpinned_requirement") != "hedron"
-        or evidence.get("resolved_version") != predecessor_version
-        or evidence.get("predecessor_version") != predecessor_version
+        or fallback_version != expected_fallback
+        or evidence.get("resolved_version") != fallback_version
+        or evidence.get(evidence_fallback_key) != fallback_version
         or not str(evidence.get("python", "")).startswith("3.10.")
         or evidence.get("platform") in (None, "")
         or evidence.get("architecture") in (None, "")
@@ -150,7 +163,7 @@ def validate_python310_evidence(
     source_commit: str,
     artifacts: list[dict[str, str | int]],
     candidate_version: str,
-    predecessor_version: str = PREDECESSOR_VERSION,
+    fallback_version: str | None = None,
 ) -> dict[str, object]:
     evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
     return validate_python310_evidence_data(
@@ -158,7 +171,7 @@ def validate_python310_evidence(
         source_commit=source_commit,
         artifacts=artifacts,
         candidate_version=candidate_version,
-        predecessor_version=predecessor_version,
+        fallback_version=fallback_version,
     )
 
 
@@ -283,7 +296,7 @@ def main(argv: list[str] | None = None) -> int:
             source_commit=args.source_commit,
             artifacts=artifacts,
             candidate_version=packages["hedron"],
-            predecessor_version=args.predecessor_version,
+            fallback_version=python310_fallback_for_version(packages["hedron"]),
         )
         upgrade_rollback_evidence = validate_upgrade_rollback_evidence(
             args.upgrade_rollback_evidence,
@@ -302,6 +315,7 @@ def main(argv: list[str] | None = None) -> int:
         "phase": phase,
         "target": f"v{packages['hedron']}",
         "predecessor_version": args.predecessor_version,
+        "python310_fallback_version": python310_fallback_for_version(packages["hedron"]),
         "source_commit": args.source_commit,
         "command": (
             "SOURCE_DATE_EPOCH=315619200 PYTHONDONTWRITEBYTECODE=1 "

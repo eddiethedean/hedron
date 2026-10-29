@@ -45,6 +45,7 @@ def test_release_artifact_verifier_authenticates_every_stable_artifact(
 def test_release_artifact_verifier_enforces_candidate_exact_set(
     tmp_path, monkeypatch, version, predecessor, phase_code
 ) -> None:
+    python310_fallback = "1.1.3"
     dist = tmp_path / "dist"
     dist.mkdir()
     rows: list[dict[str, str | int]] = []
@@ -74,6 +75,7 @@ def test_release_artifact_verifier_enforces_candidate_exact_set(
                 "phase": version.rsplit(".", 1)[0],
                 "target": f"v{version}",
                 "predecessor_version": predecessor,
+                "python310_fallback_version": python310_fallback,
                 "source_commit": "a" * 40,
                 "environment": {
                     "python": "3.12.0",
@@ -86,7 +88,10 @@ def test_release_artifact_verifier_enforces_candidate_exact_set(
                 "retention_reference": "https://github.com/example/actions/runs/1",
                 "packages": ["hedron-core", "hedron"],
                 "python310_compatibility": {
-                    "schema": f"hedron.phase-{phase_code}-python310-compatibility/1",
+                    "schema": (
+                        f"hedron.phase-{phase_code}-python310-compatibility/"
+                        f"{'1' if phase_code == '120' else '2'}"
+                    ),
                     "source_commit": "a" * 40,
                     "python": "3.10.20",
                     "candidate_install": "rejected by Requires-Python",
@@ -102,8 +107,10 @@ def test_release_artifact_verifier_enforces_candidate_exact_set(
                     ),
                     "candidate_rejection_mentions_python_310_and_311": True,
                     "unpinned_requirement": "hedron",
-                    "resolved_version": predecessor,
-                    "predecessor_version": predecessor,
+                    "resolved_version": python310_fallback,
+                    "predecessor_version" if phase_code == "120" else "fallback_version": (
+                        python310_fallback
+                    ),
                     "platform": "Linux",
                     "architecture": "x86_64",
                 },

@@ -14,13 +14,12 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PREDECESSOR_VERSION = "1.1.3"
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts.verify_release_reproducibility import (  # noqa: E402
     phase_for_version,
-    predecessor_for_version,
+    python310_fallback_for_version,
 )
 
 
@@ -28,22 +27,22 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("dist_dir", type=Path)
     parser.add_argument("evidence_output", type=Path)
-    parser.add_argument("--predecessor-version")
+    parser.add_argument("--fallback-version")
     parser.add_argument("--candidate-version", default="1.2.0")
     args = parser.parse_args(argv)
 
     dist_dir = args.dist_dir.resolve()
     try:
         phase, phase_code = phase_for_version(args.candidate_version)
-        expected_predecessor = predecessor_for_version(args.candidate_version)
+        expected_fallback = python310_fallback_for_version(args.candidate_version)
     except ValueError as exc:
         parser.error(str(exc))
-    if args.predecessor_version is None:
-        args.predecessor_version = expected_predecessor
-    if args.predecessor_version != expected_predecessor:
+    if args.fallback_version is None:
+        args.fallback_version = expected_fallback
+    if args.fallback_version != expected_fallback:
         parser.error(
-            f"phase {phase} requires predecessor {expected_predecessor}, "
-            f"got {args.predecessor_version}"
+            f"phase {phase} requires Python 3.10 fallback {expected_fallback}, "
+            f"got {args.fallback_version}"
         )
     wheels = sorted(dist_dir.glob(f"hedron-{args.candidate_version}-*.whl"))
     if len(wheels) != 1:
@@ -108,10 +107,10 @@ def main(argv: list[str] | None = None) -> int:
             return 1
 
     resolved_facts = json.loads(resolved)
-    if resolved_facts.get("version") != args.predecessor_version:
+    if resolved_facts.get("version") != args.fallback_version:
         print(
-            "Python 3.10 unpinned resolver expected Hedron "
-            f"{args.predecessor_version}, found {resolved_facts.get('version')!r}",
+            "Python 3.10 unpinned resolver expected fallback Hedron "
+            f"{args.fallback_version}, found {resolved_facts.get('version')!r}",
             file=sys.stderr,
         )
         return 1
@@ -123,7 +122,10 @@ def main(argv: list[str] | None = None) -> int:
         ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
     ).strip()
     payload = {
-        "schema": f"hedron.phase-{phase_code}-python310-compatibility/1",
+        "schema": (
+            f"hedron.phase-{phase_code}-python310-compatibility/"
+            f"{'1' if phase == '1.2' else '2'}"
+        ),
         "phase": phase,
         "candidate_version": args.candidate_version,
         "source_commit": source_commit,
@@ -134,7 +136,7 @@ def main(argv: list[str] | None = None) -> int:
         "candidate_rejection_mentions_python_310_and_311": True,
         "unpinned_requirement": "hedron",
         "resolved_version": resolved_facts["version"],
-        "predecessor_version": args.predecessor_version,
+        "predecessor_version" if phase == "1.2" else "fallback_version": args.fallback_version,
         "platform": platform.platform(),
         "architecture": platform.machine(),
     }
@@ -143,7 +145,7 @@ def main(argv: list[str] | None = None) -> int:
     output.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
     print(
         f"ok: {args.candidate_version} candidate rejected on Python 3.10; "
-        f"resolver selected {args.predecessor_version}"
+        f"resolver selected {args.fallback_version}"
     )
     print(f"evidence: {output}")
     return 0

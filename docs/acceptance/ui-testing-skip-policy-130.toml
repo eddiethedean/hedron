@@ -26,6 +26,13 @@ allowed_in_browser_lane = true
 explanation = "Raw Playwright tracing is enabled only for the isolated, explicitly synthetic failure-capture probe."
 
 [[classification]]
+id = "CHROMIUM-ONLY-STYLE-EVIDENCE"
+reason_regex = "^Chromium-only style evidence$"
+disposition = "not-applicable-engine-evidence"
+allowed_in_browser_lane = true
+explanation = "The phase 1.1 style screenshot case is explicitly scoped to Chromium and is not required evidence in Firefox or WebKit lanes."
+
+[[classification]]
 id = "HISTORICAL-API-RETIRED"
 reason_regex = "^historical 0.x API fixture retired on the Hedron 1.0 canonical surface$"
 disposition = "reviewed-legacy-test-inventory"

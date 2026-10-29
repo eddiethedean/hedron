@@ -17,6 +17,7 @@ from scripts.verify_release_reproducibility import (  # noqa: E402
     expected_packages,
     phase_for_version,
     predecessor_for_version,
+    python310_fallback_for_version,
 )
 
 
@@ -48,6 +49,7 @@ def main(argv: list[str] | None = None) -> int:
                 f"expected {args.candidate_version}"
             )
         expected_predecessor = predecessor_for_version(args.candidate_version)
+        expected_python310_fallback = python310_fallback_for_version(args.candidate_version)
         if args.predecessor_version is None:
             args.predecessor_version = expected_predecessor
         if args.predecessor_version != expected_predecessor:
@@ -75,8 +77,8 @@ def main(argv: list[str] | None = None) -> int:
                 str(compatibility_evidence),
                 "--candidate-version",
                 args.candidate_version,
-                "--predecessor-version",
-                args.predecessor_version,
+                "--fallback-version",
+                expected_python310_fallback,
             ],
             cwd=ROOT,
             env=env,

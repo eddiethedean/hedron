@@ -99,9 +99,9 @@ def test_python310_evidence_is_bound_to_the_candidate_wheel() -> None:
         )
 
 
-def test_python310_evidence_supports_1_3_and_its_predecessor() -> None:
+def test_python310_evidence_uses_last_release_that_supports_python_310() -> None:
     evidence = {
-        "schema": "hedron.phase-130-python310-compatibility/1",
+        "schema": "hedron.phase-130-python310-compatibility/2",
         "source_commit": "a" * 40,
         "python": "3.10.20",
         "candidate_install": "rejected by Requires-Python",
@@ -109,8 +109,8 @@ def test_python310_evidence_supports_1_3_and_its_predecessor() -> None:
         "candidate_sha256": "b" * 64,
         "candidate_rejection_mentions_python_310_and_311": True,
         "unpinned_requirement": "hedron",
-        "resolved_version": "1.2.0",
-        "predecessor_version": "1.2.0",
+        "resolved_version": "1.1.3",
+        "fallback_version": "1.1.3",
         "platform": "Linux-6.8",
         "architecture": "x86_64",
     }
@@ -124,7 +124,7 @@ def test_python310_evidence_supports_1_3_and_its_predecessor() -> None:
             source_commit="a" * 40,
             artifacts=artifacts,
             candidate_version="1.3.0",
-            predecessor_version="1.2.0",
+            fallback_version="1.1.3",
         )
         == evidence
     )
@@ -134,7 +134,7 @@ def test_python310_evidence_supports_1_3_and_its_predecessor() -> None:
             source_commit="a" * 40,
             artifacts=artifacts,
             candidate_version="1.3.0",
-            predecessor_version="1.1.3",
+            fallback_version="1.2.0",
         )
 
 
