@@ -60,13 +60,17 @@ def main(argv: list[str] | None = None) -> int:
 
     run_id = uuid.uuid4().hex[:12]
     args.output_json.parent.mkdir(parents=True, exist_ok=True)
-    threshold_termination = _probe_soft_limit_termination(
-        temp_root=temp_root,
-        output_dir=args.output_json.parent,
-        run_id=run_id,
-        tempfs_limit_mib=args.tempfs_limit_mib,
-        file_limit_mib=args.trace_file_limit_mib,
-    )
+    threshold_root = _private_probe_root(temp_root, f"threshold-{run_id}")
+    try:
+        threshold_termination = _probe_soft_limit_termination(
+            temp_root=threshold_root,
+            output_dir=args.output_json.parent,
+            run_id=run_id,
+            tempfs_limit_mib=args.tempfs_limit_mib,
+            file_limit_mib=args.trace_file_limit_mib,
+        )
+    finally:
+        shutil.rmtree(threshold_root, ignore_errors=True)
     if threshold_termination["termination_reason"] != "temporary_storage_limit":
         errors.append("temporary-storage threshold probe did not terminate at its frozen limit")
     if threshold_termination["process_terminated"] is not True:
@@ -74,15 +78,19 @@ def main(argv: list[str] | None = None) -> int:
     if threshold_termination["overshoot_within_bound"] is not True:
         errors.append("temporary-storage threshold probe exceeded the frozen overshoot bound")
 
-    normal = _run_capture_case(
-        browser=args.browser,
-        temp_root=temp_root,
-        junit_path=args.junit_dir / f"ui-capture-{args.browser}-{run_id}.xml",
-        output_dir=temp_root / f"output-normal-{run_id}",
-        artifact_dir=temp_root / f"structured-normal-{run_id}",
-        tempfs_limit_mib=args.tempfs_limit_mib,
-        file_limit_bytes=args.trace_file_limit_mib * 1024 * 1024,
-    )
+    normal_root = _private_probe_root(temp_root, f"normal-{run_id}")
+    try:
+        normal = _run_capture_case(
+            browser=args.browser,
+            temp_root=normal_root,
+            junit_path=args.junit_dir / f"ui-capture-{args.browser}-{run_id}.xml",
+            output_dir=normal_root / "output",
+            artifact_dir=normal_root / "structured",
+            tempfs_limit_mib=args.tempfs_limit_mib,
+            file_limit_bytes=args.trace_file_limit_mib * 1024 * 1024,
+        )
+    finally:
+        shutil.rmtree(normal_root, ignore_errors=True)
     if normal["expected_failure_seen"] is not True:
         errors.append("normal capture probe did not retain the intentional test failure")
     if not normal["trace_valid"]:
@@ -94,15 +102,19 @@ def main(argv: list[str] | None = None) -> int:
     if normal["temporary_filesystem_usage_limit_bytes"] != 64 * 1024 * 1024:
         errors.append("normal capture probe did not enforce the frozen total-tree limit")
 
-    overflow = _run_capture_case(
-        browser=args.browser,
-        temp_root=temp_root,
-        junit_path=None,
-        output_dir=temp_root / f"output-overflow-{run_id}",
-        artifact_dir=temp_root / f"structured-overflow-{run_id}",
-        tempfs_limit_mib=args.tempfs_limit_mib,
-        file_limit_bytes=1024,
-    )
+    overflow_root = _private_probe_root(temp_root, f"overflow-{run_id}")
+    try:
+        overflow = _run_capture_case(
+            browser=args.browser,
+            temp_root=overflow_root,
+            junit_path=None,
+            output_dir=overflow_root / "output",
+            artifact_dir=overflow_root / "structured",
+            tempfs_limit_mib=args.tempfs_limit_mib,
+            file_limit_bytes=1024,
+        )
+    finally:
+        shutil.rmtree(overflow_root, ignore_errors=True)
     if overflow["capture_limit_error_seen"] is not True:
         errors.append("over-limit trace did not surface the operating-system file-size error")
 
@@ -133,6 +145,16 @@ def main(argv: list[str] | None = None) -> int:
     )
     print(json.dumps(report, sort_keys=True))
     return 1 if errors else 0
+
+
+def _private_probe_root(parent: Path, name: str) -> Path:
+    path = parent / f".hedron-ui-capture-{name}"
+    path.mkdir(mode=0o700)
+    info = path.stat()
+    if path.is_symlink() or info.st_uid != os.getuid() or info.st_mode & 0o077:
+        shutil.rmtree(path, ignore_errors=True)
+        raise OSError("capture probe directory must be private and owned by the current user")
+    return path
 
 
 def _probe_tmpfs_hard_limit(root: Path, capacity_bytes: int) -> dict[str, object]:
@@ -220,10 +242,12 @@ def _probe_soft_limit_termination(
         "-c",
         writer,
     ]
+    environment = os.environ.copy()
+    environment["TMPDIR"] = str(temp_root)
     completed = subprocess.run(
         command,
         cwd=ROOT,
-        env=os.environ.copy(),
+        env=environment,
         capture_output=True,
         timeout=70,
         check=False,
@@ -288,6 +312,7 @@ def _run_capture_case(
         pytest_command.append(f"--junitxml={junit_path}")
     pytest_command.append(PROBE_TEST)
     environment = os.environ.copy()
+    environment["TMPDIR"] = str(temp_root)
     environment["HEDRON_BROWSER"] = "1"
     environment["HEDRON_BROWSER_ENGINE"] = browser
     environment["HEDRON_UI_CAPTURE_PROBE_FAIL"] = "1"
