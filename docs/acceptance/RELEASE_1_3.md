@@ -69,6 +69,14 @@ pinned Playwright 1.62.0 matrix. All checks in the follow-up run passed. The
 identities and a zero-hit scan across 49 downloaded files. The source revision and CI results are
 candidate evidence; release acceptance is still open.
 
+The final full CI run [40924535172](https://github.com/eddiethedean/hedron/actions/runs/40924535172)
+passed on the current source revision `008959155f6426b5239069bd8bd4cd93323d8e28`, including
+quality/docs checks of the evidence-backed contract state. Its host, browser, bounds, packaging,
+integration, supply-chain, and required aggregate results are retained in
+[ci-run-40924535172.json](evidence-130/ci-run-40924535172.json). The 49 downloaded artifact files
+were scanned for randomized privacy-canary values with zero matches. This confirms the current
+candidate revision; it does not close the human-owned gates or produce release artifacts.
+
 ## Required gates
 
 | Gate | Owner role | Required evidence |

@@ -1,0 +1,319 @@
+{
+  "schema_version": 1,
+  "phase": "1.3",
+  "candidate_version": "1.3.0",
+  "run_id": 40924535172,
+  "run_url": "https://github.com/eddiethedean/hedron/actions/runs/40924535172",
+  "source_revision": "008959155f6426b5239069bd8bd4cd93323d8e28",
+  "run_started_at": "2026-10-29T17:46:36Z",
+  "completed_at": "2026-10-29T17:58:34Z",
+  "status": "success",
+  "required_check": "passed",
+  "required_job_groups": {
+    "python_3_11_to_3_14_host_suites": "passed",
+    "chromium_firefox_webkit_linux_suites": "passed",
+    "minimum_latest_testing_extra_bounds": "passed",
+    "quality_docs_typing_packages": "passed",
+    "PKG-033_packaging_rehearsal": "passed",
+    "REALWB-030": "passed",
+    "REALCONNECT-033": "passed",
+    "supply_chain_evidence_bundle": "passed",
+    "CI_required": "passed"
+  },
+  "host_python_rows": [
+    {
+      "python": "3.11.15",
+      "required_case_count": 13,
+      "required_cases_all_passed": true,
+      "acceptance_errors": [],
+      "budget_errors": [],
+      "max_startup_ms": 1190.861108000007,
+      "max_shutdown_ms": 328.35258599999406,
+      "max_child_processes": 1
+    },
+    {
+      "python": "3.12.13",
+      "required_case_count": 13,
+      "required_cases_all_passed": true,
+      "acceptance_errors": [],
+      "budget_errors": [],
+      "max_startup_ms": 1244.3246440000166,
+      "max_shutdown_ms": 382.6798590000635,
+      "max_child_processes": 1
+    },
+    {
+      "python": "3.13.14",
+      "required_case_count": 13,
+      "required_cases_all_passed": true,
+      "acceptance_errors": [],
+      "budget_errors": [],
+      "max_startup_ms": 1034.9804129999711,
+      "max_shutdown_ms": 373.89064399997096,
+      "max_child_processes": 1
+    },
+    {
+      "python": "3.14.6",
+      "required_case_count": 13,
+      "required_cases_all_passed": true,
+      "acceptance_errors": [],
+      "budget_errors": [],
+      "max_startup_ms": 679.6099459999994,
+      "max_shutdown_ms": 353.9882890000001,
+      "max_child_processes": 1
+    }
+  ],
+  "browser_engine_rows": [
+    {
+      "engine": "chromium",
+      "browser_version": "151.0.7922.34",
+      "python": "3.12.13",
+      "playwright_version": "1.62.0",
+      "pytest_playwright_version": "0.10.0",
+      "required_case_count": 27,
+      "required_cases_all_passed": true,
+      "skip_count": 79,
+      "acceptance_errors": [],
+      "budget_errors": [],
+      "resource_report": {
+        "duration_seconds": 284.554737,
+        "max_process_group_rss_bytes": 797888512,
+        "max_processes": 8,
+        "max_temporary_tree_bytes": 46769596,
+        "temporary_filesystem": "tmpfs",
+        "temporary_filesystem_capacity_bytes": 134217728,
+        "termination_reason": null
+      },
+      "privacy_probe": {
+        "status": "passed",
+        "canary_categories": [
+          "form",
+          "query",
+          "header",
+          "cookie",
+          "storage",
+          "console",
+          "exception",
+          "target",
+          "path"
+        ],
+        "manifest_leaked_categories": [],
+        "unexpected_native_output_count": 0
+      },
+      "synthetic_capture_probe": {
+        "errors": [],
+        "trace_file_limit_bytes": 67108864,
+        "monitor_interval_ms": 25,
+        "normal_trace_valid": true,
+        "normal_failure_retained": true,
+        "hard_limit_enospc_observed": true,
+        "over_limit_error_visible": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "browser_version": "153.0",
+      "python": "3.12.13",
+      "playwright_version": "1.62.0",
+      "pytest_playwright_version": "0.10.0",
+      "required_case_count": 27,
+      "required_cases_all_passed": true,
+      "skip_count": 81,
+      "acceptance_errors": [],
+      "budget_errors": [],
+      "resource_report": {
+        "duration_seconds": 520.429883,
+        "max_process_group_rss_bytes": 800018432,
+        "max_processes": 8,
+        "max_temporary_tree_bytes": 84432980,
+        "temporary_filesystem": "tmpfs",
+        "temporary_filesystem_capacity_bytes": 134217728,
+        "termination_reason": null
+      },
+      "privacy_probe": {
+        "status": "passed",
+        "canary_categories": [
+          "form",
+          "query",
+          "header",
+          "cookie",
+          "storage",
+          "console",
+          "exception",
+          "target",
+          "path"
+        ],
+        "manifest_leaked_categories": [],
+        "unexpected_native_output_count": 0
+      },
+      "synthetic_capture_probe": {
+        "errors": [],
+        "trace_file_limit_bytes": 67108864,
+        "monitor_interval_ms": 25,
+        "normal_trace_valid": true,
+        "normal_failure_retained": true,
+        "hard_limit_enospc_observed": true,
+        "over_limit_error_visible": true
+      }
+    },
+    {
+      "engine": "webkit",
+      "browser_version": "26.5",
+      "python": "3.12.13",
+      "playwright_version": "1.62.0",
+      "pytest_playwright_version": "0.10.0",
+      "required_case_count": 27,
+      "required_cases_all_passed": true,
+      "skip_count": 81,
+      "acceptance_errors": [],
+      "budget_errors": [],
+      "resource_report": {
+        "duration_seconds": 281.835029,
+        "max_process_group_rss_bytes": 847904768,
+        "max_processes": 8,
+        "max_temporary_tree_bytes": 44519912,
+        "temporary_filesystem": "tmpfs",
+        "temporary_filesystem_capacity_bytes": 134217728,
+        "termination_reason": null
+      },
+      "privacy_probe": {
+        "status": "passed",
+        "canary_categories": [
+          "form",
+          "query",
+          "header",
+          "cookie",
+          "storage",
+          "console",
+          "exception",
+          "target",
+          "path"
+        ],
+        "manifest_leaked_categories": [],
+        "unexpected_native_output_count": 0
+      },
+      "synthetic_capture_probe": {
+        "errors": [],
+        "trace_file_limit_bytes": 67108864,
+        "monitor_interval_ms": 25,
+        "normal_trace_valid": true,
+        "normal_failure_retained": true,
+        "hard_limit_enospc_observed": true,
+        "over_limit_error_visible": true
+      }
+    }
+  ],
+  "minimum_latest_testing_extra_bounds": {
+    "plugin_explicitly_activated": "-p hedron.testing.pytest_plugin",
+    "suite_summary_each_row": {
+      "passed": 333,
+      "skipped": 11
+    },
+    "minimum": {
+      "python": "3.12",
+      "pytest": "8.3.0",
+      "pytest_playwright": "0.10.0",
+      "playwright": "1.62.0",
+      "uvicorn": "0.46.0",
+      "pytest_xdist": "3.6.1",
+      "suite_warnings": 6
+    },
+    "latest": {
+      "python": "3.12",
+      "pytest": "9.2.0",
+      "pytest_playwright": "0.10.0",
+      "playwright": "1.64.1",
+      "uvicorn": "0.54.0",
+      "pytest_xdist": "3.8.0",
+      "suite_warnings": 9
+    },
+    "browser_launch_in_bounds_jobs": false,
+    "browser_matrix_remains_pinned_to_playwright": "1.62.0"
+  },
+  "artifact_scan": {
+    "downloaded_action_artifact_files_scanned": 49,
+    "randomized_canary_token_pattern": "hedron_privacy_<32 lowercase hex chars>_<form|query|header|cookie|storage|console|exception|target|path>",
+    "matching_files": [],
+    "randomized_canary_token_pattern_hits": 0
+  },
+  "artifact_retention_expires_at": "2027-01-27T17:46:36Z",
+  "retained_artifacts": [
+    {
+      "id": 12921245342,
+      "name": "ui-testing-host-3.12",
+      "size_bytes": 4939,
+      "sha256": "93f1a9030782a8103536917c8cd18629607b243c848ebf30a26e8c75d025cf85",
+      "expires_at": "2027-01-27T17:46:36Z"
+    },
+    {
+      "id": 12921046052,
+      "name": "browser-htmx-firefox",
+      "size_bytes": 14668,
+      "sha256": "65b1cf7dd1012f4b8015ad1b966e4ac68483998f9c2aea721df703df716f8ec4",
+      "expires_at": "2027-01-27T17:46:36Z"
+    },
+    {
+      "id": 12920521247,
+      "name": "realconnect-033-result",
+      "size_bytes": 844,
+      "sha256": "71aa764a88a3e36d75529c2d74c2796e0b95e174c7aa0139df7959648249af88",
+      "expires_at": "2027-01-27T17:46:36Z"
+    },
+    {
+      "id": 12920501148,
+      "name": "browser-htmx-webkit",
+      "size_bytes": 14634,
+      "sha256": "86d3a93045417c2e5f0a0be40c55683a6fcd94f65aa112d318c5d1bbe68c6834",
+      "expires_at": "2027-01-27T17:46:36Z"
+    },
+    {
+      "id": 12920302268,
+      "name": "python-package-coverage-3.12",
+      "size_bytes": 498247,
+      "sha256": "0328c181541b2cc62acc3857f8fed93764d60c6037600d0666378fa11063f692",
+      "expires_at": "2027-01-27T17:46:36Z"
+    },
+    {
+      "id": 12920247063,
+      "name": "realwb-030-result",
+      "size_bytes": 1054,
+      "sha256": "5d43e1b25313bd75254f0d8ea37d80190acd719e38584d8efc65d4a82b01b901",
+      "expires_at": "2027-01-27T17:46:36Z"
+    },
+    {
+      "id": 12920167324,
+      "name": "ui-testing-host-3.13",
+      "size_bytes": 4941,
+      "sha256": "9e66215c87740b8828fc0e9240024a05eb24cbfbb88e8205f479a17c9a253594",
+      "expires_at": "2027-01-27T17:46:36Z"
+    },
+    {
+      "id": 12919483613,
+      "name": "ui-testing-host-3.14",
+      "size_bytes": 4879,
+      "sha256": "e8415f9254e554ca2d404e8a8386d1ea0d1a2e195df0edb27fdc2b715922db29",
+      "expires_at": "2027-01-27T17:46:36Z"
+    },
+    {
+      "id": 12919382695,
+      "name": "hedron-evidence-bundle",
+      "size_bytes": 7020,
+      "sha256": "b557e1b918d6fa5b71491de5ea4b5578759bf7187bd3595acd9941e379a1b49e",
+      "expires_at": "2027-01-27T17:46:36Z"
+    },
+    {
+      "id": 12919198494,
+      "name": "ui-testing-host-3.11",
+      "size_bytes": 4886,
+      "sha256": "ed5d616de2b77a73f3befb1bb1f2731a45ba4dda652d16a188c093752528c33c",
+      "expires_at": "2027-01-27T17:46:36Z"
+    },
+    {
+      "id": 12918859619,
+      "name": "browser-htmx-chromium",
+      "size_bytes": 14596,
+      "sha256": "464aa4709a9e4d766b229565040c4c4d054619e9cac2e184fe71f47ad1a5c591",
+      "expires_at": "2027-01-27T17:46:36Z"
+    }
+  ],
+  "release_disposition": "Candidate evidence for this exact source revision; all release gate states and maintainer/release approvals remain open. No v1.3.0 tag or publication was created."
+}
