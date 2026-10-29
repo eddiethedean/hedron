@@ -84,11 +84,16 @@ def test_release_gate_1_3_candidate_is_selected_and_inventory_is_fixed() -> None
     assert gate.evidence_manifest_for("1.3.0") == manifest
     assert gate.check_evidence_manifest_lenient(manifest) == []
     errors = gate.check_evidence_manifest(manifest)
+    data = tomllib.loads(manifest.read_text(encoding="utf-8"))
+    states = {row["id"]: row["state"] for row in data["evidence"]}
+    assert states["FREEZE-130"] == "Verified"
+    assert states["RELEASE-130"] == "Planned"
     assert not any("predecessor evidence must be satisfied" in error for error in errors)
     assert not any(
         "predecessor_record must confirm v1.2.0 publication" in error for error in errors
     )
-    assert any("FREEZE-130: state 'Planned'" in error for error in errors)
+    assert not any("FREEZE-130: state 'Planned'" in error for error in errors)
+    assert any("RELEASE-130: state 'Planned'" in error for error in errors)
     assert any("every required phase 1.3 gate must be Verified" in error for error in errors)
     assert not any("planning contract freeze_satisfied must be true" in error for error in errors)
     assert any("release_approval.approved must be true" in error for error in errors)
