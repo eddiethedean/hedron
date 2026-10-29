@@ -1,6 +1,6 @@
 # Phase 1.3: first-class UI testing and adoption confidence
 
-**Status:** Candidate implementation in progress; local three-engine slice passes; all release gates remain open
+**Status:** Candidate implementation and required Linux host/browser evidence are in place; freeze, review, package rehearsal, and release gates remain open
 **Planning revision:** 2026-10-28
 **Planning baseline:** Published `v1.2.0`
 **Release predecessor:** `v1.2.0`, published on PyPI and bound to the retained release evidence
@@ -46,9 +46,28 @@ Reviewed on 2026-10-28; source inspection does not verify prototype/runtime/rele
 
 The [local vertical-slice record](../acceptance/evidence-130/LOCAL_VERTICAL_SLICE_2026-10-28.md)
 records pytest 9.1.1, pytest-playwright 0.10.0, Playwright 1.62.0, Uvicorn 0.52.1, Python
-3.12.13, macOS 26.6.2, browser versions, commands, and the 31-test result per engine. Do not
-infer supported minimums or Linux release support from this one environment. No performance
-budget or release matrix is claimed.
+3.12.13, macOS 26.6.2, browser versions, commands, and the 31-test result per engine. Required
+Linux matrix and resource-budget evidence is now recorded separately in the
+[hosted CI evidence](../acceptance/evidence-130/ui-testing-resource-budgets-2026-10-29.json).
+The local record remains a pilot, not the basis for Linux support or dependency bounds.
+
+## Hosted verification — 2026-10-29
+
+Candidate CI run [40918890605](https://github.com/eddiethedean/hedron/actions/runs/40918890605)
+passed on Linux x86_64 at source revision `825f31c8af6e1c446995dbff8be30738b634b22c`. All 13
+host acceptance cases passed on Python 3.11.15, 3.12.13, 3.13.14, and 3.14.6. Chromium 151.0.7922.34,
+Firefox 153.0, and WebKit 26.5 each passed all 27 required inventory cases, including the 15
+behavior and five accessibility cases. Every skip in the broader collected suite matched the
+versioned skip policy. The run also enforced the measured Linux resource budgets and passed the
+structured privacy canary and synthetic capture probes; details and retained-artifact identities
+are in the linked evidence record.
+
+The workflow now adds `hedron[testing]` to its minimum/latest dependency jobs and explicitly
+activates Hedron’s pytest plugin while running the host, artifact, policy, and contribution unit
+suites. Those added bounds checks have not yet run on this workflow revision. Keep
+`upstream_bounds_verified` false until the resulting hosted run passes. The host/browser matrix is
+candidate evidence, not maintainer acceptance: the API freeze, package dispositions, named owners,
+clean distributable rehearsal, gate reviews, and release approval remain open.
 
 ## Candidate implementation status
 
@@ -57,11 +76,11 @@ budget or release matrix is claimed.
 | Spawned ASGI host | Implemented and exercised for lifespan, startup failure, root path, static assets, and graceful stop | Forced-stop, timeout interruption, xdist, and broad fixture-failure cases |
 | pytest/Playwright integration | Explicit sync plugin, lazy `new_context` lease, option guards, and native Page/Locator usage implemented | Setup/call/teardown matrix, reruns, missing-browser behavior, and clean package matrix |
 | Checkpoint and settle | Bounded browser event ring, pre-action checkpoint, target-scoped request correlation, expected HTTP rules, and error collection implemented | Full 204/abort/OOB/removal/supersession/hung-request corpus and capability boundaries |
-| Structured diagnostics | Versioned manifest, safe summaries, private per-run paths, atomic writes, and bounded size implemented | Confidential canary sweep, overflow/partial-write cases, and retained immutable artifacts |
-| Synthetic native capture | Explicit synthetic marker and upstream trace/screenshot option validation implemented | Recording-time disk limits, overshoot, capture failure ownership, and successful-run cleanup proof |
-| Example and browser matrix | Packaged profile app passes the local Chromium/Firefox/WebKit slice; external loopback and JavaScript-off forms pass | Bounded existing Hedron behavior and accessibility corpus on Linux |
+| Structured diagnostics | Versioned manifest, safe summaries, private per-run paths, atomic writes, and bounded size implemented; hosted structured-only canary probe passed on all three engines | Overflow/partial-write cases, full retained release evidence, and maintainer review |
+| Synthetic native capture | Explicit synthetic marker and upstream option guards implemented; hosted recording limit, ENOSPC, over-limit error, and retained failure trace probes passed | Full capture failure ownership matrix and accepted scope freeze |
+| Example and browser matrix | Packaged profile app passes the local three-engine slice; hosted Linux Chromium/Firefox/WebKit rows pass all 27 required behavior/accessibility inventory cases | Maintainer acceptance and any residual evidence outside the declared inventory |
 | Package extension | Hedron validates versioned contribution objects or JSON-shaped metadata, with explicit marker loading and conflict/resource checks; sample-kit declares a core-only metadata record and optional FastAPI factory using hedron-core without importing flagship Hedron; a draft inventory names all 23 workspace packages | Maintainer review, absence/conflict/version matrix, and fleet import isolation remain |
-| Freeze and release | API remains a Beta candidate; all 17 machine-gate rows remain Planned | Accepted exact contract, named maintainers, numeric budgets, v1.2 predecessor, and release evidence |
+| Freeze and release | API remains a Beta candidate; all 17 machine-gate rows remain Planned; hosted numeric budgets are measured and frozen | Accepted exact contract, direct user exercise, named maintainers, package review, distributable rehearsal, and release evidence |
 
 ## Candidate API and ownership lock
 
@@ -87,8 +106,9 @@ not serialized across the host boundary.
 
 ## W0 — Complete the empirical freeze
 
-Resolve the following concrete probes. The local slice above covers only part of the managed-host
-and browser-matrix probes; the remaining results are still open.
+The hosted matrix and budget results above close the declared Linux runtime rows for this candidate,
+but they do not by themselves satisfy the phase gates. Resolve the remaining probes and obtain the
+required maintainer acceptance before freezing the contract.
 
 | Probe | Required result | Gate owner |
 |---|---|---|
@@ -102,10 +122,11 @@ and browser-matrix probes; the remaining results are still open.
 | Satellite ownership | Every package disposition, one minimal public-use-case contribution, explicit loading, absence/conflict/version behavior | SATELLITE-130 |
 
 The [contract ledger](../acceptance/ui-testing-contract-130.toml) and [package inventory](../acceptance/ui-testing-package-dispositions-130.toml)
-are implementation records, not accepted release evidence. Budgets remain Unmeasured with no
-numeric thresholds; replace them with measured/frozen values, exact commands/artifact paths, and
-actual maintainers before FREEZE-130 can be Verified. The 1.2 release predecessor and detailed
-scope freeze are separate conditions.
+are implementation records, not accepted release evidence. Numeric budgets now have measured
+Linux evidence and frozen limits, but FREEZE-130 still requires an accepted exact API/contract,
+direct user exercise, named maintainers, and reconciled package dispositions. The new minimum/latest
+UI-testing-extra checks are pending CI. The 1.2 release predecessor and detailed scope freeze are
+separate conditions.
 
 ## W1 — Small managed host and browser core
 

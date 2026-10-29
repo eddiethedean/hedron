@@ -212,7 +212,7 @@ jobs:
         if: matrix.bounds == 'minimum'
         run: >-
           uv pip install --python .bounds-venv/bin/python --resolution lowest-direct
-          -e packages/hedron-core -e packages/hedron -e packages/hedron-explorer
+          -e packages/hedron-core -e "packages/hedron[testing]" -e packages/hedron-explorer
           -e packages/hedron-data -e packages/hedron-flask -e packages/hedron-django
           -e packages/hedron-jinja -e packages/hedron-conformance -e packages/hedron-extras
           -e packages/hedron-elements -e packages/hedron-posit -e packages/fastapi-workbench
@@ -224,7 +224,7 @@ jobs:
         if: matrix.bounds == 'latest'
         run: >-
           uv pip install --python .bounds-venv/bin/python --resolution highest
-          -e packages/hedron-core -e packages/hedron -e packages/hedron-explorer
+          -e packages/hedron-core -e "packages/hedron[testing]" -e packages/hedron-explorer
           -e packages/hedron-data -e packages/hedron-flask -e packages/hedron-django
           -e packages/hedron-jinja -e packages/hedron-conformance -e packages/hedron-extras
           -e packages/hedron-elements -e packages/hedron-posit -e packages/fastapi-workbench
@@ -238,7 +238,7 @@ jobs:
           --verify-installed ${{ matrix.bounds }}
       - name: Run stable adapter contract suite
         run: >-
-          .bounds-venv/bin/pytest -q --confcutdir=tests
+          .bounds-venv/bin/pytest -q --confcutdir=tests -p hedron.testing.pytest_plugin
           tests/adapters/workbench
           tests/adapters/flask
           tests/adapters/django
@@ -248,6 +248,10 @@ jobs:
           tests/unit/test_maps_047_pkg.py
           tests/unit/test_charts_028_static_matrix.py
           tests/unit/test_edron_100_packet.py
+          tests/unit/test_ui_testing_host.py
+          tests/unit/test_ui_testing_artifacts.py
+          tests/unit/test_ui_testing_policy.py
+          tests/unit/test_ui_testing_contributions.py
 
   quality:
     name: Quality, strict core typing, docs, and packages

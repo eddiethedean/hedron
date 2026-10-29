@@ -1,6 +1,6 @@
 # Hedron 1.3.0 release readiness execution plan
 
-**State:** Execution underway; local implementation and verification are recorded below; no gate is promoted<br>
+**State:** Candidate implementation is verified by hosted CI; maintainer review, final artifacts, and release approval remain open<br>
 **Prepared:** 2026-10-28<br>
 **Target:** Repository ready for an authorized 1.3.0 release cut<br>
 **Authority:** [RFC-0097](../rfcs/RFC-0097-FIRST-CLASS-UI-TESTING.md),
@@ -8,7 +8,7 @@
 [acceptance](../acceptance/RELEASE_1_3.md), and
 [17 required gates](../acceptance/release-gate-1.3.toml)
 
-## Execution update — 2026-10-28
+## Execution update — 2026-10-28 (historical baseline)
 
 The repository work now includes the 1.3 gate dispatcher and version-aware evidence tooling,
 trusted-user-action and generation-aware settle selection, explicit root pytest activation,
@@ -58,7 +58,7 @@ revision or bound distributable manifest, and ran outside the required Linux env
 gate rows remain Planned. The v1.2.0 predecessor is verified; freeze, maintainer review, and
 release approval are not claimed.
 
-Remaining release blockers are concrete:
+Remaining release blockers as of 2026-10-28 were:
 
 1. Required Linux/Python 3.11–3.14 package and host matrices, pinned browser provenance, and
    downstream clean-install/upgrade/rollback rehearsals are incomplete. Broad Firefox and WebKit
@@ -81,6 +81,44 @@ Remaining release blockers are concrete:
 The separately versioned `hedron-native==0.1.4` package lookup on PyPI remains unconfirmed. The
 1.2 predecessor record covers the 22 coordinated Python distributions; native artifacts remain
 tracked separately and are not represented as a PyPI upload.
+
+## Execution update — 2026-10-29
+
+Hosted candidate CI run [40918890605](https://github.com/eddiethedean/hedron/actions/runs/40918890605)
+passed on source revision `825f31c8af6e1c446995dbff8be30738b634b22c`. It completed on Linux
+`x86_64` with all Python 3.11–3.14 host rows, all three pinned browser lanes on Python 3.12,
+quality/docs/typing/package jobs, both existing minimum/latest dependency-bound jobs, integration
+smokes, the supply-chain bundle, and the required aggregate check. The retained results are
+summarized in the [Linux resource and matrix evidence](../acceptance/evidence-130/ui-testing-resource-budgets-2026-10-29.json);
+GitHub retains the per-job artifacts for 90 days.
+
+The Linux host acceptance passed all 13 required cases on each of Python 3.11.15, 3.12.13, 3.13.14,
+and 3.14.6. The Chromium, Firefox, and WebKit lanes each passed all 27 required inventory cases.
+Skip totals were 79, 81, and 81; each skip matched the explicit policy. The five accessibility cases
+and 15 behavior cases passed on all three engines.
+
+The three Linux budget reports passed. The synthetic capture probe used a private 128 MiB tmpfs,
+25 ms monitoring, a 64 MiB file limit, a valid retained failure trace, a confirmed ENOSPC hard-limit
+probe, and a visible over-limit file error. Its largest 25 ms growth sample was 44,515,636 bytes;
+the historical maximum used for the frozen 64 MiB overshoot bound is 45,564,212 bytes. The separate
+structured privacy probe passed on each engine for form, query, header, cookie, storage, console,
+exception, target, and path values. It retained one structured manifest per engine, found no canary
+values in those manifests, wrote no native browser output, and the downloaded 49-file CI artifact
+set contained zero canary-token matches.
+
+The candidate CI workflow now also installs `hedron[testing]` in its minimum/latest dependency
+environments and runs the host, artifact, policy, and contribution suites with explicit plugin
+activation. That closes the earlier gap where the minimum/latest jobs covered stable adapters but
+not the optional UI-testing stack; its result must be green on the source revision containing the
+workflow change before upstream-bounds evidence is closed.
+
+The release remains in progress. The contract freeze flag is still false, no named maintainer
+assignments or package-disposition review are recorded, and the phase gate file keeps all 17 rows
+Planned. Reproducible distributables, the Python 3.10 fallback check, and the Python 3.11 scaffold
+upgrade/rollback rehearsal are bundled in the 1.3 release-artifact workflow, which is not yet on the
+default branch and has not produced an artifact manifest. PR #984 is still draft with no reviewer
+or assignee. The maintainer review and release approval records are empty. No tag or publication
+has been created.
 
 ## Initial planning snapshot
 

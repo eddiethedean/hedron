@@ -1,6 +1,6 @@
 # Hedron `v1.3.0` first-class UI testing acceptance plan
 
-**Status:** Candidate implementation in progress; all 17 release gates remain Planned
+**Status:** Candidate Linux host/browser and budget evidence is recorded; all 17 release gates remain Planned pending acceptance and sign-off
 **Planning revision:** 2026-10-28
 **Planning baseline:** Published `v1.2.0`
 **Required release predecessor:** `v1.2.0` — PyPI publication verified
@@ -14,11 +14,12 @@
 **Skip policy:** [ui-testing-skip-policy-130.toml](ui-testing-skip-policy-130.toml)
 
 The candidate implementation now includes the direct-Page testing surface, spawned ASGI host,
-explicit pytest plugin, structured failure manifests, packaged sample app, and browser tests.
-The [local vertical-slice record](evidence-130/LOCAL_VERTICAL_SLICE_2026-10-28.md) reports 31
-passing tests on each local browser engine. This is partial evidence only: the API freeze,
-numeric baseline, full acceptance corpus, and release are not claimed. All 17 gate ids remain
-authoritative and their machine states remain Planned.
+explicit pytest plugin, structured failure manifests, packaged sample app, and browser tests. The
+[local vertical-slice record](evidence-130/LOCAL_VERTICAL_SLICE_2026-10-28.md) reports 31 passing
+tests on each local browser engine. Hosted Linux candidate evidence now covers the host/browser
+matrix, skip policy, measured budgets, capture limits, and structured privacy probe. Those results
+do not establish API freeze, maintainer acceptance, distributable rehearsal, or release approval.
+All 17 gate ids remain authoritative and their machine states remain Planned.
 
 Strict release validation binds every Verified gate to a retained evidence file, its SHA-256, and
 the tested source revision. Evidence results, the final gate states, and review/approval records may
@@ -43,6 +44,24 @@ contract ledger records uncompleted requirements as Planned or Unmeasured. The
 version-aware [release gate checker](../../scripts/check_release_gate.py) now selects the 1.3
 ledger, accepts Planned rows only in candidate mode, and rejects incomplete evidence in strict
 release mode.
+
+## Hosted candidate evidence — 2026-10-29
+
+CI run [40918890605](https://github.com/eddiethedean/hedron/actions/runs/40918890605) passed on
+Linux x86_64 at source revision `825f31c8af6e1c446995dbff8be30738b634b22c`. It exercised all 13
+required host cases on CPython 3.11.15–3.14.6, and all 27 required inventory cases on pinned
+Chromium, Firefox, and WebKit rows running Python 3.12.13. The browser rows passed behavior,
+accessibility, skip-classification, and resource-budget checks. The same run passed the structured
+privacy and synthetic capture probes; a local scan of its downloaded 49-file artifact set found
+zero randomized canary-token matches. Details, metrics, and artifact identities are in the
+[retained resource and matrix evidence](evidence-130/ui-testing-resource-budgets-2026-10-29.json).
+
+That run’s minimum/latest dependency jobs installed stable dependencies and passed their adapter
+suite; they did not include the optional UI-testing extra. The current candidate diff extends both
+jobs to install `hedron[testing]` and run its host/artifact/policy/contribution unit suites. This
+extension must pass CI before the contract may claim upstream UI-testing bounds verified. The
+existing run is evidence for its exact recorded revision only; the workflow change is not yet
+covered by it.
 
 ## Required gates
 
@@ -82,16 +101,12 @@ candidate; scope freeze must record actual included surfaces and maturity before
 
 ## Required vertical slice and failure matrix
 
-The first synthetic profile slice now passes locally in Chromium, Firefox, and WebKit. It covers
-real host/lifespan/
-root-path/static startup; label/role input; explicitly expected validation failure with focus/
-announcement; pre-action checkpoint and one valid request/swap; visible success; intentional
-failure with bounded structured diagnostics; success/failure/timeout teardown.
-
-The bounded declared corpus still needs to run on Chromium, Firefox, WebKit and Linux integration runtime;
-exercise CPython 3.11–3.14 for host/import/package compatibility. Freeze actual dependency bounds,
-browser revisions, platform/runtime intersections, and optional OS pilots at W0. No implied full
-Cartesian or managed-adapter support.
+The first synthetic profile slice passes locally in Chromium, Firefox, and WebKit. Hosted Linux CI
+then passed the declared 27-case behavior/accessibility inventory on each pinned browser engine and
+the 13-case host acceptance on each CPython 3.11–3.14 row. The new minimum/latest testing-extra
+extension is pending a hosted run. Freeze actual API ownership, package dispositions, remaining
+dependency-bound evidence, platform/runtime intersections, and optional OS pilots at W0. No full
+Cartesian or managed-adapter support is implied.
 
 | Deliberate case | Required interpretation |
 |---|---|
