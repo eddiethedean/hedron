@@ -57,11 +57,17 @@ zero randomized canary-token matches. Details, metrics, and artifact identities 
 [retained resource and matrix evidence](evidence-130/ui-testing-resource-budgets-2026-10-29.json).
 
 That run’s minimum/latest dependency jobs installed stable dependencies and passed their adapter
-suite; they did not include the optional UI-testing extra. The current candidate diff extends both
-jobs to install `hedron[testing]` and run its host/artifact/policy/contribution unit suites. This
-extension must pass CI before the contract may claim upstream UI-testing bounds verified. The
-existing run is evidence for its exact recorded revision only; the workflow change is not yet
-covered by it.
+suite; they did not include the optional UI-testing extra. Follow-up CI run
+[40922256179](https://github.com/eddiethedean/hedron/actions/runs/40922256179) passed on source
+revision `ee72dd904b4aefef74a62c7a1521484d78646837`, including the extended minimum/latest jobs.
+Both rows installed `hedron[testing]`, explicitly loaded Hedron’s pytest plugin, and passed the
+selected adapter plus UI-testing suites (333 passed, 11 skipped each). The minimum row resolved
+pytest 8.3.0, pytest-playwright 0.10.0, Playwright 1.62.0, and Uvicorn 0.46.0; the latest row
+resolved 9.2.0, 0.10.0, 1.64.1, and 0.54.0. Browser end-to-end tests remain on the separately
+pinned Playwright 1.62.0 matrix. All checks in the follow-up run passed. The
+[retained evidence](evidence-130/ui-testing-resource-budgets-2026-10-29.json) records its artifact
+identities and a zero-hit scan across 49 downloaded files. The source revision and CI results are
+candidate evidence; release acceptance is still open.
 
 ## Required gates
 
@@ -102,11 +108,11 @@ candidate; scope freeze must record actual included surfaces and maturity before
 ## Required vertical slice and failure matrix
 
 The first synthetic profile slice passes locally in Chromium, Firefox, and WebKit. Hosted Linux CI
-then passed the declared 27-case behavior/accessibility inventory on each pinned browser engine and
-the 13-case host acceptance on each CPython 3.11–3.14 row. The new minimum/latest testing-extra
-extension is pending a hosted run. Freeze actual API ownership, package dispositions, remaining
-dependency-bound evidence, platform/runtime intersections, and optional OS pilots at W0. No full
-Cartesian or managed-adapter support is implied.
+passed the declared 27-case behavior/accessibility inventory on each pinned browser engine and the
+13-case host acceptance on each CPython 3.11–3.14 row. Follow-up CI also passed the minimum/latest
+testing-extra suites. Freeze actual API ownership, package dispositions, platform/runtime
+intersections, and optional OS pilots at W0. No full Cartesian or managed-adapter support is
+implied.
 
 | Deliberate case | Required interpretation |
 |---|---|

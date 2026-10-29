@@ -1334,6 +1334,334 @@
   "phase": "1.3",
   "purpose": "Frozen UI-testing resource ceilings and the observations that informed them.",
   "recorded_date": "2026-10-29",
-  "release_scope_note": "Hosted Linux CI run 40918890605 passed on source revision 825f31c8af6e1c446995dbff8be30738b634b22c: the Python 3.11–3.14 host rows, all 27 required browser cases on Chromium/Firefox/WebKit, skip classification, frozen resource budgets, nine-category structured privacy canary, and minimum/latest stable-adapter dependency-bound jobs. These results are candidate evidence only. The workflow now adds the optional UI-testing extra to the minimum/latest jobs, and that follow-up remains unverified. Contract freeze, named maintainer assignments, package-disposition review, reproducible release-artifact rehearsal, and maintainer/release approvals remain open; no release tag or publication is authorized.",
-  "schema_version": 1
+  "release_scope_note": "Hosted Linux CI run 40918890605 measured and passed the candidate Python 3.11–3.14 host rows, three pinned browser-engine rows, skip classification, frozen resource budgets, synthetic capture limits, and structured privacy canary. Follow-up CI run 40922256179 passed all jobs on the revised candidate source ee72dd904b4aefef74a62c7a1521484d78646837, including the minimum and latest hedron[testing] dependency suites: 333 passed and 11 skipped in each row. The minimum resolved pytest/pytest-playwright/Playwright/Uvicorn versions were 8.3.0/0.10.0/1.62.0/0.46.0; the latest were 9.2.0/0.10.0/1.64.1/0.54.0. The 49 downloaded action-artifact files from the follow-up run contained zero randomized canary-token matches. These are candidate results; API freeze, named maintainer assignments, package-disposition review, release-artifact rehearsal, and maintainer/release approvals remain open. No release tag or publication is authorized.",
+  "schema_version": 1,
+  "bounds_follow_up_ci": {
+    "run_id": 40922256179,
+    "run_url": "https://github.com/eddiethedean/hedron/actions/runs/40922256179",
+    "source_revision": "ee72dd904b4aefef74a62c7a1521484d78646837",
+    "run_started_at": "2026-10-29T17:32:12Z",
+    "completed_at": "2026-10-29T17:41:32Z",
+    "status": "success",
+    "required_check": "passed",
+    "all_required_jobs_passed": true,
+    "host_python_rows": [
+      {
+        "python": "3.11.15",
+        "required_case_count": 13,
+        "required_cases_all_passed": true,
+        "budget_errors": [],
+        "max_startup_ms": 1252.2451720000163,
+        "max_shutdown_ms": 405.8992380000177,
+        "max_child_processes": 1
+      },
+      {
+        "python": "3.12.13",
+        "required_case_count": 13,
+        "required_cases_all_passed": true,
+        "budget_errors": [],
+        "max_startup_ms": 937.4727859999439,
+        "max_shutdown_ms": 322.17050500003097,
+        "max_child_processes": 1
+      },
+      {
+        "python": "3.13.14",
+        "required_case_count": 13,
+        "required_cases_all_passed": true,
+        "budget_errors": [],
+        "max_startup_ms": 653.144301000026,
+        "max_shutdown_ms": 381.42280300002085,
+        "max_child_processes": 1
+      },
+      {
+        "python": "3.14.6",
+        "required_case_count": 13,
+        "required_cases_all_passed": true,
+        "budget_errors": [],
+        "max_startup_ms": 1002.8812989999949,
+        "max_shutdown_ms": 381.3099070000021,
+        "max_child_processes": 1
+      }
+    ],
+    "browser_engine_rows": [
+      {
+        "engine": "chromium",
+        "browser_version": "151.0.7922.34",
+        "python": "3.12.13",
+        "playwright_version": "1.62.0",
+        "pytest_playwright_version": "0.10.0",
+        "required_case_count": 27,
+        "required_cases_all_passed": true,
+        "skip_count": 79,
+        "budget_errors": [],
+        "resource_report": {
+          "duration_seconds": 318.917915,
+          "max_process_group_rss_bytes": 797667328,
+          "max_temporary_tree_bytes": 46202452,
+          "temporary_filesystem": "tmpfs",
+          "temporary_filesystem_capacity_bytes": 134217728,
+          "termination_reason": null
+        },
+        "structured_privacy": {
+          "status": "passed",
+          "categories": [
+            "form",
+            "query",
+            "header",
+            "cookie",
+            "storage",
+            "console",
+            "exception",
+            "target",
+            "path"
+          ],
+          "manifest_leaked_categories": [],
+          "unexpected_native_output_count": 0
+        },
+        "synthetic_capture": {
+          "errors": [],
+          "normal_trace_valid": true,
+          "normal_failure_retained": true,
+          "file_limit_bytes": 67108864,
+          "monitor_interval_ms": 25,
+          "hard_limit_enospc_observed": true,
+          "over_limit_error_visible": true,
+          "max_temporary_growth_per_sample_bytes": 45089076
+        }
+      },
+      {
+        "engine": "firefox",
+        "browser_version": "153.0",
+        "python": "3.12.13",
+        "playwright_version": "1.62.0",
+        "pytest_playwright_version": "0.10.0",
+        "required_case_count": 27,
+        "required_cases_all_passed": true,
+        "skip_count": 81,
+        "budget_errors": [],
+        "resource_report": {
+          "duration_seconds": 453.870469,
+          "max_process_group_rss_bytes": 803524608,
+          "max_temporary_tree_bytes": 84433000,
+          "temporary_filesystem": "tmpfs",
+          "temporary_filesystem_capacity_bytes": 134217728,
+          "termination_reason": null
+        },
+        "structured_privacy": {
+          "status": "passed",
+          "categories": [
+            "form",
+            "query",
+            "header",
+            "cookie",
+            "storage",
+            "console",
+            "exception",
+            "target",
+            "path"
+          ],
+          "manifest_leaked_categories": [],
+          "unexpected_native_output_count": 0
+        },
+        "synthetic_capture": {
+          "errors": [],
+          "normal_trace_valid": true,
+          "normal_failure_retained": true,
+          "file_limit_bytes": 67108864,
+          "monitor_interval_ms": 25,
+          "hard_limit_enospc_observed": true,
+          "over_limit_error_visible": true,
+          "max_temporary_growth_per_sample_bytes": 44515636
+        }
+      },
+      {
+        "engine": "webkit",
+        "browser_version": "26.5",
+        "python": "3.12.13",
+        "playwright_version": "1.62.0",
+        "pytest_playwright_version": "0.10.0",
+        "required_case_count": 27,
+        "required_cases_all_passed": true,
+        "skip_count": 81,
+        "budget_errors": [],
+        "resource_report": {
+          "duration_seconds": 366.603966,
+          "max_process_group_rss_bytes": 801669120,
+          "max_temporary_tree_bytes": 44519912,
+          "temporary_filesystem": "tmpfs",
+          "temporary_filesystem_capacity_bytes": 134217728,
+          "termination_reason": null
+        },
+        "structured_privacy": {
+          "status": "passed",
+          "categories": [
+            "form",
+            "query",
+            "header",
+            "cookie",
+            "storage",
+            "console",
+            "exception",
+            "target",
+            "path"
+          ],
+          "manifest_leaked_categories": [],
+          "unexpected_native_output_count": 0
+        },
+        "synthetic_capture": {
+          "errors": [],
+          "normal_trace_valid": true,
+          "normal_failure_retained": true,
+          "file_limit_bytes": 67108864,
+          "monitor_interval_ms": 25,
+          "hard_limit_enospc_observed": true,
+          "over_limit_error_visible": true,
+          "max_temporary_growth_per_sample_bytes": 44515636
+        }
+      }
+    ],
+    "minimum_latest_ui_testing_extra_bounds": {
+      "plugin_explicitly_activated": "-p hedron.testing.pytest_plugin",
+      "suite_summary_each_row": {
+        "passed": 333,
+        "skipped": 11
+      },
+      "suite_scope": [
+        "host",
+        "artifact",
+        "policy",
+        "contribution",
+        "stable workbench/flask/django adapters and selected package contracts"
+      ],
+      "browser_launch_in_bounds_jobs": false,
+      "minimum": {
+        "python": "3.12",
+        "pytest": "8.3.0",
+        "pytest_playwright": "0.10.0",
+        "playwright": "1.62.0",
+        "uvicorn": "0.46.0",
+        "pytest_xdist": "3.6.1",
+        "stable_direct_versions": {
+          "fastapi": "0.121.0",
+          "itsdangerous": "2.1.2",
+          "markdown": "3.4.1",
+          "nh3": "0.2.0",
+          "packaging": "22.0",
+          "pydantic": "2.12.0",
+          "python-multipart": "0.0.9",
+          "starlette": "0.40.0",
+          "typing-extensions": "4.14.1",
+          "uvicorn": "0.46.0"
+        },
+        "suite_warnings": 6
+      },
+      "latest": {
+        "python": "3.12",
+        "pytest": "9.2.0",
+        "pytest_playwright": "0.10.0",
+        "playwright": "1.64.1",
+        "uvicorn": "0.54.0",
+        "pytest_xdist": "3.8.0",
+        "stable_direct_versions": {
+          "fastapi": "0.149.0",
+          "itsdangerous": "2.2.0",
+          "markdown": "3.11.2",
+          "nh3": "0.3.7",
+          "packaging": "26.3",
+          "pydantic": "2.14.2",
+          "python-multipart": "0.0.32",
+          "starlette": "1.10.0",
+          "typing-extensions": "4.16.0",
+          "uvicorn": "0.54.0"
+        },
+        "suite_warnings": 9
+      }
+    },
+    "artifact_scan": {
+      "downloaded_action_artifact_files_scanned": 49,
+      "pattern": "hedron_privacy_<32 lowercase hex chars>_<form|query|header|cookie|storage|console|exception|target|path>",
+      "matching_files": [],
+      "randomized_canary_token_pattern_hits": 0
+    },
+    "retained_artifact_expires_at": "2027-01-27T17:32:13Z",
+    "retained_artifacts": [
+      {
+        "id": 12920095864,
+        "name": "ui-testing-host-3.12",
+        "size_bytes": 4929,
+        "sha256": "bce58d7cb0d7430718ea73ea8bb8dbaee9f43b04dc200909bdb88796ad429e63",
+        "expires_at": "2027-01-27T17:32:13Z"
+      },
+      {
+        "id": 12919556222,
+        "name": "ui-testing-host-3.11",
+        "size_bytes": 4921,
+        "sha256": "8358eda445d0abb03da5d8c89e0ab7ed71b082bb6d2068ccdab330f21d11edd0",
+        "expires_at": "2027-01-27T17:32:13Z"
+      },
+      {
+        "id": 12919447331,
+        "name": "browser-htmx-webkit",
+        "size_bytes": 14687,
+        "sha256": "2c1b4419c5e1c423e44ff52792fbd6b1db8e88b41f903eee9bfbe2e7e2e4b367",
+        "expires_at": "2027-01-27T17:32:13Z"
+      },
+      {
+        "id": 12919347313,
+        "name": "browser-htmx-chromium",
+        "size_bytes": 14578,
+        "sha256": "cb017c7fc8801c433f57bb72ab80f423524c91168dd4472bc4070edde02f9e38",
+        "expires_at": "2027-01-27T17:32:13Z"
+      },
+      {
+        "id": 12919252804,
+        "name": "python-package-coverage-3.12",
+        "size_bytes": 498212,
+        "sha256": "1027fbd1ddbe19441f4e82c7eed0f856256a3bd149abaa62f2d0cdd9e8700ee9",
+        "expires_at": "2027-01-27T17:32:13Z"
+      },
+      {
+        "id": 12918793528,
+        "name": "browser-htmx-firefox",
+        "size_bytes": 14706,
+        "sha256": "b0ce9e4c646714afc0f5b9cb6545db039f0d1cafbd3ea616e11fdc99e473c744",
+        "expires_at": "2027-01-27T17:32:13Z"
+      },
+      {
+        "id": 12918667165,
+        "name": "ui-testing-host-3.14",
+        "size_bytes": 4924,
+        "sha256": "79858789045399d82fd6acb69182850b6825a48ea09647a1867e6d6fc5ab0d2f",
+        "expires_at": "2027-01-27T17:32:13Z"
+      },
+      {
+        "id": 12918458242,
+        "name": "realconnect-033-result",
+        "size_bytes": 843,
+        "sha256": "cbfe34bdbd8d6bb4dc12641a156cfe0593960c7ea7dfe581f5279a399533703f",
+        "expires_at": "2027-01-27T17:32:13Z"
+      },
+      {
+        "id": 12918432425,
+        "name": "ui-testing-host-3.13",
+        "size_bytes": 4910,
+        "sha256": "7bb9bfc8ed18f3ef12aae8a0d0e0bff263b2f26965ff066e8f098f00a0c953b2",
+        "expires_at": "2027-01-27T17:32:13Z"
+      },
+      {
+        "id": 12918218132,
+        "name": "realwb-030-result",
+        "size_bytes": 1053,
+        "sha256": "68ff8b20685c4f09ed83137f4abf1e2b396dcb8d8002dcc70786a9da88722601",
+        "expires_at": "2027-01-27T17:32:13Z"
+      },
+      {
+        "id": 12917364655,
+        "name": "hedron-evidence-bundle",
+        "size_bytes": 7022,
+        "sha256": "7e1be88227323a11cbb62d3be3130fcdb52808788e5fc52cf865f969729c8704",
+        "expires_at": "2027-01-27T17:32:13Z"
+      }
+    ]
+  }
 }

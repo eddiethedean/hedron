@@ -1,6 +1,6 @@
 # Phase 1.3: first-class UI testing and adoption confidence
 
-**Status:** Candidate implementation and required Linux host/browser evidence are in place; freeze, review, package rehearsal, and release gates remain open
+**Status:** Candidate implementation and required Linux host/browser evidence are in place; freeze, maintainer review, release-artifact rehearsal, and release gates remain open
 **Planning revision:** 2026-10-28
 **Planning baseline:** Published `v1.2.0`
 **Release predecessor:** `v1.2.0`, published on PyPI and bound to the retained release evidence
@@ -62,12 +62,16 @@ versioned skip policy. The run also enforced the measured Linux resource budgets
 structured privacy canary and synthetic capture probes; details and retained-artifact identities
 are in the linked evidence record.
 
-The workflow now adds `hedron[testing]` to its minimum/latest dependency jobs and explicitly
-activates Hedron’s pytest plugin while running the host, artifact, policy, and contribution unit
-suites. Those added bounds checks have not yet run on this workflow revision. Keep
-`upstream_bounds_verified` false until the resulting hosted run passes. The host/browser matrix is
-candidate evidence, not maintainer acceptance: the API freeze, package dispositions, named owners,
-clean distributable rehearsal, gate reviews, and release approval remain open.
+Follow-up CI run [40922256179](https://github.com/eddiethedean/hedron/actions/runs/40922256179)
+passed on source revision `ee72dd904b4aefef74a62c7a1521484d78646837`. Its minimum/latest jobs
+installed `hedron[testing]`, explicitly activated Hedron’s pytest plugin, and passed the selected
+adapter plus host, artifact, policy, and contribution suites (333 passed and 11 skipped in each
+row). The minimum versions were pytest 8.3.0, pytest-playwright 0.10.0, Playwright 1.62.0, and
+Uvicorn 0.46.0; the latest were 9.2.0, 0.10.0, 1.64.1, and 0.54.0. These bounds jobs did not
+launch browsers; the three browser-engine acceptance rows stay pinned to Playwright 1.62.0. The
+host/browser results remain candidate evidence, not maintainer acceptance: the API freeze, package
+dispositions, named owners, release-artifact rehearsal, gate reviews, and release approval remain
+open.
 
 ## Candidate implementation status
 
@@ -123,10 +127,10 @@ required maintainer acceptance before freezing the contract.
 
 The [contract ledger](../acceptance/ui-testing-contract-130.toml) and [package inventory](../acceptance/ui-testing-package-dispositions-130.toml)
 are implementation records, not accepted release evidence. Numeric budgets now have measured
-Linux evidence and frozen limits, but FREEZE-130 still requires an accepted exact API/contract,
-direct user exercise, named maintainers, and reconciled package dispositions. The new minimum/latest
-UI-testing-extra checks are pending CI. The 1.2 release predecessor and detailed scope freeze are
-separate conditions.
+Linux evidence and frozen limits, and the minimum/latest UI-testing-extra checks passed in the
+follow-up run. FREEZE-130 still requires an accepted exact API/contract, direct user exercise, named
+maintainers, and reconciled package dispositions. The 1.2 release predecessor and detailed scope
+freeze are separate conditions.
 
 ## W1 — Small managed host and browser core
 

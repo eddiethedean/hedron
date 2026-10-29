@@ -137,7 +137,7 @@ browser_xdist_workers = 0
 required_case_skip_policy = "fail"
 legacy_skip_policy = "ui-testing-skip-policy-130.toml"
 full_cartesian_matrix_implied = false
-upstream_bounds_verified = false
+upstream_bounds_verified = true
 browser_revisions_frozen = true
 required_missing_or_skipped_browser_row = "fail"
 collection_without_binaries = "allowed without launching a browser"
@@ -181,7 +181,7 @@ unit = "milliseconds"
 sample_count = 20
 frozen_limits = { startup_samples_per_row = 5, shutdown_samples_per_row = 5, shutdown_max_ms = 7000, child_processes_max = 1 }
 measurement_evidence = "evidence-130/ui-testing-resource-budgets-2026-10-29.json"
-measurement_sha256 = "f83ccbfdbcf0d455101cd45d590779620423722205b2b59fe2be456b840a9252"
+measurement_sha256 = "c4a18f67cd4a1b522514b34219a5c7aab1a2a357434c8957889964ef6629c59a"
 
 [[budgets]]
 id = "browser"
@@ -195,7 +195,7 @@ sample_count = 3
 frozen_limits = { context_samples_per_row = 10, scenario_cycle_max_ms = 15000 }
 measurement_scope = "Three hosted Linux engine rows measured and enforced the frozen limits on Python 3.12.13 with Playwright 1.62.0 and pinned browser revisions; each required case passed."
 measurement_evidence = "evidence-130/ui-testing-resource-budgets-2026-10-29.json"
-measurement_sha256 = "f83ccbfdbcf0d455101cd45d590779620423722205b2b59fe2be456b840a9252"
+measurement_sha256 = "c4a18f67cd4a1b522514b34219a5c7aab1a2a357434c8957889964ef6629c59a"
 
 [[budgets]]
 id = "settle"
@@ -209,7 +209,7 @@ sample_count = 3
 frozen_limits = { samples_per_row = 1, event_count_max = 256, event_snapshot_bytes_max = 1048576, default_timeout_ms = 10000, poll_interval_ms = 25, event_capacity_default = 256, event_capacity_max = 4096 }
 measurement_scope = "Three hosted Linux engine rows measured and enforced the frozen limits on Python 3.12.13 with Playwright 1.62.0 and pinned browser revisions; each required case passed."
 measurement_evidence = "evidence-130/ui-testing-resource-budgets-2026-10-29.json"
-measurement_sha256 = "f83ccbfdbcf0d455101cd45d590779620423722205b2b59fe2be456b840a9252"
+measurement_sha256 = "c4a18f67cd4a1b522514b34219a5c7aab1a2a357434c8957889964ef6629c59a"
 
 [[budgets]]
 id = "structured_artifacts"
@@ -222,7 +222,7 @@ unit = "bytes_per_worker"
 sample_count = 4
 frozen_limits = { max_manifest_bytes = 524288, max_manifests_per_worker = 128, max_workers = 4, aggregate_max_bytes = 268435456 }
 measurement_evidence = "evidence-130/ui-testing-resource-budgets-2026-10-29.json"
-measurement_sha256 = "f83ccbfdbcf0d455101cd45d590779620423722205b2b59fe2be456b840a9252"
+measurement_sha256 = "c4a18f67cd4a1b522514b34219a5c7aab1a2a357434c8957889964ef6629c59a"
 
 [[budgets]]
 id = "synthetic_capture"
@@ -236,7 +236,7 @@ sample_count = 3
 frozen_limits = { tmpfs_max_bytes = 134217728, monitor_interval_ms = 25, max_overshoot_bytes = 67108864, termination_must_be_visible = true }
 measurement_scope = "Three hosted Linux probes on private 128 MiB tmpfs used 25 ms sampling, a 64 MiB per-file limit, a successful ENOSPC hard-limit probe, and an over-limit capture error probe. The largest historical 25 ms growth sample was 45,564,212 bytes; the selected bound leaves 21,544,652 bytes of measured margin."
 measurement_evidence = "evidence-130/ui-testing-resource-budgets-2026-10-29.json"
-measurement_sha256 = "f83ccbfdbcf0d455101cd45d590779620423722205b2b59fe2be456b840a9252"
+measurement_sha256 = "c4a18f67cd4a1b522514b34219a5c7aab1a2a357434c8957889964ef6629c59a"
 
 [[budgets]]
 id = "parallel"
@@ -249,7 +249,7 @@ unit = "xdist_workers"
 sample_count = 1
 frozen_limits = { browser_xdist_workers = 0, rss_max_bytes = 8589934592, process_count_max = 64, host_timeout_seconds = 900, browser_timeout_seconds = 1800, host_monitor_interval_ms = 50, browser_monitor_interval_ms = 25, per_file_bytes = 67108864 }
 measurement_evidence = "evidence-130/ui-testing-resource-budgets-2026-10-29.json"
-measurement_sha256 = "f83ccbfdbcf0d455101cd45d590779620423722205b2b59fe2be456b840a9252"
+measurement_sha256 = "c4a18f67cd4a1b522514b34219a5c7aab1a2a357434c8957889964ef6629c59a"
 
 [[budgets]]
 id = "compatibility"
@@ -261,6 +261,6 @@ limit = 7
 unit = "required_linux_lane_rows"
 sample_count = 7
 frozen_limits = { host_python_min = "3.11", host_python_max = "3.14", browser_python = "3.12", browser_engines = ["chromium", "firefox", "webkit"], playwright = "1.62.0", pytest_playwright = "0.10.0" }
-measurement_scope = "Four hosted Linux host rows (Python 3.11–3.14) and three hosted Linux browser rows (Python 3.12) passed. The baseline minimum/latest stable-adapter jobs passed; optional UI-testing-extra bounds coverage is added in the current candidate workflow and awaits its hosted result."
+measurement_scope = "Four hosted Linux host rows (Python 3.11–3.14) and three hosted Linux browser rows (Python 3.12) passed. Follow-up minimum/latest jobs installed hedron[testing], activated Hedron’s pytest plugin, and passed the selected adapter plus UI-testing host/artifact/policy/contribution suites (333 passed, 11 skipped each). Minimum and latest pytest/pytest-playwright/Playwright/Uvicorn versions were 8.3.0/0.10.0/1.62.0/0.46.0 and 9.2.0/0.10.0/1.64.1/0.54.0 respectively; browser-engine acceptance remains pinned to Playwright 1.62.0."
 measurement_evidence = "evidence-130/ui-testing-resource-budgets-2026-10-29.json"
-measurement_sha256 = "f83ccbfdbcf0d455101cd45d590779620423722205b2b59fe2be456b840a9252"
+measurement_sha256 = "c4a18f67cd4a1b522514b34219a5c7aab1a2a357434c8957889964ef6629c59a"

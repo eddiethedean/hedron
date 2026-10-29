@@ -106,11 +106,15 @@ exception, target, and path values. It retained one structured manifest per engi
 values in those manifests, wrote no native browser output, and the downloaded 49-file CI artifact
 set contained zero canary-token matches.
 
-The candidate CI workflow now also installs `hedron[testing]` in its minimum/latest dependency
-environments and runs the host, artifact, policy, and contribution suites with explicit plugin
-activation. That closes the earlier gap where the minimum/latest jobs covered stable adapters but
-not the optional UI-testing stack; its result must be green on the source revision containing the
-workflow change before upstream-bounds evidence is closed.
+Follow-up CI run [40922256179](https://github.com/eddiethedean/hedron/actions/runs/40922256179)
+passed all required checks on source revision `ee72dd904b4aefef74a62c7a1521484d78646837`. The
+minimum/latest jobs now install `hedron[testing]`, activate Hedron’s pytest plugin explicitly, and
+run the host, artifact, policy, and contribution suites with the adapter contract suite. Both rows
+reported 333 passed and 11 skipped. Minimum versions were pytest 8.3.0, pytest-playwright 0.10.0,
+Playwright 1.62.0, Uvicorn 0.46.0; latest versions were 9.2.0, 0.10.0, 1.64.1, and 0.54.0. The
+three pinned browser lanes and all four host-Python rows also passed on this same revision. This
+closes the workflow coverage gap for the optional UI-testing stack, while owner assignment, API
+freeze, package review, release-artifact rehearsal, and approval remain open.
 
 The release remains in progress. The contract freeze flag is still false, no named maintainer
 assignments or package-disposition review are recorded, and the phase gate file keeps all 17 rows
