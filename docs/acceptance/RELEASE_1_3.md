@@ -1,6 +1,6 @@
 # Hedron `v1.3.0` first-class UI testing acceptance plan
 
-**Status:** Release candidate prepared on `4dbab1ea7c511b56058eca5d2da8297c43b1d059`; 16 non-release gates are Verified, and release approval/cut/tag/publication remain pending
+**Status:** Release candidate prepared on `e76f595db5cf1643b05bf6124dbf970a8741b806`; 16 non-release gates are Verified, and release approval/cut/tag/publication remain pending
 **Planning revision:** 2026-10-28
 **Planning baseline:** Published `v1.2.0`
 **Required release predecessor:** `v1.2.0` — PyPI publication verified
@@ -78,38 +78,19 @@ superseded by the final candidate run below.
 
 ## Final candidate verification — 2026-10-29
 
-CI run [40937671727](https://github.com/eddiethedean/hedron/actions/runs/40937671727) completed
-successfully on source revision `4dbab1ea7c511b56058eca5d2da8297c43b1d059`. All 18 workflow jobs
-passed, including the required aggregate, the four Linux CPython host rows (3.11.15–3.14.6), the
-three Linux browser rows (Python 3.12.13; Chromium 151.0.7922.34, Firefox 153.0, WebKit 26.5),
-minimum/latest dependency bounds, strict quality and typing, package rehearsals, integration smokes,
-and the supply-chain bundle. Each browser row passed all 27 required cases. The 79–81 skips per row
-are classified as non-selected engines, retired historical APIs, separate privacy/capture probes,
-and a Chromium-only style check; no required case was skipped.
+The first candidate evidence run, [40937671727](https://github.com/eddiethedean/hedron/actions/runs/40937671727), passed on source revision `4dbab1ea7c511b56058eca5d2da8297c43b1d059`. An intervening run, [40941629675](https://github.com/eddiethedean/hedron/actions/runs/40941629675), exposed a stale release-gate test assertion after maintainer acceptance changed `FREEZE-130` to Verified. The assertion was corrected in the tested source below; this is recorded as CI history, not candidate evidence.
 
-The host rows each passed all 13 required cases with no skips. Measured maximum startup was 0.62–1.31
-seconds, maximum shutdown was 0.35–0.42 seconds, and every row used one host child. Browser suites
-completed in 269–442 seconds, within the frozen 1,800-second timeout and 128 MiB private tmpfs cap.
-The explicit synthetic capture probes retained valid failure traces (196–201 kB), surfaced the
-over-limit error, and terminated an over-budget profile within its measured overshoot bound. The
-structured privacy probes passed in all three engines with no canary category leaks or unexpected
-native output. A scan of all 142 downloaded run-artifact files found zero randomized canary-token
-matches.
+CI run [40942185662](https://github.com/eddiethedean/hedron/actions/runs/40942185662) completed successfully on the exact candidate source revision `e76f595db5cf1643b05bf6124dbf970a8741b806`. All 18 workflow jobs passed, including `CI required`. This covers Linux CPython 3.11.15–3.14.6, pinned Linux Chromium 151.0.7922.34, Firefox 153.0, and WebKit 26.5, minimum/latest testing-extra bounds, quality and strict typing, package rehearsals, Workbench and Connect integration smokes, and the supply-chain bundle.
 
-The minimum/latest testing-extra jobs explicitly activated `-p hedron.testing.pytest_plugin` and
-each passed 335 tests with 11 classified skips. The 22 coordinated packages produced 44
-distributions in two byte-identical builds. Independent verification against both retained builds
-matched all 44 approved hashes. The Python 3.11 upgrade rehearsal passed from v1.2.0 to v1.3.0 and
-rolled back to v1.2.0 with the original lock restored. The retained hash ledger and rollback record
-are [python-artifacts.json](evidence-130/python-artifacts.json) and
-[upgrade-rollback-1.3.json](evidence-130/upgrade-rollback-1.3.json); the full CI summary, job
-identities, and artifact digests are in
-[ci-run-40937671727.json](evidence-130/ci-run-40937671727.json). GitHub retains the run artifacts
-through 2027-01-27.
+Each Python host row passed all 55 cases, including all 13 required host cases, with no skips. Maximum measured startup was 0.95–1.15 seconds, shutdown was 0.33–0.39 seconds, and each host used one child process. Each browser row passed all 27 required behavior/accessibility cases. Overall browser suites had 216 collected cases per engine; 79–81 skips were classified as unselected-engine cases, retired historical APIs, separate privacy/capture lanes, or the Chromium-only style check. No required case was skipped. Browser runs completed in 279–528 seconds; peak private temporary trees were 44.5–84.4 MB within the 128 MiB private tmpfs cap and 1,800-second timeout.
 
-The owner accepted the exact scope/API contract and package dispositions. That acceptance does not
-approve release. `RELEASE-130` stays Planned; `release_approval.approved` and
-`release_cut_satisfied` remain false, and no 1.3.0 tag or publication has been made.
+The isolated synthetic capture probes retained valid failure traces (195–220 kB), surfaced the over-limit error, and terminated an over-budget profile within the frozen overshoot bound. Structured privacy probes passed on all three engines with no leaked canary categories or unexpected native output. A scan of all 142 extracted files from the retained run artifacts found zero randomized canary-token matches.
+
+The minimum and latest dependency-bound jobs explicitly loaded `-p hedron.testing.pytest_plugin`; each passed 335 tests with 11 classified skips. The minimum row resolved pytest 8.3.0, pytest-playwright 0.10.0, Playwright 1.62.0, pytest-xdist 3.6.1, and Uvicorn 0.46.0. The latest row resolved pytest 9.2.0, pytest-playwright 0.10.0, Playwright 1.64.1, pytest-xdist 3.8.0, and Uvicorn 0.54.0. The browser matrix remains pinned to Playwright 1.62.0.
+
+The 22 coordinated packages produced 44 distributions in two byte-identical builds. Independent verification from a clean checkout of candidate source matched all 44 approved hashes in each retained build. The CPython 3.11 upgrade rehearsal passed from v1.2.0 to v1.3.0 and rolled back to v1.2.0 with the original lock restored. The versioned [artifact hash ledger](evidence-130/python-artifacts-40942185662.json) and [upgrade/rollback record](evidence-130/upgrade-rollback-40942185662.json) are retained with the [CI summary, job identities, and artifact digests](evidence-130/ci-run-40942185662.json). GitHub retains these run artifacts through 2027-01-27.
+
+The owner accepted the exact scope/API contract and package dispositions. That acceptance does not approve release. `RELEASE-130` stays Planned; `release_approval.approved` and `release_cut_satisfied` remain false, and no 1.3.0 tag or publication has been made.
 
 ## Required gates
 
