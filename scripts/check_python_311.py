@@ -34,6 +34,24 @@ def package_uses_typing_extensions(package: Path) -> bool:
     return False
 
 
+def workflow_errors(directory: Path) -> list[str]:
+    """Check combined CI coverage and publication's reuse of branch CI."""
+    errors: list[str] = []
+    ci = (directory / "ci.yml").read_text(encoding="utf-8")
+    matrix = re.search(r"python-version: \[([^\]]+)\]", ci)
+    versions = set(re.findall(r'"(3\.\d+)"', matrix.group(1))) if matrix else set()
+    coverage = re.search(r"^  coverage:\n(.*?)(?=^  \S|\Z)", ci, re.M | re.S)
+    if coverage and "scripts/ci_checks.sh coverage --python 3.12" in coverage.group(1):
+        versions.add("3.12")
+    if versions != set(MATRIX):
+        errors.append("CI's test and coverage jobs must cover CPython 3.11–3.14")
+    for name in ("release.yml", "edron-release.yml"):
+        workflow = (directory / name).read_text(encoding="utf-8")
+        if "bash scripts/check_release_ci.sh" not in workflow:
+            errors.append(f"{name}: publication must require successful branch CI")
+    return errors
+
+
 def check() -> list[str]:
     errors: list[str] = []
     root_data = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
@@ -101,10 +119,7 @@ def check() -> list[str]:
     if str(lock.get("requires-python", "")).replace(" ", "") != PYTHON_RANGE:
         errors.append(f"uv.lock requires-python must be {PYTHON_RANGE}")
 
-    for workflow_name in ("ci.yml", "release.yml", "edron-release.yml"):
-        workflow = (ROOT / ".github" / "workflows" / workflow_name).read_text(encoding="utf-8")
-        if 'python-version: ["3.11", "3.12", "3.13", "3.14"]' not in workflow:
-            errors.append(f".github/workflows/{workflow_name}: runtime matrix must be 3.11–3.14")
+    errors.extend(workflow_errors(ROOT / ".github" / "workflows"))
 
     local_ci = (ROOT / "scripts" / "ci_checks.sh").read_text(encoding="utf-8")
     if "CI_PYTHONS=(3.11 3.12 3.13 3.14)" not in local_ci:

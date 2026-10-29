@@ -6,13 +6,29 @@ import tomllib
 from enum import StrEnum
 from pathlib import Path
 
+import pytest
 from packaging.specifiers import SpecifierSet
-from scripts.check_python_311 import check
+from scripts.check_python_311 import check, workflow_errors
 from scripts.check_release_gate import evidence_manifest_for
 
 from hedron_core import compat
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+@pytest.mark.parametrize("missing_version", ["3.11", "3.12", "3.13", "3.14"])
+def test_combined_ci_matrix_rejects_missing_python(tmp_path: Path, missing_version: str) -> None:
+    for name in ("ci.yml", "release.yml", "edron-release.yml"):
+        source = (ROOT / ".github/workflows" / name).read_text()
+        (tmp_path / name).write_text(source.replace(missing_version, "3.99"))
+    assert any("CPython 3.11–3.14" in error for error in workflow_errors(tmp_path))
+
+
+def test_publication_cannot_drop_the_branch_ci_precondition(tmp_path: Path) -> None:
+    for name in ("ci.yml", "release.yml", "edron-release.yml"):
+        source = (ROOT / ".github/workflows" / name).read_text()
+        (tmp_path / name).write_text(source.replace("bash scripts/check_release_ci.sh", "true"))
+    assert len(workflow_errors(tmp_path)) == 2
 
 
 def test_all_workspace_metadata_matches_the_311_baseline() -> None:

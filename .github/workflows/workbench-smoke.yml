@@ -31,13 +31,13 @@ jobs:
           enable-cache: true
           cache-dependency-glob: uv.lock
       - name: Sync workspace
-        run: uv sync --frozen --all-extras
+        run: uv sync --locked --python 3.12 --no-install-package hedron-native
       - name: Run Workbench Docker smoke (hedron-workbench + fastapi-workbench)
         env:
           PWB_LICENSE: ${{ secrets.PWB_LICENSE }}
           HEDRON_REALWB: "1"
           HEDRON_REQUIRED_LIVE_GATES: "1"
-        run: python scripts/check_realwb_smoke.py --live
+        run: uv run --no-sync --python 3.12 python scripts/check_realwb_smoke.py --live
       - name: Upload redacted RESULT.log
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

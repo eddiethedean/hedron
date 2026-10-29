@@ -7,385 +7,53 @@ on:
   workflow_dispatch:
     inputs:
       publish_tag:
-        description: "Release tag to publish (e.g. release-20260902-01). Required when publish_only is true."
+        description: "Release tag to publish (e.g. release-20260902-01)."
         type: string
         default: ""
-      publish_only:
-        description: "Emergency recovery only: skip full test/quality/browser/evidence, but enforce typing, release-contract, and import-boundary gates before publishing."
-        type: boolean
-        default: false
 
 permissions:
   contents: read
 
 concurrency:
-  group: release-${{ github.workflow }}-${{ github.ref }}
+  group: release-${{ inputs.publish_tag || github.ref_name }}
   cancel-in-progress: false
 
 env:
   UV_NO_PROGRESS: "1"
+  UV_NO_SYNC: "1"
   # Reproducible wheel/sdist metadata and native Mach-O IDs.
   SOURCE_DATE_EPOCH: "315619200"
   PYTHONDONTWRITEBYTECODE: "1"
   UV_VERSION: "0.12.1"
-  # Shared check suites live in scripts/ci_checks.sh (also used by ci.yml).
-  HEDRON_GATE_VERSION: "1.3.0"
 
 jobs:
-  test:
-    name: Tests (Python ${{ matrix.python-version }})
-    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_only) }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    env:
-      PYTEST_XDIST_AUTO_NUM_WORKERS: "4"
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.11", "3.12", "3.13", "3.14"]
-
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
-        with:
-          version: ${{ env.UV_VERSION }}
-          enable-cache: true
-          cache-dependency-glob: uv.lock
-      - name: Set up Python
-        run: uv python install ${{ matrix.python-version }}
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
-        with:
-          toolchain: stable
-      - name: Sync
-        run: uv sync --locked --python ${{ matrix.python-version }}
-      - name: Run test suite
-        run: bash scripts/ci_checks.sh test --python ${{ matrix.python-version }}
-      - name: Run 1.3 Linux host, import, and package acceptance
-        run: |
-          mkdir -p test-results
-          uv run --python ${{ matrix.python-version }} pytest -q -n 0 \
-            --override-ini=junit_family=legacy \
-            --junitxml=test-results/ui-host.xml \
-            tests/unit/test_ui_testing_host.py \
-            tests/unit/test_ui_testing_artifacts.py \
-            tests/unit/test_ui_testing_policy.py \
-            tests/unit/test_ui_testing_contributions.py \
-            tests/ops/test_packaging_isolation.py
-          uv run --python ${{ matrix.python-version }} python scripts/check_ui_testing_acceptance.py \
-            --lane host --python ${{ matrix.python-version }} \
-            --junitxml test-results/ui-host.xml \
-            --output test-results/ui-testing-host-${{ matrix.python-version }}.json
-          uv run --python ${{ matrix.python-version }} python scripts/check_ui_testing_budgets.py \
-            --lane host --python ${{ matrix.python-version }} \
-            --junitxml test-results/ui-host.xml \
-            --resource-report test-results/ui-testing-resources.json \
-            --output test-results/ui-testing-budget-host-${{ matrix.python-version }}.json
-      - name: Retain 1.3 host matrix evidence
-        if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: ui-testing-host-${{ matrix.python-version }}
-          path: test-results/
-          if-no-files-found: ignore
-          retention-days: 90
-
-  quality:
-    name: Quality, strict core typing, docs, and packages
-    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_only) }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
-        with:
-          version: ${{ env.UV_VERSION }}
-          enable-cache: true
-          cache-dependency-glob: uv.lock
-      - name: Set up Python
-        run: uv python install 3.11
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
-        with:
-          toolchain: stable
-      - name: Install all dependency groups
-        run: uv sync --locked --all-groups --python 3.11
-      - name: Run quality suite with strict package typing gate
-        run: bash scripts/ci_checks.sh quality --python 3.11
-
-  dependency_bounds:
-    name: Stable dependency bounds (minimum and latest)
-    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_only) }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
-        with:
-          version: ${{ env.UV_VERSION }}
-          enable-cache: true
-          cache-dependency-glob: uv.lock
-      - name: Set up Python
-        run: uv python install 3.12
-      - name: Run minimum/latest Stable dependency matrix
-        run: bash scripts/ci_checks.sh workbench --python 3.12
-
-  realwb:
-    name: Required Workbench backend gate
-    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_only) }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
-        with:
-          version: ${{ env.UV_VERSION }}
-      - name: Set up Python
-        run: uv python install 3.12
-      - name: Install dependencies
-        run: uv sync --locked --python 3.12
-      - name: Run required Workbench Docker smoke
-        env:
-          PWB_LICENSE: ${{ secrets.PWB_LICENSE }}
-          HEDRON_REALWB: "1"
-          HEDRON_REQUIRED_LIVE_GATES: "1"
-        run: bash scripts/ci_checks.sh realwb --python 3.12
-
-  realconnect:
-    name: Connect backend smoke (advisory)
-    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_only) }}
-    runs-on: ubuntu-latest
-    # Connect requires a separately licensed service. Preserve its redacted result,
-    # but never gate or delay a release on license or service availability.
-    continue-on-error: true
-    timeout-minutes: 45
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
-        with:
-          version: ${{ env.UV_VERSION }}
-      - name: Set up Python
-        run: uv python install 3.12
-      - name: Install dependencies
-        run: uv sync --locked --python 3.12
-      - name: Run advisory Connect Docker smoke
-        env:
-          CONNECT_LICENSE: ${{ secrets.CONNECT_LICENSE }}
-          HEDRON_REALCONNECT: "1"
-        run: bash scripts/ci_checks.sh realconnect --python 3.12
-
-  publish_only_typing:
-    name: Recovery release gates (publish-only)
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_only }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: ${{ inputs.publish_tag }}
-          fetch-depth: 0
-          persist-credentials: false
-      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
-        with:
-          version: ${{ env.UV_VERSION }}
-          enable-cache: true
-          cache-dependency-glob: uv.lock
-      - name: Set up Python
-        run: uv python install 3.11
-      - name: Install typing dependencies
-        run: uv sync --locked --all-groups --python 3.11
-      - name: Run strict package typing gate
-        run: bash scripts/ci_checks.sh typing --python 3.11
-      - name: Run stable release contract gate
-        run: uv run --python 3.12 python scripts/check_release_contract.py
-      - name: Run satellite import boundary gate
-        run: uv run --python 3.12 python scripts/check_satellite_imports.py
-
-  browser:
-    name: Browser HTMX (${{ matrix.browser }})
-    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_only) }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    env:
-      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/ms-playwright
-    strategy:
-      fail-fast: false
-      matrix:
-        browser: [chromium, firefox, webkit]
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
-        with:
-          version: ${{ env.UV_VERSION }}
-          enable-cache: true
-          cache-dependency-glob: uv.lock
-      - name: Set up Python
-        run: uv python install 3.12
-      - name: Sync locked dependencies
-        run: uv sync --locked --all-groups --python 3.12
-      - name: Playwright version
-        id: playwright
-        run: echo "version=$(uv run --python 3.12 python -c 'from importlib.metadata import version; print(version("playwright"))')" >> "$GITHUB_OUTPUT"
-      - name: Cache Playwright browser
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
-          key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}-${{ matrix.browser }}
-      - name: Install Playwright browser
-        run: bash scripts/ci_install_playwright.sh ${{ matrix.browser }} 3.12
-      - name: Prepare 128 MiB private capture tmpfs
-        run: |
-          set -euo pipefail
-          capture_tmp="${RUNNER_TEMP}/hedron-ui-capture"
-          mkdir -p "$capture_tmp"
-          sudo mount -t tmpfs -o "size=128m,mode=0700,uid=$(id -u),gid=$(id -g),nosuid,nodev" tmpfs "$capture_tmp"
-          echo "TMPDIR=${capture_tmp}" >> "$GITHUB_ENV"
-          echo "HEDRON_UI_CAPTURE_TMPFS_MIB=128" >> "$GITHUB_ENV"
-      - name: Run browser suite
-        env:
-          HEDRON_BROWSER: "1"
-          HEDRON_BROWSER_ENGINE: ${{ matrix.browser }}
-        run: bash scripts/ci_checks.sh browser --python 3.12
-      - name: Probe failure-only synthetic capture limits
-        env:
-          HEDRON_BROWSER: "1"
-          HEDRON_BROWSER_ENGINE: ${{ matrix.browser }}
-        run: >-
-          uv run --python 3.12 python scripts/probe_ui_testing_capture.py
-          --browser ${{ matrix.browser }}
-          --junit-dir test-results
-          --output-json test-results/ui-capture-budget-${{ matrix.browser }}.json
-      - name: Check frozen browser resource budgets
-        run: >-
-          uv run --python 3.12 python scripts/check_ui_testing_budgets.py
-          --lane browser --python 3.12 --browser ${{ matrix.browser }}
-          --junitxml test-results/browser.xml
-          --resource-report test-results/ui-testing-resources-${{ matrix.browser }}.json
-          --capture-probe test-results/ui-capture-budget-${{ matrix.browser }}.json
-          --output test-results/ui-testing-budget-${{ matrix.browser }}.json
-      - name: Retain browser and skip-classification evidence
-        if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: browser-htmx-${{ matrix.browser }}
-          path: |
-            test-results/
-            playwright-report/
-          if-no-files-found: ignore
-          retention-days: 90
-
-  evidence:
-    name: Supply-chain evidence bundle
-    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_only) }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
-        with:
-          version: ${{ env.UV_VERSION }}
-          enable-cache: true
-          cache-dependency-glob: uv.lock
-      - name: Set up Python
-        run: uv python install 3.12
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
-        with:
-          toolchain: stable
-      - name: Install dependencies
-        # Docs group required: the living packet's DOCS/REGRESS gates run strict MkDocs.
-        run: uv sync --locked --python 3.12 --group docs
-      - name: Set up Java
-        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
-        with:
-          distribution: temurin
-          java-version: "17"
-      - name: Set up Node
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: "20"
-      - name: Resolve gate version
-        id: gate
-        run: |
-          set -euo pipefail
-          if [[ "${GITHUB_REF}" == refs/tags/release-* ]]; then
-            version="$(uv run --python 3.12 python -c 'import tomllib; from pathlib import Path; print(tomllib.loads(Path("pyproject.toml").read_text())["project"]["version"])')"
-            echo "version=${version}" >> "$GITHUB_OUTPUT"
-          else
-            echo "version=${HEDRON_GATE_VERSION}" >> "$GITHUB_OUTPUT"
-          fi
-      - name: Run evidence suite
-        run: >
-          bash scripts/ci_checks.sh evidence --python 3.12
-          --gate-version ${{ steps.gate.outputs.version }}
-
   publish:
     name: Publish to PyPI
-    needs:
-      [
-        test,
-        quality,
-        dependency_bounds,
-        realwb,
-        publish_only_typing,
-        browser,
-        evidence,
-      ]
-    if: |
-      always() &&
-      !cancelled() &&
-      (
-        startsWith(github.ref, 'refs/tags/release-') ||
-        (github.event_name == 'workflow_dispatch' && inputs.publish_tag != '')
-      ) &&
-      (needs.test.result == 'success' || needs.test.result == 'skipped') &&
-      (needs.quality.result == 'success' || needs.quality.result == 'skipped') &&
-      (needs.dependency_bounds.result == 'success' || needs.dependency_bounds.result == 'skipped') &&
-      (needs.realwb.result == 'success' || needs.realwb.result == 'skipped') &&
-      (needs.publish_only_typing.result == 'success' || needs.publish_only_typing.result == 'skipped') &&
-      (needs.browser.result == 'success' || needs.browser.result == 'skipped') &&
-      (needs.evidence.result == 'success' || needs.evidence.result == 'skipped')
+    if: startsWith(github.ref, 'refs/tags/release-') || (github.event_name == 'workflow_dispatch' && inputs.publish_tag != '')
     runs-on: ubuntu-latest
     environment: release
-    # PyPI caps new-project creates (~4/day). Retries wait up to ~6h on 429.
-    timeout-minutes: 420
+    timeout-minutes: 30
     permissions:
+      actions: read
       contents: write
       id-token: write
       attestations: write
-      packages: write
     steps:
       - name: Resolve publish ref
         id: ref
+        env:
+          PUBLISH_TAG: ${{ inputs.publish_tag }}
         run: |
           set -euo pipefail
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.publish_tag }}" ]; then
-            TAG="${{ inputs.publish_tag }}"
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] && [ -n "$PUBLISH_TAG" ]; then
+            TAG="$PUBLISH_TAG"
           else
             TAG="${GITHUB_REF_NAME}"
           fi
           case "$TAG" in
             release-*) ;;
             v*)
-              if [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
+              if [ "$GITHUB_EVENT_NAME" != "workflow_dispatch" ]; then
                 echo "Refusing legacy version tag outside manual recovery: $TAG" >&2
                 exit 1
               fi
@@ -399,9 +67,14 @@ jobs:
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ steps.ref.outputs.tag }}
+          ref: refs/tags/${{ steps.ref.outputs.tag }}
           fetch-depth: 0
           persist-credentials: false
+      - name: Require successful CI for the tagged commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: bash scripts/check_release_ci.sh
       - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
           version: ${{ env.UV_VERSION }}
@@ -410,7 +83,7 @@ jobs:
       - name: Set up Python
         run: uv python install 3.12
       - name: Sync
-        run: uv sync --locked --python 3.12
+        run: uv sync --locked --python 3.12 --no-install-package hedron-native
       - name: Resolve release version from checked-out metadata
         id: version
         run: |
@@ -486,256 +159,25 @@ jobs:
             dist/release-manifest.json
       - name: Publish to PyPI
         id: pypi
-        continue-on-error: true
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
-          PUBLISH_ONLY: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_only }}
         run: |
           set -euo pipefail
-          if [ -z "${UV_PUBLISH_TOKEN:-}" ]; then
-            echo "PYPI_API_TOKEN secret is not set" >&2
-            exit 1
-          fi
-
-          # Skip each package's own version already on PyPI (workspace packages
-          # may have independent versions). Space NEW project creates; only wait
-          # after a successful create. Treat "File already exists" as idempotent OK.
-          # Drop non-manylinux linux_* wheels (PyPI rejects linux_x86_64).
-          existing_names=()
-          new_names=()
-          for pyproject in packages/*/pyproject.toml; do
-            pkg_dir="$(dirname "$pyproject")"
-            pkg="$(basename "$pkg_dir")"
-            if [ "$pkg" = "hedron-native" ]; then
-              echo "Skipping hedron-native; publish it only from native-wheels.yml"
+          : "${UV_PUBLISH_TOKEN:?PYPI_API_TOKEN secret is not set}"
+          # Fail before dependents if any package cannot be uploaded. Re-runs
+          # skip identical files and complete partially uploaded packages.
+          order="$(uv run --python 3.12 python scripts/release_publish_order.py)"
+          while IFS= read -r name; do
+            if [ "$name" = "hedron-native" ]; then
               continue
             fi
-            read -r name pkg_version <<<"$(uv run --python 3.12 python - <<PY
-          import tomllib
-          from pathlib import Path
-          data = tomllib.loads(Path("${pyproject}").read_text())["project"]
-          print(data["name"], data["version"])
-          PY
-          )"
-            # PEP 503 normalized name for JSON/simple indexes.
-            normalized="$(printf '%s' "$name" | tr '[:upper:]' '[:lower:]' | tr '_.' '-')"
-            version_code="$(curl -sS --max-time 30 -o /dev/null -w '%{http_code}' \
-              "https://pypi.org/pypi/${normalized}/${pkg_version}/json")"
-            if [ "$version_code" = "200" ]; then
-              echo "Skipping ${name}==${pkg_version} (already on PyPI)"
-              continue
-            elif [ "$version_code" != "404" ]; then
-              echo "Unexpected PyPI version status ${version_code} for ${name}==${pkg_version}" >&2
-              exit 1
-            fi
-            code="$(curl -sS --max-time 30 -o /dev/null -w '%{http_code}' \
-              -H 'Accept: application/vnd.pypi.simple.v1+json' \
-              "https://pypi.org/simple/${normalized}/")"
-            if [ "$code" = "200" ]; then
-              existing_names+=("$name")
-            elif [ "$code" = "404" ]; then
-              new_names+=("$name")
-            else
-              echo "Unexpected PyPI status ${code} for ${name}" >&2
-              exit 1
-            fi
-          done
-
-          mapfile -t publish_order < <(
-            uv run --python 3.12 python scripts/release_publish_order.py
-          )
-          order_names() {
-            local -n input_names="$1"
-            local -n output_names="$2"
-            output_names=()
-            local ordered candidate found
-            for ordered in "${publish_order[@]}"; do
-              for candidate in "${input_names[@]}"; do
-                if [ "$candidate" = "$ordered" ]; then
-                  output_names+=("$candidate")
-                fi
-              done
-            done
-            for candidate in "${input_names[@]}"; do
-              found=0
-              for ordered in "${publish_order[@]}"; do
-                if [ "$candidate" = "$ordered" ]; then
-                  found=1
-                  break
-                fi
-              done
-              if [ "$found" -eq 0 ]; then
-                output_names+=("$candidate")
-              fi
-            done
-          }
-          ordered_existing=()
-          ordered_new=()
-          order_names existing_names ordered_existing
-          order_names new_names ordered_new
-          existing_names=("${ordered_existing[@]}")
-          new_names=("${ordered_new[@]}")
-
-          echo "Existing PyPI projects to publish: ${existing_names[*]:-none}"
-          echo "New PyPI projects to publish: ${new_names[*]:-none}"
-
-          publish_one() {
-            local name="$1"
-            local kind="$2"
-            # Match hatchling artifacts: hyphens become underscores in filenames.
-            local stem="${name//-/_}"
-            local -a files filtered
-            shopt -s nullglob
+            stem="${name//-/_}"
             files=(dist/"${stem}"-*.whl dist/"${stem}"-*.tar.gz)
-            filtered=()
-            local f
-            for f in "${files[@]}"; do
-              case "$f" in
-                *-linux_*.whl|*-linux-*.whl)
-                  # PyPI rejects plain linux_* tags; keep manylinux/musllinux only.
-                  if [[ "$f" != *manylinux* && "$f" != *musllinux* ]]; then
-                    echo "WARN: omitting unsupported platform wheel for PyPI: $f" >&2
-                    continue
-                  fi
-                  ;;
-              esac
-              filtered+=("$f")
+            for file in "${files[@]}"; do
+              test -f "$file"
             done
-            if ((${#filtered[@]} == 0)); then
-              echo "No publishable dist artifacts for ${name} (stem=${stem})" >&2
-              return 1
-            fi
-            local attempt=1
-            # Tag cuts may wait through rate limits; publish_only recovery fails fast.
-            local max_attempts=3
-            local rate_limit_sleep=1200
-            if [ "${PUBLISH_ONLY}" = "true" ]; then
-              max_attempts=1
-              rate_limit_sleep=0
-            fi
-            local out=""
-            while true; do
-              echo "Publishing ${kind} project ${name} (attempt ${attempt}/${max_attempts}): ${filtered[*]}"
-              set +e
-              # Avoid indefinite hangs on upload/auth stalls.
-              out="$(timeout 180 uv publish --token "$UV_PUBLISH_TOKEN" "${filtered[@]}" 2>&1)"
-              local status=$?
-              set -e
-              printf '%s\n' "$out"
-              if [ "$status" -eq 0 ]; then
-                return 0
-              fi
-              if printf '%s' "$out" | grep -Eqi 'File already exists|filename-reuse'; then
-                echo "INFO: ${name} artifacts already on PyPI; treating as success"
-                return 0
-              fi
-              if [ "$status" -eq 124 ]; then
-                echo "WARN: uv publish timed out after 180s for ${name}" >&2
-              fi
-              if [ "$kind" = "NEW" ] && [ "$attempt" -lt "$max_attempts" ] \
-                && printf '%s' "$out" | grep -Eqi '429|Too many new projects'; then
-                echo "PyPI new-project rate limit; waiting $((rate_limit_sleep / 60)) minutes before retry"
-                sleep "$rate_limit_sleep"
-                attempt=$((attempt + 1))
-                continue
-              fi
-              if [ "$kind" = "NEW" ] \
-                && printf '%s' "$out" | grep -Eqi '429|Too many new projects'; then
-                echo "WARN: PyPI new-project rate limit for ${name}; not waiting in this mode" >&2
-              fi
-              return "$status"
-            done
-          }
-
-          failed_names=()
-
-          for name in "${existing_names[@]}"; do
-            if ! publish_one "$name" "existing"; then
-              echo "WARN: publish failed for existing project ${name}" >&2
-              failed_names+=("$name")
-              if [ "$name" = "hedron-core" ] || [ "$name" = "hedron" ] || [ "$name" = "fastapi-workbench" ]; then
-                echo "Foundational package failed; refusing to publish dependents" >&2
-                break
-              fi
-            fi
-          done
-
-          published_new=0
-          uploaded_new=()
-          for name in "${new_names[@]}"; do
-            if [ "$published_new" -eq 1 ]; then
-              if [ "${PUBLISH_ONLY}" = "true" ]; then
-                echo "Waiting 2 minutes before creating new PyPI project: ${name}"
-                sleep 120
-              else
-                echo "Waiting 15 minutes before creating new PyPI project: ${name}"
-                sleep 900
-              fi
-            fi
-            if publish_one "$name" "NEW"; then
-              published_new=1
-              uploaded_new+=("$name")
-            else
-              echo "WARN: publish failed for NEW project ${name}" >&2
-              failed_names+=("$name")
-              # Do not set published_new — only successful creates consume the quota spacing.
-              if [ "${PUBLISH_ONLY}" = "true" ] && [ "$published_new" -eq 0 ]; then
-                echo "WARN: aborting further NEW creates after early failure in publish_only" >&2
-                break
-              fi
-              if [ "$name" = "hedron-core" ] || [ "$name" = "hedron" ] || [ "$name" = "fastapi-workbench" ]; then
-                echo "Foundational package failed; refusing to create dependents" >&2
-                break
-              fi
-            fi
-          done
-
-          # Any NEW name not yet on PyPI after the loop counts as remaining work.
-          # PyPI's simple index can lag a few minutes behind a successful first
-          # upload (hedron-maps 0.1.0); do not fail a successful uv publish.
-          still_missing=()
-          for name in "${new_names[@]}"; do
-            normalized="$(printf '%s' "$name" | tr '[:upper:]' '[:lower:]' | tr '_.' '-')"
-            found=0
-            for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
-              code="$(curl -sS --max-time 30 -o /dev/null -w '%{http_code}' \
-                -H 'Accept: application/vnd.pypi.simple.v1+json' \
-                "https://pypi.org/simple/${normalized}/")"
-              json_code="$(curl -sS --max-time 30 -o /dev/null -w '%{http_code}' \
-                "https://pypi.org/pypi/${normalized}/json")"
-              if [ "$code" = "200" ] || [ "$json_code" = "200" ]; then
-                found=1
-                break
-              fi
-              if [ "$attempt" -lt 12 ]; then
-                echo "Waiting for ${name} to appear on PyPI (attempt ${attempt}/12)..."
-                sleep 15
-              fi
-            done
-            if [ "$found" -eq 0 ]; then
-              uploaded=0
-              if ((${#uploaded_new[@]})); then
-                for uploaded_name in "${uploaded_new[@]}"; do
-                  if [ "$uploaded_name" = "$name" ]; then
-                    uploaded=1
-                    break
-                  fi
-                done
-              fi
-              if [ "$uploaded" -eq 1 ]; then
-                echo "WARN: ${name} uploaded but PyPI index still lagging; treating as published" >&2
-              else
-                still_missing+=("$name")
-              fi
-            fi
-          done
-
-          if ((${#failed_names[@]})) || ((${#still_missing[@]})); then
-            echo "One or more packages failed to publish: failed=[${failed_names[*]:-}] missing=[${still_missing[*]:-}]" >&2
-            echo "publish_failed=1" >> "$GITHUB_OUTPUT"
-            exit 1
-          fi
-          echo "publish_failed=0" >> "$GITHUB_OUTPUT"
+            timeout 180 uv publish --check-url https://pypi.org/simple/ "${files[@]}"
+          done <<< "$order"
       - name: Publish hedron-runtime-node to npm
         id: npm_runtime
         env:
@@ -744,8 +186,7 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "${NODE_AUTH_TOKEN:-}" ]; then
-            echo "NPM_TOKEN secret is not set; skipping npm publish (dry-run pack only)" >&2
-            npm pack --dry-run
+            echo "NPM_TOKEN secret is not set; skipping npm publish" >&2
             exit 0
           fi
           echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
@@ -762,19 +203,18 @@ jobs:
             exit 0
           fi
           exit "$status"
-      - name: Publish hedron-runtime-java (Maven Central dry-run / optional deploy)
+      - name: Publish hedron-runtime-java (optional)
         id: maven_runtime
         working-directory: packages/hedron-runtime-java
         run: |
           set -euo pipefail
+          if [ -z "${SONATYPE_USERNAME:-}" ] || [ -z "${SONATYPE_PASSWORD:-}" ]; then
+            echo "SONATYPE credentials unset; skipping Maven publication"
+            exit 0
+          fi
           if ! command -v mvn >/dev/null 2>&1; then
             sudo apt-get update -y
             sudo apt-get install -y maven
-          fi
-          mvn -q -DskipTests package
-          if [ -z "${SONATYPE_USERNAME:-}" ] || [ -z "${SONATYPE_PASSWORD:-}" ]; then
-            echo "INFO: SONATYPE credentials unset; Maven package dry-run only"
-            exit 0
           fi
           mvn -q -DskipTests deploy
         env:
@@ -782,12 +222,12 @@ jobs:
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
       - name: Verify the published quick start
         id: verify_quickstart
-        if: ${{ !cancelled() && steps.pypi.outcome == 'success' && steps.pypi.outputs.publish_failed != '1' }}
+        if: ${{ !cancelled() && steps.pypi.outcome == 'success' }}
         run: >
           uv run --python 3.12 python scripts/check_published_quickstart.py
           "${{ steps.version.outputs.version }}"
       - name: Create GitHub Release
-        if: ${{ !cancelled() && steps.pypi.outcome == 'success' && steps.pypi.outputs.publish_failed != '1' && steps.verify_quickstart.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.pypi.outcome == 'success' && steps.verify_quickstart.outcome == 'success' }}
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -840,8 +280,3 @@ jobs:
               --title "Hedron ${VERSION}" \
               --notes "$NOTES"
           fi
-      - name: Fail job if PyPI publish failed
-        if: ${{ always() && !cancelled() && (steps.pypi.outcome == 'failure' || steps.pypi.outputs.publish_failed == '1') }}
-        run: |
-          echo "PyPI publish reported failures; GitHub Release creation was skipped." >&2
-          exit 1

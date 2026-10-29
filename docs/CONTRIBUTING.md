@@ -93,8 +93,8 @@ bash scripts/ci_checks.sh quality --python 3.12
 ### CI path filters
 
 Docs-only PRs (allowlisted paths in `.github/workflows/ci.yml`) run the **`docs`**
-suite (mkdocs, train SSOT, recipe/sim checks) and **skip** Rust, wheel smoke, `test`,
-`browser`, and `evidence`. Allowlisted paths today:
+suite (mkdocs, train SSOT, recipe/sim checks) and **skip** Rust, wheel smoke,
+Python/browser tests, and dependency-bound matrices. Allowlisted paths today:
 
 - `docs/*`, `README.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `mkdocs.yml`
 - `scripts/sync_demo_code_tabs.py`, `scripts/generate_component_docs.py`,
@@ -104,7 +104,7 @@ suite (mkdocs, train SSOT, recipe/sim checks) and **skip** Rust, wheel smoke, `t
   `scripts/check_package_readme_links.py`, `scripts/check_external_links.py`,
   `scripts/check_recipe_code_sync.py`, `scripts/README.md`
 
-**Not docs-only** (triggers the full matrix): root `STATUS.md` mirror,
+**Not docs-only** (triggers the normal code checks): root `STATUS.md` mirror,
 `scripts/sync_status_roadmap.py`, package/source changes, or any other non-allowlisted path.
 Edit `docs/STATUS.md` / `docs/ROADMAP.md`. Sync STATUS with `uv run python scripts/sync_status_roadmap.py`
 only when you intend a full CI run.
@@ -171,36 +171,45 @@ Issue labels and bite-sized tasks vary; prefer small PRs over RFC-scale first pa
 
 ### CI map (`.github/workflows/ci.yml` + `release.yml`)
 
-Check **commands** live in [`scripts/ci_checks.sh`](https://github.com/eddiethedean/hedron/blob/main/scripts/ci_checks.sh).
-Both commit CI and release CI call the same suites after checkout / sync / tool setup.
+Check commands live in [`scripts/ci_checks.sh`](https://github.com/eddiethedean/hedron/blob/main/scripts/ci_checks.sh).
+Ordinary pull requests run five jobs, including the stable `CI required` status used by branch
+protection. Documentation-only pull requests run change/version checks, documentation checks,
+and `CI required`.
 
-| Job | Suite (`ci_checks.sh …`) | On pull requests? |
+| Job | Checks | When |
 |---|---|---|
-| `test` | `test` — `pytest -n auto` on Python 3.11–3.14 | Yes, unless **docs-only** |
-| `workbench-dependencies` | `workbench` — Workbench contract tests at minimum/latest Starlette/Uvicorn bounds | Yes, unless **docs-only** |
-| `quality` | `quality` — Ruff, workspace BasedPyright in `all` mode with a complete `Any` ban, package inventory, `verify_pkg_*`, wheel build + smoke, docs train SSOT, recipe/sim checks, `mkdocs build --strict` | Yes, unless **docs-only** (then the same job runs `docs` instead) |
-| `quality` (docs-only) | `docs` — mkdocs, train SSOT, recipe/sim checks; **no** Rust toolchain and **no** `uv build --all-packages` | Docs-only PRs |
-| `browser` | `browser` — Playwright HTMX suite (`HEDRON_BROWSER=1`) — **Chromium only on PRs**; Chromium+Firefox+WebKit on `main` / `workflow_dispatch` / release | Yes, unless **docs-only** |
-| `realwb` | `realwb` — REALWB-030 Docker smoke (skips when `PWB_LICENSE` unset) | Yes, unless **docs-only** or fork PR |
-| `realconnect` | `realconnect` — REALCONNECT-033 Docker smoke (skips when `CONNECT_LICENSE` unset) | Yes, unless **docs-only** or fork PR |
-| `evidence` | `evidence` — Evidence bundle, dependency audit, configured release gate, historical `verify_pkg_*`, living `verify_pkg_47.py` cut | Yes, unless **docs-only**; also on release |
-| `release` (commit CI) | `packaging` — Packaging rehearsal plus living `verify_pkg_47.py` cut | After `evidence` succeeds (skipped when docs-only) |
+| `changes` | Classify docs-only changes and require version bumps for changed packages | Every run |
+| `coverage` | Full Python 3.12 suite, Chromium suite, and independent branch-coverage floors (73% Hedron, 83% core) | Non-docs PRs and branch runs |
+| `quality` | Ruff, strict workspace BasedPyright, package/API/import contracts, generated-doc checks, and strict MkDocs; docs-only PRs run the `docs` suite | Every run |
+| `packaging` | One workspace wheel build, clean install/import checks, and scaffold smoke | Non-docs PRs and branch runs, parallel with quality |
+| `test` | Full suite on Python 3.11, 3.13, and 3.14 | Pushes to `main`/`v1.0`, weekly, or manual CI |
+| `browser` | Firefox and WebKit; Chromium is already covered by `coverage` | Pushes to `main`/`v1.0`, weekly, or manual CI |
+| `dependency-bounds` | Minimum/latest dependencies through the shared `workbench` suite | Pushes to `main`/`v1.0`, weekly, or manual CI |
+| `required` | Require every applicable check to succeed; failures, cancellations, and unexpected skips fail the gate | Every run |
 
-Local full parity: `bash scripts/ci_checks.sh all --python 3.12 --skip-browser` runs every
-non-browser job on one Python. Omit `--python` for the full 3.11–3.14 test matrix.
-Pass `--all-browsers` to match the `main`-branch browser matrix.
-See `scripts/ci_checks.sh --help`.
+The release workflow requires successful branch CI for the exact tagged commit. It then checks
+the strict release gate, builds and validates the publication artifacts, audits dependencies,
+attests provenance, uploads in dependency order, and verifies the published quick start.
+It does not repeat the Python/browser/typing matrices. Edron's recovery workflow uses the same
+branch-CI precondition and keeps its artifact and registry smoke checks.
 
-Release workflow (`release.yml`) runs the same `test` / `quality` / `browser` / `evidence`
-suites before `publish` (tag pushes only).
+Live Workbench and Connect checks run through their dedicated manual/post-release workflows;
+licensed service availability does not block PRs. The double-build 1.3 artifact rehearsal remains
+available through manual `release-artifacts-1.3.yml` dispatch. Resource-budget and synthetic-capture
+probes remain available in `scripts/` for acceptance evidence; ordinary CI runs pytest directly.
+Native package changes trigger one native wheel matrix, with no duplicate PR build in the native
+publication workflow. External-link and HTMX-pin checks keep their independent schedules.
 
-Local Playwright is still optional for docs-only work. On docs-only PRs, CI skips
-`browser` / `evidence` / `test` and runs `docs` instead of full `quality` (see
-[CI path filters](#ci-path-filters)).
+For local checks, run `bash scripts/ci_checks.sh quality --python 3.12 --skip-wheels`,
+`bash scripts/ci_checks.sh packaging --python 3.12`, and
+`bash scripts/ci_checks.sh coverage --python 3.12` after installing Chromium and the locked
+workspace/docs dependencies. Use `test` for Python tests without browser coverage, or
+`workbench --bounds minimum` / `workbench --bounds latest` for one dependency-bound lane.
+The extended `all` command also runs optional release evidence and licensed-service probes;
+see `scripts/ci_checks.sh --help` for its skip flags.
 
-**Rust:** the `test` job and non-docs `quality` job install a Rust toolchain so
-`hedron-native` wheels can build. Docs-only CI skips that toolchain. Full
-`bash scripts/ci_checks.sh quality` on a cold machine may require Rust.
+**Rust:** test and packaging jobs install Rust for `hedron-native`. Quality and docs checks skip
+native installation; they do not build wheels. Local Playwright remains optional for docs work.
 
 ### Bugs vs RFCs vs decisions
 

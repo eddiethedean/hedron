@@ -7,8 +7,9 @@ scripts here when you add them.
 
 | Script | When to run |
 |---|---|
-| `ci_checks.sh` | **Shared CI suites** used by `.github/workflows/ci.yml` and `release.yml`. Local: `bash scripts/ci_checks.sh test\|workbench\|docs\|typing\|quality\|browser\|evidence\|packaging\|all` — `typing` runs BasedPyright in `all` mode for every uv workspace package and rejects both explicit and inferred `Any`. The `coverage` suite also runs the opt-in Chromium lane serially; set `HEDRON_COVERAGE_BROWSER=1` and install Chromium first. Docs-only CI calls `docs` (no wheels). Independent checks inside a suite overlap. `--jobs N` or `HEDRON_CHECK_JOBS` caps concurrency (see `ci_checks.sh --help`) |
-| `ci_install_playwright.sh` | CI-only Playwright browser + OS deps install with apt-lock wait and timed retries (WebKit `install-deps` can hang on GitHub Ubuntu mirrors) |
+| `ci_checks.sh` | Shared local/CI suites: `test`, `coverage`, `workbench`, `docs`, `typing`, `quality`, `browser`, `evidence`, `packaging`, `all`. PR CI runs Python 3.12 + Chromium coverage, lint/strict typing/docs, and one packaging smoke. Branch/manual/weekly runs add the remaining Python/browser/dependency matrices. `quality --skip-wheels` avoids duplicating packaging; `workbench --bounds minimum` / `workbench --bounds latest` selects one bound. |
+| `ci_install_playwright.sh` | Install one Playwright browser with OS dependencies and a bounded timeout. |
+| `check_release_ci.sh` | Require successful `ci.yml` push CI on the exact checked-out commit before publication. |
 | `mkdocs.sh` | Docs preview / build wrapper (`./scripts/mkdocs.sh serve`) |
 | `smoke_workbench_adapter_docker.sh` | License-independent Linux smoke for mounted Workbench adapter behavior |
 | `generate_component_docs.py` | After changing the component docs manifest; `--check` in CI/PR |
@@ -106,7 +107,7 @@ Documentation source ownership and review rules:
 | `build_evidence_bundle.py` | Collect release evidence artifacts |
 | `write_release_manifest.py` | Record SHA-256 digests and sizes for every release asset |
 | `verify_release_manifest.py` | Verify local/downloaded assets against `release-manifest.json` |
-| `check_published_quickstart.py` | Install an exact PyPI version or local release wheels, scaffold an app, and import it; quality CI tests wheels before tagging, and release CI repeats before and after upload |
+| `check_published_quickstart.py` | Install an exact PyPI version or local release wheels, scaffold an app, and import it; packaging CI tests wheels before tagging, and release CI checks before and after upload |
 | `build_reproducible_release_artifacts.py` | Build every coordinated 1.2.0 or 1.3.0 Python package twice without publishing; rehearse the Python 3.11 scaffold upgrade/rollback and retain the comparison ledger |
 | `verify_release_reproducibility.py` | Require matching complete wheel/sdist inventories and hashes, then write the phase-specific artifact evidence ledger |
 | `rehearse_python_311_upgrade_rollback.py` | Upgrade an application from the immediate prior coordinated release (1.1.3 for 1.2; 1.2.0 for 1.3) using exact local wheels, then restore its prior lock and environment |

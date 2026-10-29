@@ -1,7 +1,6 @@
 name: Release artifact rehearsal (1.3.0)
 
 on:
-  workflow_call:
   workflow_dispatch:
 
 permissions:

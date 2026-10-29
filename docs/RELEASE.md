@@ -38,6 +38,25 @@ except for an explicitly authorized corrective retag after a failed publication.
    `registry_status = "uploaded"` in `docs/release.toml`. Until that point, the previous
    public release pins remain authoritative.
 
+## CI and recovery
+
+Publication requires successful `ci.yml` push CI for the exact tagged commit on `main` or
+`v1.0`. `scripts/check_release_ci.sh` rejects missing, pending, failed, or cancelled runs.
+Wait for branch CI before tagging. The release jobs reuse those results and retain strict
+release-gate, immutable-artifact, quick-start, audit, checksum, and provenance checks.
+
+To retry a partial upload, dispatch `release.yml` with `publish_tag` set to the existing tag.
+Uploads follow `release/publish-order.toml`, skip identical files, and stop on the first error
+before publishing dependents. Rate limits fail the run without long sleeps; retry the same tag
+after the registry accepts uploads. There is one publication path with the same checks for
+initial publication and recovery.
+
+The expensive double-build and upgrade/rollback rehearsal runs on demand via
+`release-artifacts-1.3.yml`, rather than on every release-branch PR update. Retain its approved
+ledger before publishing. Native changes run a single PR wheel matrix; the native publication
+workflow builds on tags or explicit dispatch. Live Workbench/Connect checks have dedicated
+manual/post-release workflows.
+
 ## Build and validate artifacts
 
 ```bash

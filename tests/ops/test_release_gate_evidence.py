@@ -209,10 +209,12 @@ def test_current_patch_package_metadata_passes() -> None:
 
 
 def test_github_release_requires_successful_pypi_publish() -> None:
-    workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
+    workflow = (ROOT / ".github/workflows/release.yml").read_text(encoding="utf-8")
+    assert "continue-on-error: true" not in workflow
     assert "steps.pypi.outcome == 'success'" in workflow
-    assert "steps.pypi.outputs.publish_failed != '1'" in workflow
-    assert "steps.pypi.outcome == 'failure' || steps.pypi.outputs.publish_failed == '1'" in workflow
+    assert "steps.verify_quickstart.outcome == 'success'" in workflow
+    assert "--check-url https://pypi.org/simple/" in workflow
+    assert 'if [ "$name" = "hedron-native" ]' in workflow
 
 
 def test_release_workflow_uses_metadata_version_with_release_namespace() -> None:
@@ -223,27 +225,20 @@ def test_release_workflow_uses_metadata_version_with_release_namespace() -> None
     assert "Using legacy version tag for manual recovery" in workflow
 
 
-def test_connect_live_smoke_is_advisory_to_release_publication() -> None:
-    workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
-    connect_start = workflow.index("  realconnect:")
-    connect_end = workflow.index("  publish_only_typing:", connect_start)
-    connect_job = workflow[connect_start:connect_end]
-    publish_start = workflow.index("  publish:\n")
-    publish_job = workflow[publish_start:]
-    publish_needs = publish_job[publish_job.index("    needs:") : publish_job.index("    if:")]
-
-    assert "name: Connect backend smoke (advisory)" in connect_job
-    assert "continue-on-error: true" in connect_job
-    assert "HEDRON_REQUIRED_LIVE_GATES" not in connect_job
-    assert "realconnect" not in publish_needs
-    assert "needs.realconnect.result" not in publish_job
+def test_release_reuses_ci_and_keeps_live_services_out_of_publication() -> None:
+    workflow = (ROOT / ".github/workflows/release.yml").read_text(encoding="utf-8")
+    assert "scripts/check_release_ci.sh" in workflow
+    assert "actions: read" in workflow
+    assert "  realconnect:" not in workflow
+    assert "  realwb:" not in workflow
+    assert "  publish_only_typing:" not in workflow
 
 
-def test_ci_requires_package_version_change_detection() -> None:
-    workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
-    assert "name: Detect package version changes" in workflow
-    assert "scripts/check_changed_package_versions.py" in workflow
-    assert "package_versions" in workflow[workflow.index("  required:") :]
+def test_ci_checks_package_versions_in_the_change_job() -> None:
+    workflow = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    changes = workflow[workflow.index("  changes:") : workflow.index("  coverage:")]
+    assert "scripts/check_changed_package_versions.py" in changes
+    assert "  package_versions:" not in workflow
 
 
 def test_built_quickstart_is_verified_before_pypi_upload() -> None:
@@ -264,7 +259,7 @@ def test_workbench_artifacts_are_verified_before_pypi_upload() -> None:
     assert build < prepublish
     assert prepublish < upload
     assert "scripts/check_workbench_release_artifacts.py" in workflow[prepublish:upload]
-    assert workflow.count('|| [ "$name" = "fastapi-workbench" ]') == 2
+    assert "scripts/release_publish_order.py" in workflow
 
 
 def test_120_release_requires_exact_approved_candidate_artifacts() -> None:
@@ -284,13 +279,12 @@ def test_release_rehearsal_does_not_restore_the_retired_120_fallback_path() -> N
     workflow = (ROOT / ".github/workflows/release-artifacts-1.3.yml").read_text(encoding="utf-8")
     assert "check_python_310_candidate.py" not in workflow
     assert "uv python install 3.10" not in workflow
-    assert "workflow_call:" in workflow
+    assert "workflow_dispatch:" in workflow
     assert "uv publish" not in workflow
 
     ci = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
-    assert "release-artifact-rehearsal:" in ci
-    assert "github.event.pull_request.head.ref == 'codex/hedron-1.3-release-prep'" in ci
-    assert "RELEASE_ARTIFACT_REHEARSAL_RESULT" in ci
+    assert "release-artifact-rehearsal:" not in ci
+    assert "release-artifacts-1.3.yml" not in ci
 
 
 def test_workbench_dependency_is_published_before_hedron_posit() -> None:
@@ -317,7 +311,7 @@ def test_edron_is_published_by_main_and_retains_recovery_path() -> None:
     assert "workflow_dispatch:" in edron
     assert "RELEASE_REF:" in edron
     assert "fetch-depth: 0" in edron[edron.index("  publish:") :]
-    assert "needs: [test, dependency_bounds, browser]" in edron
+    assert "scripts/check_release_ci.sh" in edron
     assert ".venv/bin/python scripts/check_edron_10_release.py" in edron
     assert "Recover Edron and edron-sim publication" in edron
     assert "secrets.PYPI_API_TOKEN" in edron
@@ -325,8 +319,6 @@ def test_edron_is_published_by_main_and_retains_recovery_path() -> None:
     assert "uv sync --no-install-project" in edron
     assert "uv run --no-sync python" in edron
     assert "Preflight published Stable dependencies from PyPI" in edron
-    assert "tests/unit/test_edron_runtime.py" in edron
-    assert "tests/unit/test_edron_phase02.py" in edron
     assert "id-token: write" in edron
     publisher = re.search(r"pypa/gh-action-pypi-publish@([^\s]+)", edron)
     assert publisher is not None
@@ -337,7 +329,10 @@ def test_v1_branch_has_one_stable_required_ci_context() -> None:
     workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
     assert "branches: [main, v1.0]" in workflow
     assert "name: CI required" in workflow
-    assert "needs:\n      [changes, package_versions, test, dependency-bounds" in workflow
+    assert (
+        "needs: [changes, coverage, test, dependency-bounds, quality, browser, packaging]"
+        in workflow
+    )
 
 
 def test_local_release_gate_accepts_both_license_spelling_aliases() -> None:
