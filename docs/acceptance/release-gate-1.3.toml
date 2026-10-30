@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "1.3"
-status = "ReleaseCandidateReady"
+status = "ReleaseApproved"
 planning_revision = "2026-10-28"
 planning_baseline = "v1.2.0"
 compatibility_baseline = "v1.0.0 stable testing plus additive 1.x"
@@ -16,7 +16,7 @@ behavior_accessibility_inventory = "ui-testing-inventory-130.toml"
 skip_classification_policy = "ui-testing-skip-policy-130.toml"
 planning_only = false
 stage_1_entry_satisfied = true
-release_cut_satisfied = false
+release_cut_satisfied = true
 local_probe_evidence = "evidence-130/LOCAL_VERTICAL_SLICE_2026-10-28.md"
 local_probe_engines = ["chromium", "firefox", "webkit"]
 satellite_contribution = "hedron_sample_kit.ui_testing:CONTRIBUTION"
@@ -48,11 +48,11 @@ review_record = "evidence-130/maintainer-acceptance-2026-10-29.json"
 review_record_sha256 = "98a95c8481fce5d36f4e3c02e7e81453b0c9b3b9e0af300337928b5465d16862"
 
 [release_approval]
-approver = ""
-approved_at = ""
-approved = false
-approval_record = ""
-approval_record_sha256 = ""
+approver = "Odos Matthews (@eddiethedean)"
+approved_at = "2026-10-30T01:32:02Z"
+approved = true
+approval_record = "evidence-130/RELEASE_APPROVAL_2026-10-30.md"
+approval_record_sha256 = "7b1b9ba2aacdfe82a6c07283ecb579e6bc2c375efa089c7cc7939f5d3540111d"
 
 [release_artifacts]
 manifest = "evidence-130/python-artifacts-40973136018.json"
@@ -269,8 +269,13 @@ description = "Clean base/browser/testing-extra wheels/sdists/offline install/im
 
 [[evidence]]
 id = "RELEASE-130"
-state = "Planned"
+state = "Verified"
 owner = "release"
 ci_job = "release"
+command = "uv run python scripts/check_release_gate.py 1.3.0"
+maintainer = "Odos Matthews (@eddiethedean)"
+source_revision = "dec75e9ab60a5632ce9d63d8662f01589e2ccb4d"
+evidence = "evidence-130/RELEASE_APPROVAL_2026-10-30.md"
+evidence_sha256 = "7b1b9ba2aacdfe82a6c07283ecb579e6bc2c375efa089c7cc7939f5d3540111d"
 required = true
-description = "All other Required rows Verified; v1.2.0 predecessor evidence, accepted exact contract and immutable artifacts, upgrade/opt-out/rollback and maturity/limits, explicit release approval; no skipped Required browser row or future feature claim."
+description = "All other Required rows Verified; v1.2.0 predecessor evidence, accepted exact contract and immutable artifacts, upgrade/opt-out/rollback and maturity/limits, explicit maintainer release-cut approval; no skipped Required browser row or future feature claim."

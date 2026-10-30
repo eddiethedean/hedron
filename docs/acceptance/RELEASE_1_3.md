@@ -1,6 +1,6 @@
 # Hedron `v1.3.0` first-class UI testing acceptance plan
 
-**Status:** Candidate source verified on `dec75e9ab60a5632ce9d63d8662f01589e2ccb4d`; all 16 non-release gates have current retained evidence, and release approval/cut/tag/publication remain pending
+**Status:** Release approved and cut authorized on 2026-10-30; all 17 required gates are Verified. The merge is in progress; no tag or publication has been made.
 **Planning revision:** 2026-10-28
 **Planning baseline:** Published `v1.2.0`
 **Required release predecessor:** `v1.2.0` — PyPI publication verified
@@ -18,15 +18,16 @@ pytest plugin, structured failure manifests, packaged sample app, and browser te
 [local vertical-slice record](evidence-130/LOCAL_VERTICAL_SLICE_2026-10-28.md) reports 31 passing
 tests on each local browser engine. The accepted scope/API contract and package dispositions are
 bound to the maintainer acceptance record. The current release ledger records 16 non-release gates
-as Verified; `RELEASE-130` remains Planned until release approval and the release cut are recorded.
+as Verified. `RELEASE-130` records the maintainer's approval and cut authorization.
 
 Strict release validation binds every Verified gate to retained evidence, its SHA-256, and the tested
 source revision. The evidence-only record may follow that source revision under
 `docs/acceptance/evidence-130/`, with the gate and this plan; strict validation requires a clean
 tree. The ledger retains the v1.2.0 publication record, accepted frozen contract, measured budgets,
 complete package dispositions, reproducible artifact manifest, and upgrade/rollback rehearsal.
-Release approval remains empty, `release_cut_satisfied` is false, and no tag or publication is
-authorized by this candidate packet.
+The approval and cut authorization are recorded in
+[RELEASE_APPROVAL_2026-10-30.md](evidence-130/RELEASE_APPROVAL_2026-10-30.md). They authorize the
+v1.3.0 cut after merge; they do not publish artifacts. No tag or publication has been made.
 
 ## Entry and release dependencies
 
@@ -98,7 +99,9 @@ The final release-CI repair is at source revision `dec75e9ab60a5632ce9d63d8662f0
 
 The current [CI summary and retained acceptance reports](evidence-130/ci-run-40973136018.json) bind the 16 verified non-release gates to `dec75e9`. It retains the host/browser case reports, resource budgets, privacy and capture probes, supply-chain bundle, and run artifact identities. The current [Python artifact ledger](evidence-130/python-artifacts-40973136018.json) records 22 coordinated packages and 44 distributions, byte-identical repeated builds, and the [CPython 3.11 upgrade/rollback rehearsal](evidence-130/upgrade-rollback-40973136018.json), which passed baseline, upgrade, and rollback with the original lock restored. GitHub retains the run artifacts through 2027-01-27.
 
-`RELEASE-130` remains Planned until the release decision. `release_approval.approved` and `release_cut_satisfied` remain false; no tag or publication has been made. The candidate is technically prepared for the release decision, with the approval and cut record intentionally pending.
+Final PR CI run [40974810399](https://github.com/eddiethedean/hedron/actions/runs/40974810399) passed all required jobs, including branch coverage, strict typing/docs, package installation, minimum/latest dependency bounds, host acceptance on CPython 3.11–3.14, Chromium/Firefox/WebKit acceptance, supply-chain evidence, reproducible artifact rehearsal, and `CI required`. The [native wheel matrix](https://github.com/eddiethedean/hedron/actions/runs/40974810366) passed on Linux x86_64, Linux ARM64, macOS ARM64, and Windows. The [build-only native wheel dispatch](https://github.com/eddiethedean/hedron/actions/runs/40974767465) passed with publishing disabled.
+
+On 2026-10-30, the maintainer approved the v1.3.0 release cut and set `release_cut_satisfied = true`; the evidence and approval are recorded in [RELEASE_APPROVAL_2026-10-30.md](evidence-130/RELEASE_APPROVAL_2026-10-30.md). The gate is `ReleaseApproved`, all 17 required rows are Verified, and strict validation passes. The cut is authorized after merge. No release tag or artifact publication has occurred.
 
 ## Required gates
 
