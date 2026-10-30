@@ -1,0 +1,73 @@
+{
+  "architecture": "x86_64",
+  "browser": null,
+  "errors": [],
+  "lane": "host",
+  "measurements": {
+    "host_child_processes": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "host_shutdown_ms": [
+      382.66731099999873,
+      375.24534399999965,
+      379.1947839999992,
+      387.29805799999895,
+      373.24252100000166
+    ],
+    "host_startup_ms": [
+      1057.7868040000026,
+      1045.9043959999974,
+      1062.8953900000013,
+      1053.5594959999983,
+      1049.7228790000008
+    ],
+    "parallel_resource_report": {
+      "architecture": "x86_64",
+      "command": [
+        "uv",
+        "run",
+        "--python",
+        "3.13",
+        "pytest",
+        "-q",
+        "-n",
+        "0",
+        "--override-ini=junit_family=legacy",
+        "--junitxml=test-results/ui-host.xml",
+        "tests/unit/test_ui_testing_host.py",
+        "tests/unit/test_ui_testing_artifacts.py",
+        "tests/unit/test_ui_testing_policy.py",
+        "tests/unit/test_ui_testing_contributions.py",
+        "tests/ops/test_packaging_isolation.py"
+      ],
+      "duration_seconds": 16.542609,
+      "exit_code": 0,
+      "max_process_group_rss_bytes": 266633216,
+      "max_processes": 5,
+      "max_temporary_growth_per_sample_bytes": 393216,
+      "max_temporary_tree_bytes": 995328,
+      "monitor_interval_ms": 50,
+      "operating_system": "Linux",
+      "per_file_rlimit_bytes": 67108864,
+      "python": "3.13.14",
+      "requested_xdist_workers": 0,
+      "sample_count": 286,
+      "schema_version": 1,
+      "temporary_filesystem": "ext4",
+      "temporary_filesystem_capacity_bytes": 154894188544,
+      "temporary_filesystem_limit_bytes": null,
+      "temporary_filesystem_usage_limit_bytes": null,
+      "termination_reason": null,
+      "timeout_seconds": 900.0
+    },
+    "structured_manifest_bytes": 294.0
+  },
+  "operating_system": "Linux",
+  "phase": "1.3",
+  "python": "3.13",
+  "schema_version": 1
+}

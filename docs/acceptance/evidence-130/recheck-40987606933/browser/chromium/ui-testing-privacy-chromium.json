@@ -1,0 +1,32 @@
+{
+  "browser": "chromium",
+  "canary_categories": [
+    "form",
+    "query",
+    "header",
+    "cookie",
+    "storage",
+    "console",
+    "exception",
+    "target",
+    "path"
+  ],
+  "errors": [],
+  "expected_exception_seen": true,
+  "failure_contains_assertion_error": false,
+  "failure_contains_runtime_error": true,
+  "failure_exception_names": [
+    "RuntimeError"
+  ],
+  "failure_message_length": 3285,
+  "failure_type": "unavailable",
+  "intentional_failure_recorded": true,
+  "lane": "structured-privacy-canary",
+  "manifest_bytes": 3994,
+  "manifest_count": 1,
+  "manifest_leaked_categories": [],
+  "operating_system": "linux",
+  "schema_version": 1,
+  "status": "passed",
+  "unexpected_native_output_count": 0
+}

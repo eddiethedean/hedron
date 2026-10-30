@@ -1,0 +1,32 @@
+{
+  "htmx_version": "2.0.11",
+  "htmx_path": "packages/hedron/src/hedron/static/htmx.min.js",
+  "htmx_sha256": "d6fdc75f204e6bdefa99b69bf1e6d4ac69b8a364f77929f45c13476b4000f717",
+  "sse_deferred": false,
+  "extensions": [
+    {
+      "name": "htmx-ext-head-support",
+      "version": "2.0.5",
+      "deferred": false,
+      "digest": "sha256-207f449ba70ad0d384b1734288ddae8493d26737bd74d8510829c0be5b737568"
+    },
+    {
+      "name": "htmx-ext-preload",
+      "version": "2.1.2",
+      "deferred": false,
+      "digest": "sha256-7504ccd4c10e44b0aed3d62f30156e8a0abc7b9f18f3980f0fad58b465563466"
+    },
+    {
+      "name": "htmx-ext-sse",
+      "version": "2.2.4",
+      "deferred": false,
+      "digest": "sha256-3b5992a541619babefc4c169505af474df5c3039da51e59b96ccf9241ecd61d2"
+    },
+    {
+      "name": "htmx-ext-hedron",
+      "version": "0.67.0",
+      "deferred": false,
+      "digest": "sha256-02166a5a484eae08baa56215d9255077b0fc5fcd0eead28b13a178c62c31f23f"
+    }
+  ]
+}

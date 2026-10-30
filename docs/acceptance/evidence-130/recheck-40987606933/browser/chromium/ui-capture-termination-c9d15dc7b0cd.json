@@ -1,0 +1,27 @@
+{
+  "architecture": "x86_64",
+  "command": [
+    "/home/runner/work/hedron/hedron/.venv/bin/python3",
+    "-c",
+    "import os\nfrom pathlib import Path\nroot = Path(os.environ['TMPDIR']) / 'hedron-ui-soft-limit-probe'\nroot.mkdir(exist_ok=True)\nchunk = b'x' * (1024 * 1024)\nindex = 0\nwhile True:\n    path = root / f'{index % 8}.bin'\n    with path.open('wb', buffering=0) as stream:\n        for _ in range(8):\n            stream.write(chunk)\n    index += 1"
+  ],
+  "duration_seconds": 0.034965,
+  "exit_code": -15,
+  "max_process_group_rss_bytes": 14643200,
+  "max_processes": 1,
+  "max_temporary_growth_per_sample_bytes": 62013640,
+  "max_temporary_tree_bytes": 62013640,
+  "monitor_interval_ms": 25,
+  "operating_system": "Linux",
+  "per_file_rlimit_bytes": 67108864,
+  "python": "3.12.13",
+  "requested_xdist_workers": "auto",
+  "sample_count": 2,
+  "schema_version": 1,
+  "temporary_filesystem": "tmpfs",
+  "temporary_filesystem_capacity_bytes": 134217728,
+  "temporary_filesystem_limit_bytes": 134217728,
+  "temporary_filesystem_usage_limit_bytes": 33554432,
+  "termination_reason": "temporary_storage_limit",
+  "timeout_seconds": 60.0
+}

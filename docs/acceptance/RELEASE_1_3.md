@@ -1,6 +1,6 @@
 # Hedron `v1.3.0` first-class UI testing acceptance plan
 
-**Status:** Release approved and cut authorized on 2026-10-30; all 17 required gates are Verified. The merge is in progress; no tag or publication has been made.
+**Status:** Release approved and cut authorized on 2026-10-30; all 17 required gates are Verified. No tag or publication has been made.
 **Planning revision:** 2026-10-28
 **Planning baseline:** Published `v1.2.0`
 **Required release predecessor:** `v1.2.0` — PyPI publication verified
@@ -93,15 +93,21 @@ The 22 coordinated packages produced 44 distributions in two byte-identical buil
 
 The owner accepted the exact scope/API contract and package dispositions. That acceptance does not approve release. `RELEASE-130` stays Planned; `release_approval.approved` and `release_cut_satisfied` remain false, and no 1.3.0 tag or publication has been made.
 
-## Current candidate verification — 2026-10-29
+## Candidate evidence history — 2026-10-29
 
 The final release-CI repair is at source revision `dec75e9ab60a5632ce9d63d8662f01589e2ccb4d`. PR CI run [40973136018](https://github.com/eddiethedean/hedron/actions/runs/40973136018) passed every required job: coverage, strict typing/docs, packaging, both dependency bounds, bounded host acceptance on CPython 3.11–3.14, and the complete Chromium/Firefox/WebKit browser acceptance matrix. The supply-chain evidence job and candidate artifact rehearsal also passed. The separate full CI dispatch [40973327693](https://github.com/eddiethedean/hedron/actions/runs/40973327693) passed the general test suite on CPython 3.11–3.14 and the full CI matrix. Native wheel matrix [40973135817](https://github.com/eddiethedean/hedron/actions/runs/40973135817) passed on Linux x86_64, Linux ARM64, macOS ARM64, and Windows.
 
-The current [CI summary and retained acceptance reports](evidence-130/ci-run-40973136018.json) bind the 16 verified non-release gates to `dec75e9`. It retains the host/browser case reports, resource budgets, privacy and capture probes, supply-chain bundle, and run artifact identities. The current [Python artifact ledger](evidence-130/python-artifacts-40973136018.json) records 22 coordinated packages and 44 distributions, byte-identical repeated builds, and the [CPython 3.11 upgrade/rollback rehearsal](evidence-130/upgrade-rollback-40973136018.json), which passed baseline, upgrade, and rollback with the original lock restored. GitHub retains the run artifacts through 2027-01-27.
+The [CI summary and retained acceptance reports](evidence-130/ci-run-40973136018.json) bind the 16 non-release gates to `dec75e9`. The [Python artifact ledger](evidence-130/python-artifacts-40973136018.json) records 22 coordinated packages and 44 distributions, byte-identical repeated builds, and the [CPython 3.11 upgrade/rollback rehearsal](evidence-130/upgrade-rollback-40973136018.json), which passed baseline, upgrade, and rollback with the original lock restored. GitHub retains the run artifacts through 2027-01-27.
 
 Final PR CI run [40974810399](https://github.com/eddiethedean/hedron/actions/runs/40974810399) passed all required jobs, including branch coverage, strict typing/docs, package installation, minimum/latest dependency bounds, host acceptance on CPython 3.11–3.14, Chromium/Firefox/WebKit acceptance, supply-chain evidence, reproducible artifact rehearsal, and `CI required`. The [native wheel matrix](https://github.com/eddiethedean/hedron/actions/runs/40974810366) passed on Linux x86_64, Linux ARM64, macOS ARM64, and Windows. The [build-only native wheel dispatch](https://github.com/eddiethedean/hedron/actions/runs/40974767465) passed with publishing disabled.
 
-On 2026-10-30, the maintainer approved the v1.3.0 release cut and set `release_cut_satisfied = true`; the evidence and approval are recorded in [RELEASE_APPROVAL_2026-10-30.md](evidence-130/RELEASE_APPROVAL_2026-10-30.md). The gate is `ReleaseApproved`, all 17 required rows are Verified, and strict validation passes. The cut is authorized after merge. No release tag or artifact publication has occurred.
+## Release approval and exact-source verification — 2026-10-30
+
+The maintainer approved the v1.3.0 release cut and set `release_cut_satisfied = true`; the decision is retained in [RELEASE_APPROVAL_2026-10-30.md](evidence-130/RELEASE_APPROVAL_2026-10-30.md). The approval authorizes cutting after merge; publication remains separate.
+
+The current evidence-bound revision is `e153dccffac042e63e959672b9c95af59220e00e`. It contains a test-only correction to align the release-gate assertion with the approved release state; package implementation and release artifacts are unchanged. PR CI [40987606933](https://github.com/eddiethedean/hedron/actions/runs/40987606933) passed all required jobs. Full CI dispatch [40988708468](https://github.com/eddiethedean/hedron/actions/runs/40988708468) passed the Python 3.11–3.14 test matrix and full workflow. Native wheel matrix [40987606890](https://github.com/eddiethedean/hedron/actions/runs/40987606890) passed on Linux x86_64, Linux ARM64, macOS ARM64, and Windows.
+
+The current [CI summary and retained reports](evidence-130/ci-run-40987606933.json) bind the 16 non-release gates to the exact tested revision and include all host/browser acceptance and resource/privacy reports, the supply-chain bundle, and the native wheel inventory. The [Python artifact manifest](evidence-130/python-artifacts-40987606933.json) records two byte-identical builds of 22 packages and 44 distributions. The [upgrade/rollback rehearsal](evidence-130/upgrade-rollback-40987606933.json) passed baseline, upgrade, and rollback with the original lock restored. All 39 retained acceptance JSON reports were scanned for randomized privacy canary patterns with zero hits. Strict release validation passes with all 17 required gates Verified. No release tag or artifact publication has occurred.
 
 ## Required gates
 

@@ -9,12 +9,15 @@ This approval closes `RELEASE-130` and sets `release_cut_satisfied = true`. It a
 
 ## Verified candidate
 
-The release candidate source is `dec75e9ab60a5632ce9d63d8662f01589e2ccb4d`. The following all passed:
+The current evidence-bound source revision is `e153dccffac042e63e959672b9c95af59220e00e`. Relative to the approved package source revision `dec75e9ab60a5632ce9d63d8662f01589e2ccb4d`, its only change is the ops test assertion updated to validate the now-approved release state; package implementation and artifacts are unchanged.
 
-- [Final PR CI run 40974810399](https://github.com/eddiethedean/hedron/actions/runs/40974810399), including required coverage, strict typing and docs, package install, minimum/latest dependency bounds, host acceptance on CPython 3.11–3.14, Chromium/Firefox/WebKit acceptance, supply-chain evidence, reproducible distribution rehearsal, and `CI required`.
-- [Native wheel matrix 40974810366](https://github.com/eddiethedean/hedron/actions/runs/40974810366) on Linux x86_64, Linux ARM64, macOS ARM64, and Windows.
-- [Build-only native wheel dispatch 40974767465](https://github.com/eddiethedean/hedron/actions/runs/40974767465), with PyPI and crates.io publishing disabled.
-- The retained [Python distribution manifest](python-artifacts-40973136018.json) and [upgrade/rollback rehearsal](upgrade-rollback-40973136018.json).
+All required CI passed on this revision:
+
+- [Final PR CI run 40987606933](https://github.com/eddiethedean/hedron/actions/runs/40987606933), including branch coverage, strict typing/docs, packaging, minimum/latest dependency bounds, host acceptance on CPython 3.11–3.14, Chromium/Firefox/WebKit acceptance, supply-chain evidence, reproducible distribution rehearsal, and `CI required`.
+- [Full CI dispatch 40988708468](https://github.com/eddiethedean/hedron/actions/runs/40988708468), including the Python 3.11, 3.13, and 3.14 test matrix plus the complete CI workflow.
+- [Native wheel matrix 40987606890](https://github.com/eddiethedean/hedron/actions/runs/40987606890) on Linux x86_64, Linux ARM64, macOS ARM64, and Windows.
+
+The retained [Python distribution manifest](python-artifacts-40987606933.json) records two byte-identical builds of all 22 coordinated packages (44 distributions). The [CPython 3.11 upgrade/rollback rehearsal](upgrade-rollback-40987606933.json) passed baseline, upgrade, and rollback with the original lock restored. The [CI report](ci-run-40987606933.json) retains the host/browser/resource/privacy reports, supply-chain bundle, native artifact inventory, run job identities, and artifact digests. All 39 retained acceptance JSON reports were scanned for randomized privacy canary patterns; no hits were found.
 
 All 16 non-release gates were verified with retained evidence before this decision. The exact candidate contract and package dispositions have maintainer acceptance; the v1.2.0 predecessor publication is recorded.
 
