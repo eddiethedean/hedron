@@ -1,7 +1,7 @@
 # Authoring loop and chrome API (`v0.54`)
 
 **Status:** Implemented (D-093 / D-094 / RFC-0081), introduced in `v0.54.0` and
-available on the published `1.2.x` train.
+available on the published `1.3.x` train.
 
 ## Shared schema
 

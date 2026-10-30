@@ -1,9 +1,16 @@
-# Upgrade to Hedron 1.2
+# Upgrade to Hedron 1.3
 
-This guide starts with the current 1.2 migration boundary, then retains historical notes for
-older release trains. The published release is `1.2.0` on the `1.2.x` line. Read
+This guide starts with the current 1.3 migration boundary, then retains historical notes for
+older release trains. The published release is `1.3.0` on the `1.3.x` line. Read
 [Current release and support](current-release.md) for the published PyPI status before changing
 an application requirement.
+
+## 1.2 → 1.3
+
+Hedron 1.3 adds first-class UI testing with direct Playwright APIs, an opt-in pytest plugin,
+managed ASGI scenarios, and an opt-in scaffold. The maintained Python baseline remains CPython
+3.11–3.14. See the [1.3 release notes](release-notes.md#130--2026-10-30) and review the
+application's browser-test configuration before enabling the optional testing extra.
 
 ## 1.1 → 1.2
 
@@ -12,7 +19,7 @@ the environment under Python 3.11–3.14, then upgrade the coordinated packages 
 application's tests:
 
 ```bash
-python -m pip install -U "hedron>=1.2.0,<1.3" "edron>=1.2.0,<2.0"
+python -m pip install -U "hedron>=1.3.0,<1.4" "edron>=1.3.0,<2.0"
 ```
 
 For a project using uv, update the interpreter in its project configuration and run

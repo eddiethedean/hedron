@@ -11,7 +11,7 @@ Short diligence sheet for security, procurement, and architecture reviewers.
 | Item | Value |
 |---|---|
 | License | MIT |
-| Current version | Published **v1.2.0**; recommended application range `hedron>=1.2.0,<1.3` |
+| Current version | Published **v1.3.0**; recommended application range `hedron>=1.3.0,<1.4` |
 | Publication / commercial SLA | Hedron `1.2.0` and Edron `1.2.0` are on PyPI; **no commercial SLA** |
 | Support | Community GitHub Issues only — [Support](support.md) |
 | Governance / maintainers | Maintainer-led public governance; current authority is the PyPI maintainer and GitHub administrator roster — [Governance](governance.md) |
@@ -42,7 +42,7 @@ Short diligence sheet for security, procurement, and architecture reviewers.
 
 ## Dependency and pin policy
 
-- Coordinate on published trains. Use `hedron>=1.2.0,<1.3` for the current application
+- Coordinate on published trains. Use `hedron>=1.3.0,<1.4` for the current application
   range, then commit a lockfile; use `==1.2.0` for exact evidence reproduction.
 - Runtime ranges and conflict guidance: [COMPATIBILITY.md](../COMPATIBILITY.md)
   (FastAPI/Pydantic pins are intentionally tight).

@@ -2,8 +2,8 @@
 
 The canonical release history now lives on [Releases](release-notes.md).
 
-The coordinated **v1.2.0** release is published on PyPI. Use
-`hedron>=1.2.0,<1.3` for new applications, or `hedron>=1.0.0` when maintaining a
+The coordinated **v1.3.0** release is published on PyPI. Use
+`hedron>=1.3.0,<1.4` for new applications, or `hedron>=1.0.0` when maintaining a
 library that tests across the compatibility floor. See
 [Installation](../getting-started/installation.md).
 

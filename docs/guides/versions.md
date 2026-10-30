@@ -2,7 +2,7 @@
 
 Hedron publishes release snapshots and development documentation on Read the Docs.
 
-- **Stable** documents the newest published release, currently **1.2.0**.
+- **Stable** documents the newest published release, currently **1.3.0**.
 - **Latest** follows `main` and may describe the unreleased **1.3.0** development source.
 - A numbered version such as **1.2.0** is an immutable snapshot associated with the
   `release-20261027-01` source tag and retained publication record.

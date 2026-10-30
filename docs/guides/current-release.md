@@ -15,23 +15,23 @@ maintaining their own release story.
 
 | Package | Version | Maturity | Application requirement | Role |
 |---|---:|---|---|---|
-| `hedron` | `1.2.0` | Stable | `hedron>=1.2.0,<1.3` | FastAPI-native component and route authoring |
-| `hedron-data` | `1.2.0` | Stable | `hedron-data>=1.0.0` | DataTable, DataEditor, and bounded data contracts |
-| `hedron-charts` | `1.2.0` | Stable | `hedron-charts>=1.0.0` | First-party charts and static/Matplotlib output |
-| `hedron-maps` | `1.2.0` | Stable | `hedron-maps>=1.0.0` | Bounded first-party maps and offline presentation |
-| `edron` | `1.2.0` | Stable | `edron>=1.2.0,<2.0` | Alternate class-oriented facade over Hedron |
+| `hedron` | `1.3.0` | Stable | `hedron>=1.3.0,<1.4` | FastAPI-native component and route authoring |
+| `hedron-data` | `1.3.0` | Stable | `hedron-data>=1.0.0` | DataTable, DataEditor, and bounded data contracts |
+| `hedron-charts` | `1.3.0` | Stable | `hedron-charts>=1.0.0` | First-party charts and static/Matplotlib output |
+| `hedron-maps` | `1.3.0` | Stable | `hedron-maps>=1.0.0` | Bounded first-party maps and offline presentation |
+| `edron` | `1.3.0` | Stable | `edron>=1.3.0,<2.0` | Alternate class-oriented facade over Hedron |
 
 The coordinated release supports CPython **3.11–3.14**. Package maturity, capability
 readiness, and individual API stability are separate: a stable package may contain a
 clearly labeled experimental capability.
 
 Python 3.10 has reached end of security support and will receive no further CPython security fixes.
-The published 1.2.0 release requires CPython 3.11 or newer. Recreate the environment under
+The published 1.3.0 release requires CPython 3.11 or newer. Recreate the environment under
 Python 3.11–3.14 before upgrading.
 
 The exact Stable package and API boundary is maintained in the repository’s
 [`release/support-matrix.toml`](https://github.com/eddiethedean/hedron/blob/main/release/support-matrix.toml);
-the 1.2.0 release is published, and the in-tree source is preparing the 1.3.0 candidate. Beta
+the 1.3.0 release is published, and the same versioned source is available from PyPI. Beta
 host/tooling satellites are opt-in compatibility
 surfaces, not part of the stable platform contract.
 
@@ -45,8 +45,8 @@ surfaces, not part of the stable platform contract.
 | Repository contribution | `uv sync`, then [Contributor day one](contributor-day-one.md) |
 
 The table's `>=1.0.0` values are compatibility floors, not the recommended production lock.
-For a new Hedron application use `hedron>=1.2.0,<1.3`; for reproducible CI and deployment,
-resolve and commit a lockfile or use `hedron==1.2.0`. Reusable libraries may use the broader
+For a new Hedron application use `hedron>=1.3.0,<1.4`; for reproducible CI and deployment,
+resolve and commit a lockfile or use `hedron==1.3.0`. Reusable libraries may use the broader
 `>=1.0.0` floor when they test against the full supported range. Upgrade deliberately after
 reading the release notes and running the application's own integration tests.
 
@@ -54,8 +54,9 @@ reading the release notes and running the application's own integration tests.
 
 | Train | Security support | Compatibility expectation |
 |---|---|---|
-| `1.2.x` | Current published train | Stable APIs follow the 1.x compatibility policy |
-| `1.0.x` | Best-effort security triage through approximately 2027-02-27 | Upgrade to 1.2; migration aliases are not the new golden path |
+| `1.3.x` | Current published train | Stable APIs follow the 1.x compatibility policy |
+| `1.2.x` | Best-effort security triage through approximately 2027-02-27 | Upgrade to 1.3; migration aliases are not the new golden path |
+| `1.0.x` | Historical migration baseline; best-effort security triage through approximately 2027-02-27 | Upgrade to 1.3 |
 | Earlier `0.x` | Unsupported | Use historical documentation only to plan an upgrade |
 
 There is no commercial SLA. Community support is provided through GitHub; security reports

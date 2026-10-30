@@ -6,16 +6,16 @@
 > product readiness use [What’s ready](docs/guides/whats-ready.md); for the public roadmap use
 > [What’s next](docs/guides/whats-next.md). Do not treat gate tables as the getting-started guide.
 
-**Roadmap position:** `v1.2.0` is Verified and published on PyPI, including Edron.
-**Current workspace:** Hedron `1.3.0` is in development; `1.2.0` is the current published train.
+**Roadmap position:** `v1.3.0` is Verified and published on PyPI, npm, and GitHub, including Edron.
+**Current workspace:** Hedron `1.3.0` is the current published train.
 The published release establishes the CPython 3.11+ baseline and retains BasedPyright `all` mode
 with errors for explicit and inferred `Any` in first-party Python code.
 `v1.0.17` remains the immutable migration baseline for compatibility evidence.
-**Date:** 2026-10-28
+**Date:** 2026-10-30
 **Published package inventory:** Stable — `hedron`, `hedron-core`, `edron`, `hedron-data`,
-`hedron-charts`, and `hedron-maps` `1.2.0`. Beta — `hedron-explorer`, `hedron-flask`,
+`hedron-charts`, and `hedron-maps` `1.3.0`. Beta — `hedron-explorer`, `hedron-flask`,
 `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`, and `hedron-elements`
-`1.2.0`; `hedron-posit` `1.0.12`; `fastapi-workbench` `1.0.13`; `hedron-sample-kit` `0.2.5`;
+`1.3.0`; `hedron-posit` `1.0.12`; `fastapi-workbench` `1.0.13`; `hedron-sample-kit` `0.2.6`;
 `hedron-notebook` and `hedron-gradio` `0.2.6`; `hedron-sim` and `hedron-mcp` `0.2.7`; and
 `edron-sim` `0.1.2` (MIT, D-033). Native `0.1.4` platform wheels are retained separately;
 PyPI project publication is unconfirmed.

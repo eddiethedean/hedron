@@ -7,7 +7,7 @@ hide:
 
 !!! note "Release context"
 
-    Component contracts and demos target the published 1.2.0 release.
+    Component contracts and demos target the published 1.3.0 release.
     Registry and support details live on
     [Current release and support](../guides/current-release.md).
 

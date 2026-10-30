@@ -210,7 +210,9 @@ INTERNAL_DOC_NAMES = {
     "TRACEABILITY.md",
 }
 HISTORICAL_PREFIXES = ("whats-new-0.", "RELEASE_0_")
-HISTORICAL_RELEASE_PAGES = frozenset({"whats-new-1.0.md", "whats-new-1.1.md"})
+HISTORICAL_RELEASE_PAGES = frozenset(
+    {"whats-new-1.0.md", "whats-new-1.1.md", "whats-new-1.2.md"}
+)
 
 # Implementation claims are independent of registry state: a verified release
 # must never be described as unimplemented, and the malformed ``.1.0.x`` token
