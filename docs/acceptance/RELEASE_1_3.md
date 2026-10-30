@@ -1,6 +1,6 @@
 # Hedron `v1.3.0` first-class UI testing acceptance plan
 
-**Status:** Release approved and cut authorized on 2026-10-30; all 17 required gates are Verified. No tag or publication has been made.
+**Status:** Release approved and cut authorized on 2026-10-30; all 17 required gates are Verified. The first tag preflight stopped before publication because merged-source evidence needed refresh; the refreshed candidate is recorded below.
 **Planning revision:** 2026-10-28
 **Planning baseline:** Published `v1.2.0`
 **Required release predecessor:** `v1.2.0` — PyPI publication verified
@@ -26,8 +26,8 @@ source revision. The evidence-only record may follow that source revision under
 tree. The ledger retains the v1.2.0 publication record, accepted frozen contract, measured budgets,
 complete package dispositions, reproducible artifact manifest, and upgrade/rollback rehearsal.
 The approval and cut authorization are recorded in
-[RELEASE_APPROVAL_2026-10-30.md](evidence-130/RELEASE_APPROVAL_2026-10-30.md). They authorize the
-v1.3.0 cut after merge; they do not publish artifacts. No tag or publication has been made.
+[RELEASE_APPROVAL_2026-10-30.md](evidence-130/RELEASE_APPROVAL_2026-10-30.md). The first tag preflight stopped before publication because the merged source needed fresh
+evidence; the corrected candidate and artifact rehearsal are retained below.
 
 ## Entry and release dependencies
 
@@ -105,9 +105,9 @@ Final PR CI run [40974810399](https://github.com/eddiethedean/hedron/actions/run
 
 The maintainer approved the v1.3.0 release cut and set `release_cut_satisfied = true`; the decision is retained in [RELEASE_APPROVAL_2026-10-30.md](evidence-130/RELEASE_APPROVAL_2026-10-30.md). The approval authorizes cutting after merge; publication remains separate.
 
-The current evidence-bound revision is `e153dccffac042e63e959672b9c95af59220e00e`. It contains a test-only correction to align the release-gate assertion with the approved release state; package implementation and release artifacts are unchanged. PR CI [40987606933](https://github.com/eddiethedean/hedron/actions/runs/40987606933) passed all required jobs. Full CI dispatch [40988708468](https://github.com/eddiethedean/hedron/actions/runs/40988708468) passed the Python 3.11–3.14 test matrix and full workflow. Native wheel matrix [40987606890](https://github.com/eddiethedean/hedron/actions/runs/40987606890) passed on Linux x86_64, Linux ARM64, macOS ARM64, and Windows.
+The original evidence-bound revision was `e153dccffac042e63e959672b9c95af59220e00e`. Strict preflight found mainline documentation and simulator changes missing from its artifact evidence. The merged source `a99ddec3333d5773f0d6b8e3ffda70a1ba486eee` passed main CI and the native wheel matrix. Reproducible artifacts were refreshed from evidence commit `8bacd7075c6302d1b953a4aeb739fc14f6e2cb16`. PR CI [40987606933](https://github.com/eddiethedean/hedron/actions/runs/40987606933) passed all required jobs. Full CI dispatch [40988708468](https://github.com/eddiethedean/hedron/actions/runs/40988708468) passed the Python 3.11–3.14 test matrix and full workflow. Native wheel matrix [40987606890](https://github.com/eddiethedean/hedron/actions/runs/40987606890) passed on Linux x86_64, Linux ARM64, macOS ARM64, and Windows.
 
-The current [CI summary and retained reports](evidence-130/ci-run-40987606933.json) bind the 16 non-release gates to the exact tested revision and include all host/browser acceptance and resource/privacy reports, the supply-chain bundle, and the native wheel inventory. The [Python artifact manifest](evidence-130/python-artifacts-40987606933.json) records two byte-identical builds of 22 packages and 44 distributions. The [upgrade/rollback rehearsal](evidence-130/upgrade-rollback-40987606933.json) passed baseline, upgrade, and rollback with the original lock restored. All 39 retained acceptance JSON reports were scanned for randomized privacy canary patterns with zero hits. Strict release validation passes with all 17 required gates Verified. No release tag or artifact publication has occurred.
+The refreshed [CI summary](evidence-130/ci-run-40990900936.json) links the successful mainline CI and native wheel matrix on the merged source. The [Python artifact manifest](evidence-130/recheck-40993249628/python-artifacts.json) records two byte-identical builds of all 22 coordinated packages (44 distributions) from the refreshed candidate; both builds and the [upgrade/rollback rehearsal](evidence-130/recheck-40993249628/upgrade-rollback-1.3.json) are retained. The original 39 detailed acceptance reports remain available for the PR-tested candidate. Strict validation now binds the release evidence and exact package hashes to the refreshed source.
 
 ## Required gates
 
@@ -215,3 +215,6 @@ Supply 1.4–1.7 only the versioned checkpoint/event/error facts, explicit capab
 context isolation, and controlled test-factory seams. Future polling/loading/timing/save behavior
 and real visibility/suspension evidence stay with their owning phases. This preserves 1.3's
 tooling-only scope and the [new sequence](../rfcs/RFC-0100-INTERACTION-EFFICIENCY-AND-FORM-CONTINUITY.md).
+
+
+The merged-source artifact refresh is retained in [the reproducible distribution manifest](evidence-130/recheck-40993249628/python-artifacts.json), [both complete builds](evidence-130/recheck-40993249628/), and [merge CI record](evidence-130/ci-run-40990900936.json). The source-bound CI run passed at `a99ddec`; the release-evidence-only commit is `8bacd70`.

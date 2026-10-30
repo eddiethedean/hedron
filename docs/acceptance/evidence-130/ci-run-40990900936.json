@@ -1,0 +1,156 @@
+{
+  "merge_commit_ci": {
+    "conclusion": "success",
+    "event": "push",
+    "head_branch": "main",
+    "jobs": [
+      {
+        "conclusion": "success",
+        "name": "Classify changes and check package versions",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900936/job/123852786512"
+      },
+      {
+        "conclusion": "success",
+        "name": "Stable dependency bounds (latest)",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900936/job/123852836459"
+      },
+      {
+        "conclusion": "success",
+        "name": "Browser HTMX (firefox)",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900936/job/123852836495"
+      },
+      {
+        "conclusion": "success",
+        "name": "Tests, branch coverage, and Chromium",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900936/job/123852836501"
+      },
+      {
+        "conclusion": "success",
+        "name": "Tests (Python 3.11)",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900936/job/123852836506"
+      },
+      {
+        "conclusion": "success",
+        "name": "Package wheels and clean-install smoke",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900936/job/123852836529"
+      },
+      {
+        "conclusion": "success",
+        "name": "1.3 host acceptance (Python 3.12)",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900936/job/123852836547"
+      },
+      {
+        "conclusion": "success",
+        "name": "Supply-chain evidence and release gate",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900936/job/123852836555"
+      },
+      {
+        "conclusion": "success",
+        "name": "Tests (Python 3.13)",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900936/job/123852836566"
+      },
+      {
+        "conclusion": "success",
+        "name": "1.3 host acceptance (Python 3.13)",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900936/job/123852836607"
+      },
+      {
+        "conclusion": "success",
+        "name": "Stable dependency bounds (minimum)",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900936/job/123852836608"
+      },
+      {
+        "conclusion": "success",
+        "name": "1.3 host acceptance (Python 3.11)",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900936/job/123852836612"
+      },
+      {
+        "conclusion": "success",
+        "name": "1.3 host acceptance (Python 3.14)",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900936/job/123852836615"
+      },
+      {
+        "conclusion": "success",
+        "name": "Lint, strict typing, and docs",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900936/job/123852836626"
+      },
+      {
+        "conclusion": "success",
+        "name": "Tests (Python 3.14)",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900936/job/123852836627"
+      },
+      {
+        "conclusion": "success",
+        "name": "Browser HTMX (chromium)",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900936/job/123852836635"
+      },
+      {
+        "conclusion": "success",
+        "name": "Browser HTMX (webkit)",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900936/job/123852836647"
+      },
+      {
+        "conclusion": "skipped",
+        "name": "1.3 reproducible artifact rehearsal",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900936/job/123852838800"
+      },
+      {
+        "conclusion": "success",
+        "name": "CI required",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900936/job/123856786000"
+      }
+    ],
+    "run_id": 40990900936,
+    "run_url": "https://github.com/eddiethedean/hedron/actions/runs/40990900936",
+    "workflow": "CI"
+  },
+  "native_wheel_matrix": {
+    "conclusion": "success",
+    "event": "push",
+    "head_branch": "main",
+    "head_sha": "a99ddec3333d5773f0d6b8e3ffda70a1ba486eee",
+    "jobs": [
+      {
+        "conclusion": "success",
+        "name": "ubuntu-latest",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900901/job/123852786476"
+      },
+      {
+        "conclusion": "success",
+        "name": "ubuntu-24.04-arm",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900901/job/123852786511"
+      },
+      {
+        "conclusion": "success",
+        "name": "macos-14",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900901/job/123852786550"
+      },
+      {
+        "conclusion": "success",
+        "name": "windows-latest",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900901/job/123852786641"
+      },
+      {
+        "conclusion": "success",
+        "name": "Aggregate native release evidence",
+        "url": "https://github.com/eddiethedean/hedron/actions/runs/40990900901/job/123853956012"
+      }
+    ],
+    "run_id": 40990900901,
+    "run_url": "https://github.com/eddiethedean/hedron/actions/runs/40990900901",
+    "workflow": "Native wheel matrix"
+  },
+  "phase": "1.3",
+  "reproducible_artifact_rehearsal": {
+    "artifact_name": "release-artifacts-1.3.0-40993249628",
+    "conclusion": "success",
+    "head_sha": "8bacd7075c6302d1b953a4aeb739fc14f6e2cb16",
+    "run_id": 40993249628,
+    "run_url": "https://github.com/eddiethedean/hedron/actions/runs/40993249628",
+    "workflow": "Release artifact rehearsal (1.3.0)"
+  },
+  "schema_version": 1,
+  "source_revision": "a99ddec3333d5773f0d6b8e3ffda70a1ba486eee",
+  "status": "success",
+  "target": "v1.3.0"
+}
