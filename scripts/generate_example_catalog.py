@@ -28,13 +28,16 @@ def render() -> str:
         "",
         "# Repository example catalog",
         "",
-        "Generated from `examples/catalog.toml`. Current examples target the 1.0 contract;",
+        "Generated from `examples/catalog.toml`. Candidate examples document unreleased work;",
         "historical examples are phase evidence and are not recommended starting points.",
         "",
         "| Example | Outcome | Layer | Difficulty | Time | Status |",
         "|---|---|---|---|---:|---|",
     ]
-    for entry in sorted(entries, key=lambda item: (item["status"] != "current", item["path"])):
+    status_order = {"current": 0, "candidate": 1, "historical": 2}
+    for entry in sorted(
+        entries, key=lambda item: (status_order.get(item["status"], 3), item["path"])
+    ):
         path = entry["path"]
         ref = entry.get("ref", "v1.0")
         url = f"https://github.com/eddiethedean/hedron/tree/{ref}/examples/{path}"

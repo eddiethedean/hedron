@@ -1,0 +1,112 @@
+schema_version = 1
+phase = "1.5"
+status = "Planned"
+planning_baseline = "v1.2.0"
+required_predecessor = "v1.4.0"
+predecessor_satisfied = false
+target = "v1.5.0"
+owning_rfc = "RFC-0100"
+implementation = "../implementation/DEFERRED_LOADING_1_5.md"
+acceptance = "RELEASE_1_5.md"
+stage_1_entry_satisfied = false
+release_cut_satisfied = false
+production_runtime_authority_change = false
+changes_existing_defaults = false
+new_policy_api_maturity = "beta-candidate"
+planning_only = true
+
+[[evidence]]
+id = "FREEZE-150"
+state = "Planned"
+owner = "architecture"
+ci_job = "evidence"
+required = true
+description = "Accepted detailed RFC/phase contract; current-source inventory, named maintainers, exact additive APIs and diagnostics, required/deferred scope, host/maturity matrix, schemas, numeric limits, measured baselines, and exact executable commands/artifact paths."
+
+[[evidence]]
+id = "CONTRACT-150"
+state = "Planned"
+owner = "architecture"
+ci_job = "test"
+required = true
+description = "Existing HTMX/Alpine/element authorities and canonical handles reused; one transport/presentation owner; no duplicate state runtime; compatible omitted-policy defaults and documented invalid combinations."
+
+[[evidence]]
+id = "INITIATION-150"
+state = "Planned"
+owner = "browser-platform"
+ci_job = "browser"
+required = true
+description = "Immediate/viewport/user activation, bounded intersection options, one-shot fetch, explicit retry, duplicate suppression, and disposed observers after removal."
+
+[[evidence]]
+id = "PREPARATION-150"
+state = "Planned"
+owner = "runtime"
+ci_job = "test"
+required = true
+description = "Zero deferred handler/query/preparation calls before activation; normal dependency/authorization behavior on activation; no fragment-created executable asset."
+
+[[evidence]]
+id = "LIFECYCLE-150"
+state = "Planned"
+owner = "browser-platform"
+ci_job = "browser"
+required = true
+description = "Repeated/nested/OOB replacement, removed targets, stale generations, asset failure, interruption, and teardown; exactly-once initialization/cleanup and zero retained owned resources after removal."
+
+[[evidence]]
+id = "A11Y-150"
+state = "Planned"
+owner = "accessibility"
+ci_job = "browser"
+required = true
+description = "Keyboard/native fallback, focus and announcement ownership, semantic busy/error states, reduced motion, zoom/reflow, and the declared no-JavaScript flow; no blanket accessibility-conformance claim."
+
+[[evidence]]
+id = "SECURITY-150"
+state = "Planned"
+owner = "security"
+ci_job = "evidence"
+required = true
+description = "Activation performs the normal authorized view request with bounded parameters and target checks. Do not serialize private report data into placeholders, intersection metadata, or traces; deny stale cross-principal results."
+
+[[evidence]]
+id = "PERF-150"
+state = "Planned"
+owner = "performance"
+ci_job = "browser"
+required = true
+description = "Measure initial TTFB, LCP, layout shift, query count, request count, total bytes, activation-to-visible completion, and eventual total work. Freeze representative corpora and numeric limits at W0. The deferred report must issue zero queries and requests before eligibility; activation permits one in-flight fetch per identity. Separate reduced work from work shifted later."
+
+[[evidence]]
+id = "COMPAT-150"
+state = "Planned"
+owner = "compatibility"
+ci_job = "test"
+required = true
+description = "Stable inventory and current-default behavior preserved; explicit FastAPI/Flask/Django/HDJ/Edron/mount dispositions, strict CSP, three-browser evidence, unsupported combinations and Beta migration guidance."
+
+[[evidence]]
+id = "DOCS-150"
+state = "Planned"
+owner = "docs"
+ci_job = "quality"
+required = true
+description = "Packaged reference flow and examples, policy defaults/limits, failure/recovery, HTTP fallback, privacy, diagnostics, API maturity, and exercised opt-out/rollback instructions."
+
+[[evidence]]
+id = "PKG-150"
+state = "Planned"
+owner = "packaging"
+ci_job = "packaging"
+required = true
+description = "Clean wheel/sdist base/extra installs, optional-import isolation, compatible pins and asset plans, typing, provenance/notices, and package/version evidence for every changed distribution."
+
+[[evidence]]
+id = "RELEASE-150"
+state = "Planned"
+owner = "release"
+ci_job = "release"
+required = true
+description = "Every other Required row Verified; immutable artifact-bound evidence, predecessor/support/maturity decisions, migration/rollback, and explicit release approval; no skipped Required row."

@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
+import hashlib
 import re
 import sys
 import tomllib
 from pathlib import Path
-
-import pytest
+from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPTS = ROOT / "scripts"
@@ -77,8 +77,92 @@ def test_release_gate_1_2_candidate_is_selected_without_historical_fallback() ->
     manifest = ROOT / "docs" / "acceptance" / "release-gate-1.2.toml"
     assert gate.evidence_manifest_for("1.2.0") == manifest
     assert gate.check_evidence_manifest_lenient(manifest) == []
-    with pytest.raises(ValueError, match="no explicit release evidence manifest"):
-        gate.evidence_manifest_for("1.3.0")
+
+
+def test_release_gate_1_3_approved_manifest_is_selected_and_inventory_is_fixed() -> None:
+    manifest = ROOT / "docs" / "acceptance" / "release-gate-1.3.toml"
+    assert gate.evidence_manifest_for("1.3.0") == manifest
+    assert gate.check_evidence_manifest_lenient(manifest) == []
+    data = tomllib.loads(manifest.read_text(encoding="utf-8"))
+    states = {row["id"]: row["state"] for row in data["evidence"]}
+    assert all(state == "Verified" for state in states.values())
+    assert data["status"] == "ReleaseApproved"
+    assert data["release_cut_satisfied"] is True
+    assert data["release_approval"]["approved"] is True
+
+
+def test_release_gate_1_3_rejects_inventory_and_target_drift(tmp_path: Path) -> None:
+    source = (ROOT / "docs" / "acceptance" / "release-gate-1.3.toml").read_text(encoding="utf-8")
+    source = source.replace('target = "v1.3.0"', 'target = "v1.3.1"')
+    source = source.replace('id = "RELEASE-130"', 'id = "OTHER-130"')
+    manifest = tmp_path / "release-gate-1.3.toml"
+    manifest.write_text(source, encoding="utf-8")
+    errors = gate.check_evidence_manifest_lenient(manifest)
+    assert any("gate order mismatch" in error for error in errors)
+    assert any("target must be v1.3.0" in error for error in errors)
+
+
+def test_release_gate_1_3_binds_evidence_to_sha256(tmp_path: Path) -> None:
+    evidence_root = tmp_path / "acceptance"
+    evidence_root.mkdir()
+    evidence = evidence_root / "evidence.json"
+    evidence.write_text('{"result":"pass"}\n', encoding="utf-8")
+    digest = hashlib.sha256(evidence.read_bytes()).hexdigest()
+
+    assert gate._bound_record_errors(evidence_root, "evidence.json", digest, "TEST-130") == []
+    evidence.write_text('{"result":"stale"}\n', encoding="utf-8")
+    assert gate._bound_record_errors(evidence_root, "evidence.json", digest, "TEST-130") == [
+        "TEST-130: retained evidence SHA-256 does not match"
+    ]
+
+
+def test_release_gate_1_3_source_commit_allows_only_evidence_followup(monkeypatch) -> None:
+    source = "d" * 40
+    changed = (
+        "docs/acceptance/RELEASE_1_3.md\n"
+        "docs/acceptance/release-gate-1.3.toml\n"
+        "docs/acceptance/evidence-130/browser-linux.json\n"
+    )
+
+    def fake_run(command, **_kwargs):
+        assert command == ["git", "merge-base", "--is-ancestor", source, "HEAD"]
+        return SimpleNamespace(returncode=0)
+
+    def fake_check_output(command, **_kwargs):
+        if command[:3] == ["git", "diff", "--name-only"]:
+            if command[3] == f"{source}..HEAD":
+                return changed
+            return ""
+        if command[:2] == ["git", "status"]:
+            return ""
+        raise AssertionError(command)
+
+    monkeypatch.setattr(gate.subprocess, "run", fake_run)
+    monkeypatch.setattr(gate.subprocess, "check_output", fake_check_output)
+
+    assert gate._phase_130_source_revision_errors(source) == []
+
+    changed += "packages/hedron/src/hedron/app.py\n"
+    assert gate._phase_130_source_revision_errors(source) == [
+        "phase 1.3 source revision predates non-evidence changes: packages/hedron/src/hedron/app.py"
+    ]
+
+
+def test_release_gate_1_3_rejects_symlinked_evidence(tmp_path: Path) -> None:
+    evidence_root = tmp_path / "acceptance"
+    evidence_root.mkdir()
+    outside = tmp_path / "outside.json"
+    outside.write_text("{}\n", encoding="utf-8")
+    (evidence_root / "evidence.json").symlink_to(outside)
+
+    errors = gate._bound_record_errors(
+        evidence_root,
+        "evidence.json",
+        hashlib.sha256(outside.read_bytes()).hexdigest(),
+        "TEST-130",
+    )
+
+    assert errors == ["TEST-130: evidence path must not traverse symlinks"]
 
 
 def test_release_gate_1_2_rejects_deferred_required_gates(tmp_path: Path) -> None:
@@ -117,10 +201,12 @@ def test_current_patch_package_metadata_passes() -> None:
 
 
 def test_github_release_requires_successful_pypi_publish() -> None:
-    workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
+    workflow = (ROOT / ".github/workflows/release.yml").read_text(encoding="utf-8")
+    assert "continue-on-error: true" not in workflow
     assert "steps.pypi.outcome == 'success'" in workflow
-    assert "steps.pypi.outputs.publish_failed != '1'" in workflow
-    assert "steps.pypi.outcome == 'failure' || steps.pypi.outputs.publish_failed == '1'" in workflow
+    assert "steps.verify_quickstart.outcome == 'success'" in workflow
+    assert "--check-url https://pypi.org/simple/" in workflow
+    assert 'if [ "$name" = "hedron-native" ]' in workflow
 
 
 def test_release_workflow_uses_metadata_version_with_release_namespace() -> None:
@@ -131,27 +217,20 @@ def test_release_workflow_uses_metadata_version_with_release_namespace() -> None
     assert "Using legacy version tag for manual recovery" in workflow
 
 
-def test_connect_live_smoke_is_advisory_to_release_publication() -> None:
-    workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
-    connect_start = workflow.index("  realconnect:")
-    connect_end = workflow.index("  publish_only_typing:", connect_start)
-    connect_job = workflow[connect_start:connect_end]
-    publish_start = workflow.index("  publish:\n")
-    publish_job = workflow[publish_start:]
-    publish_needs = publish_job[publish_job.index("    needs:") : publish_job.index("    if:")]
-
-    assert "name: Connect backend smoke (advisory)" in connect_job
-    assert "continue-on-error: true" in connect_job
-    assert "HEDRON_REQUIRED_LIVE_GATES" not in connect_job
-    assert "realconnect" not in publish_needs
-    assert "needs.realconnect.result" not in publish_job
+def test_release_reuses_ci_and_keeps_live_services_out_of_publication() -> None:
+    workflow = (ROOT / ".github/workflows/release.yml").read_text(encoding="utf-8")
+    assert "scripts/check_release_ci.sh" in workflow
+    assert "actions: read" in workflow
+    assert "  realconnect:" not in workflow
+    assert "  realwb:" not in workflow
+    assert "  publish_only_typing:" not in workflow
 
 
-def test_ci_requires_package_version_change_detection() -> None:
-    workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
-    assert "name: Detect package version changes" in workflow
-    assert "scripts/check_changed_package_versions.py" in workflow
-    assert "package_versions" in workflow[workflow.index("  required:") :]
+def test_ci_checks_package_versions_in_the_change_job() -> None:
+    workflow = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    changes = workflow[workflow.index("  changes:") : workflow.index("  coverage:")]
+    assert "scripts/check_changed_package_versions.py" in changes
+    assert "  package_versions:" not in workflow
 
 
 def test_built_quickstart_is_verified_before_pypi_upload() -> None:
@@ -172,7 +251,7 @@ def test_workbench_artifacts_are_verified_before_pypi_upload() -> None:
     assert build < prepublish
     assert prepublish < upload
     assert "scripts/check_workbench_release_artifacts.py" in workflow[prepublish:upload]
-    assert workflow.count('|| [ "$name" = "fastapi-workbench" ]') == 2
+    assert "scripts/release_publish_order.py" in workflow
 
 
 def test_120_release_requires_exact_approved_candidate_artifacts() -> None:
@@ -186,23 +265,20 @@ def test_120_release_requires_exact_approved_candidate_artifacts() -> None:
     assert "--expected-artifact-count 44 --exact-set" in release_steps
 
 
-def test_120_artifact_rehearsal_builds_twice_and_never_publishes() -> None:
-    workflow = (ROOT / ".github/workflows/release-artifacts-1.2.yml").read_text(encoding="utf-8")
-
+def test_release_rehearsal_is_candidate_ci_only_and_has_no_publish_path() -> None:
+    assert not (ROOT / ".github/workflows/release-artifacts-1.2.yml").exists()
+    assert not (ROOT / "scripts/check_python_310_candidate.py").exists()
+    workflow = (ROOT / ".github/workflows/release-artifacts-1.3.yml").read_text(encoding="utf-8")
+    assert "check_python_310_candidate.py" not in workflow
+    assert "uv python install 3.10" not in workflow
     assert "workflow_dispatch:" in workflow
-    assert "push:" in workflow
-    assert "branches:" in workflow and "- main" in workflow
-    assert "build_reproducible_release_artifacts.py" in workflow
-    assert "check_python_310_candidate.py" in (
-        ROOT / "scripts/build_reproducible_release_artifacts.py"
-    ).read_text(encoding="utf-8")
-    assert "rehearse_python_311_upgrade_rollback.py" in (
-        ROOT / "scripts/build_reproducible_release_artifacts.py"
-    ).read_text(encoding="utf-8")
-    assert "actions/upload-artifact@" in workflow
-    assert "retention-days: 90" in workflow
+    assert "workflow_call:" in workflow
     assert "uv publish" not in workflow
-    assert "PyPI" not in workflow
+
+    ci = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    assert "release-artifact-rehearsal:" in ci
+    assert "github.event.pull_request.head.ref == 'codex/hedron-1.3-release-prep'" in ci
+    assert "uses: ./.github/workflows/release-artifacts-1.3.yml" in ci
 
 
 def test_workbench_dependency_is_published_before_hedron_posit() -> None:
@@ -229,7 +305,7 @@ def test_edron_is_published_by_main_and_retains_recovery_path() -> None:
     assert "workflow_dispatch:" in edron
     assert "RELEASE_REF:" in edron
     assert "fetch-depth: 0" in edron[edron.index("  publish:") :]
-    assert "needs: [test, dependency_bounds, browser]" in edron
+    assert "scripts/check_release_ci.sh" in edron
     assert ".venv/bin/python scripts/check_edron_10_release.py" in edron
     assert "Recover Edron and edron-sim publication" in edron
     assert "secrets.PYPI_API_TOKEN" in edron
@@ -237,8 +313,6 @@ def test_edron_is_published_by_main_and_retains_recovery_path() -> None:
     assert "uv sync --no-install-project" in edron
     assert "uv run --no-sync python" in edron
     assert "Preflight published Stable dependencies from PyPI" in edron
-    assert "tests/unit/test_edron_runtime.py" in edron
-    assert "tests/unit/test_edron_phase02.py" in edron
     assert "id-token: write" in edron
     publisher = re.search(r"pypa/gh-action-pypi-publish@([^\s]+)", edron)
     assert publisher is not None
@@ -249,7 +323,12 @@ def test_v1_branch_has_one_stable_required_ci_context() -> None:
     workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
     assert "branches: [main, v1.0]" in workflow
     assert "name: CI required" in workflow
-    assert "needs:\n      [changes, package_versions, test, dependency-bounds" in workflow
+    assert (
+        "needs: [changes, coverage, test, dependency-bounds, quality, browser, packaging, "
+        "release-host, evidence, release-artifact-rehearsal]" in workflow
+    )
+    assert "RELEASE_CANDIDATE" in workflow
+    assert 'required.add("release-artifact-rehearsal")' in workflow
 
 
 def test_local_release_gate_accepts_both_license_spelling_aliases() -> None:

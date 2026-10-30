@@ -1,0 +1,235 @@
+{
+  "architecture": "aarch64",
+  "browser": null,
+  "errors": [],
+  "junitxml": "docs/acceptance/evidence-130/linux-host-matrix/host-3.11.xml",
+  "lane": "host",
+  "operating_system": "Linux",
+  "phase": "1.3",
+  "python": "3.11",
+  "required_cases": [
+    {
+      "id": "HOST-ASGI-LIFECYCLE",
+      "matched_testcases": [
+        {
+          "classname": "tests.unit.test_ui_testing_host",
+          "name": "test_managed_host_owns_child_app_and_root_path",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "5.012"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/unit/test_ui_testing_host.py::test_managed_host_owns_child_app_and_root_path"
+    },
+    {
+      "id": "HOST-RESOURCE-BUDGET",
+      "matched_testcases": [
+        {
+          "classname": "tests.unit.test_ui_testing_host",
+          "name": "test_managed_host_resource_budget",
+          "properties": {
+            "host_child_processes": "[1, 1, 1, 1, 1]",
+            "host_shutdown_ms": "[305.01808400731534, 306.39637500280514, 297.83633298939094, 299.1255829692818, 304.5322500402108]",
+            "host_startup_ms": "[580.5665000225417, 552.3446259903722, 551.3924169936217, 587.8223750041798, 553.2449170132168]"
+          },
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "4.340"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/unit/test_ui_testing_host.py::test_managed_host_resource_budget"
+    },
+    {
+      "id": "HOST-STARTUP-FAILURE",
+      "matched_testcases": [
+        {
+          "classname": "tests.unit.test_ui_testing_host",
+          "name": "test_managed_host_reports_factory_startup_failure_without_leaking_child",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.421"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/unit/test_ui_testing_host.py::test_managed_host_reports_factory_startup_failure_without_leaking_child"
+    },
+    {
+      "id": "HOST-SHUTDOWN-CONFIRMATION",
+      "matched_testcases": [
+        {
+          "classname": "tests.unit.test_ui_testing_host",
+          "name": "test_shutdown_uses_confirmation_received_after_child_exits",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.001"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/unit/test_ui_testing_host.py::test_shutdown_uses_confirmation_received_after_child_exits"
+    },
+    {
+      "id": "HOST-LIFESPAN-FAILURE",
+      "matched_testcases": [
+        {
+          "classname": "tests.unit.test_ui_testing_host",
+          "name": "test_shutdown_rejects_failed_lifespan_confirmation",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.001"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/unit/test_ui_testing_host.py::test_shutdown_rejects_failed_lifespan_confirmation"
+    },
+    {
+      "id": "HOST-FACTORY-INPUT",
+      "matched_testcases": [
+        {
+          "classname": "tests.unit.test_ui_testing_host",
+          "name": "test_factory_config_is_json_compatible_and_bounded[config0-TypeError]",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.001"
+        },
+        {
+          "classname": "tests.unit.test_ui_testing_host",
+          "name": "test_factory_config_is_json_compatible_and_bounded[config1-TypeError]",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.001"
+        },
+        {
+          "classname": "tests.unit.test_ui_testing_host",
+          "name": "test_factory_config_is_json_compatible_and_bounded[config2-ValueError]",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.002"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/unit/test_ui_testing_host.py::test_factory_config_is_json_compatible_and_bounded"
+    },
+    {
+      "id": "HOST-ISOLATED-IMPORTS",
+      "matched_testcases": [
+        {
+          "classname": "tests.unit.test_ui_testing_host",
+          "name": "test_public_browser_scenario_import_has_no_optional_runner_imports",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.418"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/unit/test_ui_testing_host.py::test_public_browser_scenario_import_has_no_optional_runner_imports"
+    },
+    {
+      "id": "HOST-ARTIFACT-PATHS",
+      "matched_testcases": [
+        {
+          "classname": "tests.unit.test_ui_testing_artifacts",
+          "name": "test_artifact_tree_is_private_without_changing_selected_root",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.002"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/unit/test_ui_testing_artifacts.py::test_artifact_tree_is_private_without_changing_selected_root"
+    },
+    {
+      "id": "HOST-ARTIFACT-BUDGET",
+      "matched_testcases": [
+        {
+          "classname": "tests.unit.test_ui_testing_artifacts",
+          "name": "test_artifact_writer_fails_closed_at_per_worker_budget",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.002"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/unit/test_ui_testing_artifacts.py::test_artifact_writer_fails_closed_at_per_worker_budget"
+    },
+    {
+      "id": "HOST-MANIFEST-BYTE-CEILING",
+      "matched_testcases": [
+        {
+          "classname": "tests.unit.test_ui_testing_artifacts",
+          "name": "test_artifact_writer_respects_manifest_byte_ceiling",
+          "properties": {
+            "structured_manifest_bytes": "294"
+          },
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.004"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/unit/test_ui_testing_artifacts.py::test_artifact_writer_respects_manifest_byte_ceiling"
+    },
+    {
+      "id": "HOST-CAPTURE-POLICY",
+      "matched_testcases": [
+        {
+          "classname": "tests.unit.test_ui_testing_policy",
+          "name": "test_upstream_capture_flags_require_synthetic_consent_before_context_creation",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.001"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/unit/test_ui_testing_policy.py::test_upstream_capture_flags_require_synthetic_consent_before_context_creation"
+    },
+    {
+      "id": "HOST-SATELLITE-CONTRIBUTION",
+      "matched_testcases": [
+        {
+          "classname": "tests.unit.test_ui_testing_contributions",
+          "name": "test_json_shaped_contribution_metadata_is_validated",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.001"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/unit/test_ui_testing_contributions.py::test_json_shaped_contribution_metadata_is_validated"
+    },
+    {
+      "id": "HOST-PACKAGE-RESOURCE",
+      "matched_testcases": [
+        {
+          "classname": "tests.ops.test_packaging_isolation",
+          "name": "test_hedron_build_module_is_packaged",
+          "properties": {},
+          "reason": null,
+          "status": "passed",
+          "time_seconds": "0.744"
+        }
+      ],
+      "status": "passed",
+      "test": "tests/ops/test_packaging_isolation.py::test_hedron_build_module_is_packaged"
+    }
+  ],
+  "schema_version": 1,
+  "skips": [],
+  "status_counts": {
+    "passed": 53
+  },
+  "testcase_count": 53
+}

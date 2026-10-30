@@ -1,0 +1,826 @@
+{
+  "schema_version": 1,
+  "phase": "1.3",
+  "candidate_version": "1.3.0",
+  "run_id": 40942185662,
+  "run_url": "https://github.com/eddiethedean/hedron/actions/runs/40942185662",
+  "source_revision": "e76f595db5cf1643b05bf6124dbf970a8741b806",
+  "completed_at": "2026-10-29T19:51:12Z",
+  "status": "success",
+  "required_check": "passed",
+  "job_count": 18,
+  "jobs": [
+    {
+      "id": 123688351765,
+      "name": "Detect docs-only PR",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 123688352144,
+      "name": "Detect package version changes",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 123688438460,
+      "name": "Quality, strict core typing, docs, and packages",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 123688438547,
+      "name": "REALWB-030",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 123688438572,
+      "name": "REALCONNECT-033",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 123688438577,
+      "name": "Stable dependency bounds (minimum)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 123688438607,
+      "name": "Supply-chain evidence bundle",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 123688438609,
+      "name": "Stable dependency bounds (latest)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 123688438626,
+      "name": "Browser HTMX (webkit)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 123688438676,
+      "name": "Tests (Python 3.13)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 123688438759,
+      "name": "Tests (Python 3.14)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 123688438789,
+      "name": "Tests (Python 3.11)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 123688438797,
+      "name": "Browser HTMX (chromium)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 123688438843,
+      "name": "Tests (Python 3.12)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 123688438973,
+      "name": "Browser HTMX (firefox)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 123688439506,
+      "name": "1.3 release artifact rehearsal / Reproducible Python distributions",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 123688741718,
+      "name": "PKG-033 packaging rehearsal",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 123693631149,
+      "name": "CI required",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "required_job_groups": {
+    "python_3_11_to_3_14_host_suites": "passed",
+    "chromium_firefox_webkit_linux_suites": "passed",
+    "minimum_latest_testing_extra_bounds": "passed",
+    "quality_docs_typing_packages": "passed",
+    "PKG_033_packaging_rehearsal": "passed",
+    "REALWB_030": "passed",
+    "REALCONNECT_033": "passed",
+    "supply_chain_evidence_bundle": "passed",
+    "reproducible_1_3_distributions": "passed",
+    "CI_required": "passed"
+  },
+  "host_python_rows": [
+    {
+      "python": "3.11.15",
+      "operating_system": "Linux",
+      "architecture": "x86_64",
+      "testcase_count": 55,
+      "required_case_ids": [
+        "HOST-ASGI-LIFECYCLE",
+        "HOST-RESOURCE-BUDGET",
+        "HOST-STARTUP-FAILURE",
+        "HOST-SHUTDOWN-CONFIRMATION",
+        "HOST-LIFESPAN-FAILURE",
+        "HOST-FACTORY-INPUT",
+        "HOST-ISOLATED-IMPORTS",
+        "HOST-ARTIFACT-PATHS",
+        "HOST-ARTIFACT-BUDGET",
+        "HOST-MANIFEST-BYTE-CEILING",
+        "HOST-CAPTURE-POLICY",
+        "HOST-SATELLITE-CONTRIBUTION",
+        "HOST-PACKAGE-RESOURCE"
+      ],
+      "required_case_count": 13,
+      "required_cases_all_passed": true,
+      "skip_count": 0,
+      "status_counts": {
+        "passed": 55
+      },
+      "acceptance_errors": [],
+      "budget_errors": [],
+      "max_startup_ms": 1148.9832350000029,
+      "max_shutdown_ms": 385.3317979999815,
+      "max_child_processes": 1.0,
+      "resource_report": {
+        "duration_seconds": 16.141236,
+        "max_process_group_rss_bytes": 276975616,
+        "max_processes": 5,
+        "max_temporary_tree_bytes": 10113024,
+        "max_temporary_growth_per_sample_bytes": 9166848,
+        "temporary_filesystem": "ext4",
+        "timeout_seconds": 900.0,
+        "termination_reason": null
+      }
+    },
+    {
+      "python": "3.12.13",
+      "operating_system": "Linux",
+      "architecture": "x86_64",
+      "testcase_count": 55,
+      "required_case_ids": [
+        "HOST-ASGI-LIFECYCLE",
+        "HOST-RESOURCE-BUDGET",
+        "HOST-STARTUP-FAILURE",
+        "HOST-SHUTDOWN-CONFIRMATION",
+        "HOST-LIFESPAN-FAILURE",
+        "HOST-FACTORY-INPUT",
+        "HOST-ISOLATED-IMPORTS",
+        "HOST-ARTIFACT-PATHS",
+        "HOST-ARTIFACT-BUDGET",
+        "HOST-MANIFEST-BYTE-CEILING",
+        "HOST-CAPTURE-POLICY",
+        "HOST-SATELLITE-CONTRIBUTION",
+        "HOST-PACKAGE-RESOURCE"
+      ],
+      "required_case_count": 13,
+      "required_cases_all_passed": true,
+      "skip_count": 0,
+      "status_counts": {
+        "passed": 55
+      },
+      "acceptance_errors": [],
+      "budget_errors": [],
+      "max_startup_ms": 946.2175209999941,
+      "max_shutdown_ms": 378.0018840000139,
+      "max_child_processes": 1.0,
+      "resource_report": {
+        "duration_seconds": 13.779351,
+        "max_process_group_rss_bytes": 272338944,
+        "max_processes": 5,
+        "max_temporary_tree_bytes": 56463360,
+        "max_temporary_growth_per_sample_bytes": 55963648,
+        "temporary_filesystem": "ext4",
+        "timeout_seconds": 900.0,
+        "termination_reason": null
+      }
+    },
+    {
+      "python": "3.13.14",
+      "operating_system": "Linux",
+      "architecture": "x86_64",
+      "testcase_count": 55,
+      "required_case_ids": [
+        "HOST-ASGI-LIFECYCLE",
+        "HOST-RESOURCE-BUDGET",
+        "HOST-STARTUP-FAILURE",
+        "HOST-SHUTDOWN-CONFIRMATION",
+        "HOST-LIFESPAN-FAILURE",
+        "HOST-FACTORY-INPUT",
+        "HOST-ISOLATED-IMPORTS",
+        "HOST-ARTIFACT-PATHS",
+        "HOST-ARTIFACT-BUDGET",
+        "HOST-MANIFEST-BYTE-CEILING",
+        "HOST-CAPTURE-POLICY",
+        "HOST-SATELLITE-CONTRIBUTION",
+        "HOST-PACKAGE-RESOURCE"
+      ],
+      "required_case_count": 13,
+      "required_cases_all_passed": true,
+      "skip_count": 0,
+      "status_counts": {
+        "passed": 55
+      },
+      "acceptance_errors": [],
+      "budget_errors": [],
+      "max_startup_ms": 1014.3877429999861,
+      "max_shutdown_ms": 369.46042200000306,
+      "max_child_processes": 1.0,
+      "resource_report": {
+        "duration_seconds": 15.417681,
+        "max_process_group_rss_bytes": 279986176,
+        "max_processes": 5,
+        "max_temporary_tree_bytes": 10493952,
+        "max_temporary_growth_per_sample_bytes": 9170944,
+        "temporary_filesystem": "ext4",
+        "timeout_seconds": 900.0,
+        "termination_reason": null
+      }
+    },
+    {
+      "python": "3.14.6",
+      "operating_system": "Linux",
+      "architecture": "x86_64",
+      "testcase_count": 55,
+      "required_case_ids": [
+        "HOST-ASGI-LIFECYCLE",
+        "HOST-RESOURCE-BUDGET",
+        "HOST-STARTUP-FAILURE",
+        "HOST-SHUTDOWN-CONFIRMATION",
+        "HOST-LIFESPAN-FAILURE",
+        "HOST-FACTORY-INPUT",
+        "HOST-ISOLATED-IMPORTS",
+        "HOST-ARTIFACT-PATHS",
+        "HOST-ARTIFACT-BUDGET",
+        "HOST-MANIFEST-BYTE-CEILING",
+        "HOST-CAPTURE-POLICY",
+        "HOST-SATELLITE-CONTRIBUTION",
+        "HOST-PACKAGE-RESOURCE"
+      ],
+      "required_case_count": 13,
+      "required_cases_all_passed": true,
+      "skip_count": 0,
+      "status_counts": {
+        "passed": 55
+      },
+      "acceptance_errors": [],
+      "budget_errors": [],
+      "max_startup_ms": 1046.0155419999921,
+      "max_shutdown_ms": 358.868359000013,
+      "max_child_processes": 1.0,
+      "resource_report": {
+        "duration_seconds": 15.888394,
+        "max_process_group_rss_bytes": 301846528,
+        "max_processes": 5,
+        "max_temporary_tree_bytes": 10113024,
+        "max_temporary_growth_per_sample_bytes": 9162752,
+        "temporary_filesystem": "ext4",
+        "timeout_seconds": 900.0,
+        "termination_reason": null
+      }
+    }
+  ],
+  "browser_engine_rows": [
+    {
+      "engine": "chromium",
+      "browser_version": "151.0.7922.34",
+      "python": "3.12",
+      "playwright_version": "1.62.0",
+      "pytest_playwright_version": "0.10.0",
+      "testcase_count": 216,
+      "required_case_ids": [
+        "BEHAVIOR-PROFILE-CSRF-FORM",
+        "BEHAVIOR-EXTERNAL-LOOPBACK",
+        "BEHAVIOR-NO-JAVASCRIPT",
+        "BEHAVIOR-POLL-ACTION",
+        "BEHAVIOR-ACTION-GENERATION",
+        "BEHAVIOR-FRAGMENT-OOB",
+        "BEHAVIOR-HISTORY-RESTORE",
+        "BEHAVIOR-CSP-REDUCED-MOTION",
+        "BEHAVIOR-REQUEST-POLICY",
+        "BEHAVIOR-EXTENSION-ASSETS",
+        "BEHAVIOR-EXTENSION-LOAD-ORDER",
+        "BEHAVIOR-MOUNTED-LOAD-ORDER",
+        "BEHAVIOR-UNAUTHORIZED-TARGET",
+        "BEHAVIOR-TOAST-TTL",
+        "BEHAVIOR-ELEMENTS-UPLOAD-LOCAL-STATE",
+        "BEHAVIOR-COMBINED-REQUEST-STATE",
+        "BEHAVIOR-ASSET-FAILURE",
+        "BEHAVIOR-JS-DISABLED-SEMANTICS",
+        "BEHAVIOR-INTEGRITY-FAILURE",
+        "BEHAVIOR-DOWNLOAD",
+        "PERF-BROWSER-RESOURCE-BUDGET",
+        "A11Y-KEYBOARD-AXE-REFLOW",
+        "A11Y-OFFLINE-SEMANTIC-SNAPSHOT",
+        "A11Y-FORM-ANNOUNCEMENT",
+        "A11Y-NO-JAVASCRIPT",
+        "A11Y-SEMANTIC-ASSET-FAILURE",
+        "BEHAVIOR-FACTORY-INPUT-REJECT"
+      ],
+      "required_case_count": 27,
+      "required_cases_all_passed": true,
+      "skip_count": 79,
+      "skip_classifications": {
+        "ENGINE-MATRIX-NOT-SELECTED": 72,
+        "HISTORICAL-API-RETIRED": 5,
+        "STRUCTURED-PRIVACY-PROBE-SEPARATE-LANE": 1,
+        "SYNTHETIC-CAPTURE-PROBE-SEPARATE-LANE": 1
+      },
+      "status_counts": {
+        "passed": 137,
+        "skipped": 79
+      },
+      "acceptance_errors": [],
+      "budget_errors": [],
+      "resource_errors": [],
+      "browser_resource_report": {
+        "duration_seconds": 279.372476,
+        "exit_code": 0,
+        "max_process_group_rss_bytes": 796471296,
+        "max_processes": 8,
+        "max_temporary_tree_bytes": 46437280,
+        "max_temporary_growth_per_sample_bytes": 6037728,
+        "temporary_filesystem": "tmpfs",
+        "temporary_filesystem_capacity_bytes": 134217728,
+        "temporary_filesystem_limit_bytes": 134217728,
+        "temporary_filesystem_usage_limit_bytes": 134217728,
+        "termination_reason": null
+      },
+      "budget_measurements": {
+        "max_context_create_ms": 5.238982999969721,
+        "max_context_close_ms": 3.8265460000275198,
+        "scenario_cycle_ms": 2428.7150239999846,
+        "settle_ms": [
+          27.767320000009477
+        ],
+        "event_count": 29.0,
+        "event_snapshot_bytes": 3149.0
+      },
+      "privacy_probe": {
+        "status": "passed",
+        "canary_categories": [
+          "form",
+          "query",
+          "header",
+          "cookie",
+          "storage",
+          "console",
+          "exception",
+          "target",
+          "path"
+        ],
+        "manifest_leaked_categories": [],
+        "unexpected_native_output_count": 0,
+        "errors": []
+      },
+      "synthetic_capture_probe": {
+        "errors": [],
+        "private_tmpfs_capacity_bytes": 134217728,
+        "monitor_interval_ms": 25,
+        "per_file_limit_bytes": 67108864,
+        "normal_trace_bytes": 195365,
+        "normal_trace_valid": true,
+        "normal_failure_retained": true,
+        "normal_profile_max_temporary_tree_bytes": 1165204,
+        "over_limit_error_visible": true,
+        "over_limit_trace_bytes": 0,
+        "soft_limit_bytes": 33554432,
+        "maximum_observed_temporary_tree_bytes": 50954420,
+        "maximum_overshoot_bound_bytes": 67108864,
+        "overshoot_within_bound": true,
+        "threshold_termination_visible": true,
+        "threshold_termination_reason": "temporary_storage_limit"
+      }
+    },
+    {
+      "engine": "firefox",
+      "browser_version": "153.0",
+      "python": "3.12",
+      "playwright_version": "1.62.0",
+      "pytest_playwright_version": "0.10.0",
+      "testcase_count": 216,
+      "required_case_ids": [
+        "BEHAVIOR-PROFILE-CSRF-FORM",
+        "BEHAVIOR-EXTERNAL-LOOPBACK",
+        "BEHAVIOR-NO-JAVASCRIPT",
+        "BEHAVIOR-POLL-ACTION",
+        "BEHAVIOR-ACTION-GENERATION",
+        "BEHAVIOR-FRAGMENT-OOB",
+        "BEHAVIOR-HISTORY-RESTORE",
+        "BEHAVIOR-CSP-REDUCED-MOTION",
+        "BEHAVIOR-REQUEST-POLICY",
+        "BEHAVIOR-EXTENSION-ASSETS",
+        "BEHAVIOR-EXTENSION-LOAD-ORDER",
+        "BEHAVIOR-MOUNTED-LOAD-ORDER",
+        "BEHAVIOR-UNAUTHORIZED-TARGET",
+        "BEHAVIOR-TOAST-TTL",
+        "BEHAVIOR-ELEMENTS-UPLOAD-LOCAL-STATE",
+        "BEHAVIOR-COMBINED-REQUEST-STATE",
+        "BEHAVIOR-ASSET-FAILURE",
+        "BEHAVIOR-JS-DISABLED-SEMANTICS",
+        "BEHAVIOR-INTEGRITY-FAILURE",
+        "BEHAVIOR-DOWNLOAD",
+        "PERF-BROWSER-RESOURCE-BUDGET",
+        "A11Y-KEYBOARD-AXE-REFLOW",
+        "A11Y-OFFLINE-SEMANTIC-SNAPSHOT",
+        "A11Y-FORM-ANNOUNCEMENT",
+        "A11Y-NO-JAVASCRIPT",
+        "A11Y-SEMANTIC-ASSET-FAILURE",
+        "BEHAVIOR-FACTORY-INPUT-REJECT"
+      ],
+      "required_case_count": 27,
+      "required_cases_all_passed": true,
+      "skip_count": 81,
+      "skip_classifications": {
+        "CHROMIUM-ONLY-STYLE-EVIDENCE": 1,
+        "ENGINE-MATRIX-NOT-SELECTED": 73,
+        "HISTORICAL-API-RETIRED": 5,
+        "STRUCTURED-PRIVACY-PROBE-SEPARATE-LANE": 1,
+        "SYNTHETIC-CAPTURE-PROBE-SEPARATE-LANE": 1
+      },
+      "status_counts": {
+        "passed": 135,
+        "skipped": 81
+      },
+      "acceptance_errors": [],
+      "budget_errors": [],
+      "resource_errors": [],
+      "browser_resource_report": {
+        "duration_seconds": 528.222516,
+        "exit_code": 0,
+        "max_process_group_rss_bytes": 817213440,
+        "max_processes": 8,
+        "max_temporary_tree_bytes": 84437056,
+        "max_temporary_growth_per_sample_bytes": 14434584,
+        "temporary_filesystem": "tmpfs",
+        "temporary_filesystem_capacity_bytes": 134217728,
+        "temporary_filesystem_limit_bytes": 134217728,
+        "temporary_filesystem_usage_limit_bytes": 134217728,
+        "termination_reason": null
+      },
+      "budget_measurements": {
+        "max_context_create_ms": 74.37205300004734,
+        "max_context_close_ms": 116.48938700000144,
+        "scenario_cycle_ms": 4297.491501999957,
+        "settle_ms": [
+          36.3442100000384
+        ],
+        "event_count": 29.0,
+        "event_snapshot_bytes": 3149.0
+      },
+      "privacy_probe": {
+        "status": "passed",
+        "canary_categories": [
+          "form",
+          "query",
+          "header",
+          "cookie",
+          "storage",
+          "console",
+          "exception",
+          "target",
+          "path"
+        ],
+        "manifest_leaked_categories": [],
+        "unexpected_native_output_count": 0,
+        "errors": []
+      },
+      "synthetic_capture_probe": {
+        "errors": [],
+        "private_tmpfs_capacity_bytes": 134217728,
+        "monitor_interval_ms": 25,
+        "per_file_limit_bytes": 67108864,
+        "normal_trace_bytes": 220204,
+        "normal_trace_valid": true,
+        "normal_failure_retained": true,
+        "normal_profile_max_temporary_tree_bytes": 25125028,
+        "over_limit_error_visible": true,
+        "over_limit_trace_bytes": 0,
+        "soft_limit_bytes": 33554432,
+        "maximum_observed_temporary_tree_bytes": 42418336,
+        "maximum_overshoot_bound_bytes": 67108864,
+        "overshoot_within_bound": true,
+        "threshold_termination_visible": true,
+        "threshold_termination_reason": "temporary_storage_limit"
+      }
+    },
+    {
+      "engine": "webkit",
+      "browser_version": "26.5",
+      "python": "3.12",
+      "playwright_version": "1.62.0",
+      "pytest_playwright_version": "0.10.0",
+      "testcase_count": 216,
+      "required_case_ids": [
+        "BEHAVIOR-PROFILE-CSRF-FORM",
+        "BEHAVIOR-EXTERNAL-LOOPBACK",
+        "BEHAVIOR-NO-JAVASCRIPT",
+        "BEHAVIOR-POLL-ACTION",
+        "BEHAVIOR-ACTION-GENERATION",
+        "BEHAVIOR-FRAGMENT-OOB",
+        "BEHAVIOR-HISTORY-RESTORE",
+        "BEHAVIOR-CSP-REDUCED-MOTION",
+        "BEHAVIOR-REQUEST-POLICY",
+        "BEHAVIOR-EXTENSION-ASSETS",
+        "BEHAVIOR-EXTENSION-LOAD-ORDER",
+        "BEHAVIOR-MOUNTED-LOAD-ORDER",
+        "BEHAVIOR-UNAUTHORIZED-TARGET",
+        "BEHAVIOR-TOAST-TTL",
+        "BEHAVIOR-ELEMENTS-UPLOAD-LOCAL-STATE",
+        "BEHAVIOR-COMBINED-REQUEST-STATE",
+        "BEHAVIOR-ASSET-FAILURE",
+        "BEHAVIOR-JS-DISABLED-SEMANTICS",
+        "BEHAVIOR-INTEGRITY-FAILURE",
+        "BEHAVIOR-DOWNLOAD",
+        "PERF-BROWSER-RESOURCE-BUDGET",
+        "A11Y-KEYBOARD-AXE-REFLOW",
+        "A11Y-OFFLINE-SEMANTIC-SNAPSHOT",
+        "A11Y-FORM-ANNOUNCEMENT",
+        "A11Y-NO-JAVASCRIPT",
+        "A11Y-SEMANTIC-ASSET-FAILURE",
+        "BEHAVIOR-FACTORY-INPUT-REJECT"
+      ],
+      "required_case_count": 27,
+      "required_cases_all_passed": true,
+      "skip_count": 81,
+      "skip_classifications": {
+        "CHROMIUM-ONLY-STYLE-EVIDENCE": 1,
+        "ENGINE-MATRIX-NOT-SELECTED": 73,
+        "HISTORICAL-API-RETIRED": 5,
+        "STRUCTURED-PRIVACY-PROBE-SEPARATE-LANE": 1,
+        "SYNTHETIC-CAPTURE-PROBE-SEPARATE-LANE": 1
+      },
+      "status_counts": {
+        "passed": 135,
+        "skipped": 81
+      },
+      "acceptance_errors": [],
+      "budget_errors": [],
+      "resource_errors": [],
+      "browser_resource_report": {
+        "duration_seconds": 363.392837,
+        "exit_code": 0,
+        "max_process_group_rss_bytes": 776286208,
+        "max_processes": 8,
+        "max_temporary_tree_bytes": 44523968,
+        "max_temporary_growth_per_sample_bytes": 5029752,
+        "temporary_filesystem": "tmpfs",
+        "temporary_filesystem_capacity_bytes": 134217728,
+        "temporary_filesystem_limit_bytes": 134217728,
+        "temporary_filesystem_usage_limit_bytes": 134217728,
+        "termination_reason": null
+      },
+      "budget_measurements": {
+        "max_context_create_ms": 20.406406999995852,
+        "max_context_close_ms": 8.806975000084094,
+        "scenario_cycle_ms": 3358.313290999945,
+        "settle_ms": [
+          36.31329400002414
+        ],
+        "event_count": 29.0,
+        "event_snapshot_bytes": 3149.0
+      },
+      "privacy_probe": {
+        "status": "passed",
+        "canary_categories": [
+          "form",
+          "query",
+          "header",
+          "cookie",
+          "storage",
+          "console",
+          "exception",
+          "target",
+          "path"
+        ],
+        "manifest_leaked_categories": [],
+        "unexpected_native_output_count": 0,
+        "errors": []
+      },
+      "synthetic_capture_probe": {
+        "errors": [],
+        "private_tmpfs_capacity_bytes": 134217728,
+        "monitor_interval_ms": 25,
+        "per_file_limit_bytes": 67108864,
+        "normal_trace_bytes": 195680,
+        "normal_trace_valid": true,
+        "normal_failure_retained": true,
+        "normal_profile_max_temporary_tree_bytes": 721796,
+        "over_limit_error_visible": true,
+        "over_limit_trace_bytes": 0,
+        "soft_limit_bytes": 33554432,
+        "maximum_observed_temporary_tree_bytes": 42160288,
+        "maximum_overshoot_bound_bytes": 67108864,
+        "overshoot_within_bound": true,
+        "threshold_termination_visible": true,
+        "threshold_termination_reason": "temporary_storage_limit"
+      }
+    }
+  ],
+  "minimum_latest_testing_extra_bounds": {
+    "plugin_explicitly_activated": "-p hedron.testing.pytest_plugin",
+    "minimum": {
+      "python": "3.12",
+      "pytest": "8.3.0",
+      "pytest_playwright": "0.10.0",
+      "playwright": "1.62.0",
+      "uvicorn": "0.46.0",
+      "pytest_xdist": "3.6.1",
+      "suite": {
+        "passed": 335,
+        "skipped": 11,
+        "warnings": 6
+      },
+      "job_id": 123688438577
+    },
+    "latest": {
+      "python": "3.12",
+      "pytest": "9.2.0",
+      "pytest_playwright": "0.10.0",
+      "playwright": "1.64.1",
+      "uvicorn": "0.54.0",
+      "pytest_xdist": "3.8.0",
+      "suite": {
+        "passed": 335,
+        "skipped": 11,
+        "warnings": 9
+      },
+      "job_id": 123688438609
+    },
+    "browser_launch_in_bounds_jobs": false,
+    "browser_matrix_remains_pinned_to_playwright": "1.62.0"
+  },
+  "artifact_scan": {
+    "downloaded_artifact_files_scanned": 142,
+    "randomized_canary_token_pattern": "hedron_privacy_<32 lowercase hex chars>_<form|query|header|cookie|storage|console|exception|target|path>",
+    "matching_files": [],
+    "randomized_canary_token_pattern_hits": 0
+  },
+  "action_artifact_retention_expires_at": "2027-01-27T19:40:20Z",
+  "retained_action_artifacts": [
+    {
+      "id": 12928615465,
+      "name": "browser-htmx-webkit",
+      "size_bytes": 15787,
+      "sha256": "sha256:aaa7691b07c93a9f8fead0f1eba406c92e16b4b88d7d4d5d7371ca7524ffe2b6",
+      "created_at": "2026-10-29T19:48:59Z",
+      "expires_at": "2027-01-27T19:40:20Z"
+    },
+    {
+      "id": 12928545045,
+      "name": "realwb-030-result",
+      "size_bytes": 1053,
+      "sha256": "sha256:7b4816871cd68d4f914a2aff0f1e5fb1237ef6e268dfa9e5aa4d50926a76ab74",
+      "created_at": "2026-10-29T19:43:45Z",
+      "expires_at": "2027-01-27T19:40:20Z"
+    },
+    {
+      "id": 12928430335,
+      "name": "release-artifacts-1.3.0-40942185662",
+      "size_bytes": 21398932,
+      "sha256": "sha256:ec49234e25955f75ffb38db2d20d35a4a4adb23f39f4641954250b352471704b",
+      "created_at": "2026-10-29T19:42:29Z",
+      "expires_at": "2027-01-27T19:40:20Z"
+    },
+    {
+      "id": 12928296042,
+      "name": "browser-htmx-chromium",
+      "size_bytes": 15705,
+      "sha256": "sha256:cd45754aae540cd2ed8e9dc7a3faf54cdca30002971b2c5157c2fc52d4752a29",
+      "created_at": "2026-10-29T19:46:32Z",
+      "expires_at": "2027-01-27T19:40:20Z"
+    },
+    {
+      "id": 12927483732,
+      "name": "python-package-coverage-3.12",
+      "size_bytes": 498414,
+      "sha256": "sha256:550b12c748a3bbbb169696c9896f466e6b9ab7049b9f65dfff5e7f82d4d1891e",
+      "created_at": "2026-10-29T19:50:21Z",
+      "expires_at": "2027-01-27T19:40:20Z"
+    },
+    {
+      "id": 12927083564,
+      "name": "ui-testing-host-3.13",
+      "size_bytes": 4994,
+      "sha256": "sha256:3869760e35cb4e2c6cd9f89e16d7308dc59503e6935f241caebb326671ee5800",
+      "created_at": "2026-10-29T19:43:51Z",
+      "expires_at": "2027-01-27T19:40:20Z"
+    },
+    {
+      "id": 12927078518,
+      "name": "ui-testing-host-3.14",
+      "size_bytes": 4960,
+      "sha256": "sha256:303cffa31f854b123cd809c1f1f3171e0dff30a5de918628a32da2fc8da63298",
+      "created_at": "2026-10-29T19:43:58Z",
+      "expires_at": "2027-01-27T19:40:20Z"
+    },
+    {
+      "id": 12927029697,
+      "name": "browser-htmx-firefox",
+      "size_bytes": 15866,
+      "sha256": "sha256:deadbe6c2ad1dd27e1f773b65319d6360065c7cd10cce2eb992073447fa38719",
+      "created_at": "2026-10-29T19:51:01Z",
+      "expires_at": "2027-01-27T19:40:20Z"
+    },
+    {
+      "id": 12926938090,
+      "name": "realconnect-033-result",
+      "size_bytes": 844,
+      "sha256": "sha256:ac03b10cf525d6ed8fbc82c74210a0b5ad8f127ca184507895174fa659eec953",
+      "created_at": "2026-10-29T19:42:45Z",
+      "expires_at": "2027-01-27T19:40:20Z"
+    },
+    {
+      "id": 12926879806,
+      "name": "ui-testing-host-3.12",
+      "size_bytes": 5002,
+      "sha256": "sha256:e91cde43b1acc1404e4989381d037104c420c712ec9600696678ba2b72f16bdf",
+      "created_at": "2026-10-29T19:50:22Z",
+      "expires_at": "2027-01-27T19:40:20Z"
+    },
+    {
+      "id": 12926708560,
+      "name": "hedron-evidence-bundle",
+      "size_bytes": 7019,
+      "sha256": "sha256:e4aad723e5c9bd37dcc441c1bb933ae9f44ae05943a3daa69f3ce7603202f702",
+      "created_at": "2026-10-29T19:41:26Z",
+      "expires_at": "2027-01-27T19:40:20Z"
+    },
+    {
+      "id": 12926654518,
+      "name": "ui-testing-host-3.11",
+      "size_bytes": 5005,
+      "sha256": "sha256:f18c8d134883590669d2e48080757c4505bb2032a1c5effed52e930b678fb51d",
+      "created_at": "2026-10-29T19:44:07Z",
+      "expires_at": "2027-01-27T19:40:20Z"
+    }
+  ],
+  "release_artifact_rehearsal": {
+    "artifact_id": 12928430335,
+    "artifact_name": "release-artifacts-1.3.0-40942185662",
+    "artifact_sha256": "ec49234e25955f75ffb38db2d20d35a4a4adb23f39f4641954250b352471704b",
+    "source_commit": "e76f595db5cf1643b05bf6124dbf970a8741b806",
+    "package_count": 22,
+    "distribution_count": 44,
+    "repeat_builds": 2,
+    "byte_identical_builds": true,
+    "ledger_sha256": "2ca87e8773caee6e29f825c57a112c89990d07fee870e594a229c1d5a8ba3ba4",
+    "independent_verification": {
+      "checkout_revision": "e76f595db5cf1643b05bf6124dbf970a8741b806",
+      "clean_checkout_before_evidence_copy": true,
+      "build_1": "passed; 44 approved artifact hashes matched",
+      "build_2": "passed; 44 approved artifact hashes matched"
+    },
+    "upgrade_rollback": {
+      "evidence_path": "upgrade-rollback-40942185662.json",
+      "baseline": "pass",
+      "upgrade": "pass",
+      "rollback": "pass",
+      "restored_original_lock": true,
+      "python": "3.11.15",
+      "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.39"
+    }
+  },
+  "supply_chain_artifact": {
+    "artifact_id": 12926708560,
+    "name": "hedron-evidence-bundle",
+    "sha256": "e4aad723e5c9bd37dcc441c1bb933ae9f44ae05943a3daa69f3ce7603202f702",
+    "contents": [
+      "sbom.cdx.json",
+      "license-inventory.json",
+      "asset-audit.json",
+      "dep-audit.json",
+      "bundle-manifest.json"
+    ]
+  },
+  "maintainer_acceptance": {
+    "reviewer": "eddiethedean",
+    "accepted_scope_and_api_contract": true,
+    "accepted_package_dispositions": true,
+    "release_approval": false,
+    "tag_authorized": false,
+    "publication_authorized": false,
+    "record_path": "maintainer-acceptance-2026-10-29.json"
+  }
+}

@@ -1,0 +1,292 @@
+schema_version = 1
+phase = "1.3"
+status = "RequiredInventory"
+required_os = "Linux"
+host_python_versions = ["3.11", "3.12", "3.13", "3.14"]
+browser_python_version = "3.12"
+browsers = ["chromium", "firefox", "webkit"]
+host_junit = "test-results/ui-host.xml"
+browser_junit = "test-results/browser.xml"
+
+[coverage]
+required_host_cases = 13
+required_browser_cases = 27
+behavior_cases = 15
+accessibility_cases = 5
+supporting_browser_cases = 7
+
+[[host_case]]
+id = "HOST-ASGI-LIFECYCLE"
+file = "tests/unit/test_ui_testing_host.py"
+name = "test_managed_host_owns_child_app_and_root_path"
+description = "Spawned app, retained port-zero loopback listener, lifespan readiness, and mount path."
+
+[[host_case]]
+id = "HOST-RESOURCE-BUDGET"
+file = "tests/unit/test_ui_testing_host.py"
+name = "test_managed_host_resource_budget"
+description = "Five cold/warm host startup and graceful shutdown samples stay inside the frozen deadlines."
+
+[[host_case]]
+id = "HOST-STARTUP-FAILURE"
+file = "tests/unit/test_ui_testing_host.py"
+name = "test_managed_host_reports_factory_startup_failure_without_leaking_child"
+description = "Factory startup error is surfaced and the child is reaped."
+
+[[host_case]]
+id = "HOST-SHUTDOWN-CONFIRMATION"
+file = "tests/unit/test_ui_testing_host.py"
+name = "test_shutdown_uses_confirmation_received_after_child_exits"
+description = "Late shutdown confirmation is handled without a false timeout."
+
+[[host_case]]
+id = "HOST-LIFESPAN-FAILURE"
+file = "tests/unit/test_ui_testing_host.py"
+name = "test_shutdown_rejects_failed_lifespan_confirmation"
+description = "Failed lifespan shutdown remains a cleanup failure."
+
+[[host_case]]
+id = "HOST-FACTORY-INPUT"
+file = "tests/unit/test_ui_testing_host.py"
+name = "test_factory_config_is_json_compatible_and_bounded"
+instances = 3
+description = "Factory arguments are bounded JSON-compatible data."
+
+[[host_case]]
+id = "HOST-ISOLATED-IMPORTS"
+file = "tests/unit/test_ui_testing_host.py"
+name = "test_public_browser_scenario_import_has_no_optional_runner_imports"
+description = "Core browser-scenario import stays isolated from optional runners."
+
+[[host_case]]
+id = "HOST-ARTIFACT-PATHS"
+file = "tests/unit/test_ui_testing_artifacts.py"
+name = "test_artifact_tree_is_private_without_changing_selected_root"
+description = "Artifact roots remain private and honor the selected path."
+
+[[host_case]]
+id = "HOST-ARTIFACT-BUDGET"
+file = "tests/unit/test_ui_testing_artifacts.py"
+name = "test_artifact_writer_fails_closed_at_per_worker_budget"
+description = "Aggregate structured artifacts fail visibly at the frozen per-worker byte cap."
+
+[[host_case]]
+id = "HOST-MANIFEST-BYTE-CEILING"
+file = "tests/unit/test_ui_testing_artifacts.py"
+name = "test_artifact_writer_respects_manifest_byte_ceiling"
+description = "A representative failure manifest remains below the frozen per-manifest ceiling."
+
+[[host_case]]
+id = "HOST-CAPTURE-POLICY"
+file = "tests/unit/test_ui_testing_policy.py"
+name = "test_upstream_capture_flags_require_synthetic_consent_before_context_creation"
+description = "Raw capture flags are rejected before context creation without explicit synthetic consent."
+
+[[host_case]]
+id = "HOST-SATELLITE-CONTRIBUTION"
+file = "tests/unit/test_ui_testing_contributions.py"
+name = "test_json_shaped_contribution_metadata_is_validated"
+description = "Specialist contribution metadata remains JSON-shaped and version-validated."
+
+[[host_case]]
+id = "HOST-PACKAGE-RESOURCE"
+file = "tests/ops/test_packaging_isolation.py"
+name = "test_hedron_build_module_is_packaged"
+description = "Wheel build and clean-environment import exercise on every supported Python minor."
+
+[[browser_case]]
+id = "BEHAVIOR-PROFILE-CSRF-FORM"
+gate = "BEHAVIOR-130"
+file = "examples/ui-testing/test_profile_flow.py"
+name = "test_profile_validation_and_save"
+description = "Managed root-path form validates, preserves CSRF, focuses errors, announces status, and saves."
+
+[[browser_case]]
+id = "BEHAVIOR-EXTERNAL-LOOPBACK"
+gate = "HOST-130"
+file = "examples/ui-testing/test_profile_flow.py"
+name = "test_external_loopback_scenario_leaves_server_owned_by_caller"
+description = "External loopback scenario leaves the caller-owned app running."
+
+[[browser_case]]
+id = "BEHAVIOR-NO-JAVASCRIPT"
+gate = "BEHAVIOR-130"
+file = "examples/ui-testing/test_profile_flow.py"
+name = "test_native_form_submission_works_without_javascript"
+description = "Native form path works with JavaScript disabled."
+
+[[browser_case]]
+id = "BEHAVIOR-POLL-ACTION"
+gate = "SETTLE-130"
+file = "examples/ui-testing/test_profile_flow.py"
+name = "test_settle_ignores_background_poll_before_user_action"
+description = "Background poll does not satisfy a later user-action settle."
+
+[[browser_case]]
+id = "BEHAVIOR-ACTION-GENERATION"
+gate = "SETTLE-130"
+file = "examples/ui-testing/test_profile_flow.py"
+name = "test_settle_requires_generation_for_overlapping_same_target_actions"
+description = "Overlapping same-target actions require explicit generation disambiguation."
+
+[[browser_case]]
+id = "BEHAVIOR-FRAGMENT-OOB"
+gate = "BEHAVIOR-130"
+file = "tests/browser/test_browser_matrix.py"
+name = "test_fragment_oob_per_engine"
+description = "Live app response swaps a fragment and applies an out-of-band update."
+
+[[browser_case]]
+id = "BEHAVIOR-HISTORY-RESTORE"
+gate = "BEHAVIOR-130"
+file = "tests/browser/test_browser_matrix.py"
+name = "test_history_restore_header_returns_page"
+description = "History restoration receives a complete page response."
+
+[[browser_case]]
+id = "BEHAVIOR-CSP-REDUCED-MOTION"
+gate = "BEHAVIOR-130"
+file = "tests/browser/test_browser_matrix.py"
+name = "test_csp_and_reduced_motion_meta"
+description = "Content security policy and reduced-motion behavior are present in a live engine."
+
+[[browser_case]]
+id = "BEHAVIOR-REQUEST-POLICY"
+gate = "BEHAVIOR-130"
+file = "tests/browser/test_browser_matrix.py"
+name = "test_cache_vary_and_forbidden_target"
+description = "Request target policy rejects forbidden fragment targets and varies cache metadata."
+
+[[browser_case]]
+id = "BEHAVIOR-EXTENSION-ASSETS"
+gate = "BEHAVIOR-130"
+file = "tests/browser/test_browser_matrix.py"
+name = "test_extension_assets_served"
+description = "Pinned HTMX extensions are served from local package assets."
+
+[[browser_case]]
+id = "BEHAVIOR-EXTENSION-LOAD-ORDER"
+gate = "BEHAVIOR-130"
+file = "tests/browser/test_browser_matrix.py"
+name = "test_htmx_core_loads_before_extensions"
+description = "Deferred HTMX extensions load after core without page errors."
+
+[[browser_case]]
+id = "BEHAVIOR-MOUNTED-LOAD-ORDER"
+gate = "BEHAVIOR-130"
+file = "tests/browser/test_browser_matrix.py"
+name = "test_htmx_core_loads_before_extensions_under_mount"
+description = "Deferred scripts preserve order when the app is served under a mount path."
+
+[[browser_case]]
+id = "BEHAVIOR-UNAUTHORIZED-TARGET"
+gate = "SECURITY-130"
+file = "tests/browser/test_htmx_lifecycle.py"
+name = "test_unauthorized_target_returns_forbidden"
+description = "Live browser request cannot read an unauthorized interaction target."
+
+[[browser_case]]
+id = "BEHAVIOR-TOAST-TTL"
+gate = "BEHAVIOR-130"
+file = "tests/browser/test_htmx_lifecycle.py"
+name = "test_toast_ttl_expires_after_oob_beforeend_swap"
+description = "Toast accessibility output expires after its out-of-band swap lifetime."
+
+[[browser_case]]
+id = "BEHAVIOR-ELEMENTS-UPLOAD-LOCAL-STATE"
+gate = "BEHAVIOR-130"
+file = "tests/browser/test_phase067_alpine.py"
+name = "test_alpine_core_and_focus_plugin_are_demand_loaded"
+description = "Element controls, upload input, local state, tabs, and dialogs work in a live browser."
+
+[[browser_case]]
+id = "BEHAVIOR-COMBINED-REQUEST-STATE"
+gate = "BEHAVIOR-130"
+file = "tests/browser/test_phase067_alpine.py"
+name = "test_combined_interaction_has_one_local_transition_and_one_request"
+description = "Combined interaction has one local transition and one network request."
+
+[[browser_case]]
+id = "BEHAVIOR-ASSET-FAILURE"
+gate = "BEHAVIOR-130"
+file = "tests/browser/test_phase067_alpine.py"
+name = "test_semantic_content_survives_alpine_asset_failure"
+description = "Semantic content remains available when a client asset fails."
+
+[[browser_case]]
+id = "BEHAVIOR-JS-DISABLED-SEMANTICS"
+gate = "BEHAVIOR-130"
+file = "tests/browser/test_phase067_alpine.py"
+name = "test_semantic_content_survives_javascript_disabled"
+description = "Labels, controls, and content remain available when JavaScript is disabled."
+
+[[browser_case]]
+id = "BEHAVIOR-INTEGRITY-FAILURE"
+gate = "SECURITY-130"
+file = "tests/browser/test_phase067_alpine.py"
+name = "test_integrity_failure_does_not_cloak_semantic_content"
+description = "An integrity failure cannot hide semantic content or controls."
+
+[[browser_case]]
+id = "BEHAVIOR-DOWNLOAD"
+gate = "BEHAVIOR-130"
+file = "tests/browser/test_docs_styles_explorer.py"
+name = "test_explorer_navigation_themes_comparison_and_exports"
+description = "Native browser download and exported artifact contents are verified."
+
+
+[synthetic_capture_probe]
+file = "tests/browser/test_ui_testing_capture_probe.py"
+name = "test_synthetic_trace_capture_probe"
+runner = "scripts/probe_ui_testing_capture.py"
+expected_outcome = "intentional failure retained with a valid bounded trace archive"
+normal_browser_lane = "classified skip; capture probe owns --tracing=retain-on-failure"
+
+[[browser_case]]
+id = "PERF-BROWSER-RESOURCE-BUDGET"
+gate = "PERF-130"
+file = "tests/browser/test_ui_testing_resource_budget.py"
+name = "test_ui_testing_resource_budget"
+description = "Context creation/close, managed scenario, settle and bounded event observations are retained per browser."
+
+[[browser_case]]
+id = "A11Y-KEYBOARD-AXE-REFLOW"
+gate = "A11Y-130"
+file = "tests/browser/test_phase19_at_matrix.py"
+name = "test_keyboard_and_landmarks_per_engine"
+description = "Keyboard, focus, landmarks, viewport/reflow, media modes, axe provenance and deliberate violation detection."
+
+[[browser_case]]
+id = "A11Y-OFFLINE-SEMANTIC-SNAPSHOT"
+gate = "A11Y-130"
+file = "tests/browser/test_phase19_at_matrix.py"
+name = "test_at_matrix_offline_evidence_artifact"
+description = "The offline semantic landmark snapshot is explicitly labeled incomplete and never asserts full accessibility."
+
+[[browser_case]]
+id = "A11Y-FORM-ANNOUNCEMENT"
+gate = "A11Y-130"
+file = "examples/ui-testing/test_profile_flow.py"
+name = "test_profile_validation_and_save"
+description = "Validation focus and polite live-region announcement are checked with native locators."
+
+[[browser_case]]
+id = "A11Y-NO-JAVASCRIPT"
+gate = "A11Y-130"
+file = "examples/ui-testing/test_profile_flow.py"
+name = "test_native_form_submission_works_without_javascript"
+description = "Native form remains operable without JavaScript."
+
+[[browser_case]]
+id = "A11Y-SEMANTIC-ASSET-FAILURE"
+gate = "A11Y-130"
+file = "tests/browser/test_phase067_alpine.py"
+name = "test_semantic_content_survives_alpine_asset_failure"
+description = "Semantic content remains available when the optional client asset fails."
+
+[[browser_case]]
+id = "BEHAVIOR-FACTORY-INPUT-REJECT"
+gate = "HOST-130"
+file = "examples/ui-testing/test_profile_flow.py"
+name = "test_profile_factory_rejects_live_values"
+description = "Managed app factory rejects invalid live input and reports a bounded startup error."

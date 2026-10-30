@@ -155,7 +155,7 @@ ALPINE_067_ARTIFACTS: Mapping[str, AlpineArtifact] = MappingProxyType(
 
 ALPINE_FILE_INTEGRITY: Mapping[str, str] = MappingProxyType(
     {
-        "/hedron-static/hedron-alpine.mjs": "sha256-YvNtPDjF90uyi2GbohI2OoWyMpaRgSIvBapE44M7LoM=",
+        "/hedron-static/hedron-alpine.mjs": "sha256-iTaHoNhDgyqeOAO24t+z2CDN/PFkYXHkk4czx9nUQLY=",
         **{
             artifact.local_path: digest
             for artifact, digest in zip(

@@ -8,10 +8,12 @@ changes to static assets that are bundled into a wheel.
 
 from __future__ import annotations
 
+import re
 import subprocess
 import sys
 import tomllib
 from collections.abc import Iterable
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -56,15 +58,48 @@ def unreleased_development_version(ref: str) -> tuple[str, str] | None:
     return development, published
 
 
+def finalized_changelog_header_only(
+    base: str,
+    head: str,
+    directory: str,
+    version: str,
+    package_paths: list[str],
+) -> bool:
+    """Allow closing a published changelog date without a new package release."""
+    changelog = f"packages/{directory}/CHANGELOG.md"
+    if package_paths != [changelog]:
+        return False
+    base_text = git_show(base, changelog)
+    head_text = git_show(head, changelog)
+    if base_text is None or head_text is None:
+        return False
+    base_lines = base_text.splitlines()
+    head_lines = head_text.splitlines()
+    expected_unreleased = f"## [{version}] — Unreleased"
+    if len(base_lines) < 3 or len(head_lines) < 3:
+        return False
+    if base_lines[:2] != head_lines[:2] or base_lines[2] != expected_unreleased:
+        return False
+    match = re.fullmatch(rf"## \[{re.escape(version)}\] — (\d{{4}}-\d{{2}}-\d{{2}})", head_lines[2])
+    if match is None or base_lines[3:] != head_lines[3:]:
+        return False
+    try:
+        date.fromisoformat(match.group(1))
+    except ValueError:
+        return False
+    return True
+
+
 def version_change_errors(base: str, head: str) -> list[str]:
     errors: list[str] = []
     development_versions = unreleased_development_version(head)
+    paths_by_package: dict[str, list[str]] = {}
+    for path in changed_paths(base, head):
+        parts = Path(path).parts
+        if len(parts) > 1 and parts[0] == "packages":
+            paths_by_package.setdefault(parts[1], []).append(path)
     package_dirs = sorted(
-        {
-            Path(path).parts[1]
-            for path in changed_paths(base, head)
-            if len(Path(path).parts) > 1 and Path(path).parts[0] == "packages"
-        }
+        paths_by_package
     )
     for directory in package_dirs:
         relative = f"packages/{directory}/pyproject.toml"
@@ -84,7 +119,18 @@ def version_change_errors(base: str, head: str) -> list[str]:
                 "rename the package explicitly instead of reusing its version"
             )
         elif head_version == base_version:
-            if (
+            if finalized_changelog_header_only(
+                base,
+                head,
+                directory,
+                head_version,
+                paths_by_package[directory],
+            ):
+                print(
+                    f"ok: {head_name} changelog date finalized for existing version "
+                    f"{head_version}"
+                )
+            elif (
                 development_versions is not None
                 and head_version == development_versions[0]
                 and development_versions[0] != development_versions[1]

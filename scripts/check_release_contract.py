@@ -41,7 +41,9 @@ def _canonical_signature_text(signature: str) -> str:
                 depth -= 1
                 if depth == 0:
                     inner = _canonical_signature_text(signature[opening + 1 : closing])
-                    signature = f"{signature[:match.start()]}{inner} | None{signature[closing + 1:]}"
+                    signature = (
+                        f"{signature[: match.start()]}{inner} | None{signature[closing + 1 :]}"
+                    )
                     break
         else:
             break
@@ -151,7 +153,10 @@ def main() -> int:
     native_release = (ROOT / ".github/workflows/native-wheels.yml").read_text(encoding="utf-8")
     if "environment: release" not in main_release:
         errors.append("main publication job is not protected by the release environment")
-    if main_release.count('if [ "$pkg" = "hedron-native" ]') != 2:
+    if (
+        'if [ "$pkg" = "hedron-native" ]' not in main_release
+        or 'if [ "$name" = "hedron-native" ]' not in main_release
+    ):
         errors.append("main release must exclude hedron-native from build and publication")
     if "cargo publish" in main_release:
         errors.append("main release must not share crates.io ownership with native-wheels.yml")

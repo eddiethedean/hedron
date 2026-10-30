@@ -4,11 +4,15 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+import math
 import re
 import shlex
 import subprocess
 import sys
-from pathlib import Path
+from collections.abc import Mapping
+from pathlib import Path, PurePosixPath
+from typing import cast
 
 from hedron_core.compat import tomllib
 
@@ -77,6 +81,7 @@ EVIDENCE_BY_MAJOR_MINOR = {
     "1.0": ROOT / "docs" / "acceptance" / "release-gate-1.0.toml",
     "1.1": ROOT / "docs" / "acceptance" / "release-gate-1.1.toml",
     "1.2": ROOT / "docs" / "acceptance" / "release-gate-1.2.toml",
+    "1.3": ROOT / "docs" / "acceptance" / "release-gate-1.3.toml",
 }
 DEFAULT_EVIDENCE = EVIDENCE_BY_MAJOR_MINOR["0.6"]
 PHASE_120_EVIDENCE_IDS = (
@@ -92,6 +97,41 @@ PHASE_120_EVIDENCE_IDS = (
     "PKG-120",
     "DOCS-120",
     "RELEASE-120",
+)
+PHASE_130_EVIDENCE_IDS = (
+    "FREEZE-130",
+    "CONTRACT-130",
+    "HOST-130",
+    "LOCATOR-130",
+    "SETTLE-130",
+    "ERROR-130",
+    "ARTIFACT-130",
+    "PYTEST-130",
+    "SATELLITE-130",
+    "BEHAVIOR-130",
+    "A11Y-130",
+    "SECURITY-130",
+    "PERF-130",
+    "COMPAT-130",
+    "DOCS-130",
+    "PKG-130",
+    "RELEASE-130",
+)
+PHASE_130_EVIDENCE_ONLY_PATHS = frozenset(
+    {
+        "docs/acceptance/RELEASE_1_3.md",
+        "docs/acceptance/release-gate-1.3.toml",
+    }
+)
+PHASE_130_EVIDENCE_ONLY_PREFIX = "docs/acceptance/evidence-130/"
+PHASE_130_BUDGET_IDS = (
+    "host",
+    "browser",
+    "settle",
+    "structured_artifacts",
+    "synthetic_capture",
+    "parallel",
+    "compatibility",
 )
 # Includes historical ``release`` attestation used by older gate manifests.
 KNOWN_CI_JOBS = frozenset(
@@ -159,6 +199,438 @@ def evidence_manifest_for(version: str) -> Path:
         if parts[0] == "1":
             raise ValueError(f"no explicit release evidence manifest for version {version!r}")
     return DEFAULT_EVIDENCE
+
+
+def _bound_record_errors(
+    base_dir: Path,
+    record_value: object,
+    digest_value: object,
+    label: str,
+) -> list[str]:
+    errors: list[str] = []
+    record = str(record_value).strip() if isinstance(record_value, str) else ""
+    digest = str(digest_value).strip() if isinstance(digest_value, str) else ""
+    if not record:
+        return [f"{label}: retained evidence path is required"]
+    relative = PurePosixPath(record)
+    if (
+        relative.is_absolute()
+        or relative.as_posix() != record
+        or "\\" in record
+        or any(part in {".", ".."} for part in relative.parts)
+    ):
+        return [f"{label}: evidence path must be a normalized repository-relative path"]
+    candidate = base_dir
+    for part in relative.parts:
+        candidate = candidate / part
+        if candidate.is_symlink():
+            return [f"{label}: evidence path must not traverse symlinks"]
+    try:
+        resolved = candidate.resolve(strict=True)
+    except OSError:
+        return [f"{label}: retained evidence file does not exist: {record}"]
+    try:
+        _ = resolved.relative_to(base_dir.resolve())
+    except ValueError:
+        return [f"{label}: evidence file must remain inside {base_dir}"]
+    if not resolved.is_file():
+        return [f"{label}: retained evidence path is not a file: {record}"]
+    try:
+        _ = base_dir.resolve().relative_to(ROOT.resolve())
+    except ValueError:
+        pass
+    else:
+        try:
+            repository_path = resolved.relative_to(ROOT.resolve()).as_posix()
+            _ = subprocess.check_output(
+                ["git", "ls-files", "--error-unmatch", "--", repository_path],
+                cwd=ROOT,
+                text=True,
+                stderr=subprocess.DEVNULL,
+            )
+        except (OSError, subprocess.CalledProcessError, ValueError):
+            return [f"{label}: evidence file must be committed in the release source"]
+    if re.fullmatch(r"[0-9a-f]{64}", digest) is None:
+        return [f"{label}: evidence_sha256 must be a lowercase SHA-256 digest"]
+    sha256 = hashlib.sha256()
+    try:
+        with resolved.open("rb") as evidence_file:
+            for chunk in iter(lambda: evidence_file.read(1024 * 1024), b""):
+                sha256.update(chunk)
+    except OSError as exc:
+        return [f"{label}: unable to read retained evidence: {exc}"]
+    if sha256.hexdigest() != digest:
+        errors.append(f"{label}: retained evidence SHA-256 does not match")
+    return errors
+
+
+def _validate_phase_130_release_records(
+    data: dict[str, object],
+    rows: list[object],
+    path: Path,
+) -> list[str]:
+    errors: list[str] = []
+    evidence_root = path.parent
+    source_revisions: set[str] = set()
+    for row_value in rows:
+        if not isinstance(row_value, dict):
+            continue
+        row = cast(Mapping[str, object], row_value)
+        if str(row.get("state", "")).strip() != "Verified":
+            continue
+        gate_id = str(row.get("id", "")).strip() or "unknown gate"
+        source_revision = row.get("source_revision")
+        if (
+            not isinstance(source_revision, str)
+            or re.fullmatch(r"[0-9a-f]{40}", source_revision) is None
+        ):
+            errors.append(f"{gate_id}: Verified evidence requires a full source_revision")
+        else:
+            source_revisions.add(source_revision)
+        if not str(row.get("maintainer", "")).strip():
+            errors.append(f"{gate_id}: Verified evidence requires a named maintainer")
+        errors.extend(
+            _bound_record_errors(
+                evidence_root,
+                row.get("evidence"),
+                row.get("evidence_sha256"),
+                gate_id,
+            )
+        )
+        if row.get("required") is not True:
+            errors.append(f"{gate_id}: every phase 1.3 gate must remain Required")
+
+    if len(source_revisions) > 1:
+        errors.append("phase 1.3 gate evidence must bind to one source revision")
+    if len(source_revisions) == 1:
+        errors.extend(_phase_130_source_revision_errors(next(iter(source_revisions))))
+
+    predecessor = data.get("predecessor_record")
+    if not isinstance(predecessor, dict):
+        errors.append("phase 1.3 requires a retained v1.2.0 predecessor publication record")
+    else:
+        predecessor_record = cast(Mapping[str, object], predecessor)
+        if predecessor_record.get("published_version") != "v1.2.0":
+            errors.append("predecessor_record must identify published_version=v1.2.0")
+        if predecessor_record.get("published") is not True:
+            errors.append("predecessor_record must confirm v1.2.0 publication")
+        for key in ("published_at", "publication_url"):
+            if not str(predecessor_record.get(key, "")).strip():
+                errors.append(f"predecessor_record.{key} is required")
+        errors.extend(
+            _bound_record_errors(
+                evidence_root,
+                predecessor_record.get("release_record"),
+                predecessor_record.get("release_record_sha256"),
+                "predecessor_record",
+            )
+        )
+
+    for section, approval_key, reviewer_key in (
+        ("maintainer_review", "accepted", "reviewer"),
+        ("release_approval", "approved", "approver"),
+    ):
+        record_value = data.get(section)
+        if not isinstance(record_value, dict):
+            errors.append(f"phase 1.3 requires [{section}] evidence")
+            continue
+        record = cast(Mapping[str, object], record_value)
+        if record.get(approval_key) is not True:
+            errors.append(f"{section}.{approval_key} must be true")
+        if not str(record.get(reviewer_key, "")).strip():
+            errors.append(f"{section}.{reviewer_key} is required")
+        if not str(
+            record.get("reviewed_at" if section == "maintainer_review" else "approved_at", "")
+        ).strip():
+            errors.append(f"{section} timestamp is required")
+        errors.extend(
+            _bound_record_errors(
+                evidence_root,
+                record.get(
+                    "review_record" if section == "maintainer_review" else "approval_record"
+                ),
+                record.get(
+                    "review_record_sha256"
+                    if section == "maintainer_review"
+                    else "approval_record_sha256"
+                ),
+                section,
+            )
+        )
+
+    artifact_record = data.get("release_artifacts")
+    if not isinstance(artifact_record, dict):
+        errors.append("phase 1.3 requires a retained release artifact manifest")
+    else:
+        artifact_mapping = cast(Mapping[str, object], artifact_record)
+        errors.extend(
+            _bound_record_errors(
+                evidence_root,
+                artifact_mapping.get("manifest"),
+                artifact_mapping.get("manifest_sha256"),
+                "release_artifacts",
+            )
+        )
+        if (
+            not isinstance(artifact_mapping.get("source_revision"), str)
+            or artifact_mapping.get("source_revision") not in source_revisions
+        ):
+            errors.append("release_artifacts.source_revision must match the verified gate revision")
+
+    contract_name = data.get("planning_contract")
+    contract_path: Path | None = None
+    if not isinstance(contract_name, str) or not contract_name.strip():
+        errors.append("phase 1.3 planning_contract path is required")
+    else:
+        contract_relative = PurePosixPath(contract_name)
+        if (
+            contract_relative.is_absolute()
+            or ".." in contract_relative.parts
+            or "\\" in contract_name
+        ):
+            errors.append("planning_contract must be a local acceptance-directory path")
+        else:
+            contract_path = evidence_root / Path(*contract_relative.parts)
+            try:
+                _ = contract_path.resolve(strict=True).relative_to(evidence_root.resolve())
+                contract_data = tomllib.loads(contract_path.read_text(encoding="utf-8"))
+            except (OSError, ValueError) as exc:
+                errors.append(f"unable to validate phase 1.3 planning contract: {exc}")
+                contract_data = {}
+            if contract_data:
+                for key in (
+                    "freeze_satisfied",
+                    "numeric_budgets_frozen",
+                    "named_maintainers_assigned",
+                ):
+                    if contract_data.get(key) is not True:
+                        errors.append(f"planning contract {key} must be true")
+                api_contract = contract_data.get("api")
+                if not isinstance(api_contract, dict):
+                    errors.append("planning contract [api] is required")
+                else:
+                    api_mapping = cast(Mapping[str, object], api_contract)
+                    if (
+                        api_mapping.get("state") != "Frozen"
+                        or api_mapping.get("maturity") != "beta"
+                    ):
+                        errors.append("planning contract API must be frozen with Beta maturity")
+                matrix = contract_data.get("matrix")
+                if not isinstance(matrix, dict):
+                    errors.append("planning contract [matrix] is required")
+                else:
+                    matrix_mapping = cast(Mapping[str, object], matrix)
+                    if matrix_mapping.get("state") != "Frozen":
+                        errors.append("planning contract matrix.state must be Frozen")
+                    for key in ("upstream_bounds_verified", "browser_revisions_frozen"):
+                        if matrix_mapping.get(key) is not True:
+                            errors.append(f"planning contract matrix.{key} must be true")
+                budgets = contract_data.get("budgets")
+                if not isinstance(budgets, list) or not budgets:
+                    errors.append("planning contract must contain measured budgets")
+                else:
+                    budget_rows = cast(list[object], budgets)
+                    for budget_value in budget_rows:
+                        if not isinstance(budget_value, dict):
+                            errors.append("planning contract budget entries must be tables")
+                            continue
+                        budget = cast(Mapping[str, object], budget_value)
+                        budget_id = str(budget.get("id", "unknown"))
+                        if (
+                            budget.get("state") != "Measured"
+                            or budget.get("threshold_frozen") is not True
+                        ):
+                            errors.append(
+                                f"planning contract budget {budget_id} must be measured and frozen"
+                            )
+                        if not str(budget.get("unit", "")).strip():
+                            errors.append(f"budget {budget_id} requires a threshold unit")
+                        limit = budget.get("limit")
+                        if not isinstance(limit, (int, float)) or isinstance(limit, bool):
+                            errors.append(
+                                f"planning contract budget {budget_id} requires a numeric limit"
+                            )
+                        elif not math.isfinite(float(limit)) or float(limit) <= 0:
+                            errors.append(
+                                f"planning contract budget {budget_id} requires a positive limit"
+                            )
+                        sample_count = budget.get("sample_count")
+                        if type(sample_count) is not int or sample_count < 1:
+                            errors.append(f"budget {budget_id}: sample_count must be positive")
+                        errors.extend(
+                            _bound_record_errors(
+                                evidence_root,
+                                budget.get("measurement_evidence"),
+                                budget.get("measurement_sha256"),
+                                f"planning contract budget {budget_id}",
+                            )
+                        )
+                    budget_ids = tuple(
+                        str(cast(Mapping[str, object], budget).get("id", "")).strip()
+                        for budget in budget_rows
+                        if isinstance(budget, dict)
+                    )
+                    if budget_ids != PHASE_130_BUDGET_IDS:
+                        errors.append(
+                            "planning contract budget ids do not match required inventory"
+                        )
+
+    dispositions_name = data.get("package_dispositions")
+    if not isinstance(dispositions_name, str) or not dispositions_name.strip():
+        errors.append("phase 1.3 package_dispositions path is required")
+    else:
+        dispositions_relative = PurePosixPath(dispositions_name)
+        if (
+            dispositions_relative.is_absolute()
+            or ".." in dispositions_relative.parts
+            or "\\" in dispositions_name
+        ):
+            errors.append("package_dispositions must be a local acceptance-directory path")
+        else:
+            dispositions_path = evidence_root / Path(*dispositions_relative.parts)
+            try:
+                _ = dispositions_path.resolve(strict=True).relative_to(evidence_root.resolve())
+                dispositions_data = tomllib.loads(dispositions_path.read_text(encoding="utf-8"))
+            except (OSError, ValueError) as exc:
+                errors.append(f"unable to validate phase 1.3 package dispositions: {exc}")
+                dispositions_data = {}
+            if dispositions_data:
+                package_rows = dispositions_data.get("package")
+                package_count = dispositions_data.get("workspace_package_count")
+                has_package_list = isinstance(package_rows, list)
+                package_values = cast(list[object], package_rows) if has_package_list else []
+                if (
+                    not has_package_list
+                    or type(package_count) is not int
+                    or len(package_values) != package_count
+                ):
+                    errors.append(
+                        "package dispositions must cover the complete workspace inventory"
+                    )
+                else:
+                    package_mappings = [
+                        cast(Mapping[str, object], package)
+                        for package in package_values
+                        if isinstance(package, dict)
+                    ]
+                    if len(package_mappings) != len(package_values) or any(
+                        not str(package.get("id", "")).strip()
+                        or not str(package.get("disposition", "")).strip()
+                        or not str(package.get("reason", "")).strip()
+                        for package in package_mappings
+                    ):
+                        errors.append(
+                            "every package disposition requires id, disposition, and reason"
+                        )
+                    package_ids = tuple(
+                        str(package.get("id", "")).strip() for package in package_mappings
+                    )
+                    if len(package_ids) != len(set(package_ids)):
+                        errors.append("package disposition ids must be unique")
+                if dispositions_data.get("maintainer_review_complete") is not True:
+                    errors.append("package disposition maintainer review must be complete")
+
+    return errors
+
+
+def _phase_130_source_revision_errors(source_revision: str) -> list[str]:
+    """Bind evidence to a clean code commit with only evidence commits after it.
+
+    Evidence files and the gate itself are committed after CI and artifact
+    rehearsal. They cannot be included in the commit whose SHA they record, so
+    allow those review records as follow-up commits while rejecting any source
+    or build-input changes after the verified code revision.
+    """
+    try:
+        ancestor = subprocess.run(
+            ["git", "merge-base", "--is-ancestor", source_revision, "HEAD"],
+            cwd=ROOT,
+            check=False,
+        )
+        if ancestor.returncode != 0:
+            return ["phase 1.3 evidence source_revision must be an ancestor of the release commit"]
+        changed = subprocess.check_output(
+            ["git", "diff", "--name-only", f"{source_revision}..HEAD"],
+            cwd=ROOT,
+            text=True,
+        ).splitlines()
+        unexpected = sorted(
+            path
+            for path in changed
+            if path not in PHASE_130_EVIDENCE_ONLY_PATHS
+            and not path.startswith(PHASE_130_EVIDENCE_ONLY_PREFIX)
+        )
+        if unexpected:
+            return [
+                "phase 1.3 source revision predates non-evidence changes: "
+                + ", ".join(unexpected[:5])
+            ]
+        dirty = subprocess.check_output(
+            ["git", "status", "--porcelain", "--untracked-files=all"],
+            cwd=ROOT,
+            text=True,
+        )
+        if dirty.strip():
+            return ["phase 1.3 strict release validation requires a clean source tree"]
+    except (OSError, subprocess.CalledProcessError):
+        return ["phase 1.3 evidence source revision cannot be verified in this checkout"]
+    return []
+
+
+def _validate_phase_130_contract(data: dict[str, object], path: Path, *, strict: bool) -> list[str]:
+    """Validate the fixed 1.3.0 gate inventory and release-only conditions."""
+    errors: list[str] = []
+    rows = data.get("evidence")
+    found: tuple[str, ...] = ()
+    if isinstance(rows, list):
+        evidence_rows = cast(list[object], rows)
+        typed_rows = (
+            cast(Mapping[str, object], row) for row in evidence_rows if isinstance(row, dict)
+        )
+        found = tuple(str(row.get("id", "")).strip() for row in typed_rows)
+    if found != PHASE_130_EVIDENCE_IDS:
+        errors.append(
+            f"{path}: phase 1.3 gate order mismatch: {found!r}; expected {PHASE_130_EVIDENCE_IDS!r}"
+        )
+    if isinstance(rows, list):
+        phase_rows = cast(list[object], rows)
+        for row_value in phase_rows:
+            if not isinstance(row_value, dict):
+                continue
+            row = cast(Mapping[str, object], row_value)
+            if row.get("required") is not True:
+                errors.append(f"{row.get('id', 'unknown gate')}: phase 1.3 gates must be Required")
+    if data.get("target") != "v1.3.0":
+        errors.append(f"{path}: phase 1.3 release target must be v1.3.0")
+    if data.get("required_predecessor") != "v1.2.0":
+        errors.append(f"{path}: phase 1.3 predecessor must be v1.2.0")
+    if strict:
+        if data.get("predecessor_satisfied") is not True:
+            errors.append(f"{path}: v1.2.0 predecessor evidence must be satisfied")
+        if data.get("stage_1_entry_satisfied") is not True:
+            errors.append(f"{path}: stage_1_entry_satisfied must be true before release")
+        if data.get("release_cut_satisfied") is not True:
+            errors.append(f"{path}: release_cut_satisfied must be true before v1.3.0 publication")
+        if data.get("candidate_api_maturity") != "beta":
+            errors.append(f"{path}: new phase 1.3 API maturity must remain beta")
+        if not isinstance(rows, list) or any(
+            not isinstance(row, dict)
+            or str(cast(Mapping[str, object], row).get("state", "")).strip() != "Verified"
+            for row in cast(list[object], rows)
+        ):
+            errors.append(
+                f"{path}: every required phase 1.3 gate must be Verified before publication"
+            )
+        if data.get("status") != "ReleaseApproved":
+            errors.append(f"{path}: status must be ReleaseApproved before publication")
+        errors.extend(
+            _validate_phase_130_release_records(
+                data,
+                cast(list[object], rows) if isinstance(rows, list) else [],
+                path,
+            )
+        )
+    return errors
 
 
 def _is_alpha_package(project: dict[str, object]) -> bool:
@@ -429,6 +901,8 @@ def check_evidence_manifest(path: Path) -> list[str]:
             errors.append(
                 f"{path}: every required phase 1.2 gate must be Verified before publication"
             )
+    if data.get("phase") == "1.3":
+        errors.extend(_validate_phase_130_contract(data, path, strict=True))
     return errors
 
 
@@ -481,6 +955,8 @@ def check_evidence_manifest_lenient(path: Path) -> list[str]:
     rows = data.get("evidence")
     if not isinstance(rows, list) or not rows:
         return [f"{path}: [[evidence]] entries required"]
+    if data.get("phase") == "1.3":
+        errors.extend(_validate_phase_130_contract(data, path, strict=False))
     seen: set[str] = set()
     for row in rows:
         if not isinstance(row, dict):

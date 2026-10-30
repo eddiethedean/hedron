@@ -774,7 +774,7 @@ wheels = [
 
 [[package]]
 name = "edron"
-version = "1.2.0"
+version = "1.3.0"
 source = { editable = "packages/edron" }
 dependencies = [
     { name = "hedron" },
@@ -817,7 +817,7 @@ sqlalchemy = [
 [package.metadata]
 requires-dist = [
     { name = "altair", marker = "extra == 'altair'", specifier = ">=6,<7" },
-    { name = "hedron", editable = "packages/hedron" },
+    { name = "hedron", specifier = ">=1.3.0,<2.0", editable = "packages/hedron" },
     { name = "hedron-charts", editable = "packages/hedron-charts" },
     { name = "hedron-data", editable = "packages/hedron-data" },
     { name = "hedron-maps", editable = "packages/hedron-maps" },
@@ -1148,7 +1148,7 @@ wheels = [
 
 [[package]]
 name = "hedron"
-version = "1.2.0"
+version = "1.3.0"
 source = { editable = "packages/hedron" }
 dependencies = [
     { name = "fastapi" },
@@ -1231,6 +1231,12 @@ posit = [
 sanitize = [
     { name = "nh3" },
 ]
+testing = [
+    { name = "playwright" },
+    { name = "pytest" },
+    { name = "pytest-playwright" },
+    { name = "uvicorn" },
+]
 
 [package.metadata]
 requires-dist = [
@@ -1262,17 +1268,21 @@ requires-dist = [
     { name = "packaging", specifier = ">=22.0" },
     { name = "pillow", marker = "extra == 'images'", specifier = ">=10.0" },
     { name = "playwright", marker = "extra == 'browser'", specifier = ">=1.40" },
+    { name = "playwright", marker = "extra == 'testing'", specifier = ">=1.62,<2" },
     { name = "pydantic", specifier = ">=2.12.0,<2.15" },
     { name = "pygments", marker = "extra == 'code'", specifier = ">=2.17" },
+    { name = "pytest", marker = "extra == 'testing'", specifier = ">=8.3,<10" },
+    { name = "pytest-playwright", marker = "extra == 'testing'", specifier = ">=0.10.0,<0.11" },
     { name = "python-multipart", specifier = ">=0.0.9" },
     { name = "starlette", specifier = ">=0.40.0,<2.0" },
     { name = "typing-extensions", specifier = ">=4.10.0" },
+    { name = "uvicorn", marker = "extra == 'testing'", specifier = ">=0.46,<1" },
 ]
-provides-extras = ["dev", "data", "charts", "maps", "markdown", "code", "images", "email", "sanitize", "auth", "browser", "jinja", "native", "conformance", "extras", "experimental-ui", "notebook", "mcp", "elements", "gradio", "posit", "otel"]
+provides-extras = ["dev", "data", "charts", "maps", "markdown", "code", "images", "email", "sanitize", "auth", "browser", "testing", "jinja", "native", "conformance", "extras", "experimental-ui", "notebook", "mcp", "elements", "gradio", "posit", "otel"]
 
 [[package]]
 name = "hedron-charts"
-version = "1.2.0"
+version = "1.3.0"
 source = { editable = "packages/hedron-charts" }
 dependencies = [
     { name = "hedron-core" },
@@ -1372,7 +1382,7 @@ provides-extras = ["matplotlib", "plotly", "altair", "pydeck", "folium", "graphv
 
 [[package]]
 name = "hedron-conformance"
-version = "1.2.0"
+version = "1.3.0"
 source = { editable = "packages/hedron-conformance" }
 dependencies = [
     { name = "hedron-core" },
@@ -1387,7 +1397,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-core"
-version = "1.2.0"
+version = "1.3.0"
 source = { editable = "packages/hedron-core" }
 dependencies = [
     { name = "packaging" },
@@ -1404,7 +1414,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-data"
-version = "1.2.0"
+version = "1.3.0"
 source = { editable = "packages/hedron-data" }
 dependencies = [
     { name = "hedron-core" },
@@ -1468,7 +1478,7 @@ provides-extras = ["pandas", "polars", "pyarrow", "dataframes", "sqlalchemy", "s
 
 [[package]]
 name = "hedron-django"
-version = "1.2.0"
+version = "1.3.0"
 source = { editable = "packages/hedron-django" }
 dependencies = [
     { name = "asgiref" },
@@ -1508,7 +1518,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-elements"
-version = "1.2.0"
+version = "1.3.0"
 source = { editable = "packages/hedron-elements" }
 dependencies = [
     { name = "hedron-core" },
@@ -1523,7 +1533,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-explorer"
-version = "1.2.0"
+version = "1.3.0"
 source = { editable = "packages/hedron-explorer" }
 dependencies = [
     { name = "fastapi" },
@@ -1545,7 +1555,7 @@ provides-extras = ["fastapi"]
 
 [[package]]
 name = "hedron-extras"
-version = "1.2.0"
+version = "1.3.0"
 source = { editable = "packages/hedron-extras" }
 dependencies = [
     { name = "hedron-core" },
@@ -1579,7 +1589,7 @@ provides-extras = ["code-editor", "json-editor", "data-explorer", "chart-workben
 
 [[package]]
 name = "hedron-flask"
-version = "1.2.0"
+version = "1.3.0"
 source = { editable = "packages/hedron-flask" }
 dependencies = [
     { name = "flask" },
@@ -1607,7 +1617,7 @@ requires-dist = [{ name = "hedron-core", editable = "packages/hedron-core" }]
 
 [[package]]
 name = "hedron-jinja"
-version = "1.2.0"
+version = "1.3.0"
 source = { editable = "packages/hedron-jinja" }
 dependencies = [
     { name = "hedron-core" },
@@ -1626,7 +1636,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-maps"
-version = "1.2.0"
+version = "1.3.0"
 source = { editable = "packages/hedron-maps" }
 dependencies = [
     { name = "hedron-core" },
@@ -1710,7 +1720,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-sample-kit"
-version = "0.2.5"
+version = "0.2.6"
 source = { editable = "packages/hedron-sample-kit" }
 dependencies = [
     { name = "hedron-core" },
@@ -1721,14 +1731,18 @@ dependencies = [
 authoring = [
     { name = "hedron-conformance" },
 ]
+testing = [
+    { name = "hedron", extra = ["testing"] },
+]
 
 [package.metadata]
 requires-dist = [
+    { name = "hedron", extras = ["testing"], marker = "extra == 'testing'", editable = "packages/hedron" },
     { name = "hedron-conformance", marker = "extra == 'authoring'", editable = "packages/hedron-conformance" },
     { name = "hedron-core", editable = "packages/hedron-core" },
     { name = "typing-extensions", specifier = ">=4.10.0" },
 ]
-provides-extras = ["authoring"]
+provides-extras = ["authoring", "testing"]
 
 [[package]]
 name = "hedron-sim"
@@ -1747,7 +1761,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-workspace"
-version = "1.2.0"
+version = "1.3.0"
 source = { virtual = "." }
 
 [package.dev-dependencies]
@@ -1796,6 +1810,7 @@ dev = [
     { name = "pygments" },
     { name = "pytest" },
     { name = "pytest-cov" },
+    { name = "pytest-playwright" },
     { name = "pytest-xdist" },
     { name = "ruff" },
     { name = "sqlalchemy" },
@@ -1862,6 +1877,7 @@ dev = [
     { name = "pygments", specifier = ">=2.17" },
     { name = "pytest", specifier = ">=8.3" },
     { name = "pytest-cov", specifier = ">=7.0" },
+    { name = "pytest-playwright", specifier = ">=0.10.0,<0.11" },
     { name = "pytest-xdist", specifier = ">=3.6" },
     { name = "ruff", specifier = ">=0.11" },
     { name = "sqlalchemy", specifier = ">=2.0" },
@@ -3462,6 +3478,20 @@ wheels = [
 ]
 
 [[package]]
+name = "pytest-playwright"
+version = "0.10.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "playwright" },
+    { name = "pytest" },
+    { name = "python-slugify" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/91/de/1c45f90a545771201ac11aead321ced92b66190da56f2138ee1ee78cee8a/pytest_playwright-0.10.0.tar.gz", hash = "sha256:47baf574dfb120bb53675d05c9784f8bf94e04c6dd7477dc56159ce732191952", size = 22634, upload-time = "2026-10-08T22:38:46.758Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/09/15/ab14dfdfd6756389e0a5467417863cf6fffa18ecfba0a68bfdc15dc5895a/pytest_playwright-0.10.0-py3-none-any.whl", hash = "sha256:8314d1af726e2c15531635902ece3ee47ed83f5a75c937a7eda8686d3dae6c0d", size = 22485, upload-time = "2026-10-08T22:38:49.089Z" },
+]
+
+[[package]]
 name = "pytest-xdist"
 version = "3.8.0"
 source = { registry = "https://pypi.org/simple" }
@@ -3502,6 +3532,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/5b/42/55c32bb9b12693c092ad250a0e82edb5b31ddeda6eb772de5f308b3804ad/python_multipart-0.0.32.tar.gz", hash = "sha256:be54b7f3fa167bb83e4fcd936b887b708f4e57fe75911c02aebf53efaf8d938e", size = 46881, upload-time = "2026-06-04T16:18:58.647Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e1/04/e8135ebd1ad02c56ec633277529b2602ff99ff634be76cdba5744cf554fd/python_multipart-0.0.32-py3-none-any.whl", hash = "sha256:ff6d3f776f16878c894e52e107296ffc890e913c611b1a4ec6c44e2821fe2e23", size = 30042, upload-time = "2026-06-04T16:18:57.319Z" },
+]
+
+[[package]]
+name = "python-slugify"
+version = "9.1.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "text-unidecode" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/bd/e8/26b1af09d728d604dc16427a39f53985b22a170dbd61addac3f48db73f03/python_slugify-9.1.3.tar.gz", hash = "sha256:90e997f2e0987239ce95e12f700086eb18e1d1d3ee22624fbbdbd095afca42b6", size = 66093, upload-time = "2026-10-07T01:06:20.101Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/47/67/5598c98725332a6a4084c7b622d5a1ebe7d6745c1d2f434c9e4e89e04cba/python_slugify-9.1.3-py3-none-any.whl", hash = "sha256:9aced0670e54c5603e2335c0fa9a4011ad4bc41ecb3c46e8097294c46fd60ed4", size = 16032, upload-time = "2026-10-07T01:06:18.891Z" },
 ]
 
 [[package]]
@@ -4103,6 +4145,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/e7/39/17dde9f0c76cc5abcdeef1b2243791bb850d498f784147b8e460dd23abe8/syrupy-5.5.3.tar.gz", hash = "sha256:fa21e4ae77c89ec5abfca513338d8a7eb916da6618ca0f8db301476e0768e57a", size = 91614, upload-time = "2026-07-11T15:54:31.46Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ae/f9/617a194c1a4203279998e1859426cf2635042533a99a93d63d3ee1fb967e/syrupy-5.5.3-py3-none-any.whl", hash = "sha256:0b260a0c9dad55e1fb83818973dc36fbc1aea3fd5381592f442a986686c4171a", size = 54959, upload-time = "2026-07-11T15:54:29.836Z" },
+]
+
+[[package]]
+name = "text-unidecode"
+version = "1.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ab/e2/e9a00f0ccb71718418230718b3d900e71a5d16e701a3dae079a21e9cd8f8/text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93", size = 76885, upload-time = "2019-08-30T21:36:45.405Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a6/a5/c0b6468d3824fe3fde30dbb5e1f687b291608f9473681bbf7dabbf5a87d7/text_unidecode-1.3-py2.py3-none-any.whl", hash = "sha256:1311f10e8b895935241623731c2ba64f4c455287888b18189350b67134a822e8", size = 78154, upload-time = "2019-08-30T21:37:03.543Z" },
 ]
 
 [[package]]

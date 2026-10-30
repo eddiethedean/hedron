@@ -149,11 +149,23 @@ status commentary, not a satisfied release gate.
   workspace; release verification pending**. The [machine gate](release-gate-1.2.toml) records the
   accepted policy and in-tree changes; runtime, host, native artifact, and migration evidence remain
   open.
-- [`v1.3` first-class UI testing and adoption confidence](RELEASE_1_3.md) — **Proposed and
-  unscheduled** Stage 0 acceptance packet. All rows in the
-  [machine gate](release-gate-1.3.toml) remain Planned pending API/schema/matrix/budget freeze;
-  `SATELLITE-130` also requires an explicit testing disposition for every coordinated/optional
-  package; no implementation or release claim is made.
+- [`v1.3` first-class UI testing and adoption confidence](RELEASE_1_3.md) — **Candidate
+  implementation in progress**; a local 31-test slice passes on Chromium, Firefox, and WebKit.
+  All 17 [release gates](release-gate-1.3.toml) remain Planned, the v1.2 predecessor is
+  unsatisfied, [freeze budgets](ui-testing-contract-130.toml) remain Unmeasured, and the
+  [23-package disposition inventory](ui-testing-package-dispositions-130.toml) awaits review.
+- [`v1.4` visibility-aware polling](RELEASE_1_4.md) — **Proposed and
+  unscheduled**; [machine packet](release-gate-1.4.toml) remains Planned, with detailed
+  contract freeze and release predecessor unsatisfied
+- [`v1.5` viewport and on-demand loading](RELEASE_1_5.md) — **Proposed and
+  unscheduled**; [machine packet](release-gate-1.5.toml) remains Planned, with detailed
+  contract freeze and release predecessor unsatisfied
+- [`v1.6` typed input timing and request policies](RELEASE_1_6.md) — **Proposed and
+  unscheduled**; [machine packet](release-gate-1.6.toml) remains Planned, with detailed
+  contract freeze and release predecessor unsatisfied
+- [`v1.7` dirty-form and confirmed-save integration](RELEASE_1_7.md) — **Proposed and
+  unscheduled**; [machine packet](release-gate-1.7.toml) remains Planned, with detailed
+  contract freeze and release predecessor unsatisfied
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
   sessions outstanding)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)

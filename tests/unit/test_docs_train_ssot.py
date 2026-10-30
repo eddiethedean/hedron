@@ -241,11 +241,11 @@ def test_section_landings_require_release_context_and_status_link() -> None:
     assert ssot.check_section_landing(path, "# Guides\n")
     assert not ssot.check_section_landing(
         path,
-        "# Guides\n\nTargets 1.1. See [status](current-release.md).\n",
+        f"# Guides\n\nTargets {ssot.FACTS.train}. See [status](current-release.md).\n",
     )
     assert not ssot.check_section_landing(
         path,
-        '# Guides\n\nTargets 1.1. <a href="current-release/">Status</a>.\n',
+        f'# Guides\n\nTargets {ssot.FACTS.train}. <a href="current-release/">Status</a>.\n',
     )
 
 

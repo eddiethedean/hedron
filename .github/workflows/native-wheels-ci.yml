@@ -22,7 +22,7 @@ permissions:
 
 concurrency:
   group: native-wheel-matrix-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 env:
   UV_NO_PROGRESS: "1"
@@ -78,23 +78,7 @@ jobs:
       - name: Build and test native wheels
         working-directory: packages/hedron-native
         shell: bash
-        run: |
-          set -euo pipefail
-          attempt=1
-          max_attempts=3
-          while true; do
-            echo "cibuildwheel attempt ${attempt}/${max_attempts}"
-            if python -m cibuildwheel --output-dir wheelhouse; then
-              break
-            fi
-            if [ "$attempt" -ge "$max_attempts" ]; then
-              echo "cibuildwheel failed after ${max_attempts} attempts" >&2
-              exit 1
-            fi
-            attempt=$((attempt + 1))
-            echo "Retrying after transient container pull/build failure..."
-            sleep 30
-          done
+        run: python -m cibuildwheel --output-dir wheelhouse
 
       - name: Verify exact interpreter and platform matrix
         run: >-
@@ -149,7 +133,7 @@ jobs:
       - name: Retain combined wheels and release ledger
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: hedron-native-1.2.0-evidence-${{ github.run_id }}
+          name: hedron-native-evidence-${{ github.run_id }}
           path: |
             dist/native-artifacts.json
             dist/native/*.whl

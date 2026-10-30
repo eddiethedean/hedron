@@ -229,6 +229,11 @@ def _register_scaffold_commands(sub: _Subparsers) -> None:
         default="minimal",
         help="FastAPI scaffold template (default: minimal)",
     )
+    _ignored = new_p.add_argument(
+        "--with-ui-tests",
+        action="store_true",
+        help="Include an explicit Playwright testing extra and a real-browser test example",
+    )
     new_p.set_defaults(func=cmd_new)
 
 

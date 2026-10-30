@@ -1,0 +1,145 @@
+{
+  "licenses": [
+    {
+      "name": "hedron-workspace",
+      "license": "MIT",
+      "path": "LICENSE"
+    },
+    {
+      "name": "edron",
+      "license": "MIT",
+      "path": "packages/edron/LICENSE"
+    },
+    {
+      "name": "edron-sim",
+      "license": "MIT",
+      "path": "packages/edron-sim/LICENSE"
+    },
+    {
+      "name": "fastapi-workbench",
+      "license": "MIT",
+      "path": "packages/fastapi-workbench/LICENSE"
+    },
+    {
+      "name": "hedron",
+      "license": "MIT",
+      "path": "packages/hedron/LICENSE"
+    },
+    {
+      "name": "hedron-charts",
+      "license": "MIT",
+      "path": "packages/hedron-charts/LICENSE"
+    },
+    {
+      "name": "hedron-conformance",
+      "license": "MIT",
+      "path": "packages/hedron-conformance/LICENSE"
+    },
+    {
+      "name": "hedron-core",
+      "license": "MIT",
+      "path": "packages/hedron-core/LICENSE"
+    },
+    {
+      "name": "hedron-data",
+      "license": "MIT",
+      "path": "packages/hedron-data/LICENSE"
+    },
+    {
+      "name": "hedron-django",
+      "license": "MIT",
+      "path": "packages/hedron-django/LICENSE"
+    },
+    {
+      "name": "hedron-docs",
+      "license": "MIT",
+      "path": "packages/hedron-docs/LICENSE"
+    },
+    {
+      "name": "hedron-elements",
+      "license": "MIT",
+      "path": "packages/hedron-elements/LICENSE"
+    },
+    {
+      "name": "hedron-explorer",
+      "license": "MIT",
+      "path": "packages/hedron-explorer/LICENSE"
+    },
+    {
+      "name": "hedron-extras",
+      "license": "MIT",
+      "path": "packages/hedron-extras/LICENSE"
+    },
+    {
+      "name": "hedron-flask",
+      "license": "MIT",
+      "path": "packages/hedron-flask/LICENSE"
+    },
+    {
+      "name": "hedron-gradio",
+      "license": "MIT",
+      "path": "packages/hedron-gradio/LICENSE"
+    },
+    {
+      "name": "hedron-jinja",
+      "license": "MIT",
+      "path": "packages/hedron-jinja/LICENSE"
+    },
+    {
+      "name": "hedron-maps",
+      "license": "MIT",
+      "path": "packages/hedron-maps/LICENSE"
+    },
+    {
+      "name": "hedron-mcp",
+      "license": "MIT",
+      "path": "packages/hedron-mcp/LICENSE"
+    },
+    {
+      "name": "hedron-native",
+      "license": "MIT",
+      "path": "packages/hedron-native/LICENSE"
+    },
+    {
+      "name": "hedron-notebook",
+      "license": "MIT",
+      "path": "packages/hedron-notebook/LICENSE"
+    },
+    {
+      "name": "hedron-posit",
+      "license": "MIT",
+      "path": "packages/hedron-posit/LICENSE"
+    },
+    {
+      "name": "hedron-runtime-java",
+      "license": "MIT",
+      "path": "packages/hedron-runtime-java/LICENSE"
+    },
+    {
+      "name": "hedron-runtime-node",
+      "license": "MIT",
+      "path": "packages/hedron-runtime-node/LICENSE"
+    },
+    {
+      "name": "hedron-sample-kit",
+      "license": "MIT",
+      "path": "packages/hedron-sample-kit/LICENSE"
+    },
+    {
+      "name": "hedron-sim",
+      "license": "MIT",
+      "path": "packages/hedron-sim/LICENSE"
+    },
+    {
+      "name": "htmx",
+      "license": "BSD-Zero-Clause (upstream HTMX)",
+      "path": "packages/hedron/src/hedron/static/htmx.min.js",
+      "version": "2.0.11"
+    },
+    {
+      "name": "hedron-disclose",
+      "license": "MIT",
+      "path": "packages/hedron/src/hedron/static/hedron-disclose.mjs"
+    }
+  ]
+}

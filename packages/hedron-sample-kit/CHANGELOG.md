@@ -1,6 +1,13 @@
 # Changelog
 
-## [0.2.5] — Unreleased
+## [0.2.6] — Unreleased
+
+### Added
+
+- Add an explicitly loaded UI-testing contribution with versioned metadata and an isolated
+  sample-app factory fixture.
+
+## [0.2.5] — 2026-10-27
 
 ### Changed
 

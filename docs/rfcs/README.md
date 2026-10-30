@@ -114,6 +114,7 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0094](RFC-0094-EDRON-AUTHORING-FACADE.md) | Edron batteries-included Pythonic authoring facade | Accepted, implemented, and verified in-tree as an untagged Edron `1.0.0` candidate |
 | [0095](RFC-0095-ALPINE-BROWSER-ENHANCEMENT.md) | Alpine browser-local enhancement and unified interaction preview | Accepted and implemented as the verified `v0.67.0` migration baseline; D-113 / D-115 / D-116 |
 | [0096](RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md) | Hedron 1.0 interface and HTMX/Alpine/component-engine consolidation | Accepted, implemented, and verified as an untagged `v1.0.0` candidate; D-114–D-117 |
-| [0097](RFC-0097-FIRST-CLASS-UI-TESTING.md) | First-class UI testing and adoption confidence | Proposed; phase 1.3 Stage 0 refinement |
+| [0097](RFC-0097-FIRST-CLASS-UI-TESTING.md) | First-class UI testing and adoption confidence | Proposed; phase 1.3 empirical freeze, bounded sync harness and capture refinement |
 | [0098](RFC-0098-OPEN-ENHANCEMENT-COMPLETION.md) | Open enhancement completion and complementary application features | Accepted, implemented, and verified in `v1.1.0`; 20 required feature requests |
 | [0099](RFC-0099-PYTHON-311-BASELINE.md) | Python 3.11+ support and typing baseline | Accepted (D-120); implementation in-tree, release evidence pending |
+| [0100](RFC-0100-INTERACTION-EFFICIENCY-AND-FORM-CONTINUITY.md) | Interaction efficiency and form continuity | Proposed; phases 1.4–1.7, preserved 1.3 testing foundation; D-121 planning sequence |

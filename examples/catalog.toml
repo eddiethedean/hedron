@@ -1,5 +1,5 @@
-# Public example metadata. Keep current examples on the 1.0 contract and label historical
-# phase evidence explicitly so it never appears to be a recommended starting point.
+# Public example metadata. Candidate examples are in development; historical
+# Historical phase evidence remains clearly separate from supported/current examples.
 
 [[example]]
 path = "chrome-zero-css"
@@ -233,3 +233,21 @@ layer = "Hedron"
 difficulty = "Historical"
 minutes = 0
 status = "historical"
+
+[[example]]
+path = "ui-testing"
+outcome = "Real-browser testing with native Playwright APIs"
+layer = "Hedron testing"
+difficulty = "Advanced"
+minutes = 45
+status = "candidate"
+ref = "main"
+
+[[example]]
+path = "ui-testing-satellite"
+outcome = "Opt-in specialist contribution to browser tests"
+layer = "Hedron testing"
+difficulty = "Advanced"
+minutes = 30
+status = "candidate"
+ref = "main"

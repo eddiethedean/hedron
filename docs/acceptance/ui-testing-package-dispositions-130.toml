@@ -1,0 +1,129 @@
+schema_version = 1
+phase = "1.3"
+status = "MaintainerAccepted"
+workspace_package_count = 23
+dispositions_assigned = true
+maintainer_review_complete = true
+reviewer = "eddiethedean"
+reviewed_at = "2026-10-29T18:26:59Z"
+specialist_contribution = "hedron-sample-kit"
+specialist_contribution_reference = "hedron_sample_kit.ui_testing:CONTRIBUTION"
+explicit_loading = "pytest_plugins plus pytest.mark.hedron_ui_contribution"
+implementation = "../implementation/UI_TESTING_1_3.md"
+
+[[package]]
+id = "edron"
+disposition = "facade_consumer"
+reason = "Uses the Hedron browser contract through the core facade; owns no browser runner."
+
+[[package]]
+id = "edron-sim"
+disposition = "simulation_consumer"
+reason = "Simulation fixtures may use native Playwright; no separate test host is needed."
+
+[[package]]
+id = "fastapi-workbench"
+disposition = "application_consumer"
+reason = "Application flows can opt into the flagship managed ASGI scenario."
+
+[[package]]
+id = "hedron"
+disposition = "testing_product"
+reason = "Owns the optional scenario API, managed ASGI host, and explicit pytest plugin."
+
+[[package]]
+id = "hedron-charts"
+disposition = "browser_product_consumer"
+reason = "Chart behavior can be asserted through native Playwright; no chart runner is added."
+
+[[package]]
+id = "hedron-conformance"
+disposition = "contract_consumer"
+reason = "Retains portable conformance ownership and may call the browser product explicitly."
+
+[[package]]
+id = "hedron-core"
+disposition = "portable_testing_provider"
+reason = "Keeps render and AppScenario helpers; does not acquire Playwright or pytest dependencies."
+
+[[package]]
+id = "hedron-data"
+disposition = "browser_product_consumer"
+reason = "Data UI tests use native browser assertions without a package-specific runner."
+
+[[package]]
+id = "hedron-django"
+disposition = "external_url_consumer"
+reason = "May use caller-owned loopback URL mode; managed WSGI launchers remain Deferred."
+
+[[package]]
+id = "hedron-docs"
+disposition = "documentation_consumer"
+reason = "Documents the public browser workflow; does not own a second site-test lifecycle."
+
+[[package]]
+id = "hedron-elements"
+disposition = "browser_product_consumer"
+reason = "Element interaction tests use native Playwright and the shared observation surface."
+
+[[package]]
+id = "hedron-explorer"
+disposition = "browser_product_consumer"
+reason = "Explorer end-to-end tests may opt into the shared managed ASGI host."
+
+[[package]]
+id = "hedron-extras"
+disposition = "browser_product_consumer"
+reason = "Optional UI behavior uses native browser scenarios without another fixture owner."
+
+[[package]]
+id = "hedron-flask"
+disposition = "external_url_consumer"
+reason = "May use caller-owned loopback URL mode; managed WSGI launchers remain Deferred."
+
+[[package]]
+id = "hedron-gradio"
+disposition = "remote_deferred"
+reason = "Remote services and remote browser capture are outside phase 1.3."
+
+[[package]]
+id = "hedron-jinja"
+disposition = "render_consumer"
+reason = "Template contract tests remain in render/HTTP layers; no browser runner is added."
+
+[[package]]
+id = "hedron-maps"
+disposition = "browser_product_consumer"
+reason = "Map UI tests use native Playwright and explicit local assets; no map host is added."
+
+[[package]]
+id = "hedron-mcp"
+disposition = "remote_deferred"
+reason = "Remote MCP workflows are outside the local literal-loopback browser contract."
+
+[[package]]
+id = "hedron-native"
+disposition = "build_test_consumer"
+reason = "Native compilation and wheel tests remain in packaging jobs, not browser scenarios."
+
+[[package]]
+id = "hedron-notebook"
+disposition = "application_consumer"
+reason = "Notebook UI tests may use native Playwright; kernel launch and remote execution are excluded."
+
+[[package]]
+id = "hedron-posit"
+disposition = "external_url_consumer"
+reason = "Caller-owned literal-loopback mode is available; managed Posit launchers are Deferred."
+
+[[package]]
+id = "hedron-sample-kit"
+disposition = "specialist_contributor"
+contribution = "hedron_sample_kit.ui_testing:CONTRIBUTION"
+fixture_plugin = "hedron_sample_kit.pytest_plugin"
+reason = "Demonstrates explicit package identity, schema, capability, fixture-resource, and version metadata."
+
+[[package]]
+id = "hedron-sim"
+disposition = "simulation_consumer"
+reason = "Simulation UI may use the shared browser scenario; no separate runner is added."

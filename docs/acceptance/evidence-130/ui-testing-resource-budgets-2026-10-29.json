@@ -1,0 +1,1667 @@
+{
+  "frozen_budgets": [
+    {
+      "frozen_limits": {
+        "child_processes_max": 1,
+        "shutdown_max_ms": 7000,
+        "shutdown_samples_per_row": 5,
+        "startup_samples_per_row": 5
+      },
+      "id": "host",
+      "limit": 15000,
+      "measurement_evidence": "evidence-130/ui-testing-resource-budgets-2026-10-29.json",
+      "metrics": "startup/readiness, graceful/forced shutdown, child/FD/process count",
+      "owner_role": "testing",
+      "sample_count": 20,
+      "state": "Measured",
+      "threshold_frozen": true,
+      "unit": "milliseconds"
+    },
+    {
+      "frozen_limits": {
+        "context_samples_per_row": 10,
+        "scenario_cycle_max_ms": 15000
+      },
+      "id": "browser",
+      "limit": 5000,
+      "measurement_evidence": "evidence-130/ui-testing-resource-budgets-2026-10-29.json",
+      "measurement_scope": "Three hosted Linux engine rows measured and enforced the frozen limits on Python 3.12.13 with Playwright 1.62.0 and pinned browser revisions; each required case passed.",
+      "metrics": "context create/close, preserved fixture options, warm/cold overhead",
+      "owner_role": "testing",
+      "sample_count": 3,
+      "state": "Measured",
+      "threshold_frozen": true,
+      "unit": "milliseconds"
+    },
+    {
+      "frozen_limits": {
+        "default_timeout_ms": 10000,
+        "event_capacity_default": 256,
+        "event_capacity_max": 4096,
+        "event_count_max": 256,
+        "event_snapshot_bytes_max": 1048576,
+        "poll_interval_ms": 25,
+        "samples_per_row": 1
+      },
+      "id": "settle",
+      "limit": 1000,
+      "measurement_evidence": "evidence-130/ui-testing-resource-budgets-2026-10-29.json",
+      "measurement_scope": "Three hosted Linux engine rows measured and enforced the frozen limits on Python 3.12.13 with Playwright 1.62.0 and pinned browser revisions; each required case passed.",
+      "metrics": "event ring count/bytes, wait/probe overhead, timeout tolerance",
+      "owner_role": "browser-platform",
+      "sample_count": 3,
+      "state": "Measured",
+      "threshold_frozen": true,
+      "unit": "milliseconds"
+    },
+    {
+      "frozen_limits": {
+        "aggregate_max_bytes": 268435456,
+        "max_manifest_bytes": 524288,
+        "max_manifests_per_worker": 128,
+        "max_workers": 4
+      },
+      "id": "structured_artifacts",
+      "limit": 67108864,
+      "measurement_evidence": "evidence-130/ui-testing-resource-budgets-2026-10-29.json",
+      "metrics": "manifest/events/stacks/member/aggregate bytes, paths, writes and retention",
+      "owner_role": "testing",
+      "sample_count": 4,
+      "state": "Measured",
+      "threshold_frozen": true,
+      "unit": "bytes_per_worker"
+    },
+    {
+      "frozen_limits": {
+        "max_overshoot_bytes": 67108864,
+        "monitor_interval_ms": 25,
+        "termination_must_be_visible": true,
+        "tmpfs_max_bytes": 134217728
+      },
+      "id": "synthetic_capture",
+      "limit": 67108864,
+      "measurement_evidence": "evidence-130/ui-testing-resource-budgets-2026-10-29.json",
+      "measurement_scope": "Three hosted Linux probes on private 128 MiB tmpfs used 25 ms sampling, a 64 MiB per-file limit, a successful ENOSPC hard-limit probe, and an over-limit capture error probe. The largest historical 25 ms growth sample was 45,564,212 bytes; the selected bound leaves 21,544,652 bytes of measured margin.",
+      "metrics": "native temporary disk, monitoring granularity, bounded overshoot, capture termination",
+      "owner_role": "security",
+      "sample_count": 3,
+      "state": "Measured",
+      "threshold_frozen": true,
+      "unit": "bytes_per_file"
+    },
+    {
+      "frozen_limits": {
+        "browser_monitor_interval_ms": 25,
+        "browser_timeout_seconds": 1800,
+        "browser_xdist_workers": 0,
+        "host_monitor_interval_ms": 50,
+        "host_timeout_seconds": 900,
+        "per_file_bytes": 67108864,
+        "process_count_max": 64,
+        "rss_max_bytes": 8589934592
+      },
+      "id": "parallel",
+      "limit": 4,
+      "measurement_evidence": "evidence-130/ui-testing-resource-budgets-2026-10-29.json",
+      "measurement_scope": "The hosted Linux candidate run completed the three serial browser suites and four host rows within the frozen process, RSS, time, and temporary-storage limits.",
+      "metrics": "xdist workers, memory/processes, rerun/attempt artifacts, total CI duration",
+      "owner_role": "performance",
+      "sample_count": 1,
+      "state": "Measured",
+      "threshold_frozen": true,
+      "unit": "xdist_workers"
+    },
+    {
+      "frozen_limits": {
+        "browser_engines": [
+          "chromium",
+          "firefox",
+          "webkit"
+        ],
+        "browser_python": "3.12",
+        "host_python_max": "3.14",
+        "host_python_min": "3.11",
+        "playwright": "1.62.0",
+        "pytest_playwright": "0.10.0"
+      },
+      "id": "compatibility",
+      "limit": 7,
+      "measurement_evidence": "evidence-130/ui-testing-resource-budgets-2026-10-29.json",
+      "measurement_scope": "Four hosted Linux host rows (Python 3.11–3.14), three hosted Linux browser rows (Python 3.12), and the hosted minimum/latest stable dependency-bound jobs passed.",
+      "metrics": "minimum/maximum upstream dependency and pinned browser integration workload",
+      "owner_role": "compatibility",
+      "sample_count": 7,
+      "state": "Measured",
+      "threshold_frozen": true,
+      "unit": "required_linux_lane_rows"
+    }
+  ],
+  "hosted_linux_ci_revalidation": {
+    "architecture": "x86_64",
+    "artifact_retention_expires_at": "2027-01-27T17:11:16Z",
+    "artifact_scan": {
+      "downloaded_action_artifact_files_scanned": 49,
+      "matching_files": [],
+      "randomized_canary_token_pattern_hits": 0
+    },
+    "browser_engine_rows": [
+      {
+        "acceptance": {
+          "errors": [],
+          "required_case_count": 27,
+          "required_cases_all_passed": true,
+          "skip_classifications": {
+            "ENGINE-MATRIX-NOT-SELECTED": 72,
+            "HISTORICAL-API-RETIRED": 5,
+            "STRUCTURED-PRIVACY-PROBE-SEPARATE-LANE": 1,
+            "SYNTHETIC-CAPTURE-PROBE-SEPARATE-LANE": 1
+          },
+          "status_counts": {
+            "passed": 137,
+            "skipped": 79
+          },
+          "testcase_count": 216
+        },
+        "browser_resource_report": {
+          "duration_seconds": 320.933149,
+          "exit_code": 0,
+          "max_process_group_rss_bytes": 812171264,
+          "max_processes": 8,
+          "max_temporary_growth_per_sample_bytes": 6037728,
+          "max_temporary_tree_bytes": 44811708,
+          "temporary_filesystem": "tmpfs",
+          "temporary_filesystem_capacity_bytes": 134217728,
+          "termination_reason": null
+        },
+        "browser_version": "151.0.7922.34",
+        "budget_measurements": {
+          "event_count": 29,
+          "event_snapshot_bytes": 3149,
+          "max_context_close_ms": 3.784,
+          "max_context_create_ms": 9.768,
+          "scenario_cycle_ms": 3173.924,
+          "settle_ms": [
+            31.578
+          ]
+        },
+        "budget_status": "passed",
+        "engine": "chromium",
+        "playwright_version": "1.62.0",
+        "pytest_playwright_version": "0.10.0",
+        "python": "3.12.13",
+        "structured_privacy_probe": {
+          "canary_categories": [
+            "form",
+            "query",
+            "header",
+            "cookie",
+            "storage",
+            "console",
+            "exception",
+            "target",
+            "path"
+          ],
+          "errors": [],
+          "expected_exception_seen": true,
+          "failure_exception_names": [
+            "RuntimeError"
+          ],
+          "intentional_failure_recorded": true,
+          "manifest_count": 1,
+          "manifest_leaked_categories": [],
+          "resource_exit_code": 0,
+          "resource_max_growth_per_sample_bytes": 44515636,
+          "resource_max_temporary_tree_bytes": 44669348,
+          "resource_termination_reason": null,
+          "status": "passed",
+          "unexpected_native_output_count": 0
+        },
+        "synthetic_capture_probe": {
+          "intentional_failure_seen": true,
+          "max_temporary_growth_per_sample_bytes": 44515636,
+          "monitor_interval_ms": 25,
+          "normal_trace_bytes": 195462,
+          "normal_trace_valid": true,
+          "over_limit_error_visible": true,
+          "temporary_filesystem": "tmpfs",
+          "temporary_filesystem_capacity_bytes": 134217728,
+          "temporary_filesystem_hard_limit_observed_enospc": true,
+          "trace_file_limit_bytes": 67108864
+        }
+      },
+      {
+        "acceptance": {
+          "errors": [],
+          "required_case_count": 27,
+          "required_cases_all_passed": true,
+          "skip_classifications": {
+            "CHROMIUM-ONLY-STYLE-EVIDENCE": 1,
+            "ENGINE-MATRIX-NOT-SELECTED": 73,
+            "HISTORICAL-API-RETIRED": 5,
+            "STRUCTURED-PRIVACY-PROBE-SEPARATE-LANE": 1,
+            "SYNTHETIC-CAPTURE-PROBE-SEPARATE-LANE": 1
+          },
+          "status_counts": {
+            "passed": 135,
+            "skipped": 81
+          },
+          "testcase_count": 216
+        },
+        "browser_resource_report": {
+          "duration_seconds": 520.196928,
+          "exit_code": 0,
+          "max_process_group_rss_bytes": 770879488,
+          "max_processes": 8,
+          "max_temporary_growth_per_sample_bytes": 14655568,
+          "max_temporary_tree_bytes": 84473980,
+          "temporary_filesystem": "tmpfs",
+          "temporary_filesystem_capacity_bytes": 134217728,
+          "termination_reason": null
+        },
+        "browser_version": "153.0",
+        "budget_measurements": {
+          "event_count": 29,
+          "event_snapshot_bytes": 3149,
+          "max_context_close_ms": 111.7,
+          "max_context_create_ms": 77.526,
+          "scenario_cycle_ms": 3856.501,
+          "settle_ms": [
+            4.601
+          ]
+        },
+        "budget_status": "passed",
+        "engine": "firefox",
+        "playwright_version": "1.62.0",
+        "pytest_playwright_version": "0.10.0",
+        "python": "3.12.13",
+        "structured_privacy_probe": {
+          "canary_categories": [
+            "form",
+            "query",
+            "header",
+            "cookie",
+            "storage",
+            "console",
+            "exception",
+            "target",
+            "path"
+          ],
+          "errors": [],
+          "expected_exception_seen": true,
+          "failure_exception_names": [
+            "RuntimeError"
+          ],
+          "intentional_failure_recorded": true,
+          "manifest_count": 1,
+          "manifest_leaked_categories": [],
+          "resource_exit_code": 0,
+          "resource_max_growth_per_sample_bytes": 44515636,
+          "resource_max_temporary_tree_bytes": 57335060,
+          "resource_termination_reason": null,
+          "status": "passed",
+          "unexpected_native_output_count": 0
+        },
+        "synthetic_capture_probe": {
+          "intentional_failure_seen": true,
+          "max_temporary_growth_per_sample_bytes": 44515636,
+          "monitor_interval_ms": 25,
+          "normal_trace_bytes": 221580,
+          "normal_trace_valid": true,
+          "over_limit_error_visible": true,
+          "temporary_filesystem": "tmpfs",
+          "temporary_filesystem_capacity_bytes": 134217728,
+          "temporary_filesystem_hard_limit_observed_enospc": true,
+          "trace_file_limit_bytes": 67108864
+        }
+      },
+      {
+        "acceptance": {
+          "errors": [],
+          "required_case_count": 27,
+          "required_cases_all_passed": true,
+          "skip_classifications": {
+            "CHROMIUM-ONLY-STYLE-EVIDENCE": 1,
+            "ENGINE-MATRIX-NOT-SELECTED": 73,
+            "HISTORICAL-API-RETIRED": 5,
+            "STRUCTURED-PRIVACY-PROBE-SEPARATE-LANE": 1,
+            "SYNTHETIC-CAPTURE-PROBE-SEPARATE-LANE": 1
+          },
+          "status_counts": {
+            "passed": 135,
+            "skipped": 81
+          },
+          "testcase_count": 216
+        },
+        "browser_resource_report": {
+          "duration_seconds": 352.637448,
+          "exit_code": 0,
+          "max_process_group_rss_bytes": 845967360,
+          "max_processes": 8,
+          "max_temporary_growth_per_sample_bytes": 4861876,
+          "max_temporary_tree_bytes": 44519912,
+          "temporary_filesystem": "tmpfs",
+          "temporary_filesystem_capacity_bytes": 134217728,
+          "termination_reason": null
+        },
+        "browser_version": "26.5",
+        "budget_measurements": {
+          "event_count": 29,
+          "event_snapshot_bytes": 3149,
+          "max_context_close_ms": 11.711,
+          "max_context_create_ms": 26.181,
+          "scenario_cycle_ms": 3234.137,
+          "settle_ms": [
+            38.259
+          ]
+        },
+        "budget_status": "passed",
+        "engine": "webkit",
+        "playwright_version": "1.62.0",
+        "pytest_playwright_version": "0.10.0",
+        "python": "3.12.13",
+        "structured_privacy_probe": {
+          "canary_categories": [
+            "form",
+            "query",
+            "header",
+            "cookie",
+            "storage",
+            "console",
+            "exception",
+            "target",
+            "path"
+          ],
+          "errors": [],
+          "expected_exception_seen": true,
+          "failure_exception_names": [
+            "RuntimeError"
+          ],
+          "intentional_failure_recorded": true,
+          "manifest_count": 1,
+          "manifest_leaked_categories": [],
+          "resource_exit_code": 0,
+          "resource_max_growth_per_sample_bytes": 44515636,
+          "resource_max_temporary_tree_bytes": 44524248,
+          "resource_termination_reason": null,
+          "status": "passed",
+          "unexpected_native_output_count": 0
+        },
+        "synthetic_capture_probe": {
+          "intentional_failure_seen": true,
+          "max_temporary_growth_per_sample_bytes": 44515636,
+          "monitor_interval_ms": 25,
+          "normal_trace_bytes": 195686,
+          "normal_trace_valid": true,
+          "over_limit_error_visible": true,
+          "temporary_filesystem": "tmpfs",
+          "temporary_filesystem_capacity_bytes": 134217728,
+          "temporary_filesystem_hard_limit_observed_enospc": true,
+          "trace_file_limit_bytes": 67108864
+        }
+      }
+    ],
+    "browser_matrix": [
+      "chromium",
+      "firefox",
+      "webkit"
+    ],
+    "browser_python": "3.12.13",
+    "candidate_version": "1.3.0",
+    "full_test_suites_python": [
+      "3.11",
+      "3.12",
+      "3.13",
+      "3.14"
+    ],
+    "host_matrix_rows": [
+      {
+        "architecture": "x86_64",
+        "budget_status": "passed",
+        "max_child_processes": 1,
+        "max_shutdown_ms": 351.547,
+        "max_startup_ms": 737.593,
+        "python": "3.11.15",
+        "required_cases": 13,
+        "required_cases_passed": true,
+        "resource_report": {
+          "duration_seconds": 11.014525,
+          "exit_code": 0,
+          "max_process_group_rss_bytes": 274931712,
+          "max_processes": 5,
+          "max_temporary_growth_per_sample_bytes": 9142272,
+          "max_temporary_tree_bytes": 10072064,
+          "temporary_filesystem": "ext4",
+          "termination_reason": null
+        },
+        "test_status_counts": {
+          "passed": 53
+        }
+      },
+      {
+        "architecture": "x86_64",
+        "budget_status": "passed",
+        "max_child_processes": 1,
+        "max_shutdown_ms": 381.44,
+        "max_startup_ms": 1003.807,
+        "python": "3.12.13",
+        "required_cases": 13,
+        "required_cases_passed": true,
+        "resource_report": {
+          "duration_seconds": 14.427433,
+          "exit_code": 0,
+          "max_process_group_rss_bytes": 268988416,
+          "max_processes": 5,
+          "max_temporary_growth_per_sample_bytes": 56205312,
+          "max_temporary_tree_bytes": 57139200,
+          "temporary_filesystem": "ext4",
+          "termination_reason": null
+        },
+        "test_status_counts": {
+          "passed": 53
+        }
+      },
+      {
+        "architecture": "x86_64",
+        "budget_status": "passed",
+        "max_child_processes": 1,
+        "max_shutdown_ms": 345.552,
+        "max_startup_ms": 901.415,
+        "python": "3.13.14",
+        "required_cases": 13,
+        "required_cases_passed": true,
+        "resource_report": {
+          "duration_seconds": 13.339814,
+          "exit_code": 0,
+          "max_process_group_rss_bytes": 279216128,
+          "max_processes": 5,
+          "max_temporary_growth_per_sample_bytes": 9138176,
+          "max_temporary_tree_bytes": 10067968,
+          "temporary_filesystem": "ext4",
+          "termination_reason": null
+        },
+        "test_status_counts": {
+          "passed": 53
+        }
+      },
+      {
+        "architecture": "x86_64",
+        "budget_status": "passed",
+        "max_child_processes": 1,
+        "max_shutdown_ms": 369.626,
+        "max_startup_ms": 1050.861,
+        "python": "3.14.6",
+        "required_cases": 13,
+        "required_cases_passed": true,
+        "resource_report": {
+          "duration_seconds": 15.965634,
+          "exit_code": 0,
+          "max_process_group_rss_bytes": 302694400,
+          "max_processes": 5,
+          "max_temporary_growth_per_sample_bytes": 9138176,
+          "max_temporary_tree_bytes": 10067968,
+          "temporary_filesystem": "ext4",
+          "termination_reason": null
+        },
+        "test_status_counts": {
+          "passed": 53
+        }
+      }
+    ],
+    "live_integration_jobs": {
+      "REALCONNECT-033": "passed",
+      "REALWB-030": "passed"
+    },
+    "operating_system": "Linux (ubuntu-latest)",
+    "packaging_rehearsal_job": "PKG-033 packaging rehearsal: passed",
+    "python_host_versions": [
+      "3.11.15",
+      "3.12.13",
+      "3.13.14",
+      "3.14.6"
+    ],
+    "quality_docs_typing_packages": "passed",
+    "release_artifact_rehearsal": "not run: workflow is not yet on the default branch",
+    "release_gate_disposition": "candidate CI evidence only; maintainer review and release approval remain open",
+    "required_check": "passed",
+    "retained_artifacts": [
+      {
+        "expires_at": "2027-01-27T17:11:16Z",
+        "id": 12918245593,
+        "name": "browser-htmx-chromium",
+        "sha256": "27d0e2984915bb273356147573d686daa6c8908a67858694974654cfc5e5f580",
+        "size_bytes": 14551
+      },
+      {
+        "expires_at": "2027-01-27T17:11:16Z",
+        "id": 12916729283,
+        "name": "browser-htmx-firefox",
+        "sha256": "b9c0e517d640a50b1d050f172c42dcce7f5c4f54bf431546dfac59f4383f155d",
+        "size_bytes": 14749
+      },
+      {
+        "expires_at": "2027-01-27T17:11:16Z",
+        "id": 12916969623,
+        "name": "browser-htmx-webkit",
+        "sha256": "dab678521e2fa3373cf5ddde0dc059da91b31fb010d7e1c38ce64b3327b3b197",
+        "size_bytes": 14678
+      },
+      {
+        "expires_at": "2027-01-27T17:11:16Z",
+        "id": 12916519082,
+        "name": "hedron-evidence-bundle",
+        "sha256": "b75f3f29608e7b72fe150157b687b868043bf7da456465b23d2dc6fd4d47a7d1",
+        "size_bytes": 7021
+      },
+      {
+        "expires_at": "2027-01-27T17:11:16Z",
+        "id": 12918320627,
+        "name": "python-package-coverage-3.12",
+        "sha256": "9860d8298ba43d132eb486307abe948955707700addbe17271a3c6375fa732a6",
+        "size_bytes": 498213
+      },
+      {
+        "expires_at": "2027-01-27T17:11:16Z",
+        "id": 12916628367,
+        "name": "ui-testing-host-3.11",
+        "sha256": "cd822e44f7d434f9b4353965321dcfae20dbf810df77dc8b751781923221b74a",
+        "size_bytes": 4914
+      },
+      {
+        "expires_at": "2027-01-27T17:11:16Z",
+        "id": 12916589515,
+        "name": "ui-testing-host-3.12",
+        "sha256": "b6af77a517853a5a1a41e92f926f6020fc3f388286343e981e98327c188cc109",
+        "size_bytes": 4926
+      },
+      {
+        "expires_at": "2027-01-27T17:11:16Z",
+        "id": 12917831572,
+        "name": "ui-testing-host-3.13",
+        "sha256": "ae06e269e9bd9391523a5de176832a641d1e3d3e90af67b726067d2fad977f41",
+        "size_bytes": 4874
+      },
+      {
+        "expires_at": "2027-01-27T17:11:16Z",
+        "id": 12917751392,
+        "name": "ui-testing-host-3.14",
+        "sha256": "40cc65a3c900e6dff8a48c35e5f1a8005651e610c475fa663ddcac1c7c3056e9",
+        "size_bytes": 4912
+      }
+    ],
+    "run_id": 40918890605,
+    "run_url": "https://github.com/eddiethedean/hedron/actions/runs/40918890605",
+    "schema_version": 1,
+    "source_revision": "825f31c8af6e1c446995dbff8be30738b634b22c",
+    "stable_dependency_bounds": {
+      "latest": "passed",
+      "minimum": "passed"
+    },
+    "status": "success",
+    "supply_chain_evidence_job": "passed",
+    "stable_dependency_bounds_scope": "The minimum/latest jobs passed the stable adapter suite. They did not install hedron[testing] on this source revision; a follow-up workflow change adds that coverage."
+  },
+  "linux_browser_and_capture_probe": {
+    "local_execution": {
+      "reason": "The local Linux aarch64 container could not resolve Playwright browser download hosts; the required probes ran on ubuntu-latest instead.",
+      "status": "not-run"
+    },
+    "measurement_run": {
+      "budget_rejection": "A 25 MiB ceiling rejected initial measured growth; the frozen 64 MiB overshoot bound passed hosted revalidation with all three Linux browser and capture lanes.",
+      "engine_rows": [
+        {
+          "browser_suite": {
+            "deselected": 26,
+            "passed": 137,
+            "skipped": 78
+          },
+          "engine": "chromium",
+          "job_id": 123589171331,
+          "max_temporary_growth_per_sample_bytes": 45564212,
+          "max_temporary_tree_bytes": 46439240,
+          "over_limit_error_visible": true,
+          "tmpfs_hard_limit_observed_enospc": true,
+          "trace_bytes": 195439,
+          "trace_valid": true
+        },
+        {
+          "browser_suite": {
+            "deselected": 26,
+            "passed": 135,
+            "skipped": 80
+          },
+          "engine": "firefox",
+          "job_id": 123589171375,
+          "max_temporary_growth_per_sample_bytes": 44515636,
+          "max_temporary_tree_bytes": 69607836,
+          "over_limit_error_visible": true,
+          "tmpfs_hard_limit_observed_enospc": true,
+          "trace_bytes": 216173,
+          "trace_valid": true
+        },
+        {
+          "browser_suite": {
+            "deselected": 26,
+            "passed": 135,
+            "skipped": 80
+          },
+          "engine": "webkit",
+          "job_id": 123589171206,
+          "max_temporary_growth_per_sample_bytes": 44515636,
+          "max_temporary_tree_bytes": 45232936,
+          "over_limit_error_visible": true,
+          "tmpfs_hard_limit_observed_enospc": true,
+          "trace_bytes": 195570,
+          "trace_valid": true
+        }
+      ],
+      "monitor_interval_ms": 25,
+      "operating_system": "Linux",
+      "playwright_version": "1.62.0",
+      "prior_max_overshoot_bytes": 26214400,
+      "pytest_playwright_version": "0.10.0",
+      "python": "3.12.13",
+      "revalidation_engine_rows": [
+        {
+          "browser_suite": {
+            "passed": 137,
+            "required_cases": 27,
+            "skipped": 79
+          },
+          "canary_categories": [
+            "form",
+            "query",
+            "header",
+            "cookie",
+            "storage",
+            "console",
+            "exception",
+            "target",
+            "path"
+          ],
+          "engine": "chromium",
+          "manifest_leaked_categories": [],
+          "max_browser_temporary_tree_bytes": 44811708,
+          "max_temporary_growth_per_sample_bytes": 44515636,
+          "over_limit_error_visible": true,
+          "privacy_probe": "passed",
+          "tmpfs_hard_limit_observed_enospc": true,
+          "trace_bytes": 195462,
+          "trace_valid": true
+        },
+        {
+          "browser_suite": {
+            "passed": 135,
+            "required_cases": 27,
+            "skipped": 81
+          },
+          "canary_categories": [
+            "form",
+            "query",
+            "header",
+            "cookie",
+            "storage",
+            "console",
+            "exception",
+            "target",
+            "path"
+          ],
+          "engine": "firefox",
+          "manifest_leaked_categories": [],
+          "max_browser_temporary_tree_bytes": 84473980,
+          "max_temporary_growth_per_sample_bytes": 44515636,
+          "over_limit_error_visible": true,
+          "privacy_probe": "passed",
+          "tmpfs_hard_limit_observed_enospc": true,
+          "trace_bytes": 221580,
+          "trace_valid": true
+        },
+        {
+          "browser_suite": {
+            "passed": 135,
+            "required_cases": 27,
+            "skipped": 81
+          },
+          "canary_categories": [
+            "form",
+            "query",
+            "header",
+            "cookie",
+            "storage",
+            "console",
+            "exception",
+            "target",
+            "path"
+          ],
+          "engine": "webkit",
+          "manifest_leaked_categories": [],
+          "max_browser_temporary_tree_bytes": 44519912,
+          "max_temporary_growth_per_sample_bytes": 44515636,
+          "over_limit_error_visible": true,
+          "privacy_probe": "passed",
+          "tmpfs_hard_limit_observed_enospc": true,
+          "trace_bytes": 195686,
+          "trace_valid": true
+        }
+      ],
+      "revalidation_run_id": 40918890605,
+      "revalidation_source_revision": "825f31c8af6e1c446995dbff8be30738b634b22c",
+      "revalidation_status": "passed",
+      "revalidation_url": "https://github.com/eddiethedean/hedron/actions/runs/40918890605",
+      "run_id": 40913955483,
+      "selected_max_overshoot_bytes": 67108864,
+      "source_revision": "440ca0281a2a082867116feee02bac1251ba05fc",
+      "temporary_filesystem": "tmpfs",
+      "temporary_filesystem_capacity_bytes": 134217728,
+      "url": "https://github.com/eddiethedean/hedron/actions/runs/40913955483"
+    },
+    "required_engines": [
+      "chromium",
+      "firefox",
+      "webkit"
+    ],
+    "required_python": "3.12",
+    "status": "measured-and-revalidated"
+  },
+  "linux_host_matrix": {
+    "all_required_host_cases_passed": true,
+    "hosted_revalidation": {
+      "all_required_host_cases_passed": true,
+      "architecture": "x86_64",
+      "rows": [
+        {
+          "architecture": "x86_64",
+          "budget_status": "passed",
+          "max_child_processes": 1,
+          "max_shutdown_ms": 351.547,
+          "max_startup_ms": 737.593,
+          "python": "3.11.15",
+          "required_cases": 13,
+          "required_cases_passed": true,
+          "test_status_counts": {
+            "passed": 53
+          }
+        },
+        {
+          "architecture": "x86_64",
+          "budget_status": "passed",
+          "max_child_processes": 1,
+          "max_shutdown_ms": 381.44,
+          "max_startup_ms": 1003.807,
+          "python": "3.12.13",
+          "required_cases": 13,
+          "required_cases_passed": true,
+          "test_status_counts": {
+            "passed": 53
+          }
+        },
+        {
+          "architecture": "x86_64",
+          "budget_status": "passed",
+          "max_child_processes": 1,
+          "max_shutdown_ms": 345.552,
+          "max_startup_ms": 901.415,
+          "python": "3.13.14",
+          "required_cases": 13,
+          "required_cases_passed": true,
+          "test_status_counts": {
+            "passed": 53
+          }
+        },
+        {
+          "architecture": "x86_64",
+          "budget_status": "passed",
+          "max_child_processes": 1,
+          "max_shutdown_ms": 369.626,
+          "max_startup_ms": 1050.861,
+          "python": "3.14.6",
+          "required_cases": 13,
+          "required_cases_passed": true,
+          "test_status_counts": {
+            "passed": 53
+          }
+        }
+      ],
+      "run_id": 40918890605,
+      "source_revision": "825f31c8af6e1c446995dbff8be30738b634b22c",
+      "url": "https://github.com/eddiethedean/hedron/actions/runs/40918890605"
+    },
+    "locally_tested_architecture": "aarch64",
+    "required_os": "Linux",
+    "required_python_versions": [
+      "3.11",
+      "3.12",
+      "3.13",
+      "3.14"
+    ],
+    "rows": [
+      {
+        "acceptance_status": "passed",
+        "architecture": "aarch64",
+        "budget_report_status": "passed",
+        "host_shutdown_ms": [
+          305.01808400731534,
+          306.39637500280514,
+          297.83633298939094,
+          299.1255829692818,
+          304.5322500402108
+        ],
+        "host_startup_ms": [
+          580.5665000225417,
+          552.3446259903722,
+          551.3924169936217,
+          587.8223750041798,
+          553.2449170132168
+        ],
+        "junit": "docs/acceptance/evidence-130/linux-host-matrix/host-3.11.xml",
+        "managed_child_processes": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "python": "3.11",
+        "required_cases": 13,
+        "resource_report": {
+          "command": [
+            "/venvs/py311/bin/python",
+            "-m",
+            "pytest",
+            "-q",
+            "-n",
+            "0",
+            "--override-ini=junit_family=legacy",
+            "--junitxml=docs/acceptance/evidence-130/linux-host-matrix/host-3.11.xml",
+            "tests/unit/test_ui_testing_host.py",
+            "tests/unit/test_ui_testing_artifacts.py",
+            "tests/unit/test_ui_testing_policy.py",
+            "tests/unit/test_ui_testing_contributions.py",
+            "tests/ops/test_packaging_isolation.py"
+          ],
+          "duration_seconds": 19.063468,
+          "exit_code": 0,
+          "max_process_group_rss_bytes": 321024000,
+          "max_processes": 4,
+          "max_temporary_growth_per_sample_bytes": 2813992,
+          "max_temporary_tree_bytes": 3383336,
+          "monitor_interval_ms": 50,
+          "operating_system": "Linux",
+          "per_file_rlimit_bytes": 67108864,
+          "python": "3.11.15",
+          "requested_xdist_workers": 0,
+          "sample_count": 348,
+          "schema_version": 1,
+          "temporary_filesystem": "overlay",
+          "temporary_filesystem_capacity_bytes": 485473984512,
+          "temporary_filesystem_limit_bytes": null,
+          "termination_reason": null,
+          "timeout_seconds": 900.0
+        },
+        "runtime": "3.11.15",
+        "structured_manifest_bytes": 294
+      },
+      {
+        "acceptance_status": "passed",
+        "architecture": "aarch64",
+        "budget_report_status": "passed",
+        "host_shutdown_ms": [
+          290.093916002661,
+          297.02679195906967,
+          297.4259589682333,
+          296.22545797610655,
+          298.5065419925377
+        ],
+        "host_startup_ms": [
+          591.9635419850238,
+          596.4596669655293,
+          627.6173340156674,
+          595.175708993338,
+          613.4327090112492
+        ],
+        "junit": "docs/acceptance/evidence-130/linux-host-matrix/host-3.12.xml",
+        "managed_child_processes": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "python": "3.12",
+        "required_cases": 13,
+        "resource_report": {
+          "command": [
+            "/venvs/py312/bin/python",
+            "-m",
+            "pytest",
+            "-q",
+            "-n",
+            "0",
+            "--override-ini=junit_family=legacy",
+            "--junitxml=docs/acceptance/evidence-130/linux-host-matrix/host-3.12.xml",
+            "tests/unit/test_ui_testing_host.py",
+            "tests/unit/test_ui_testing_artifacts.py",
+            "tests/unit/test_ui_testing_policy.py",
+            "tests/unit/test_ui_testing_contributions.py",
+            "tests/ops/test_packaging_isolation.py"
+          ],
+          "duration_seconds": 9.196442,
+          "exit_code": 0,
+          "max_process_group_rss_bytes": 294559744,
+          "max_processes": 4,
+          "max_temporary_growth_per_sample_bytes": 2813992,
+          "max_temporary_tree_bytes": 3747880,
+          "monitor_interval_ms": 50,
+          "operating_system": "Linux",
+          "per_file_rlimit_bytes": 67108864,
+          "python": "3.12.13",
+          "requested_xdist_workers": 0,
+          "sample_count": 171,
+          "schema_version": 1,
+          "temporary_filesystem": "overlay",
+          "temporary_filesystem_capacity_bytes": 485473984512,
+          "temporary_filesystem_limit_bytes": null,
+          "termination_reason": null,
+          "timeout_seconds": 900.0
+        },
+        "runtime": "3.12.13",
+        "structured_manifest_bytes": 294
+      },
+      {
+        "acceptance_status": "passed",
+        "architecture": "aarch64",
+        "budget_report_status": "passed",
+        "host_shutdown_ms": [
+          299.9890830251388,
+          290.66445800708607,
+          295.6185410148464,
+          303.2126260222867,
+          302.9688749811612
+        ],
+        "host_startup_ms": [
+          545.648584025912,
+          542.6017090212554,
+          572.5748339900747,
+          606.0673340107314,
+          567.860625043977
+        ],
+        "junit": "docs/acceptance/evidence-130/linux-host-matrix/host-3.13.xml",
+        "managed_child_processes": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "python": "3.13",
+        "required_cases": 13,
+        "resource_report": {
+          "command": [
+            "/venvs/py313/bin/python",
+            "-m",
+            "pytest",
+            "-q",
+            "-n",
+            "0",
+            "--override-ini=junit_family=legacy",
+            "--junitxml=docs/acceptance/evidence-130/linux-host-matrix/host-3.13.xml",
+            "tests/unit/test_ui_testing_host.py",
+            "tests/unit/test_ui_testing_artifacts.py",
+            "tests/unit/test_ui_testing_policy.py",
+            "tests/unit/test_ui_testing_contributions.py",
+            "tests/ops/test_packaging_isolation.py"
+          ],
+          "duration_seconds": 12.812947,
+          "exit_code": 0,
+          "max_process_group_rss_bytes": 291827712,
+          "max_processes": 4,
+          "max_temporary_growth_per_sample_bytes": 2813992,
+          "max_temporary_tree_bytes": 3493928,
+          "monitor_interval_ms": 50,
+          "operating_system": "Linux",
+          "per_file_rlimit_bytes": 67108864,
+          "python": "3.13.14",
+          "requested_xdist_workers": 0,
+          "sample_count": 235,
+          "schema_version": 1,
+          "temporary_filesystem": "overlay",
+          "temporary_filesystem_capacity_bytes": 485473984512,
+          "temporary_filesystem_limit_bytes": null,
+          "termination_reason": null,
+          "timeout_seconds": 900.0
+        },
+        "runtime": "3.13.14",
+        "structured_manifest_bytes": 294
+      },
+      {
+        "acceptance_status": "passed",
+        "architecture": "aarch64",
+        "budget_report_status": "passed",
+        "host_shutdown_ms": [
+          331.30316698225215,
+          308.08616598369554,
+          346.9484999659471,
+          307.3453750112094,
+          313.32641700282693
+        ],
+        "host_startup_ms": [
+          554.0704999584705,
+          563.9228340005502,
+          576.0554590378888,
+          560.8945009880699,
+          647.8603329742327
+        ],
+        "junit": "docs/acceptance/evidence-130/linux-host-matrix/host-3.14.xml",
+        "managed_child_processes": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "python": "3.14",
+        "required_cases": 13,
+        "resource_report": {
+          "command": [
+            "/venvs/py314/bin/python",
+            "-m",
+            "pytest",
+            "-q",
+            "-n",
+            "0",
+            "--override-ini=junit_family=legacy",
+            "--junitxml=docs/acceptance/evidence-130/linux-host-matrix/host-3.14.xml",
+            "tests/unit/test_ui_testing_host.py",
+            "tests/unit/test_ui_testing_artifacts.py",
+            "tests/unit/test_ui_testing_policy.py",
+            "tests/unit/test_ui_testing_contributions.py",
+            "tests/ops/test_packaging_isolation.py"
+          ],
+          "duration_seconds": 14.387183,
+          "exit_code": 0,
+          "max_process_group_rss_bytes": 305221632,
+          "max_processes": 4,
+          "max_temporary_growth_per_sample_bytes": 2805800,
+          "max_temporary_tree_bytes": 3289128,
+          "monitor_interval_ms": 50,
+          "operating_system": "Linux",
+          "per_file_rlimit_bytes": 67108864,
+          "python": "3.14.6",
+          "requested_xdist_workers": 0,
+          "sample_count": 264,
+          "schema_version": 1,
+          "temporary_filesystem": "overlay",
+          "temporary_filesystem_capacity_bytes": 485473984512,
+          "temporary_filesystem_limit_bytes": null,
+          "termination_reason": null,
+          "timeout_seconds": 900.0
+        },
+        "runtime": "3.14.6",
+        "structured_manifest_bytes": 293
+      }
+    ]
+  },
+  "local_accessibility_engine_rows": [
+    {
+      "engine": "chromium",
+      "operating_system": "macOS",
+      "status_counts": {
+        "passed": 2,
+        "skipped": 2
+      },
+      "testcase_count": 4
+    },
+    {
+      "engine": "firefox",
+      "operating_system": "macOS",
+      "status_counts": {
+        "passed": 2,
+        "skipped": 2
+      },
+      "testcase_count": 4
+    },
+    {
+      "engine": "webkit",
+      "operating_system": "macOS",
+      "status_counts": {
+        "passed": 2,
+        "skipped": 2
+      },
+      "testcase_count": 4
+    }
+  ],
+  "local_browser_corpus": {
+    "classified_skip_count": 78,
+    "engine": "chromium",
+    "local_acceptance_note": "The acceptance checker reports the expected Darwin-versus-Linux lane mismatch; every required browser inventory case passed and every skip matched an explicit disposition.",
+    "operating_system": "macOS",
+    "required_inventory_cases": 27,
+    "required_inventory_non_os_errors": [],
+    "status_counts": {
+      "passed": 136,
+      "skipped": 78
+    },
+    "testcase_count": 214
+  },
+  "local_browser_resource_samples": [
+    {
+      "browser_version": "151.0.7922.34",
+      "context_close_ms": [
+        8.81220807787031,
+        1.6469999682158232,
+        1.0502500226721168,
+        0.6347500020638108,
+        0.6254160543903708,
+        0.5577079718932509,
+        0.7903750520199537,
+        0.6298749940469861,
+        0.6455830298364162,
+        0.6453749956563115
+      ],
+      "context_create_ms": [
+        8.882875088602304,
+        1.194500015117228,
+        2.1006250753998756,
+        0.8465840946882963,
+        0.793374958448112,
+        0.8257919689640403,
+        0.8348328992724419,
+        0.8665829664096236,
+        0.8762910729274154,
+        0.9706669952720404
+      ],
+      "engine": "chromium",
+      "event_count": 29,
+      "event_snapshot_bytes": 3149,
+      "managed_scenario_cycle_ms": 1980.8565420098603,
+      "operating_system": "macOS",
+      "playwright_version": "1.62.0",
+      "pytest_playwright_version": "0.10.0",
+      "python": "3.12",
+      "resource_test_status": "passed",
+      "settle_ms": [
+        27.562957955524325
+      ]
+    },
+    {
+      "browser_version": "153.0",
+      "context_close_ms": [
+        9.674291010014713,
+        1.6756670083850622,
+        1.655750093050301,
+        1.5204580267891288,
+        1.6971670556813478,
+        2.7067919727414846,
+        1.131791970692575,
+        1.4271249528974295,
+        3.8777500158175826,
+        42.099375044927
+      ],
+      "context_create_ms": [
+        80.01295803114772,
+        38.626749999821186,
+        8.416541037149727,
+        2.378417062573135,
+        1.934582949616015,
+        1.572291017509997,
+        1.4951250050216913,
+        1.7413749592378736,
+        2.1149161038920283,
+        2.2402909817174077
+      ],
+      "engine": "firefox",
+      "event_count": 29,
+      "event_snapshot_bytes": 3149,
+      "managed_scenario_cycle_ms": 1293.9889580011368,
+      "operating_system": "macOS",
+      "playwright_version": "1.62.0",
+      "pytest_playwright_version": "0.10.0",
+      "python": "3.12",
+      "resource_test_status": "passed",
+      "settle_ms": [
+        31.833249959163368
+      ]
+    },
+    {
+      "browser_version": "26.5",
+      "context_close_ms": [
+        1.2966250069439411,
+        0.7050000131130219,
+        0.7435419829562306,
+        0.5936670349910855,
+        0.6054999539628625,
+        0.4993749316781759,
+        0.5151659715920687,
+        0.516209052875638,
+        0.5980830173939466,
+        0.6709169829264283
+      ],
+      "context_create_ms": [
+        37.66091703437269,
+        1.6728329937905073,
+        1.395041006617248,
+        1.3563750544562936,
+        1.300834002904594,
+        1.1844999389722943,
+        1.2644999660551548,
+        1.1294590076431632,
+        1.2055829865857959,
+        1.3121659867465496
+      ],
+      "engine": "webkit",
+      "event_count": 29,
+      "event_snapshot_bytes": 3149,
+      "managed_scenario_cycle_ms": 1327.9859160538763,
+      "operating_system": "macOS",
+      "playwright_version": "1.62.0",
+      "pytest_playwright_version": "0.10.0",
+      "python": "3.12",
+      "resource_test_status": "passed",
+      "settle_ms": [
+        26.521666906774044
+      ]
+    }
+  ],
+  "local_profile_behavior_engine_rows": [
+    {
+      "engine": "chromium",
+      "operating_system": "macOS",
+      "status_counts": {
+        "passed": 6
+      },
+      "testcase_count": 6
+    },
+    {
+      "engine": "firefox",
+      "operating_system": "macOS",
+      "status_counts": {
+        "passed": 6
+      },
+      "testcase_count": 6
+    },
+    {
+      "engine": "webkit",
+      "operating_system": "macOS",
+      "status_counts": {
+        "passed": 6
+      },
+      "testcase_count": 6
+    }
+  ],
+  "parallel_sample": {
+    "budget_report_status": "passed",
+    "duration_seconds": 10.053658,
+    "exit_code": 0,
+    "max_process_group_rss_bytes": 752939008,
+    "max_processes": 9,
+    "python": "3.12",
+    "requested_xdist_workers": 4,
+    "resource_report": {
+      "command": [
+        "/venvs/py312/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "-n",
+        "4",
+        "--override-ini=junit_family=legacy",
+        "--junitxml=docs/acceptance/evidence-130/linux-host-matrix/host-xdist4.xml",
+        "tests/unit/test_ui_testing_host.py",
+        "tests/unit/test_ui_testing_artifacts.py",
+        "tests/unit/test_ui_testing_policy.py",
+        "tests/unit/test_ui_testing_contributions.py",
+        "tests/ops/test_packaging_isolation.py"
+      ],
+      "duration_seconds": 10.053658,
+      "exit_code": 0,
+      "max_process_group_rss_bytes": 752939008,
+      "max_processes": 9,
+      "max_temporary_growth_per_sample_bytes": 2805800,
+      "max_temporary_tree_bytes": 3747880,
+      "monitor_interval_ms": 50,
+      "operating_system": "Linux",
+      "per_file_rlimit_bytes": 67108864,
+      "python": "3.12.13",
+      "requested_xdist_workers": 4,
+      "sample_count": 186,
+      "schema_version": 1,
+      "temporary_filesystem": "overlay",
+      "temporary_filesystem_capacity_bytes": 485473984512,
+      "temporary_filesystem_limit_bytes": null,
+      "termination_reason": null,
+      "timeout_seconds": 900.0
+    }
+  },
+  "phase": "1.3",
+  "purpose": "Frozen UI-testing resource ceilings and the observations that informed them.",
+  "recorded_date": "2026-10-29",
+  "release_scope_note": "Hosted Linux CI run 40918890605 measured and passed the candidate Python 3.11–3.14 host rows, three pinned browser-engine rows, skip classification, frozen resource budgets, synthetic capture limits, and structured privacy canary. Follow-up CI run 40922256179 passed all jobs on the revised candidate source ee72dd904b4aefef74a62c7a1521484d78646837, including the minimum and latest hedron[testing] dependency suites: 333 passed and 11 skipped in each row. The minimum resolved pytest/pytest-playwright/Playwright/Uvicorn versions were 8.3.0/0.10.0/1.62.0/0.46.0; the latest were 9.2.0/0.10.0/1.64.1/0.54.0. The 49 downloaded action-artifact files from the follow-up run contained zero randomized canary-token matches. These are candidate results; API freeze, named maintainer assignments, package-disposition review, release-artifact rehearsal, and maintainer/release approvals remain open. No release tag or publication is authorized.",
+  "schema_version": 1,
+  "bounds_follow_up_ci": {
+    "run_id": 40922256179,
+    "run_url": "https://github.com/eddiethedean/hedron/actions/runs/40922256179",
+    "source_revision": "ee72dd904b4aefef74a62c7a1521484d78646837",
+    "run_started_at": "2026-10-29T17:32:12Z",
+    "completed_at": "2026-10-29T17:41:32Z",
+    "status": "success",
+    "required_check": "passed",
+    "all_required_jobs_passed": true,
+    "host_python_rows": [
+      {
+        "python": "3.11.15",
+        "required_case_count": 13,
+        "required_cases_all_passed": true,
+        "budget_errors": [],
+        "max_startup_ms": 1252.2451720000163,
+        "max_shutdown_ms": 405.8992380000177,
+        "max_child_processes": 1
+      },
+      {
+        "python": "3.12.13",
+        "required_case_count": 13,
+        "required_cases_all_passed": true,
+        "budget_errors": [],
+        "max_startup_ms": 937.4727859999439,
+        "max_shutdown_ms": 322.17050500003097,
+        "max_child_processes": 1
+      },
+      {
+        "python": "3.13.14",
+        "required_case_count": 13,
+        "required_cases_all_passed": true,
+        "budget_errors": [],
+        "max_startup_ms": 653.144301000026,
+        "max_shutdown_ms": 381.42280300002085,
+        "max_child_processes": 1
+      },
+      {
+        "python": "3.14.6",
+        "required_case_count": 13,
+        "required_cases_all_passed": true,
+        "budget_errors": [],
+        "max_startup_ms": 1002.8812989999949,
+        "max_shutdown_ms": 381.3099070000021,
+        "max_child_processes": 1
+      }
+    ],
+    "browser_engine_rows": [
+      {
+        "engine": "chromium",
+        "browser_version": "151.0.7922.34",
+        "python": "3.12.13",
+        "playwright_version": "1.62.0",
+        "pytest_playwright_version": "0.10.0",
+        "required_case_count": 27,
+        "required_cases_all_passed": true,
+        "skip_count": 79,
+        "budget_errors": [],
+        "resource_report": {
+          "duration_seconds": 318.917915,
+          "max_process_group_rss_bytes": 797667328,
+          "max_temporary_tree_bytes": 46202452,
+          "temporary_filesystem": "tmpfs",
+          "temporary_filesystem_capacity_bytes": 134217728,
+          "termination_reason": null
+        },
+        "structured_privacy": {
+          "status": "passed",
+          "categories": [
+            "form",
+            "query",
+            "header",
+            "cookie",
+            "storage",
+            "console",
+            "exception",
+            "target",
+            "path"
+          ],
+          "manifest_leaked_categories": [],
+          "unexpected_native_output_count": 0
+        },
+        "synthetic_capture": {
+          "errors": [],
+          "normal_trace_valid": true,
+          "normal_failure_retained": true,
+          "file_limit_bytes": 67108864,
+          "monitor_interval_ms": 25,
+          "hard_limit_enospc_observed": true,
+          "over_limit_error_visible": true,
+          "max_temporary_growth_per_sample_bytes": 45089076
+        }
+      },
+      {
+        "engine": "firefox",
+        "browser_version": "153.0",
+        "python": "3.12.13",
+        "playwright_version": "1.62.0",
+        "pytest_playwright_version": "0.10.0",
+        "required_case_count": 27,
+        "required_cases_all_passed": true,
+        "skip_count": 81,
+        "budget_errors": [],
+        "resource_report": {
+          "duration_seconds": 453.870469,
+          "max_process_group_rss_bytes": 803524608,
+          "max_temporary_tree_bytes": 84433000,
+          "temporary_filesystem": "tmpfs",
+          "temporary_filesystem_capacity_bytes": 134217728,
+          "termination_reason": null
+        },
+        "structured_privacy": {
+          "status": "passed",
+          "categories": [
+            "form",
+            "query",
+            "header",
+            "cookie",
+            "storage",
+            "console",
+            "exception",
+            "target",
+            "path"
+          ],
+          "manifest_leaked_categories": [],
+          "unexpected_native_output_count": 0
+        },
+        "synthetic_capture": {
+          "errors": [],
+          "normal_trace_valid": true,
+          "normal_failure_retained": true,
+          "file_limit_bytes": 67108864,
+          "monitor_interval_ms": 25,
+          "hard_limit_enospc_observed": true,
+          "over_limit_error_visible": true,
+          "max_temporary_growth_per_sample_bytes": 44515636
+        }
+      },
+      {
+        "engine": "webkit",
+        "browser_version": "26.5",
+        "python": "3.12.13",
+        "playwright_version": "1.62.0",
+        "pytest_playwright_version": "0.10.0",
+        "required_case_count": 27,
+        "required_cases_all_passed": true,
+        "skip_count": 81,
+        "budget_errors": [],
+        "resource_report": {
+          "duration_seconds": 366.603966,
+          "max_process_group_rss_bytes": 801669120,
+          "max_temporary_tree_bytes": 44519912,
+          "temporary_filesystem": "tmpfs",
+          "temporary_filesystem_capacity_bytes": 134217728,
+          "termination_reason": null
+        },
+        "structured_privacy": {
+          "status": "passed",
+          "categories": [
+            "form",
+            "query",
+            "header",
+            "cookie",
+            "storage",
+            "console",
+            "exception",
+            "target",
+            "path"
+          ],
+          "manifest_leaked_categories": [],
+          "unexpected_native_output_count": 0
+        },
+        "synthetic_capture": {
+          "errors": [],
+          "normal_trace_valid": true,
+          "normal_failure_retained": true,
+          "file_limit_bytes": 67108864,
+          "monitor_interval_ms": 25,
+          "hard_limit_enospc_observed": true,
+          "over_limit_error_visible": true,
+          "max_temporary_growth_per_sample_bytes": 44515636
+        }
+      }
+    ],
+    "minimum_latest_ui_testing_extra_bounds": {
+      "plugin_explicitly_activated": "-p hedron.testing.pytest_plugin",
+      "suite_summary_each_row": {
+        "passed": 333,
+        "skipped": 11
+      },
+      "suite_scope": [
+        "host",
+        "artifact",
+        "policy",
+        "contribution",
+        "stable workbench/flask/django adapters and selected package contracts"
+      ],
+      "browser_launch_in_bounds_jobs": false,
+      "minimum": {
+        "python": "3.12",
+        "pytest": "8.3.0",
+        "pytest_playwright": "0.10.0",
+        "playwright": "1.62.0",
+        "uvicorn": "0.46.0",
+        "pytest_xdist": "3.6.1",
+        "stable_direct_versions": {
+          "fastapi": "0.121.0",
+          "itsdangerous": "2.1.2",
+          "markdown": "3.4.1",
+          "nh3": "0.2.0",
+          "packaging": "22.0",
+          "pydantic": "2.12.0",
+          "python-multipart": "0.0.9",
+          "starlette": "0.40.0",
+          "typing-extensions": "4.14.1",
+          "uvicorn": "0.46.0"
+        },
+        "suite_warnings": 6
+      },
+      "latest": {
+        "python": "3.12",
+        "pytest": "9.2.0",
+        "pytest_playwright": "0.10.0",
+        "playwright": "1.64.1",
+        "uvicorn": "0.54.0",
+        "pytest_xdist": "3.8.0",
+        "stable_direct_versions": {
+          "fastapi": "0.149.0",
+          "itsdangerous": "2.2.0",
+          "markdown": "3.11.2",
+          "nh3": "0.3.7",
+          "packaging": "26.3",
+          "pydantic": "2.14.2",
+          "python-multipart": "0.0.32",
+          "starlette": "1.10.0",
+          "typing-extensions": "4.16.0",
+          "uvicorn": "0.54.0"
+        },
+        "suite_warnings": 9
+      }
+    },
+    "artifact_scan": {
+      "downloaded_action_artifact_files_scanned": 49,
+      "pattern": "hedron_privacy_<32 lowercase hex chars>_<form|query|header|cookie|storage|console|exception|target|path>",
+      "matching_files": [],
+      "randomized_canary_token_pattern_hits": 0
+    },
+    "retained_artifact_expires_at": "2027-01-27T17:32:13Z",
+    "retained_artifacts": [
+      {
+        "id": 12920095864,
+        "name": "ui-testing-host-3.12",
+        "size_bytes": 4929,
+        "sha256": "bce58d7cb0d7430718ea73ea8bb8dbaee9f43b04dc200909bdb88796ad429e63",
+        "expires_at": "2027-01-27T17:32:13Z"
+      },
+      {
+        "id": 12919556222,
+        "name": "ui-testing-host-3.11",
+        "size_bytes": 4921,
+        "sha256": "8358eda445d0abb03da5d8c89e0ab7ed71b082bb6d2068ccdab330f21d11edd0",
+        "expires_at": "2027-01-27T17:32:13Z"
+      },
+      {
+        "id": 12919447331,
+        "name": "browser-htmx-webkit",
+        "size_bytes": 14687,
+        "sha256": "2c1b4419c5e1c423e44ff52792fbd6b1db8e88b41f903eee9bfbe2e7e2e4b367",
+        "expires_at": "2027-01-27T17:32:13Z"
+      },
+      {
+        "id": 12919347313,
+        "name": "browser-htmx-chromium",
+        "size_bytes": 14578,
+        "sha256": "cb017c7fc8801c433f57bb72ab80f423524c91168dd4472bc4070edde02f9e38",
+        "expires_at": "2027-01-27T17:32:13Z"
+      },
+      {
+        "id": 12919252804,
+        "name": "python-package-coverage-3.12",
+        "size_bytes": 498212,
+        "sha256": "1027fbd1ddbe19441f4e82c7eed0f856256a3bd149abaa62f2d0cdd9e8700ee9",
+        "expires_at": "2027-01-27T17:32:13Z"
+      },
+      {
+        "id": 12918793528,
+        "name": "browser-htmx-firefox",
+        "size_bytes": 14706,
+        "sha256": "b0ce9e4c646714afc0f5b9cb6545db039f0d1cafbd3ea616e11fdc99e473c744",
+        "expires_at": "2027-01-27T17:32:13Z"
+      },
+      {
+        "id": 12918667165,
+        "name": "ui-testing-host-3.14",
+        "size_bytes": 4924,
+        "sha256": "79858789045399d82fd6acb69182850b6825a48ea09647a1867e6d6fc5ab0d2f",
+        "expires_at": "2027-01-27T17:32:13Z"
+      },
+      {
+        "id": 12918458242,
+        "name": "realconnect-033-result",
+        "size_bytes": 843,
+        "sha256": "cbfe34bdbd8d6bb4dc12641a156cfe0593960c7ea7dfe581f5279a399533703f",
+        "expires_at": "2027-01-27T17:32:13Z"
+      },
+      {
+        "id": 12918432425,
+        "name": "ui-testing-host-3.13",
+        "size_bytes": 4910,
+        "sha256": "7bb9bfc8ed18f3ef12aae8a0d0e0bff263b2f26965ff066e8f098f00a0c953b2",
+        "expires_at": "2027-01-27T17:32:13Z"
+      },
+      {
+        "id": 12918218132,
+        "name": "realwb-030-result",
+        "size_bytes": 1053,
+        "sha256": "68ff8b20685c4f09ed83137f4abf1e2b396dcb8d8002dcc70786a9da88722601",
+        "expires_at": "2027-01-27T17:32:13Z"
+      },
+      {
+        "id": 12917364655,
+        "name": "hedron-evidence-bundle",
+        "size_bytes": 7022,
+        "sha256": "7e1be88227323a11cbb62d3be3130fcdb52808788e5fc52cf865f969729c8704",
+        "expires_at": "2027-01-27T17:32:13Z"
+      }
+    ]
+  }
+}

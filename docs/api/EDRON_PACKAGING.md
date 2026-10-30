@@ -4,8 +4,8 @@ status: verified
 
 # Edron packaging contract
 
-**Status:** Published `1.1.3` Stable release<br>
-**Target:** Edron `1.1.x`; Hedron `>=1.0.0`<br>
+**Status:** Published `1.2.0` Stable release<br>
+**Target:** Edron `1.2.x`; Hedron `>=1.0.0`<br>
 **Historical 0.1 target metadata:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
 **Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **Public API:** [Edron 0.1 public API](EDRON.md)<br>
@@ -187,9 +187,9 @@ shipping a degraded private replacement.
 
 ## Required version train
 
-Edron supports the same Python range as its compatible Hedron train. The first release targets
-Python 3.10 through 3.14 on the published 1.1.3 artifacts. The 1.2 candidate changes the complete train
-consistently.
+Edron supports the same Python range as its compatible Hedron train. The published 1.1.3 artifacts
+target Python 3.10 through 3.14. Published 1.2.0 artifacts move the maintained train to Python
+3.11–3.14 consistently.
 
 Before RFC acceptance, the packaging packet freezes:
 

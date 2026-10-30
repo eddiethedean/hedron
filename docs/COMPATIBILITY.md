@@ -1,9 +1,9 @@
 # Compatibility policy
 
-**Status:** Accepted for the verified and published **1.1.x** release (`v1.1.3`).
-**Reviewed:** 2026-09-28
+**Status:** Accepted for the verified and published **1.2.x** release (`v1.2.0`).
+**Reviewed:** 2026-10-27
 
-## Candidate 1.2.0 baseline (read this first)
+## Published 1.2.0 compatibility facts (read this first)
 
 The maintained workspace now targets default-build CPython **3.11–3.14** with
 `requires-python = ">=3.11,<3.15"`. Python 3.10 has reached end of security support and no further
@@ -11,11 +11,11 @@ CPython security fixes will be released for it. New Hedron releases therefore re
 or newer. Use the [upgrade guide](guides/upgrade.md) to move an application and recreate its
 environment before selecting the 1.2 package train.
 
-| Dependency | Candidate matrix (tested in CI) | Declared range | Notes |
+| Dependency | Supported matrix (tested in CI) | Declared range | Notes |
 |---|---|---|---|
 | Python | CPython 3.11–3.14 (configured candidate matrix) | `>=3.11,<3.15` | BasedPyright targets 3.11; Python 3.15, PyPy, and free-threaded builds are excluded. |
 
-## Published 1.1.3 compatibility facts
+## Published 1.1.3 compatibility facts (historical)
 
 These rows describe the already-published 1.1 artifacts. Their immutable metadata still declares
 CPython 3.10–3.14; that declaration does not provide security fixes for an end-of-life interpreter.
@@ -37,7 +37,7 @@ until evidence is green. In the 1.1 boundary, `hedron-core`, `hedron`, `edron`, 
 platform packages. Host adapters, Explorer, elements, extras, Posit, conformance, Workbench,
 native, MCP, Gradio, notebook, sample-kit, and simulation packages are independent Beta
 satellites; experimental adapter surfaces remain outside the Stable API even when their owning
-package is Stable. The coordinated 1.1.3 package train is published on the public index. The
+package is Stable. The coordinated 1.2.0 package train is published on the public index. The
 0.67.0 train remains the immutable
 migration baseline for compatibility evidence.
 
@@ -192,8 +192,8 @@ The framework capability matrix labels each guarantee as portable, ASGI, WSGI, o
 framework-specific. A version appearing in dependency metadata is not considered supported until
 its native conformance slice is green.
 
-The published 1.1.3 Python matrix was exercised from 3.10 through 3.14. The 1.2 candidate matrix
-starts at 3.11; Python 3.15 is outside both contracts. FastAPI 0.121.0 and Pydantic 2.12.0 are the verified lower bounds;
+The published 1.2.0 Python matrix covers 3.11 through 3.14; Python 3.15 is outside the contract.
+FastAPI 0.121.0 and Pydantic 2.12.0 are the verified lower bounds;
 FastAPI 0.141.1 is the latest stable release reviewed for the baseline. HTMX's official
 repository documents 2.0.10, while later major-line work is not used for the initial contract.
 

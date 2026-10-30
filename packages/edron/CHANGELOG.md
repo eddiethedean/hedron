@@ -1,6 +1,12 @@
 # Changelog
 
-## [1.2.0] — Unreleased
+## [1.3.0] — 2026-10-28
+
+### Changed
+
+- Align Edron metadata and its Hedron dependency floor with the 1.3 development train.
+
+## [1.2.0] — 2026-10-27
 
 ### Changed
 

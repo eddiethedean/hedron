@@ -1,6 +1,12 @@
 # Changelog
 
-## [1.2.0] — Unreleased
+## [1.3.0] — Unreleased
+
+### Changed
+
+- Align package metadata with the coordinated 1.3.0 development train.
+
+## [1.2.0] — 2026-10-27
 
 ### Changed
 

@@ -1,0 +1,1428 @@
+{
+  "artifact_scan": {
+    "evidence_json_files_scanned": 39,
+    "matching_files": [],
+    "pattern": "hedron_privacy_<32 lowercase hex> with structured category suffix",
+    "randomized_canary_token_pattern_hits": 0
+  },
+  "browser_acceptance": {
+    "chromium": {
+      "acceptance": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/chromium/ui-testing-browser-chromium.json",
+        "sha256": "2ebc477d4d158c4b7029fb07a89acc035a2d706bdc3204d1fa9cc261d494bcb1"
+      },
+      "budget": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/chromium/ui-testing-budget-chromium.json",
+        "sha256": "42222e6a568cb50fdda50bada9a3df797e156c91400ce19b0b24024a246774d4"
+      },
+      "capture_budget": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/chromium/ui-capture-budget-chromium.json",
+        "sha256": "84b6bdc26e29586c56946f5cd28425d72b21399baa30c4bf74a6d25554774792"
+      },
+      "capture_termination": [
+        {
+          "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/chromium/ui-capture-termination-c9d15dc7b0cd.json",
+          "sha256": "178a7a0d05da6e35b4ea2b0b05dbb088a561c336a209bad90848fcaa5d39ff7d"
+        }
+      ],
+      "privacy": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/chromium/ui-testing-privacy-chromium.json",
+        "sha256": "c8f8b804b7342415776f2cb2d8ecfe241c77404b5f11c08bb9b947adda454170"
+      },
+      "privacy_resources": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/chromium/ui-testing-resources-privacy-chromium.json",
+        "sha256": "c4f6c066b4c8978b37ac29281a87ec39b8890d00640aec7087ab4f296a0fbef9"
+      },
+      "resources": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/chromium/ui-testing-resources-chromium.json",
+        "sha256": "9d211a368b4c012aa9cad1e6e8338d427279befcd9e039dd2c74c00ddf75d2bd"
+      },
+      "summary": {
+        "budget_errors": [],
+        "capture_errors": [],
+        "measurements": {
+          "browser_version": "151.0.7922.34",
+          "context_close_ms": [
+            2.5856450000105724,
+            2.839977999997245,
+            2.394257999981164,
+            1.2276439999823197,
+            2.3411770000052456,
+            1.5920019999953183,
+            1.3131730000282005,
+            1.3627180000526096,
+            1.1732830000141803,
+            2.150031000041963
+          ],
+          "context_create_ms": [
+            4.305690000023787,
+            2.3972719999960646,
+            2.5350490000164427,
+            2.4869460000331856,
+            2.4162600000181556,
+            1.8533649999881163,
+            1.9315119999987473,
+            2.2276270000247678,
+            1.5308499999946434,
+            1.7415570000025582
+          ],
+          "event_count": 29.0,
+          "event_snapshot_bytes": 3149.0,
+          "parallel_resource_report": {
+            "architecture": "x86_64",
+            "command": [
+              "uv",
+              "run",
+              "--python",
+              "3.12",
+              "pytest",
+              "-q",
+              "-rs",
+              "-m",
+              "browser",
+              "--tb=short",
+              "-n",
+              "0",
+              "--override-ini=junit_family=legacy",
+              "--browser",
+              "chromium",
+              "--junitxml=test-results/browser.xml",
+              "tests/browser",
+              "examples/ui-testing",
+              "examples/ui-testing-satellite"
+            ],
+            "duration_seconds": 259.7329,
+            "exit_code": 0,
+            "max_process_group_rss_bytes": 757325824,
+            "max_processes": 8,
+            "max_temporary_growth_per_sample_bytes": 6115592,
+            "max_temporary_tree_bytes": 45330004,
+            "monitor_interval_ms": 25,
+            "operating_system": "Linux",
+            "per_file_rlimit_bytes": 67108864,
+            "python": "3.12.13",
+            "requested_xdist_workers": 0,
+            "sample_count": 6776,
+            "schema_version": 1,
+            "temporary_filesystem": "tmpfs",
+            "temporary_filesystem_capacity_bytes": 134217728,
+            "temporary_filesystem_limit_bytes": 134217728,
+            "temporary_filesystem_usage_limit_bytes": 134217728,
+            "termination_reason": null,
+            "timeout_seconds": 1800.0
+          },
+          "playwright_version": "1.62.0",
+          "pytest_playwright_version": "0.10.0",
+          "scenario_cycle_ms": 2117.8403380000077,
+          "settle_ms": [
+            29.254273000049125
+          ],
+          "synthetic_capture": {
+            "limit_bytes": 67108864.0,
+            "over_limit_error_visible": true,
+            "storage_threshold_termination": {
+              "exit_code": -15,
+              "max_temporary_growth_per_sample_bytes": 62013640,
+              "max_temporary_tree_bytes": 62013640,
+              "monitor_interval_ms": 25,
+              "overshoot_bound_bytes": 67108864,
+              "overshoot_within_bound": true,
+              "process_terminated": true,
+              "soft_limit_bytes": 33554432,
+              "termination_reason": "temporary_storage_limit",
+              "wrapper_exit_code": 1
+            },
+            "tmpfs_capacity_bytes": 134217728,
+            "trace_bytes": 195264
+          }
+        },
+        "privacy_leaked_categories": [],
+        "privacy_status": "passed",
+        "required_case_count": 27,
+        "required_cases_passed": true,
+        "skip_count": 79,
+        "status": "passed",
+        "testcase_count": 216,
+        "unexpected_native_output_count": 0
+      }
+    },
+    "firefox": {
+      "acceptance": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/firefox/ui-testing-browser-firefox.json",
+        "sha256": "16680c4cd519bb23354bf93a283facb9e18cdf4eaf7b2508868d152b80470d6d"
+      },
+      "budget": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/firefox/ui-testing-budget-firefox.json",
+        "sha256": "fbb55ae6b8d9651300f495248dd035ef89814650772051fd762dfb4bfd75d571"
+      },
+      "capture_budget": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/firefox/ui-capture-budget-firefox.json",
+        "sha256": "b0739e99b1d79f9a2db66abd6d0a650b108a03b854924831b0e06415f2c6709a"
+      },
+      "capture_termination": [
+        {
+          "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/firefox/ui-capture-termination-d5408e446947.json",
+          "sha256": "d46545c3a92084b67f7acccabd286bb0a25ee3e63cbb12a73e75d5e1ea9c9994"
+        }
+      ],
+      "privacy": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/firefox/ui-testing-privacy-firefox.json",
+        "sha256": "2b9e166fba622967b198c8777789185b251b0cfe394e965ea70545f522feda67"
+      },
+      "privacy_resources": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/firefox/ui-testing-resources-privacy-firefox.json",
+        "sha256": "9bdb5b1fe4ecc218343496bd5bab7c07d42af6d3c82fd854f4619071f0c1d54e"
+      },
+      "resources": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/firefox/ui-testing-resources-firefox.json",
+        "sha256": "41f9f730a49cdcae7ba28eff72b1776305372548521ff465df715da242c2f02e"
+      },
+      "summary": {
+        "budget_errors": [],
+        "capture_errors": [],
+        "measurements": {
+          "browser_version": "153.0",
+          "context_close_ms": [
+            5.495775999975194,
+            6.824227000038263,
+            4.026102000011633,
+            5.41121399999156,
+            4.364348000081009,
+            3.8067539999246947,
+            3.937238999924375,
+            4.290427000000818,
+            3.5843409999642972,
+            100.05652000006648
+          ],
+          "context_create_ms": [
+            52.2896170000422,
+            33.26593799999955,
+            6.264820000069449,
+            6.162287000051947,
+            5.549782000002779,
+            5.369502000007742,
+            8.145223000042279,
+            4.8092580000229646,
+            11.378719000049387,
+            5.068892000053893
+          ],
+          "event_count": 29.0,
+          "event_snapshot_bytes": 3149.0,
+          "parallel_resource_report": {
+            "architecture": "x86_64",
+            "command": [
+              "uv",
+              "run",
+              "--python",
+              "3.12",
+              "pytest",
+              "-q",
+              "-rs",
+              "-m",
+              "browser",
+              "--tb=short",
+              "-n",
+              "0",
+              "--override-ini=junit_family=legacy",
+              "--browser",
+              "firefox",
+              "--junitxml=test-results/browser.xml",
+              "tests/browser",
+              "examples/ui-testing",
+              "examples/ui-testing-satellite"
+            ],
+            "duration_seconds": 429.498616,
+            "exit_code": 0,
+            "max_process_group_rss_bytes": 788271104,
+            "max_processes": 8,
+            "max_temporary_growth_per_sample_bytes": 14434584,
+            "max_temporary_tree_bytes": 84051992,
+            "monitor_interval_ms": 25,
+            "operating_system": "Linux",
+            "per_file_rlimit_bytes": 67108864,
+            "python": "3.12.13",
+            "requested_xdist_workers": 0,
+            "sample_count": 9748,
+            "schema_version": 1,
+            "temporary_filesystem": "tmpfs",
+            "temporary_filesystem_capacity_bytes": 134217728,
+            "temporary_filesystem_limit_bytes": 134217728,
+            "temporary_filesystem_usage_limit_bytes": 134217728,
+            "termination_reason": null,
+            "timeout_seconds": 1800.0
+          },
+          "playwright_version": "1.62.0",
+          "pytest_playwright_version": "0.10.0",
+          "scenario_cycle_ms": 3311.3473159999103,
+          "settle_ms": [
+            32.28015300010156
+          ],
+          "synthetic_capture": {
+            "limit_bytes": 67108864.0,
+            "over_limit_error_visible": true,
+            "storage_threshold_termination": {
+              "exit_code": -15,
+              "max_temporary_growth_per_sample_bytes": 50466996,
+              "max_temporary_tree_bytes": 50466996,
+              "monitor_interval_ms": 25,
+              "overshoot_bound_bytes": 67108864,
+              "overshoot_within_bound": true,
+              "process_terminated": true,
+              "soft_limit_bytes": 33554432,
+              "termination_reason": "temporary_storage_limit",
+              "wrapper_exit_code": 1
+            },
+            "tmpfs_capacity_bytes": 134217728,
+            "trace_bytes": 212873
+          }
+        },
+        "privacy_leaked_categories": [],
+        "privacy_status": "passed",
+        "required_case_count": 27,
+        "required_cases_passed": true,
+        "skip_count": 81,
+        "status": "passed",
+        "testcase_count": 216,
+        "unexpected_native_output_count": 0
+      }
+    },
+    "webkit": {
+      "acceptance": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/webkit/ui-testing-browser-webkit.json",
+        "sha256": "e9dc654cc6f5a4e4acc16dcd3e39e6839f90b143f0576911aeb89aa5f3ae6aae"
+      },
+      "budget": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/webkit/ui-testing-budget-webkit.json",
+        "sha256": "4e748be443f6228ce0afbce1d8b3fc07a8443b286233df1e052123b9b11d94be"
+      },
+      "capture_budget": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/webkit/ui-capture-budget-webkit.json",
+        "sha256": "9b4f93011128639f921379e83c56d13bb7ae22be338a3f592fd98451da8ea789"
+      },
+      "capture_termination": [
+        {
+          "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/webkit/ui-capture-termination-a448f72521d8.json",
+          "sha256": "57f038001cfca84231d055dc235a2f130049482e779cf89b5b94c12c8518ebc2"
+        }
+      ],
+      "privacy": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/webkit/ui-testing-privacy-webkit.json",
+        "sha256": "44b0b578958bf55b36ef3009c385c5db970fbca7edb41f172deb612bc70c14a4"
+      },
+      "privacy_resources": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/webkit/ui-testing-resources-privacy-webkit.json",
+        "sha256": "34eac7c6028073e4769f672950ea9029df3183da24dbe1042d842162769f4205"
+      },
+      "resources": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/webkit/ui-testing-resources-webkit.json",
+        "sha256": "fc80fc08a96ccaf52197df07374a5c6cf36b63afca43a2c5742cf3060c331d45"
+      },
+      "summary": {
+        "budget_errors": [],
+        "capture_errors": [],
+        "measurements": {
+          "browser_version": "26.5",
+          "context_close_ms": [
+            3.4674450000125034,
+            9.325656999976673,
+            6.26816500005134,
+            5.713431000003766,
+            9.44811300001902,
+            6.8682289999628665,
+            1.819708000027731,
+            3.909496999995099,
+            4.0228290000072775,
+            5.371320999984164
+          ],
+          "context_create_ms": [
+            14.5624630000043,
+            5.991072999961489,
+            21.292912000035358,
+            10.950958999956129,
+            19.868113999962134,
+            18.501204999950005,
+            24.15016800000558,
+            5.699700999969082,
+            13.718759000028058,
+            14.371752999977616
+          ],
+          "event_count": 29.0,
+          "event_snapshot_bytes": 3149.0,
+          "parallel_resource_report": {
+            "architecture": "x86_64",
+            "command": [
+              "uv",
+              "run",
+              "--python",
+              "3.12",
+              "pytest",
+              "-q",
+              "-rs",
+              "-m",
+              "browser",
+              "--tb=short",
+              "-n",
+              "0",
+              "--override-ini=junit_family=legacy",
+              "--browser",
+              "webkit",
+              "--junitxml=test-results/browser.xml",
+              "tests/browser",
+              "examples/ui-testing",
+              "examples/ui-testing-satellite"
+            ],
+            "duration_seconds": 312.413292,
+            "exit_code": 0,
+            "max_process_group_rss_bytes": 789557248,
+            "max_processes": 8,
+            "max_temporary_growth_per_sample_bytes": 6115592,
+            "max_temporary_tree_bytes": 44524008,
+            "monitor_interval_ms": 25,
+            "operating_system": "Linux",
+            "per_file_rlimit_bytes": 67108864,
+            "python": "3.12.13",
+            "requested_xdist_workers": 0,
+            "sample_count": 8044,
+            "schema_version": 1,
+            "temporary_filesystem": "tmpfs",
+            "temporary_filesystem_capacity_bytes": 134217728,
+            "temporary_filesystem_limit_bytes": 134217728,
+            "temporary_filesystem_usage_limit_bytes": 134217728,
+            "termination_reason": null,
+            "timeout_seconds": 1800.0
+          },
+          "playwright_version": "1.62.0",
+          "pytest_playwright_version": "0.10.0",
+          "scenario_cycle_ms": 2483.9985429999842,
+          "settle_ms": [
+            31.97566899996218
+          ],
+          "synthetic_capture": {
+            "limit_bytes": 67108864.0,
+            "over_limit_error_visible": true,
+            "storage_threshold_termination": {
+              "exit_code": -15,
+              "max_temporary_growth_per_sample_bytes": 58699956,
+              "max_temporary_tree_bytes": 58699956,
+              "monitor_interval_ms": 25,
+              "overshoot_bound_bytes": 67108864,
+              "overshoot_within_bound": true,
+              "process_terminated": true,
+              "soft_limit_bytes": 33554432,
+              "termination_reason": "temporary_storage_limit",
+              "wrapper_exit_code": 1
+            },
+            "tmpfs_capacity_bytes": 134217728,
+            "trace_bytes": 195489
+          }
+        },
+        "privacy_leaked_categories": [],
+        "privacy_status": "passed",
+        "required_case_count": 27,
+        "required_cases_passed": true,
+        "skip_count": 81,
+        "status": "passed",
+        "testcase_count": 216,
+        "unexpected_native_output_count": 0
+      }
+    }
+  },
+  "candidate_version": "1.3.0",
+  "full_ci_dispatch": {
+    "completed_at": "2026-10-30T02:06:26Z",
+    "conclusion": "success",
+    "created_at": "2026-10-30T01:55:52Z",
+    "event": "workflow_dispatch",
+    "jobs": [
+      {
+        "conclusion": "success",
+        "id": 123845663261,
+        "name": "Classify changes and check package versions",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123845716400,
+        "name": "Tests, branch coverage, and Chromium",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123845716443,
+        "name": "Package wheels and clean-install smoke",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123845716446,
+        "name": "Lint, strict typing, and docs",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123845716453,
+        "name": "Tests (Python 3.14)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123845716504,
+        "name": "Supply-chain evidence and release gate",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123845716523,
+        "name": "Stable dependency bounds (latest)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123845716530,
+        "name": "Tests (Python 3.11)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123845716540,
+        "name": "Stable dependency bounds (minimum)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123845716546,
+        "name": "1.3 host acceptance (Python 3.14)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123845716575,
+        "name": "Browser HTMX (chromium)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123845716607,
+        "name": "1.3 host acceptance (Python 3.13)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123845716612,
+        "name": "1.3 host acceptance (Python 3.11)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123845716619,
+        "name": "1.3 host acceptance (Python 3.12)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123845716628,
+        "name": "Browser HTMX (firefox)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123845716634,
+        "name": "Tests (Python 3.13)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123845716703,
+        "name": "Browser HTMX (webkit)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "skipped",
+        "id": 123845718316,
+        "name": "1.3 reproducible artifact rehearsal",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123848933911,
+        "name": "CI required",
+        "status": "completed"
+      }
+    ],
+    "run_id": 40988708468,
+    "run_url": "https://github.com/eddiethedean/hedron/actions/runs/40988708468",
+    "source_revision": "e153dccffac042e63e959672b9c95af59220e00e",
+    "workflow": "CI"
+  },
+  "host_acceptance": {
+    "3.11": {
+      "acceptance": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.11/ui-testing-host-3.11.json",
+        "sha256": "fb01e4274016b588811001d5d69cf6b35d6bf8eb441a8206a5383f407fc89a8a"
+      },
+      "budget": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.11/ui-testing-budget-host-3.11.json",
+        "sha256": "5e8eb0d79d22d5bac4ae273556265fbc962dbe8aa83b05f9c02cfacb2bca31a5"
+      },
+      "resources": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.11/ui-testing-resources-host-3.11.json",
+        "sha256": "692103c7df2e25aa5a84537a20046a7e86e2cf824c9fcd0a6a07f230801ec539"
+      },
+      "summary": {
+        "budget_errors": [],
+        "measurements": {
+          "host_child_processes": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "host_shutdown_ms": [
+            326.74830099999497,
+            321.9863289999978,
+            350.1299590000002,
+            326.6864109999972,
+            333.00526500001126
+          ],
+          "host_startup_ms": [
+            901.436657000005,
+            887.8493099999929,
+            872.0615339999966,
+            896.4013909999977,
+            874.5498840000039
+          ],
+          "parallel_resource_report": {
+            "architecture": "x86_64",
+            "command": [
+              "uv",
+              "run",
+              "--python",
+              "3.11",
+              "pytest",
+              "-q",
+              "-n",
+              "0",
+              "--override-ini=junit_family=legacy",
+              "--junitxml=test-results/ui-host.xml",
+              "tests/unit/test_ui_testing_host.py",
+              "tests/unit/test_ui_testing_artifacts.py",
+              "tests/unit/test_ui_testing_policy.py",
+              "tests/unit/test_ui_testing_contributions.py",
+              "tests/ops/test_packaging_isolation.py"
+            ],
+            "duration_seconds": 12.803327,
+            "exit_code": 0,
+            "max_process_group_rss_bytes": 264036352,
+            "max_processes": 5,
+            "max_temporary_growth_per_sample_bytes": 442368,
+            "max_temporary_tree_bytes": 999424,
+            "monitor_interval_ms": 50,
+            "operating_system": "Linux",
+            "per_file_rlimit_bytes": 67108864,
+            "python": "3.11.15",
+            "requested_xdist_workers": 0,
+            "sample_count": 235,
+            "schema_version": 1,
+            "temporary_filesystem": "ext4",
+            "temporary_filesystem_capacity_bytes": 154894188544,
+            "temporary_filesystem_limit_bytes": null,
+            "temporary_filesystem_usage_limit_bytes": null,
+            "termination_reason": null,
+            "timeout_seconds": 900.0
+          },
+          "structured_manifest_bytes": 294.0
+        },
+        "required_case_count": 13,
+        "required_cases_passed": true,
+        "skip_count": 0,
+        "status": "passed",
+        "testcase_count": 55
+      }
+    },
+    "3.12": {
+      "acceptance": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.12/ui-testing-host-3.12.json",
+        "sha256": "413b120ace4e2955ff61b2c3f3dd19fb4f0ec117d0a2ce7a0adf299a5f6705cc"
+      },
+      "budget": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.12/ui-testing-budget-host-3.12.json",
+        "sha256": "24e387d6a88ac32e44fce4e5c1cb70cafc9b06a3440ac9516423e31045ba3659"
+      },
+      "resources": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.12/ui-testing-resources-host-3.12.json",
+        "sha256": "c0428024e523c9168f5a7a0e1124584112fbf129e47e366d4f0186d8c5e4d03f"
+      },
+      "summary": {
+        "budget_errors": [],
+        "measurements": {
+          "host_child_processes": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "host_shutdown_ms": [
+            325.6001759999947,
+            326.12510399999906,
+            347.8294869999843,
+            340.671900000018,
+            334.0317740000103
+          ],
+          "host_startup_ms": [
+            1224.0064290000134,
+            1242.1194529999866,
+            1250.6843019999963,
+            1255.2366410000104,
+            1259.7796840000228
+          ],
+          "parallel_resource_report": {
+            "architecture": "x86_64",
+            "command": [
+              "uv",
+              "run",
+              "--python",
+              "3.12",
+              "pytest",
+              "-q",
+              "-n",
+              "0",
+              "--override-ini=junit_family=legacy",
+              "--junitxml=test-results/ui-host.xml",
+              "tests/unit/test_ui_testing_host.py",
+              "tests/unit/test_ui_testing_artifacts.py",
+              "tests/unit/test_ui_testing_policy.py",
+              "tests/unit/test_ui_testing_contributions.py",
+              "tests/ops/test_packaging_isolation.py"
+            ],
+            "duration_seconds": 16.721283,
+            "exit_code": 0,
+            "max_process_group_rss_bytes": 260554752,
+            "max_processes": 5,
+            "max_temporary_growth_per_sample_bytes": 372736,
+            "max_temporary_tree_bytes": 999424,
+            "monitor_interval_ms": 50,
+            "operating_system": "Linux",
+            "per_file_rlimit_bytes": 67108864,
+            "python": "3.12.13",
+            "requested_xdist_workers": 0,
+            "sample_count": 289,
+            "schema_version": 1,
+            "temporary_filesystem": "ext4",
+            "temporary_filesystem_capacity_bytes": 154894188544,
+            "temporary_filesystem_limit_bytes": null,
+            "temporary_filesystem_usage_limit_bytes": null,
+            "termination_reason": null,
+            "timeout_seconds": 900.0
+          },
+          "structured_manifest_bytes": 294.0
+        },
+        "required_case_count": 13,
+        "required_cases_passed": true,
+        "skip_count": 0,
+        "status": "passed",
+        "testcase_count": 55
+      }
+    },
+    "3.13": {
+      "acceptance": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.13/ui-testing-host-3.13.json",
+        "sha256": "6448d7d7393811a0acea52d984e69e6df0a4e8e58c3b20f27d05d4ab0dec79c9"
+      },
+      "budget": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.13/ui-testing-budget-host-3.13.json",
+        "sha256": "afd800482fe8db9be1425192d98b4a039c1d3ebee4ca028af2087630f76d641d"
+      },
+      "resources": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.13/ui-testing-resources-host-3.13.json",
+        "sha256": "81271e08bbd975db8a4a79ca0cc29d5c8fd72ddc551e58f696cc64ab665d851b"
+      },
+      "summary": {
+        "budget_errors": [],
+        "measurements": {
+          "host_child_processes": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "host_shutdown_ms": [
+            382.66731099999873,
+            375.24534399999965,
+            379.1947839999992,
+            387.29805799999895,
+            373.24252100000166
+          ],
+          "host_startup_ms": [
+            1057.7868040000026,
+            1045.9043959999974,
+            1062.8953900000013,
+            1053.5594959999983,
+            1049.7228790000008
+          ],
+          "parallel_resource_report": {
+            "architecture": "x86_64",
+            "command": [
+              "uv",
+              "run",
+              "--python",
+              "3.13",
+              "pytest",
+              "-q",
+              "-n",
+              "0",
+              "--override-ini=junit_family=legacy",
+              "--junitxml=test-results/ui-host.xml",
+              "tests/unit/test_ui_testing_host.py",
+              "tests/unit/test_ui_testing_artifacts.py",
+              "tests/unit/test_ui_testing_policy.py",
+              "tests/unit/test_ui_testing_contributions.py",
+              "tests/ops/test_packaging_isolation.py"
+            ],
+            "duration_seconds": 16.542609,
+            "exit_code": 0,
+            "max_process_group_rss_bytes": 266633216,
+            "max_processes": 5,
+            "max_temporary_growth_per_sample_bytes": 393216,
+            "max_temporary_tree_bytes": 995328,
+            "monitor_interval_ms": 50,
+            "operating_system": "Linux",
+            "per_file_rlimit_bytes": 67108864,
+            "python": "3.13.14",
+            "requested_xdist_workers": 0,
+            "sample_count": 286,
+            "schema_version": 1,
+            "temporary_filesystem": "ext4",
+            "temporary_filesystem_capacity_bytes": 154894188544,
+            "temporary_filesystem_limit_bytes": null,
+            "temporary_filesystem_usage_limit_bytes": null,
+            "termination_reason": null,
+            "timeout_seconds": 900.0
+          },
+          "structured_manifest_bytes": 294.0
+        },
+        "required_case_count": 13,
+        "required_cases_passed": true,
+        "skip_count": 0,
+        "status": "passed",
+        "testcase_count": 55
+      }
+    },
+    "3.14": {
+      "acceptance": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.14/ui-testing-host-3.14.json",
+        "sha256": "41c28056399a7df828e89f9bf3c4e9dd8596f2023c53b92e559b4b527cecc48b"
+      },
+      "budget": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.14/ui-testing-budget-host-3.14.json",
+        "sha256": "6c44c43af8354b2441903bae1d3357974b70c48c2ab3001b59f2c3c8930c98da"
+      },
+      "resources": {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.14/ui-testing-resources-host-3.14.json",
+        "sha256": "819cd2290868a0c7ef19317ccf9c36cd6eb7be47f3a40db617aed31adbd27dbf"
+      },
+      "summary": {
+        "budget_errors": [],
+        "measurements": {
+          "host_child_processes": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "host_shutdown_ms": [
+            427.9301870000012,
+            463.7911840000015,
+            455.67074499999194,
+            459.78503099999557,
+            418.36803900000064
+          ],
+          "host_startup_ms": [
+            822.422237000012,
+            828.5168310000017,
+            850.2505980000024,
+            867.2017650000043,
+            861.0321489999961
+          ],
+          "parallel_resource_report": {
+            "architecture": "x86_64",
+            "command": [
+              "uv",
+              "run",
+              "--python",
+              "3.14",
+              "pytest",
+              "-q",
+              "-n",
+              "0",
+              "--override-ini=junit_family=legacy",
+              "--junitxml=test-results/ui-host.xml",
+              "tests/unit/test_ui_testing_host.py",
+              "tests/unit/test_ui_testing_artifacts.py",
+              "tests/unit/test_ui_testing_policy.py",
+              "tests/unit/test_ui_testing_contributions.py",
+              "tests/ops/test_packaging_isolation.py"
+            ],
+            "duration_seconds": 14.296479,
+            "exit_code": 0,
+            "max_process_group_rss_bytes": 288485376,
+            "max_processes": 5,
+            "max_temporary_growth_per_sample_bytes": 450560,
+            "max_temporary_tree_bytes": 999424,
+            "monitor_interval_ms": 50,
+            "operating_system": "Linux",
+            "per_file_rlimit_bytes": 67108864,
+            "python": "3.14.6",
+            "requested_xdist_workers": 0,
+            "sample_count": 262,
+            "schema_version": 1,
+            "temporary_filesystem": "ext4",
+            "temporary_filesystem_capacity_bytes": 154894188544,
+            "temporary_filesystem_limit_bytes": null,
+            "temporary_filesystem_usage_limit_bytes": null,
+            "termination_reason": null,
+            "timeout_seconds": 900.0
+          },
+          "structured_manifest_bytes": 293.0
+        },
+        "required_case_count": 13,
+        "required_cases_passed": true,
+        "skip_count": 0,
+        "status": "passed",
+        "testcase_count": 55
+      }
+    }
+  },
+  "native_wheel_matrix": {
+    "artifact_source_commit": "d7e64669f3927d2a6ead881b70ae0c9632367942",
+    "conclusion": "success",
+    "event": "pull_request",
+    "inventory_path": "docs/acceptance/evidence-130/recheck-40987606933/native-artifacts-40987606890.json",
+    "inventory_sha256": "8a0a76f2e7190c56f5b4cdd422fc8d8259d8cea8e8037a716f890bb533068615",
+    "jobs": [
+      {
+        "conclusion": "success",
+        "id": 123842173393,
+        "name": "windows-latest",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123842173723,
+        "name": "ubuntu-24.04-arm",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123842173732,
+        "name": "macos-14",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123842173744,
+        "name": "ubuntu-latest",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123843138604,
+        "name": "Aggregate native release evidence",
+        "status": "completed"
+      }
+    ],
+    "retained_artifacts": [
+      {
+        "created_at": "2026-10-30T01:46:02Z",
+        "expires_at": "2027-01-28T01:44:17Z",
+        "id": 12948090781,
+        "name": "hedron-native-wheel-linux-x86_64-40987606890",
+        "sha256": "sha256:b4fabb8f364fbd99d05d05101b68b530fa9c55ef2d089ca6af5f2363291fee7d",
+        "size_bytes": 911319
+      },
+      {
+        "created_at": "2026-10-30T01:46:20Z",
+        "expires_at": "2027-01-28T01:44:17Z",
+        "id": 12947797196,
+        "name": "hedron-native-wheel-linux-aarch64-40987606890",
+        "sha256": "sha256:e4af470cec41aed52da1434f10235b88690c3133efbf24ef6e8bc3646df96387",
+        "size_bytes": 884500
+      },
+      {
+        "created_at": "2026-10-30T01:47:24Z",
+        "expires_at": "2027-01-28T01:44:17Z",
+        "id": 12947503666,
+        "name": "hedron-native-wheel-windows-amd64-40987606890",
+        "sha256": "sha256:a7b2305345d0cd8736264ebf3058f9869c4bf8134d3cbdc007f4a3bc21fd555b",
+        "size_bytes": 403122
+      },
+      {
+        "created_at": "2026-10-30T01:46:04Z",
+        "expires_at": "2027-01-28T01:44:17Z",
+        "id": 12947279239,
+        "name": "hedron-native-wheel-macos-arm64-40987606890",
+        "sha256": "sha256:e4a3b730c9fca2bfe074bbb3dedd88c93be916dfcc7a9fc66c7d30b2e5b2a88d",
+        "size_bytes": 791359
+      },
+      {
+        "created_at": "2026-10-30T01:47:39Z",
+        "expires_at": "2027-01-28T01:44:17Z",
+        "id": 12947093793,
+        "name": "hedron-native-evidence-40987606890",
+        "sha256": "sha256:272f351f53790e332cd30dbf8cc51c744360aa3cc1219628a18b8f877983773f",
+        "size_bytes": 2988990
+      }
+    ],
+    "run_id": 40987606890,
+    "run_url": "https://github.com/eddiethedean/hedron/actions/runs/40987606890",
+    "source_revision": "e153dccffac042e63e959672b9c95af59220e00e"
+  },
+  "phase": "1.3",
+  "primary_ci": {
+    "completed_at": "2026-10-30T01:54:20Z",
+    "conclusion": "success",
+    "created_at": "2026-10-30T01:44:17Z",
+    "event": "pull_request",
+    "jobs": [
+      {
+        "conclusion": "success",
+        "id": 123842173627,
+        "name": "Classify changes and check package versions",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123842246786,
+        "name": "Tests, branch coverage, and Chromium",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123842246794,
+        "name": "Stable dependency bounds (latest)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123842246802,
+        "name": "Stable dependency bounds (minimum)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123842246837,
+        "name": "Browser HTMX (webkit)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123842246847,
+        "name": "Browser HTMX (firefox)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123842246855,
+        "name": "Lint, strict typing, and docs",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123842246866,
+        "name": "1.3 host acceptance (Python 3.13)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123842246869,
+        "name": "Package wheels and clean-install smoke",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123842246879,
+        "name": "1.3 host acceptance (Python 3.12)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123842246895,
+        "name": "Browser HTMX (chromium)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123842246898,
+        "name": "Supply-chain evidence and release gate",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123842246933,
+        "name": "1.3 host acceptance (Python 3.14)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123842247080,
+        "name": "1.3 host acceptance (Python 3.11)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123842247294,
+        "name": "1.3 reproducible artifact rehearsal / Reproducible Python distributions",
+        "status": "completed"
+      },
+      {
+        "conclusion": "skipped",
+        "id": 123842248587,
+        "name": "Tests (Python ${{ matrix.python-version }})",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 123845163140,
+        "name": "CI required",
+        "status": "completed"
+      }
+    ],
+    "run_id": 40987606933,
+    "run_url": "https://github.com/eddiethedean/hedron/actions/runs/40987606933",
+    "source_revision": "e153dccffac042e63e959672b9c95af59220e00e",
+    "workflow": "CI"
+  },
+  "release_artifact_rehearsal": {
+    "artifact_expires_at": "2027-01-28T01:44:17Z",
+    "artifact_id": 12947553639,
+    "artifact_name": "release-artifacts-1.3.0-40987606933",
+    "artifact_sha256": "sha256:cf1619b40573c64c3f3720c77fdc4f72f3ae3e1134e6c4ba21f540f4bf0fb667",
+    "artifact_size_bytes": 21399260,
+    "byte_identical_builds": true,
+    "distribution_count": 44,
+    "manifest_path": "docs/acceptance/evidence-130/python-artifacts-40987606933.json",
+    "manifest_sha256": "162c544d4cd6435cba87cdbbcb9b126fe8204e8f4543385d0cfd381fac06ef15",
+    "package_count": 22,
+    "repeat_builds": 2,
+    "source_commit": "e153dccffac042e63e959672b9c95af59220e00e",
+    "upgrade_rollback": {
+      "baseline": "pass",
+      "restored_original_lock": true,
+      "rollback": "pass",
+      "upgrade": "pass"
+    },
+    "upgrade_rollback_path": "docs/acceptance/evidence-130/upgrade-rollback-40987606933.json",
+    "upgrade_rollback_sha256": "6159ffb88d1973183fd3719c9d1a70b25b94e1d6a05c7075d9a1ee8bb75f08d1"
+  },
+  "required_check": "passed",
+  "retained_action_artifacts": [
+    {
+      "created_at": "2026-10-30T01:53:33Z",
+      "expires_at": "2027-01-28T01:44:17Z",
+      "id": 12948600058,
+      "name": "python-package-coverage-3.12",
+      "sha256": "sha256:f7582d66fd647806ca8ec3dff50f44d598748e45330240256dc3fc5d032a9e1e",
+      "size_bytes": 504533
+    },
+    {
+      "created_at": "2026-10-30T01:47:55Z",
+      "expires_at": "2027-01-28T01:44:17Z",
+      "id": 12948111075,
+      "name": "ui-testing-host-3.14",
+      "sha256": "sha256:56173217345015707999d3b661df0e82ac7c162c2dd399441c135bcb85aca765",
+      "size_bytes": 4965
+    },
+    {
+      "created_at": "2026-10-30T01:53:03Z",
+      "expires_at": "2027-01-28T01:44:17Z",
+      "id": 12948012345,
+      "name": "browser-htmx-webkit",
+      "sha256": "sha256:cf15fe811c57ce051fdeecdb995dd86586a243580a39ff07ceb4882eae4a8906",
+      "size_bytes": 15792
+    },
+    {
+      "created_at": "2026-10-30T01:54:10Z",
+      "expires_at": "2027-01-28T01:44:17Z",
+      "id": 12947818422,
+      "name": "browser-htmx-firefox",
+      "sha256": "sha256:7450ac941e5d60d9cae112a7a3d22551d6bf9875acfb5040aacc69170a5fb7d9",
+      "size_bytes": 15855
+    },
+    {
+      "created_at": "2026-10-30T01:45:18Z",
+      "expires_at": "2027-01-28T01:44:17Z",
+      "id": 12947767426,
+      "name": "ui-testing-host-3.12",
+      "sha256": "sha256:c11b2adf677cc3f4c2fd4f1986d97c6962bb5a46e345f58df8622f20fa255c22",
+      "size_bytes": 4998
+    },
+    {
+      "created_at": "2026-10-30T01:46:54Z",
+      "expires_at": "2027-01-28T01:44:17Z",
+      "id": 12947752554,
+      "name": "ui-testing-host-3.13",
+      "sha256": "sha256:b460565641f0da9c3cd2fcf1d30f42cd0bc191a1a977d1b082f74bf8d2a5dc09",
+      "size_bytes": 4980
+    },
+    {
+      "created_at": "2026-10-30T01:48:11Z",
+      "expires_at": "2027-01-28T01:44:17Z",
+      "id": 12947732910,
+      "name": "ui-testing-host-3.11",
+      "sha256": "sha256:232c26533ba41e65fcdb71db526301eba77b6e82f4d0061f3fd72eaf25b7447b",
+      "size_bytes": 4968
+    },
+    {
+      "created_at": "2026-10-30T01:52:04Z",
+      "expires_at": "2027-01-28T01:44:17Z",
+      "id": 12947703607,
+      "name": "browser-htmx-chromium",
+      "sha256": "sha256:45a71f1712ba7aab214ed028b3aa3f4d4d1d0aefce54b7164a224b4501738e1b",
+      "size_bytes": 15666
+    },
+    {
+      "created_at": "2026-10-30T01:47:18Z",
+      "expires_at": "2027-01-28T01:44:17Z",
+      "id": 12947553639,
+      "name": "release-artifacts-1.3.0-40987606933",
+      "sha256": "sha256:cf1619b40573c64c3f3720c77fdc4f72f3ae3e1134e6c4ba21f540f4bf0fb667",
+      "size_bytes": 21399260
+    },
+    {
+      "created_at": "2026-10-30T01:48:04Z",
+      "expires_at": "2027-01-28T01:44:17Z",
+      "id": 12947234832,
+      "name": "hedron-evidence-bundle",
+      "sha256": "sha256:cf8aeaf58f752aeac47817f50bee8d59e56adc5c5b1758806db6205bc9f7def6",
+      "size_bytes": 7019
+    }
+  ],
+  "retained_reports": [
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/chromium/ui-capture-budget-chromium.json",
+      "sha256": "84b6bdc26e29586c56946f5cd28425d72b21399baa30c4bf74a6d25554774792",
+      "size_bytes": 2448
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/chromium/ui-capture-termination-c9d15dc7b0cd.json",
+      "sha256": "178a7a0d05da6e35b4ea2b0b05dbb088a561c336a209bad90848fcaa5d39ff7d",
+      "size_bytes": 1151
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/chromium/ui-testing-browser-chromium.json",
+      "sha256": "2ebc477d4d158c4b7029fb07a89acc035a2d706bdc3204d1fa9cc261d494bcb1",
+      "size_bytes": 33938
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/chromium/ui-testing-budget-chromium.json",
+      "sha256": "42222e6a568cb50fdda50bada9a3df797e156c91400ce19b0b24024a246774d4",
+      "size_bytes": 2960
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/chromium/ui-testing-privacy-chromium.json",
+      "sha256": "c8f8b804b7342415776f2cb2d8ecfe241c77404b5f11c08bb9b947adda454170",
+      "size_bytes": 722
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/chromium/ui-testing-resources-chromium.json",
+      "sha256": "9d211a368b4c012aa9cad1e6e8338d427279befcd9e039dd2c74c00ddf75d2bd",
+      "size_bytes": 1056
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/chromium/ui-testing-resources-privacy-chromium.json",
+      "sha256": "c4f6c066b4c8978b37ac29281a87ec39b8890d00640aec7087ab4f296a0fbef9",
+      "size_bytes": 924
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/firefox/ui-capture-budget-firefox.json",
+      "sha256": "b0739e99b1d79f9a2db66abd6d0a650b108a03b854924831b0e06415f2c6709a",
+      "size_bytes": 2448
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/firefox/ui-capture-termination-d5408e446947.json",
+      "sha256": "d46545c3a92084b67f7acccabd286bb0a25ee3e63cbb12a73e75d5e1ea9c9994",
+      "size_bytes": 1151
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/firefox/ui-testing-browser-firefox.json",
+      "sha256": "16680c4cd519bb23354bf93a283facb9e18cdf4eaf7b2508868d152b80470d6d",
+      "size_bytes": 34335
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/firefox/ui-testing-budget-firefox.json",
+      "sha256": "fbb55ae6b8d9651300f495248dd035ef89814650772051fd762dfb4bfd75d571",
+      "size_bytes": 2939
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/firefox/ui-testing-privacy-firefox.json",
+      "sha256": "2b9e166fba622967b198c8777789185b251b0cfe394e965ea70545f522feda67",
+      "size_bytes": 721
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/firefox/ui-testing-resources-firefox.json",
+      "sha256": "41f9f730a49cdcae7ba28eff72b1776305372548521ff465df715da242c2f02e",
+      "size_bytes": 1058
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/firefox/ui-testing-resources-privacy-firefox.json",
+      "sha256": "9bdb5b1fe4ecc218343496bd5bab7c07d42af6d3c82fd854f4619071f0c1d54e",
+      "size_bytes": 922
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/webkit/ui-capture-budget-webkit.json",
+      "sha256": "9b4f93011128639f921379e83c56d13bb7ae22be338a3f592fd98451da8ea789",
+      "size_bytes": 2445
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/webkit/ui-capture-termination-a448f72521d8.json",
+      "sha256": "57f038001cfca84231d055dc235a2f130049482e779cf89b5b94c12c8518ebc2",
+      "size_bytes": 1151
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/webkit/ui-testing-browser-webkit.json",
+      "sha256": "e9dc654cc6f5a4e4acc16dcd3e39e6839f90b143f0576911aeb89aa5f3ae6aae",
+      "size_bytes": 34283
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/webkit/ui-testing-budget-webkit.json",
+      "sha256": "4e748be443f6228ce0afbce1d8b3fc07a8443b286233df1e052123b9b11d94be",
+      "size_bytes": 2938
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/webkit/ui-testing-privacy-webkit.json",
+      "sha256": "44b0b578958bf55b36ef3009c385c5db970fbca7edb41f172deb612bc70c14a4",
+      "size_bytes": 720
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/webkit/ui-testing-resources-privacy-webkit.json",
+      "sha256": "34eac7c6028073e4769f672950ea9029df3183da24dbe1042d842162769f4205",
+      "size_bytes": 920
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/browser/webkit/ui-testing-resources-webkit.json",
+      "sha256": "fc80fc08a96ccaf52197df07374a5c6cf36b63afca43a2c5742cf3060c331d45",
+      "size_bytes": 1056
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.11/ui-testing-budget-host-3.11.json",
+      "sha256": "5e8eb0d79d22d5bac4ae273556265fbc962dbe8aa83b05f9c02cfacb2bca31a5",
+      "size_bytes": 1931
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.11/ui-testing-host-3.11.json",
+      "sha256": "fb01e4274016b588811001d5d69cf6b35d6bf8eb441a8206a5383f407fc89a8a",
+      "size_bytes": 7780
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.11/ui-testing-resources-host-3.11.json",
+      "sha256": "692103c7df2e25aa5a84537a20046a7e86e2cf824c9fcd0a6a07f230801ec539",
+      "size_bytes": 1101
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.12/ui-testing-budget-host-3.12.json",
+      "sha256": "24e387d6a88ac32e44fce4e5c1cb70cafc9b06a3440ac9516423e31045ba3659",
+      "size_bytes": 1935
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.12/ui-testing-host-3.12.json",
+      "sha256": "413b120ace4e2955ff61b2c3f3dd19fb4f0ec117d0a2ce7a0adf299a5f6705cc",
+      "size_bytes": 7784
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.12/ui-testing-resources-host-3.12.json",
+      "sha256": "c0428024e523c9168f5a7a0e1124584112fbf129e47e366d4f0186d8c5e4d03f",
+      "size_bytes": 1101
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.13/ui-testing-budget-host-3.13.json",
+      "sha256": "afd800482fe8db9be1425192d98b4a039c1d3ebee4ca028af2087630f76d641d",
+      "size_bytes": 1939
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.13/ui-testing-host-3.13.json",
+      "sha256": "6448d7d7393811a0acea52d984e69e6df0a4e8e58c3b20f27d05d4ab0dec79c9",
+      "size_bytes": 7788
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.13/ui-testing-resources-host-3.13.json",
+      "sha256": "81271e08bbd975db8a4a79ca0cc29d5c8fd72ddc551e58f696cc64ab665d851b",
+      "size_bytes": 1101
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.14/ui-testing-budget-host-3.14.json",
+      "sha256": "6c44c43af8354b2441903bae1d3357974b70c48c2ab3001b59f2c3c8930c98da",
+      "size_bytes": 1931
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.14/ui-testing-host-3.14.json",
+      "sha256": "41c28056399a7df828e89f9bf3c4e9dd8596f2023c53b92e559b4b527cecc48b",
+      "size_bytes": 7781
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/host/3.14/ui-testing-resources-host-3.14.json",
+      "sha256": "819cd2290868a0c7ef19317ccf9c36cd6eb7be47f3a40db617aed31adbd27dbf",
+      "size_bytes": 1100
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/native-artifacts-40987606890.json",
+      "sha256": "8a0a76f2e7190c56f5b4cdd422fc8d8259d8cea8e8037a716f890bb533068615",
+      "size_bytes": 3525
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/supply-chain/asset-audit.json",
+      "sha256": "6827d4f2859e109dbc3ee1ab2677bc0f12f642ff7b2d74acd1b2c74eae37a1a1",
+      "size_bytes": 980
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/supply-chain/bundle-manifest.json",
+      "sha256": "4318d37a1d03e34f100e62a35205b2e6967b8a33169dfa2f6a7fe90840588bec",
+      "size_bytes": 349
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/supply-chain/dep-audit.json",
+      "sha256": "0a9336a9fbc7a1093828eb252118c7bfffd94ad5795f228dfc5078269efd1d1f",
+      "size_bytes": 15488
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/supply-chain/license-inventory.json",
+      "sha256": "2e7e013a4ad02f9c152fdf34ecc275e82ea797037b47b1dc9150a4269ad82d9b",
+      "size_bytes": 3299
+    },
+    {
+      "path": "docs/acceptance/evidence-130/recheck-40987606933/supply-chain/sbom.cdx.json",
+      "sha256": "4e72dbc0b3379e5d510c49ce091f845b67e5d42aaaeab3dadfddf0233d866a64",
+      "size_bytes": 28254
+    }
+  ],
+  "schema_version": 2,
+  "source_revision": "e153dccffac042e63e959672b9c95af59220e00e",
+  "status": "success",
+  "supply_chain_bundle": {
+    "files": [
+      {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/supply-chain/asset-audit.json",
+        "sha256": "6827d4f2859e109dbc3ee1ab2677bc0f12f642ff7b2d74acd1b2c74eae37a1a1"
+      },
+      {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/supply-chain/bundle-manifest.json",
+        "sha256": "4318d37a1d03e34f100e62a35205b2e6967b8a33169dfa2f6a7fe90840588bec"
+      },
+      {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/supply-chain/dep-audit.json",
+        "sha256": "0a9336a9fbc7a1093828eb252118c7bfffd94ad5795f228dfc5078269efd1d1f"
+      },
+      {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/supply-chain/license-inventory.json",
+        "sha256": "2e7e013a4ad02f9c152fdf34ecc275e82ea797037b47b1dc9150a4269ad82d9b"
+      },
+      {
+        "path": "docs/acceptance/evidence-130/recheck-40987606933/supply-chain/sbom.cdx.json",
+        "sha256": "4e72dbc0b3379e5d510c49ce091f845b67e5d42aaaeab3dadfddf0233d866a64"
+      }
+    ],
+    "path": "docs/acceptance/evidence-130/recheck-40987606933/supply-chain/bundle-manifest.json"
+  }
+}

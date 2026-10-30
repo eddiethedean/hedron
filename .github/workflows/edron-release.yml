@@ -20,6 +20,7 @@ concurrency:
 
 env:
   UV_NO_PROGRESS: "1"
+  UV_NO_SYNC: "1"
   UV_VERSION: "0.12.1"
   SOURCE_DATE_EPOCH: "315619200"
   PYTHONDONTWRITEBYTECODE: "1"
@@ -27,136 +28,13 @@ env:
   RELEASE_TAG: ${{ inputs.release_ref || github.ref_name }}
 
 jobs:
-  test:
-    name: Test Edron (Python ${{ matrix.python-version }})
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.11", "3.12", "3.13", "3.14"]
-    permissions:
-      contents: read
-
-    steps:
-      - name: Check out tagged source
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: ${{ env.RELEASE_REF }}
-          persist-credentials: false
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
-        with:
-          version: ${{ env.UV_VERSION }}
-          enable-cache: true
-          cache-dependency-glob: uv.lock
-
-      - name: Set up Python
-        run: uv python install ${{ matrix.python-version }}
-
-      - name: Sync locked workspace
-        run: uv sync --locked --python ${{ matrix.python-version }}
-
-      - name: Run Edron regression tests
-        run: >-
-          uv run --python ${{ matrix.python-version }} pytest -q
-          tests/unit/test_edron_phase05.py
-          tests/unit/test_phase07_edron.py
-          tests/unit/test_phase08_edron.py
-          tests/unit/test_edron_phase09.py
-          tests/unit/test_edron_phase09_packet.py
-          tests/unit/test_edron_100_packet.py
-          tests/upgrade/test_0_7_to_0_8_deployment.py
-          tests/unit/test_edron_phase04.py
-          tests/unit/test_edron_phase03.py
-          tests/unit/test_edron_phase02.py
-          tests/unit/test_package_metadata.py
-          tests/unit/test_edron_runtime.py
-          tests/unit/test_edron_docs_checker.py
-          tests/unit/test_hedron_import_surface.py
-          tests/unit/test_maps_047_pkg.py
-          tests/ops/test_packaging_isolation.py::test_all_packages_declare_license_and_version
-
-      - name: Lint Edron release surface
-        if: matrix.python-version == '3.11'
-        run: >-
-          uv run --python 3.11 ruff check
-          packages/edron/src/edron
-          scripts/check_edron_release.py
-          scripts/verify_edron_phase08.py
-          scripts/check_edron_09_release.py
-          scripts/verify_edron_phase09.py
-          scripts/check_edron_10_release.py
-          scripts/verify_edron_100.py
-          tests/unit/test_edron_phase05.py
-          tests/unit/test_phase07_edron.py
-          tests/unit/test_phase08_edron.py
-          tests/upgrade/test_0_7_to_0_8_deployment.py
-          tests/unit/test_edron_phase04.py
-          tests/unit/test_edron_phase03.py
-          tests/unit/test_edron_phase02.py
-
-      - name: Run Stable package typing gate
-        if: matrix.python-version == '3.11'
-        run: bash scripts/ci_checks.sh typing --python 3.11
-
-      - name: Verify Edron 1.0 packet
-        if: matrix.python-version == '3.11'
-        run: uv run --python 3.11 python scripts/verify_edron_100.py
-
-  dependency_bounds:
-    name: Edron Stable dependency bounds
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: ${{ env.RELEASE_REF }}
-          persist-credentials: false
-      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
-        with:
-          version: ${{ env.UV_VERSION }}
-      - name: Set up Python
-        run: uv python install 3.12
-      - name: Run minimum/latest matrix
-        run: bash scripts/ci_checks.sh workbench --python 3.12
-
-  browser:
-    name: Edron browser (${{ matrix.browser }})
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    strategy:
-      fail-fast: false
-      matrix:
-        browser: [chromium, firefox, webkit]
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: ${{ env.RELEASE_REF }}
-          persist-credentials: false
-      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
-        with:
-          version: ${{ env.UV_VERSION }}
-      - name: Set up Python
-        run: uv python install 3.12
-      - name: Sync locked workspace
-        run: uv sync --locked --python 3.12
-      - name: Install browser
-        run: bash scripts/ci_install_playwright.sh ${{ matrix.browser }} 3.12
-      - name: Run Stable browser gate
-        env:
-          HEDRON_BROWSER: "1"
-          HEDRON_BROWSER_ENGINE: ${{ matrix.browser }}
-        run: bash scripts/ci_checks.sh browser --python 3.12
-
   publish:
     name: Build and publish Edron
-    needs: [test, dependency_bounds, browser]
     runs-on: ubuntu-latest
     environment: release
     timeout-minutes: 15
     permissions:
+      actions: read
       contents: read
       id-token: write
       attestations: write
@@ -169,6 +47,12 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Require successful CI for the tagged commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: bash scripts/check_release_ci.sh
+
       - name: Install uv
         uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
@@ -180,7 +64,7 @@ jobs:
         run: uv python install 3.12
 
       - name: Sync locked workspace
-        run: uv sync --locked --python 3.12
+        run: uv sync --locked --python 3.12 --no-install-package hedron-native
 
       - name: Verify tag and package version
         env:

@@ -210,6 +210,7 @@ INTERNAL_DOC_NAMES = {
     "TRACEABILITY.md",
 }
 HISTORICAL_PREFIXES = ("whats-new-0.", "RELEASE_0_")
+HISTORICAL_RELEASE_PAGES = frozenset({"whats-new-1.0.md", "whats-new-1.1.md"})
 
 # Implementation claims are independent of registry state: a verified release
 # must never be described as unimplemented, and the malformed ``.1.0.x`` token
@@ -247,6 +248,7 @@ def _is_historical(path: Path) -> bool:
     return (
         any(part in PUBLIC_DOC_EXCLUDES for part in path.parts)
         or path.name in INTERNAL_DOC_NAMES
+        or path.name in HISTORICAL_RELEASE_PAGES
         or path.name.startswith(HISTORICAL_PREFIXES)
     )
 
@@ -943,7 +945,9 @@ def main() -> int:
         failures.extend(check_section_landing(relative, text))
     # Historical release pages may keep their original install commands, but any
     # explicit current/living pointer on those pages must track release.toml.
-    for path in sorted((ROOT / "docs" / "guides").glob("whats-new-0.*.md")):
+    historical_1x_pages = [ROOT / "docs" / "guides" / name for name in HISTORICAL_RELEASE_PAGES]
+    historical_pages = sorted((ROOT / "docs" / "guides").glob("whats-new-0.*.md"))
+    for path in sorted([*historical_pages, *historical_1x_pages]):
         relative = path.relative_to(ROOT)
         historical_text = path.read_text(encoding="utf-8")
         failures.extend(check_text(relative, historical_text, check_installs=False))

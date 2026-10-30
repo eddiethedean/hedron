@@ -7,7 +7,7 @@
 # Usage:
 #   scripts/ci_checks.sh test [--python 3.12]
 #   scripts/ci_checks.sh coverage [--python 3.12]
-#   scripts/ci_checks.sh workbench [--python 3.12]
+#   scripts/ci_checks.sh workbench [--python 3.12] [--bounds minimum|latest]
 #   scripts/ci_checks.sh docs [--python 3.12]
 #   scripts/ci_checks.sh typing [--python 3.12]
 #   scripts/ci_checks.sh quality [--python 3.12] [--skip-wheels]
@@ -18,7 +18,7 @@
 #   scripts/ci_checks.sh packaging [--python 3.12]
 #   scripts/ci_checks.sh all [--python 3.12] [--gate-version 0.37.0] [options]
 #
-# Full local CI (`all`) mirrors `.github/workflows/ci.yml` job order:
+# Extended local checks (`all`) include optional release and live-service evidence:
 #   test (Python 3.11–3.14 by default) → stable dependency bounds → quality →
 #   browser (Chromium; pass --all-browsers for main-branch matrix) → realwb →
 #   realconnect → evidence → packaging
@@ -52,7 +52,7 @@
 # Prerequisites for `all` (match workflow setup steps):
 #   uv sync --locked --all-groups --python 3.12
 #   uv sync --locked --python 3.12 --group docs   # evidence / packaging
-#   Rust toolchain — quality + evidence (hedron-native wheels)
+#   Rust toolchain — tests and packaging (hedron-native wheels)
 #   Java 17 + Node 20 — evidence / packaging verify scripts
 #   Playwright — browser job (see ci.yml browser install step)
 set -euo pipefail
@@ -92,6 +92,7 @@ SKIP_WHEELS=0
 RELEASE_GATE=0
 UNSUPPORTED_GATES=()
 JOBS="${HEDRON_CHECK_JOBS:-}"
+BOUNDS=""
 HEDRON_PYTHON_EXE=""
 
 usage() {
@@ -135,6 +136,14 @@ default_jobs() {
 parse_args() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
+      --bounds)
+        BOUNDS="${2:?--bounds requires minimum or latest}"
+        if [[ "$BOUNDS" != minimum && "$BOUNDS" != latest ]]; then
+          echo "--bounds requires minimum or latest" >&2
+          exit 1
+        fi
+        shift 2
+        ;;
       --python)
         PYTHON="${2:?--python requires a version}"
         PYTHON_EXPLICIT=1
@@ -386,27 +395,28 @@ wait_jobs() {
 
 cmd_test() {
   # Treat unknown markers and invalid pytest configuration as CI failures.
-  # Parallel workers come from pyproject addopts (`-n auto --dist=loadfile`).
-  (
-    export HEDRON_ENFORCE_RETIRED_INVENTORY=1
-    run_uv pytest -q --strict-config --strict-markers
-  )
+  mkdir -p test-results
+  HEDRON_ENFORCE_RETIRED_INVENTORY=1 run_uv pytest -q \
+    --strict-config --strict-markers \
+    --override-ini=junit_family=legacy --junitxml=test-results/full-suite.xml
 }
 
 cmd_coverage() {
-  # One branch-aware run covers both public Python packages. The post-check
-  # enforces independent floors so aggregate coverage cannot hide regressions.
-  (
-    export HEDRON_ENFORCE_RETIRED_INVENTORY=1
-    run_uv pytest -q -n 0 --strict-config --strict-markers \
-      --cov=hedron --cov=hedron_core --cov-branch \
+  # Collect the Python suite and Chromium once, including the optional UI host.
+  mkdir -p test-results
+  HEDRON_ENFORCE_RETIRED_INVENTORY=1 run_uv pytest -q -n 4 \
+    --strict-config --strict-markers \
+    --override-ini=junit_family=legacy --junitxml=test-results/full-suite.xml \
+    --cov=hedron --cov=hedron_core --cov-branch --cov-fail-under=0 \
+    --cov-report=
+  HEDRON_BROWSER=1 HEDRON_BROWSER_ENGINE=chromium \
+    run_uv pytest -q -rs -m browser --tb=short -n 0 --browser chromium \
+      --override-ini=junit_family=legacy --junitxml=test-results/coverage-browser.xml \
+      --cov=hedron --cov=hedron_core --cov-branch --cov-append --cov-fail-under=0 \
       --cov-report=term-missing:skip-covered \
-      --cov-report=xml:coverage.xml \
-      --cov-report=json:coverage.json \
-      --cov-fail-under=0
-    run_py scripts/check_coverage_thresholds.py coverage.json \
-      --hedron 73 --hedron-core 83
-  )
+      --cov-report=xml:coverage.xml --cov-report=json:coverage.json \
+      tests/browser examples/ui-testing examples/ui-testing-satellite
+  run_py scripts/check_coverage_thresholds.py coverage.json --hedron 73 --hedron-core 83
 }
 
 quality_ruff() {
@@ -584,6 +594,10 @@ quality_verify_pkgs() {
     run_py scripts/verify_pkg_120.py --allow-planned
     return 0
   fi
+  if [[ "$GATE_VERSION" == 1.3.* ]]; then
+    run_py scripts/check_release_gate.py "$GATE_VERSION" --allow-planned
+    return 0
+  fi
   run_py scripts/verify_pkg_56.py
   run_py scripts/verify_pkg_57.py
   run_py scripts/verify_pkg_58.py
@@ -686,39 +700,61 @@ cmd_quality() {
 cmd_browser() {
   export HEDRON_BROWSER="${HEDRON_BROWSER:-1}"
   export HEDRON_BROWSER_ENGINE="${HEDRON_BROWSER_ENGINE:-chromium}"
+  local -a tempfs_args=()
+  if [[ -n "${HEDRON_UI_CAPTURE_TMPFS_MIB:-}" ]]; then
+    # Bound the complete suite by the private capture filesystem capacity.
+    tempfs_args=(
+      --tempfs-limit-mib "$HEDRON_UI_CAPTURE_TMPFS_MIB"
+      --tempfs-usage-limit-mib "$HEDRON_UI_CAPTURE_TMPFS_MIB"
+    )
+  fi
   # Keep Playwright serial: xdist contention on browser processes flakes.
-  run_uv pytest -q -m browser --tb=short -n 0
+  mkdir -p test-results
+  run_py scripts/run_ui_budgeted.py \
+    --output-json "test-results/ui-testing-resources-${HEDRON_BROWSER_ENGINE}.json" \
+    --timeout-seconds 1800 --max-rss-mib 8192 --max-processes 64 \
+    --sample-interval-ms 25 --max-file-mib 64 \
+    "${tempfs_args[@]}" -- \
+    uv run --python "$PYTHON" pytest -q -rs -m browser --tb=short -n 0 \
+    --override-ini=junit_family=legacy \
+    --browser "$HEDRON_BROWSER_ENGINE" \
+    --junitxml=test-results/browser.xml \
+    tests/browser examples/ui-testing examples/ui-testing-satellite
+  run_py scripts/check_ui_testing_acceptance.py \
+    --lane browser --python "$PYTHON" --browser "$HEDRON_BROWSER_ENGINE" \
+    --junitxml test-results/browser.xml \
+    --output "test-results/ui-testing-browser-${HEDRON_BROWSER_ENGINE}.json"
+  run_py scripts/run_ui_budgeted.py \
+    --output-json "test-results/ui-testing-resources-privacy-${HEDRON_BROWSER_ENGINE}.json" \
+    --timeout-seconds 300 --max-rss-mib 8192 --max-processes 64 \
+    --sample-interval-ms 25 --max-file-mib 64 \
+    "${tempfs_args[@]}" -- \
+    uv run --python "$PYTHON" python scripts/probe_ui_testing_privacy.py \
+      --browser "$HEDRON_BROWSER_ENGINE" \
+      --output-json "test-results/ui-testing-privacy-${HEDRON_BROWSER_ENGINE}.json"
 }
 
 cmd_workbench_bounds() {
   # Matches ci.yml dependency-bounds (minimum + latest Starlette/Uvicorn bounds).
   local bounds="$1"
   local venv=".bounds-venv-${bounds}"
+  local resolution=highest
+  if [[ "$bounds" == minimum ]]; then
+    resolution=lowest-direct
+  fi
   echo "== workbench dependencies ($bounds) =="
   uv venv "$venv" --python "$PYTHON" --clear
-  if [[ "$bounds" == minimum ]]; then
-    uv pip install --python "$venv/bin/python" --resolution lowest-direct \
-      -e packages/hedron-core -e packages/hedron -e packages/hedron-explorer \
-      -e packages/hedron-data -e packages/hedron-flask -e packages/hedron-django \
-      -e packages/hedron-jinja -e packages/hedron-conformance -e packages/hedron-extras \
-      -e packages/hedron-elements -e packages/hedron-posit -e packages/fastapi-workbench \
-      -e packages/hedron-charts -e packages/hedron-maps -e packages/edron \
-      -r release/stable-dependencies.txt \
-      "pytest>=8.3" "pytest-xdist>=3.6" "httpx>=0.28" \
-      "django>=5.2,<6" "matplotlib>=3.10.8,<4"
-  else
-    uv pip install --python "$venv/bin/python" --resolution highest \
-      -e packages/hedron-core -e packages/hedron -e packages/hedron-explorer \
-      -e packages/hedron-data -e packages/hedron-flask -e packages/hedron-django \
-      -e packages/hedron-jinja -e packages/hedron-conformance -e packages/hedron-extras \
-      -e packages/hedron-elements -e packages/hedron-posit -e packages/fastapi-workbench \
-      -e packages/hedron-charts -e packages/hedron-maps -e packages/edron \
-      -r release/stable-dependencies.txt \
-      "pytest>=8.3" "pytest-xdist>=3.6" "httpx>=0.28" \
-      "django>=5.2,<6" "matplotlib>=3.10.8,<4"
-  fi
+  uv pip install --python "$venv/bin/python" --resolution "$resolution" \
+    -e packages/hedron-core -e "packages/hedron[testing]" -e packages/hedron-explorer \
+    -e packages/hedron-data -e packages/hedron-flask -e packages/hedron-django \
+    -e packages/hedron-jinja -e packages/hedron-conformance -e packages/hedron-extras \
+    -e packages/hedron-elements -e packages/hedron-posit -e packages/fastapi-workbench \
+    -e packages/hedron-charts -e packages/hedron-maps -e packages/edron \
+    -r release/stable-dependencies.txt \
+    "pytest>=8.3" "pytest-xdist>=3.6" "httpx>=0.28" \
+    "django>=5.2,<6" "matplotlib>=3.10.8,<4"
   run "$venv/bin/python" scripts/check_stable_dependency_bounds.py --verify-installed "$bounds"
-  run "$venv/bin/pytest" -q \
+  run "$venv/bin/pytest" -q --confcutdir=tests -p hedron.testing.pytest_plugin \
     tests/adapters/workbench \
     tests/adapters/flask \
     tests/adapters/django \
@@ -727,10 +763,18 @@ cmd_workbench_bounds() {
     tests/security/test_workbench_adversarial.py \
     tests/unit/test_maps_047_pkg.py \
     tests/unit/test_charts_028_static_matrix.py \
-    tests/unit/test_edron_100_packet.py
+    tests/unit/test_edron_100_packet.py \
+    tests/unit/test_ui_testing_host.py \
+    tests/unit/test_ui_testing_artifacts.py \
+    tests/unit/test_ui_testing_policy.py \
+    tests/unit/test_ui_testing_contributions.py
 }
 
 cmd_workbench() {
+  if [[ -n "$BOUNDS" ]]; then
+    cmd_workbench_bounds "$BOUNDS"
+    return
+  fi
   job_pool_init
   start_job workbench-minimum cmd_workbench_bounds minimum
   start_job workbench-latest cmd_workbench_bounds latest
@@ -748,7 +792,7 @@ evidence_audit() {
 evidence_gates() {
   # The 1.2 implementation packet remains open while platform/artifact evidence is collected.
   # Release tags use the strict gate in release.yml before any publication step.
-  if [[ "$GATE_VERSION" == 1.2.* ]]; then
+  if [[ "$GATE_VERSION" == 1.2.* || "$GATE_VERSION" == 1.3.* ]]; then
     run_py scripts/check_release_gate.py "$GATE_VERSION" --allow-planned
   else
     run_py scripts/check_release_gate.py "$GATE_VERSION"
@@ -767,6 +811,10 @@ evidence_verify_pkgs() {
   fi
   if [[ "$GATE_VERSION" == 1.2.* ]]; then
     run_py scripts/verify_pkg_120.py --allow-planned
+    return 0
+  fi
+  if [[ "$GATE_VERSION" == 1.3.* ]]; then
+    run_py scripts/check_release_gate.py "$GATE_VERSION" --allow-planned
     return 0
   fi
   run_py scripts/verify_pkg_34.py --allow-planned
@@ -839,7 +887,11 @@ cmd_realwb() {
 }
 
 cmd_packaging() {
-  # PKG packaging rehearsal (same verify helper as the evidence suite).
+  if [[ "${HEDRON_CI_ALL:-0}" == 1 ]]; then
+    echo "skip: packaging (wheels already validated by quality)"
+    return 0
+  fi
+  # Build and smoke the current release once; historical packets remain local tools.
   if [[ "$GATE_VERSION" == 1.0.* ]]; then
     run_py scripts/check_100.py --gate PKG-100 --verify
     return 0
@@ -847,6 +899,12 @@ cmd_packaging() {
   if [[ "$GATE_VERSION" == 1.2.* ]]; then
     resolve_python
     run_py scripts/verify_pkg_120.py --allow-planned
+    quality_wheels_smoke
+    return 0
+  fi
+  if [[ "$GATE_VERSION" == 1.3.* ]]; then
+    resolve_python
+    run_py scripts/check_release_gate.py "$GATE_VERSION" --allow-planned
     quality_wheels_smoke
     return 0
   fi

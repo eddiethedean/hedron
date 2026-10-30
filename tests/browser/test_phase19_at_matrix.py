@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+from typing import Protocol
 
 import pytest
 from fastapi.testclient import TestClient
@@ -22,6 +23,10 @@ _ENGINES = ("chromium", "firefox", "webkit")
 _FAIL_IMPACTS = frozenset({"critical", "serious"})
 # Explicit AT-019 waiver list (rule ids). Empty by default — add only with evidence.
 _AXE_WAIVERS: frozenset[str] = frozenset()
+
+
+class _RecordProperty(Protocol):
+    def __call__(self, name: str, value: object) -> None: ...
 
 
 @pytest.fixture(autouse=True)
@@ -96,7 +101,10 @@ def _blocking_violations(violations: list[dict]) -> list[dict]:
 
 
 @pytest.mark.parametrize("engine", _ENGINES)
-def test_keyboard_and_landmarks_per_engine(engine: str) -> None:
+def test_keyboard_and_landmarks_per_engine(
+    engine: str,
+    record_property: _RecordProperty,
+) -> None:
     if os.environ.get("HEDRON_BROWSER") != "1":
         pytest.skip("Set HEDRON_BROWSER=1 for live browser matrix")
     wanted = os.environ.get("HEDRON_BROWSER_ENGINE")
@@ -123,9 +131,16 @@ def test_keyboard_and_landmarks_per_engine(engine: str) -> None:
         focused = page.evaluate("() => document.activeElement && document.activeElement.tagName")
         assert focused in {"INPUT", "BUTTON", "A"}
         assert focused != "BODY"
-        # Zoom / reflow: narrow viewport still exposes main landmark.
+        # Reflow: narrow viewport exposes main and has no horizontal overflow.
         page.set_viewport_size({"width": 320, "height": 640})
         assert page.get_by_role("main").count() >= 1
+        assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 1")
+        # 200% zoom from a 640 CSS-pixel viewport is equivalent to a 320-pixel
+        # layout viewport, avoiding a compounded 200%-of-320 probe.
+        page.set_viewport_size({"width": 640, "height": 640})
+        page.evaluate("document.documentElement.style.zoom = '200%'")
+        assert page.get_by_role("main").is_visible()
+        assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 1")
         # Reduced motion / forced-colors emulation where supported.
         page.emulate_media(reduced_motion="reduce")
         try:
@@ -133,6 +148,10 @@ def test_keyboard_and_landmarks_per_engine(engine: str) -> None:
         except Exception:  # noqa: BLE001
             page.emulate_media(color_scheme="dark")
         report = axe_scan_report(page)
+        record_property("axe_engine", str(report.get("engine")))
+        record_property("axe_scope", "entire rendered accessibility profile document")
+        record_property("axe_incomplete", str(report.get("incomplete")))
+        record_property("axe_error", str(report.get("message") or "none"))
         assert report["incomplete"] is False, report.get("message")
         violations = list(report.get("violations") or [])
         blocked = _blocking_violations(violations)
@@ -142,7 +161,15 @@ def test_keyboard_and_landmarks_per_engine(engine: str) -> None:
         scenario = AccessibilityScenario(
             name=f"at-{engine}",
             engine_versions={"browser": engine, "axe": str(report.get("engine"))},
-            covers=("keyboard", "zoom", "reduced-motion", "forced-colors", "landmarks"),
+            covers=(
+                "keyboard",
+                "focus",
+                "zoom-reflow",
+                "reduced-motion",
+                "forced-colors",
+                "landmarks",
+                "axe-positive-negative",
+            ),
         )
         for v in violations:
             scenario.record_finding(
@@ -156,6 +183,26 @@ def test_keyboard_and_landmarks_per_engine(engine: str) -> None:
         assert summary["accessible"] is False  # never claim accessible from automation alone
         sarif = axe_to_sarif(violations, tool_version=str(report.get("engine") or "pinned"))
         assert sarif["runs"][0]["properties"]["hedron_gate"] == "TEST-019"
+
+        # A known image-alt defect proves the pinned axe engine can report a violation.
+        page.set_content(
+            "<!doctype html><html lang='en'><head><title>Violation probe</title></head>"
+            "<body><main><img src='data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='>"
+            "</main></body></html>"
+        )
+        violation_report = axe_scan_report(page)
+        record_property(
+            "axe_violation_probe_incomplete",
+            str(violation_report.get("incomplete")),
+        )
+        violations_found = {
+            str(item.get("id"))
+            for item in list(violation_report.get("violations") or [])
+            if isinstance(item, dict)
+        }
+        record_property("axe_deliberate_violation_detected", str("image-alt" in violations_found))
+        assert violation_report["incomplete"] is False, violation_report.get("message")
+        assert "image-alt" in violations_found, "axe did not detect the deliberate image-alt defect"
         # HTMX fragment path: drive swap via page.request against TestClient HTML is limited;
         # assert fragment route returns markup without serious axe issues when set as content.
         frag = client.get("/panel", headers={"HX-Request": "true", "HX-Target": "#panel"})

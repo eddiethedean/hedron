@@ -1,11 +1,26 @@
-# Upgrade to Hedron 1.1
+# Upgrade to Hedron 1.2
 
-This guide starts with the current 1.1 migration boundary, then retains historical notes for
-older release trains. The published release is `1.1.3` on the `1.1.x` line. Read
+This guide starts with the current 1.2 migration boundary, then retains historical notes for
+older release trains. The published release is `1.2.0` on the `1.2.x` line. Read
 [Current release and support](current-release.md) for the published PyPI status before changing
 an application requirement.
 
-## 1.0 → 1.1
+## 1.1 → 1.2
+
+Hedron 1.2 requires CPython 3.11 or newer. Python 3.10 no longer receives security fixes. Recreate
+the environment under Python 3.11–3.14, then upgrade the coordinated packages and run the
+application's tests:
+
+```bash
+python -m pip install -U "hedron>=1.2.0,<1.3" "edron>=1.2.0,<2.0"
+```
+
+For a project using uv, update the interpreter in its project configuration and run
+`uv lock --upgrade-package hedron --upgrade-package edron`. Review the resulting lockfile and
+recreate the virtual environment if it used Python 3.10. See
+[What’s new in 1.2](whats-new-1.2.md) for the package and compatibility details.
+
+## Historical: 1.0 → 1.1
 
 Hedron 1.1 extends the stable 1.x application model without changing the core page, view, and
 action authoring roles. Upgrade the coordinated packages together and review the new contracts
@@ -20,15 +35,8 @@ only where the application needs them:
 | Application builds | Adopt the application-aware build contract for reproducible release artifacts |
 | Presentation | Review native shell refinements and computed-style browser evidence |
 
-Upgrade the stable packages from PyPI:
-
-```bash
-python -m pip install -U "hedron>=1.1.3,<1.2" "edron>=1.1.3,<1.2"
-```
-
-Read [What’s new in 1.1](whats-new-1.1.md) and the [1.1.3 release notes](release-notes.md)
-for the complete feature and evidence boundary. Keep the application’s existing integration
-tests and add coverage for any newly adopted collection, navigation, or secure-form behavior.
+The 1.1 feature and evidence boundary is retained in [What’s new in 1.1](whats-new-1.1.md).
+Applications upgrading now should target the published 1.2 release using the instructions above.
 
 ## Historical: 0.67 → 1.0
 

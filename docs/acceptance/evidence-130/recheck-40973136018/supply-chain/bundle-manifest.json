@@ -1,0 +1,12 @@
+{
+  "release_version": "1.3.0",
+  "phase": "1.3",
+  "generated_at": "2026-10-29T23:27:53.716180+00:00",
+  "uv_lock_sha256": "89f36c4381c57aec954711e910a82d6347507e422813571f7d4d2f180f2adccd",
+  "artifacts": [
+    "asset-audit.json",
+    "license-inventory.json",
+    "sbom.cdx.json"
+  ],
+  "gate_manifest": "docs/acceptance/release-gate-1.3.toml"
+}

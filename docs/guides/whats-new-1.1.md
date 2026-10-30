@@ -6,6 +6,11 @@ search:
 
 # What’s new in Hedron 1.1
 
+!!! note "Historical release note"
+
+    This page describes the 1.1 release. For current installation, support, and release details,
+    see [Current release and support](current-release.md).
+
 Hedron `v1.1.1` completes Phase 1.1 and is published on PyPI. The release extends the
 server-rendered FastAPI and HTMX authoring model with stronger data, navigation, security,
 presentation, and application integration contracts.
@@ -36,6 +41,7 @@ Install the published release from PyPI:
 python -m pip install "hedron>=1.1.3,<1.2" "uvicorn[standard]"
 ```
 
-For the full release identity and verification record, see the
-[release notes](release-notes.md), [current release and support](current-release.md), and
-[1.1.3 evidence bundle](evidence-bundle.md).
+For current release status, see [Current release and support](current-release.md).
+
+The historical 1.1.3 evidence bundle is available at
+[evidence-bundle-1.1.md](evidence-bundle-1.1.md).

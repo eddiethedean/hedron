@@ -6946,64 +6946,66 @@ through `python scripts/check_100.py --gate <GATE-ID> --verify`.
 
 ## Proposed 1.X sequence
 
-**Planning revision:** 2026-10-27. The published `v1.1.3` train is the starting baseline;
-published-channel facts remain owned by [docs/release.toml](release.toml). Phase 1.1 is complete.
-Phase 1.2 raises the Python floor, and the former 1.2–1.8 plans continue as the proposed
-1.3–1.9 sequence.
+**Planning revision:** 2026-10-28. The published `v1.2.0` train is the starting baseline;
+published-channel facts remain owned by [docs/release.toml](release.toml). Phases 1.1 and 1.2 are complete.
+Phase 1.2 raises the Python floor; 1.3 retains its first-class UI-testing scope. The high-priority
+interaction features from [RFC-0100](rfcs/RFC-0100-INTERACTION-EFFICIENCY-AND-FORM-CONTINUITY.md)
+occupy 1.4–1.7. The former 1.4–1.9 themes move intact to 1.8–1.13 under proposed planning
+decision D-121; historical phase references below remain records of their earlier revisions.
 
-**Planning status:** Phase 1.1 is Verified and published; the 1.2 Python baseline is implemented
-in-tree under accepted decision D-120, with release evidence and publication pending. Phases 1.3–1.9 remain proposed,
-unscheduled, and subject to the 1.1 stability policy. This is a
-candidate ordering for post-1.0 work, not a release or calendar commitment. The phase number is a
-planning bucket, not a promise that every item in the bucket ships together. Each phase can end in
-promotion, continued Beta/Experimental status, a narrower scope, or an explicit non-admission.
+**Planning status:** Phases 1.1 and 1.2 are published; the 1.2 Python baseline is recorded under
+accepted decision D-120. Phase 1.3 remains in progress. Phases
+1.3–1.13 remain proposed and unscheduled. The new 1.4–1.7 packets contain Planned gates only;
+detailed contract freezes, implementation entry, and release evidence are unsatisfied. Phase
+numbers express preferred delivery order, not a release or calendar commitment.
 
 | Phase | Theme | Primary question | Entry condition |
 |---|---|---|---|
 | **1.1** | Open enhancement completion and complementary application features | Can adopters use every open enhancement in complete, secure application flows? | **Verified and published as v1.1.0** |
 | **1.2** | Python 3.11+ support and typing baseline | Can Hedron retire Python 3.10 and use Python 3.11 typing semantics and checks across the coordinated workspace? | Accepted D-120; implementation complete, release evidence pending |
 | **1.3** | First-class UI testing and adoption confidence | Can a team test real Hedron UI behavior and diagnose failures with ordinary pytest? | 1.2 Python baseline plus the preserved stable testing inventory and interaction traces |
-| **1.4** | Production async and durable workflows | Is anything beyond polling ready for production? | 1.3 browser, upgrade, and fixture baseline |
-| **1.5** | Inclusive and international UX | Can the stable surface work for more users and locales? | 1.0 interaction corpus plus human-evaluation protocol |
-| **1.6** | Visualization and media graduation | Which optional adapters can meet the first-party contract? | 1.5 accessibility/fallback corpus |
-| **1.7** | Stateful browser composition | Can partial updates retain local state without a second app runtime? | 1.4 interaction ownership and 1.5 browser evidence |
-| **1.8** | Controlled ecosystem expansion | Which advanced integrations have a trustworthy operating model? | The core, browser, and security contracts consumed by the selected integration are proven |
-| **1.9** | Evidence-gated large-application build scalability | Are current rebuild times acceptable at the largest application size Hedron promises to support? | A supported size ceiling and repeatable cold/no-op/one-change benchmark corpus |
+| **1.4** | Visibility-aware polling | Can unseen and failing status regions avoid unnecessary requests without losing freshness? | 1.3 browser lifecycle evidence; existing Poll/TaskFlow observation contracts |
+| **1.5** | Viewport and on-demand loading | Can expensive regions defer both queries and HTML until they are needed? | 1.3 harness; shared visibility ownership from 1.4 where consumed; current Lazy/view/asset contracts |
+| **1.6** | Typed input timing and request policies | Can search and validation issue fewer requests while keeping the newest result correct? | Existing Hx/Interaction/Control and generation semantics; 1.3 browser evidence |
+| **1.7** | Dirty-form and confirmed-save integration | Can navigation and save feedback protect newer edits and handle uncertain saves correctly? | Existing 1.1 guards/save/reset; 1.6 validation/submit ordering and operation identity |
+| **1.8** | Production async and durable workflows | Is anything beyond polling ready for production? | 1.3 browser/upgrade corpus plus 1.4 observation scheduling where consumed |
+| **1.9** | Inclusive and international UX | Can the stable surface work for more users and locales? | Existing interaction corpus plus human-evaluation protocol |
+| **1.10** | Visualization and media graduation | Which optional adapters can meet the first-party contract? | Relevant 1.9 accessibility/fallback corpus |
+| **1.11** | Stateful browser composition | Can partial updates retain local state without a second app runtime? | 1.7 form continuity, 1.8 interaction ownership, and relevant 1.9 focus/announcement evidence |
+| **1.12** | Controlled ecosystem expansion | Which advanced integrations have a trustworthy operating model? | Only the core, browser, and security contracts consumed by the selected integration |
+| **1.13** | Evidence-gated large-application build scalability | Are rebuild times acceptable at the largest supported application size? | A supported size ceiling and repeatable cold/no-op/one-change benchmark corpus |
 
 ### Delivery priorities and dependencies
 
-The first delivery priority is the 1.1 enhancement implementation phase. It completes the
-open backlog and the complementary features needed for useful application flows, using existing
-test facilities. The 1.2 Python support transition is followed by the 1.3 testing foundation and
-1.4 durable job contract, including a complete polling experience even if no live transport
-graduates. Human evaluation preparation for 1.5 and baseline measurements for 1.9 can proceed
-alongside these phases; neither depends on a new browser API to begin gathering evidence.
+The 1.2 support transition is followed by the preserved 1.3 testing foundation and four additive
+interaction feature phases. These prioritize reducing unnecessary observations/data work and
+protecting in-progress forms. Their candidate APIs remain opt-in Beta; existing defaults, native
+fallbacks, routing, security, and the HTMX/Alpine authority boundary remain protected.
 
-Phase numbers express the preferred delivery order. Admission depends on specific verified
-contracts, not on completing every earlier phase:
+- **1.1 uses existing testing facilities:** its completed browser/reference corpus stays owned by 1.1.
+- **1.2 raises the language floor:** coordinate metadata and checks as one support-policy transition.
+- **1.3 consumes the 1.1 reference corpus:** it remains a testing/tooling phase without production
+  runtime scope; new interaction behavior belongs to 1.4–1.7.
+- **1.4 reuses observation authority:** visibility/backoff schedules existing HTMX polling; terminal
+  jobs remain stopped, missed ticks never form a replay queue, and mutations are never retried.
+- **1.5 shares visibility lifecycle where useful:** defer route preparation as well as rendering;
+  retain admitted document assets and an ordinary report URL.
+- **1.6 reuses operation identity:** typed timing compiles to existing transport, and generation
+  checking protects search/validation even when a browser cancellation does not stop server work.
+- **1.7 extends shipped guards:** a save acknowledges the submitted revision only; newer edits
+  stay dirty and a lost response requires explicit reconciliation.
+- **1.8 reuses the browser and polling contracts:** a complete durable polling flow is required
+  even if no live transport graduates.
+- **1.9 human evaluation preparation** and **1.13 build baselines** can begin independently;
+  neither needs a new browser API before evidence gathering.
+- **1.10 consumes relevant 1.9 evidence; 1.11 consumes relevant 1.7/1.8/1.9 contracts.**
+  Unrelated locale work or a decision to retain polling need not block a proven slice.
+- **1.12 consumes only integration-specific contracts:** a read-only adapter need not wait for morphing.
 
-- **1.1 uses existing testing facilities:** #915 extends the current browser conformance matrix;
-  it does not wait for the managed browser harness in 1.3.
-- **1.2 raises the language floor:** update coordinated package metadata and checks as one
-  support-policy transition.
-- **1.3 consumes the 1.1 reference corpus:** reuse the new settings, collection, chrome, and
-  deployment flows when proving the managed testing experience.
-- **1.4 consumes 1.3:** reuse the browser lifecycle, failure evidence, and isolation corpus.
-- **1.5 consumes the existing human-evaluation protocol:** reuse 1.3 automation when available;
-  recruit participants and define tasks independently of the harness implementation.
-- **1.6 consumes 1.5:** use the relevant accessible interaction and fallback criteria for each
-  candidate adapter; unrelated locale work need not block an adapter packet.
-- **1.7 consumes 1.4 and 1.5:** use verified generation/cancellation and focus/announcement contracts.
-  A decision to retain polling in 1.3 still satisfies the transport dependency.
-- **1.8 consumes only the contracts an integration needs:** a read-only adapter need not wait for
-  morph retention; mutation or shared-session candidates require the relevant ownership evidence.
-- **1.9 is a parallel measurement lane:** optimization starts only after the supported-size corpus
-  demonstrates a missed budget. It does not depend on ecosystem graduation.
-
-Maintenance of the supported 1.1 line continues independently. Correctness and security fixes stay
-eligible for patch releases; proposed feature work must not delay them. Every admitted feature
-delivers a usable increment of the reference application, explicit failure behavior, and upgrade
-evidence. Evaluation-only outcomes retain their measured corpus and explicit disposition.
+Design and bounded prototypes can use existing AppScenario/Playwright facilities while 1.3 is
+pending. Release predecessors and consumed-contract evidence must be verified before the
+corresponding cut. Maintenance fixes continue independently. Required feature scope may narrow
+only by recorded amendment; optional evaluation work can retain an explicit non-admission.
 
 ### 1.1 — Open enhancement completion and complementary application features
 
@@ -7089,70 +7091,166 @@ harness, or unrelated runtime redesign is implied. Phase 1.3 receives the floor 
 
 ### 1.3 — First-class UI testing and adoption confidence
 
-**Planning status:** Proposed and unscheduled; Stage 0 refinement only. See
-[RFC-0097](rfcs/RFC-0097-FIRST-CLASS-UI-TESTING.md), the
-[implementation plan](implementation/UI_TESTING_1_3.md), and the
-[acceptance packet](acceptance/RELEASE_1_3.md). Every row in the
-[machine release gate](acceptance/release-gate-1.3.toml) remains Planned; implementation is not
-authorized until `FREEZE-130` resolves the public API, schemas, matrices, and measured budgets.
+**Planning status:** Proposed and unscheduled; refined 2026-10-28. See
+[RFC-0097](rfcs/RFC-0097-FIRST-CLASS-UI-TESTING.md),
+[implementation](implementation/UI_TESTING_1_3.md),
+[acceptance](acceptance/RELEASE_1_3.md),
+[17-row release gate](acceptance/release-gate-1.3.toml), and
+[planning contract](acceptance/ui-testing-contract-130.toml). All gates remain Planned.
+The release predecessor is `v1.2.0`, not the stable `v1.0.0` compatibility baseline;
+predecessor evidence and the detailed empirical freeze are still unsatisfied.
 
-**Problem.** Hedron 1.0 has deterministic render assertions, portable HTTP/HTMX fixtures,
-`AppScenario`, low-level Playwright/axe hooks, interaction traces, and test generation, but an
-application author still has to assemble a live server, browser lifecycle, framework waiting,
-failure correlation, artifacts, and cleanup. The result is too much plumbing for a small UI test
-and too little evidence when a browser test fails.
+**Problem.** Render assertions, AppScenario, low-level Playwright/axe helpers, interaction facts,
+and browser CI exist, but an adopter still assembles host startup, root paths, context isolation,
+waits, failure correlation, artifacts, and cleanup. Private threaded launchers, port reservations,
+and registry/reuse helpers are source inputs, not a supported managed-host contract.
 
-**Plan.** Preserve three explicit layers: render tests for deterministic output, `AppScenario` for
-request/fragment/security contracts, and a candidate `BrowserScenario` plus pytest fixture for real
-user-agent behavior. Playwright remains the browser, locator, actionability, assertion, and trace
-authority. Hedron contributes a managed loopback application host, semantic mark/region lookup,
-bounded Hedron-owned settle facts, correlated server/browser errors, leak-free teardown, and a
-versioned redacted failure bundle. Ordinary `pytest` remains the runner; the browser surface is an
-optional install and never enters core/base imports. Each coordinated and optional package receives
-an explicit testing disposition: package testing module, thin facade, managed-host provider,
-protocol-fixture provider, testing-product/no-nested-module, or private/non-fit. Satellites may
-contribute package-owned fixtures and semantics through the central protocol but may not duplicate
-the browser harness or auto-register pytest plugins.
+**Selected candidate.** Add an optional `hedron[testing]` extra and explicitly loaded central
+pytest plugin. A function-scoped `hedron_ui` factory composes sync pytest-playwright with an
+isolated spawned ASGI test-app factory or caller-owned literal-loopback URL. Use native
+`ui.page` locators and Playwright `expect`; add only mark/region helpers and framework-specific
+checkpoint, settle, event/error, URL, and cleanup behavior. New surfaces are Beta candidates;
+existing Stable imports and lower-cost render/HTTP paths stay compatible.
 
-The phase begins with competing thin-wrapper prototypes and a documented fresh-user exercise.
-Stage 0 freezes the exact API and decides which managed hosts, schemas, artifacts, and generated
-tests have enough evidence for Stable, Beta, or Deferred status. Chromium is the ordinary/default
-candidate; the bounded release corpus covers Chromium, Firefox, and WebKit plus root-path,
-JavaScript-disabled, accessibility, security, performance, package, and parallel-cleanup paths.
+**Required behavior.** Child-owned port-zero listener and owned lifespan readiness; one context/
+capture/teardown owner; pre-action checkpoint with matching request start and scoped completion;
+automatic clean checks with narrow expected-HTTP rules; structured-only default evidence and a
+separate explicit synthetic/unredacted capture profile. A fast request must not be missed,
+unobservable readiness must be reported unavailable, and unrelated polling must not block a wait.
+Raw native captures cannot be advertised as generically redacted or recorded only after failure.
 
-**Exit evidence.** A clean generated application can install one optional testing surface and run
-a semantic real-browser test without manually starting a server or sleeping. Deliberate server,
-page, console, network, locator, and settle failures produce actionable bounded evidence with
-redaction/provenance. Required browser/host/dependency rows pass rather than skip; repeated and
-parallel runs leak no port, process, thread, browser context, override, registry, or temporary
-artifact; every satellite testing disposition and admitted contribution passes fleet conformance;
-and every stable 1.0 testing import and non-browser path remains compatible.
-
-**Delivery checkpoints.** Follow the existing packet rather than introducing a second gate list:
+**Delivery.** Prove the flagship secured-form/intentional-failure Chromium slice before satellite
+breadth. Inventory every package, but require only one useful minimal specialist contribution
+rather than public testing modules or managed launchers across the fleet. Then complete the bounded
+three-browser/Linux integration corpus, CPython 3.11–3.14 host/import/package compatibility,
+security/a11y/resources, clean packages, docs, upgrade, and opt-out. macOS/Windows and additional
+managed hosts remain explicit pilot/admission candidates until proven.
 
 | Checkpoint | Reviewable result | Authority |
 |---|---|---|
-| `1.3a0` | Compare the two thin-wrapper prototypes, run the fresh-user exercise, inventory fleet testing ownership, and freeze APIs, schemas, host matrix, and measured budgets | `FREEZE-130` |
-| `1.3a1` | Exercise a secured profile form through managed startup, invalid/valid submission, semantic lookup, settling, deliberate failure evidence, and cleanup in Chromium | `HOST-130` through `ARTIFACT-130`; required vertical slice |
-| `1.3b1` | Package pytest/scaffold integration and admitted satellite contributions; prove isolation, security, accessibility, and repeated/parallel execution | `PYTEST-130`, `SATELLITE-130`, behavior and assurance gates |
-| `1.3rc1` | Reproduce the declared host/dependency matrix in Chromium, Firefox, and WebKit from clean packages; finish compatibility, docs, and rollback evidence | Every non-release gate Verified |
+| `1.3a0` | Actual host/context/capture/settle probes, selected API/user exercise, named maintainers, schemas, dependency/browser matrix and measured budgets | `FREEZE-130`; planning ledger still Unmeasured |
+| `1.3a1` | Spawned ASGI/profile-form/intentional-failure slice and structured evidence in Chromium, without satellite prerequisites | Core host/locator/settle/error evidence |
+| `1.3b1` | Capture/pytest hardening, bounded three-browser behavior/assurance corpus, minimal contribution and complete dispositions | Existing behavior/security/a11y/performance/compatibility/satellite gates |
+| `1.3rc1` | Clean packages/docs/upgrade/opt-out, predecessor evidence, immutable artifacts and every non-release gate Verified | Existing 17-row packet |
 
-**Ownership and handoff.** `hedron.testing` owns the optional managed host and pytest integration;
-`hedron_core.testing` retains portable render/HTTP facts; each satellite owns its contributed
-fixtures. Edron uses the same harness through its facade. The handoff to later phases is a reusable
-reference-flow corpus and versioned failure evidence, with optional imports and package boundaries
-preserved. Names remain candidates until the existing Stage 0 freeze.
+**Exit.** No manual server or sleeps in new/adopted examples; no lost primary failure, unexpected
+Required skip, secret capture, leaked owned resources, optional-import/default regression, or
+fabricated settle fact. Freeze numeric budgets from measurements, not one installed environment.
+The ledger records current source/environment findings and empirical blockers without claiming
+prototype or runtime verification.
 
-**Non-goals.** No fake DOM/widget emulator, complete Playwright wrapper, second test runner,
-production browser instrumentation, ambient remote testing/capture, Stable pixel-golden framework,
-new client-side state/runtime authority, or automated accessibility-conformance claim.
+**Handoff and non-goals.** 1.4–1.7 receive checkpoint/event/capability/error facts and controlled
+fixtures; they retain their runtime policy and visibility/timing/save semantics. No production
+instrumentation, new request/state authority, fake DOM, Playwright wrapper, second runner, ambient
+plugin, async/standalone lifecycle, remote production testing, generic raw-trace-redaction claim,
+Stable pixel-golden framework, or mandatory browser testgen enters this phase. The older HTMX/
+Alpine runtime-transition proposal remains unassigned.
 
-**Prior 1.1 proposal disposition.** The older unaccepted HTMX/Alpine implementation transition is
-unassigned design input, not part of this phase. Runtime lowering, compatibility shims,
-deprecations, asset-default changes, and possible 2.0 removals require a separate accepted phase
-decision and cannot enter 1.3 through the testing packet.
+### 1.4 — Visibility-aware polling
 
-### 1.4 — Production async and durable workflows
+**Planning status:** Proposed and unscheduled under [RFC-0100](rfcs/RFC-0100-INTERACTION-EFFICIENCY-AND-FORM-CONTINUITY.md)
+and proposed D-121. [Implementation](implementation/VISIBILITY_POLLING_1_4.md),
+[acceptance](acceptance/RELEASE_1_4.md), and
+[machine packet](acceptance/release-gate-1.4.toml) define Planned gates; no implementation
+or release is claimed.
+
+**Problem.** Long-open dashboards keep requesting status for hidden tabs and offscreen cards. Fixed intervals also synchronize traffic and repeat failures at the same rate.
+
+**Required slice.** A dashboard job card observes a synthetic export while visible, pauses under the selected hidden/offscreen policy, backs off after a scripted transient failure, refreshes once on return, and stops permanently at terminal state. A manual refresh link and ordinary status page remain usable.
+
+**Scope and ownership.** Add opt-in hidden-tab and viewport scheduling policies with explicit keep-alive behavior. Preserve existing interval defaults and terminal-job stopping. Coalesce missed ticks; permit at most one fresh observation on visibility return and never replay a backlog. Jitter initial/resumed scheduling and bound retry/backoff after observation failures.
+Use existing core/host/HTMX/lifecycle authorities and the exact source seams inventoried in the
+implementation plan. Applications retain authorization, persistence, and durable state ownership.
+
+**Delivery.** Freeze exact policies, APIs, host/browser/maturity dispositions, schemas, and measured
+budgets; deliver the reference flow; harden failure/security/a11y/cleanup; verify packages,
+compatibility, and rollback before a release decision. Feature-specific gates are
+`SCHEDULE-140`, `RECOVERY-140`; all assurance gates remain Required.
+
+**Exit evidence.** Record request counts and worker CPU for the same dashboard under foreground, background, and offscreen workloads; freeze timing tolerances and request/observer/timer budgets before implementation. A selected pause policy dispatches zero new automatic observations while ineligible, excluding an already-dispatched request. Return produces at most one immediate observation; removed targets leave zero owned timers/observers.
+Cover hidden/visible changes while a request is in flight; removed/recreated IDs; nested/OOB swaps; browser suspension; delayed responses; server 429; expired authentication; failure during return refresh; terminal result before the page becomes hidden.
+
+**Non-goals.** SSE/WebSocket promotion, a durable scheduler, shared polling batches, changed global polling defaults, automatic mutation retries, or a second network runtime.
+
+### 1.5 — Viewport and on-demand loading
+
+**Planning status:** Proposed and unscheduled under [RFC-0100](rfcs/RFC-0100-INTERACTION-EFFICIENCY-AND-FORM-CONTINUITY.md)
+and proposed D-121. [Implementation](implementation/DEFERRED_LOADING_1_5.md),
+[acceptance](acceptance/RELEASE_1_5.md), and
+[machine packet](acceptance/release-gate-1.5.toml) define Planned gates; no implementation
+or release is claimed.
+
+**Problem.** The current Lazy helper loads immediately after insertion. Expensive reports below the fold can therefore spend server and browser resources before the user needs them.
+
+**Required slice.** A dashboard shows its summary immediately and a bounded placeholder for an expensive report. The report performs no query before viewport or explicit activation, loads once, recovers from a scripted failure, and remains accessible through an ordinary report URL without JavaScript.
+
+**Scope and ownership.** Add explicit immediate, viewport, and user-activated loading initiation. Preserve the existing Lazy load behavior when the new policy is omitted. Defer expensive route dependencies and preparation until activation, rather than eagerly querying data and merely hiding its HTML. Do not execute a deferred renderer during initial page composition.
+Use existing core/host/HTMX/lifecycle authorities and the exact source seams inventoried in the
+implementation plan. Applications retain authorization, persistence, and durable state ownership.
+
+**Delivery.** Freeze exact policies, APIs, host/browser/maturity dispositions, schemas, and measured
+budgets; deliver the reference flow; harden failure/security/a11y/cleanup; verify packages,
+compatibility, and rollback before a release decision. Feature-specific gates are
+`INITIATION-150`, `PREPARATION-150`; all assurance gates remain Required.
+
+**Exit evidence.** Measure initial TTFB, LCP, layout shift, query count, request count, total bytes, activation-to-visible completion, and eventual total work. Freeze representative corpora and numeric limits at W0. The deferred report must issue zero queries and requests before eligibility; activation permits one in-flight fetch per identity. Separate reduced work from work shifted later.
+Cover intersection events after removal; simultaneous click and intersection; repeated insertion of the same host; nested scroll containers; failed first load; auth expiry before activation; stale response after navigation; deferred specialist content whose asset was not admitted.
+
+**Non-goals.** General Python suspension, a new component/region hierarchy, whole-page lazy loading by default, speculative authenticated mutations, dynamic fragment script installation, request batching, or new transport authority.
+
+### 1.6 — Typed input timing and request policies
+
+**Planning status:** Proposed and unscheduled under [RFC-0100](rfcs/RFC-0100-INTERACTION-EFFICIENCY-AND-FORM-CONTINUITY.md)
+and proposed D-121. [Implementation](implementation/INPUT_TIMING_1_6.md),
+[acceptance](acceptance/RELEASE_1_6.md), and
+[machine packet](acceptance/release-gate-1.6.toml) define Planned gates; no implementation
+or release is claimed.
+
+**Problem.** Authors can express debounce and synchronization through HTMX strings, but repeated search/validation patterns are easy to assemble inconsistently and can allow stale responses to replace newer input or results.
+
+**Required slice.** A searchable collection sends a single final request after a typing pause, skips too-short queries under the declared policy, ignores an older delayed result, and supports an ordinary GET submission. A separate profile field validates on blur; explicit POST save supersedes obsolete validation without invoking a mutation twice.
+
+**Scope and ownership.** Provide typed, bounded policies for explicit submission, blur/change validation, debounce/throttle, changed-value filtering, and minimum input length. Exact names and combinations are frozen in W0; do not advertise candidate names as shipped. Compile one declaration into existing HTMX transport and lifecycle policy. Keep explicit submission as the default; do not infer a mutation from a validation or search declaration.
+Use existing core/host/HTMX/lifecycle authorities and the exact source seams inventoried in the
+implementation plan. Applications retain authorization, persistence, and durable state ownership.
+
+**Delivery.** Freeze exact policies, APIs, host/browser/maturity dispositions, schemas, and measured
+budgets; deliver the reference flow; harden failure/security/a11y/cleanup; verify packages,
+compatibility, and rollback before a release decision. Feature-specific gates are
+`LOWERING-160`, `ORDERING-160`; all assurance gates remain Required.
+
+**Exit evidence.** Freeze timing tolerances, typing traces, input/queue limits, and a baseline before implementation. Assert the expected request count for each trace, including one final debounced request for a continuous eligible burst and the declared empty-query refresh. Track completion latency and retained listeners; do not turn nominal millisecond timers into cross-platform real-time promises.
+Cover type/delete/type across the minimum threshold; an empty query with an old result displayed; IME start/update/end; composition followed by blur/Enter; save during validation; validation finishing after a newer keystroke; two independent search widgets; aborted browser request whose server handler completes.
+
+**Non-goals.** Two-way application-object synchronization, a Livewire-style component snapshot protocol, new browser state stores, client-authoritative validation, automatic per-keystroke saves, or blanket changes to current trigger defaults.
+
+### 1.7 — Dirty-form and confirmed-save integration
+
+**Planning status:** Proposed and unscheduled under [RFC-0100](rfcs/RFC-0100-INTERACTION-EFFICIENCY-AND-FORM-CONTINUITY.md)
+and proposed D-121. [Implementation](implementation/FORM_SAVE_STATE_1_7.md),
+[acceptance](acceptance/RELEASE_1_7.md), and
+[machine packet](acceptance/release-gate-1.7.toml) define Planned gates; no implementation
+or release is claimed.
+
+**Problem.** A form can be locally changed, validated by the server, or durably saved; treating those as one condition risks discarded edits and false Saved indicators, especially when the user edits during a pending save or loses the response.
+
+**Required slice.** A settings form is edited, validated, and guarded against accidental navigation. One save fails validation; a second saves revision A while a newer edit B remains dirty. A scripted lost response is reconciled with the server's revision. Explicit reset, canceled confirmation, session expiry, and a write-only credential change all preserve the existing ownership rules.
+
+**Scope and ownership.** Distinguish local dirty revision, validated revision, submitted revision, and application-confirmed committed revision. Server validation/synchronization alone never clears the unsaved indicator. Connect native input baselines and opt-in dirty scope flags to existing navigation/action guards, Dialog confirmation/focus return, and explicit reset. Do not duplicate unsaved domain values in Alpine.
+Use existing core/host/HTMX/lifecycle authorities and the exact source seams inventoried in the
+implementation plan. Applications retain authorization, persistence, and durable state ownership.
+
+**Delivery.** Freeze exact policies, APIs, host/browser/maturity dispositions, schemas, and measured
+budgets; deliver the reference flow; harden failure/security/a11y/cleanup; verify packages,
+compatibility, and rollback before a release decision. Feature-specific gates are
+`REVISION-170`, `GUARD-170`, `RECONCILE-170`; all assurance gates remain Required.
+
+**Exit evidence.** Freeze native-control corpus, maximum scope/field/revision metadata, serialized trace limits, event-processing costs, and repeated-navigation listener budgets before implementation. Measure presentation responsiveness without copying form values. Zero secret values in retained artifacts and zero owned listeners after scope removal are invariant checks.
+Cover edit while saving; save A returns after save B; validation without persistence; committed save with lost response; reset while pending; entity replacement with reused IDs; checkbox/select/repeated fields; write-only secrets; two scopes in one page; browser history; logout/session expiry; canceled leave confirmation.
+
+**Non-goals.** Durable draft storage, offline mutation queues, inferred database commits, automatic mutation replay, generic client/server object synchronization, DOM morph admission, or a second navigation runtime.
+
+### 1.8 — Production async and durable workflows
 
 **Problem.** Polling is the Supported production baseline, while live transports and some richer
 async behavior remain Experimental. Adopters need a disposition they can operate, not another
@@ -7194,7 +7292,7 @@ cannot support a production claim.
 **Non-goals.** Hedron does not provide a queue, scheduler, worker fleet, durable store, or
 application authorization system.
 
-### 1.5 — Inclusive and international UX
+### 1.9 — Inclusive and international UX
 
 **Problem.** Automated accessibility and progressive-enhancement coverage is not the same as
 evidence from people using the product, and the 1.0 contract does not yet make international layout
@@ -7233,7 +7331,7 @@ pass alone cannot close the inherited human-evaluation gap.
 **Non-goals.** No automatic WCAG, legal-compliance, VPAT, ACR, or certification claim from a test
 suite or release label.
 
-### 1.6 — Visualization and media graduation
+### 1.10 — Visualization and media graduation
 
 **Problem.** Optional Plotly/Altair and related media paths are attractive, but promotion would be
 misleading unless they match the security, accessibility, fallback, and asset discipline of native
@@ -7271,7 +7369,7 @@ adapter does not block unrelated first-party visualization work.
 **Non-goals.** No implicit callbacks, arbitrary JavaScript, unbounded client payloads, or promotion
 based only on visual parity.
 
-### 1.7 — Stateful browser composition
+### 1.11 — Stateful browser composition
 
 **Problem.** Partial replacement is reliable when local state resets, but morph-aware retention is
 still deferred. Retaining state can easily create duplicate DOM writers, stale UI, or focus bugs.
@@ -7307,7 +7405,7 @@ reset rule, and no authority over server/domain state.
 **Non-goals.** No client-side application store, virtual DOM, general-purpose synchronization
 runtime, or peer browser framework choices for ordinary widgets.
 
-### 1.8 — Controlled ecosystem expansion
+### 1.12 — Controlled ecosystem expansion
 
 **Problem.** MCP mutations, multi-user notebooks, additional adapters, and satellite graduation
 require materially different trust and operations guarantees. Combining them into one blanket
@@ -7347,7 +7445,7 @@ Supported scope.
 **Non-goals.** Hedron does not become an identity provider, ORM, authorization engine, hosted
 notebook service, queue, database, or ambient plugin runtime.
 
-### 1.9 — Evidence-gated large-application build scalability
+### 1.13 — Evidence-gated large-application build scalability
 
 **Planning status:** Proposed and unscheduled. This phase is a conditional performance lane, not
 authorization for a general build-system rewrite. Stage 0 first freezes the largest application
@@ -7436,11 +7534,11 @@ Use four checkpoints for each candidate phase:
 | Hardening | Required compatibility, browser/host, security, accessibility, performance, package, and cleanup rows pass with reproducible evidence |
 | Release decision | Explicit per-capability maturity, unresolved limitations, migration/rollback instructions, immutable artifacts, and an approved release disposition |
 
-Phases 1.1–1.3 have linked detailed RFCs, implementation plans, and machine packets in this
+Phases 1.1–1.7 have linked detailed RFCs, implementation plans, and machine packets in this
 sequence. Phase 1.1 is published; phase 1.2 is implemented in the candidate workspace with release
-evidence pending, while phase 1.3 remains Planned. The 1.4–1.9 steps above are
-planning scope; their owners must create and accept the
-corresponding packets before implementation gates can be claimed. Proposed gate names or commands
+evidence pending; 1.3 and all new 1.4–1.7 rows remain Planned. RFC-0100 and D-121 describe
+proposed planning scope, not accepted implementation contracts. The 1.8–1.13 themes above still
+need their corresponding accepted packets before implementation gates can be claimed. Proposed gate names or commands
 must not be presented as existing checkers. Numeric limits for new work are frozen from measured
 baselines, with exact-limit and over-limit behavior where relevant.
 

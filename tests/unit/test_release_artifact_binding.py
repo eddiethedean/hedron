@@ -5,6 +5,8 @@ from __future__ import annotations
 import hashlib
 import json
 
+import pytest
+
 from scripts import verify_release_artifacts
 
 
@@ -36,16 +38,22 @@ def test_release_artifact_verifier_authenticates_every_stable_artifact(
     assert verify_release_artifacts.main() == 1
 
 
-def test_release_artifact_verifier_enforces_candidate_exact_set(tmp_path, monkeypatch) -> None:
+@pytest.mark.parametrize(
+    ("version", "predecessor", "phase_code"),
+    [("1.2.0", "1.1.3", "120"), ("1.3.0", "1.2.0", "130")],
+)
+def test_release_artifact_verifier_enforces_candidate_exact_set(
+    tmp_path, monkeypatch, version, predecessor, phase_code
+) -> None:
     dist = tmp_path / "dist"
     dist.mkdir()
     rows: list[dict[str, str | int]] = []
     for distribution in ("hedron_core", "hedron"):
         for suffix, ending in (("whl", "py3-none-any.whl"), ("tar.gz", "tar.gz")):
             name = (
-                f"{distribution}-1.2.0-{ending}"
+                f"{distribution}-{version}-{ending}"
                 if suffix == "whl"
-                else f"{distribution}-1.2.0.{ending}"
+                else f"{distribution}-{version}.{ending}"
             )
             payload = f"candidate-{distribution}-{suffix}".encode()
             (dist / name).write_bytes(payload)
@@ -62,9 +70,10 @@ def test_release_artifact_verifier_enforces_candidate_exact_set(tmp_path, monkey
     evidence.write_text(
         json.dumps(
             {
-                "schema": "hedron.phase-120-python-artifact-evidence/1",
-                "phase": "1.2",
-                "target": "v1.2.0",
+                "schema": f"hedron.phase-{phase_code}-python-artifact-evidence/1",
+                "phase": version.rsplit(".", 1)[0],
+                "target": f"v{version}",
+                "predecessor_version": predecessor,
                 "source_commit": "a" * 40,
                 "environment": {
                     "python": "3.12.0",
@@ -76,48 +85,28 @@ def test_release_artifact_verifier_enforces_candidate_exact_set(tmp_path, monkey
                 "reproducibility": {"repeat_builds": 2, "verified": True},
                 "retention_reference": "https://github.com/example/actions/runs/1",
                 "packages": ["hedron-core", "hedron"],
-                "python310_compatibility": {
-                    "schema": "hedron.phase-120-python310-compatibility/1",
-                    "source_commit": "a" * 40,
-                    "python": "3.10.20",
-                    "candidate_install": "rejected by Requires-Python",
-                    "candidate_artifact": next(
-                        row["name"] for row in rows if str(row["name"]).startswith("hedron-1.2.0-")
-                    ),
-                    "candidate_sha256": next(
-                        row["sha256"]
-                        for row in rows
-                        if str(row["name"]).startswith("hedron-1.2.0-")
-                    ),
-                    "candidate_rejection_mentions_python_310_and_311": True,
-                    "unpinned_requirement": "hedron",
-                    "resolved_version": "1.1.3",
-                    "predecessor_version": "1.1.3",
-                    "platform": "Linux",
-                    "architecture": "x86_64",
-                },
                 "installed_application_upgrade_rollback": {
-                    "schema": "hedron.phase-120-python311-upgrade-rollback/1",
+                    "schema": f"hedron.phase-{phase_code}-python311-upgrade-rollback/1",
                     "source_commit": "a" * 40,
-                    "predecessor_version": "1.1.3",
-                    "candidate_version": "1.2.0",
+                    "predecessor_version": predecessor,
+                    "candidate_version": version,
                     "python": "3.11.14",
                     "platform": "Linux",
                     "architecture": "x86_64",
                     "application": "generated fixture",
                     "baseline": {
                         "result": "pass",
-                        "hedron": "1.1.3",
+                        "hedron": predecessor,
                         "uv_lock_sha256": "c" * 64,
                     },
                     "upgrade": {
                         "result": "pass",
-                        "hedron": "1.2.0",
+                        "hedron": version,
                         "uv_lock_sha256": "d" * 64,
                     },
                     "rollback": {
                         "result": "pass",
-                        "hedron": "1.1.3",
+                        "hedron": predecessor,
                         "uv_lock_sha256": "c" * 64,
                         "restored_original_lock": True,
                     },
@@ -134,7 +123,7 @@ def test_release_artifact_verifier_enforces_candidate_exact_set(tmp_path, monkey
     monkeypatch.setattr(
         verify_release_artifacts,
         "expected_packages",
-        lambda: {"hedron-core": "1.2.0", "hedron": "1.2.0"},
+        lambda: {"hedron-core": version, "hedron": version},
     )
 
     args = [
@@ -148,7 +137,16 @@ def test_release_artifact_verifier_enforces_candidate_exact_set(tmp_path, monkey
     ]
     assert verify_release_artifacts.main(args) == 0
 
-    (dist / "unapproved-1.2.0.tar.gz").write_bytes(b"extra")
+    if phase_code == "130":
+        ledger = json.loads(evidence.read_text(encoding="utf-8"))
+        for legacy_key in ("python310_fallback_version", "python310_compatibility"):
+            ledger[legacy_key] = "retired"
+            evidence.write_text(json.dumps(ledger), encoding="utf-8")
+            assert verify_release_artifacts.main(args) == 1
+            del ledger[legacy_key]
+        evidence.write_text(json.dumps(ledger), encoding="utf-8")
+
+    (dist / f"unapproved-{version}.tar.gz").write_bytes(b"extra")
     assert verify_release_artifacts.main(args) == 1
 
 
@@ -202,7 +200,12 @@ def test_candidate_ledger_allows_only_the_ledger_after_source_freeze(monkeypatch
     source = "b" * 40
     evidence_root = verify_release_artifacts.ROOT / "docs/acceptance/evidence-120"
     evidence_prefix = f"{evidence_root.relative_to(verify_release_artifacts.ROOT)}/"
-    changed = f"{evidence_prefix}python-artifacts.json\n{evidence_prefix}native-artifacts.json\n"
+    changed = (
+        f"{evidence_prefix}python-artifacts.json\n"
+        f"{evidence_prefix}native-artifacts.json\n"
+        f"{evidence_prefix}upgrade-rollback-1.3.json\n"
+    )
+    untracked = ""
 
     def fake_check_output(command, **_kwargs):
         if command[:3] == ["git", "diff", "--name-only"]:
@@ -210,7 +213,7 @@ def test_candidate_ledger_allows_only_the_ledger_after_source_freeze(monkeypatch
                 return changed
             return ""
         if command[:3] == ["git", "ls-files", "--others"]:
-            return ""
+            return untracked
         raise AssertionError(command)
 
     monkeypatch.setattr(verify_release_artifacts.subprocess, "check_output", fake_check_output)
@@ -220,6 +223,43 @@ def test_candidate_ledger_allows_only_the_ledger_after_source_freeze(monkeypatch
     assert verify_release_artifacts.evidence_source_errors(source, evidence_root=evidence_root) == [
         "approved release evidence is stale; source_commit predates non-evidence changes: "
         "docs/acceptance/evidence-120/SCOPE.md"
+    ]
+
+    changed = ""
+    untracked = f"{evidence_prefix}unexpected.json\n"
+    assert verify_release_artifacts.evidence_source_errors(source, evidence_root=evidence_root) == [
+        "approved release evidence is stale; source_commit predates non-evidence changes: "
+        "docs/acceptance/evidence-120/unexpected.json"
+    ]
+
+
+def test_130_candidate_allows_only_release_evidence_followup(monkeypatch) -> None:
+    source = "c" * 40
+    evidence_root = verify_release_artifacts.ROOT / "docs/acceptance/evidence-130"
+    changed = (
+        "docs/acceptance/RELEASE_1_3.md\n"
+        "docs/acceptance/release-gate-1.3.toml\n"
+        "docs/acceptance/evidence-130/maintainer-review.json\n"
+        "docs/acceptance/evidence-130/python-artifacts.json\n"
+    )
+    untracked = ""
+
+    def fake_check_output(command, **_kwargs):
+        if command[:3] == ["git", "diff", "--name-only"]:
+            if command[3] == f"{source}..HEAD":
+                return changed
+            return ""
+        if command[:3] == ["git", "ls-files", "--others"]:
+            return untracked
+        raise AssertionError(command)
+
+    monkeypatch.setattr(verify_release_artifacts.subprocess, "check_output", fake_check_output)
+    assert not verify_release_artifacts.evidence_source_errors(source, evidence_root=evidence_root)
+
+    changed += "packages/hedron/src/hedron/app.py\n"
+    assert verify_release_artifacts.evidence_source_errors(source, evidence_root=evidence_root) == [
+        "approved release evidence is stale; source_commit predates non-evidence changes: "
+        "packages/hedron/src/hedron/app.py"
     ]
 
 

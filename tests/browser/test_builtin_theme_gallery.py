@@ -201,7 +201,16 @@ def test_gallery_overlays_focus_and_control_layout(engine: str) -> None:
                 before = switch.evaluate("e => getComputedStyle(e, '::before').transform")
                 page.locator("html").evaluate("e => e.dir = 'rtl'")
                 page.emulate_media(reduced_motion="reduce")
-                page.wait_for_timeout(200)
+                page.wait_for_function(
+                    """selector => {
+                      const input = document.querySelector(selector);
+                      const transform = getComputedStyle(input, '::before').transform;
+                      const values = transform.match(/^matrix\\(([^)]+)\\)$/)?.[1].split(',');
+                      return values !== undefined && Number(values[4]) < 0;
+                    }""",
+                    arg='.hedron-toggle-switch input[name="enabled"]',
+                    timeout=2_000,
+                )
                 after = switch.evaluate("e => getComputedStyle(e, '::before').transform")
                 assert float(before.removeprefix("matrix(").removesuffix(")").split(",")[4]) > 0
                 assert float(after.removeprefix("matrix(").removesuffix(")").split(",")[4]) < 0

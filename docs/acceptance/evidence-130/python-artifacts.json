@@ -1,0 +1,304 @@
+{
+  "schema": "hedron.phase-130-python-artifact-evidence/1",
+  "phase": "1.3",
+  "target": "v1.3.0",
+  "predecessor_version": "1.2.0",
+  "source_commit": "4dbab1ea7c511b56058eca5d2da8297c43b1d059",
+  "command": "SOURCE_DATE_EPOCH=315619200 PYTHONDONTWRITEBYTECODE=1 uv build --package <each publish-order package except hedron-native>",
+  "environment": {
+    "python": "3.12.13",
+    "uv": "uv 0.12.1 (x86_64-unknown-linux-gnu)",
+    "os": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.39",
+    "architecture": "x86_64",
+    "source_date_epoch": 315619200
+  },
+  "reproducibility": {
+    "repeat_builds": 2,
+    "comparison": "byte-for-byte SHA-256 equality",
+    "verified": true
+  },
+  "retention_reference": "https://github.com/eddiethedean/hedron/actions/runs/40937671727",
+  "packages": [
+    "hedron-core",
+    "fastapi-workbench",
+    "hedron",
+    "hedron-docs",
+    "hedron-data",
+    "hedron-explorer",
+    "hedron-flask",
+    "hedron-django",
+    "hedron-jinja",
+    "hedron-conformance",
+    "hedron-extras",
+    "hedron-elements",
+    "hedron-posit",
+    "hedron-charts",
+    "hedron-maps",
+    "edron",
+    "hedron-mcp",
+    "hedron-gradio",
+    "hedron-sample-kit",
+    "hedron-notebook",
+    "hedron-sim",
+    "edron-sim"
+  ],
+  "artifacts": [
+    {
+      "name": "edron-1.3.0-py3-none-any.whl",
+      "sha256": "4496f32db9f46a66c776645bce724a371dfd7953c400b26fcb6e6cb7084ca82c",
+      "size": 86908
+    },
+    {
+      "name": "edron-1.3.0.tar.gz",
+      "sha256": "8c857012d74c0f56cd120e5c3024f47f86b32364671a25071aee4f4af93097dd",
+      "size": 74600
+    },
+    {
+      "name": "edron_sim-0.1.2-py3-none-any.whl",
+      "sha256": "464f70d960e62b6ad8fceda7b893f01482902ea29c11f9058eb6227cba3b650e",
+      "size": 6911
+    },
+    {
+      "name": "edron_sim-0.1.2.tar.gz",
+      "sha256": "27c42717134dff011cb280432939260dc5a9aa4ab4f0194943fe396468fe83c0",
+      "size": 6503
+    },
+    {
+      "name": "fastapi_workbench-1.0.13-py3-none-any.whl",
+      "sha256": "6ff9b65193205425927bf2eab2a0c198b1f577e9282ee0b54db8c435ed6f60c4",
+      "size": 38286
+    },
+    {
+      "name": "fastapi_workbench-1.0.13.tar.gz",
+      "sha256": "5d7919ce6b2361e7c1bd89234639028d78631049800d914d95eb2b12054cbe24",
+      "size": 32600
+    },
+    {
+      "name": "hedron-1.3.0-py3-none-any.whl",
+      "sha256": "85ec59a4ff399d28c64ef3159c1cff71d4f5bf10f7cdf9f02c878868c989a5c9",
+      "size": 447878
+    },
+    {
+      "name": "hedron-1.3.0.tar.gz",
+      "sha256": "6afcdf8b02abd414b5e9d832c4efac3e3fa6faae143c94355000c6d9941faf88",
+      "size": 372516
+    },
+    {
+      "name": "hedron_charts-1.3.0-py3-none-any.whl",
+      "sha256": "131d924754f5028f372b152ea782662c8e8a3f5de6d5ee081e8f9b717fb9e9e4",
+      "size": 2946412
+    },
+    {
+      "name": "hedron_charts-1.3.0.tar.gz",
+      "sha256": "d8fc0012f4cbb640e6cd194ba6b41e49ee9db2ca406a2404991701a75e58c59a",
+      "size": 2928085
+    },
+    {
+      "name": "hedron_conformance-1.3.0-py3-none-any.whl",
+      "sha256": "5dc6d68e2be4b4907355e5bf7ccf61a288b337793677868b402609bc8c8d3809",
+      "size": 33933
+    },
+    {
+      "name": "hedron_conformance-1.3.0.tar.gz",
+      "sha256": "b74650bf69d9575ab363e55b26932ea197f490fe7d6cfa48c5a57f377458957b",
+      "size": 27606
+    },
+    {
+      "name": "hedron_core-1.3.0-py3-none-any.whl",
+      "sha256": "fb4ea18b43c9d7619c235a3db9c2dd9575cea4aa48d7602f9d392a2ae84d2079",
+      "size": 714910
+    },
+    {
+      "name": "hedron_core-1.3.0.tar.gz",
+      "sha256": "d8f6be979558e6a7d1f691e1c8765349a4d44ff4e384e3426b863afe720e9d09",
+      "size": 595214
+    },
+    {
+      "name": "hedron_data-1.3.0-py3-none-any.whl",
+      "sha256": "318124f726d070b06eedbc4526d86aecb1ceeb5ec80a3edc49f265b3f417356b",
+      "size": 426519
+    },
+    {
+      "name": "hedron_data-1.3.0.tar.gz",
+      "sha256": "a1876bb6f9bb939a32323d79cee0aab7ccf8808f280378dbf4e571cbd6077665",
+      "size": 416525
+    },
+    {
+      "name": "hedron_django-1.3.0-py3-none-any.whl",
+      "sha256": "2e58a0da99d46ef6766fe6542cadf8897d6aa01011f13e4787258d59dd5bd893",
+      "size": 27719
+    },
+    {
+      "name": "hedron_django-1.3.0.tar.gz",
+      "sha256": "7ca84f969d7b9ef7138de35055fcae44df7fe1eff31c342344c65152647ac026",
+      "size": 26666
+    },
+    {
+      "name": "hedron_docs-0.5.2-py3-none-any.whl",
+      "sha256": "17330560e1366090bdbfec8c286b580db98de309bbc4d9a2b615e373c21d4f2e",
+      "size": 44702
+    },
+    {
+      "name": "hedron_docs-0.5.2.tar.gz",
+      "sha256": "af34e3f7e1dbc7a1e8bd33f3cb848b18b052e7cf85a7663d69f6b852dd92a492",
+      "size": 40351
+    },
+    {
+      "name": "hedron_elements-1.3.0-py3-none-any.whl",
+      "sha256": "a8b75291eb39ab116858514ac8121637169f19054d3c96c2f6ceaee21c159011",
+      "size": 42180
+    },
+    {
+      "name": "hedron_elements-1.3.0.tar.gz",
+      "sha256": "df22090afeac4d4a32ceed09ae5e4c518337cbcd5dba38b58b3bbd42ada90089",
+      "size": 30058
+    },
+    {
+      "name": "hedron_explorer-1.3.0-py3-none-any.whl",
+      "sha256": "72ec960c5ca6ec426744518598f7208648feecd331918caceefbafbb1ae6fcc4",
+      "size": 37443
+    },
+    {
+      "name": "hedron_explorer-1.3.0.tar.gz",
+      "sha256": "73633bcb013b1c10fe8f06e21b16229315bced5defaa590f384e7769f65dc091",
+      "size": 36081
+    },
+    {
+      "name": "hedron_extras-1.3.0-py3-none-any.whl",
+      "sha256": "79d25318dd44845b04ac75b9b924ad6766c71b123ac270d4dba3a871be7efb6d",
+      "size": 39050
+    },
+    {
+      "name": "hedron_extras-1.3.0.tar.gz",
+      "sha256": "a1bc29a546a88f32592c091c3dc4b5bb862d3d124a4831985379199a6d6563fa",
+      "size": 31339
+    },
+    {
+      "name": "hedron_flask-1.3.0-py3-none-any.whl",
+      "sha256": "9aba07d73b4dd73c68912d4c2145aa85a3814040ac2b443791e262d63e3dfada",
+      "size": 28851
+    },
+    {
+      "name": "hedron_flask-1.3.0.tar.gz",
+      "sha256": "ca1dedf067de3d5dc5f1bb823865480317ec61eed758dbe57207f45ccce0e929",
+      "size": 27722
+    },
+    {
+      "name": "hedron_gradio-0.2.6-py3-none-any.whl",
+      "sha256": "3b5b8dc56aee50a0742febd35f33ac8cdd52d21dc0abf894260eccbb935d4340",
+      "size": 19244
+    },
+    {
+      "name": "hedron_gradio-0.2.6.tar.gz",
+      "sha256": "a4d56ab364d58c31336fa559d2a3c4b2860f97381124c8714497199534ee2fd7",
+      "size": 16101
+    },
+    {
+      "name": "hedron_jinja-1.3.0-py3-none-any.whl",
+      "sha256": "48a264b84852bc1913420c968aed5730b28d03476e140b08e5bfad1067bf96bb",
+      "size": 52643
+    },
+    {
+      "name": "hedron_jinja-1.3.0.tar.gz",
+      "sha256": "2f989c1af6da9c1232318c035bb8b5e9530226d36587983d49c116eb0e1ed625",
+      "size": 50450
+    },
+    {
+      "name": "hedron_maps-1.3.0-py3-none-any.whl",
+      "sha256": "1d1f42d594847d36d37fbf26c9f7eb9b003e7f6aaac85fe990608851f9431399",
+      "size": 378584
+    },
+    {
+      "name": "hedron_maps-1.3.0.tar.gz",
+      "sha256": "2b1881a2c3268cfdb8109e95e71afc71411380223c9f3f74552ce4cb5011ec3e",
+      "size": 371527
+    },
+    {
+      "name": "hedron_mcp-0.2.7-py3-none-any.whl",
+      "sha256": "f8106df5f0d2d91c36399df759ce75f1adaa9670de6e293bb121411775e35d03",
+      "size": 20785
+    },
+    {
+      "name": "hedron_mcp-0.2.7.tar.gz",
+      "sha256": "548b0a7072d82dff7cabee8f36f98e794eb3d4617beb158e3834d145f825d678",
+      "size": 18401
+    },
+    {
+      "name": "hedron_notebook-0.2.6-py3-none-any.whl",
+      "sha256": "7d2884919092a98bdf2115a11b1917993db7939c0ca147630e7a09ed1cce1878",
+      "size": 15814
+    },
+    {
+      "name": "hedron_notebook-0.2.6.tar.gz",
+      "sha256": "3c413870df8995e8a82ea279a884da7ae324a7c0f4ea67df77567e2d1d965c14",
+      "size": 13721
+    },
+    {
+      "name": "hedron_posit-1.0.12-py3-none-any.whl",
+      "sha256": "ef32308cf79255cd8f0ec3e6dc53fd268ccf43b6095e8d3105afb317759580e4",
+      "size": 37301
+    },
+    {
+      "name": "hedron_posit-1.0.12.tar.gz",
+      "sha256": "9b3890c97a7721f508072758eece2e5c695df12d2f355e4125c0f49c40d821d0",
+      "size": 32778
+    },
+    {
+      "name": "hedron_sample_kit-0.2.6-py3-none-any.whl",
+      "sha256": "6df8120542df5b4c7a20d40b872d61b4f87ffd755959ef27fc44114dec7750be",
+      "size": 17172
+    },
+    {
+      "name": "hedron_sample_kit-0.2.6.tar.gz",
+      "sha256": "a0999d459ec82b9547809a4ee44bbe0d928e45819e159ba68cea723287d281e8",
+      "size": 11561
+    },
+    {
+      "name": "hedron_sim-0.2.7-py3-none-any.whl",
+      "sha256": "5028b8c4c77cffb53069eb384153d0dca8cc3f31bf265e1031f634b6376bcf6c",
+      "size": 32821
+    },
+    {
+      "name": "hedron_sim-0.2.7.tar.gz",
+      "sha256": "9b3a6b43a10cfb5cbeee7913e6d23837c1b49c76b61e992090d465edd5896589",
+      "size": 29882
+    }
+  ],
+  "installed_application_upgrade_rollback": {
+    "schema": "hedron.phase-130-python311-upgrade-rollback/1",
+    "phase": "1.3",
+    "source_commit": "4dbab1ea7c511b56058eca5d2da8297c43b1d059",
+    "predecessor_version": "1.2.0",
+    "candidate_version": "1.3.0",
+    "python": "3.11.15",
+    "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.39",
+    "architecture": "x86_64",
+    "application": "scaffold generated by the installed 1.2.0 CLI",
+    "baseline": {
+      "result": "pass",
+      "hedron": "1.2.0",
+      "uv_lock_sha256": "734622fb0254aeb76445dafc49ecc0fff8e9231d69fb1571a1f0fa351f5f5051"
+    },
+    "upgrade": {
+      "result": "pass",
+      "hedron": "1.3.0",
+      "uv_lock_sha256": "664413914858e242427d27734ea83303e574fda02e30e46cdfa3f097e5dfbb7b"
+    },
+    "rollback": {
+      "result": "pass",
+      "hedron": "1.2.0",
+      "uv_lock_sha256": "734622fb0254aeb76445dafc49ecc0fff8e9231d69fb1571a1f0fa351f5f5051",
+      "restored_original_lock": true
+    },
+    "candidate_artifacts": [
+      {
+        "name": "hedron-1.3.0-py3-none-any.whl",
+        "sha256": "85ec59a4ff399d28c64ef3159c1cff71d4f5bf10f7cdf9f02c878868c989a5c9"
+      },
+      {
+        "name": "hedron_core-1.3.0-py3-none-any.whl",
+        "sha256": "fb4ea18b43c9d7619c235a3db9c2dd9575cea4aa48d7602f9d392a2ae84d2079"
+      }
+    ]
+  }
+}

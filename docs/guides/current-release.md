@@ -15,25 +15,24 @@ maintaining their own release story.
 
 | Package | Version | Maturity | Application requirement | Role |
 |---|---:|---|---|---|
-| `hedron` | `1.1.3` | Stable | `hedron>=1.0.0` | FastAPI-native component and route authoring |
-| `hedron-data` | `1.1.3` | Stable | `hedron-data>=1.0.0` | DataTable, DataEditor, and bounded data contracts |
-| `hedron-charts` | `1.1.3` | Stable | `hedron-charts>=1.0.0` | First-party charts and static/Matplotlib output |
-| `hedron-maps` | `1.1.3` | Stable | `hedron-maps>=1.0.0` | Bounded first-party maps and offline presentation |
-| `edron` | `1.1.3` | Stable | `edron>=1.0.0` | Alternate class-oriented facade over Hedron |
+| `hedron` | `1.2.0` | Stable | `hedron>=1.2.0,<1.3` | FastAPI-native component and route authoring |
+| `hedron-data` | `1.2.0` | Stable | `hedron-data>=1.0.0` | DataTable, DataEditor, and bounded data contracts |
+| `hedron-charts` | `1.2.0` | Stable | `hedron-charts>=1.0.0` | First-party charts and static/Matplotlib output |
+| `hedron-maps` | `1.2.0` | Stable | `hedron-maps>=1.0.0` | Bounded first-party maps and offline presentation |
+| `edron` | `1.2.0` | Stable | `edron>=1.2.0,<2.0` | Alternate class-oriented facade over Hedron |
 
-The coordinated release supports CPython **3.10–3.14**. Package maturity, capability
+The coordinated release supports CPython **3.11–3.14**. Package maturity, capability
 readiness, and individual API stability are separate: a stable package may contain a
 clearly labeled experimental capability.
 
 Python 3.10 has reached end of security support and will receive no further CPython security fixes.
-The 1.1.3 artifacts remain installable with their published metadata, while the 1.2 candidate
-requires CPython 3.11 or newer. Move the application to 3.11+ and recreate its environment before
-upgrading to the next train.
+The published 1.2.0 release requires CPython 3.11 or newer. Recreate the environment under
+Python 3.11–3.14 before upgrading.
 
-The exact 1.1 package and API boundary is maintained in the repository’s
+The exact Stable package and API boundary is maintained in the repository’s
 [`release/support-matrix.toml`](https://github.com/eddiethedean/hedron/blob/main/release/support-matrix.toml);
-the in-tree Python row now describes the 1.2 candidate matrix, while the compatibility table above
-preserves the published 1.1.3 requirement. Beta host/tooling satellites are opt-in compatibility
+the 1.2.0 release is published, and the in-tree source is preparing the 1.3.0 candidate. Beta
+host/tooling satellites are opt-in compatibility
 surfaces, not part of the stable platform contract.
 
 ## What should I install?
@@ -46,8 +45,8 @@ surfaces, not part of the stable platform contract.
 | Repository contribution | `uv sync`, then [Contributor day one](contributor-day-one.md) |
 
 The table's `>=1.0.0` values are compatibility floors, not the recommended production lock.
-For a new Hedron application use `hedron>=1.1.3,<1.2`; for reproducible CI and deployment,
-resolve and commit a lockfile or use `hedron==1.1.3`. Reusable libraries may use the broader
+For a new Hedron application use `hedron>=1.2.0,<1.3`; for reproducible CI and deployment,
+resolve and commit a lockfile or use `hedron==1.2.0`. Reusable libraries may use the broader
 `>=1.0.0` floor when they test against the full supported range. Upgrade deliberately after
 reading the release notes and running the application's own integration tests.
 
@@ -55,8 +54,8 @@ reading the release notes and running the application's own integration tests.
 
 | Train | Security support | Compatibility expectation |
 |---|---|---|
-| `1.1.x` | Current published train | Stable APIs follow the 1.x compatibility policy |
-| `0.67.x` | Best-effort security triage through approximately 2027-02-27 | Upgrade to 1.0; migration aliases are not the new golden path |
+| `1.2.x` | Current published train | Stable APIs follow the 1.x compatibility policy |
+| `1.0.x` | Best-effort security triage through approximately 2027-02-27 | Upgrade to 1.2; migration aliases are not the new golden path |
 | Earlier `0.x` | Unsupported | Use historical documentation only to plan an upgrade |
 
 There is no commercial SLA. Community support is provided through GitHub; security reports
@@ -75,7 +74,7 @@ major release. See [Stability](../api/STABILITY.md) and [Upgrade](upgrade.md).
 ## Coordinated and independent packages
 
 `hedron-core`, `hedron`, Edron, `hedron-data`, `hedron-charts`, and `hedron-maps` use the
-coordinated 1.1 Stable contract in the repository. Host adapters and vendor/tooling satellites
+coordinated 1.2 Stable contract in the repository. Host adapters and vendor/tooling satellites
 retain independent versions and Beta maturity.
 Do not infer satellite compatibility from a similar
 version number; use the [compatibility matrix](../COMPATIBILITY.md).
