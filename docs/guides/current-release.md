@@ -55,8 +55,7 @@ reading the release notes and running the application's own integration tests.
 | Train | Security support | Compatibility expectation |
 |---|---|---|
 | `1.3.x` | Current published train | Stable APIs follow the 1.x compatibility policy |
-| `1.2.x` | Best-effort security triage through approximately 2027-02-27 | Upgrade to 1.3; migration aliases are not the new golden path |
-| `1.0.x` | Historical migration baseline; best-effort security triage through approximately 2027-02-27 | Upgrade to 1.3 |
+| `1.0.x` | Best-effort security triage through approximately 2027-02-27 | Upgrade to 1.3; migration aliases are not the new golden path |
 | Earlier `0.x` | Unsupported | Use historical documentation only to plan an upgrade |
 
 There is no commercial SLA. Community support is provided through GitHub; security reports

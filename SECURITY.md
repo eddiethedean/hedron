@@ -4,7 +4,7 @@
 
 Security fixes land on the **current published train** (`1.3.x`). Older lines should upgrade;
 there is **no multi-year LTS**. Best-effort triage for the immediately
-previous minor (`1.2.x`) continues through approximately **2027-02-27** — after that, upgrade
+previous minor (`1.0.x`) continues through approximately **2027-02-27** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
 The current published train is **`1.3.x`**. Applications require `>=1.0.0`; PyPI publishes
@@ -13,8 +13,7 @@ The current published train is **`1.3.x`**. Applications require `>=1.0.0`; PyPI
 | Version | Supported |
 |---|---|
 | `1.3.x` | Yes (published train — requirement `>=1.0.0`; published `v1.3.0`) |
-| `1.2.x` | Best-effort security triage through approximately 2027-02-27; upgrade to `1.3.x` |
-| `1.0.x` | Best-effort security triage ended 2027-02-27; upgrade to `1.3.x` |
+| `1.0.x` | Best-effort security triage through approximately 2027-02-27; upgrade to `1.3.x` |
 
 ## Reporting a vulnerability
 
