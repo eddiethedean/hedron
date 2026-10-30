@@ -1,7 +1,7 @@
 # Release process summary
 
 Hedron’s coordinated `v1.3.0` package train is published on PyPI and npm. Its 44 wheel/sdist
-artifacts across 22 Python distributions are recorded in the [publication verification](../acceptance/evidence-130/PUBLICATION.md).
+artifacts across 22 Python distributions are recorded in the [publication verification](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/evidence-130/PUBLICATION.md).
 
 The exact maintainer commands and publication rules live in
 [`docs/RELEASE.md`](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md).
