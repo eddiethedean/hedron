@@ -3,7 +3,7 @@
   "phase": "1.3",
   "target": "v1.3.0",
   "predecessor_version": "1.2.0",
-  "source_commit": "8bacd7075c6302d1b953a4aeb739fc14f6e2cb16",
+  "source_commit": "20c86f3e91b9aac3c2a1b803b293a4447217cded",
   "command": "SOURCE_DATE_EPOCH=315619200 PYTHONDONTWRITEBYTECODE=1 uv build --package <each publish-order package except hedron-native>",
   "environment": {
     "python": "3.12.13",
@@ -17,7 +17,7 @@
     "comparison": "byte-for-byte SHA-256 equality",
     "verified": true
   },
-  "retention_reference": "https://github.com/eddiethedean/hedron/actions/runs/40993249628",
+  "retention_reference": "https://github.com/eddiethedean/hedron/actions/runs/40997077158",
   "packages": [
     "hedron-core",
     "fastapi-workbench",
@@ -267,7 +267,7 @@
   "installed_application_upgrade_rollback": {
     "schema": "hedron.phase-130-python311-upgrade-rollback/1",
     "phase": "1.3",
-    "source_commit": "8bacd7075c6302d1b953a4aeb739fc14f6e2cb16",
+    "source_commit": "20c86f3e91b9aac3c2a1b803b293a4447217cded",
     "predecessor_version": "1.2.0",
     "candidate_version": "1.3.0",
     "python": "3.11.15",
@@ -277,17 +277,17 @@
     "baseline": {
       "result": "pass",
       "hedron": "1.2.0",
-      "uv_lock_sha256": "734622fb0254aeb76445dafc49ecc0fff8e9231d69fb1571a1f0fa351f5f5051"
+      "uv_lock_sha256": "91c85aaec9a109aea0f21e80437af76752fe3d8273783e26377f251d9a3023ce"
     },
     "upgrade": {
       "result": "pass",
       "hedron": "1.3.0",
-      "uv_lock_sha256": "664413914858e242427d27734ea83303e574fda02e30e46cdfa3f097e5dfbb7b"
+      "uv_lock_sha256": "fcc76fa71d991215d84963153dc52b804dc2d1ecc245b430a766df59e6d2019a"
     },
     "rollback": {
       "result": "pass",
       "hedron": "1.2.0",
-      "uv_lock_sha256": "734622fb0254aeb76445dafc49ecc0fff8e9231d69fb1571a1f0fa351f5f5051",
+      "uv_lock_sha256": "91c85aaec9a109aea0f21e80437af76752fe3d8273783e26377f251d9a3023ce",
       "restored_original_lock": true
     },
     "candidate_artifacts": [

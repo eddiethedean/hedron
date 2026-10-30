@@ -171,6 +171,27 @@ jobs:
             if [ "$name" = "hedron-native" ]; then
               continue
             fi
+            version="$(uv run --python 3.12 python - "$name" <<'PYTHON'
+          import sys
+          import tomllib
+          from pathlib import Path
+
+          package = sys.argv[1]
+          for pyproject in Path("packages").glob("*/pyproject.toml"):
+              metadata = tomllib.loads(pyproject.read_text())
+              project = metadata.get("project", {})
+              if project.get("name") == package:
+                  print(project["version"])
+                  break
+          else:
+              raise SystemExit(f"package {package!r} is missing from the workspace")
+          PYTHON
+          )"
+            published="$(uv run --python 3.12 python scripts/pypi_version_exists.py "$name" "$version")"
+            if [ "$published" = "present" ]; then
+              echo "$name==$version already exists on PyPI; immutable wheel payload parity was verified above, skipping upload"
+              continue
+            fi
             stem="${name//-/_}"
             files=(dist/"${stem}"-*.whl dist/"${stem}"-*.tar.gz)
             for file in "${files[@]}"; do
