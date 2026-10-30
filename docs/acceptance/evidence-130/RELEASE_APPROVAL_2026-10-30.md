@@ -23,4 +23,11 @@ All 16 non-release gates were verified with retained evidence before this decisi
 
 ## Cut and publication boundary
 
-The maintainer instructed Codex to merge and approve all for release. That authorization covers the refreshed candidate and its exact reproduced artifact set. The first tag-triggered workflow stopped at strict source validation before publication; the corrected release commit must use the refreshed source and retained artifact evidence.
+The maintainer instructed Codex to merge and approve all for release. That authorization covers the refreshed candidate and its exact reproduced artifact set. The first tag-triggered run stopped at strict source validation before publication. The corrected run passed source, CI, artifact, and quick-start checks, then partially published before detecting an immutable PyPI archive mismatch. The release workflow is being corrected to skip already-published versions only after the existing wheel-payload parity check succeeds.
+
+
+## PyPI publication attempt and recovery
+
+Release workflow run [40995042038](https://github.com/eddiethedean/hedron/actions/runs/40995042038) used tag commit `4884858bbdb913f3c777fda4efae18a20b6465be`. All pre-publication checks passed, including the strict gate and all 44 exact approved artifact hashes. PyPI accepted `hedron-core==1.3.0`; the next upload stopped because PyPI already contains `fastapi-workbench==1.0.13` with a different archive SHA-256. The release step did not continue to later packages and did not create a GitHub Release. The immutable PyPI payload checker had verified that the existing Workbench wheel has the same runtime payload as the release candidate; its archive metadata differs, so `uv publish --check-url` correctly refused the duplicate filename.
+
+The release workflow fix is in candidate commit `acbd2efbb301a9fae216fd81ffe50c6e897a5a92`. After the payload-parity step, the publish loop checks the exact PyPI version and skips an already-existing version as a whole; PyPI API failures remain fatal. This lets the retry retain the existing `fastapi-workbench==1.0.13` and already-uploaded `hedron-core==1.3.0` while publishing still-missing versions. Candidate CI [40995891593](https://github.com/eddiethedean/hedron/actions/runs/40995891593) passed the full required test, browser, host, packaging, quality, bounds, and supply-chain jobs.

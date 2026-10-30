@@ -1,6 +1,6 @@
 # Hedron `v1.3.0` first-class UI testing acceptance plan
 
-**Status:** Release approved and cut authorized on 2026-10-30; all 17 required gates are Verified. The first tag preflight stopped before publication because merged-source evidence needed refresh; the refreshed candidate is recorded below.
+**Status:** Release approved and cut authorized on 2026-10-30; all 17 required gates are Verified. The first tag preflight stopped before publication because merged-source evidence needed refresh. A later release attempt published `hedron-core==1.3.0` before PyPI rejected an existing `fastapi-workbench==1.0.13` archive; the recovery is recorded below.
 **Planning revision:** 2026-10-28
 **Planning baseline:** Published `v1.2.0`
 **Required release predecessor:** `v1.2.0` — PyPI publication verified
@@ -218,3 +218,6 @@ tooling-only scope and the [new sequence](../rfcs/RFC-0100-INTERACTION-EFFICIENC
 
 
 The merged-source artifact refresh is retained in [the reproducible distribution manifest](evidence-130/python-artifacts.json), [both complete builds](evidence-130/recheck-40993249628/), and [merge CI record](evidence-130/ci-run-40990900936.json). The source-bound CI run passed at `a99ddec`; the release-evidence-only commit is `8bacd70`.
+
+
+The first publication retry partially uploaded `hedron-core==1.3.0` and then stopped on the immutable `fastapi-workbench==1.0.13` archive hash; the [recovery record](evidence-130/RELEASE_APPROVAL_2026-10-30.md#pypi-publication-attempt-and-recovery) documents the cause and the verified-version skip fix.
