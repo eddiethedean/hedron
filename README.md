@@ -24,16 +24,16 @@ injection, middleware, lifespan, async I/O, JSON routes, and OpenAPI remain avai
 
 [![Hedron Showcase workspace overview using Folio](docs/assets/hedron-showcase.jpg)](https://hedron.readthedocs.io/en/latest/examples/showcase/)
 
-Hedron 1.2.0 is the published Stable 1.2 release, with a Python 3.11–3.14 support matrix. [Explore the showcase](https://hedron.readthedocs.io/en/latest/examples/showcase/).
+Hedron 1.3.0 is the published Stable 1.3 release, with a Python 3.11–3.14 support matrix. [Explore the showcase](https://hedron.readthedocs.io/en/latest/examples/showcase/).
 
-**Hedron 1.2.0 is published on PyPI.** The supported Python range is 3.11–3.14.
+**Hedron 1.3.0 is published on PyPI.** The supported Python range is 3.11–3.14.
 `hedron>=1.0.0` is the compatibility floor; new applications should prefer
-`hedron>=1.2.0,<1.3` and commit a lockfile (or use `hedron==1.2.0` for an exact
+`hedron>=1.3.0,<1.4` and commit a lockfile (or use `hedron==1.3.0` for an exact
 reproduction). Review the [compatibility matrix](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/)
 before combining independently versioned satellites.
 
 Python 3.10 has reached end of security support and will receive no further CPython security fixes.
-The in-tree 1.2.0 candidate requires CPython 3.11–3.14; move to Python 3.11+ before upgrading.
+The published 1.3.0 release requires CPython 3.11–3.14; move to Python 3.11+ before upgrading.
 
 For the strict typing policy and other changes in this release, see the
 [release notes](docs/guides/release-notes.md).
