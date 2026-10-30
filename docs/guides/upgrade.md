@@ -9,7 +9,7 @@ an application requirement.
 
 Hedron 1.3 adds first-class UI testing with direct Playwright APIs, an opt-in pytest plugin,
 managed ASGI scenarios, and an opt-in scaffold. The maintained Python baseline remains CPython
-3.11–3.14. See the [1.3 release notes](release-notes.md#130--2026-10-30) and review the
+3.11–3.14. See the [1.3 release notes](release-notes.md) and review the
 application's browser-test configuration before enabling the optional testing extra.
 
 ## 1.1 → 1.2
