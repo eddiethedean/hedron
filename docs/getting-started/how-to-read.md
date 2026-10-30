@@ -38,8 +38,8 @@ reference page before treating its signature as compatibility-protected.
 
 ## Current release
 
-The current published train is the **1.2.x** release (`v1.2.0`). PyPI serves Hedron and Edron
-`1.2.0`. Install from PyPI:
+The current published train is the **1.3.x** release (`v1.3.0`). PyPI serves Hedron and Edron
+`1.3.0`. Install from PyPI:
 
 ```bash
 python -m pip install "hedron>=1.0.0"

@@ -4,6 +4,9 @@ description: Hedron 1.2.0 release notes and Python 3.11 migration guidance.
 
 # What’s new in Hedron 1.2
 
+> **Historical release note.** For the current published release and install guidance, see
+> [Current release](current-release.md).
+
 Hedron `v1.2.0` was published on PyPI on 2026-10-27. This release moves the maintained Python
 workspace to CPython 3.11–3.14 and tightens the typing and runtime baseline.
 

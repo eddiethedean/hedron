@@ -37,7 +37,7 @@ introduces the web concepts as they appear.
 
 | Item | Value |
 |---|---|
-| Stable version | Published **1.2.0** on the `1.2.x` train |
+| Stable version | Published **1.3.0** on the `1.3.x` train |
 | Previous train | `v1.0.17` — upgrade and migration baseline |
 | Python | 3.11–3.14 |
 | License | MIT |

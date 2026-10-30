@@ -85,12 +85,12 @@ wheel with its immutable PyPI version. If a version already exists with differen
 fails and requires a version bump. Run the quick-start check first against local artifacts. After
 upload, rerun it against the registry and record the result before changing public documentation.
 
-The current coordinated release is **1.2.0**, published on PyPI on 2026-10-27. The retained
+The current coordinated release is **1.3.0**, published on PyPI on 2026-10-30. The retained
 [publication verification](acceptance/evidence-120/PUBLICATION.md) matches all 44 wheel and source
 archive hashes for the 22 coordinated Python distributions against PyPI. The local annotated
 release tag is `release-20261027-01`; this runbook does not assert a hosted GitHub Release entry.
-The separately versioned native 0.1.4 PyPI upload remains unconfirmed. Edron 1.2.0 requires
-`hedron>=1.2.0,<2.0`; publish Hedron before Edron using `release/publish-order.toml`.
+The separately versioned native 0.1.4 PyPI upload remains unconfirmed. Edron 1.3.0 requires
+`hedron>=1.3.0,<2.0`; publish Hedron before Edron using `release/publish-order.toml`.
 
 ## Tag and publish
 

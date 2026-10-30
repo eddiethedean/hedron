@@ -3,6 +3,23 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 1.3.0 — 2026-10-30
+
+Published coordinated release adding first-class UI testing with direct Playwright APIs, an
+opt-in pytest plugin, managed ASGI scenarios, and an opt-in scaffold. Release CI passed on the
+immutable [`release-1.3.0`](https://github.com/eddiethedean/hedron/releases/tag/release-1.3.0)
+tag; all 44 Python wheel and source archive artifacts across 22 distributions are recorded in the
+[publication verification](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/evidence-130/PUBLICATION.md). The Hedron runtime was
+also published to npm.
+
+### Added
+
+- Add first-class UI testing with direct Playwright APIs, an opt-in pytest plugin, managed ASGI
+  scenarios, and an opt-in scaffold.
+
+See [publication verification](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/evidence-130/PUBLICATION.md) and the
+[1.3.0 release workflow](https://github.com/eddiethedean/hedron/actions/runs/40999409118).
+
 ## 1.2.0 — 2026-10-27
 
 Published coordinated release that raises the maintained Python baseline to CPython 3.11–3.14.

@@ -1,11 +1,11 @@
 # What’s next
 
-Hedron `v1.2.0` is verified and published on PyPI. See
+Hedron `v1.3.0` is verified and published on PyPI and npm. See
 [Current release and support](current-release.md) for the exact channel status.
 
-There is no committed 1.3 calendar or commercial SLA. The maintainer roadmap contains a proposed
-1.X sequence, but these are planning candidates rather than release promises. The 1.2 Python
-baseline is published. Future work must preserve the stable inventory and pass the same evidence-driven compatibility,
+There is no committed 1.4 calendar or commercial SLA. The maintainer roadmap contains a proposed
+1.X sequence, but these are planning candidates rather than release promises. The 1.3 UI testing
+release is published. Future work must preserve the stable inventory and pass the same evidence-driven compatibility,
 security, accessibility, packaging, and migration review used for the 1.0 cut.
 
 ## Shipped in 1.1
@@ -32,7 +32,7 @@ Later evaluation phases can end in promotion, continued experimentation, or non-
 |---|---|---|
 | **1.1** | Open enhancement completion and complementary application features | **Shipped in `v1.1.1`; complete application flows are supported** |
 | **1.2** | Python 3.11+ support and typing baseline | **Published** (`v1.2.0`) |
-| **1.3** | First-class UI testing and adoption confidence | Candidate implementation; required freeze and release evidence remain open |
+| **1.3** | First-class UI testing and adoption confidence | **Published** (`v1.3.0`) |
 | **1.4** | Visibility-aware polling | Can hidden/offscreen and failing status regions avoid unnecessary requests? |
 | **1.5** | Viewport and on-demand loading | Can expensive regions defer queries and rendering until needed? |
 | **1.6** | Typed input timing and request policies | Can search/validation issue fewer requests and keep the newest result correct? |

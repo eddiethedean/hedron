@@ -1,7 +1,7 @@
 # Release process summary
 
-Hedron’s coordinated `v1.2.0` package train is published on PyPI and its 44 wheel/sdist
-hashes across 22 Python distributions are recorded in the [publication verification](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/evidence-120/PUBLICATION.md).
+Hedron’s coordinated `v1.3.0` package train is published on PyPI and npm. Its 44 wheel/sdist
+artifacts across 22 Python distributions are recorded in the [publication verification](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/evidence-130/PUBLICATION.md).
 
 The exact maintainer commands and publication rules live in
 [`docs/RELEASE.md`](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md).
@@ -10,15 +10,15 @@ The exact maintainer commands and publication rules live in
 
 | Item | Value |
 |---|---|
-| Current stable release | **v1.2.0** (`hedron`, `hedron-core`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps`) |
+| Current stable release | **v1.3.0** (`hedron`, `hedron-core`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps`) |
 | Migration baseline | **v0.67.0** |
-| PyPI latest | **v1.2.0** |
+| PyPI latest | **v1.3.0** |
 | Public-index requirement | `hedron>=1.0.0` |
-| Repository version | `uv sync` installs development version `1.3.0`; PyPI remains at `1.2.0` until the next cut |
+| Repository version | `uv sync` installs source version `1.3.0`; PyPI has published `1.3.0` |
 | Charts package | `hedron-charts>=1.0.0` |
 | Maps package | `hedron-maps>=1.0.0` |
-| Generic Workbench adapter | `fastapi-workbench>=1.0.8,<2.0` |
-| Release gate | `python scripts/check_release_gate.py 1.3.0 --allow-planned` for candidate checks; strict validation is required before a release cut |
+| Generic Workbench adapter | `fastapi-workbench>=1.0.13,<2.0` |
+| Release gate | `python scripts/check_release_gate.py 1.3.0` |
 
 Adopter-facing sources of truth: [Current release](current-release.md) ·
 [What’s next](whats-next.md) · [Upgrade](upgrade.md) ·

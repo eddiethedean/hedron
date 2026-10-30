@@ -7,8 +7,9 @@
     Keep the historical pins below only when maintaining that release line.
 
 Published **0.56.0** on PyPI. This is a historical train; the current published
-train is **1.2.x** — see [What’s next](whats-next.md). Pin
-`hedron>=1.0.0` from PyPI for current applications.
+train is **1.3.x** — see [Current release](current-release.md).
+
+The reusable-library compatibility floor is `hedron>=1.0.0`.
 
 ## 0.56.1
 
